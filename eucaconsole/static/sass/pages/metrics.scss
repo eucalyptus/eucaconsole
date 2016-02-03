@@ -41,6 +41,7 @@ table td input[type="checkbox"] {
 
 .split-bottom {
     position: relative;
+    padding-top: 1.0rem;
 }
 
 select {
@@ -75,4 +76,15 @@ th.metric-action {
 
 magic-search .f-dropdown {
     min-width: 15rem;
+}
+
+div.absolute-grouping {
+    float: left;
+}
+
+input.datefield {
+    width: 9rem;
+    float: left;
+    margin-bottom: 0;
+    margin-right: 1rem;
 }

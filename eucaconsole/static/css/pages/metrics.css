@@ -152,7 +152,7 @@ table td input[type="checkbox"] { margin: 0 0 0; }
 .split-bar { height: 0.6rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; overflow-y: hidden; }
 .split-bar hr { margin: 4px 4px 4px 4px; }
 
-.split-bottom { position: relative; }
+.split-bottom { position: relative; padding-top: 1.0rem; }
 
 select { width: 20rem; }
 
@@ -166,3 +166,7 @@ th.metric-action { text-align: right !important; }
 .metrics-selected { padding-top: 1.5rem; padding-left: 0.25rem; }
 
 magic-search .f-dropdown { min-width: 15rem; }
+
+div.absolute-grouping { float: left; }
+
+input.datefield { width: 9rem; float: left; margin-bottom: 0; margin-right: 1rem; }

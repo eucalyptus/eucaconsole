@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table'])
+angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter'])
     .directive('splitbar', function () {
         var pageElement = angular.element(document.body.parentElement);
         return {
@@ -23,6 +23,21 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 });
             }
         };
+    })
+    .directive('datepicker', function () {
+        return {
+            require: 'ngModel',
+            restrict: 'A',
+            scope: { format: "=" },
+            link: function(scope, element, attrs, ngModel){
+                if(typeof(scope.format) == "undefined"){ scope.format = "yyyy/mm/dd hh:ii" }
+                $(element).fdatepicker({format: scope.format, pickTime: true}).on('changeDate', function(ev){
+                    scope.$apply(function(){
+                        ngModel.$setViewValue(ev.date);
+                    }); 
+                })
+            }
+        } 
     })
     .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
         var vm = this;
@@ -155,6 +170,19 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 }
                 return value;
             }
+        };
+        vm.chartDimensions = function(chart) {
+            var ret = [];
+            chart.forEach(function(row) {
+                var label = '';
+                var dims = {};
+                row.resources.forEach(function(res) {
+                    label = label + res.res_name + " ";
+                    dims[res.res_type] = res.res_id;
+                });
+                ret.push({'label': label, 'dimensions':dims});
+            });
+            return ret;
         };
     })
 ;

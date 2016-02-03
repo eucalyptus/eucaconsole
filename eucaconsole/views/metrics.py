@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS CloudWatch metrics
 
 """
 import copy
+import datetime
 import simplejson as json
 
 from pyramid.view import view_config
@@ -247,6 +248,7 @@ class CloudWatchMetricsView(LandingPageView):
         return self.render_dict
 
     def get_chart_options_json(self):
+        now = datetime.datetime.utcnow()
         return BaseView.escape_json(json.dumps({
             'metric_title_mapping': METRIC_TITLE_MAPPING,
             'granularity_choices': GRANULARITY_CHOICES,
@@ -334,7 +336,7 @@ class CloudWatchMetricsJsonView(BaseView):
         res_type = self.request.params.get('restype')
         names = {}
         if res_type == 'instance':
-            instances = self.get_connection().get_only_instances(ids)
+            instances = self.get_connection().get_only_instances(filters={'instance_id': ids})
             for instance in instances:
                 names[instance.id] = TaggedItemView.get_display_name(instance)
         elif res_type == 'image':

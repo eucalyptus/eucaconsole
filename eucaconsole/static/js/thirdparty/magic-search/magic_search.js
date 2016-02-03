@@ -81,11 +81,6 @@ angular.module('MagicSearch')
                     }
                     $scope.filteredObj = $scope.facetsObj;
                 };
-                $scope.$on('facets_updated', function($event, newVal) {
-                    $scope.facetsObj = newVal;
-                    $scope.facetsSave = $scope.copyFacets($scope.facetsObj);
-                    $scope.initFacets();
-                });
                 $scope.addFacets = function(facets) {
                     // add a facets javascript object to the existing list
                     for (var facet in facets) {
