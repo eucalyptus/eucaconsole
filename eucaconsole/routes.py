@@ -277,7 +277,7 @@ urls = [
     Route(name='cloudwatch_alarms_create', pattern='/alarms/create'),
     Route(name='cloudwatch_alarms_delete', pattern='/alarms/delete'),
     Route(name='cloudwatch_alarms_for_metric_json', pattern='/alarms/json/{metric}'),
-    # REST API - this route is hard-coded elsehwere, do not change.
+    # REST API - this route is hard-coded elsewhere, do not change.
     Route(name='cloudwatch_api', pattern='/cloudwatch/api'),
     # Metrics Landing page
     Route(name='cloudwatch_metrics', pattern='/metrics'),

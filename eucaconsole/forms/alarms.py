@@ -194,6 +194,4 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
 
 
 class CloudWatchAlarmFilterForm(BaseSecureForm):
-
-    def __init__(self):
-        pass
+    pass

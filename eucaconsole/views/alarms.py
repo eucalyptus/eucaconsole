@@ -129,10 +129,7 @@ class CloudWatchAlarmsView(LandingPageView):
             self.request.error_messages = error_msg_list
         return self.render_dict
 
-    @view_config(
-        route_name='cloudwatch_alarms_delete',
-        renderer='json',
-        request_method='DELETE')
+    @view_config(route_name='cloudwatch_alarms_delete', renderer='json', request_method='DELETE')
     def cloudwatch_alarms_delete(self):
 
         message = json.loads(self.request.body)
