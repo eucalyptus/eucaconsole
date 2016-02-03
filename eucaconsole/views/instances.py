@@ -187,6 +187,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         controller_options_json = BaseView.escape_json(json.dumps({
             'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
             'roles_json_items_endpoint': self.request.route_path('instances_roles_json'),
+            'cloud_type': self.cloud_type,
         }))
         self.render_dict = dict(
             prefix=self.prefix,
