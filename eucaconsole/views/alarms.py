@@ -36,7 +36,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
-from ..forms.alarms import CloudWatchAlarmCreateForm
+from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
@@ -134,17 +134,24 @@ class CloudWatchAlarmsView(LandingPageView):
 
         message = json.loads(self.request.body)
         alarms = message.get('alarms', [])
+        form = CloudWatchAlarmDeleteForm(self.request)
 
-        with boto_error_handler(self.request):
-            self.log_request(_(u"Deleting alarm(s) {0}").format(alarms))
-            action = self.cloudwatch_conn.delete_alarms(alarms)
+        if form.validate():
+            with boto_error_handler(self.request):
+                self.log_request(_(u"Deleting alarm(s) {0}").format(alarms))
+                action = self.cloudwatch_conn.delete_alarms(alarms)
 
-            if action:
-                prefix = _(u'Successfully deleted alarm(s)')
-            else:
-                prefix = _(u'There was a problem deleting alarm(s)')
+                if action:
+                    prefix = _(u'Successfully deleted alarm(s)')
+                else:
+                    prefix = _(u'There was a problem deleting alarm(s)')
 
-            msg = u'{0} {1}'.format(prefix, ', '.join(alarms))
+                msg = u'{0} {1}'.format(prefix, ', '.join(alarms))
+        else:
+            error_msg_list = form.get_errors_list()
+            if self.request.is_xhr:
+                return JSONResponse(status=400, message=', '.join(error_msg_list))
+            self.request.error_messages = error_msg_list
 
         return dict(success=action, message=msg)
 

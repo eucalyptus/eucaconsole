@@ -129,7 +129,7 @@
                     metrics landing page.</p>
                 </div>
                 <div class="row">
-                    <a class="button expand" href="${request.route_path('cloudwatch_metrics')}">
+                    <a class="button expand" href="${request.route_path('cloudwatch_metrics')}" i18n:translate="">
                         Take Me to the Metrics Landing Page
                     </a>
                 </div>

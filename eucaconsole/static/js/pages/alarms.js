@@ -8,11 +8,15 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
     .controller('AlarmsCtrl', ['$scope', '$timeout', '$compile', 'AlarmService',
     function ($scope, $timeout, $compile, AlarmService) {
         $scope.alarms = [];
-
+        var csrf_token = $('#csrf_token').val();
 
         $scope.revealModal = function (action, item) {
             $scope.alarms = [].concat(item);
-            $scope.deleteAlarmsExpanded = false;
+
+            $scope.expanded = false;
+            if(action === 'delete' && $scope.alarms.length === 1) {
+                $scope.expanded = true;
+            }
 
             var modal = $('#' + action + '-alarm-modal');
             modal.foundation('reveal', 'open');
@@ -22,12 +26,13 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
             var servicePath = event.target.dataset.servicePath;
             $('#delete-alarm-modal').foundation('reveal', 'close');
 
-            AlarmService.deleteAlarms($scope.alarms, servicePath).then(function success (response) {
-                Notify.success(response.data.message);
-                $scope.refreshList();
-            }, function error (response) {
-                Notify.failure(response.data.message);
-            }); 
+            AlarmService.deleteAlarms($scope.alarms, servicePath, csrf_token)
+                .then(function success (response) {
+                    Notify.success(response.data.message);
+                    $scope.refreshList();
+                }, function error (response) {
+                    Notify.failure(response.data.message);
+                }); 
         };
 
         $scope.refreshList = function () {
@@ -57,7 +62,7 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
     }])
     .factory('AlarmService', ['$http', function ($http) {
         return {
-            deleteAlarms: function (alarms, path) {
+            deleteAlarms: function (alarms, path, csrf_token) {
                 var alarmNames = alarms.map(function (current) {
                     return current.name;
                 });
@@ -66,7 +71,8 @@ angular.module('AlarmsPage', ['LandingPage', 'CustomFilters'])
                     method: 'DELETE',
                     url: path,
                     data: {
-                        alarms: alarmNames
+                        alarms: alarmNames,
+                        csrf_token: csrf_token
                     }
                 });
             }
