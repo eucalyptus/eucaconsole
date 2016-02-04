@@ -1,7 +1,7 @@
 angular.module('AlarmsComponents', [])
     .directive('alarmState', function () {
         var stateValues = {
-            'OK': 'Ok',
+            'OK': 'OK',
             'ALARM': 'Alarm',
             'INSUFFICIENT_DATA': 'Insufficient data'
         };
