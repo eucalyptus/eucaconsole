@@ -324,7 +324,7 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def terminate_instance_from_view_page(self, instance_id, instance_name=None):
+    def terminate_instance_from_view_page(self, instance_id, instance_name=None,timeout_in_seconds=240):
         """
         Navigates to view page, terminates instance.
         :param instance_name:
@@ -334,9 +334,9 @@ class GuiEC2(GuiTester):
         InstanceLanding(self).click_action_terminate_instance_on_view_page(instance_id)
         TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
         InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated(timeout_in_seconds=timeout_in_seconds)
 
-    def terminate_instance_from_detail_page(self, instance_id):
+    def terminate_instance_from_detail_page(self, instance_id, timeout_in_seconds=240):
         """
         Navigates to detail page, terminates instance.
         :param instance_id:
@@ -347,7 +347,7 @@ class GuiEC2(GuiTester):
         InstanceLanding(self).goto_instance_detail_page_via_actions(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_terminate_instance_action_item_from_detail_page()
         TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated(timeout_in_seconds=timeout_in_seconds)
 
     def batch_terminate_all_instances(self):
         """
