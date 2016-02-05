@@ -347,7 +347,7 @@ class SeleniumApi(object):
         Clicks the element.
         :param element_id:
         """
-        self.wait_for_visible_by_id(element_id)
+        self.wait_for_clickable_by_id(element_id)
         print "Executing click_element_by_id('{0}')".format(element_id)
         try:
             time.sleep(0.6)
@@ -365,7 +365,7 @@ class SeleniumApi(object):
         :param css:
         """
         if wait:
-            self.wait_for_visible_by_css(css)
+            self.wait_for_clickable_by_css(css)
         print "Executing click_element_by_css('{0}')".format(css)
         try:
             time.sleep(0.6)
