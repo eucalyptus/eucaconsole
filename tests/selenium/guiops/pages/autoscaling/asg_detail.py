@@ -1,3 +1,5 @@
+import time
+
 from pages.detailpage import DetailPage
 
 
@@ -9,7 +11,7 @@ class ASGDetailPage(DetailPage):
     _asg_detail_page_title = "Details for scaling group: {0}"  # asg name required
     _next_step_modal_id = "nextstep-scalinggroup-modal"
     _do_notshow_again_checkbox_id = "check-do-not-show-me-again"
-    _close_modal_x_css = "#nextstep-scalinggroup-modal>a.close-reveal-modal"
+    _close_modal_x_css = "#nextstep-scalinggroup-modal .close-reveal-modal"
     _scaling_history_tab_css = "[href='/scalinggroups/{0}/history']"  # asg name required
     _scaling_policies_tab_css = "[href='/scalinggroups/{0}/policies']"  # asg name required
     _instances_tab_css = "[href='/scalinggroups/{0}/instances']"  # asg name required
@@ -32,7 +34,19 @@ class ASGDetailPage(DetailPage):
         """
         if self.tester.check_visibility_by_id(self._next_step_modal_id):
             self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
-            self.tester.click_element_by_css(self._close_modal_x_css)
+            is_selected = self.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+            i=1
+            while (i<3) and not is_selected:
+                try:
+                    time.sleep(1)
+                    is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+                    if is_selected:
+                        break
+                    self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
+                except Exception,e:
+                    print "Click on Do not show again dialog checkbox failed"
+                is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+            self.tester.click_element_by_css_resilisnt(self._close_modal_x_css, self._close_modal_x_css)
         self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id,
                                                 self._asg_detail_page_title.format(asg_name))
         self.tester.wait_for_element_present_by_css(DetailPage(self)._actions_menu_css)
@@ -96,7 +110,16 @@ class ASGDetailPage(DetailPage):
         if desired_capacity is not None:
             self.tester.send_keys_by_id(self._desired_capacity_field_id, desired_capacity)
             self.tester.click_element_by_id(self._desired_capacity_field_id)  # Validation error workaround
-        self.tester.click_element_by_id(self._save_changes_button_id)
+        time.sleep(1)
+        try:
+            self.tester.click_element_by_id(self._save_changes_button_id)
+            is_visible = self.tester.check_visibility_by_css(DetailPage(self)._notification_css)
+            if not is_visible:
+                print "Hitting enter on Save Changes button"
+                self.tester.send_keys_by_id(self._save_changes_button_id,"\n", clear_field=False)
+        except Exception,e:
+            print "ERROR: Could not Save Changes"
+            raise
 
     def verify_capacity_entries(self, min_capacity=0, desired_capacity=0, max_capacity=0):
         min_field_value = self.tester.driver.find_element_by_id(self._min_capacity_field_id).get_attribute('value')
@@ -115,14 +138,17 @@ class ASGDetailPage(DetailPage):
         self.tester.click_element_by_id(self._save_changes_button_id)
 
     def verify_scaling_history(self, asg_name):
-        if self.tester.check_visibility_by_id(self._next_step_modal_id):
-            self.tester.click_element_by_id_resilient(self._do_notshow_again_checkbox_id, self._do_notshow_again_checkbox_id)
-            self.tester.click_element_by_css(self._close_modal_x_css)
+        self._confirm_scaling_policy_modal()
         self.goto_scaling_history_tab(asg_name)
-        self.tester.wait_for_clickable_by_css(self._scaling_history_first_row_expando_css)
-        self.tester.click_element_by_css(self._scaling_history_first_row_expando_css)
+        self.tester.click_element_by_css_robust(
+            self._scaling_history_first_row_expando_css, self._scaling_history_first_cause_css)
         text = self.tester.store_text_by_css(self._scaling_history_first_cause_css)
         if text.find('an instance was started') > 0:
             print 'Found expected cause {0}'.format(text)
         else:
             print "ERROR: couldn't find expected scaling history cause text"
+
+    def _confirm_scaling_policy_modal(self):
+        if self.tester.check_visibility_by_id(self._next_step_modal_id):
+            self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
+            self.tester.click_element_by_css(self._close_modal_x_css)
