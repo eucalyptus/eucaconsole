@@ -30,6 +30,9 @@ class Complete_sequence(GuiOps):
 
     def run_all_tests(self):
 
+        f = open('results.html','w')
+        f.write('Started test \n')
+        test_failed = 0
         print "KEYPAIR OPS TEST"
         print ""
         try:
@@ -38,6 +41,12 @@ class Complete_sequence(GuiOps):
             Keypair_operations_sequence().keypair_ops_test()
         except Exception:
             print "Keypair ops test failed"
+            test_failed = 1
+        if test_failed is 0:
+            f.write('KEYPAIR OPS TEST PASSED \n')
+        else:
+            f.write('KEYPAIR OPS TEST FAILED \n')
+        test_failed = 0
         print "SECURITY GROUP OPS TEST"
         print ""
         try:
@@ -45,7 +54,13 @@ class Complete_sequence(GuiOps):
             print""
             Security_group_operations_sequence().security_group_ops_test()
         except Exception:
+            test_failed = 1
             print "Security group ops test failed"
+        if test_failed is 0:
+            f.write('SECURITY GROUP OPS TEST PASSED \n')
+        else:
+            f.write('SECURITY GROUP OPS TEST FAILED \n')
+        test_failed = 0
         print "INSTANCE OPS TEST"
         print ""
         try:
@@ -53,7 +68,13 @@ class Complete_sequence(GuiOps):
             print""
             Instance_operations_sequence().instance_ops_test()
         except Exception:
+            test_failed = 1
             print "Instance ops test failed"
+        if test_failed is 0:
+            f.write('INSTANCE OPS TEST PASSED \n')
+        else:
+            f.write('INSTANCE OPS TEST FAILED \n')
+        test_failed = 0
         print "VOLUME OPS TEST"
         print ""
         try:
@@ -61,10 +82,23 @@ class Complete_sequence(GuiOps):
             print""
             VolumeOperationsSequence().volume_ops_test()
         except Exception:
+            test_failed = 1
             print "Volume ops test failed"
+        if test_failed is 0:
+            f.write('VOLUME OPS TEST PASSED \n')
+        else:
+            f.write('VOLUME OPS TEST FAILED \n')
+        test_failed = 0
         print "SNAPSHOT OPS TEST"
         print ""
-        #Snapshot_operations_sequence().snapshot_ops_test()
+        try:
+            print "Executing snapshot ops test"
+            print""
+            Snapshot_operations_sequence().snapshot_ops_test()
+        except Exception:
+            test_failed = 1
+            print "Snapshot ops test failed"
+        test_failed = 0
         print "BUCKET OPS TEST"
         print ""
         try:
@@ -72,16 +106,29 @@ class Complete_sequence(GuiOps):
             print""
             Buckets_operations_sequence().bucket_ops_test()
         except Exception:
+            test_failed = 1
             print "Bucket ops test failed"
-
+        test_failed = 0
         print "AUTOSCALING OPS TEST"
         print ""
-        #AutoScalingOperationsSequence().asg_ops_test()
+        try:
+            print "Autoscaling ops test"
+            print""
+            AutoScalingOperationsSequence().asg_ops_test()
+        except Exception:
+            test_failed = 1
+            print "Autoscaling ops test failed"
+        test_failed = 0
         print "ELASTIC IPS OPS TEST"
         print ""
-        #ElasticIPsOperationsSequence().elastic_ip_ops_test()
-
-
+        try:
+            print "Elastic IP ops test"
+            print""
+            ElasticIPsOperationsSequence().elastic_ip_ops_test()
+        except Exception:
+            test_failed = 1
+            print "Elastic IP ops test failed"
+        f.close()
 
 
 if __name__ == '__main__':
