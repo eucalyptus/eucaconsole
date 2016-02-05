@@ -225,8 +225,24 @@
                                       ng-click="chartsCtrl.refreshLargeChart()"><i class="fa fa-refresh"></i></span>
                             </div>
                         </div>
+                        <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                            <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
+                                <i class="fa fa-arrow-circle-o-left fa-2x"></i>
+                            </a>
+                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right">
+                                <i class="fa fa-arrow-circle-o-right fa-2x"></i>
+                            </a>
+                        </div>
                         <div class="chart-wrapper" ng-repeat="(metric, chart) in items | filter:{ _selected: true } | groupBy: 'metric_name'" ng-cloak="true">
                             <h6>{{ chart[0].metric_label }}</h6>
+                            <a href="" id="metric-close-graph-{{ metric }}" class="graph-close" ng-click="metricsCtrl.clearThisChart(chart)" >&#215;</a>
+                            <span id="metric-chart-menu-{{ metric }}" class="metric-chart-menu" data-dropdown="chart-dropdown-{{ metric }}">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </span>
+                            <ul id="chart-dropdown-{{ metric }}" class="f-dropdown" data-dropdown-content="">
+                                <li> <a ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{metric}}&resource={{ chart[0].res_ids | escapeURL }}" i18n:translate="">Create alarm</a> </li>
+                                <li> <a ng-click="metricsCtrl.copyUrl(chart)" i18n:translate="">Copy URL</a> </li>
+                            </ul>
                             <div class="large-chart-wrapper">
                                 <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
                                 <svg cloudwatch-chart="" id="large-chart-{{ metric }}" class="cwchart"
@@ -240,6 +256,14 @@
                                      statistic="{{ chartsCtrl.largeChartStatistics }}" empty="No Data" large="true">
                                 </svg>
                             </div>
+                        </div>
+                        <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                            <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
+                                <i class="fa fa-arrow-circle-o-left fa-2x"></i>
+                            </a>
+                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right">
+                                <i class="fa fa-arrow-circle-o-right fa-2x"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -256,7 +280,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.stickytableheaders.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>

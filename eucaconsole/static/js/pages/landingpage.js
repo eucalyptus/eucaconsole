@@ -141,7 +141,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
         };
         $scope.getItems = function (okToRefresh) {
             var csrf_token = $('#csrf_token').val();
-            var data = "csrf_token="+csrf_token+"&tz_offset="+(new Date()).getTimezoneOffset();
+            var data = "csrf_token="+csrf_token;
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {

@@ -22,4 +22,4 @@
 svg g.euca-alarmLines line.alarm { stroke: red; stroke-width: 1px; stroke-dasharray: 3 3; }
 
 .large-chart-wrapper svg { width: 100%; height: 500px; }
-.large-chart-wrapper .busy.loading { position: absolute; top: 50%; left: 48%; width: 3rem; height: 3rem; font-size: 3rem; color: #6a737b; }
+.large-chart-wrapper .busy.loading { position: absolute; top: 12rem; left: 48%; width: 3rem; height: 3rem; font-size: 3rem; color: #6a737b; }

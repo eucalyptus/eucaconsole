@@ -31,7 +31,11 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             scope: { format: "=" },
             link: function(scope, element, attrs, ngModel){
                 if(typeof(scope.format) == "undefined"){ scope.format = "yyyy/mm/dd hh:ii"; }
-                $(element).fdatepicker({format: scope.format, pickTime: true}).on('changeDate', function(ev){
+                var startDate = new Date();
+                startDate.setHours(-(14 * 24));  // move back 2 weeks
+                var endDate = new Date();
+                $(element).fdatepicker({format: scope.format, pickTime: true, startDate:startDate, endDate:endDate}).on('changeDate', function(ev){
+                    console.log("date from datepicker directive: "+ev.date);
                     scope.$apply(function(){
                         ngModel.$setViewValue(ev.date);
                     }); 
@@ -119,6 +123,11 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         });
         vm.clearSelections = function() {
             vm.items.forEach(function(metric) {
+                metric._selected = false;
+            });
+        };
+        vm.clearThisChart = function(charts) {
+            charts.forEach(function(metric) {
                 metric._selected = false;
             });
         };
