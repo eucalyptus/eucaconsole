@@ -31,7 +31,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
         getAlarmsForMetric: function (metricName, params) {
             return $http({
-                url: '/cloudwatch/alarms/json/' + metricName,
+                url: '/alarms/json/' + metricName,
                 method: 'GET',
                 params: params
             }).then(function success (oData) {
