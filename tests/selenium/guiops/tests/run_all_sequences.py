@@ -30,14 +30,56 @@ class Complete_sequence(GuiOps):
 
     def run_all_tests(self):
 
-        #Keypair_operations_sequence().keypair_ops_test()
-        #Security_group_operations_sequence().security_group_ops_test()
-        #Instance_operations_sequence().instance_ops_test()
-        #VolumeOperationsSequence().volume_ops_test()
+        print "KEYPAIR OPS TEST"
+        print ""
+        try:
+            print "Executing keypair ops test"
+            print""
+            Keypair_operations_sequence().keypair_ops_test()
+        except Exception:
+            print "Keypair ops test failed"
+        print "SECURITY GROUP OPS TEST"
+        print ""
+        try:
+            print "Executing security group ops test"
+            print""
+            Security_group_operations_sequence().security_group_ops_test()
+        except Exception:
+            print "Security group ops test failed"
+        print "INSTANCE OPS TEST"
+        print ""
+        try:
+            print "Executing instance ops test"
+            print""
+            Instance_operations_sequence().instance_ops_test()
+        except Exception:
+            print "Instance ops test failed"
+        print "VOLUME OPS TEST"
+        print ""
+        try:
+            print "Executing volume ops test"
+            print""
+            VolumeOperationsSequence().volume_ops_test()
+        except Exception:
+            print "Volume ops test failed"
+        print "SNAPSHOT OPS TEST"
+        print ""
         #Snapshot_operations_sequence().snapshot_ops_test()
-        #Buckets_operations_sequence().bucket_ops_test()
+        print "BUCKET OPS TEST"
+        print ""
+        try:
+            print "Executing bucket ops test"
+            print""
+            Buckets_operations_sequence().bucket_ops_test()
+        except Exception:
+            print "Bucket ops test failed"
+
+        print "AUTOSCALING OPS TEST"
+        print ""
         #AutoScalingOperationsSequence().asg_ops_test()
-        ElasticIPsOperationsSequence().elastic_ip_ops_test()
+        print "ELASTIC IPS OPS TEST"
+        print ""
+        #ElasticIPsOperationsSequence().elastic_ip_ops_test()
 
 
 
