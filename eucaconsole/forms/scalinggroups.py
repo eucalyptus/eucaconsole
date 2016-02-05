@@ -393,6 +393,11 @@ class ScalingGroupInstancesTerminateForm(BaseSecureForm):
     decrement_capacity = wtforms.BooleanField(label=_(u'Also decrement desired capacity of scaling group'))
 
 
+class ScalingGroupMonitoringForm(BaseSecureForm):
+    """CSRF-protected form to enable/disable metrics collection for a scaling group"""
+    pass
+
+
 class ScalingGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))

@@ -1,0 +1,52 @@
+<!--! Delete Alarm Dialog -->
+<div id="delete-alarm-wrapper">
+    <div id="delete-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
+        <a class="close-reveal-modal" href="#">&#215;</a>
+
+        <h3 ng-if="alarms.length == 1" i18n:translate="">Delete alarm</h3>
+        <h3 ng-if="alarms.length > 1" i18n:translate="">Delete alarms</h3>
+
+        <p ng-if="alarms.length == 1" i18n:translate="">Are you sure you want to delete the following alarm?</p>
+        <p ng-if="alarms.length > 1" i18n:translate="">Are you sure you want to delete the following alarms?</p>
+
+        <div class="expando" ng-cloak="">
+            <h6 class="title" ng-if="alarms.length > 1">
+                <a ng-click="toggleContent()">
+                    <i class="fi-plus" ng-show="!expanded"></i>
+                    <i class="fi-minus" ng-show="expanded"></i>
+                    &nbsp;<span i18n:translate="">{{ alarms.length }} alarms</span>
+                </a>
+            </h6>
+            <div class="content" ng-show="expanded">
+                <div class="row header">
+                    <div class="large-4 columns" i18n:translate="">
+                        Alarm Name
+                    </div>
+                    <div class="large-8 columns" i18n:translate="">
+                        Dimensions
+                    </div>
+                </div>
+                <div class="row alarm-dimensions" ng-repeat="alarm in alarms">
+                    <div class="large-4 columns">
+                        {{ alarm.name }}
+                    </div>
+                    <div class="large-8 columns">
+                        <div ng-repeat="(key, vals) in alarm.dimensions">
+                            <div ng-repeat="val in vals">
+                                {{ key }} = {{ val }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row buttons">
+            <button id="delete-alarm-btn" class="button expand" data-service-path="${service_path}"
+                ng-click="deleteAlarm($event)" i18n:translate="">
+                <span ng-if="alarms.length == 1" i18n:translate="">Yes, Delete Alarm</span>
+                <span ng-if="alarms.length > 1" i18n:translate="">Yes, Delete {{ alarms.length }} Alarms</span>
+            </button>
+        </div>
+    </div>
+</div>

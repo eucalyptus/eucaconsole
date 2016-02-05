@@ -31,7 +31,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
         getAlarmsForMetric: function (metricName, params) {
             return $http({
-                url: '/cloudwatch/alarms/json/' + metricName,
+                url: '/alarms/json/' + metricName,
                 method: 'GET',
                 params: params
             }).then(function success (oData) {
@@ -91,7 +91,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 yFormat = '.2f';
             }
 
-            if (params.maxValue && params.maxValue < 10) {
+            if (params.maxValue && params.maxValue < 10 && params.unit !== 'Count') {
                 chart.forceY([0, params.maxValue]);
                 yFormat = '0.2f';
             }

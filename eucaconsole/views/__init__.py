@@ -157,8 +157,10 @@ class BaseView(object):
             return self.request.session.get('account')
         return self.request.session.get('access_id')  # AWS
 
-    def is_csrf_valid(self):
-        return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
+    def is_csrf_valid(self, token=None):
+        if token is None:
+            token = self.request.params.get('csrf_token')
+        return self.request.session.get_csrf_token() == token
 
     def _store_file_(self, filename, mime_type, contents):
         # disable using memcache for file storage

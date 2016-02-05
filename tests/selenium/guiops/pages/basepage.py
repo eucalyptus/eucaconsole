@@ -1,5 +1,5 @@
 from selenium_api.selenium_api import SeleniumApi
-import time
+
 
 class BasePage(SeleniumApi):
 
@@ -40,6 +40,10 @@ class BasePage(SeleniumApi):
 
     def __init__(self, tester):
         self.tester = tester
+
+    @classmethod
+    def print_test_context(cls):
+        print "\n##### Executing methods in {0}.{1} .....\n".format(cls.__module__, cls.__name__)
 
     def logout(self):
         self.tester.click_element_by_css(self._user_dropdown_css)
