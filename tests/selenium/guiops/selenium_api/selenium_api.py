@@ -350,6 +350,7 @@ class SeleniumApi(object):
         self.wait_for_visible_by_id(element_id)
         print "Executing click_element_by_id('{0}')".format(element_id)
         try:
+            time.sleep(0.6)
             self.driver.find_element_by_id(element_id).click()
             print "Clicking on element by id = ('{0}')".format(element_id)
         except Exception, e:
@@ -367,6 +368,7 @@ class SeleniumApi(object):
             self.wait_for_visible_by_css(css)
         print "Executing click_element_by_css('{0}')".format(css)
         try:
+            time.sleep(0.6)
             self.driver.find_element_by_css_selector(css).click()
             print "Clicking on element by css = ('{0}')".format(css)
         except Exception, e:
