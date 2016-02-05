@@ -217,7 +217,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             }
             var val = item[this.key];
             if (val === undefined || val === null) {
-                return false;
+                return true;
             }
             if (Array.isArray(val)) {
                 for (var i=0; i<val.length; i++) {
