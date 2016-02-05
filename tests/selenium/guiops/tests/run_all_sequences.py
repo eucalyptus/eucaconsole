@@ -30,6 +30,8 @@ class Complete_sequence(GuiOps):
 
     def run_all_tests(self):
 
+        all_tests_capital = ["Keypair", "Security Group", "Instance", "Volume", "Snapshot", "Bucket", "Autoscaling", "Elastic IPs"]
+        all_tests_lowercase = ["keypair", "security group", "instance", "volume", "snapshot", "bucket", "autoscaling", "elastic IPs"]
         f = open('results.html','w')
         f.write('Started test \n')
         test_failed = 0
