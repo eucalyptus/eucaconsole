@@ -32,105 +32,30 @@ class Complete_sequence(GuiOps):
 
         all_tests_capital = ["Keypair", "Security Group", "Instance", "Volume", "Snapshot", "Bucket", "Autoscaling", "Elastic IPs"]
         all_tests_lowercase = ["keypair", "security group", "instance", "volume", "snapshot", "bucket", "autoscaling", "elastic IPs"]
+        sequences = [Keypair_operations_sequence().keypair_ops_test(), Security_group_operations_sequence().security_group_ops_test(),
+                     Instance_operations_sequence().instance_ops_test(), VolumeOperationsSequence().volume_ops_test(),
+                     Snapshot_operations_sequence().snapshot_ops_test(), Buckets_operations_sequence().bucket_ops_test(),
+                     AutoScalingOperationsSequence().asg_ops_test(), ElasticIPsOperationsSequence().elastic_ip_ops_test()]
+
         f = open('results.html','w')
         f.write('Started test \n')
-        test_failed = 0
-        print "KEYPAIR OPS TEST"
-        print ""
-        try:
-            print "Executing keypair ops test"
-            print""
-            Keypair_operations_sequence().keypair_ops_test()
-        except Exception:
-            print "Keypair ops test failed"
-            test_failed = 1
-        if test_failed is 0:
-            f.write('KEYPAIR OPS TEST PASSED \n')
-        else:
-            f.write('KEYPAIR OPS TEST FAILED \n')
-        test_failed = 0
-        print "SECURITY GROUP OPS TEST"
-        print ""
-        try:
-            print "Executing security group ops test"
-            print""
-            Security_group_operations_sequence().security_group_ops_test()
-        except Exception:
-            test_failed = 1
-            print "Security group ops test failed"
-        if test_failed is 0:
-            f.write('SECURITY GROUP OPS TEST PASSED \n')
-        else:
-            f.write('SECURITY GROUP OPS TEST FAILED \n')
-        test_failed = 0
-        print "INSTANCE OPS TEST"
-        print ""
-        try:
-            print "Executing instance ops test"
-            print""
-            Instance_operations_sequence().instance_ops_test()
-        except Exception:
-            test_failed = 1
-            print "Instance ops test failed"
-        if test_failed is 0:
-            f.write('INSTANCE OPS TEST PASSED \n')
-        else:
-            f.write('INSTANCE OPS TEST FAILED \n')
-        test_failed = 0
-        print "VOLUME OPS TEST"
-        print ""
-        try:
-            print "Executing volume ops test"
-            print""
-            VolumeOperationsSequence().volume_ops_test()
-        except Exception:
-            test_failed = 1
-            print "Volume ops test failed"
-        if test_failed is 0:
-            f.write('VOLUME OPS TEST PASSED \n')
-        else:
-            f.write('VOLUME OPS TEST FAILED \n')
-        test_failed = 0
-        print "SNAPSHOT OPS TEST"
-        print ""
-        try:
-            print "Executing snapshot ops test"
-            print""
-            Snapshot_operations_sequence().snapshot_ops_test()
-        except Exception:
-            test_failed = 1
-            print "Snapshot ops test failed"
-        test_failed = 0
-        print "BUCKET OPS TEST"
-        print ""
-        try:
-            print "Executing bucket ops test"
-            print""
-            Buckets_operations_sequence().bucket_ops_test()
-        except Exception:
-            test_failed = 1
-            print "Bucket ops test failed"
-        test_failed = 0
-        print "AUTOSCALING OPS TEST"
-        print ""
-        try:
-            print "Autoscaling ops test"
-            print""
-            AutoScalingOperationsSequence().asg_ops_test()
-        except Exception:
-            test_failed = 1
-            print "Autoscaling ops test failed"
-        test_failed = 0
-        print "ELASTIC IPS OPS TEST"
-        print ""
-        try:
-            print "Elastic IP ops test"
-            print""
-            ElasticIPsOperationsSequence().elastic_ip_ops_test()
-        except Exception:
-            test_failed = 1
-            print "Elastic IP ops test failed"
-        f.close()
+        for i in range(1,2):
+            test_failed = 0
+            print all_tests_capital[i] + " Ops Test"
+            print ""
+            try:
+                print "Executing {0} ops test".format(all_tests_lowercase[i])
+                print""
+                sequences[i]
+            except Exception:
+                print "{0} ops test failed".format(all_tests_capital[i])
+                test_failed = 1
+            if test_failed is 0:
+                f.write('{0} ops test PASSED \n'.format(all_tests_capital[i]))
+            else:
+                f.write('{0} ops test FAILED \n'.format(all_tests_capital[i]))
+
+
 
 
 if __name__ == '__main__':
