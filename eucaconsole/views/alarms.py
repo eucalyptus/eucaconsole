@@ -36,6 +36,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
+
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
@@ -259,17 +260,29 @@ class CloudWatchAlarmDetailView(BaseView):
     def cloudwatch_alarm_view(self):
         dimensions = self.get_available_dimensions(self.alarm.metric)
         options = []
-        print self.alarm.dimensions
         for d in dimensions:
             for name, value in d.items():
                 option = {
                     'label': '{0} = {1}'.format(name, ', '.join(value)),
                     'value': d,
-                    'selected': False
+                    'selected': value == self.alarm.dimensions.get(name)
                 }
                 options.append(option)
 
+        alarm_json = json.dumps({
+            'name': self.alarm.name,
+            'state': self.alarm.state_value,
+            'stateReason': self.alarm.state_reason,
+            'metric': self.alarm.metric,
+            'namespace': self.alarm.namespace,
+            'statistic': self.alarm.statistic,
+            'unit': self.alarm.unit,
+            'dimensions': self.alarm.dimensions,
+            'duration': self.alarm.period
+        })
+
         self.render_dict.update(
+            alarm_json=alarm_json,
             dimensions=dimensions,
             options=options
         )
