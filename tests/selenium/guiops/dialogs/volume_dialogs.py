@@ -1,43 +1,52 @@
 from pages.basepage import BasePage
 
+
 class CreateVolumeDialog(BasePage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     _volume_name_field_id = "name"
     _create_from_snapshot_id = "snapshot_id_chosen"
     _create_from_snapshot_search_field_css = ".chosen-search>input"
     _volume_size_field_id = "size"
-    _availability_zone_selector_id ="zone"
+    _availability_zone_selector_id = "zone"
     _create_volume_submit_button_id = "create_volume_submit_button"
 
-    def create_volume(self, volume_name=None, create_from_snapshot=False, snapshot_id = None, volume_size=None, availability_zone=None, timeout_in_seconds=120):
+    def create_volume(self, volume_name=None, create_from_snapshot=False, snapshot_id=None,
+                      volume_size=None, availability_zone=None, timeout_in_seconds=120):
         if volume_name is not None:
             self.tester.send_keys_by_id(self._volume_name_field_id, volume_name)
         if create_from_snapshot:
             self.tester.click_element_by_id(self._create_from_snapshot_id)
             self.tester.send_keys_by_css(self._create_from_snapshot_search_field_css, snapshot_id)
         if availability_zone is not None:
-            self.tester.select_by_id(self._availability_zone_selector_id, availability_zone, timeout_in_seconds=timeout_in_seconds)
+            self.tester.select_by_id(
+                self._availability_zone_selector_id, availability_zone, timeout_in_seconds=timeout_in_seconds)
         if volume_size is not None:
             self.tester.send_keys_by_id(self._volume_size_field_id, volume_size)
-        self.tester.click_element_by_id_resilient(self._create_volume_submit_button_id, self._create_volume_submit_button_id )
+        self.tester.click_element_by_id_resilient(
+            self._create_volume_submit_button_id, self._create_volume_submit_button_id )
+
 
 class DeleteVolumeModal(BasePage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     _delete_volume_submit_button_id = "delete_volume_submit_button"
 
     def delete_volume(self):
         self.tester.click_element_by_id(self._delete_volume_submit_button_id)
 
+
 class AttachVolumeModalSelectInstance(BasePage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     _instance_dropdown_css = ".chosen-single"
     _search_field_css = ".chosen-search>input"
@@ -51,7 +60,9 @@ class AttachVolumeModalSelectInstance(BasePage):
         self.tester.click_element_by_css(self._active_result_css)
         if device is not None:
             self.tester.send_keys_by_id(self._device_field_id, device)
-        self.tester.click_element_by_id_resilient(self._attach_volume_submit_button_id,self._attach_volume_submit_button_id)
+        self.tester.click_element_by_id_resilient(
+            self._attach_volume_submit_button_id,self._attach_volume_submit_button_id)
+
 
 class AttachVolumeModalSelectVolume(BasePage):
 

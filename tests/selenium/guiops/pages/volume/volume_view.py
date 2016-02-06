@@ -4,6 +4,7 @@ from pages.landingpage import LandingPage
 class VolumeLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_volume_view_page_loaded()
 
     _volume_view_page_title = "Volumes"
