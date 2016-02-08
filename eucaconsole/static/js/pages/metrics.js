@@ -211,6 +211,9 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         };
         vm.copyUrl = function(chart) {
             var dims = {};
+            if (Array.isArray(chart)) {
+                chart = chart[0];
+            }
             chart.resources.forEach(function(res) {
                 dims[res.res_type] = res.res_id;
             });
@@ -222,8 +225,11 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             if (url.indexOf("#") > -1) {
                 url = url.split("#")[0];
             }
-            console.log(url+"?graph="+$.base64.encode(chart_string));
-            return url+"?graph="+$.base64.encode(chart_string);
+            vm.graphURL = url+"?graph="+$.base64.encode(chart_string);
+            $("#metrics_copy_url_modal").foundation("reveal", "open");
+            $timeout(function() {
+                $(".metrics-url-field").select();
+            }, 500);
         };
     })
 ;

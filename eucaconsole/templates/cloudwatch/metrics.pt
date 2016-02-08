@@ -80,7 +80,7 @@
                                     <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
                                     <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown">
                                         <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
-                                        <li><a href="" ng-click="copyURL(item)" i18n:translate="">Copy URL</a></li>
+                                        <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
                                     </ul>
                                 </metal:block>
                             </div>
@@ -269,6 +269,14 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div id="metrics_copy_url_modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Copy URL</h3>
+        <p i18n:translate="">The URL below will bring you to the metric landing page with preselected metric(s) and graph.</p>
+        <div class="">
+            <input class="metrics-url-field" ng-model="metricsCtrl.graphURL"/>
+        </div>
+        <a href="#" id="metrics_copy_url_close_link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
 
