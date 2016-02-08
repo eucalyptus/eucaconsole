@@ -265,6 +265,19 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         }
         vm.refreshLargeChart();
     };
+    $scope.$on("cloudwatch:updateLargeGraphParams", function($event, stat, period, duration, startTime, endTime) {
+        vm.largeChartStatistic = stat;
+        vm.largeChartGranularity = period;
+        if (duration !== undefined) {
+            vm.timeRange = "relative";
+            vm.largeChartDuration = duration;
+        }
+        else {
+            vm.timeRange = "absolute";
+            vm._largeChartStartTime = startTime;
+            vm._largeChartEndTime = endTime;
+        }
+    });
 
     function submitMonitoringForm() {
         document.getElementById('monitoring-form').submit();
@@ -279,6 +292,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
     vm.refreshLargeChart = function() {
         $scope.$broadcast('cloudwatch:refreshLargeChart');
+        // for external listeners
+        $scope.$emit('cloudwatch:refreshLargeChart', vm.largeChartStatistic, vm.largeChartGranularity, vm.timeRange, vm.largeChartDuration, vm._largeChartStartTime, vm._largeChartEndTime);
     };
 
     function emptyLargeChartDialogOnOpen() {

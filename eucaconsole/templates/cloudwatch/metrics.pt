@@ -174,7 +174,7 @@
                                         <label for="large-chart-statistic" class="left stack-label" i18n:translate="">Statistic</label>
                                     </div>
                                     <div>
-                                        <select name="large_chart_statistic" id="large-chart-statistic" class="duration-input"
+                                        <select name="large_chart_statistic" id="large-chart-statistic" class="statistic-input"
                                                 ng-model="chartsCtrl.largeChartStatistic" ng-change="chartsCtrl.refreshLargeChart()">
                                             <option tal:repeat="option statistic_choices" value="${option[0]}">
                                                 ${option[1]}
@@ -196,8 +196,8 @@
                                 <div class="field-wrapper">
                                     <div>
                                         <label class="left stack-label" i18n:translate="">Time range</label>
-                                        <input type="radio" name="range" value="relative" ng-model="chartsCtrl.timeRange"/><label i18n:translate="">Relative</label>
-                                        <input type="radio" name="range" value="absolute" ng-model="chartsCtrl.timeRange"/><label i18n:translate="">Absolute</label>
+                                        <input id="metric-time-range" type="radio" name="range" value="relative" ng-model="chartsCtrl.timeRange"/><label i18n:translate="">Relative</label>
+                                        <input id="metric-time-range" type="radio" name="range" value="absolute" ng-model="chartsCtrl.timeRange"/><label i18n:translate="">Absolute</label>
                                     </div>
                                     <div>
                                         <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration"
@@ -270,13 +270,13 @@
             </div>
         </div>
     </div>
-    <div id="metrics_copy_url_modal" class="reveal-modal small" data-reveal="">
+    <div id="metrics-copy-url-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Copy URL</h3>
         <p i18n:translate="">The URL below will bring you to the metric landing page with preselected metric(s) and graph.</p>
         <div class="">
             <input class="metrics-url-field" ng-model="metricsCtrl.graphURL"/>
         </div>
-        <a href="#" id="metrics_copy_url_close_link" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="metrics-copy-url-close-link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
 

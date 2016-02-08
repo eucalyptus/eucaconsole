@@ -49,6 +49,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         var headResources;
         var headMetricName;
         var itemNamesUrl;
+        var graphParams = "";
         vm.initPage = function(itemNamesEndpoint) {
             itemNamesUrl = itemNamesEndpoint;
             enableInfiniteScroll();
@@ -135,6 +136,23 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                         }
                     }
                 });
+                if (graph.stat !== undefined) {
+                    if (graph.duration !== undefined) {
+                        $scope.$broadcast("cloudwatch:updateLargeGraphParams", graph.stat, parseInt(graph.period), parseInt(graph.duration));
+                    }
+                    else {
+                        $scope.$broadcast("cloudwatch:updateLargeGraphParams", graph.stat, parseInt(graph.period), undefined, new Date(graph.startTime), new Date(graph.endTime));
+                    }
+                }
+            }
+        });
+        $scope.$on('cloudwatch:refreshLargeChart', function ($event, stat, period, timeRange, duration, startTime, endTime) {
+            graphParams = "&stat="+stat+"&period="+period;
+            if (timeRange == "relative") {
+                graphParams += "&duration="+duration
+            }
+            else {
+                graphParams += "&startTime="+startTime.toUTCString()+"&endTime="+endTime.toUTCString();
             }
         });
         vm.clearSelections = function() {
@@ -217,7 +235,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             chart.resources.forEach(function(res) {
                 dims[res.res_type] = res.res_id;
             });
-            var chart_string = "metric="+chart.metric_name+"&dimensions="+JSON.stringify(dims);
+            var chart_string = "metric="+chart.metric_name+"&dimensions="+JSON.stringify(dims)+graphParams;
             var url = window.location.href;
             if (url.indexOf("?") > -1) {
                 url = url.split("?")[0];
@@ -226,7 +244,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 url = url.split("#")[0];
             }
             vm.graphURL = url+"?graph="+$.base64.encode(chart_string);
-            $("#metrics_copy_url_modal").foundation("reveal", "open");
+            $("#metrics-copy-url-modal").foundation("reveal", "open");
             $timeout(function() {
                 $(".metrics-url-field").select();
             }, 500);
