@@ -77,8 +77,8 @@ class BasePage(SeleniumApi):
     def goto_images_view_via_menu(self):
         print "Scrolling to element by id {0}".format(self._images_menuitem_id)
         self.tester.scroll_to_element_by_id(self._images_menuitem_id)
-        time.sleep(3)
-        self.tester.click_element_by_id_css_robust(self._images_menuitem_id, "li.current>a:contains('Images')")
+        time.sleep(2)
+        self.click_element_by_id_text_by_id_robust(self._images_menuitem_id, self._page_title_id, "Images")
         self.tester.scroll_to_element_by_id(self._dashboard_menuitem_id)
 
     def goto_instances_via_menu(self):
