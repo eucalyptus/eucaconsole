@@ -5,15 +5,18 @@ from option_parser import Option_parser
 class InstanceOperationsSequence(GuiOps):
     def __init__(self):
         parser = Option_parser()
-        self.console_url = parser.parse_options()['console_url']
-        self.webdriver_url = parser.parse_options()['web_driver']
-        self.account = parser.parse_options()['account']
-        self.user = parser.parse_options()['user_name']
-        self.password = parser.parse_options()['password']
-        self.sauce = parser.parse_options()['sauce']
-        self.browser = parser.parse_options()['browser']
-        self.version = parser.parse_options()['version']
-        self.platform = parser.parse_options()['platform']
+        options = parser.parse_options()
+        self.console_url = options['console_url']
+        self.webdriver_url = options['web_driver']
+        self.account = options['account']
+        self.user = options['user_name']
+        self.password = options['password']
+        self.sauce = options['sauce']
+        self.browser = options['browser']
+        self.version = options['version']
+        self.platform = options['platform']
+        self.zones = self.get_zones_from_options(options)
+        self.zone1 = self.zones.get(0)
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce,
                              browser=self.browser, version=self.version, platform=self.platform)
 
@@ -39,13 +42,13 @@ class InstanceOperationsSequence(GuiOps):
         self.tester.terminate_instance_from_detail_page(instance1_id)
         instance3_name = self.id_generator() + "-instance"
         instance3 = self.tester.launch_instance_from_dashboard(
-            image="centos", instance_name=instance3_name, availability_zone="one",
+            image="centos", instance_name=instance3_name, availability_zone=self.zone1,
             instance_type="m1.small", security_group=s_group1_name, key_name=keypair1_name)
         instance3_id = instance3.get("instance_id")
         self.tester.terminate_instance_from_detail_page(instance3_id)
         self.tester.batch_terminate_all_instances()
         instance4 = self.tester.launch_instance_from_dashboard(
-            image="centos", availability_zone="one", instance_type="m1.large")
+            image="centos", availability_zone=self.zone1, instance_type="m1.large")
         instance4_id = instance4.get("instance_id")
         self.tester.terminate_instance_from_view_page(instance_id=instance4_id)
         self.tester.delete_keypair_from_detail_page(keypair1_name)
