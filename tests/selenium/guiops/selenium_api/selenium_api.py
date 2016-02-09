@@ -411,24 +411,21 @@ class SeleniumApi(object):
         """
         print "Executing click_element_by_css_robust ('{0}')".format(css)
         self.wait_for_clickable_by_css(css)
-        #self.verify_enabled_by_css(css)
         self.click_element_by_css(css)
 
         is_visible = self.check_visibility_by_css(element_css_on_next_page)
         k = 1
-        while not is_visible and (k < 4):
+        while not is_visible and (k < 6):
             try:
                 time.sleep(1)
-                print "Repeated click. Executing attempt " + str(k)
-                self.click_element_by_css(css)
+                print "Hitting enter. Executing attempt " + str(k)
+                self.send_keys_by_id(css, "\n", clear_field=False)
             except Exception, e:
-                print str(k) + "-th attempt to click unsuccessful."
-                self.close_browser()
-                raise
+                print str(k) + "-th attempt to hit enter unsuccessful."
             is_visible = self.check_visibility_by_css(element_css_on_next_page)
             k = k + 1
 
-        while not is_visible and (k < 7):
+        while not is_visible and (k < 8):
             try:
                 time.sleep(1)
                 print "Hitting enter. Executing attempt " + str(k)
