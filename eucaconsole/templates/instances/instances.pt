@@ -29,8 +29,6 @@
                         </li>
                     </div>
                 </metal:block>
-            </div>
-            <div metal:fill-slot="gridview_selectall_checkbox">
                 <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
             </div>
             <div metal:fill-slot="tile_header">

@@ -63,9 +63,6 @@
         </div>
         <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
         <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
-            <metal:block metal:define-slot="gridview_selectall_checkbox">
-                <!-- Use layout.global_macros['selectall_items_checkbox'] for tile views with multi-select !-->
-            </metal:block>
             <div ng-show="!itemsLoading">
                 <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
                     No items were found
@@ -235,13 +232,16 @@
 
 <!-- "Select all" checkbox (for tile/grid view) -->
 <metal:selectall_items_checkbox metal:define-macro="selectall_items_checkbox">
-    <input type="checkbox" id="select-all-items-tileview" ng-model="state.allSelected" ng-click="setAllState()" />
+    <span ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" class="select-all-wrapper">
+        <input type="checkbox" id="select-all-items-tileview" ng-model="state.allSelected" ng-click="setAllState()" />&nbsp;
+        <span i18n:translate="">Select all</span>
+    </span>
 </metal:selectall_items_checkbox>
 
 
 <!-- checkbox macro for a table cell in a table with multi-select rows -->
 <metal:select_item_checkbox metal:define-macro="select_item_checkbox">
-    <input type="checkbox" class="row-checkbox" ng-model="item.selected" ng-change="handleItemSelection()" />
+    <input type="checkbox" class="item-checkbox" ng-model="item.selected" ng-change="handleItemSelection()" />
 </metal:select_item_checkbox>
 
 <!-- "More actions" menu item for multi-select operations on landing pages -->
