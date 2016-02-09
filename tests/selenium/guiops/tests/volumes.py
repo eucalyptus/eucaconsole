@@ -16,19 +16,18 @@ class VolumeOperationsSequence(GuiOps):
         self.browser = options['browser']
         self.version = options['version']
         self.platform = options['platform']
-        # Get dict of zones keyed by index (e.g {0: 'one', 1: 'two'})
-        self.zones = dict(enumerate(options['zones'].split(',')))
+        self.zones = self.get_zones_from_options(options)
+        self.zone1 = self.zones.get(0)
+        self.zone2 = self.zones.get(1, self.zones.get(0))
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url,
                              sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
 
     def volume_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
         volume1_name = self.id_generator()+"-volume"
-        volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=2,
-                                                           availability_zone=self.zones.get(0))
+        volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=2, availability_zone=self.zone1)
         volume1_id = volume1.get("volume_id")
-        instance1 = self.tester.launch_instance_from_dashboard(availability_zone=self.zones.get(0),
-                                                               timeout_in_seconds=400)
+        instance1 = self.tester.launch_instance_from_dashboard(availability_zone=self.zone1, timeout_in_seconds=400)
         instance1_id = instance1.get("instance_id")
         self.tester.verify_attach_notice_on_volume_monitoring_page(volume1_id)
         self.tester.attach_volume_from_instance_detail_page(volume1_id, instance1_id, timeout_in_seconds=400)
@@ -42,8 +41,7 @@ class VolumeOperationsSequence(GuiOps):
         self.tester.attach_volume_from_volume_lp(instance1_id, volume1_id, timeout_in_seconds=800)
         self.tester.terminate_instance_from_view_page(instance1_id)
         self.tester.delete_volume_from_view_page(volume1_id)
-        volume2 = self.tester.create_volume_from_dashboard(
-            volume_size=3, availability_zone=self.zones.get(1, self.zones.get(0)))
+        volume2 = self.tester.create_volume_from_dashboard(volume_size=3, availability_zone=self.zone2)
         volume2_id = volume2.get("volume_id")
         self.tester.delete_volume_from_detail_page(volume2_id)
         self.sortable_volumes_tables_test()
@@ -52,12 +50,10 @@ class VolumeOperationsSequence(GuiOps):
 
     def sortable_volumes_tables_test(self):
         volume1_name = "!!!!"+self.id_generator()+"-volume"
-        volume1 = self.tester.create_volume_from_view_page(
-            volume1_name, volume_size=1, availability_zone=self.zones.get(0))
+        volume1 = self.tester.create_volume_from_view_page(volume1_name, volume_size=1, availability_zone=self.zone1)
         volume1_id = volume1.get("volume_id")
         volume2_name = "~~~~"+self.id_generator()+"-volume"
-        volume2 = self.tester.create_volume_from_dashboard(
-            volume2_name, volume_size=1, availability_zone=self.zones.get(0))
+        volume2 = self.tester.create_volume_from_dashboard(volume2_name, volume_size=1, availability_zone=self.zone1)
         volume2_id = volume2.get("volume_id")
         # Test ascending sort by name column
         self.tester.click_sortable_column_header_on_volumes_landing_page(column_name='name')
