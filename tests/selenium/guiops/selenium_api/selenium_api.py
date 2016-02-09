@@ -411,6 +411,7 @@ class SeleniumApi(object):
         """
         print "Executing click_element_by_css_robust ('{0}')".format(css)
         self.wait_for_clickable_by_css(css)
+        time.sleep(1)
         self.click_element_by_css(css)
 
         is_visible = self.check_visibility_by_css(element_css_on_next_page)
