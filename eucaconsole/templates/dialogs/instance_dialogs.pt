@@ -78,7 +78,10 @@
              tal:define="landingpage_action request.route_path('instances_terminate') + layout.querystring;
                          detailpage_action request.route_path('instance_terminate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Terminate instance</h3>
+            <h3>
+                <span i18n:translate="" ng-if="!multipleItemsSelected">Terminate instance</span>
+                <span i18n:translate="" ng-if="multipleItemsSelected">Terminate instances</span>
+            </h3>
             <div ng-show="rootDevice == 'ebs'">
                 <p>
                     <span i18n:translate="">

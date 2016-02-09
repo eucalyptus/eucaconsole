@@ -70,7 +70,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             var instanceNames = [];
             checkedItems.forEach(function (item) {
                 instanceIDs.push(item.id);
-                instanceNames.push(item.instance_name || item.id);
+                instanceNames.push(item.name || item.id);
             });
             $scope.multipleItemsSelected = instanceIDs.length > 1;
             $scope.instanceID = instanceIDs.join(', ');
