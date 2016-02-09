@@ -46,7 +46,7 @@ class Instance_operations_sequence(GuiOps):
         instance4 = self.tester.launch_instance_from_dashboard(image="centos", availability_zone="one",
                                                             instance_type= "m1.large",timeout_in_seconds=480)
         instance4_id = instance4.get("instance_id")
-        self.tester.terminate_instance_from_view_page(instance_id=instance4_id)
+        self.tester.terminate_instance_from_view_page(instance_id=instance4_id, timeout_in_seconds=480)
         self.tester.delete_keypair_from_detail_page(keypair1_name)
         self.tester.delete_security_group_from_view_page(s_group1_name, s_group1_id)
         self.tester.logout()
