@@ -390,19 +390,47 @@ class SeleniumApi(object):
         """
         print "Executing click_element_by_id_robust ('{0}')".format(element_id)
         self.wait_for_clickable_by_id(element_id)
+        time.sleep(2)
         self.click_element_by_id(element_id)
+        time.sleep(2)
 
         is_visible = self.check_visibility_by_id(element_id_on_next_page)
         k = 1
         while not is_visible and (k < 6):
             try:
-                time.sleep(1)
+                time.sleep(2)
                 print "Hitting enter. Executing attempt " + str(k)
                 self.send_keys_by_id(element_id, "\n", clear_field=False)
             except Exception, e:
                 print str(k) + "-th attempt to hit enter unsuccessful."
             is_visible = self.check_visibility_by_id(element_id_on_next_page)
             k = k + 1
+
+    def click_element_by_id_robust(self, element_id, element_css_on_next_page):
+        """
+        Waits for an element to be enabled such that you can click it.
+        Clicks the element, checks if element is still visible, hits enter on element if visible up to 5 times.
+        :param element_id_on_next_page:
+        :param element_id:
+        """
+        print "Executing click_element_by_id_css_robust ('{0}')".format(element_id)
+        self.wait_for_clickable_by_id(element_id)
+        time.sleep(2)
+        self.click_element_by_id(element_id)
+        time.sleep(2)
+
+        is_visible = self.check_visibility_by_css(element_css_on_next_page)
+        k = 1
+        while not is_visible and (k < 6):
+            try:
+                time.sleep(2)
+                print "Hitting enter. Executing attempt " + str(k)
+                self.send_keys_by_id(element_id, "\n", clear_field=False)
+            except Exception, e:
+                print str(k) + "-th attempt to hit enter unsuccessful."
+            is_visible = self.check_visibility_by_css(element_css_on_next_page)
+            k = k + 1
+
 
     def click_element_by_css_robust(self, css, element_css_on_next_page):
         """
