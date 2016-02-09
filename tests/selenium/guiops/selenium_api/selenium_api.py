@@ -450,6 +450,7 @@ class SeleniumApi(object):
         while no_match and (k < 6):
             if is_visible:
                 title = self.store_text_by_id(element_id_for_text_on_next_page)
+                print "Stored text at the locator {0} ".format(element_id_for_text_on_next_page)+title
                 try:
                     if title is text:
                         no_match = False
