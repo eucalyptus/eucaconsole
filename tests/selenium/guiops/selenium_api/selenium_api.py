@@ -171,6 +171,10 @@ class SeleniumApi(object):
             except NoSuchElementException:
                 print "ERROR: Element by css = '{0}' not found in the DOM.".format(css)
             return False
+        except Exception, e:
+            print "ERROR: Unknown Exception e thrown by webdriver."
+            print "Element was not found"
+            pass
 
     def wait_for_visible_by_xpath(self, xpath, timeout_in_seconds=None):
         """
