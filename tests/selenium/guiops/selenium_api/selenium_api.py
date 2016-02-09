@@ -33,7 +33,7 @@ class SeleniumApi(object):
     timeout_to_determine_if_clickable_in_seconds = 20
     timeout_to_wait_for_text_in_seconds = 120
     implicit_wait_default_in_seconds = 60
-    timeout_to_check_for_visibility_in_seconds = 2
+    timeout_to_check_for_visibility_in_seconds = 5
 
     def set_implicit_wait(self, implicit_wait_time):
         """
@@ -406,11 +406,11 @@ class SeleniumApi(object):
             is_visible = self.check_visibility_by_id(element_id_on_next_page)
             k = k + 1
 
-    def click_element_by_id_robust(self, element_id, element_css_on_next_page):
+    def click_element_by_id_css_robust(self, element_id, element_css_on_next_page):
         """
         Waits for an element to be enabled such that you can click it.
         Clicks the element, checks if element is still visible, hits enter on element if visible up to 5 times.
-        :param element_id_on_next_page:
+        :param element_css_on_next_page:
         :param element_id:
         """
         print "Executing click_element_by_id_css_robust ('{0}')".format(element_id)
@@ -429,6 +429,35 @@ class SeleniumApi(object):
             except Exception, e:
                 print str(k) + "-th attempt to hit enter unsuccessful."
             is_visible = self.check_visibility_by_css(element_css_on_next_page)
+            k = k + 1
+
+    def click_element_by_id_text_by_id_robust(self, element_id, element_id_for_text_on_next_page, text):
+        """
+        Waits for an element to be enabled such that you can click it.
+        Clicks the element, checks if text is visible, hits enter on element if visible up to 5 times.
+        :param element_css_on_next_page:
+        :param element_id:
+        """
+        print "Executing click_element_by_id_css_robust ('{0}')".format(element_id)
+        self.wait_for_clickable_by_id(element_id)
+        time.sleep(2)
+        self.click_element_by_id(element_id)
+        time.sleep(2)
+
+        is_visible = self.check_visibility_by_id(element_id_for_text_on_next_page)
+        print "Checked visibility on {0}".format(element_id_for_text_on_next_page)+ "Visibility status: "+str(is_visible)
+        k = 1
+        while not is_visible and (k < 6):
+            try:
+                if self.store_text_by_id(element_id_for_text_on_next_page) is not text:
+                    time.sleep(2)
+                    print "Hitting enter. Executing attempt " + str(k)
+                    self.send_keys_by_id(element_id, "\n", clear_field=False)
+            except Exception, e:
+                print str(k) + "-th attempt to hit enter unsuccessful."
+
+            is_visible = self.check_visibility_by_css(element_id_for_text_on_next_page)
+            print "Checked visibility on {0}".format(element_id_for_text_on_next_page)+ "Visibility status: "+str(is_visible)
             k = k + 1
 
 

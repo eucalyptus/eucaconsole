@@ -22,11 +22,11 @@ class Instance_operations_sequence(GuiOps):
 
     def instance_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
+        keypair1_name = self.id_generator()+"-key-pair"
+        self.tester.create_keypair_from_dashboard(keypair1_name)
         s_group1_name = self.id_generator()+"-group"
         s_group1=self.tester.create_security_group_from_view_page(s_group1_name, "Security group created by instance test")
         s_group1_id = s_group1.get("s_group_id")
-        keypair1_name = self.id_generator()+"-key-pair"
-        self.tester.create_keypair_from_dashboard(keypair1_name)
         instance1_name = self.id_generator()+"-instance"
         instance1 = self.tester.launch_instance_from_image_view_page(image_id_or_type="centos", instance_name=instance1_name,
                                                                instance_type= "m1.medium", security_group=s_group1_name, key_name=keypair1_name, timeout_in_seconds=480)
