@@ -1,9 +1,6 @@
 from basepage import BasePage
 
 
-__author__ = 'alicehubenko'
-
-
 class LoginPage(BasePage):
     _eucalyptus_log_in_tab_css = "#euca-tab>a"
     _eucalyptus_account_field_id = "account"
@@ -14,6 +11,7 @@ class LoginPage(BasePage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     def login(self, account, username, password):
         self.tester.click_element_by_css(self._eucalyptus_log_in_tab_css)

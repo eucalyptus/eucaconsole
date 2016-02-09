@@ -1,16 +1,18 @@
 from pages.landingpage import LandingPage
 
+
 class SecurityGroupLanding(LandingPage):
 
     _s_group_view_page_title = "Security groups"
     _create_s_group_btn_id = "create-securitygroup-btn"
     _s_group_link_css = 'td>a:contains("{0}")'
     _s_group_actions_menu_id = "table-item-dropdown_{0}"
-    _delete_s_group_actions_menuitem_css ="#item-dropdown_{0}>li:nth-child(2)>a"
+    _delete_s_group_actions_menuitem_css = "#item-dropdown_{0}>li:nth-child(2)>a"
     _view_details_actions_menuitem_css = "#item-dropdown_{0}>li>a"
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_s_group_view_page_loaded()
 
     def verify_s_group_view_page_loaded(self):
