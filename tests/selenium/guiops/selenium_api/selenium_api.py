@@ -10,6 +10,7 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 class UICheckException(Exception):
@@ -413,6 +414,7 @@ class SeleniumApi(object):
         self.wait_for_clickable_by_css(css)
         time.sleep(1)
         self.click_element_by_css(css)
+        time.sleep(1)
 
         is_visible = self.check_visibility_by_css(element_css_on_next_page)
         print "Checked visibility on {0}".format(element_css_on_next_page)+ "Visibility status: "+str(is_visible)
@@ -424,9 +426,15 @@ class SeleniumApi(object):
                 time.sleep(1)
                 print "Hitting enter. Executing attempt " + str(k)
                 self.send_keys_by_id(css, "\n", clear_field=False)
+            except NoSuchElementException:
+                print "Element by css = {0} not found".format(css)
+            except ElementNotVisibleException:
+                print "Element by css = {0} not visible".format(css)
             except Exception, e:
                 print str(k) + "-th attempt to hit enter unsuccessful."
+                raise
             is_visible = self.check_visibility_by_css(element_css_on_next_page)
+            print "Checked visibility on {0}".format(element_css_on_next_page)+ "Visibility status: "+str(is_visible)
             k = k + 1
 
         while not is_visible and (k < 8):
@@ -488,6 +496,15 @@ class SeleniumApi(object):
             self.close_browser()
             raise
 
+    def hover_by_id(self, element_id):
+        """
+        Goes to the element by id and hovers.
+        """
+
+        print "Executing hover over element by id = {0}".format(element_id)
+        element = self.driver.find_element_by_id(element_id)
+        hover = ActionChains(self.driver).move_to_element(element)
+        hover.perform()
 
     def click_element_by_id_covert(self, element_id):
         """
