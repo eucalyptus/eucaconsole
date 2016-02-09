@@ -414,8 +414,11 @@ class SeleniumApi(object):
         self.click_element_by_css(css)
 
         is_visible = self.check_visibility_by_css(element_css_on_next_page)
+        print "Checked visibility on {0}".format(element_css_on_next_page)+ "Visibility status: "+str(is_visible)
         k = 1
         while not is_visible and (k < 6):
+            print "Executing Attempt {0}".format(k)
+            print""
             try:
                 time.sleep(1)
                 print "Hitting enter. Executing attempt " + str(k)
