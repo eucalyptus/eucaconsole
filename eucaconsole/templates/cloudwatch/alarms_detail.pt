@@ -124,7 +124,6 @@
                                 </select>
                             </div>
                         </div>
-                        <hr/>
                         <div class="metric-chart chart-wrapper">
                             <h4></h4>
                             <svg class="cwchart"
@@ -136,6 +135,7 @@
                                 unit="{{ unit }}"
                                 dimensions="dimensions"></svg>
                         </div>
+                        <hr/>
                         <div class="controls">
                             <button type="submit" class="button" id="save-changes-btn" ng-click="submitSaveChanges($event)" ng-disabled="isNotChanged">
                                 <span i18n:translate="">Save Changes</span>

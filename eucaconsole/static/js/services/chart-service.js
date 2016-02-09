@@ -6,13 +6,10 @@ angular.module('ChartServiceModule', [])
     };
     var timeFormat = '%m/%d %H:%M';
 
-    return {
+    var svc = {
         renderChart: function (target, results, params) {
             var yFormat = '.0f';
             params = params || {};
-            if(!params.alarms) {
-                params.alarms = [];
-            }
 
             var chart = nv.models.lineChart()
                 .margin(margin)
@@ -66,7 +63,15 @@ angular.module('ChartServiceModule', [])
                 .datum(results)
                 .call(chart);
 
-            var alarmLines = s.select('.nv-lineChart > g')
+            if(params.alarms) {
+                svc.renderAlarms(s, params);
+            }
+
+            return chart;
+        },
+
+        renderAlarms: function (selection, params) {
+            var alarmLines = selection.select('.nv-lineChart > g')
                 .append('g').attr('class', 'euca-alarmLines')
                 .datum(function () {
                     return params.alarms.map(function (current) {
@@ -92,11 +97,13 @@ angular.module('ChartServiceModule', [])
                     });
                 });
 
-            return chart;
+            return alarmLines;
         },
 
         resetChart: function (target) {
             d3.select(target).selectAll('svg > *').remove();
         }
     };
+
+    return svc;
 });

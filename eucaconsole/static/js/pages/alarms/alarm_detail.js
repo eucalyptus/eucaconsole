@@ -7,7 +7,6 @@ angular.module('AlarmDetailPage', ['AlarmsComponents', 'EucaChosenModule', 'Char
             angular.extend(scope, init);
         },
         controller: ['$scope', function ($scope) {
-            console.log('controller', $scope);
         }]
     };
 })
