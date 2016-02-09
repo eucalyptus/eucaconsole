@@ -36,6 +36,7 @@ class BasePage(SeleniumApi):
     _notification_id="notifications"
     _page_title_id = "pagetitle"
     _refresh_button_from_lp_id = "refresh-btn"
+    _notification_css = '#notifications .message'
 
     def __init__(self, tester):
         self.tester = tester
