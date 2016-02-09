@@ -24,7 +24,8 @@ class AutoScalingOperationsSequence(GuiOps):
         self.tester.login(self.account, self.user, self.password)
         launchconfig1_name = self.id_generator() + "-launch-config"
         scalinggroup1_name = self.id_generator() + "-auto-scaling-group"
-        self.tester.create_launch_config_and_asg_from_lc_lp(lc_name=launchconfig1_name, asg_name=scalinggroup1_name,max_capacity=2,desired_capacity=1,min_cpapacity=0)
+        self.tester.create_launch_config_and_asg_from_lc_lp(lc_name=launchconfig1_name, asg_name=scalinggroup1_name,
+                                                            max_capacity=2, desired_capacity=1, min_cpapacity=0)
         self.tester.delete_asg_from_lp(scalinggroup1_name)
         scalinggroup2_name = self.id_generator() + "-auto-scaling-group"
         self.tester.create_asg_from_asg_lp(launch_config_name=launchconfig1_name, asg_name=scalinggroup2_name)
@@ -38,9 +39,21 @@ class AutoScalingOperationsSequence(GuiOps):
         self.tester.set_scaling_group_capacity(scalinggroup2_name, 0, 0, 1)
         self.tester.delete_asg_from_lp(scalinggroup2_name)
         self.tester.delete_launch_config_from_lp(launchconfig2_name)
+        self.test_scaling_group_monitoring_page_with_monitoring_enabled()
         self.tester.logout()
         self.tester.exit_browser()
 
+    def test_scaling_group_monitoring_page_with_monitoring_enabled(self):
+        """Scaling group monitoring page should display charts when metrics collection is enabled and
+           its launch config has monitoring enabled"""
+        launchconfig3_name = self.id_generator() + "-launch-config"
+        scalinggroup3_name = self.id_generator() + "-auto-scaling-group"
+        self.tester.create_launch_config_and_asg_from_lc_lp(
+                lc_name=launchconfig3_name, asg_name=scalinggroup3_name, enable_monitoring=True)
+        self.tester.enable_metrics_collection_for_auto_scaling_group(scalinggroup3_name)
+        self.tester.verify_charts_on_scaling_group_monitoring_page(scalinggroup3_name)
+        self.tester.delete_asg_from_lp(scalinggroup3_name)
+        self.tester.delete_launch_config_from_lp(launchconfig3_name)
 
 if __name__ == '__main__':
     tester = AutoScalingOperationsSequence()
