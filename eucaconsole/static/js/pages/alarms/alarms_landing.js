@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'CustomFilters'])
+angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceModule', 'CustomFilters'])
     .controller('AlarmsCtrl', ['$scope', '$timeout', 'AlarmService', function ($scope, $timeout, AlarmService) {
         $scope.alarms = [];
         var csrf_token = $('#csrf_token').val();
@@ -58,22 +58,4 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'CustomFilters'
                 $scope.refreshList();
             });
         });
-    }])
-    .factory('AlarmService', ['$http', function ($http) {
-        return {
-            deleteAlarms: function (alarms, path, csrf_token) {
-                var alarmNames = alarms.map(function (current) {
-                    return current.name;
-                });
-
-                return $http({
-                    method: 'DELETE',
-                    url: path,
-                    data: {
-                        alarms: alarmNames,
-                        csrf_token: csrf_token
-                    }
-                });
-            }
-        };
     }]);

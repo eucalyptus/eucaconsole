@@ -1,4 +1,7 @@
-angular.module('AlarmDetailPage', ['AlarmsComponents', 'EucaChosenModule', 'ChartAPIModule', 'ChartServiceModule'])
+angular.module('AlarmDetailPage', [
+    'AlarmsComponents', 'EucaChosenModule', 'ChartAPIModule', 'ChartServiceModule',
+    'AlarmServiceModule'
+])
 .directive('alarmDetail', function () {
     return {
         restrict: 'A',
@@ -6,7 +9,28 @@ angular.module('AlarmDetailPage', ['AlarmsComponents', 'EucaChosenModule', 'Char
             var init = JSON.parse(attrs.alarmDetail);
             angular.extend(scope, init);
         },
-        controller: ['$scope', function ($scope) {
+        controller: ['$scope', '$window', 'AlarmService', function ($scope, $window, AlarmService) {
+            var csrf_token = $('#csrf_token').val();
+
+            $scope.saveChanges = function (event) {
+            };
+
+            $scope.delete = function (event) {
+                event.preventDefault();
+                var redirectPath = event.target.dataset.redirectPath;
+                var servicePath = event.target.dataset.servicePath;
+
+                var alarm = {
+                    name: $scope.name
+                };
+
+                AlarmService.deleteAlarms([alarm], servicePath, csrf_token, true)
+                    .then(function success (response) {
+                        $window.location.href = redirectPath;
+                    }, function error (response) {
+                        Notify.failure(response.data.message);
+                    }); 
+            };
         }]
     };
 })
@@ -49,10 +73,7 @@ angular.module('AlarmDetailPage', ['AlarmsComponents', 'EucaChosenModule', 'Char
                     }).then(function(oData) {
                         var results = oData ? oData.results : '';
                         var chart = ChartService.renderChart($scope.target, results, {
-                            unit: oData.unit || scope.unit//,
-                            //preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,
-                            //maxValue: maxValue,
-                            //alarms: alarms
+                            unit: oData.unit || scope.unit
                         });
                     });
                 });

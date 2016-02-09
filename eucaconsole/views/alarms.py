@@ -32,7 +32,7 @@ import simplejson as json
 
 from boto.ec2.cloudwatch import MetricAlarm
 
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
@@ -140,6 +140,7 @@ class CloudWatchAlarmsView(LandingPageView):
         message = json.loads(self.request.body)
         alarms = message.get('alarms', [])
         token = message.get('csrf_token')
+        flash = message.get('flash')
 
         if not self.is_csrf_valid(token):
             return JSONResponse(status=400, message="missing CSRF token")
@@ -154,6 +155,9 @@ class CloudWatchAlarmsView(LandingPageView):
                 prefix = _(u'There was a problem deleting alarm(s)')
 
             msg = u'{0} {1}'.format(prefix, ', '.join(alarms))
+
+        if flash is not None:
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
 
         return dict(success=action, message=msg)
 
@@ -258,6 +262,9 @@ class CloudWatchAlarmDetailView(BaseView):
 
     @view_config(route_name='cloudwatch_alarm_view', renderer=TEMPLATE, request_method='GET')
     def cloudwatch_alarm_view(self):
+        if not self.alarm:
+            raise HTTPNotFound()
+
         dimensions = self.get_available_dimensions(self.alarm.metric)
         options = []
         for d in dimensions:
