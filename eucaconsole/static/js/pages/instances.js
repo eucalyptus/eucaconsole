@@ -10,15 +10,10 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.fileName = '';
         $scope.ipAddresses = [];
         $scope.ipAddressList = {};
-        $scope.batchTerminateModal = $('#batch-terminate-modal');
         $scope.associateIPModal = $('#associate-ip-to-instance-modal');
         $scope.addressesEndpoint = '';
+        $scope.multipleItemsSelected = false;
         $scope.initChosenSelectors = function () {
-            $scope.batchTerminateModal.on('open.fndtn.reveal', function () {
-                var instanceIdsSelect = $scope.batchTerminateModal.find('select');
-                instanceIdsSelect.chosen({'width': '100%', 'search_contains': true});
-                instanceIdsSelect.trigger('chosen:updated');
-            });
             $scope.associateIPModal.on('open.fndtn.reveal', function () {
                 $('#ip_address').chosen({'width': '80%'});
                 $('#ip_address').trigger('chosen:updated');
@@ -67,6 +62,19 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                     $('#ip_address').trigger('chosen:updated');
                 });
             }
+            modal.foundation('reveal', 'open');
+        };
+        $scope.revealTerminateModal = function (checkedItems) {
+            var modal = $('#terminate-instance-modal');
+            var instanceIDs = [];
+            var instanceNames = [];
+            checkedItems.forEach(function (item) {
+                instanceIDs.push(item.id);
+                instanceNames.push(item.instance_name || item.id);
+            });
+            $scope.multipleItemsSelected = instanceIDs.length > 1;
+            $scope.instanceID = instanceIDs.join(', ');
+            $scope.instanceName = instanceNames.join(', ');
             modal.foundation('reveal', 'open');
         };
         $scope.removeFromView = function(instance, url) {
