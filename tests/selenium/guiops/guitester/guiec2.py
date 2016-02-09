@@ -288,21 +288,24 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+    def launch_more_like_this_from_view_page(self, instance_id, instance_name=None, user_data=None, monitoring=False,
+                                             private_addressing=False, timeout_in_seconds=240):
         """
         Navigates to instances view page. Launches an instance like given instance.
-        :param inatance_id:
+        :param instance_id:
         :param instance_name:
         :param user_data:
         :param monitoring:
         :param private_addressing:
+        :param timeout_in_seconds:
         """
         BasePage(self).goto_instances_via_menu()
-        InstanceLanding(self).click_action_launch_more_like_this(inatance_id)
+        InstanceLanding(self).click_action_launch_more_like_this(instance_id)
         LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
         instance_id = InstanceLanding(self).get_id_of_newly_launched_instance()
         InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(
+            timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_more_like_this_from_detail_page(self, base_instance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
