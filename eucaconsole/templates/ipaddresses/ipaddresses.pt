@@ -85,7 +85,7 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td metal:use-macro="layout.global_macros['select_item_checkbox']"></td>
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td tal:condition="is_vpc_supported">
                     <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>

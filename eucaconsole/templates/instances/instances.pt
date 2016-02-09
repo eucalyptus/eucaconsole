@@ -30,6 +30,15 @@
                     </div>
                 </metal:block>
             </div>
+            <div metal:fill-slot="gridview_selectall_checkbox">
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{ item.id }}">
+                    <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                    {{ item.name }}
+                </a>
+            </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></span>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
@@ -157,7 +166,7 @@
                 <th i18n:translate="" class="actions">ACTIONS</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td metal:use-macro="layout.global_macros['select_item_checkbox']"></td>
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a></td>
                 <td class="status">
                     <span class="label radius status {{ item.status }}">{{ item.status }}</span>
