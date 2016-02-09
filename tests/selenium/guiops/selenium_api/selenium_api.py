@@ -452,8 +452,9 @@ class SeleniumApi(object):
                 title = self.store_text_by_id(element_id_for_text_on_next_page)
                 print "Stored text at the locator {0} ".format(element_id_for_text_on_next_page)+title
                 try:
-                    if title is text:
+                    if title == text:
                         no_match = False
+
                     else:
                         time.sleep(2)
                         print "Hitting enter. Executing attempt " + str(k)
