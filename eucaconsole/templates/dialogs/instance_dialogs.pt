@@ -18,7 +18,9 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="reboot_instance_submit_button" class="button expand" i18n:translate="">Yes, Reboot</button>
+                    <button type="submit" id="reboot_instance_submit_button" class="button expand" i18n:translate="">
+                        Yes, Reboot
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -74,8 +76,9 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="stop_instance_submit_button" class="button expand" i18n:translate="">
-                        Yes, Stop Instance(s)
+                    <button type="submit" id="stop_instance_submit_button" class="button expand">
+                        <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Stop Instance</span>
+                        <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Stop Instances</span>
                     </button>
                 </div>
                 <div class="dialog-progress-display hide">
@@ -93,11 +96,9 @@
                 <span i18n:translate="" ng-if="multipleItemsSelected">Terminate instances</span>
             </h3>
             <div ng-show="rootDevice == 'ebs'">
-                <p>
-                    <span i18n:translate="">
-                        Terminating an EBS-backed instance may also delete the root volume if the volume is set up to do so.
-                        Data on that volume will be lost. To keep the volume, you may stop the instance instead.
-                    </span>
+                <p i18n:translate="">
+                    Terminating an EBS-backed instance may also delete the root volume if the volume is set up to do so.
+                    Data on that volume will be lost. To keep the volume, you may stop the instance instead.
                 </p>
             </div>
             <div>
@@ -113,7 +114,9 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="terminate_instance_submit_button" class="button expand" i18n:translate="">Yes, Terminate</button>
+                    <button type="submit" id="terminate_instance_submit_button" class="button expand" i18n:translate="">
+                        Yes, Terminate
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>

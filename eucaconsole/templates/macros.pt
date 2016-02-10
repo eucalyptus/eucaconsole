@@ -232,7 +232,7 @@
 
 <!-- "Select all" checkbox (for tile/grid view) -->
 <metal:selectall_items_checkbox metal:define-macro="selectall_items_checkbox">
-    <span ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" class="select-all-wrapper">
+    <span ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" class="select-all-wrapper" ng-cloak="">
         <input type="checkbox" id="select-all-items-tileview" ng-model="state.allSelected" ng-click="setAllState()" />&nbsp;
         <span i18n:translate="">Select all</span>
     </span>
