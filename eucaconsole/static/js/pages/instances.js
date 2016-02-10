@@ -221,13 +221,9 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         });
     }).filter('hasElasticIP', function() {
         return function (items) {
-            var itemsWithElasticIP = [];
-            items.forEach(function (item) {
-                if (item.has_elastic_ip) {
-                    itemsWithElasticIP.push(item);
-                }
+            return items.filter(function (item) {
+                return item.has_elastic_ip;
             });
-            return itemsWithElasticIP;
         };
     })
 ;

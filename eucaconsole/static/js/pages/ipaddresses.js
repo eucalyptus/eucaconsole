@@ -75,13 +75,9 @@ angular.module('ElasticIPsPage', ['LandingPage'])
     })
     .filter('attachedOnly', function() {
         return function (items) {
-            var attachedItems = [];
-            items.forEach(function (item) {
-                if (item.instance_id) {
-                    attachedItems.push(item);
-                }
+            return items.filter(function (item) {
+                return !!item.instance_id;
             });
-            return attachedItems;
         };
     });
 
