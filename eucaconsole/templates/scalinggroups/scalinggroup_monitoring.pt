@@ -78,7 +78,7 @@
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
                              cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
                              ids="${scaling_group.name}" idtype="AutoScalingGroupName" metric="{{ chart.metric }}" title="{{ chart.title }}"
-                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="EC2"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="AWS/EC2"
                              statistic="{{ chart.statistic }}" empty="{{ chart.empty_msg }}">
                         </svg>
                     </li>
