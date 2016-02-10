@@ -136,6 +136,11 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     });
                 });
 
+            if (params.noXLabels) {
+                d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .tick text").remove();
+                d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text").remove();
+            }
+
             return chart;
         },
 
@@ -315,13 +320,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
             'namespace': '@namespace',
             'period': '@period',
             'duration': '@duration',
-            'startTime': '@startTime',
-            'endTime': '@endTime',
+            //'startTime': '@startTime',
+            //'endTime': '@endTime',
             'unit': '@unit',
             'statistic': '@statistic',
             'title': '@title',
             'empty': '@empty',
-            'large': '@large'
+            'large': '@large',
+            'noXLabels': '@noXLabels'
         },
         link: linkFunc,
         controller: ChartController
@@ -334,8 +340,10 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 renderChart($scope);
             });
         });
-        $scope.$watch('dimensions', function() {
-            renderChart($scope);
+        $scope.$watch('dimensions', function(newVal, oldVal) {
+            if (newVal != oldVal) {
+                renderChart($scope);
+            }
         });
         if ($scope.large) {
             var parentCtrl = $scope.$parent.chartsCtrl;
@@ -439,13 +447,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 metric_name: scope.metric,
                 namespace: scope.namespace,
                 period: scope.duration,
-                statistic: scope.statistic
+                statistic: scope.statistic,
             }).then(function (alarms) {
                 var chart = ChartService.renderChart(target, results, {
                     unit: oData.unit || scope.unit,
                     preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,
                     maxValue: maxValue,
-                    alarms: alarms
+                    alarms: alarms,
+                    noXLabels: scope.noXLabels
                 });
                 nv.utils.windowResize(chart.update);
             });

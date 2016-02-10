@@ -283,7 +283,7 @@ class CloudWatchMetricsJsonView(BaseView):
                 if cat['name'] == 'ec2allinstances':
                     tmp = set([met['name'] for met in tmp])
                 else:
-                    tmp = [(met['dimensions'].items(), met['name']) for met in tmp]
+                    tmp = [(met['dimensions'].items(), met['name'], met['namespace']) for met in tmp]
                 cat_metrics = []
                 for metric in tmp:
                     if cat['name'] == 'ec2allinstances':
@@ -301,10 +301,12 @@ class CloudWatchMetricsJsonView(BaseView):
                             continue
                         unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
                         if cat['name'] == 'custom':
-                            unit = "Count"
+                            unit = ['Count']
+                    if metric_name == 'UserCount':
+                        print "Hello"
                     cat_metrics.append(dict(
                         cat_name=cat['name'],
-                        namespace=cat['namespace'],
+                        namespace=metric[2],
                         unique_id=metric[1] + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
                         resources=[dict(
                             res_id=dim[1][0],

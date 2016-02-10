@@ -178,8 +178,8 @@ class CloudWatchAPIMixin(object):
             end_time = datetime.datetime.utcnow()
             start_time = end_time - datetime.timedelta(seconds=duration)
         statistics = [statistic]
-        base_dimensions = {idtype: ids} if idtype and ids else None
-        if dimensions and base_dimensions:
+        base_dimensions = {idtype: ids} if idtype and ids else {}
+        if dimensions:
             base_dimensions.update(dimensions)
         try:
             return cw_conn.get_metric_statistics(
@@ -199,7 +199,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.request = request
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
         self.metric = self.request.params.get('metric') or 'CPUUtilization'
-        self.namespace = u'AWS/{0}'.format(self.request.params.get('namespace', 'EC2'))
+        self.namespace = self.request.params.get('namespace', 'AWS/EC2')
         self.statistic = self.request.params.get('statistic') or 'Average'
         self.zones = self.request.params.get('zones')
         self.split_zone_metrics = ['HealthyHostCount', 'UnHealthyHostCount']

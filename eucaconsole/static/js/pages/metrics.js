@@ -149,11 +149,13 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         $scope.$on('cloudwatch:refreshLargeChart', function ($event, stat, period, timeRange, duration, startTime, endTime) {
             graphParams = "&stat="+stat+"&period="+period;
             if (timeRange == "relative") {
-                graphParams += "&duration="+duration
+                graphParams += "&duration="+duration;
             }
             else {
                 graphParams += "&startTime="+startTime.toUTCString()+"&endTime="+endTime.toUTCString();
             }
+            //$(".nv-x g.nvd3.nv-wrap.nv-axis .tick text").detach()
+            //$(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text").detach()
         });
         vm.clearSelections = function() {
             vm.items.forEach(function(metric) {

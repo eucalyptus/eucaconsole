@@ -199,24 +199,24 @@
                                         <input id="metric-time-range" type="radio" name="range" value="relative" ng-model="chartsCtrl.timeRange"/><label i18n:translate="">Relative</label>
                                         <input id="metric-time-range" type="radio" name="range" value="absolute" ng-model="chartsCtrl.timeRange"/><label i18n:translate="">Absolute</label>
                                     </div>
-                                    <div>
+                                    <div ng-if="chartsCtrl.timeRange == 'relative'">
                                         <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration"
-                                                class="duration-input" ng-if="chartsCtrl.timeRange == 'relative'"
+                                                class="duration-input"
                                                 ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.handleDurationChange()">
                                             <option tal:repeat="option duration_choices" value="${option[0]}">
                                                 ${option[1]}
                                             </option>
                                         </select>
-                                        <div class="absolute-grouping" ng-if="chartsCtrl.timeRange == 'absolute'">
-                                            <label class="left stack-label" i18n:translate="">From</label>
-                                            <input type="text" class="datefield" datepicker=""
-                                                ng-model="chartsCtrl.largeChartStartTime" ng-change="chartsCtrl.handleAbsoluteChange()"
-                                                ng-model-options="{ getterSetter: true }"/>
-                                            <label class="left stack-label" i18n:translate="">To</label>
-                                            <input type="text" class="datefield" datepicker=""
-                                                ng-model="chartsCtrl.largeChartEndTime" ng-change="chartsCtrl.handleAbsoluteChange()"
-                                                ng-model-options="{ getterSetter: true }"/>
-                                        </div>
+                                    </div>
+                                    <div class="absolute-grouping" ng-if="chartsCtrl.timeRange == 'absolute'">
+                                        <label class="left stack-label" i18n:translate="">From</label>
+                                        <input type="text" class="datefield" datepicker=""
+                                            ng-model="chartsCtrl.largeChartStartTime" ng-change="chartsCtrl.handleAbsoluteChange()"
+                                            ng-model-options="{ getterSetter: true }"/>
+                                        <label class="left stack-label" i18n:translate="">To</label>
+                                        <input type="text" class="datefield" datepicker=""
+                                            ng-model="chartsCtrl.largeChartEndTime" ng-change="chartsCtrl.handleAbsoluteChange()"
+                                            ng-model-options="{ getterSetter: true }"/>
                                     </div>
                                 </div>
                             </div>
@@ -247,13 +247,15 @@
                                 <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
                                 <svg cloudwatch-chart="" id="large-chart-{{ metric }}" class="cwchart"
                                      dimensions="{{ metricsCtrl.chartDimensions(chart) }}"
+                                     namespace="{{ chart[0].namespace }}"
                                      metric="{{ chart[0].metric_name }}"
                                      period="{{ chartsCtrl.largeChartGranularity }}"
                                      duration="{{ chartsCtrl.largeChartDuration }}"
                                      start-time="{{ chartsCtrl._largeChartStartTime.toISOString() }}"
                                      end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
                                      unit="{{ chart[0].unit }}"
-                                     statistic="{{ chartsCtrl.largeChartStatistics }}" empty="No Data" large="true">
+                                     statistic="{{ chartsCtrl.largeChartStatistic }}" empty="No Data"
+                                     large="true" no-x-labels="true">
                                 </svg>
                             </div>
                         </div>

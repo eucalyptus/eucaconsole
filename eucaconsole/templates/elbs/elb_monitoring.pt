@@ -58,7 +58,7 @@
                             <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
                                  cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
                                  ids="${elb_name}" idtype="LoadBalancerName" metric="{{ chart.metric }}"
-                                 duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="ELB"
+                                 duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="AWS/ELB"
                                  statistic="{{ chart.statistic || 'Average' }}" empty="{{ chart.empty_msg }}">
                             </svg>
                         </li>
