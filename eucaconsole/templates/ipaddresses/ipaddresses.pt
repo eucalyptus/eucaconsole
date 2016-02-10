@@ -36,9 +36,13 @@
                         </li>
                     </div>
                 </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a>
+                <a ng-href="${prefix}/{{ item.public_ip }}">
+                    <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                    {{ item.public_ip }}
+                </a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
