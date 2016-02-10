@@ -68,10 +68,25 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             var modal = $('#' + action + '-instance-modal');
             var instanceIDs = [];
             var instanceNames = [];
-            selectedItems.forEach(function (item) {
-                instanceIDs.push(item.id);
-                instanceNames.push(item.name || item.id);
-            });
+            var instanceIPs = [];
+            if (action === 'disassociate-ip-from') {
+                // Disassociate IP action is a special case
+                selectedItems.forEach(function (item) {
+                    if (item.has_elastic_ip) {
+                        instanceIDs.push(item.id);
+                        instanceNames.push(item.name || item.id);
+                        instanceIPs.push(item.ip_address);
+                    }
+                });
+                $scope.ipAddress = instanceIPs.map(function (ipAddress) {
+                    return ipAddress;
+                }).join(', ');
+            } else {
+                selectedItems.forEach(function (item) {
+                    instanceIDs.push(item.id);
+                    instanceNames.push(item.name || item.id);
+                });
+            }
             $scope.multipleItemsSelected = instanceIDs.length > 1;
             $scope.instanceID = instanceIDs.join(', ');
             $scope.instanceName = instanceNames.join(', ');
@@ -204,5 +219,15 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 });
             }
         });
+    }).filter('hasElasticIP', function() {
+        return function (items) {
+            var itemsWithElasticIP = [];
+            items.forEach(function (item) {
+                if (item.has_elastic_ip) {
+                    itemsWithElasticIP.push(item);
+                }
+            });
+            return itemsWithElasticIP;
+        };
     })
 ;

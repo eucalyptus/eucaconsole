@@ -266,7 +266,10 @@
              tal:define="landingpage_action request.route_path('instances_disassociate') + layout.querystring;
                          detailpage_action request.route_path('instance_disassociate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>
+            <h3>
+                <span i18n:translate="" ng-if="!multipleItemsSelected">Disassociate elastic IP address from instance</span>
+                <span i18n:translate="" ng-if="multipleItemsSelected">Disassociate elastic IP addresses from instances</span>
+            </h3>
             <div>
                 <p>
                     <span i18n:translate=""> 
@@ -284,8 +287,8 @@
                     <span i18n:translate=""> 
                     from instance
                     </span>
-                    <span tal:condition="instance"><b>${instance.id}</b> ?</span>
-                    <span tal:condition="not instance"><b>{{ instanceName }}</b> ?</span>
+                    <span tal:condition="instance"><b>${instance.id}</b>?</span>
+                    <span tal:condition="not instance"><b>{{ instanceName }}</b>?</span>
                 </p>
             </div>
             <form method="post" action="${action}" id="disassociate-ip-to-instance-form">
@@ -297,7 +300,10 @@
                     <input type="hidden" name="ip_address" value="{{ instancePublicIP }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
+                    <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand">
+                        <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Disassociate Address from Instance</span>
+                        <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Disassociate Addresses from Instances</span>
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>

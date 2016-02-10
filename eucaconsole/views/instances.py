@@ -357,15 +357,21 @@ class InstancesView(LandingPageView, BaseInstanceView):
     @view_config(route_name='instances_disassociate', request_method='POST')
     def instances_disassociate_ip_address(self):
         if self.disassociate_ip_form.validate():
+            ip_address_param = self.request.params.get('ip_address')
+            ip_addresses = [ip_address.strip() for ip_address in ip_address_param.split(',')]
             with boto_error_handler(self.request, self.location):
-                ip_address = self.request.params.get('ip_address')
-                self.log_request(_(u"Disassociating IP {0}").format(ip_address))
-                address = self.get_ip_address(ip_address)
-                if address and address.association_id:
-                    self.conn.disassociate_address(ip_address, association_id=address.association_id)
+                for ip_address in ip_addresses:
+                    self.log_request(_(u"Disassociating IP {0}").format(ip_address))
+                    address = self.get_ip_address(ip_address)
+                    if address and address.association_id:
+                        self.conn.disassociate_address(ip_address, association_id=address.association_id)
+                    else:
+                        self.conn.disassociate_address(ip_address)
+                if len(ip_addresses) == 1:
+                    msg = _(u'Successfully disassociated the IP from the instance.')
                 else:
-                    self.conn.disassociate_address(ip_address)
-                msg = _(u'Successfully disassociated the IP from the instance.')
+                    prefix = _(u'Successfully sent request to disassociate the follow IP addresses:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(ip_addresses))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         msg = _(u'Failed to disassociate the IP address from the instance.')

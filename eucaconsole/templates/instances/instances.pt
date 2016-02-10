@@ -24,25 +24,31 @@
                         <li ng-class="{'disabled': (items | filter: {selected: true, status: 'stopped', root_device_type: 'ebs'}).length &lt; 1}">
                             <a i18n:translate="" class="more-actions-start"
                                ng-click="revealMultiSelectModal('start', (items | filter:{selected: true, status: 'stopped', root_device_type: 'ebs'}))">
-                                Start instances
+                                Start
                             </a>
                         </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running', root_device_type: 'ebs'}).length &lt; 1}">
                             <a i18n:translate="" class="more-actions-stop"
                                ng-click="revealMultiSelectModal('stop', (items | filter:{selected: true, status: 'running', root_device_type: 'ebs'}))">
-                                Stop instances
+                                Stop
                             </a>
                         </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length &lt; 1}">
                             <a i18n:translate="" class="more-actions-reboot"
                                ng-click="revealMultiSelectModal('reboot', (items | filter:{selected: true, status: 'running'}))">
-                                Reboot instances
+                                Reboot
                             </a>
                         </li>
                         <li>
                             <a i18n:translate="" class="more-actions-terminate"
                                ng-click="revealMultiSelectModal('terminate', (items | filter:{selected: true}))">
-                                Terminate instances
+                                Terminate
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'} | hasElasticIP).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-disassociate"
+                               ng-click="revealMultiSelectModal('disassociate-ip-from', (items | filter:{selected: true}))">
+                                Disassociate IP
                             </a>
                         </li>
                     </div>
