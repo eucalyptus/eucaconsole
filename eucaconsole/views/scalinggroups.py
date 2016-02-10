@@ -45,7 +45,8 @@ from pyramid.view import view_config
 from ..constants.cloudwatch import (
     METRIC_TYPES, MONITORING_DURATION_CHOICES, STATISTIC_CHOICES, GRANULARITY_CHOICES,
     DURATION_GRANULARITY_CHOICES_MAPPING)
-from ..constants.scalinggroups import SCALING_GROUP_MONITORING_CHARTS_LIST
+from ..constants.scalinggroups import (
+    SCALING_GROUP_MONITORING_CHARTS_LIST, SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST)
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupMonitoringForm,
@@ -931,6 +932,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
         launchconfig_monitoring_enabled = False
         if self.launch_configuration.instance_monitoring.enabled == 'true':
             launchconfig_monitoring_enabled = True
+        duration_help_text = _(u'Changing the time will update charts for both instance and scaling group metrics.')
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.scaling_group.name,
@@ -938,6 +940,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
             monitoring_form=self.monitoring_form,
             metrics_collection_enabled=metrics_collection_enabled,
             launchconfig_monitoring_enabled=launchconfig_monitoring_enabled,
+            duration_help_text=duration_help_text,
             duration_choices=MONITORING_DURATION_CHOICES,
             statistic_choices=STATISTIC_CHOICES,
             controller_options_json=self.get_controller_options_json()
@@ -972,11 +975,12 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
                 return HTTPFound(location=location)
 
     def get_controller_options_json(self):
+        charts_list = SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST + SCALING_GROUP_MONITORING_CHARTS_LIST
         if not self.scaling_group:
             return ''
         return BaseView.escape_json(json.dumps({
             'metric_title_mapping': {},
-            'charts_list': SCALING_GROUP_MONITORING_CHARTS_LIST,
+            'charts_list': charts_list,
             'granularity_choices': GRANULARITY_CHOICES,
             'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
         }))

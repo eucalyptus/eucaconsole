@@ -128,7 +128,7 @@ def get_configurator(settings, enable_auth=True):
     for route in urls:
         config.add_route(route.name, route.pattern)
     setup_tweens(config, settings)
-    config.scan()
+    config.scan('.views')
     if not boto.config.has_section('Boto'):
         boto.config.add_section('Boto')
     boto.config.set('Boto', 'num_retries', settings.get('connection.retries', '2'))

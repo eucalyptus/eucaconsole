@@ -211,7 +211,7 @@ class SeleniumApi(object):
         print "Executing check_visibility_by_id('{0}')".format(element_id)
 
         try:
-            self.set_implicit_wait(0)
+            self.set_implicit_wait(1)
             WebDriverWait(self.driver, self.timeout_to_check_for_visibility_in_seconds).until(
                 EC.visibility_of_element_located((By.ID, element_id)))
             self.set_implicit_wait(self.implicit_wait_default_in_seconds)
@@ -239,6 +239,14 @@ class SeleniumApi(object):
         except TimeoutException:
             print "Element by css = '{0}' not visible.".format(css)
             return False
+
+    def verify_selected_by_id(self, element_id):
+        """
+        Checks if element is selected.
+        :param element_id:
+        """
+        is_selected = self.driver.find_element_by_id(element_id).get_attribute()
+        return is_selected
 
     def verify_enabled_by_id(self, element_id):
         """
@@ -475,7 +483,6 @@ class SeleniumApi(object):
                 print "Checked visibility on {0}".format(element_id_for_text_on_next_page)+ "Visibility status: "+str(is_visible)
                 k = k + 1
 
-
     def click_element_by_css_robust(self, css, element_css_on_next_page):
         """
         Waits for an element to be enabled such that you can click it.
@@ -495,6 +502,10 @@ class SeleniumApi(object):
             print "Executing Attempt {0}".format(k)
             print""
             try:
+                time.sleep(2)
+                is_visible = self.check_visibility_by_css(css)
+                if is_visible:
+                    break
                 time.sleep(1)
                 print "Hitting enter. Executing attempt " + str(k)
                 self.send_keys_by_id(css, "\n", clear_field=False)
@@ -511,7 +522,10 @@ class SeleniumApi(object):
 
         while not is_visible and (k < 8):
             try:
-                time.sleep(1)
+                time.sleep(2)
+                is_visible = self.check_visibility_by_css(css)
+                if is_visible:
+                    break
                 print "Hitting enter. Executing attempt " + str(k)
                 self.send_keys_by_css(css, "\n", clear_field=False)
             except Exception, e:
@@ -526,7 +540,6 @@ class SeleniumApi(object):
                 print "ERROR: click_robust_by_css on element by css={0} has failed.".format(css)
                 self.close_browser()
                 raise
-
 
     def click_element_by_id_resilient(self, element_id, element_to_disappear_id):
         """

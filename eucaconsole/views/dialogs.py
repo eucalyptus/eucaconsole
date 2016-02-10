@@ -180,6 +180,17 @@ def create_alarm_dialog(context, request, alarm_form=None, alarm_choices=None, r
     )
 
 
+@panel_config('delete_alarm_dialog', renderer='../templates/dialogs/delete_alarm_dialog.pt')
+def delete_alarm_dialog(context, request, modal_size='medium', service_path=None):
+    '''
+    Delete alarm dialog page.
+    '''
+    return dict(
+        modal_size=modal_size,
+        service_path=service_path
+    )
+
+
 @panel_config('keypair_dialogs', renderer='../templates/dialogs/keypair_dialogs.pt')
 def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_form=None):
     """ Modal dialogs for Keypair landing and detail page."""
@@ -378,4 +389,3 @@ def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_c
 def ufshost_warn_dialog(context, request):
     """ Modal warning when trying to create a stack, but ufshost set to localhost"""
     return dict()
-
