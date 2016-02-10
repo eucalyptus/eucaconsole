@@ -64,11 +64,11 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             }
             modal.foundation('reveal', 'open');
         };
-        $scope.revealTerminateModal = function (checkedItems) {
-            var modal = $('#terminate-instance-modal');
+        $scope.revealMultiSelectModal = function (actionType, selectedItems) {
+            var modal = $('#' + actionType + '-instance-modal');
             var instanceIDs = [];
             var instanceNames = [];
-            checkedItems.forEach(function (item) {
+            selectedItems.forEach(function (item) {
                 instanceIDs.push(item.id);
                 instanceNames.push(item.name || item.id);
             });
@@ -88,7 +88,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 Notify.success("Successfully removed terminated instance");
               }).
               error(function (oData, status) {
-                if (status == 403) {
+                if (status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 var errorMsg = oData.message || '';
@@ -109,7 +109,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             var file = evt.target.files[0];
             var reader = new FileReader();
             reader.onloadend = function(evt) {
-                if (evt.target.readyState == FileReader.DONE) {
+                if (evt.target.readyState === FileReader.DONE) {
                     var key_contents = evt.target.result;
                     var url = $scope.password_url.replace("_id_", $scope.instanceID);
                     var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $.base64.encode(key_contents);
@@ -120,7 +120,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                         $('#the-password').text(results.password);
                       }).
                       error(function (oData, status) {
-                        if (status == 403) {
+                        if (status === 403) {
                             $('#timed-out-modal').foundation('reveal', 'open');
                         }
                         var errorMsg = oData.message || '';

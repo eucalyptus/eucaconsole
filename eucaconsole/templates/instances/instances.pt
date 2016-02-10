@@ -22,8 +22,8 @@
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
                         <li>
-                            <a i18n:translate="" ng-click="revealTerminateModal((items | filter:{ selected: true }))"
-                               class="more-actions-terminate">
+                            <a i18n:translate="" class="more-actions-terminate"
+                               ng-click="revealMultiSelectModal('terminate', (items | filter:{ selected: true }))">
                                 Terminate instances
                             </a>
                         </li>
