@@ -62,6 +62,16 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm', 'EucaConsoleUtils'])
             $scope.$watch('alarm', function () {
                 $scope.checkRequiredInput();
             });
+
+            $scope.$on('alarm_created', function ($event, promise) {
+                promise.then(function success (result) {
+                    // Add new alarm to choices and set it as selected
+                    var newAlarm = result.data && result.data.new_alarm;
+                    $rootScope.alarmChoices[newAlarm] = newAlarm;
+                    $rootScope.alarm = newAlarm;
+                    $scope.isCreatingAlarm = false;
+                });
+            });
         };
         $scope.setFocus = function () {
             $scope.policyForm.find('input#name').focus();

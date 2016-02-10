@@ -31,7 +31,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
         getAlarmsForMetric: function (metricName, params) {
             return $http({
-                url: '/cloudwatch/alarms/json/' + metricName,
+                url: '/alarms/json/' + metricName,
                 method: 'GET',
                 params: params
             }).then(function success (oData) {
@@ -288,11 +288,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
         document.getElementById('monitoring-form').submit();
     }
 
-    function refreshCharts() {
+    function refreshCharts(refreshOptions) {
+        refreshOptions = refreshOptions || null;
         vm.emptyMessages = {};
         vm.emptyChartCount = 0;
         // Broadcast message to CW charts directive controller to refresh
-        $scope.$broadcast('cloudwatch:refreshCharts');
+        $scope.$broadcast('cloudwatch:refreshCharts', refreshOptions);
     }
 
     vm.refreshLargeChart = function() {
@@ -335,10 +336,21 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
 
     function ChartController($scope, $timeout) {
         renderChart($scope);
-        $scope.$on('cloudwatch:refreshCharts', function () {
-            $timeout(function () {
-                renderChart($scope);
-            });
+        $scope.$on('cloudwatch:refreshCharts', function (evt, refreshOptions) {
+            var doRefresh = false;
+            // Conditionally refresh charts based on passed options
+            if (refreshOptions) {
+                if (refreshOptions.namespace === $scope.namespace) {
+                    doRefresh = true;
+                }
+            } else {
+                doRefresh = true;
+            }
+            if (doRefresh) {
+                $timeout(function () {
+                    renderChart($scope);
+                });
+            }
         });
         $scope.$watch('dimensions', function(newVal, oldVal) {
             if (newVal != oldVal) {
