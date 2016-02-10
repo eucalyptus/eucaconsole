@@ -221,8 +221,6 @@ class SeleniumApi(object):
             print "Element by id = '{0}' not visible.".format(element_id)
             return False
 
-
-
     def check_visibility_by_css(self, css):
         """
         Checks if the element is visible.
@@ -440,9 +438,7 @@ class SeleniumApi(object):
         """
         print "Executing click_element_by_id_css_robust ('{0}')".format(element_id)
         self.wait_for_clickable_by_id(element_id)
-        time.sleep(2)
         self.click_element_by_id(element_id)
-        time.sleep(2)
         is_visible = self.check_visibility_by_id(element_id_for_text_on_next_page)
         print "Checked visibility on {0}".format(element_id_for_text_on_next_page)+ "Visibility status: "+str(is_visible)
         k = 1
@@ -456,7 +452,7 @@ class SeleniumApi(object):
                         no_match = False
 
                     else:
-                        time.sleep(2)
+                        time.sleep(1)
                         print "Hitting enter. Executing attempt " + str(k)
                         try:
                             self.send_keys_by_id(element_id, "\n", clear_field=False)
@@ -469,7 +465,7 @@ class SeleniumApi(object):
                 except:
                     pass
             else:
-                time.sleep(2)
+                time.sleep(1)
                 print "Hitting enter. Executing attempt " + str(k)
                 try:
                     self.send_keys_by_id(element_id, "\n", clear_field=False)
