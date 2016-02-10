@@ -279,18 +279,24 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_reboot', request_method='POST')
     def instances_reboot(self):
-        instance_id = self.request.params.get('instance_id')
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.reboot_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Rebooting instance {0}").format(instance_id))
-                rebooted = self.conn.reboot_instances([instance_id])
-                msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-                if not rebooted:
+                self.log_request(_(u"Rebooting instance {0}").format(instance_id_param))
+                rebooted = self.conn.reboot_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
+                    msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to reboot the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if rebooted:
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                else:
                     msg = _(u'Unable to reboot the instance.')
                     self.request.session.flash(msg, queue=Notification.ERROR)
         else:
-            msg = _(u'Unable to reboot instance')
+            msg = _(u'Unable to reboot instance(s)')
             self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 

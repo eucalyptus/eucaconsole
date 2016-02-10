@@ -64,6 +64,21 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             }
             modal.foundation('reveal', 'open');
         };
+        $scope.revealRebootModal = function (selectedItems) {
+            var modal = $('#reboot-instance-modal');
+            var instanceIDs = [];
+            var instanceNames = [];
+            selectedItems.forEach(function (item) {
+                if (item.status === 'running') {
+                    instanceIDs.push(item.id);
+                    instanceNames.push(item.name || item.id);
+                }
+            });
+            $scope.multipleItemsSelected = instanceIDs.length > 1;
+            $scope.instanceID = instanceIDs.join(', ');
+            $scope.instanceName = instanceNames.join(', ');
+            modal.foundation('reveal', 'open');
+        };
         $scope.revealTerminateModal = function (selectedItems) {
             var modal = $('#terminate-instance-modal');
             var instanceIDs = [];
