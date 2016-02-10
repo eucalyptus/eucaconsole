@@ -81,6 +81,19 @@ $dropdown-border-color: $hp-gray-65;
         }
     }
 }
+#more-actions-dropdown.f-dropdown {
+    li.disabled {
+        cursor: default;
+        a {
+            color: $hp-gray-20;
+            pointer-events: none;
+        }
+        &:hover {
+            background-color: #fff;
+        }
+    }
+}
+
 
 .gridwrapper {
     margin-top: 0.5rem;

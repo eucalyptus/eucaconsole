@@ -21,6 +21,10 @@
 #primary-buttons .button { padding: 8px 1rem; }
 #primary-buttons .button.more-actions { margin-left: 1rem; padding-right: 3rem; }
 
+#more-actions-dropdown.f-dropdown li.disabled { cursor: default; }
+#more-actions-dropdown.f-dropdown li.disabled a { color: #cccccc; pointer-events: none; }
+#more-actions-dropdown.f-dropdown li.disabled:hover { background-color: #fff; }
+
 .gridwrapper { margin-top: 0.5rem; }
 
 #refresh-btn { color: #5a5a5a; }

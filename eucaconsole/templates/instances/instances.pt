@@ -21,7 +21,7 @@
                    href="${request.route_path('instance_create')}">Launch New Instance</a>
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
-                        <li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length &lt; 1}">
                             <a i18n:translate="" class="more-actions-reboot"
                                ng-click="revealRebootModal((items | filter:{ selected: true }))">
                                 Reboot instances
