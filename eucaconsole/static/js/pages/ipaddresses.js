@@ -72,5 +72,16 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.multipleItemsSelected = checkedIPs.length > 1;
             modal.foundation('reveal', 'open');
         };
+    })
+    .filter('attachedOnly', function() {
+        return function (items) {
+            var attachedItems = [];
+            items.forEach(function (item) {
+                if (item.instance_id) {
+                    attachedItems.push(item);
+                }
+            });
+            return attachedItems;
+        };
     });
 

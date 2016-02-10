@@ -28,7 +28,7 @@
                                 Release to cloud
                             </a>
                         </li>
-                        <li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true} | attachedOnly).length &lt; 1}">
                             <a i18n:translate="" ng-click="revealDisassociateIPsModal((items | filter:{ selected: true }))"
                                class="more-actions-disassociate">
                                 Disassociate from instance
