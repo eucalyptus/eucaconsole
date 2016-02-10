@@ -23,13 +23,13 @@
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
                         <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length &lt; 1}">
                             <a i18n:translate="" class="more-actions-reboot"
-                               ng-click="revealRebootModal((items | filter:{ selected: true }))">
+                               ng-click="revealMultiSelectModal('reboot', (items | filter:{selected: true, status: 'running'}))">
                                 Reboot instances
                             </a>
                         </li>
                         <li>
                             <a i18n:translate="" class="more-actions-terminate"
-                               ng-click="revealTerminateModal((items | filter:{ selected: true }))">
+                               ng-click="revealMultiSelectModal('terminate', (items | filter:{selected: true}))">
                                 Terminate instances
                             </a>
                         </li>
