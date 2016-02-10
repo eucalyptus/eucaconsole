@@ -30,7 +30,10 @@
              tal:define="landingpage_action request.route_path('instances_start') + layout.querystring;
                          detailpage_action request.route_path('instance_start', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Start instance</h3>
+            <h3>
+                <span i18n:translate="" ng-if="!multipleItemsSelected">Start instance</span>
+                <span i18n:translate="" ng-if="multipleItemsSelected">Start instances</span>
+            </h3>
             <p>
                 <span i18n:translate="">Are you sure you want to start</span>
                 <strong tal:condition="not landingpage">${instance_name}</strong>
@@ -42,7 +45,9 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="start_instance_submit_button" class="button expand" i18n:translate="">Yes, Start Instance</button>
+                    <button type="submit" id="start_instance_submit_button" class="button expand" i18n:translate="">
+                        Yes, Start Instance(s)
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -54,7 +59,10 @@
              tal:define="landingpage_action request.route_path('instances_stop') + layout.querystring;
                          detailpage_action request.route_path('instance_stop', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Stop instance</h3>
+            <h3>
+                <span i18n:translate="" ng-if="!multipleItemsSelected">Stop instance</span>
+                <span i18n:translate="" ng-if="multipleItemsSelected">Stop instances</span>
+            </h3>
             <p>
                 <span i18n:translate="">Are you sure you want to stop</span>
                 <strong tal:condition="not landingpage">${instance_name}</strong>
@@ -66,7 +74,9 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="stop_instance_submit_button" class="button expand" i18n:translate="">Yes, Stop Instance</button>
+                    <button type="submit" id="stop_instance_submit_button" class="button expand" i18n:translate="">
+                        Yes, Stop Instance(s)
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>

@@ -21,6 +21,18 @@
                    href="${request.route_path('instance_create')}">Launch New Instance</a>
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'stopped', root_device_type: 'ebs'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-start"
+                               ng-click="revealMultiSelectModal('start', (items | filter:{selected: true, status: 'stopped', root_device_type: 'ebs'}))">
+                                Start instances
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running', root_device_type: 'ebs'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-stop"
+                               ng-click="revealMultiSelectModal('stop', (items | filter:{selected: true, status: 'running', root_device_type: 'ebs'}))">
+                                Stop instances
+                            </a>
+                        </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length &lt; 1}">
                             <a i18n:translate="" class="more-actions-reboot"
                                ng-click="revealMultiSelectModal('reboot', (items | filter:{selected: true, status: 'running'}))">

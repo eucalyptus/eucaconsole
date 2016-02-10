@@ -244,14 +244,23 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_start', request_method='POST')
     def instances_start(self):
-        instance_id = self.request.params.get('instance_id')
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.start_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Starting instance {0}").format(instance_id))
+                self.log_request(_(u"Starting instances {0}").format(instance_id_param))
                 # Can only start an instance if it has a volume attached
-                self.conn.start_instances([instance_id])
-                msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                started = self.conn.start_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
+                    msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to start the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if started:
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                else:
+                    msg = _(u'Unable to start instances')
+                    self.request.session.flash(msg, queue=Notification.ERROR)
         else:
             msg = _(u'Unable to start instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -259,19 +268,22 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_stop', request_method='POST')
     def instances_stop(self):
-        instance_id = self.request.params.get('instance_id')
-        instance = self.get_instance(instance_id)
-        if instance and self.stop_form.validate():
-            # Only EBS-backed instances can be stopped
-            if instance.root_device_type == 'ebs':
-                with boto_error_handler(self.request, self.location):
-                    self.log_request(_(u"Stopping instance {0}").format(instance_id))
-                    instance.stop()
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
+        if self.stop_form.validate():
+            self.log_request(_(u"Stopping instance(s) {0}").format(instance_id_param))
+            with boto_error_handler(self.request, self.location):
+                stopped = self.conn.stop_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to stop the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if stopped:
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-            else:
-                msg = _(u'Only EBS-backed instances can be stopped')
-                self.request.session.flash(msg, queue=Notification.ERROR)
+                else:
+                    msg = _(u'Unable to stop the instance(s).')
+                    self.request.session.flash(msg, queue=Notification.ERROR)
         else:
             msg = _(u'Unable to stop instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -283,7 +295,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.reboot_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Rebooting instance {0}").format(instance_id_param))
+                self.log_request(_(u"Rebooting instance(s) {0}").format(instance_id_param))
                 rebooted = self.conn.reboot_instances(instance_ids=instance_ids)
                 if len(instance_ids) == 1:
                     msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
