@@ -64,8 +64,8 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             }
             modal.foundation('reveal', 'open');
         };
-        $scope.revealMultiSelectModal = function (actionType, selectedItems) {
-            var modal = $('#' + actionType + '-instance-modal');
+        $scope.revealTerminateModal = function (selectedItems) {
+            var modal = $('#terminate-instance-modal');
             var instanceIDs = [];
             var instanceNames = [];
             selectedItems.forEach(function (item) {
