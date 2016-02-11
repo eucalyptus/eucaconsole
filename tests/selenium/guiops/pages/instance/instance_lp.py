@@ -65,7 +65,7 @@ class InstanceLanding(LandingPage):
     def click_terminate_all_instances_button(self):
         self.tester.click_element_by_id(LandingPage._select_all_items_tableview_checkbox_id)
         self.tester.click_element_by_id(LandingPage._more_actions_button_id)
-        self.tester.click_element_by_id(self._more_actions_menu_terminate_instances_css)
+        self.tester.click_element_by_css(self._more_actions_menu_terminate_instances_css)
 
     def verify_there_are_no_running_instances(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "running")
