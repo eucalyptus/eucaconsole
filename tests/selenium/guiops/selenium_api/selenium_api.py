@@ -245,7 +245,7 @@ class SeleniumApi(object):
         Checks if element is selected.
         :param element_id:
         """
-        is_selected = self.driver.find_element_by_id(element_id).get_attribute()
+        is_selected = self.driver.execute_script(("return document.getElementById('%s').checked") % element_id)
         return is_selected
 
     def verify_enabled_by_id(self, element_id):
@@ -581,6 +581,42 @@ class SeleniumApi(object):
             self.close_browser()
             raise
 
+    def click_element_by_css_resilient(self, css, element_to_disappear_css):
+        """
+        Method will verify that element is enabled and try performing a click and hit enter until given element disappears. Repeats attempts, does not raise exception.
+        """
+        print "Executing click_element_by_css_resilient ('{0}')".format(css)
+        self.wait_for_clickable_by_css(css)
+        element = self.driver.find_element_by_css_selector(css)
+        element.click()
+        is_visible = self.check_visibility_by_css(element_to_disappear_css)
+        k = 1
+        while is_visible and (k < 4):
+            print "Repeated click. Executing attempt " + str(k)
+            try:
+                element.click()
+            except Exception, e:
+                print "ERROR: " + str(k) + "-th attempt to click unsuccessful."
+                pass
+            time.sleep(1)
+            is_visible = self.check_visibility_by_css(element_to_disappear_css)
+            k = k + 1
+        while is_visible and (k < 7):
+            print "Hitting enter. Executing attempt " + str(k)
+            try:
+                self.send_keys_by_css(css, "\n", clear_field=False)
+            except Exception, e:
+                print "ERROR: " + str(k) + "-th attempt to hit enter unsuccessful."
+                pass
+            time.sleep(1)
+            is_visible = self.check_visibility_by_css(element_to_disappear_css)
+            k = k + 1
+        try:
+            is_visible
+        except Exception, e:
+            print "ERROR: click_by_id_resilient on element by id={0} has failed.".format(css)
+            pass
+
     def hover_by_id(self, element_id):
         """
         Goes to the element by id and hovers.
@@ -593,19 +629,21 @@ class SeleniumApi(object):
 
     def click_element_by_id_covert(self, element_id):
         """
-        Waits for an element to be present but possibly not visible.
+        Waits for an element to be visible and clicks if it can.
         Clicks the element.
         :param element_id:
         """
-        self.wait_for_element_present_by_id(element_id)
+        self.wait_for_visible_by_id(element_id)
         print "Executing click_element_by_id_covert ('{0}')".format(element_id)
         try:
             self.driver.find_element_by_id(element_id).click()
             print "Clicking on element by id = ('{0}')".format(element_id)
+        except ElementNotVisibleException:
+            print "ERROR: element by  by id = ('{0}') not visible".format(element_id)
+            pass
         except Exception, e:
             print "ERROR: Could not perform click_on_element_covert by id = ('{0}')".format(element_id)
-            self.close_browser()
-            raise
+            pass
 
     def wait_for_element_not_present_by_id(self, element_id):
         """
