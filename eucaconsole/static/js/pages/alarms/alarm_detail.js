@@ -6,13 +6,24 @@ angular.module('AlarmDetailPage', [
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-            var init = JSON.parse(attrs.alarmDetail);
-            angular.extend(scope, init);
+            scope.alarm = JSON.parse(attrs.alarmDetail);
+            console.log('link', scope.alarm);
         },
         controller: ['$scope', '$window', 'AlarmService', function ($scope, $window, AlarmService) {
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
+                var servicePath = event.target.dataset.servicePath;
+                console.log('before save', $scope.alarm);
+
+                AlarmService.updateAlarm($scope.alarm, servicePath, csrf_token)
+                    .then(function success (response) {
+                        console.log('success');
+                        Notify.success(response.data.message);
+                    }, function error (response) {
+                        console.log('error');
+                        Notify.failure(response.data.message);
+                    });
             };
 
             $scope.delete = function (event) {
@@ -48,7 +59,8 @@ angular.module('AlarmDetailPage', [
         link: function (scope, element) {
             scope.target = element[0];
         },
-        controller: ['$scope', 'CloudwatchAPI', 'ChartService', function ($scope, CloudwatchAPI, ChartService) {
+        controller: ['$scope', 'CloudwatchAPI', 'ChartService',
+        function ($scope, CloudwatchAPI, ChartService) {
 
             // ids and idtype comes from passed in dimensions
             // iterate over dimensions, will need a separate

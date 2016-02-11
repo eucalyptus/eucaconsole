@@ -59,13 +59,22 @@
                         </div>
                         <hr/>
                         <h4>Alarm</h4>
-                        ${panel('form_field', field=alarm_form['description'], leftcol_width=2, rightcol_width=10)}
+                        <div class="row inline  controls-wrapper" id="controls_description">
+                                <div class="large-2 small-2 columns">
+                                    <label class="right">
+                                        Description&nbsp;
+                                    </label>
+                                </div>
+                                <div class="large-10 small-10 columns field">
+                                    <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
+                                </div>
+                        </div>    
                         <div class="row controls-wrapper">
                             <div class="large-2 small-4 columns">
                                 <label i18n:translate="">Dimensions</label>
                             </div>
                             <div class="large-10 small-8 columns value">
-                                <select multiple="true" ng-model="dimensions" chosen="">
+                                <select multiple="true" ng-model="alarm.dimensions" chosen="">
                                     <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected"></option>
                                 </select>
                             </div>
@@ -75,7 +84,7 @@
                                 <label i18n:translate="">Trigger alarm when the</label>
                             </div>
                             <div class="large-3 small-4 columns value">
-                                <select ng-model="statistic">
+                                <select ng-model="alarm.statistic">
                                     <option>Average</option>
                                     <option>Minimum</option>
                                     <option>Maximum</option>
@@ -92,7 +101,7 @@
                                 <label i18n:translate="">is</label>
                             </div>
                             <div class="large-3 columns value">
-                                <select>
+                                <select ng-model="alarm.comparison">
                                     <option>&gt;</option>
                                     <option>&gt;&#61;</option>
                                     <option>&lt;</option>
@@ -100,7 +109,7 @@
                                 </select>
                             </div>
                             <div class="large-3 columns value">
-                                <input type="text" value="${alarm.threshold}"/>
+                                <input type="text" value="${alarm.threshold}" ng-model="alarm.threshold"/>
                             </div>
                             <div class="large-3 columns value">
                                 ${alarm.unit}
@@ -111,13 +120,13 @@
                                 <label>for at least</label>
                             </div>
                             <div class="large-3 columns">
-                                <input type="text" value="${alarm.evaluation_periods}"/>
+                                <input type="text" value="${alarm.evaluation_periods}" ng-model="alarm.evaluation_periods"/>
                             </div>
                             <div class="large-3 columns">
                                 consecutive periods of
                             </div>
                             <div class="large-3 columns">
-                                <select ng-model="duration">
+                                <select ng-model="alarm.period">
                                     <option value="60">1 minute</option>
                                     <option value="300">5 minutes</option>
                                     <option value="900">15 minutes</option>
@@ -131,20 +140,25 @@
                             <h4></h4>
                             <svg class="cwchart"
                                 metric-chart=""
-                                metric="{{ metric }}"
-                                namespace="{{ namespace }}"
-                                duration="duration"
-                                statistic="statistic"
-                                unit="{{ unit }}"
-                                dimensions="dimensions"></svg>
+                                metric="{{ alarm.metric }}"
+                                namespace="{{ alarm.namespace }}"
+                                duration="alarm.duration"
+                                statistic="alarm.statistic"
+                                unit="{{ alarm.unit }}"
+                                dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
                         <div class="controls">
-                            <button type="submit" class="button" id="save-changes-btn" ng-click="saveChanges($event)" ng-disabled="isNotChanged">
+                            <button type="submit" class="button"
+                                id="save-changes-btn"
+                                ng-click="saveChanges($event)"
+                                ng-disabled="isNotChanged"
+                                data-service-path="${request.route_path('cloudwatch_alarms')}">
                                 <span i18n:translate="">Save Changes</span>
                             </button>
                             <a href="${request.route_path('instances')}" id="cancel-update-link"
-                               class="cancel-link" i18n:translate="">Cancel</a>
+                               class="cancel-link"
+                               i18n:translate="">Cancel</a>
                         </div>
                     </form>
                 </div>

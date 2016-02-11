@@ -48,6 +48,13 @@ class CloudWatchAlarmsView(LandingPageView):
     """CloudWatch Alarms landing page view"""
     TEMPLATE = '../templates/cloudwatch/alarms.pt'
 
+    comparison_operators = {
+        '>': 'GreaterThanThreshold',
+        '<': 'LessThanThreshold',
+        '>=': 'GreaterThanOrEqualToThreshold',
+        '<=': 'LessThanOrEqualToThreshold'
+    }
+
     def __init__(self, request):
         super(CloudWatchAlarmsView, self).__init__(request)
         self.title_parts = [_(u'Alarms')]
@@ -130,9 +137,47 @@ class CloudWatchAlarmsView(LandingPageView):
             self.request.error_messages = error_msg_list
         return self.render_dict
 
-    @view_config(route_name='cloudwatch_alarms', request_method='PUT')
+    @view_config(route_name='cloudwatch_alarms', renderer='json', request_method='PUT')
     def cloudwatch_alarms_update(self):
-        pass
+        message = json.loads(self.request.body)
+        alarm = message.get('alarm', {})
+        token = message.get('csrf_token')
+
+        if not self.is_csrf_valid(token):
+            return JSONResponse(status=400, message="missing CSRF token")
+
+        name = alarm.get('name')
+        metric = alarm.get('metric')
+        namespace = alarm.get('namespace')
+        statistic = alarm.get('statistic')
+        comparison = alarm.get('comparison')
+        threshold = alarm.get('threshold')
+        period = alarm.get('period')
+        evaluation_periods = alarm.get('evaluation_periods')
+        unit = alarm.get('unit')
+        description = alarm.get('description')
+        dimensions = alarm.get('dimensions')
+
+        print comparison
+
+        updated = MetricAlarm(
+            name=name, metric=metric, namespace=namespace, statistic=statistic,
+            comparison=comparison, threshold=threshold, period=period,
+            evaluation_periods=evaluation_periods, unit=unit, description=description,
+            dimensions=dimensions)
+
+        with boto_error_handler(self.request):
+            self.log_request(_(u'Updating alarm {0}').format(alarm.get('name')))
+            action = self.cloudwatch_conn.put_metric_alarm(updated)
+
+            if action:
+                prefix = _(u'Successfully updated alarm')
+            else:
+                prefix = _(u'There was a problem deleting alarm')
+
+            msg = u'{0} {1}'.format(prefix, alarm)
+
+        return dict(success=action, message=msg)
 
     @view_config(route_name='cloudwatch_alarms_delete', renderer='json', request_method='DELETE')
     def cloudwatch_alarms_delete(self):
@@ -285,7 +330,11 @@ class CloudWatchAlarmDetailView(BaseView):
             'statistic': self.alarm.statistic,
             'unit': self.alarm.unit,
             'dimensions': self.alarm.dimensions,
-            'duration': self.alarm.period
+            'period': self.alarm.period,
+            'evaluation_periods': self.alarm.evaluation_periods,
+            'comparison': self.alarm.comparison,
+            'threshold': self.alarm.threshold,
+            'description': self.alarm.description
         })
 
         self.render_dict.update(
