@@ -81,7 +81,7 @@ class BasePage(SeleniumApi):
 
     def goto_instances_via_menu(self):
         self.tester.scroll_to_element_by_id(self._instances_menuitem_id)
-        self.tester.click_element_by_id_robust(self._instances_menuitem_id, "terminate-instances-btn")
+        self.tester.click_element_by_id_robust(self._instances_menuitem_id, "launch-instance-btn")
         self.tester.scroll_to_element_by_id(self._dashboard_menuitem_id)
 
     def goto_stacks_view_via_menu(self):

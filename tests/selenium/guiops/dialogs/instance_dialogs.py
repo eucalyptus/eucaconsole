@@ -138,12 +138,13 @@ class LaunchMoreLikeThisDialog(BaseDialog):
                 self.tester.click_element_by_id(self._use_private_addressing_chkbox_id)
         self.tester.click_element_by_id(self._launch_instance_button_id)
 
+
 class TerminateAllInstancesModal(BaseDialog):
 
     def __init__(self, tester):
         self.tester = tester
 
-    _terminate_all_instances_submit_btn_id = "terminate_all_instances_submit_button"
+    _terminate_all_instances_submit_btn_id = "terminate_instance_submit_button"
 
     def click_terminate_all_instances_submit_button(self):
         self.tester.click_element_by_id(self._terminate_all_instances_submit_btn_id)
