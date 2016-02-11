@@ -148,6 +148,13 @@
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
+                        <div class="actions">
+                            <h4>Actions</h4>
+                            <div tal:repeat="action alarm_actions">
+                                For group <strong>${action.autoscaling_group_name}</strong> execute policy <strong>${action.policy_name}</strong>
+                            </div>
+                        </div>
+                        <hr/>
                         <div class="controls">
                             <button type="submit" class="button"
                                 id="save-changes-btn"

@@ -40,6 +40,7 @@ from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPU
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
+from ..models.arn import ARN
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
 
@@ -337,9 +338,14 @@ class CloudWatchAlarmDetailView(BaseView):
             'description': self.alarm.description
         })
 
+        alarm_actions = []
+        for arn in self.alarm.alarm_actions:
+            alarm_actions.append(ARN.factory(arn))
+
         self.render_dict.update(
             alarm_json=alarm_json,
             dimensions=dimensions,
+            alarm_actions=alarm_actions,
             options=options
         )
         return self.render_dict
