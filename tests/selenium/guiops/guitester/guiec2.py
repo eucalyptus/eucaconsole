@@ -438,20 +438,7 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).click_action_attach_to_instance(volume_id)
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
-        try:
-            VolumeLanding(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
-        except NoSuchElementException:
-            AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
-            VolumeLanding(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
-        except ElementNotVisibleException:
-            AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
-            VolumeLanding(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
-        except TimeoutException:
-            try:
-                VolumeLanding(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
-            except NoSuchElementException or ElementNotVisibleException:
-                AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
-                VolumeLanding(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
+        VolumeLanding(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
 
 
 
@@ -471,20 +458,7 @@ class GuiEC2(GuiTester):
         VolumeLanding(self).goto_volume_detail_page_via_link(volume_id)
         VolumeDetailPage(self).click_action_attach_volume_on_detail_page()
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
-        try:
-            VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
-        except NoSuchElementException:
-            AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
-            VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
-        except ElementNotVisibleException:
-            AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
-            VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
-        except TimeoutException:
-            try:
-                VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
-            except NoSuchElementException or ElementNotVisibleException:
-                AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
-                VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+        VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
 
 
 
