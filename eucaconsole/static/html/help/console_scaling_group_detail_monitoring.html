@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Scaling Group Details - Monitoring</title>
+</head>
+<body id="scaling_group_detail_monitoring_ui_context">
+
+
+    <h1 class="title topictitle1">Scaling Group Details - Monitoring</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc">This tab provides a graphical view of various data points being monitored for your scaling group.</p>
+</div>
+
+    <div class="topic task nested1" id="scale_group_monitoring_alarms">
+        <h2 class="title topictitle2">Alarms</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This section displays a list of configured alarms and allows you to create a new alarm.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">To view the details of currently configured CloudWatch alarms, expand it by clicking the plus symbol <span class="ph uicontrol">(+)</span> next to  
+                        the Cloudwatch alarms summary.</span>
+                    <div class="itemgroup stepresult">The expanded view displays the state of each alarm, the alarm name, and their thresholds.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">To create a new alarm you must first select a metric, unless you are within the scaling policy creation workflow:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click <span class="ph uicontrol">Create Alarm</span>.</span>
+                            <div class="itemgroup stepresult">An instructional message opens.</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Either close the message and view a metric from the Monitoring tab of any resource's Details page or click the
+                                <span class="ph uicontrol">Take Me to the Metrics Landing Page</span> button to be taken directly to the Metrics page.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select a metric to view and click <span class="ph uicontrol">Create Alarm</span>.</span>
+                            <div class="itemgroup stepresult">The Create alarm page opens. Refer to the Help in the Create alarm page for further instructions.</div>
+                        </li>
+
+                        
+                    </ol>
+
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+            
+    <div class="topic task nested1" id="scaling_group_detail_monitoring_ui_view_instance_graphs">
+                    <h2 class="title topictitle2">CloudWatch instance metrics</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This part of the page displays the CloudWatch data when you enabled monitoring for your launch configuration(s). </p>
+
+            <div class="section prereq p">If a launch configuration does not have monitoring enabled, no charts display.
+                Instead, a reminder that monitoring is currently turned off for that particular
+                launch configuration. To view CloudWatch metrics for this scaling group, change the
+                scaling group's launch configuration from the General tab to enable instance
+                monitoring.</div>
+
+           <ol class="ol steps"><li class="li step stepexpand">
+                   <span class="ph cmd">To adjust the range of data to display, select a desired range from the <span class="ph uicontrol">Show data for</span> drop-down list box. 
+                   Any changes in the time range applies to both instance and scaling group metrics.</span>
+               </li>
+<li class="li step stepexpand">
+                <span class="ph cmd">The graphs displayed by default are:</span>
+                <ul class="ul choices">
+                    <li class="li choice"><strong class="ph b">CPU utilization %</strong>. Represents the percentage of processing power
+                        currently in use by the instance.</li>
+
+                    <li class="li choice"><strong class="ph b">Disk read bytes</strong>. The amount of data that is being read from the instance's hard disk.</li>
+
+                    <li class="li choice"><strong class="ph b">Disk read operations</strong>. The number of read operations that has completed on all ephemeral disks availble to the instance.</li>
+
+                    <li class="li choice"><strong class="ph b">Disk write bytes</strong>. The amount of data that is being written to the instance's hard disk.</li>
+
+                    <li class="li choice"><strong class="ph b">Disk write operations</strong>. The number of write operations that has completed on all ephemeral disks availble to the instance.</li>
+
+                    <li class="li choice"><strong class="ph b">Network in</strong>. The amount of incoming network traffic to an application on this instance.</li>
+
+                    <li class="li choice"><strong class="ph b">Network out</strong>. The amount of outgoing network traffic to an application on this instance.</li>
+
+                </ul>
+
+                <div class="itemgroup info">Each of the graphs default to the <em class="ph i">average</em> statistic for the best output results.</div>
+            </li>
+<li class="li step stepexpand">
+           <span class="ph cmd">The various ways to view the data in the graphs are:</span>
+           <ul class="ul choices">
+               <li class="li choice">Click on a graph to expand it.</li>
+
+               <li class="li choice">Hover inside the graph to display a read-out of data-points desired.</li>
+
+               <li class="li choice">Use the drop-down list boxes for <span class="ph uicontrol">Statistic</span>, <span class="ph uicontrol">Show data for</span>, and 
+                   <span class="ph uicontrol">Measurement period</span> to focus in on specific set of data points. For example, 
+                   to view the combined number of healthy hosts within the last hour in 5-minute readings, select <strong class="ph b">Sum</strong> from  
+                   <span class="ph uicontrol">Statistic</span>, <strong class="ph b">Last hour</strong> from <span class="ph uicontrol">Show data for</span>, and <strong class="ph b">5 minutes</strong> 
+                   from <span class="ph uicontrol">Measurement period</span>.</li>
+
+           </ul>
+
+       </li>
+</ol>
+
+       </div>
+
+    </div>
+
+        <div class="topic task nested1" id="scaling_group_detail_monitoring_ui_view_scaling_group_context">
+            <h2 class="title topictitle2">CloudWatch scaling group metrics</h2>
+
+            <p class="shortdesc">This part of the page displays the CloudWatch data when you enabled monitoring for your scaling group. </p>
+
+        <div class="topic task nested2" id="scaling_group_details_monitoring_ui_context_menu">
+            <h3 class="title topictitle3">Context menu actions</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc">A context menu, accessible by clicking the menu icon (row of three dots), contains actions associated 
+                with the monitoring of your scaling group.</p>
+
+                <div class="section context">The following context menu actions are available:</div>
+
+                <ul class="ul steps-unordered"><li class="li step stepexpand">
+                        <span class="ph cmd"><span class="ph uicontrol">Turn monitoring on</span> displays monitoring data associated with your scaling group.</span>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd"><span class="ph uicontrol">Turn monitoring off</span> disables monitoring data completely.</span>
+                        <div class="itemgroup stepresult">When you select this option, no charts display. Instead, a reminder that monitoring is currently 
+                            turned off, but you can turn it back on by clicking the <span class="ph uicontrol">Turn Monitoring On For This Scaling Group</span> button. </div>
+                    </li>
+</ul>
+
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="scaling_group_detail_monitoring_ui_view_scaling_group_graphs">
+            <h3 class="title topictitle3">Specify data range</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc">You can specify a range in time to display the monitoring data shown in the graphs.</p>
+
+                <ol class="ol steps"><li class="li step stepexpand">
+                        <span class="ph cmd">To adjust the range of data to display, select a desired range from the <span class="ph uicontrol">Show data for</span> drop-down list box. 
+                            Any changes in the time range applies to both instance and scaling group metrics.</span>
+                    </li>
+<li class="li step stepexpand">
+                        <span class="ph cmd">The graphs displayed by default are:</span>
+                        <ul class="ul choices">
+                            <li class="li choice"><strong class="ph b">Total instances</strong>. Represents the total number of instances currently in the scaling group, regardless of state.</li>
+
+                            <li class="li choice"><strong class="ph b">In service instances</strong>. The number of instances currently in the scaling group that are in service (running and active).</li>
+
+                            <li class="li choice"><strong class="ph b">Group min size</strong>. The smallest size of the scaling group.</li>
+
+                            <li class="li choice"><strong class="ph b">Group max size</strong>. The largest size of the scaling group.</li>
+
+                            <li class="li choice"><strong class="ph b">Group desired capacity</strong>. The number of instances the scaling group attempts to maintain.</li>
+
+                            <li class="li choice"><strong class="ph b">Pending instances</strong>. The number of instances currently in the scaling group that are in pending state and not yet in service.</li>
+
+                            <li class="li choice"><strong class="ph b">Terminating instances</strong>. The number of instances currently in the scaling group that are in the process of terminating.</li>
+
+                        </ul>
+
+                        <div class="itemgroup info">Each of the graphs default to the <em class="ph i">Maximum</em> statistic within the last hour for the best output results.</div>
+                    </li>
+<li class="li step stepexpand">
+           <span class="ph cmd">The various ways to view the data in the graphs are:</span>
+           <ul class="ul choices">
+               <li class="li choice">Click on a graph to expand it.</li>
+
+               <li class="li choice">Hover inside the graph to display a read-out of data-points desired.</li>
+
+               <li class="li choice">Use the drop-down list boxes for <span class="ph uicontrol">Statistic</span>, <span class="ph uicontrol">Show data for</span>, and 
+                   <span class="ph uicontrol">Measurement period</span> to focus in on specific set of data points. For example, 
+                   to view the combined number of healthy hosts within the last hour in 5-minute readings, select <strong class="ph b">Sum</strong> from  
+                   <span class="ph uicontrol">Statistic</span>, <strong class="ph b">Last hour</strong> from <span class="ph uicontrol">Show data for</span>, and <strong class="ph b">5 minutes</strong> 
+                   from <span class="ph uicontrol">Measurement period</span>.</li>
+
+           </ul>
+
+       </li>
+</ol>
+
+            </div>
+
+        </div>
+
+        </div>
+
+        
+</body>
+</html>
