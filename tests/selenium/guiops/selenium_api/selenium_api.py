@@ -69,8 +69,10 @@ class SeleniumApi(object):
             print "Found element by id = '{0}'".format(element_id)
         except NoSuchElementException, nse:
             print "Did not find element by id = '{0}'".format(element_id)
+            raise
         except TimeoutException, t:
             print "ERROR: Timed out. Did not find element by id = '{0}'.".format(element_id)
+            raise
 
     def wait_for_element_present_by_css(self, css_selector):
         """
@@ -85,8 +87,10 @@ class SeleniumApi(object):
             print "Found element by css = '{0}'".format(css_selector)
         except NoSuchElementException, nse:
             print "Did not find element by css = '{0}'".format(css_selector)
+            raise
         except TimeoutException, t:
             print "ERROR: Timed out. Did not find element by css = '{0}'".format(css_selector)
+            raise
 
     def wait_for_element_present_by_link_text(self, link_text):
         """
@@ -102,8 +106,10 @@ class SeleniumApi(object):
             print "Found element by link_text = '{0}'".format(link_text)
         except NoSuchElementException, nse:
             print "Did not find element by link_text = '{0}'".format(link_text)
+            raise
         except TimeoutException, t:
             print "ERROR: Timed out. Did not find element by link_text = '{0}'".format(link_text)
+            raise
 
     def wait_for_element_present_by_name(self, name):
         """
@@ -119,8 +125,10 @@ class SeleniumApi(object):
             print "Found element by name = '{0}'".format(name)
         except NoSuchElementException, nse:
             print "Did not find element by name = '{0}'".format(name)
+            raise
         except TimeoutException, t:
             print "ERROR: Timed out. Did not find element by name = '{0}'".format(name)
+            raise
 
     def wait_for_visible_by_id(self, element_id, timeout_in_seconds=None):
         """
@@ -145,6 +153,7 @@ class SeleniumApi(object):
             except NoSuchElementException:
                 print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
             return False
+
 
     def wait_for_visible_by_css(self, css, timeout_in_seconds=None):
         """
@@ -448,13 +457,14 @@ class SeleniumApi(object):
         self.wait_for_clickable_by_id(element_id)
         self.click_element_by_id(element_id)
         is_visible = self.check_visibility_by_id(element_id_for_text_on_next_page)
-        print "Checked visibility on {0}".format(element_id_for_text_on_next_page)+ "Visibility status: "+str(is_visible)
+        print "Checked visibility on {0}".format(element_id_for_text_on_next_page) + "Visibility status: " + str(
+            is_visible)
         k = 1
         no_match = True
         while no_match and (k < 6):
             if is_visible:
                 title = self.store_text_by_id(element_id_for_text_on_next_page)
-                print "Stored text at the locator {0} ".format(element_id_for_text_on_next_page)+title
+                print "Stored text at the locator {0} ".format(element_id_for_text_on_next_page) + title
                 try:
                     if title == text:
                         no_match = False
@@ -468,8 +478,9 @@ class SeleniumApi(object):
                             print str(k) + "-th attempt to hit enter unsuccessful."
                         is_visible = self.check_visibility_by_id(element_id_for_text_on_next_page)
 
-                        print "Checked visibility on {0}".format(element_id_for_text_on_next_page)+ "Visibility status: "+str(is_visible)
-                        k = k+1
+                        print "Checked visibility on {0}".format(
+                            element_id_for_text_on_next_page) + "Visibility status: " + str(is_visible)
+                        k = k + 1
                 except:
                     pass
             else:
@@ -480,7 +491,8 @@ class SeleniumApi(object):
                 except Exception, e:
                     print str(k) + "-th attempt to hit enter unsuccessful."
                 is_visible = self.check_visibility_by_id(element_id_for_text_on_next_page)
-                print "Checked visibility on {0}".format(element_id_for_text_on_next_page)+ "Visibility status: "+str(is_visible)
+                print "Checked visibility on {0}".format(
+                    element_id_for_text_on_next_page) + "Visibility status: " + str(is_visible)
                 k = k + 1
 
     def click_element_by_css_robust(self, css, element_css_on_next_page):
@@ -496,7 +508,7 @@ class SeleniumApi(object):
         time.sleep(1)
 
         is_visible = self.check_visibility_by_css(element_css_on_next_page)
-        print "Checked visibility on {0}".format(element_css_on_next_page)+ "Visibility status: "+str(is_visible)
+        print "Checked visibility on {0}".format(element_css_on_next_page) + "Visibility status: " + str(is_visible)
         k = 1
         while not is_visible and (k < 6):
             print "Executing Attempt {0}".format(k)
@@ -517,7 +529,7 @@ class SeleniumApi(object):
                 print str(k) + "-th attempt to hit enter unsuccessful."
                 raise
             is_visible = self.check_visibility_by_css(element_css_on_next_page)
-            print "Checked visibility on {0}".format(element_css_on_next_page)+ "Visibility status: "+str(is_visible)
+            print "Checked visibility on {0}".format(element_css_on_next_page) + "Visibility status: " + str(is_visible)
             k = k + 1
 
         while not is_visible and (k < 8):
@@ -660,7 +672,7 @@ class SeleniumApi(object):
             print "Verified element by id = '{0}' not in the DOM".format(element_id)
         #except Exception, e:
         #    print "ERROR: Can not verify the element by id = '{0}' is not in the DOM".format(element_id)
-        except TimeoutException, t:
+        except TimeoutException:
             print "ERROR: Timed out. Element by id = '{0}' still found in the DOM.".format(element_id)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
@@ -681,15 +693,15 @@ class SeleniumApi(object):
             print "Verified element by css = '{0}' not in the DOM".format(css)
         #except Exception, e:
         #    print "ERROR: Can not verify the element by id = '{0}' is not in the DOM".format(element_id)
-        except TimeoutException, t:
+        except TimeoutException:
             print "ERROR: Timed out. Element by css = '{0}' still found in the DOM.".format(css)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
     def wait_for_text_present_by_id(self, element_id, text, timeout_in_seconds=None):
         """
         Waits for text to be present.
+        :param timeout_in_seconds:
         :param element_id:
-        :param text:
         """
         #self.set_implicit_wait(0)
         if timeout_in_seconds is None:
@@ -701,9 +713,9 @@ class SeleniumApi(object):
                 EC.text_to_be_present_in_element((By.ID, element_id), text))
             print "Verified text {0} present in element by id = {1}".format(text, element_id)
 
-        except TimeoutException, t:
-            print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by id = '{0}' timeout_in_seconds = {2}".format(
-                element_id, text, timeout_in_seconds)
+        except TimeoutException:
+            print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by id = '{0}' " \
+                  "timeout_in_seconds = {2}".format(element_id, text, timeout_in_seconds)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
 
     def wait_for_text_present_by_xpath(self, xpath, text, timeout_in_seconds=None):
@@ -723,7 +735,7 @@ class SeleniumApi(object):
                 EC.text_to_be_present_in_element((By.XPATH, xpath), text))
             print "Verified text {0} present in element by xpath = {1}".format(text, xpath)
 
-        except TimeoutException, t:
+        except TimeoutException:
             print "ERROR: Timed out. Could not verify presence of text = '{1}' in element by xpath = '{0}'".format(
                 xpath, text)
         self.set_implicit_wait(self.implicit_wait_default_in_seconds)
@@ -738,9 +750,8 @@ class SeleniumApi(object):
         self.set_implicit_wait(0)
         if timeout_in_seconds is None:
             timeout_in_seconds = self.timeout_to_wait_for_text_in_seconds
-        print "Executing wait_for_text_present_by_css css = '{0}', text = '{1}', timeout_in_seconds = {2}".format(css,
-                                                                                                                  text,
-                                                                                                                  timeout_in_seconds)
+        print "Executing wait_for_text_present_by_css css = '{0}', text = '{1}', " \
+              "timeout_in_seconds = {2}".format(css, text, timeout_in_seconds)
         text_present = self.store_text_by_css(css)
         print "Text present: " + text_present
         try:
