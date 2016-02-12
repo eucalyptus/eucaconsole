@@ -1,4 +1,5 @@
 from pages.basepage import BasePage
+import time
 
 class CreateVolumeDialog(BasePage):
 
@@ -51,6 +52,7 @@ class AttachVolumeModalSelectInstance(BasePage):
         self.tester.click_element_by_css(self._active_result_css)
         if device is not None:
             self.tester.send_keys_by_id(self._device_field_id, device)
+        time.sleep(2)
         self.tester.click_element_by_id_resilient(self._attach_volume_submit_button_id,self._attach_volume_submit_button_id)
 
 class AttachVolumeModalSelectVolume(BasePage):
@@ -70,6 +72,7 @@ class AttachVolumeModalSelectVolume(BasePage):
         self.tester.click_element_by_css(self._active_result_css)
         if device is not None:
             self.tester.send_keys_by_id(self._device_field_id, device)
+        time.sleep(2)
         self.tester.click_element_by_css(self._attach_volume_submit_button_css)
 
 
