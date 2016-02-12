@@ -27,6 +27,9 @@
                         <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate="">View details</a>
                     </li>
                     <li>
+                        <a ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring" i18n:translate="">Monitor</a>
+                    </li>
+                    <li>
                         <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate="">Manage instances</a>
                     </li>
                     <li>
@@ -104,6 +107,9 @@
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate="">View details</a>
+                            </li>
+                            <li>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring" i18n:translate="">Monitor</a>
                             </li>
                             <li>
                                 <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate="">Manage instances</a>
