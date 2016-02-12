@@ -132,7 +132,7 @@ class SeleniumApi(object):
 
     def wait_for_visible_by_id(self, element_id, timeout_in_seconds=None):
         """
-        Waits for the element to become visible. First, checks if element is present.
+        Waits for the element to become visible. First, checks if element is present. Does not raise Error on exception!
         :param timeout_in_seconds:
         :param element_id:
         """
@@ -153,7 +153,6 @@ class SeleniumApi(object):
             except NoSuchElementException:
                 print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
             return False
-
 
     def wait_for_visible_by_css(self, css, timeout_in_seconds=None):
         """
@@ -210,6 +209,89 @@ class SeleniumApi(object):
             except NoSuchElementException:
                 print "ERROR: Element by xpath = '{0}' not found in the DOM.".format(xpath)
             return False
+
+    def verify_visible_by_id(self, element_id, timeout_in_seconds=None):
+        """
+        Waits for the element to become visible. First, checks if element is present. Raises Error on exception.
+        :param timeout_in_seconds:
+        :param element_id:
+        """
+        if timeout_in_seconds is None:
+            timeout_in_seconds = self.timeout_to_determine_visibility_in_seconds
+
+        print "Executing verify_visible_by_id('{0}'), timeout_in_seconds is set to {1}".format(
+            element_id, timeout_in_seconds)
+        try:
+            WebDriverWait(self.driver, timeout_in_seconds).until(EC.visibility_of_element_located((By.ID, element_id)))
+            print "Element by id = '{0}' was located in DOM and is visible.".format(element_id)
+        except TimeoutException:
+            print "ERROR: Timed out: element by id = '{0}' not visible.".format(element_id)
+            print "Checking whether element by id = '{0}' present in the DOM.".format(element_id)
+            try:
+                self.driver.find_element_by_id(element_id)
+                print "Element by id = '{0}' is present in the DOM but not visible.".format(element_id)
+            except NoSuchElementException:
+                print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
+                raise
+            raise
+
+    def verify_visible_by_css(self, css, timeout_in_seconds=None):
+        """
+        Waits for the element to become visible. First, checks if element is present. Raises Error on exception.
+        :param timeout_in_seconds:
+        :param css:
+        """
+
+        if timeout_in_seconds is None:
+            timeout_in_seconds = self.timeout_to_determine_visibility_in_seconds
+
+        print "Executing verify_visible_by_css('{0}'), timeout_in_seconds is set to {1}".format(css,
+                                                                                           timeout_in_seconds)
+
+        try:
+            WebDriverWait(self.driver, timeout_in_seconds).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, css)))
+            print "Element by css = '{0}' was located in DOM and is visible.".format(css)
+        except TimeoutException:
+            print "ERROR: Timed out: element by css = '{0}' not visible.".format(css)
+            print "Checking whether element by css = '{0}' present in the DOM.".format(css)
+            try:
+                self.driver.find_element_by_css_selector(css)
+                print "Element by css = '{0}' is present in the DOM but not visible.".format(css)
+            except NoSuchElementException:
+                print "ERROR: Element by css = '{0}' not found in the DOM.".format(css)
+                raise
+            raise
+        except Exception, e:
+            print "ERROR: Unknown Exception e thrown by webdriver."
+            print "Element was not found"
+            raise
+
+    def verify_visible_by_xpath(self, xpath, timeout_in_seconds=None):
+        """
+        Waits for the element to become visible. First, checks if element is present. Raises Error on exception.
+        :param xpath:
+        """
+
+        if timeout_in_seconds is None:
+            timeout_in_seconds = self.timeout_to_determine_visibility_in_seconds
+
+        print "Executing verify_visible_by_xpath('{0}'), timeout_in_seconds is set to {1}".format(xpath,
+                                                                                                    timeout_in_seconds)
+
+        try:
+            WebDriverWait(self.driver, timeout_in_seconds).until(EC.visibility_of_element_located((By.XPATH, xpath)))
+            print "Element by xpath = '{0}' was located in DOM and is visible.".format(xpath)
+        except TimeoutException:
+            print "ERROR: Timed out: element by xpath = '{0}' not visible.".format(xpath)
+            print "Checking whether element by xpath = '{0}' present in the DOM.".format(xpath)
+            try:
+                self.driver.find_element_by_xpath(xpath)
+                print "Element by xpath = '{0}' is present in the DOM but not visible.".format(xpath)
+            except NoSuchElementException:
+                print "ERROR: Element by xpath = '{0}' not found in the DOM.".format(xpath)
+                raise
+            raise
 
     def check_visibility_by_id(self, element_id):
         """
