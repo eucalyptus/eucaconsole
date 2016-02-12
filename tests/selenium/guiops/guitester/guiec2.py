@@ -27,6 +27,7 @@ from dialogs.volume_dialogs import (
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
 from dialogs.image_dialogs import RemoveImageFromCloudDialog
 from dialogs.eip_dialogs import AllocateEipDialog, ReleaseEipDialog
+from selenium.common.exceptions import NoSuchElementException, ElementNotVisibleException, TimeoutException
 
 
 logger = logging.getLogger('testlogger')
@@ -415,6 +416,9 @@ class GuiEC2(GuiTester):
         :param volume_id:
         :param volume_name:
         """
+        print ""
+        print "====== Running delete_volume_from_detail_page ======"
+        print ""
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).goto_volume_detail_page_via_actions(volume_id)
         VolumeDetailPage(self).verify_volume_detail_page_loaded(volume_id, volume_name)
@@ -430,10 +434,16 @@ class GuiEC2(GuiTester):
         :param instance_id:
         :param volume_id:
         """
+
+        print ""
+        print "====== Running attach_volume_from_volume_lp ======"
+        print ""
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).click_action_attach_to_instance(volume_id)
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
         VolumeLanding(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
+
+
 
     def attach_volume_from_volume_detail_page(self, instance_id, volume_id, device=None, timeout_in_seconds=240):
         """
@@ -443,11 +453,17 @@ class GuiEC2(GuiTester):
         :param device:
         :param timeout_in_seconds:
         """
+        print ""
+        print "====== Running attach_volume_from_volume_detail_page ======"
+        print ""
+
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).goto_volume_detail_page_via_link(volume_id)
         VolumeDetailPage(self).click_action_attach_volume_on_detail_page()
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
         VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+
+
 
     def attach_volume_from_instance_detail_page(self, volume_id, instance_id, instance_name=None, device=None, timeout_in_seconds=240):
         """
@@ -457,6 +473,10 @@ class GuiEC2(GuiTester):
         :param device:
         :param timeout_in_seconds:
         """
+        print ""
+        print "====== Running attach_volume_from_instance_detail_page ======"
+        print ""
+
         BasePage(self).goto_instances_via_menu()
         InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
@@ -472,6 +492,10 @@ class GuiEC2(GuiTester):
         :param device:
         :param timeout_in_seconds:
         """
+        print ""
+        print "====== Running attach_volume_from_instance_lp ======"
+        print ""
+
         BasePage(self).goto_instances_via_menu()
         InstanceLanding(self).click_action_manage_volumes_on_view_page(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()

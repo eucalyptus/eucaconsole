@@ -52,10 +52,10 @@ class VolumeDetailPage(DetailPage):
         self.tester.click_element_by_id(self._attach_volume_action_menuitem_id)
 
     def verify_volume_status_is_available(self, timeout_in_seconds):
-        self.tester.wait_for_visible_by_css(self._volume_status_css.format("available"), timeout_in_seconds)
+        self.tester.verify_visible_by_css(self._volume_status_css.format("available"), timeout_in_seconds)
 
     def verify_volume_status_is_attached(self, timeout_in_seconds):
-        self.tester.wait_for_visible_by_css(self._volume_status_css.format("attached"), timeout_in_seconds)
+        self.tester.verify_visible_by_css(self._volume_status_css.format("attached"), timeout_in_seconds)
 
     def get_volume_name_and_id(self):
         name_and_id = str(self.tester.store_text_by_css(DetailPage(self)._resource_name_and_id_css))
