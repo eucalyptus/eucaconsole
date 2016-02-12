@@ -45,7 +45,7 @@ class InstanceDetailPage(DetailPage):
 
     def verify_volume_is_attached(self, volume_id, timeout_in_seconds=240):
         self.tester.click_element_by_css(self._volumes_tab_css)
-        self.tester.wait_for_visible_by_xpath(self._attached_volume_status_xpath.format(volume_id), timeout_in_seconds)
+        self.tester.verify_visible_by_xpath(self._attached_volume_status_xpath.format(volume_id), timeout_in_seconds)
 
 
 
