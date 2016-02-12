@@ -1,4 +1,5 @@
 from selenium_api.selenium_api import SeleniumApi
+import time
 
 
 class BasePage(SeleniumApi):
@@ -75,8 +76,9 @@ class BasePage(SeleniumApi):
         self.tester.scroll_to_element_by_id(self._dashboard_menuitem_id)
 
     def goto_images_view_via_menu(self):
+        print "Scrolling to element by id {0}".format(self._images_menuitem_id)
         self.tester.scroll_to_element_by_id(self._images_menuitem_id)
-        self.tester.click_element_by_css_robust(self._images_menuitem_css, "li.current>a:contains('Images')")
+        self.tester.click_element_by_id_text_by_id_robust(self._images_menuitem_id, self._page_title_id, "Images")
         self.tester.scroll_to_element_by_id(self._dashboard_menuitem_id)
 
     def goto_instances_via_menu(self):

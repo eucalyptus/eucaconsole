@@ -209,7 +209,7 @@ class GuiEC2(GuiTester):
 
     def launch_instance_from_dashboard(self, image="centos", availability_zone=None, instance_type="t1.micro",
                                        number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
-                                       security_group="default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+                                       security_group="default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """
         Navigates to dashboard via menu. Launches instance.
         :param image:
@@ -236,7 +236,7 @@ class GuiEC2(GuiTester):
     def launch_instance_from_instance_view_page(self, image = "centos",availability_zone = None,
                                                instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """
         Navigates to instance view page via menu. Launches instance.
         :param image:
@@ -263,7 +263,7 @@ class GuiEC2(GuiTester):
     def launch_instance_from_image_view_page(self, image_id_or_type, availability_zone = None,
                                                instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """
         Navigates to image view page via menu. Launches instance from given image.
         :param image_id_or_type:
@@ -288,7 +288,7 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """
         Navigates to instances view page. Launches an instance like given instance.
         :param inatance_id:
@@ -324,7 +324,7 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def terminate_instance_from_view_page(self, instance_id, instance_name=None):
+    def terminate_instance_from_view_page(self, instance_id, instance_name=None,timeout_in_seconds=480):
         """
         Navigates to view page, terminates instance.
         :param instance_name:
@@ -334,9 +334,9 @@ class GuiEC2(GuiTester):
         InstanceLanding(self).click_action_terminate_instance_on_view_page(instance_id)
         TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
         InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated(timeout_in_seconds=timeout_in_seconds)
 
-    def terminate_instance_from_detail_page(self, instance_id):
+    def terminate_instance_from_detail_page(self, instance_id, timeout_in_seconds=480):
         """
         Navigates to detail page, terminates instance.
         :param instance_id:
@@ -347,7 +347,7 @@ class GuiEC2(GuiTester):
         InstanceLanding(self).goto_instance_detail_page_via_actions(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_terminate_instance_action_item_from_detail_page()
         TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated(timeout_in_seconds=timeout_in_seconds)
 
     def batch_terminate_all_instances(self):
         """
