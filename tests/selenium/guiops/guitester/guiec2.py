@@ -413,6 +413,9 @@ class GuiEC2(GuiTester):
         :param volume_id:
         :param volume_name:
         """
+        print ""
+        print "====== Running delete_volume_from_detail_page ======"
+        print ""
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).goto_volume_detail_page_via_actions(volume_id)
         VolumeDetailPage(self).verify_volume_detail_page_loaded(volume_id, volume_name)
@@ -497,6 +500,10 @@ class GuiEC2(GuiTester):
         :param device:
         :param timeout_in_seconds:
         """
+        print ""
+        print "====== Running attach_volume_from_instance_lp ======"
+        print ""
+
         BasePage(self).goto_instances_via_menu()
         InstanceLanding(self).click_action_manage_volumes_on_view_page(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
