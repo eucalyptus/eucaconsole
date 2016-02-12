@@ -112,6 +112,7 @@
                         <metal:block metal:define-slot="tableview_headers" />
                     </tr>
                 </thead>
+                <!-- NOTE: use_smart_table implies sortable tables are enabled -->
                 <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
                        tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat"
                        url="${expando_data_url}" item_id="${expando_data_id}" data-item-id="{{ item.id || item.name || item.public_ip }}">
@@ -128,7 +129,8 @@
                 </tbody>
                 <metal:block metal:define-slot="tableview_with_expando" />
                 <tbody tal:condition="not:using_expando">
-                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount"
+                    <tr ng-cloak="true"
+                        tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat"
                         data-item-id="{{ item.id || item.name || item.public_ip }}">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>
