@@ -126,10 +126,15 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             if (params.graph !== undefined) {
                 // parse graph params
                 var graph = purl("?"+$.base64.decode(params.graph)).param();
+                graph.dimensions = JSON.parse(graph.dimensions);
                 items.forEach(function(metric, idx) {
+                    if (metric.heading === true) return;
                     if (metric.metric_name == graph.metric) {
                         // check dimensions
-                        if (metric.resources.every(function(res) {
+                        if (metric.resources.length === 0 && Object.keys(graph.dimensions).length === 0) {
+                            metric._selected = true;
+                        }
+                        if (metric.resources.length > 0 && metric.resources.every(function(res) {
                                 return (graph.dimensions[res.res_type] === res.res_id);
                             })) {
                             metric._selected = true;

@@ -137,8 +137,19 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 });
 
             if (params.noXLabels) {
-                d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .tick text").remove();
-                d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text").remove();
+                $(".time-shift svg").empty()
+                var minMax = d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text");
+                var middle = d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .tick text");
+                var labels = minMax[0].slice(0, 2).concat(middle[0]);
+                // get translation from parent
+                labels.forEach(function(label) {
+                    var trans = document.createAttribute('transform')
+                    trans.value = label.parentElement.attributes.transform.value;
+                    label.attributes.setNamedItem(trans);
+                });
+                $(".time-shift svg").attr('class', 'nvd3').attr('transform', 'translate(58,0)').append(labels);
+                //minMax.remove();
+                //middle.remove();
             }
 
             return chart;
@@ -461,6 +472,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 period: scope.duration,
                 statistic: scope.statistic,
             }).then(function (alarms) {
+                ChartService.resetChart(target);
                 var chart = ChartService.renderChart(target, results, {
                     unit: oData.unit || scope.unit,
                     preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,

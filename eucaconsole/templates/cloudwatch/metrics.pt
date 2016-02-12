@@ -87,8 +87,8 @@
                             <div class="content">
                                 <div>
                                     <span ng-repeat="res in item.resources">
-                                        <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name }}</a>
-                                        <span ng-if="res.res_url==null">{{ res.res_name }}</span>
+                                        <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
+                                        <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
                                         <span ng-hide="$last">,</span> 
                                     </span>
                                 </div>
@@ -126,8 +126,8 @@
                                     <td ng-if="item.heading != true">
                                         <div ng-repeat="res in item.resources">
                                             {{ res.res_type_label }}:&nbsp;
-                                            <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name }}</a>
-                                            <span ng-if="res.res_url==null">{{ res.res_name }}</span>
+                                            <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
+                                            <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
                                         </div>
                                         <span ng-if="item.resources.length == 0" i18n:translate="">
                                             All instances
@@ -229,9 +229,10 @@
                             <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
                                 <i class="fa fa-arrow-circle-o-left fa-2x"></i>
                             </a>
-                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right">
+                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="chartsCtrl.timeRange=='relative'">
                                 <i class="fa fa-arrow-circle-o-right fa-2x"></i>
                             </a>
+                            <svg></svg>
                         </div>
                         <div class="chart-wrapper" ng-repeat="(metric, chart) in items | filter:{ _selected: true } | groupBy: 'metric_name'" ng-cloak="true">
                             <h6>{{ chart[0].metric_label }}</h6>
@@ -260,10 +261,11 @@
                             </div>
                         </div>
                         <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                            <svg></svg>
                             <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
                                 <i class="fa fa-arrow-circle-o-left fa-2x"></i>
                             </a>
-                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right">
+                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="chartsCtrl.timeRange=='relative'">
                                 <i class="fa fa-arrow-circle-o-right fa-2x"></i>
                             </a>
                         </div>
