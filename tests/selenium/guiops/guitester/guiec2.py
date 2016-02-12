@@ -471,7 +471,22 @@ class GuiEC2(GuiTester):
         VolumeLanding(self).goto_volume_detail_page_via_link(volume_id)
         VolumeDetailPage(self).click_action_attach_volume_on_detail_page()
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
-        VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+        try:
+            VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+        except NoSuchElementException:
+            AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
+            VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+        except ElementNotVisibleException:
+            AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
+            VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+        except TimeoutException:
+            try:
+                VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+            except NoSuchElementException or ElementNotVisibleException:
+                AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
+                VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+
+
 
     def attach_volume_from_instance_detail_page(self, volume_id, instance_id, instance_name=None, device=None, timeout_in_seconds=240):
         """
