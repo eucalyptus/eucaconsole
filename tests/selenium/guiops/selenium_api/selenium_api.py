@@ -892,7 +892,9 @@ class SeleniumApi(object):
         self.wait_for_visible_by_id(element_id)
         if clear_field:
             print "Clearing field by if = '{0}'".format(element_id)
+            time.sleep(0.6)
             self.driver.find_element_by_id(element_id).clear()
+            time.sleep(0.6)
         print "Typing text '{1}' into field by id = '{0}'".format(element_id, text)
         self.driver.find_element_by_id(element_id).send_keys(text)
 
