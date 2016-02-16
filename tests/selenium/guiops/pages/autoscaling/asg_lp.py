@@ -35,7 +35,8 @@ class ASGLanding(LandingPage):
 
     def click_action_delete_asg_on_lp(self, asg_name):
         self.tester.click_element_by_css(self._asg_action_menu_css.format(asg_name))
-        self.tester.click_element_by_css(self._delete_asg_actions_menu_item_css.format(asg_name))
+        self.tester.click_element_by_css_robust(
+            self._delete_asg_actions_menu_item_css.format(asg_name), "#delete_scalinggroup_submit_button")
 
     def click_action_manage_instances_on_lp(self, asg_name):
         self.tester.click_element_by_css(self._asg_action_menu_css.format(asg_name))
