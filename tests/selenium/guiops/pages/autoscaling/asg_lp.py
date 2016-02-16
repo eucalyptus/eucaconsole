@@ -13,7 +13,7 @@ class ASGLanding(LandingPage):
     _asg_action_menu_id = "table-item-dropdown_{0}"  # asg_name_required
     _asg_item_row_prefix_css = '#tableview tr[data-item-id="{0}"]'  # asg_name required
     _asg_item_row_actions_css_prefix = '{0} td:last-child .actions'.format(_asg_item_row_prefix_css)
-    _asg_action_menu_css = '{0} a.dropdown'.format(_asg_item_row_actions_css_prefix)
+    _asg_action_menu_css = '{0} .dropdown'.format(_asg_item_row_actions_css_prefix)
     _view_details_actionmenu_item_css = '{0} a.action-view-details'.format(_asg_item_row_actions_css_prefix)
     _manage_instances_actions_menu_item_css = '{0} a.action-manage-instances'.format(_asg_item_row_actions_css_prefix)
     _manage_policies_actions_menu_item_css = '{0} a.action-manage-policies'.format(_asg_item_row_actions_css_prefix)
