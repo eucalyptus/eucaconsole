@@ -129,7 +129,7 @@
                 <metal:block metal:define-slot="tableview_with_expando" />
                 <tbody tal:condition="not:using_expando">
                     <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount"
-                        data-item-id="{{ item.id || item.name || item.public_ip }}">
+                        item_id="{{ data-item-id }}" data-item-id="{{ item.id || item.name || item.public_ip }}">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>
