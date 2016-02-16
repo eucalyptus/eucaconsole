@@ -82,8 +82,11 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
-                <td class="breakword"><a ng-href="/launchconfigs/{{ item.launch_config_name | escapeURL }}">{{ item.launch_config_name | ellipsis: 30 }}</a></td>
-                <td class="count">
+                <td class="breakword launchconfigs">
+                    <a ng-href="/launchconfigs/{{ item.launch_config_name | escapeURL }}"
+                       class="launch-config-link">{{ item.launch_config_name | ellipsis: 30 }}</a>
+                </td>
+                <td class="count instances">
                     <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">
                         &nbsp;{{ item.current_instances_count }}&nbsp;
                     </a>
@@ -106,19 +109,34 @@
                         <span id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate="">View details</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate=""
+                                   class="action-view-details">
+                                    View details
+                                </a>
                             </li>
                             <li>
-                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring" i18n:translate="">Monitor</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring" i18n:translate=""
+                                   class="action-monitor">
+                                    Monitor
+                                </a>
                             </li>
                             <li>
-                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate="">Manage instances</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate=""
+                                   class="action-manage-instances">
+                                    Manage instances
+                                </a>
                             </li>
                             <li>
-                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/policies" i18n:translate="">Manage policies</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/policies" i18n:translate=""
+                                   class="action-manage-policies">
+                                    Manage policies
+                                </a>
                             </li>
                             <li>
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete scaling group</a>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)"
+                                   class="action-delete">
+                                    Delete scaling group
+                                </a>
                             </li>
                         </ul>
                     </span>
