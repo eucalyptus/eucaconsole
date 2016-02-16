@@ -131,14 +131,16 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     if (metric.heading === true) return;
                     if (metric.metric_name == graph.metric) {
                         // check dimensions
-                        if (metric.resources.length === 0 && Object.keys(graph.dimensions).length === 0) {
-                            metric._selected = true;
-                        }
-                        if (metric.resources.length > 0 && metric.resources.every(function(res) {
-                                return (graph.dimensions[res.res_type] === res.res_id);
-                            })) {
-                            metric._selected = true;
-                        }
+                        graph.dimensions.forEach(function(dim) {
+                            if (metric.resources.length === 0 && Object.keys(dim).length === 0) {
+                                metric._selected = true;
+                            }
+                            if (metric.resources.length > 0 && metric.resources.every(function(res) {
+                                    return (dim[res.res_type] === res.res_id);
+                                })) {
+                                metric._selected = true;
+                            }
+                        });
                     }
                 });
                 if (graph.stat !== undefined) {
@@ -235,14 +237,28 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             return ret;
         };
         vm.copyUrl = function(chart) {
-            var dims = {};
+            var metric = '';
+            var dims = [];
             if (Array.isArray(chart)) {
-                chart = chart[0];
+                chart.forEach(function(val) {
+                    var tmp = {};
+                    val.resources.forEach(function(res) {
+                        tmp[res.res_type] = res.res_id;
+                    });
+                    dims.push(tmp);
+                });
+                metric = chart[0].metric_name;
             }
-            chart.resources.forEach(function(res) {
-                dims[res.res_type] = res.res_id;
-            });
-            var chart_string = "metric="+chart.metric_name+"&dimensions="+JSON.stringify(dims)+graphParams;
+            else {
+                var tmp = {};
+                chart.resources.forEach(function(res) {
+                    tmp[res.res_type] = res.res_id;
+                });
+                dims.push(tmp);
+                metric = chart.metric_name;
+            }
+            var chartString = "metric="+metric+"&dimensions="+JSON.stringify(dims)+graphParams;
+            console.log("chart string = "+chartString);
             var url = window.location.href;
             if (url.indexOf("?") > -1) {
                 url = url.split("?")[0];
@@ -250,7 +266,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             if (url.indexOf("#") > -1) {
                 url = url.split("#")[0];
             }
-            vm.graphURL = url+"?graph="+$.base64.encode(chart_string);
+            vm.graphURL = url+"?graph="+$.base64.encode(chartString);
             $("#metrics-copy-url-modal").foundation("reveal", "open");
             $timeout(function() {
                 $(".metrics-url-field").select();

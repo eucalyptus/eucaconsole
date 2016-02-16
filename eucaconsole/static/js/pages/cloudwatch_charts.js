@@ -137,13 +137,13 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 });
 
             if (params.noXLabels) {
-                $(".time-shift svg").empty()
+                $(".time-shift svg").empty();
                 var minMax = d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text");
                 var middle = d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .tick text");
                 var labels = minMax[0].slice(0, 2).concat(middle[0]);
                 // get translation from parent
                 labels.forEach(function(label) {
-                    var trans = document.createAttribute('transform')
+                    var trans = document.createAttribute('transform');
                     trans.value = label.parentElement.attributes.transform.value;
                     label.attributes.setNamedItem(trans);
                 });
