@@ -1,4 +1,4 @@
-from arn import ARN
+from arn import AmazonResourceName
 from autoscaling import AutoScaling
 
-__all__ = ['ARN', 'AutoScaling']
+__all__ = ['AmazonResourceName', 'AutoScaling']

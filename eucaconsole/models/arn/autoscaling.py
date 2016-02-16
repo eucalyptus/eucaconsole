@@ -1,14 +1,11 @@
-from arn import ARN
+from arn import AmazonResourceName, ServiceNamespace
 
 
-class AutoScaling(ARN):
+@ServiceNamespace('autoscaling')
+class AutoScaling(AmazonResourceName):
 
     def __init__(self, arn=None):
         super(AutoScaling, self).__init__(arn)
-
-    @classmethod
-    def match(cls, service):
-        return service == 'autoscaling'
 
     def parse(self, arn):
         resource = super(AutoScaling, self).parse(arn)

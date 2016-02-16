@@ -15,8 +15,18 @@ class MetaARN(type):
                 return arn_type(arn)
 
 
-class ARN(dict):
+class ServiceNamespace(object):
+    def __init__(self, arntype):
+        self._arntype = arntype
+
+    def __call__(self, cls):
+        cls._arntype = self._arntype
+        return cls
+
+
+class AmazonResourceName(dict):
     __metaclass__ = MetaARN
+    _arntype = None
 
     def __init__(self, arn=None):
         if arn is not None:
@@ -26,8 +36,8 @@ class ARN(dict):
         pass
 
     @classmethod
-    def match(cls, _):
-        return None
+    def match(cls, service):
+        return service == cls._arntype
 
     def parse(self, arn):
         (_, partition, service, region, accountid, resource) = arn.split(':', 5)
