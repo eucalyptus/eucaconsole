@@ -54,11 +54,8 @@ class InstanceLanding(LandingPage):
         return instance_id
 
     def verify_instance_status_is_running(self, instance_id):
-<<<<<<< HEAD
         raise NotImplementedError
-=======
-        NotImplementedError()
->>>>>>> GUI-2342
+
 
     def goto_instance_detail_page_via_link(self, instance_id):
         self.tester.click_element_by_css(self._instance_link_css.format(instance_id))
