@@ -109,6 +109,7 @@ class StacksView(LandingPageView):
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
             delete_stack_url=request.route_path('stacks_delete'),
+            update_stack_url=request.route_path('stack_update', name='_name_'),
             ufshost_error=utils.is_ufshost_error(self.cloudformation_conn, self.cloud_type)
         )
 
@@ -394,6 +395,7 @@ class StackStateView(BaseView):
 class StackWizardView(BaseView, StackMixin):
     """View for Create Stack wizard"""
     TEMPLATE = '../templates/stacks/stack_wizard.pt'
+    TEMPLATE_UPDATE = '../templates/stacks/stack_update.pt'
 
     def __init__(self, request):
         super(StackWizardView, self).__init__(request)
@@ -430,6 +432,16 @@ class StackWizardView(BaseView, StackMixin):
     def stack_new(self):
         """Displays the Stack wizard"""
         return self.render_dict
+
+    @view_config(route_name='stack_update', renderer=TEMPLATE_UPDATE, request_method='GET')
+    def stack_new(self):
+        """Displays the Stack update wizard"""
+        stack_name = self.request.matchdict.get('name')
+        ret = dict(
+            stack_name=stack_name
+        )
+        ret.update(self.render_dict)
+        return ret
 
     @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
     def stack_template_parse(self):

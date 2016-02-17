@@ -57,6 +57,18 @@ class StacksCreateForm(BaseSecureForm):
         self.sample_template.choices = mgr.get_template_options()
 
 
+class StacksUpdateForm(BaseSecureForm):
+    """Stacks update form.
+       Only need to initialize as a secure form to generate CSRF token
+    """
+    template_file_helptext = _(u'Template file may not exceed 16 KB')
+    template_file = wtforms.FileField(label='')
+
+    def __init__(self, request, s3_bucket, **kwargs):
+        super(StacksCreateForm, self).__init__(request, **kwargs)
+        self.template_file.help_text = self.template_file_helptext
+
+
 class StacksDeleteForm(BaseSecureForm):
     """Stacks deletion form.
        Only need to initialize as a secure form to generate CSRF token
