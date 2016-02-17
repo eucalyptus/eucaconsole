@@ -27,3 +27,13 @@ class GuiOps(GuiEC2, GuiCF, GuiIAM, GuiASG, GuiS3, GuiELB):
 
     def id_generator(self, size=6, chars=_default_chars):
         return ''.join(random.choice(chars) for _ in range(size))
+
+    @staticmethod
+    def get_zones_from_options(options):
+        """
+        :param options: instance of argparse parser.parse_options
+        :return: dict of zones keyed by index (e.g {0: 'one', 1: 'two'})
+        :rtype: dict
+
+        """
+        return dict(enumerate(options['zones'].split(',')))
