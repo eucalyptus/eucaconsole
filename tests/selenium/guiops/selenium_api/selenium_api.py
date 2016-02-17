@@ -387,8 +387,6 @@ class SeleniumApi(object):
             print "Element by icss = '{0}' not enabled.".format(css)
             return False
 
-=======
->>>>>>> GUI-2342
     def wait_for_clickable_by_id(self, element_id):
         """
         Waits for an element to be present, visible and enabled such that you can click it.
