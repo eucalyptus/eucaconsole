@@ -16,7 +16,7 @@ class VolumeLanding(LandingPage):
     _attach_to_instance_actions_menu_item_css = "#item-dropdown_{0} .attach-volume-action"  # volume_id required
     _first_volume_link_in_list_css = "#tableview>table>tbody>tr>td>a"
     _volume_link_css = "#table-id-column-{0}>a"  # volume_id required;
-    _volume_status_css = '#tableview [item_id="{0}"] td.status'  # volume_id required;
+    _volume_status_css = '#tableview [data-item-id="{0}"] td.status'  # volume_id required;
     _search_input_field_css = ".search-input"
     _sortable_column_header_css = '#tableview .table thead th[st-sort="{0}"]'  # requires column name;
     _sortable_row_by_position_xpath = '//div[@id="tableview"]/table/tbody[{0}]'  # requires position (as number of row in the table)
@@ -89,4 +89,4 @@ class VolumeLanding(LandingPage):
         """
         selector = self._sortable_row_by_position_xpath.format(position)
         self.tester.wait_for_visible_by_xpath(selector)
-        assert volume_id == self.tester.get_attribute_by_xpath(selector, 'item_id')
+        assert volume_id == self.tester.get_attribute_by_xpath(selector, 'data-item-id')
