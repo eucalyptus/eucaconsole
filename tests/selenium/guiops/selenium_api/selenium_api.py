@@ -56,6 +56,14 @@ class SeleniumApi(object):
         url = str(url)
         return url
 
+    def is_clickable_by_id(self, element_id):
+        """
+
+        :param element_id:
+        """
+        element = self.driver.find_element_by_id(element_id)
+        return element.is_enabled()
+
     def wait_for_element_present_by_id(self, element_id):
         """
         Waits for element to be present on the page for timeout_to_locate_element_in_seconds
@@ -339,16 +347,16 @@ class SeleniumApi(object):
         is_selected = self.driver.execute_script(("return document.getElementById('%s').checked") % element_id)
         return is_selected
 
-    def verify_enabled_by_id(self, element_id):
+    def wait_for_enabled_by_id(self, element_id):
         """
-        Waits for an element to become enabled.
+        Waits for an element to be present, visible and enabled such that you can click it.
         :param element_id:
         """
-        print "Checking if element by_id('{0}') is enabled".format(element_id)
+        print "Executing wait_for_clickable_by_id('{0}')".format(element_id)
 
         try:
-            for i in range(1, 30):
-                element = self.driver.find_elements_by_id(element_id)
+            for i in range(1, 20):
+                element=self.driver.find_element_by_id(element_id)
                 if element.is_enabled():
                     print "Element by id = " + element_id + " is enabled "
                     time.sleep(1)
@@ -379,6 +387,8 @@ class SeleniumApi(object):
             print "Element by icss = '{0}' not enabled.".format(css)
             return False
 
+=======
+>>>>>>> GUI-2342
     def wait_for_clickable_by_id(self, element_id):
         """
         Waits for an element to be present, visible and enabled such that you can click it.
@@ -396,10 +406,11 @@ class SeleniumApi(object):
             print "ERROR: Did not find clickable element by id = '{0}'".format(element_id)
             print "Checking whether element by id = '{0}' present in the DOM.".format(element_id)
             try:
-                self.driver.find_element_by_id(element_id)
+                self.driver.find_element_by_css_selector(element_id)
                 print "Element by id = '{0}' is present in the DOM but not clickable.".format(element_id)
             except NoSuchElementException:
                 print "ERROR: Element by id = '{0}' not found in the DOM.".format(element_id)
+
 
     def wait_for_clickable_by_css(self, css):
         """

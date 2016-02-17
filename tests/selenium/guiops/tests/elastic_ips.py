@@ -22,6 +22,7 @@ class ElasticIPsOperationsSequence(GuiOps):
         self.tester.login(self.account, self.user, self.password)
         self.elastic_ip_single_allocate_release_test_from_lp()
         self.elastic_ips_multi_allocate_release_test_from_dashboard()
+        self.elastic_ips_associate_disassociate_ip()
         self.tester.logout()
         self.tester.exit_browser()
 
@@ -34,6 +35,21 @@ class ElasticIPsOperationsSequence(GuiOps):
         released_ips = self.tester.release_eips_from_eip_lp(elastic_ips)
         assert elastic_ips == released_ips
 
+    def elastic_ips_associate_disassociate_ip(self):
+        elastic_ip = self.tester.allocate_eip_from_dashboard(1)
+        elastic_ip = str(elastic_ip[0])
+        launch_instance = self.tester.launch_instance_from_dashboard(instance_type="m1.medium")
+        instance_id = launch_instance['instance_id']
+        self.tester.associate_eip_from_eip_lp(elastic_ip, instance_id)
+        self.tester.disassociate_eip_from_eip_lp(elastic_ip, instance_id)
+        self.tester.associate_eip_from_eip_detail_page(elastic_ip, instance_id)
+        self.tester.disassociate_eip_from_eip_detail_page(elastic_ip, instance_id)
+        self.tester.associate_eip_from_instances_lp(elastic_ip, instance_id)
+        self.tester.disassociate_eip_from_instances_lp(elastic_ip, instance_id)
+        self.tester.associate_eip_from_instance_detail_page(elastic_ip, instance_id)
+        self.tester.disassociate_eip_from_instance_detail_page(elastic_ip, instance_id)
+        self.tester.terminate_instance_from_view_page(instance_id)
+        self.tester.release_eip_from_eip_lp(elastic_ip)
 
 if __name__ == '__main__':
         tester = ElasticIPsOperationsSequence()

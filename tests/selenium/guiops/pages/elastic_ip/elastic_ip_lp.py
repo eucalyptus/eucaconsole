@@ -1,4 +1,5 @@
 from pages.landingpage import LandingPage
+from dialogs.eip_dialogs import DisassociateEipDialog
 
 
 class EipLanding(LandingPage):
@@ -9,6 +10,10 @@ class EipLanding(LandingPage):
     _elastic_ip_release_item_css = '{0} a.action-release '.format(_elastic_ip_item_row_css_prefix)
     _more_actions_button_id = 'more-actions-btn'
     _more_actions_release_ip_css = '#more-actions-dropdown a.more-actions-release'
+    _more_actions_associate_ip_css = '#item-dropdown_{0}>li>a[ng-click="revealModal(\'associate\', item)"]'
+    _more_actions_disassociate_ip_css = '#item-dropdown_{0}>li>a[ng-click="revealModal(\'disassociate\', item)"]'
+    _elastic_ip_link_css = 'td>a[href="/ipaddresses/{0}"]'
+    _instance_id_link_css = 'td>a[href="/instances/{0}"]'
 
     def __init__(self, tester):
         super(EipLanding, self).__init__(tester)
@@ -37,3 +42,24 @@ class EipLanding(LandingPage):
 
     def verify_elastic_ip_is_released(self, elastic_ip):
         self.tester.wait_for_element_not_present_by_css(self._elastic_ip_checkbox_css.format(elastic_ip))
+
+    def click_elastic_ip(self, elastic_ip):
+        self.tester.click_element_by_css(self._elastic_ip_link_css.format(elastic_ip))
+
+    def associate_with_instance_actions_menu_item(self, elastic_ip):
+        self.tester.click_element_by_css(self._elastic_ip_actions_menu_css.format(elastic_ip))
+        elastic_ip = str(elastic_ip.replace(".", "_"))
+        self.tester.click_element_by_css(self._more_actions_associate_ip_css.format(elastic_ip))
+
+    def verify_elastic_ip_associate_instance(self, instance_id, elastic_ip):
+        self.tester.wait_for_element_present_by_css(self._instance_id_link_css.format(instance_id))
+        self.tester.click_element_by_css(self._instance_id_link_css.format(instance_id))
+        self.tester.wait_for_element_present_by_link_text(elastic_ip)
+
+    def disassociate_with_instance_actions_menu_item(self, elastic_ip, instance_id):
+        self.tester.click_element_by_css(self._elastic_ip_actions_menu_css.format(elastic_ip))
+        elastic_ip = str(elastic_ip.replace(".", "_"))
+        self.tester.click_element_by_css(self._more_actions_disassociate_ip_css.format(elastic_ip))
+
+    def verify_disassociate_eip_from_lp(self, instance_id):
+        self.tester.wait_for_element_not_present_by_css(self._instance_id_link_css.format(instance_id))
