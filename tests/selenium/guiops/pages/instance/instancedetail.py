@@ -49,9 +49,6 @@ class InstanceDetailPage(DetailPage):
 
     def verify_volume_is_attached(self, volume_id, timeout_in_seconds=240):
         self.tester.click_element_by_css(self._volumes_tab_css)
-<<<<<<< HEAD
-        self.tester.verify_visible_by_xpath(self._attached_volume_status_xpath.format(volume_id), timeout_in_seconds)
-=======
         self.tester.wait_for_visible_by_xpath(self._attached_volume_status_xpath.format(volume_id), timeout_in_seconds)
 
     def click_action_associate_ip_address(self):
@@ -67,4 +64,4 @@ class InstanceDetailPage(DetailPage):
 
     def verify_eip_address_disassociated_to_instance(self, elastic_ip):
         self.tester.wait_for_element_not_present_by_css(self._elastic_ip_link_css.format(elastic_ip))
->>>>>>> GUI-2342
+
