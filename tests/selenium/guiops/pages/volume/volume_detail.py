@@ -17,6 +17,7 @@ class VolumeDetailPage(DetailPage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     _volume_detail_page_title = "Details for volume: {0}"
     _delete_volume_action_menuitem_id = "delete-volume-action"
