@@ -7,6 +7,7 @@ class SecurityGroupDetailPage(DetailPage):
     def __init__(self, tester, s_group_name):
         self.s_group_name = s_group_name
         self.tester = tester
+        self.print_test_context()
         self.verify_s_group_detail_page_loaded()
 
     _s_group_detail_page_title = "Details for security group: {0}"

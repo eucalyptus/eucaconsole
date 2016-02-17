@@ -4,19 +4,20 @@ from pages.landingpage import LandingPage
 class InstanceLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_instance_view_page_loaded()
 
     _instances_view_page_title = "Instances"
     _launch_instance_button_id = "launch-instance-btn"
-    _instance_action_menu_id = "table-item-dropdown_{0}"  #instance_id required
-    _manage_volumes_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(7)>a"  #instance_id required
-    _terminate_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(13)>a"  #instance_id required
+    _instance_action_menu_id = "table-item-dropdown_{0}"  # instance_id required
+    _manage_volumes_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(7)>a"  # instance_id required
+    _terminate_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(13)>a"  # instance_id required
     _first_pending_instance_status_css = "status>span:contains('pending')"
     _first_instance_link_in_list_css = "#tableview>table>tbody>tr>td>a"
-    _first_instance_status_css = "td:contains('{0}')~td>span"  #instance_id required; webdriver does not accept it
-    _instance_link_css = 'a[ng-href="/instances/{0}"]'  #instance_id required;
-    _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  #instance_id required
-    _launch_more_like_this_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  #instance_id required
+    _first_instance_status_css = "td:contains('{0}')~td>span"  # instance_id required; webdriver does not accept it
+    _instance_link_css = 'a[ng-href="/instances/{0}"]'  # instance_id required;
+    _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  # instance_id required
+    _launch_more_like_this_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  # instance_id required
     _terminate_all_instances_btn_id = "terminate-instances-btn"
     _search_input_field_css = ".search-input"
 
@@ -42,7 +43,7 @@ class InstanceLanding(LandingPage):
         return instance_id
 
     def verify_instance_status_is_running(self, instance_id):
-        NotImplementedError
+        raise NotImplementedError
 
     def goto_instance_detail_page_via_link(self, instance_id):
         self.tester.click_element_by_css(self._instance_link_css.format(instance_id))
@@ -57,8 +58,8 @@ class InstanceLanding(LandingPage):
 
     def get_instance_name(self, instance_id):
         full_name = self.tester.store_text_by_css(self._instance_link_css.format(instance_id))
-        instance_name=None
-        if len(full_name)>11:
+        instance_name = None
+        if len(full_name) > 11:
             instance_name = full_name[:-13]
         return instance_name
 
@@ -67,10 +68,4 @@ class InstanceLanding(LandingPage):
 
     def verify_there_are_no_running_instances(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "running")
-        self.tester.wait_for_text_present_by_css(LandingPage(self)._item_count_css,"0")
-
-
-
-
-
-
+        self.tester.wait_for_text_present_by_css(LandingPage(self)._item_count_css, "0")

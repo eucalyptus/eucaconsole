@@ -27,13 +27,13 @@ class SeleniumApi(object):
         assert isinstance(driver, webdriver.Firefox)
         self.driver = driver
 
-    retry = 2
-    timeout_to_locate_element_in_seconds = 20
-    timeout_to_determine_visibility_in_seconds = 60
-    timeout_to_determine_if_clickable_in_seconds = 20
-    timeout_to_wait_for_text_in_seconds = 120
-    implicit_wait_default_in_seconds = 60
-    timeout_to_check_for_visibility_in_seconds = 5
+    retry = 3
+    timeout_to_locate_element_in_seconds = 60
+    timeout_to_determine_visibility_in_seconds = 120
+    timeout_to_determine_if_clickable_in_seconds = 120
+    timeout_to_wait_for_text_in_seconds = 240
+    implicit_wait_default_in_seconds = 120
+    timeout_to_check_for_visibility_in_seconds = 10
 
     def set_implicit_wait(self, implicit_wait_time):
         """
@@ -892,7 +892,9 @@ class SeleniumApi(object):
         self.wait_for_visible_by_id(element_id)
         if clear_field:
             print "Clearing field by if = '{0}'".format(element_id)
+            time.sleep(0.6)
             self.driver.find_element_by_id(element_id).clear()
+            time.sleep(0.6)
         print "Typing text '{1}' into field by id = '{0}'".format(element_id, text)
         self.driver.find_element_by_id(element_id).send_keys(text)
 
