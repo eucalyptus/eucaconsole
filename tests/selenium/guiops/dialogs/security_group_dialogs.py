@@ -1,9 +1,10 @@
 from pages.basepage import BasePage
 
-class CreateScurityGroupDialog(BasePage):
 
+class CreateScurityGroupDialog(BasePage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     _s_group_name_field_id = "name"
     _s_group_description_field = "description"
@@ -18,7 +19,7 @@ class CreateScurityGroupDialog(BasePage):
     _groupname_selection_menu_css = "#groupname_select_chosen>a"
     _groupname_selection_search_css = "#groupname_select_chosen>div>div>input"
 
-    def create_s_group(self, s_group_name,  s_group_description):
+    def create_s_group(self, s_group_name, s_group_description):
         """
         Fills the s_group name and description fields. Clicks create s_group button.
 
@@ -26,10 +27,11 @@ class CreateScurityGroupDialog(BasePage):
         :param s_group_description:
         """
         self.tester.send_keys_by_id(self._s_group_name_field_id, s_group_name)
-        self.tester.send_keys_by_id(self._s_group_description_field,  s_group_description)
+        self.tester.send_keys_by_id(self._s_group_description_field, s_group_description)
         self.tester.click_element_by_id(self._create_s_group_button_id)
 
-    def create_s_group_with_rules(self, s_group_name, s_group_description, rule_open_to_all, rule_open_to_default_group, rule_open_to_default_group_port_begin, rule_open_to_default_group_port_end):
+    def create_s_group_with_rules(self, s_group_name, s_group_description, rule_open_to_all, rule_open_to_default_group,
+                                  rule_open_to_default_group_port_begin, rule_open_to_default_group_port_end):
         """
         Creates security group with one rule open to all, and one custom rule open to default group.
         :param s_group_name:
@@ -40,7 +42,7 @@ class CreateScurityGroupDialog(BasePage):
         :param rule_open_to_default_group_port_end:
         """
         self.tester.send_keys_by_id(self._s_group_name_field_id, s_group_name)
-        self.tester.send_keys_by_id(self._s_group_description_field,  s_group_description)
+        self.tester.send_keys_by_id(self._s_group_description_field, s_group_description)
         self.tester.click_element_by_id(self._add_inbound_rules_protocol_menu_id)
         self.tester.send_keys_by_css(self._inbound_rules_text_input_field_css, rule_open_to_all)
         self.tester.click_element_by_css(".active-result")
@@ -60,12 +62,13 @@ class CreateScurityGroupDialog(BasePage):
 
 
 class DeleteScurityGroupDialog(BasePage):
-
     """
     Clicks the 'Yes, Delete' button in delete security group modal.
     """
+
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
 
     _delete_s_group_submit_button_id = "delete_securitygroup_submit_button"
 

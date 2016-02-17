@@ -24,6 +24,7 @@ class Dashboard(BasePage):
             """
             super(Dashboard, self).__init__(tester)
             self.tester = tester
+            self.print_test_context()
 
         def verify_dashboard_loaded(self):
             """
