@@ -89,4 +89,4 @@ class VolumeLanding(LandingPage):
         """
         selector = self._sortable_row_by_position_xpath.format(position)
         self.tester.wait_for_visible_by_xpath(selector)
-        assert volume_id == self.tester.get_attribute_by_xpath(selector, 'item_id')
+        assert volume_id == self.tester.get_attribute_by_xpath(selector, 'data-item-id')

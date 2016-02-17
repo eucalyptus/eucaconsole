@@ -131,7 +131,7 @@
                 <tbody tal:condition="not:using_expando">
                     <tr ng-cloak="true"
                         tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat"
-                        item_id="{{ data-item-id }}" data-item-id="{{ item.id || item.name || item.public_ip }}">
+                        data-item-id="{{ item.id || item.name || item.public_ip }}">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>
