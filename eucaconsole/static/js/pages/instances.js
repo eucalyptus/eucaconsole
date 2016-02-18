@@ -28,14 +28,14 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
         };
-        $scope.createImageClicked = function (running_create, instance_id) {
-            if (running_create) {
-                $scope.instanceID = instance_id;
+        $scope.createImageClicked = function (item) {
+            if (item.running_create) {
+                $scope.instanceID = item.id;
                 var modal = $('#create-image-denied-modal');
                 modal.foundation('reveal', 'open');
             }
             else {
-                window.location = '/instances/' + instance_id + '/createimage';
+                window.location = '/instances/' + item.id + '/createimage';
             }
         };
         $scope.revealModal = function (action, instance) {

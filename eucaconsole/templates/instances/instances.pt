@@ -22,7 +22,8 @@
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
-                            <a i18n:translate="" class="more-actions-viewdetails" ng-href="${prefix}/{{ items[0].id }}">
+                            <a i18n:translate="" class="more-actions-details"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}">
                                 View details
                             </a>
                         </li>
@@ -33,7 +34,8 @@
                             </a>
                         </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
-                            <a i18n:translate="" class="more-actions-launchmore" ng-href="${prefix}/{{ items[0].id }}/more">
+                            <a i18n:translate="" class="more-actions-launchmore"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/more">
                                 Launch more like this
                             </a>
                         </li>
@@ -41,6 +43,45 @@
                             <a i18n:translate="" class="more-actions-consoleoutput"
                                ng-click="revealConsoleOutputModal((items | filter: {selected: true, status: 'running'})[0])">
                                 View console output
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-volumes"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/volumes">
+                                Manage volumes
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-monitoring"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/monitoring">
+                                View monitoring
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-launchconfig"
+                               ng-href="{{ getCreateLaunchConfigPath((items | filter: {selected: true})[0]) }}">
+                                Create scaling group launch configuration
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-image"
+                               ng-click="createImageClicked((items | filter: {selected: true})[0])">
+                                Create image
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-associateip"
+                               ng-click="revealModal('associate-ip-to', (items | filter: {selected: true, status: 'running'})[0])">
+                                Associate IP address
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'} | hasElasticIP).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-disassociate"
+                               ng-click="revealMultiSelectModal('disassociate-ip-from', (items | filter:{selected: true}))">
+                                Disassociate IP address
                             </a>
                         </li>
                         <hr />
@@ -66,12 +107,6 @@
                             <a i18n:translate="" class="more-actions-terminate"
                                ng-click="revealMultiSelectModal('terminate', (items | filter:{selected: true}))">
                                 Terminate
-                            </a>
-                        </li>
-                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'} | hasElasticIP).length &lt; 1}">
-                            <a i18n:translate="" class="more-actions-disassociate"
-                               ng-click="revealMultiSelectModal('disassociate-ip-from', (items | filter:{selected: true}))">
-                                Disassociate IP
                             </a>
                         </li>
                     </div>
@@ -104,7 +139,7 @@
                     </li>
                     <li ng-show="item.status == 'running' || item.status == 'stopped'">
                         <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
-                           ng-click="createImageClicked(item.running_create, item.id)">
+                           ng-click="createImageClicked(item)">
                            Create image
                         </a>
                     </li>
@@ -259,7 +294,7 @@
                             </li>
                             <li ng-show="item.status == 'running' || item.status == 'stopped'">
                                 <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
-                                   ng-click="createImageClicked(item.running_create, item.id)">
+                                   ng-click="createImageClicked(item)">
                                    Create image
                                 </a>
                             </li>
