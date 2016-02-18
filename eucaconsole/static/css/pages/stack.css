@@ -20,6 +20,7 @@
 #more-actions-dropdown.f-dropdown li.disabled { cursor: default; }
 #more-actions-dropdown.f-dropdown li.disabled a { color: #cccccc; pointer-events: none; }
 #more-actions-dropdown.f-dropdown li.disabled:hover { background-color: #fff; }
+#more-actions-dropdown hr { margin-top: 0; margin-bottom: 0; }
 
 .gridwrapper { margin-top: 0.5rem; }
 
