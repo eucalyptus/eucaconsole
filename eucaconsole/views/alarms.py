@@ -342,10 +342,13 @@ class CloudWatchAlarmDetailView(BaseView):
         for arn in self.alarm.alarm_actions:
             alarm_actions.append(AmazonResourceName.factory(arn))
 
+        scaling_groups = self.get_scaling_groups()
+
         self.render_dict.update(
             alarm_json=alarm_json,
             dimensions=dimensions,
             alarm_actions=alarm_actions,
+            scaling_groups=scaling_groups,
             options=options
         )
         return self.render_dict
@@ -368,3 +371,9 @@ class CloudWatchAlarmDetailView(BaseView):
                 dimensions.append(m.dimensions)
 
         return dimensions
+
+    def get_scaling_groups(self):
+        conn = self.get_connection(conn_type='autoscale')
+        with boto_error_handler(self.request):
+            groups = conn.get_all_groups()
+            return groups

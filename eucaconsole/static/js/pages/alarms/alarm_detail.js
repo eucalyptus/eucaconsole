@@ -9,7 +9,8 @@ angular.module('AlarmDetailPage', [
             scope.alarm = JSON.parse(attrs.alarmDetail);
             console.log('link', scope.alarm);
         },
-        controller: ['$scope', '$window', 'AlarmService', function ($scope, $window, AlarmService) {
+        controller: ['$scope', '$window', 'AlarmService', 'ScalingGroupsService',
+        function ($scope, $window, AlarmService, ScalingGroupsService) {
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
@@ -41,6 +42,22 @@ angular.module('AlarmDetailPage', [
                     }, function error (response) {
                         Notify.failure(response.data.message);
                     }); 
+            };
+
+            $scope.policiesAvailable = function () {
+                var policies = $scope.scalingGroupPolicies || {};
+                return !Object.keys(policies).length;
+            };
+
+            $scope.updatePolicies = function () {
+                ScalingGroupsService.getPolicies($scope.scalingGroup)
+                    .then(function success (response) {
+                        if(response.data) {
+                            $scope.scalingGroupPolicies = response.data.policies;
+                        }
+                    }, function error (response) {
+                        console.log(response);
+                    });
             };
         }]
     };
@@ -93,4 +110,29 @@ angular.module('AlarmDetailPage', [
 
         }]
     };
-});
+})
+.directive('alarmActions', function () {
+    return {
+        restrict: 'A',
+        controller: ['$scope', function ($scope) {
+            $scope.addAction = function () {
+                console.log($scope);
+                if($scope.alarmActionsForm.$invalid) {
+                    return;
+                }
+            };
+        }]
+    };
+})
+.factory('ScalingGroupsService', ['$http', '$interpolate', function ($http, $interpolate) {
+    var getPolicyUrl = $interpolate('/scalinggroups/{{ id }}/policies/json');
+    return {
+        getPolicies: function (id) {
+            var policyUrl = getPolicyUrl({id: id});
+            return $http({
+                method: 'GET',
+                url: policyUrl
+            });
+        }
+    };
+}]);

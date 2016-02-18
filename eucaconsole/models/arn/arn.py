@@ -42,6 +42,7 @@ class AmazonResourceName(dict):
     def parse(self, arn):
         (_, partition, service, region, accountid, resource) = arn.split(':', 5)
 
+        self.arn = arn
         self.partition = partition
         self.service = service
         self.region = region

@@ -26,6 +26,12 @@ angular.module('AlarmServiceModule', [])
                     flash: flash
                 }
             });
+        },
+
+        addAction: function () {
+        },
+
+        removeAction: function () {
         }
     };
 }]);

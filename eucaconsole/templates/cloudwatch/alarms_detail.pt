@@ -148,10 +148,66 @@
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
-                        <div class="actions">
+                        <div class="actions" ng-form="alarmActionsForm" alarm-actions="">
                             <h4>Actions</h4>
-                            <div tal:repeat="action alarm_actions">
-                                For group <strong>${action.autoscaling_group_name}</strong> execute policy <strong>${action.policy_name}</strong>
+                            <div class="item-list">
+                                <span class="item" tal:repeat="action alarm_actions" data-item-value="${action.arn}">
+                                    For group
+                                    <strong>${action.autoscaling_group_name}</strong>
+                                    execute policy
+                                    <strong>${action.policy_name}</strong>
+                                    <a class="remove" title="Remove action">
+                                        <i class="fi-x"></i>
+                                    </a>
+                                </span>
+                            </div>
+                            <h5>Add an action:</h5>
+                            <div>
+                                <div class="row">
+                                    <div class="columns large-2 large-offset-1 small-2">
+                                        <label class="right" i18n:translate="">Action type</label>
+                                    </div>
+                                    <div class="columns large-9 small-10">
+                                        Autoscaling
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="columns large-2 large-offset-1 small-2">
+                                        <label class="right" i18n:translate="">When alarm state is</label>
+                                    </div>
+                                    <div class="columns large-9 small-10">
+                                        <select>
+                                            <option>ALARM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="columns large-2 large-offset-1 small-2">
+                                        <label class="right" i18n:translate="">For scaling group</label>
+                                    </div>
+                                    <div class="columns large-9 small-10">
+                                        <select ng-model="scalingGroup" ng-init="scalingGroup = ''" ng-change="updatePolicies()">
+                                            <option value="">Select scaling group...</option>
+                                            <option tal:repeat="group scaling_groups" tal:content="group.name" required=""></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="columns large-2 large-offset-1 small-2">
+                                        <label class="right" i18n:translate="">Execute scaling policy</label>
+                                    </div>
+                                    <div class="columns large-9 small-10">
+                                        <select ng-model="scalingGroupPolicy" ng-init="scalingGroupPolicy = ''" ng-disabled="policiesAvailable()" required="">
+                                            <option value="">Select policy...</option>
+                                            <option ng-repeat="(policy, arn) in scalingGroupPolicies" ng-bind="policy" ng-value="arn"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="columns large-offset-1">
+                                        <button class="button round tiny" ng-click="addAction()">Add Action</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <hr/>

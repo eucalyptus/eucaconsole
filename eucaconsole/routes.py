@@ -132,6 +132,7 @@ urls = [
     Route(name='scalinggroup_history_json', pattern='/scalinggroups/{id}/history/json'),
     Route(name='scalinggroup_history_details_json', pattern='/scalinggroups/{id}/history/{activity}/json'),
     Route(name='scalinggroup_policies', pattern='/scalinggroups/{id}/policies'),
+    Route(name='scalinggroup_policies_json', pattern='/scalinggroups/{id}/policies/json'),
     Route(name='scalinggroup_policy_new', pattern='/scalinggroups/{id}/policies/new'),
     Route(name='scalinggroup_policy_create', pattern='/scalinggroups/{id}/policies/create'),
     Route(name='scalinggroup_policy_delete', pattern='/scalinggroups/{id}/policies/delete'),
