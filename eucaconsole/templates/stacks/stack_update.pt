@@ -1,7 +1,8 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack_wizard.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack_update.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -55,8 +56,8 @@
                                     <input type="radio" id="inputtype-current" name="inputtype" value="current" ng-model="inputtype"/>
                                     <label i18n:translate="">Use current template</label>
                                     <div id="current-template-div" ng-show="inputtype=='current'">
-                                        <a class="circle remove has-tip policy-row-item" ng-click="editTemplate()"
-                                           title="View/edit template" i18n:attributes="title"><i class="fi-pencil"></i></a>
+                                        <a class="circle remove has-tip policy-row-item" ng-click="editTemplate($event)"
+                                           title="View/edit template" i18n:attributes="title"><i class="fi-pencil"></i></a><span>${template_name}</span>
                                     </div>
                                     <br ng-hide="inputtype=='current'"/>
                                     <div tal:omit-tag="" tal:condition="layout.file_uploads_enabled">
@@ -175,6 +176,9 @@
             <div class="help-padding">&nbsp;</div>
             <div class="summary" ng-cloak="">
                 <h5 i18n:translate="" class="title">Summary</h5>
+                <span ng-show="loading"><i class="busy"></i>
+                    <span i18n:translate="">Reading template</span>
+                </span>
                 <div class="section step1" ng-show="templateIdent">
                     <div class="row" ng-show="templateBucket">
                         <label i18n:translate="">Template bucket</label>
@@ -283,12 +287,27 @@
             </div>
             <a href="#" id="convert_template_close_link" class="close-reveal-modal">&#215;</a>
         </div>
+        <div id="edit-template-modal" class="reveal-modal large" data-reveal="">
+            <h3>${stack_name} <span i18n:translate="">template</span></h3>
+            <form ng-submit="saveTemplate($event)">
+                <textarea id="template-area" class="template-area" ng-model="stackTemplate"></textarea>
+                <small id="json-error" class="error" style="display:none;"></small>
+                <div>&nbsp;</div>
+                <button class="button" id="save-policy-btn" type="submit" i18n:translate="">
+                    Save Changes
+                </button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_update.js')}"></script>
 </div>
 

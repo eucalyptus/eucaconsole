@@ -1,0 +1,73 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+// Import common wizard styles
+@import "../includes/wizard";
+
+
+/* @section Stack Wizard page styles */
+
+#stack-update-form {
+    input.name {
+        width: 100px;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        padding: 4px;
+    }
+    #controls_userdata_file {
+        position: relative;
+        top: -0.5rem;
+        #userdata_file {
+            width: 80%;
+            display: inline-block;
+        }
+    }
+}
+
+.button {
+    margin: 0;
+}
+
+.columns.value {
+    padding-left: 1rem;
+}
+
+$template-indent: 1.5rem;
+
+.chosen-container {
+    width: 100%;
+    padding-bottom: 0.25rem;
+}
+
+#template-file {
+    margin-left: $template-indent;
+    width: 90%;
+}
+
+#template-url {
+    margin-left: $template-indent;
+    width: 90%;
+}
+
+small.error {
+    margin-left: $template-indent;
+}
+
+.error label {
+    color: $euca-grey;
+}
+
+#inputtype-current {
+    margin-bottom: 0;
+}
+
+#current-template-div {
+    a {
+        margin-left: 1rem;
+        color: $hp-gray-65;
+    }
+    span {
+        margin-left: 1rem;
+        color: $hp-gray-65;
+    }
+}

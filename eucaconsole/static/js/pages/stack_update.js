@@ -26,11 +26,9 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.expanded = false;
         $scope.stackForm = $('#stack-update-form');
-        $scope.stackName = '';
         $scope.s3TemplateKey = undefined;
         $scope.stackTemplateEndpoint = '';
         $scope.convertTemplateEndpoint = '';
-        $scope.tagsObject = {};
         $scope.templateFiles = [];
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
@@ -45,15 +43,16 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
         $scope.propertyList = undefined;
         $scope.parameterList = undefined;
         $scope.isCreating = false;
+        $scope.codeEditor = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
             $scope.convertTemplateEndpoint = options.convert_template_url;
-            $scope.templates = options.sample_templates;
+            $scope.templateReadEndpoint = options.stack_template_read_url;
             $scope.setInitialValues();
-            $scope.watchTags();
             $scope.setWatchers();
             $scope.setFocus();
+            $scope.initCodeMirror();
         };
         $scope.toggleContent = function () {
             $scope.expanded = !$scope.expanded;
@@ -84,25 +83,6 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
         $scope.setInitialValues = function () {
             $scope.inputtype = 'current';
         };
-        $scope.updateTagsPreview = function () {
-            // Need timeout to give the tags time to capture in hidden textarea
-            $timeout(function() {
-                var tagsTextarea = $('textarea#tags'),
-                    tagsJson = tagsTextarea.val(),
-                    removeButtons = $('.item .remove');
-                removeButtons.on('click', function () {
-                    $scope.updateTagsPreview();
-                });
-                $scope.tagsObject = JSON.parse(tagsJson);
-                $scope.tagsLength = Object.keys($scope.tagsObject).length;
-            }, 300);
-        };
-        $scope.watchTags = function () {
-            var addTagButton = $('#add-tag-btn');
-            addTagButton.on('click', function () {
-                $scope.updateTagsPreview();
-            });
-        };
         $scope.checkRequiredInput = function () {
             if ($scope.currentStepIndex === 1) {
                 $scope.isNotValid = false;
@@ -110,7 +90,7 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                 var val;
                 switch ($scope.inputtype) {
                     case 'current':
-                        val = $scope.templateSample;
+                        val = $scope.stackTemplate;
                         if (val === undefined || val === '') {
                             $scope.isNotValid = true;
                         }
@@ -134,10 +114,6 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                     default:
                         $scope.isNotValid = true;
                 }
-                if ($scope.stackName.length > 255 || $scope.stackName.length === 0) {
-                    // Once invalid name has been entered, do not enable the button unless the name length is valid
-                    $scope.isNotValid = true;
-                }
             } else if ($scope.currentStepIndex === 2) {
                 $scope.isNotValid = false;
                 angular.forEach($scope.parameters, function(param, idx) {
@@ -149,9 +125,6 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
             }
         };
         $scope.setWatchers = function () {
-            $scope.$watch('stackName', function(){
-                $scope.checkRequiredInput();
-            });
             $scope.$watch('inputtype', function(){
                 switch ($scope.inputtype) {
                     case 'current':
@@ -162,13 +135,11 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                         $scope.description = '';
                         break;
                     case 'file':
-                        $scope.templateSample = undefined;
                         $scope.templateUrl = undefined;
                         $scope.templateIdent = undefined;
                         $scope.description = '';
                         break;
                     case 'url':
-                        $scope.templateSample = undefined;
                         $scope.templateFiles = undefined;
                         $('#template-file').val(undefined);
                         $scope.templateIdent = undefined;
@@ -299,6 +270,11 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
             angular.forEach($('form').serializeArray(), function(value, key) {
                 this.append(value.name, value.value);
             }, fd);
+            if ($scope.inputtype === 'current') {
+                if ($scope.stackTemplate) {
+                    fd.append('template-body', $scope.stackTemplate);
+                }
+            }
             // Add file
             if ($scope.inputtype === 'file') {
                 var file = $scope.templateFiles[0];
@@ -418,6 +394,53 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                 ret = ret[0];
             }
             return ret;
+        };
+        $scope.initCodeMirror = function () {
+            var templateTextarea = document.getElementById('template-area');
+            $scope.codeEditor = CodeMirror.fromTextArea(templateTextarea, {
+                mode: {name:"javascript", json:true},
+                lineWrapping: true,
+                styleActiveLine: true,
+                lineNumbers: true,
+                readOnly: false
+            });
+        };
+        $scope.clearCodeEditor = function () {
+            $scope.codeEditor.setValue('');
+            $scope.codeEditor.clearHistory();
+        };
+        $scope.editTemplate = function ($event) {
+            $event.preventDefault();
+            $('#json-error').css('display', 'none');
+            $scope.clearCodeEditor();
+            var editModal = $('#edit-template-modal');
+            editModal.foundation('reveal', 'open');
+            editModal.on('close.fndtn.reveal', function() {
+                $scope.clearCodeEditor();
+            });
+            $scope.stackTemplate = ''; // clear any previous policy
+            $http.get($scope.templateReadEndpoint).success(function(oData) {
+                var results = oData ? oData.results : '';
+                $scope.stackTemplate = results;
+                $scope.codeEditor.setValue($scope.stackTemplate);
+                $scope.codeEditor.focus();
+            }).error(function (oData, status) {
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.saveTemplate = function ($event) {
+            $event.preventDefault();
+            try {
+                $('#json-error').css('display', 'none');
+                var policy_json = $scope.codeEditor.getValue();
+                JSON.parse(policy_json);
+                $('#edit-template-modal').foundation('reveal', 'close');
+                // now, save the template
+                $scope.getStackTemplateInfo();
+            } catch (e) {
+                $('#json-error').text(e);
+                $('#json-error').css('display', 'block');
+            }
         };
     })
 ;

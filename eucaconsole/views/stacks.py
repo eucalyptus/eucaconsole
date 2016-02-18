@@ -56,6 +56,16 @@ TEMPLATE_BODY_LIMIT = 460800
 
 
 class StackMixin(object):
+    def get_stack(self):
+        if self.cloudformation_conn:
+            try:
+                stack_param = self.request.matchdict.get('name')
+                stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
+                return stacks[0] if stacks else None
+            except BotoServerError:
+                pass
+        return None
+
     def get_create_template_bucket(self, create=False):
         s3_conn = self.get_connection(conn_type="s3")
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
@@ -85,6 +95,28 @@ class StackMixin(object):
             u'Please contact your cloud administrator.'
         ))
 
+    def get_template_location(self, stack_id, default_name=None):
+        bucket = None
+        try:
+            bucket = self.get_create_template_bucket()
+        except:
+            pass
+        stack_id = stack_id[stack_id.rfind('/') + 1:]
+        d = hashlib.md5()
+        d.update(stack_id)
+        md5 = d.digest()
+        stack_hash = base64.b64encode(md5, '--').replace('=', '')
+        ret = {}
+        ret['template_name'] = default_name
+        if bucket is not None:
+            keys = list(bucket.list(prefix=stack_hash))
+            if len(keys) > 0:
+                key = keys[0].key
+                name = key[key.rfind('-') + 1:]
+                ret['template_bucket'] = bucket.name
+                ret['template_key'] = key
+                ret['template_name'] = name
+        return ret
 
 class StacksView(LandingPageView):
     def __init__(self, request):
@@ -217,26 +249,9 @@ class StackView(BaseView, StackMixin):
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('name') != 'new':
             raise HTTPNotFound
-        bucket = None
-        try:
-            bucket = self.get_create_template_bucket()
-        except:
-            pass
-        stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
-        d = hashlib.md5()
-        d.update(stack_id)
-        md5 = d.digest()
-        stack_hash = base64.b64encode(md5, '--').replace('=', '')
-        self.render_dict['template_name'] = None
-        if bucket is not None:
-            keys = list(bucket.list(prefix=stack_hash))
-            if len(keys) > 0:
-                key = keys[0].key
-                name = key[key.rfind('-') + 1:]
-                self.render_dict['template_bucket'] = bucket.name
-                self.render_dict['template_key'] = key
-                self.render_dict['template_name'] = name
-        return self.render_dict
+        template_info = self.get_template_location(self.stack.stack_id)
+        template_info.update(self.render_dict)
+        return template_info
 
     @view_config(route_name='stack_delete', request_method='POST', renderer=TEMPLATE)
     def stack_delete(self):
@@ -257,16 +272,6 @@ class StackView(BaseView, StackMixin):
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
-
-    def get_stack(self):
-        if self.cloudformation_conn:
-            try:
-                stack_param = self.request.matchdict.get('name')
-                stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
-                return stacks[0] if stacks else None
-            except BotoServerError:
-                pass
-        return None
 
     def get_controller_options_json(self):
         if self.stack is None:
@@ -329,7 +334,7 @@ class StackStateView(BaseView):
             template = response['GetTemplateResponse']['GetTemplateResult']['TemplateBody']
             
             return dict(
-                results=BaseView.escape_json(template)
+                results=template
             )
 
     @view_config(route_name='stack_events', renderer='json', request_method='GET')
@@ -399,12 +404,14 @@ class StackWizardView(BaseView, StackMixin):
 
     def __init__(self, request):
         super(StackWizardView, self).__init__(request)
+        self.cloudformation_conn = self.get_connection(conn_type='cloudformation')
         self.title_parts = [_(u'Stack'), _(u'Create')]
         self.create_form = None
         location = self.request.route_path('stacks')
         with boto_error_handler(self.request, location):
             s3_bucket = self.get_template_samples_bucket()
             self.create_form = StacksCreateForm(request, s3_bucket)
+            self.stack = self.get_stack()
         self.render_dict = dict(
             create_form=self.create_form,
             controller_options_json=self.get_controller_options_json(),
@@ -425,6 +432,7 @@ class StackWizardView(BaseView, StackMixin):
         return BaseView.escape_json(json.dumps({
             'stack_template_url': self.request.route_path('stack_template_parse'),
             'convert_template_url': self.request.route_path('stack_template_convert'),
+            'stack_template_read_url': self.request.route_path('stack_template', name=self.stack.stack_name) if self.stack else '',
             'sample_templates': self.create_form.sample_template.choices
         }))
 
@@ -434,12 +442,15 @@ class StackWizardView(BaseView, StackMixin):
         return self.render_dict
 
     @view_config(route_name='stack_update', renderer=TEMPLATE_UPDATE, request_method='GET')
-    def stack_new(self):
+    def stack_update(self):
         """Displays the Stack update wizard"""
         stack_name = self.request.matchdict.get('name')
+        self.title_parts = [_(u'Stack'), stack_name, _(u'Update')]
         ret = dict(
-            stack_name=stack_name
+            stack_name=stack_name,
         )
+        template_info = self.get_template_location(self.stack.stack_id, default_name=_(u'current template'))
+        ret.update(template_info)
         ret.update(self.render_dict)
         return ret
 
@@ -492,6 +503,10 @@ class StackWizardView(BaseView, StackMixin):
                 params = []
                 if 'Parameters' in parsed.keys():
                     params = self.generate_param_list(parsed)
+                    if self.stack:
+                        # populate defaults with actual values from stack
+                        for param in params:
+                            param['default'] = [p.value for p in self.stack.parameters if p.key == param['name']][0]
                 return dict(
                     results=dict(
                         template_key=template_name,
@@ -766,7 +781,7 @@ class StackWizardView(BaseView, StackMixin):
             template_name = self.request.params.get('sample-template')
             template_url = self.request.params.get('template-url')
             files = self.request.POST.getall('template-file')
-            template_body = ''
+            template_body = self.request.params.get('template-body')
 
             if len(files) > 0 and len(str(files[0])) > 0:  # read from file
                 files[0].file.seek(0, 2)  # seek to end
@@ -799,6 +814,9 @@ class StackWizardView(BaseView, StackMixin):
                 template_name = template_url[template_url.rindex('/') + 1:]
                 if len(template_body) > TEMPLATE_BODY_LIMIT:
                     raise JSONError(status=400, message=_(u'Template too large: ') + template_name)
+            elif template_body:
+                # just proceed if body provided with request
+                template_name = 'current'
             else:
                 s3_bucket = self.get_template_samples_bucket()
                 mgr = CFSampleTemplateManager(s3_bucket)
