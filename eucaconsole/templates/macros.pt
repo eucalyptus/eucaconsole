@@ -225,24 +225,31 @@
     </div>
 </metal:plaintableview_macro>
 
-<!-- "Select all" checkbo table header -->
+<!-- "Select all" checkbox table header -->
 <metal:selectall_header_checkbox metal:define-macro="selectall_header_checkbox">
     <th class="checkbox-header">
         <input type="checkbox" id="select-all-items-tableview" ng-model="state.allSelected" ng-click="setAllState()" />
     </th>
 </metal:selectall_header_checkbox>
 
+<!-- "Select all" checkbox (for tile/grid view) -->
+<metal:selectall_items_checkbox metal:define-macro="selectall_items_checkbox">
+    <span ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" class="select-all-wrapper" ng-cloak="">
+        <input type="checkbox" id="select-all-items-tileview" ng-model="state.allSelected" ng-click="setAllState()" />&nbsp;
+        <span i18n:translate="">Select all</span>
+    </span>
+</metal:selectall_items_checkbox>
+
+
 <!-- checkbox macro for a table cell in a table with multi-select rows -->
 <metal:select_item_checkbox metal:define-macro="select_item_checkbox">
-    <td>
-        <input type="checkbox" class="row-checkbox" ng-model="item.selected" ng-change="handleItemSelection()" />
-    </td>
+    <input type="checkbox" class="item-checkbox" ng-model="item.selected" ng-change="handleItemSelection()" />
 </metal:select_item_checkbox>
 
 <!-- "More actions" menu item for multi-select operations on landing pages -->
 <metal:moreactions_macro metal:define-macro="more_actions">
     <a class="button secondary dropdown more-actions" id="more-actions-btn" ng-cloak=""
-       ng-if="landingPageView === 'tableview'" ng-disabled="(items | filter:{ selected: true}).length === 0"
+       ng-disabled="(items | filter:{ selected: true}).length === 0"
        data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
     <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="" ng-if="(items | filter:{ selected: true}).length">
         <metal:block metal:define-slot="menu_items" />

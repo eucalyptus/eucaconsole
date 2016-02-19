@@ -1,3 +1,5 @@
+import time
+
 from pages.landingpage import LandingPage
 
 
@@ -90,5 +92,6 @@ class VolumeLanding(LandingPage):
         :type position: int
         """
         selector = self._sortable_row_by_position_xpath.format(position)
+        time.sleep(1)
         self.tester.wait_for_visible_by_xpath(selector)
         assert volume_id == self.tester.get_attribute_by_xpath(selector, 'data-item-id')

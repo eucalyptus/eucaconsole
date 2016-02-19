@@ -82,7 +82,7 @@
                 <!--! <th i18n:translate="" class="actions">Actions</th> -->
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td metal:use-macro="layout.global_macros['select_item_checkbox']"></td>
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td alarm-state="{{ item.state }}"></td>
                 <td class="id">
                     <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
