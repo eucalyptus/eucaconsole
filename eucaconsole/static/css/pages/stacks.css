@@ -162,3 +162,17 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .status.Delete-complete { background-color: #444; }
 
 .status.Delete-failed { background-color: #ff0000; }
+
+.status.Update-in-progress { background-color: #6a737b; }
+
+.status.Update-complete-cleanup-in-progress { background-color: #6a737b; }
+
+.status.Update-complete { background-color: #444; }
+
+.status.Update-rollback-in-progress { background-color: #6a737b; }
+
+.status.Update-rollback-failed { background-color: #ff0000; }
+
+.status.Update-rollback-complete-cleanup-in-progress { background-color: #6a737b; }
+
+.status.Update-rollback-complete { background-color: #444; }
