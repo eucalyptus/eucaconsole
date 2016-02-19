@@ -81,8 +81,10 @@ $dropdown-border-color: $hp-gray-65;
         }
     }
 }
+
 #more-actions-dropdown {
     &.f-dropdown {
+        @include dropdown-shadow-mixin;
         li.disabled {
             cursor: default;
             a {
