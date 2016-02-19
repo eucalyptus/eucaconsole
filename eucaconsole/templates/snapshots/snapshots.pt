@@ -40,6 +40,12 @@
                                 Register as image
                             </a>
                         </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-delete"
+                               ng-click="revealMultiSelectModal('delete', (items | filter:{selected: true}))">
+                                Delete
+                            </a>
+                        </li>
                     </div>
                 </metal:block>
                 <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />

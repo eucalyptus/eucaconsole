@@ -4,14 +4,23 @@
          tal:define="landingpage_action request.route_path('snapshots_delete') + layout.querystring;
                      detailpage_action request.route_path('snapshot_delete', id=snapshot.id) if snapshot else '';
                      action landingpage_action if landingpage else detailpage_action;">
-        <h3 i18n:translate="">Delete snapshot</h3>
-        <p ng-show="images" i18n:translate="">
-            This snapshot has been registered as an image. Deleting this snapshot will also de-register the image.
+        <h3>
+            <span i18n:translate="" ng-if="!multipleItemsSelected">Delete snapshot</span>
+            <span i18n:translate="" ng-if="multipleItemsSelected">Delete snapshots</span>
+        </h3>
+        <p ng-show="images.length">
+            <span i18n:translate="" ng-if="!multipleItemsSelected">
+                This snapshot has been registered as an image. Deleting this snapshot will also de-register the image.
+            </span>
+            <span i18n:translate="" ng-if="multipleItemsSelected">
+                One or more of the selected snapshots have been registered as an image.
+                Deleting those snapshots will also de-register their respective image.
+            </span>
         </p>
         <p><span i18n:translate="">Are you sure you want to delete snapshot</span>
            <span tal:condition="snapshot"><b>${snapshot_name}</b></span>
            <span tal:condition="not snapshot"><b>{{ snapshotName }}</b></span>
-           <span ng-show="images" i18n:translate="">and de-register image(s)</span>
+           <span ng-show="images.length" i18n:translate="">and de-register image(s)</span>
            <span ng-repeat="image in images"><b>{{ image.name }} ({{ image.id }})</b><span ng-hide="$last">, </span>
            </span>
            ?
@@ -25,7 +34,10 @@
                 <input type="hidden" name="volume_id" value="${volume_id}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" id="delete_snapshot_submit_button" class="button expand" i18n:translate="">Yes, Delete Snapshot</button>
+                <button type="submit" id="delete_snapshot_submit_button" class="button expand">
+                    <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Delete Snapshot</span>
+                    <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Delete Snapshots</span>
+                </button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>

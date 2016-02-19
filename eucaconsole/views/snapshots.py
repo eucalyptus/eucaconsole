@@ -79,28 +79,35 @@ class SnapshotsView(LandingPageView):
 
     @view_config(route_name='snapshots_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshots_delete(self):
-        snapshot_id = self.request.params.get('snapshot_id')
-        volume_id = self.request.params.get('volume_id')
-        snapshot = self.get_snapshot(snapshot_id)
+        snapshot_id_param = self.request.params.get('snapshot_id')
+        snapshot_ids = [snapshot_id.strip() for snapshot_id in snapshot_id_param.split(',')]
+        snapshot_names = []
         # NOTE: could optimize by requiring snapshot name as param and avoid above CLC fetch
-        snapshot_name = TaggedItemView.get_display_name(snapshot)
         location = self.get_redirect_location('snapshots')
+        # Handle delete operation on volume-snapshots page
+        volume_id = self.request.params.get('volume_id')
         if volume_id:
             location = self.request.route_path('volume_snapshots', id=volume_id)
-        if snapshot and self.delete_form.validate():
-            with boto_error_handler(self.request, location):
-                images_registered = self.get_images_registered(snapshot_id)
-                if images_registered is not None:
-                    for img in images_registered:
-                        self.log_request(_(u"Deregistering image {0}").format(img.id))
-                        img.deregister()
-                    # Clear images cache
-                    self.invalidate_images_cache()
-                self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
-                snapshot.delete()
+        if self.delete_form.validate():
+            for snapshot_id in snapshot_ids:
+                snapshot = self.get_snapshot(snapshot_id)
+                snapshot_names.append(TaggedItemView.get_display_name(snapshot))
+                with boto_error_handler(self.request, location):
+                    images_registered = self.get_images_registered(snapshot_id)
+                    if images_registered is not None:
+                        for img in images_registered:
+                            self.log_request(_(u"Deregistering image {0}").format(img.id))
+                            img.deregister()
+                        # Clear images cache
+                        self.invalidate_images_cache()
+                    self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
+                    snapshot.delete()
+            if len(snapshot_ids) == 1:
                 prefix = _(u'Successfully deleted snapshot')
-                msg = u'{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            else:
+                prefix = _(u'Successfully deleted snapshots ')
+            msg = u'{prefix} {name}'.format(prefix=prefix, name=', '.join(snapshot_names))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to delete snapshot')
