@@ -19,8 +19,105 @@
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="launch-instance-btn"
                    href="${request.route_path('instance_create')}">Launch New Instance</a>
-                <a class="button secondary" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
-                   href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} Instance(s)</a>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-details"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}">
+                                View details
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-connect"
+                               ng-click="revealModal('connect', (items | filter: {selected: true, status: 'running'})[0])">
+                                Connect to instance
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-launchmore"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/more">
+                                Launch more like this
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-consoleoutput"
+                               ng-click="revealConsoleOutputModal((items | filter: {selected: true, status: 'running'})[0])">
+                                View console output
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-volumes"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/volumes">
+                                Manage volumes
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-monitoring"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/monitoring">
+                                View monitoring
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-launchconfig"
+                               ng-href="{{ getCreateLaunchConfigPath((items | filter: {selected: true})[0]) }}">
+                                Create scaling group launch configuration
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-image"
+                               ng-click="createImageClicked((items | filter: {selected: true})[0])">
+                                Create image
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-associateip"
+                               ng-click="revealModal('associate-ip-to', (items | filter: {selected: true, status: 'running'})[0])">
+                                Associate IP address
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'} | hasElasticIP).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-disassociate"
+                               ng-click="revealMultiSelectModal('disassociate-ip-from', (items | filter:{selected: true}))">
+                                Disassociate IP address
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'stopped', root_device_type: 'ebs'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-start"
+                               ng-click="revealMultiSelectModal('start', (items | filter:{selected: true, status: 'stopped', root_device_type: 'ebs'}))">
+                                Start
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running', root_device_type: 'ebs'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-stop"
+                               ng-click="revealMultiSelectModal('stop', (items | filter:{selected: true, status: 'running', root_device_type: 'ebs'}))">
+                                Stop
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-reboot"
+                               ng-click="revealMultiSelectModal('reboot', (items | filter:{selected: true, status: 'running'}))">
+                                Reboot
+                            </a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" class="more-actions-terminate"
+                               ng-click="revealMultiSelectModal('terminate', (items | filter:{selected: true}))">
+                                Terminate
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{ item.id }}">
+                    <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                    {{ item.name }}
+                </a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></span>
@@ -42,7 +139,7 @@
                     </li>
                     <li ng-show="item.status == 'running' || item.status == 'stopped'">
                         <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
-                           ng-click="createImageClicked(item.running_create, item.id)">
+                           ng-click="createImageClicked(item)">
                            Create image
                         </a>
                     </li>
@@ -137,6 +234,7 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
                 <th i18n:translate="">NAME (ID)</th>
                 <th i18n:translate="">STATUS</th>
                 <th i18n:translate="">IMAGE ID</th>
@@ -148,6 +246,7 @@
                 <th i18n:translate="" class="actions">ACTIONS</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a></td>
                 <td class="status">
                     <span class="label radius status {{ item.status }}">{{ item.status }}</span>
@@ -195,7 +294,7 @@
                             </li>
                             <li ng-show="item.status == 'running' || item.status == 'stopped'">
                                 <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
-                                   ng-click="createImageClicked(item.running_create, item.id)">
+                                   ng-click="createImageClicked(item)">
                                    Create image
                                 </a>
                             </li>
@@ -242,8 +341,6 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form, associate_ip_form=associate_ip_form, disassociate_ip_form=disassociate_ip_form)}
-        <!--! Batch-terminate instance modal dialog -->
-        ${panel('terminate_instances_dialog', batch_terminate_form=batch_terminate_form)}
     </div>
 </div>
 
