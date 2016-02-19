@@ -671,7 +671,7 @@ class StackWizardView(BaseView, StackMixin):
                 param_vals['options'] = self.get_cert_options()  # fetch server cert names
             if 'instance' in name_l and 'profile' in name_l:
                 param_vals['options'] = self.get_instance_profile_options()
-            if 'instance' in name_l or param_type == 'AWS::EC2::Instance::Id':
+            if ('instance' in name_l and 'instancetype' not in name_l) or param_type == 'AWS::EC2::Instance::Id':
                 param_vals['options'] = self.get_instance_options()  # fetch instances
             if 'volume' in name_l or param_type == 'AWS::EC2::Volume::Id':
                 param_vals['options'] = self.get_volume_options()  # fetch volumes
