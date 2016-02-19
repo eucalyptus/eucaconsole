@@ -36,8 +36,7 @@ angular.module('SnapshotsPage', ['LandingPage', 'EucaConsoleUtils'])
             if (action === "delete") {
                 $scope.images = [];
                 selectedItems.forEach(function (snapshot) {
-                    var snapshotImages = $scope.getSnapshotImages(snapshot, $scope.imagesURL);
-                    $scope.images.push.apply($scope.images, snapshotImages);
+                    $scope.getSnapshotImages(snapshot, $scope.imagesURL);
                 });
             }
             $scope.multipleItemsSelected = snapshotIDs.length > 1;
@@ -50,7 +49,7 @@ angular.module('SnapshotsPage', ['LandingPage', 'EucaConsoleUtils'])
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results && results.length > 0) {
-                    return results;
+                    $scope.images.push.apply($scope.images, results);
                 }
             }).error(function (oData, status) {
                 eucaHandleError(oData, status);
