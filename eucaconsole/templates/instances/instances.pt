@@ -59,19 +59,6 @@
                             </a>
                         </li>
                         <hr />
-                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
-                            <a i18n:translate="" class="more-actions-launchconfig"
-                               ng-href="{{ getCreateLaunchConfigPath((items | filter: {selected: true})[0]) }}">
-                                Create scaling group launch configuration
-                            </a>
-                        </li>
-                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
-                            <a i18n:translate="" class="more-actions-image"
-                               ng-click="createImageClicked((items | filter: {selected: true})[0])">
-                                Create image
-                            </a>
-                        </li>
-                        <hr />
                         <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length !== 1}">
                             <a i18n:translate="" class="more-actions-associateip"
                                ng-click="revealModal('associate-ip-to', (items | filter: {selected: true, status: 'running'})[0])">
@@ -85,16 +72,29 @@
                             </a>
                         </li>
                         <hr />
-                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'stopped', root_device_type: 'ebs'}).length &lt; 1}">
-                            <a i18n:translate="" class="more-actions-start"
-                               ng-click="revealMultiSelectModal('start', (items | filter:{selected: true, status: 'stopped', root_device_type: 'ebs'}))">
-                                Start
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-launchconfig"
+                               ng-href="{{ getCreateLaunchConfigPath((items | filter: {selected: true})[0]) }}">
+                                Create scaling group launch configuration
                             </a>
                         </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-image"
+                               ng-click="createImageClicked((items | filter: {selected: true})[0])">
+                                Create image
+                            </a>
+                        </li>
+                        <hr />
                         <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running', root_device_type: 'ebs'}).length &lt; 1}">
                             <a i18n:translate="" class="more-actions-stop"
                                ng-click="revealMultiSelectModal('stop', (items | filter:{selected: true, status: 'running', root_device_type: 'ebs'}))">
                                 Stop
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'stopped', root_device_type: 'ebs'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-start"
+                               ng-click="revealMultiSelectModal('start', (items | filter:{selected: true, status: 'stopped', root_device_type: 'ebs'}))">
+                                Start
                             </a>
                         </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true, status: 'running'}).length &lt; 1}">
