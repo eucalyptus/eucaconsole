@@ -42,10 +42,14 @@ from boto.ec2.autoscale.tag import Tag
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import METRIC_TYPES
+from ..constants.cloudwatch import (
+    METRIC_TYPES, MONITORING_DURATION_CHOICES, STATISTIC_CHOICES, GRANULARITY_CHOICES,
+    DURATION_GRANULARITY_CHOICES_MAPPING)
+from ..constants.scalinggroups import (
+    SCALING_GROUP_MONITORING_CHARTS_LIST, SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST)
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
-    ScalingGroupDeleteForm, ScalingGroupEditForm,
+    ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupMonitoringForm,
     ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
     ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm,
     ScalingGroupPolicyDeleteForm, ScalingGroupsFiltersForm)
@@ -236,6 +240,12 @@ class BaseScalingGroupView(BaseView):
         if self.autoscale_conn:
             scaling_groups = self.autoscale_conn.get_all_groups(names=scalinggroups_param)
         return scaling_groups[0] if scaling_groups else None
+
+    def get_launch_configuration(self, launch_config_name):
+        if self.autoscale_conn:
+            launch_configs = self.autoscale_conn.get_all_launch_configurations(names=[launch_config_name])
+            return launch_configs[0] if launch_configs else None
+        return None
 
     def get_alarms(self):
         if self.cloudwatch_conn:
@@ -905,3 +915,72 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                         cidr_block=vpc_subnet.cidr_block,
                     ))
         return subnets
+
+
+class ScalingGroupMonitoringView(BaseScalingGroupView):
+    VIEW_TEMPLATE = '../templates/scalinggroups/scalinggroup_monitoring.pt'
+
+    def __init__(self, request):
+        super(ScalingGroupMonitoringView, self).__init__(request)
+        self.title_parts = [_(u'Scaling group'), request.matchdict.get('id'), _(u'Monitoring')]
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        self.monitoring_form = ScalingGroupMonitoringForm(self.request, formdata=self.request.params or None)
+        with boto_error_handler(self.request):
+            self.scaling_group = self.get_scaling_group()
+            self.launch_configuration = self.get_launch_configuration(self.scaling_group.launch_config_name)
+        metrics_collection_enabled = True if self.scaling_group.enabled_metrics else False
+        launchconfig_monitoring_enabled = False
+        if self.launch_configuration.instance_monitoring.enabled == 'true':
+            launchconfig_monitoring_enabled = True
+        duration_help_text = _(u'Changing the time will update charts for both instance and scaling group metrics.')
+        self.render_dict = dict(
+            scaling_group=self.scaling_group,
+            scaling_group_name=self.scaling_group.name,
+            launch_config_name=self.launch_configuration.name,
+            monitoring_form=self.monitoring_form,
+            metrics_collection_enabled=metrics_collection_enabled,
+            launchconfig_monitoring_enabled=launchconfig_monitoring_enabled,
+            duration_help_text=duration_help_text,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            controller_options_json=self.get_controller_options_json()
+        )
+
+    @view_config(route_name='scalinggroup_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
+    def scallinggroup_monitoring(self):
+        if self.scaling_group is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def scalinggroup_monitoring_update(self):
+        """Enable or disable metrics collection for the scaling group"""
+        if self.monitoring_form.validate():
+            if self.scaling_group:
+                enabled_metrics = self.scaling_group.enabled_metrics
+                action = 'disabled' if enabled_metrics else 'enabled'
+                location = self.request.route_path('scalinggroup_monitoring', id=self.scaling_group.name)
+                with boto_error_handler(self.request, location):
+                    self.log_request(_(u"Metrics collection for scaling group {0} {1}").format(
+                            self.scaling_group.name, action))
+                    if enabled_metrics:
+                        self.autoscale_conn.disable_metrics_collection(self.scaling_group.name)
+                    else:
+                        # TODO: The GroupStandbyInstances metric is not included by default, so include it here
+                        #       when Eucalyptus supports Standby instances
+                        self.autoscale_conn.enable_metrics_collection(self.scaling_group.name, '1Minute')
+                    msg = _(
+                        u'Request successfully submitted.  It may take a moment for metrics collection to update.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
+
+    def get_controller_options_json(self):
+        charts_list = SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST + SCALING_GROUP_MONITORING_CHARTS_LIST
+        if not self.scaling_group:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': {},
+            'charts_list': charts_list,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+        }))

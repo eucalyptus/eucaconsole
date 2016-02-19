@@ -35,8 +35,8 @@ from boto.ec2.cloudwatch import MetricAlarm
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
-from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
+from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
+from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, JSONResponse
@@ -51,7 +51,7 @@ class CloudWatchAlarmsView(LandingPageView):
         super(CloudWatchAlarmsView, self).__init__(request)
         self.title_parts = [_(u'Alarms')]
         self.initial_sort_key = 'name'
-        self.prefix = '/cloudwatch/alarms'
+        self.prefix = '/alarms'
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
         self.ec2_conn = self.get_connection()
         self.elb_conn = self.get_connection(conn_type='elb')
@@ -60,11 +60,12 @@ class CloudWatchAlarmsView(LandingPageView):
         self.create_form = CloudWatchAlarmCreateForm(
             self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
             formdata=self.request.params or None)
-        self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
         self.filter_keys = ['name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
+            dict(key='state', name=_(u'State')),
             dict(key='name', name=_(u'Name')),
+            dict(key='metric', name=_(u'Metric')),
         ]
         self.render_dict = dict(
             filter_keys=self.filter_keys,
@@ -72,6 +73,10 @@ class CloudWatchAlarmsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_alarms_json'),
+            search_facets=[],
+            alarm_form=self.create_form,
+            metric_unit_mapping=self.get_metric_unit_mapping(),
+            create_alarm_redirect=self.request.route_path('cloudwatch_alarms'),
         )
 
     @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
@@ -124,25 +129,39 @@ class CloudWatchAlarmsView(LandingPageView):
             self.request.error_messages = error_msg_list
         return self.render_dict
 
-    @view_config(route_name='cloudwatch_alarms_delete', renderer=TEMPLATE, request_method='POST')
+    @view_config(route_name='cloudwatch_alarms_delete', renderer='json', request_method='DELETE')
     def cloudwatch_alarms_delete(self):
-        if self.delete_form.validate():
-            location = self.request.route_path('cloudwatch_alarms')
-            alarm_name = self.request.params.get('name')
-            with boto_error_handler(self.request, location):
-                self.log_request(_(u"Deleting alarm {0}").format(alarm_name))
-                self.cloudwatch_conn.delete_alarm(alarm_name)
-                prefix = _(u'Successfully deleted alarm')
-                msg = u'{0} {1}'.format(prefix, alarm_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-        else:
-            self.request.error_messages = self.delete_form.get_errors_list()
-        return self.render_dict
+
+        message = json.loads(self.request.body)
+        alarms = message.get('alarms', [])
+        token = message.get('csrf_token')
+
+        if not self.is_csrf_valid(token):
+            return JSONResponse(status=400, message="missing CSRF token")
+
+        with boto_error_handler(self.request):
+            self.log_request(_(u"Deleting alarm(s) {0}").format(alarms))
+            action = self.cloudwatch_conn.delete_alarms(alarms)
+
+            if action:
+                prefix = _(u'Successfully deleted alarm(s)')
+            else:
+                prefix = _(u'There was a problem deleting alarm(s)')
+
+            msg = u'{0} {1}'.format(prefix, ', '.join(alarms))
+
+        return dict(success=action, message=msg)
 
     def get_dimension_value(self, key=None):
         input_field = METRIC_DIMENSION_INPUTS.get(key)
         return [self.request.params.get(input_field)]
+
+    @staticmethod
+    def get_metric_unit_mapping():
+        metric_units = {}
+        for mtype in METRIC_TYPES:
+            metric_units[mtype.get('name')] = mtype.get('unit')
+        return metric_units
 
     @staticmethod
     def get_dimension_name(key=None):
@@ -159,12 +178,18 @@ class CloudWatchAlarmsJsonView(BaseView):
             for alarm in items:
                 alarms.append(dict(
                     name=alarm.name,
+                    description=alarm.description,
+                    ok_actions=alarm.ok_actions,
+                    alarm_actions=alarm.alarm_actions,
+                    insufficient_data_actions=alarm.insufficient_data_actions,
+                    dimensions=alarm.dimensions,
                     statistic=alarm.statistic,
                     metric=alarm.metric,
                     period=alarm.period,
                     comparison=alarm.comparison,
                     threshold=alarm.threshold,
                     unit=alarm.unit,
+                    state=alarm.state_value,
                 ))
             return dict(results=alarms)
 

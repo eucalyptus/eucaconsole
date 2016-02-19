@@ -1,8 +1,96 @@
 /* @fileOverview CloudWatch Alarms landing page CSS */
 @import "../includes/eucavariables";
-
 @import "../includes/landingpage";
 
+#threshold {
+    width: 100%;
+}
+#period,
+#evaluation_periods {
+    display: inline-block;
+    width: 4rem;
+}
+#unit {
+    position: relative;
+    left: -9999rem;
+}
+.unit-label {
+    position: relative;
+    top: 6px;
+}
 
+.gridwrapper {
+    .table {
+        tr {
+            th {
+                &.alarm-actions {
+                    text-align: center;
+                }
+            }
+            td {
+                &.id {
+                    max-width: none;
+                }
+                &.dimensions {
+                    font-size: 0.6875rem;
+                    dt {
+                        font-weight: bold;
+                    }
+                }
+                &.alarm-actions {
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
 
+.tile {
+    &.item {
+        dl {
+            font-size: 0.9em;
+            display: inline-block;
+            vertical-align: top;
+            margin-bottom: 0;
+        }
+    }
+    
+    .footer {
+        &.ok,
+        &.alarm,
+        &.insufficient-data {
+            text-transform: none;
+        }
 
+        &.ok {
+            background-color: #008424;
+        }
+        &.alarm {
+            background-color: #F04124;
+        }
+    }
+}
+
+#delete-alarm-modal {
+    p {
+        margin: 0 0 7px;
+    }
+    .header {
+        color: #444;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        font-weight: bold;
+        .columns {
+            padding: 0;
+        }
+    }
+    .alarm-dimensions {
+        margin: 0 0 20px;
+        .columns {
+            padding: 0;
+        }
+    }
+    .row.control {
+        margin: 0 0 15px;
+    }
+}

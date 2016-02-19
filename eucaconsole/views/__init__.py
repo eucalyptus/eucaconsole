@@ -157,8 +157,10 @@ class BaseView(object):
             return self.request.session.get('account')
         return self.request.session.get('access_id')  # AWS
 
-    def is_csrf_valid(self):
-        return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
+    def is_csrf_valid(self, token=None):
+        if token is None:
+            token = self.request.params.get('csrf_token')
+        return self.request.session.get_csrf_token() == token
 
     def _store_file_(self, filename, mime_type, contents):
         # disable using memcache for file storage
@@ -256,9 +258,10 @@ class BaseView(object):
         acct = self.request.session.get('account', '')
         if acct == '':
             acct = self.request.session.get('access_id', '')
-        invalidate_cache(long_term, 'images', None, [], [], region, acct)
-        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
-        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
+        ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
+        invalidate_cache(long_term, 'images', None, [], [], region, acct, ufshost)
+        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct, ufshost)
+        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct, ufshost)
 
     def get_euca_authenticator(self):
         """

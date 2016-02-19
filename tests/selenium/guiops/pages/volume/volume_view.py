@@ -4,6 +4,7 @@ from pages.landingpage import LandingPage
 class VolumeLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_volume_view_page_loaded()
 
     _volume_view_page_title = "Volumes"
@@ -33,7 +34,7 @@ class VolumeLanding(LandingPage):
         self.tester.click_element_by_css(self._delete_volume_actions_menu_item_css.format(volume_id))
 
     def click_action_detach_volume_on_view_page(self, volume_id):
-        self.tester.click_element_by_id(self._volume_action_menu_id.format(volume_id))
+        self.tester.click_element_by_id_css_robust(self._volume_action_menu_id.format(volume_id), self._detach_volume_actions_menu_item_css.format(volume_id))
         self.tester.click_element_by_css(self._detach_volume_actions_menu_item_css.format(volume_id))
 
     def get_id_of_newly_created_volume(self, name=None):

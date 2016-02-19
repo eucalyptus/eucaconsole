@@ -8,7 +8,7 @@
 try{
     angular.module('MagicSearch');
 } catch (exception) {
-    angular.module('MagicSearch', []);    
+    angular.module('MagicSearch', []);
 }
 
 angular.module('MagicSearch')
@@ -23,7 +23,8 @@ angular.module('MagicSearch')
             templateUrl: function (scope, elem) {
                 return elem.template;
             },
-            controller: function ($scope, $timeout) {
+            controller: function ($scope, $element, $timeout) {
+                var searchInput = $element.find('.search-input');
                 $scope.promptString = $scope.strings.prompt;
                 $scope.currentSearch = [];
                 $scope.initSearch = function() {
@@ -80,6 +81,11 @@ angular.module('MagicSearch')
                     }
                     $scope.filteredObj = $scope.facetsObj;
                 };
+                $scope.$on('facets_updated', function($event, newVal) {
+                    $scope.facetsObj = newVal;
+                    $scope.facetsSave = $scope.copyFacets($scope.facetsObj);
+                    $scope.initFacets();
+                });
                 $scope.addFacets = function(facets) {
                     // add a facets javascript object to the existing list
                     for (var facet in facets) {
@@ -127,17 +133,17 @@ angular.module('MagicSearch')
                         }
                     });
                 };
-                $('.search-input').on('keydown', function($event) {
+                searchInput.on('keydown', function($event) {
                     var key = $event.keyCode || $event.charCode;
                     if (key == 9) {  // prevent default when we can.
                         $event.preventDefault();
                     }
                 });
-                $('.search-input').on('keyup', function($event) {  // handle ctrl-char input
+                searchInput.on('keyup', function($event) {  // handle ctrl-char input
                     if ($event.metaKey === true) {
                         return;
                     }
-                    var searchVal = $('.search-input').val();
+                    var searchVal = searchInput.val();
                     var key = $event.keyCode || $event.charCode;
                     if (key == 9) {  // tab, so select facet if narrowed down to 1
                         if ($scope.facetSelected === undefined) {
@@ -150,14 +156,14 @@ angular.module('MagicSearch')
                             $scope.resetState();
                         }
                         $timeout(function() {
-                            $('.search-input').val('');
+                            searchInput.val('');
                         });
                         return;
                     }
                     if (key == 27) {  // esc, so cancel and reset everthing
                         $timeout(function() {
                             $scope.hideMenu();
-                            $('.search-input').val('');
+                            searchInput.val('');
                         });
                         $scope.resetState();
                         var textFilter = $scope.textSearch;
@@ -188,7 +194,7 @@ angular.module('MagicSearch')
                             $scope.currentSearch.push({'name':'text='+searchVal, 'label':[$scope.strings.text, searchVal]});
                             $scope.$apply();
                             $scope.hideMenu();
-                            $('.search-input').val('');
+                            searchInput.val('');
                             $scope.$emit('textSearch', searchVal, $scope.filter_keys);
                             $scope.textSearch = searchVal;
                         }
@@ -197,6 +203,7 @@ angular.module('MagicSearch')
                     else {
                         if (searchVal === '') {
                             $scope.filteredObj = $scope.facetsObj;
+                            $scope.$apply();
                             $scope.$emit('textSearch', '', $scope.filter_keys);
                             if ($scope.facetSelected && $scope.facetSelected.options === undefined) {
                                 $scope.resetState();
@@ -207,8 +214,8 @@ angular.module('MagicSearch')
                         }
                     }
                 });
-                $('.search-input').on('keypress', function($event) {  // handle character input
-                    var searchVal = $('.search-input').val();
+                searchInput.on('keypress', function($event) {  // handle character input
+                    var searchVal = searchInput.val();
                     var key = $event.which || $event.keyCode || $event.charCode;
                     if (key != 8 && key != 46 && key != 13 && key != 9 && key != 27) {
                         searchVal = searchVal + String.fromCharCode(key).toLowerCase();
@@ -216,12 +223,13 @@ angular.module('MagicSearch')
                     if (searchVal == ' ') {  // space and field is empty, show menu
                         $scope.showMenu();
                         $timeout(function() {
-                            $('.search-input').val('');
+                            searchInput.val('');
                         });
                         return;
                     }
                     if (searchVal === '') {
                         $scope.filteredObj = $scope.facetsObj;
+                        $scope.$apply();
                         $scope.$emit('textSearch', '', $scope.filter_keys);
                         if ($scope.facetSelected && $scope.facetSelected.options === undefined) {
                             $scope.resetState();
@@ -279,10 +287,10 @@ angular.module('MagicSearch')
                     }
                 };
                 // enable text entry when mouse clicked anywhere in search box
-                $('.search-main-area').on("click", function($event) {
+                $element.find('.search-main-area').on('click', function($event) {
                     var target = $($event.target);
                     if (target.is('.search-main-area')) {
-                        $('.search-input').trigger("focus");
+                        searchInput.trigger('focus');
                         $scope.showMenu();
                     }
                 });
@@ -300,11 +308,11 @@ angular.module('MagicSearch')
                         $scope.showMenu();
                     }
                     $timeout(function() {
-                        $('.search-input').val('');
+                        searchInput.val('');
                     });
                     $scope.strings.prompt = '';
                     $timeout(function() {
-                        $('.search-input').focus();
+                        searchInput.focus();
                     });
                 };
                 // when option clicked, complete facet and send event
@@ -362,7 +370,7 @@ angular.module('MagicSearch')
                     }
                     else {
                         $scope.resetState();
-                        $('.search-input').val('');
+                        searchInput.val('');
                     }
                     if ($scope.currentSearch.length === 0) {
                         $scope.strings.prompt = $scope.promptString;
@@ -386,7 +394,7 @@ angular.module('MagicSearch')
                     return Array.isArray(label);
                 };
                 $scope.resetState = function() {
-                    $('.search-input').val('');
+                    searchInput.val('');
                     $scope.filteredObj = $scope.facetsObj;
                     $scope.facetSelected = undefined;
                     $scope.facetOptions = undefined;

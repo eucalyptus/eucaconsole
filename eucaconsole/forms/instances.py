@@ -171,8 +171,7 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
-        region = request.session.get('region')
-        self.zone.choices = self.get_availability_zone_choices(region)
+        self.zone.choices = self.get_availability_zone_choices()
         if self.cloud_type == 'euca' and self.is_vpc_supported:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         else:
@@ -205,9 +204,9 @@ class LaunchInstanceForm(BaseSecureForm):
         choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
         return choices
 
-    def get_availability_zone_choices(self, region):
+    def get_availability_zone_choices(self):
         choices = [('', _(u'No preference'))]
-        choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
+        choices.extend(self.choices_manager.availability_zones(self.region, add_blank=False))
         return choices
 
     @staticmethod
@@ -393,8 +392,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.iam_choices_manager = ChoicesManager(conn=iam_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
-        region = request.session.get('region')
-        self.availability_zone.choices = self.get_availability_zone_choices(region)
+        self.availability_zone.choices = self.get_availability_zone_choices()
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
@@ -414,7 +412,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.facets = [
             {'name': 'status', 'label': self.state.label.text, 'options': self.get_status_choices()},
             {'name': 'availability_zone', 'label': self.availability_zone.label.text,
-                'options': self.get_availability_zone_choices(region)},
+                'options': self.get_availability_zone_choices()},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
                 'options': self.get_instance_type_choices()},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
@@ -444,8 +442,8 @@ class InstancesFiltersForm(BaseSecureForm):
                     'options': self.get_options_from_choices(vpc_choices)},
             )
 
-    def get_availability_zone_choices(self, region):
-        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+    def get_availability_zone_choices(self):
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(self.region, add_blank=False))
 
     def get_instance_type_choices(self):
         return self.get_options_from_choices(self.ec2_choices_manager.instance_types(

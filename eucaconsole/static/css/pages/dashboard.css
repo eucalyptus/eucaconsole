@@ -12,6 +12,9 @@
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }
 .panel .tile { background-color: white; border: 1px solid #cccccc; position: relative; height: 240px; padding: 4px 8px; }
 .panel .tile .subheader { font-size: 1rem; font-weight: 500; margin: 0 0 0 0; }
+.panel .tile i.fa-bell { color: white !important; }
+.panel .tile i.dash-no-alarms { color: #5a5a5a !important; }
+.panel .tile i.dash-alarms { color: red !important; }
 .panel .tile .icon { position: absolute; top: 20%; left: 50%; margin-left: -50px; display: inline-block; width: 100px; height: 100px; text-align: center; color: white; font-size: 3rem; }
 .panel .tile .icon em { font-size: 1.3rem; font-weight: bold; position: absolute; bottom: -40%; left: 0; right: 0; text-align: center; color: #007dba; font-style: normal; }
 .panel .tile .icon em:hover { text-decoration: underline; }
@@ -30,6 +33,10 @@
 .panel .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 .panel .tile.add a:hover { background-color: #bae8ff; }
 .panel .tile.add .plus { font-size: 5rem; margin-bottom: 0.5rem; }
+
+li#alarms .tile .content { padding-top: 0.8rem; width: 100%; text-align: center; }
+
+.euca-dash-size { font-size: 4.43em; }
 
 #instances-running .icon { background-image: url(../../img/svg/icon_running_instances.svg); }
 

@@ -4,6 +4,7 @@ from pages.landingpage import LandingPage
 class ASGLanding(LandingPage):
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_asg_lp_loaded()
 
     _asg_landing_page_title = "Scaling groups"
@@ -31,7 +32,7 @@ class ASGLanding(LandingPage):
 
     def click_action_delete_asg_on_lp(self, asg_name):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
-        self.tester.click_element_by_css(self._delete_asg_actions_menu_item_css.format(asg_name))
+        self.tester.click_element_by_css_robust(self._delete_asg_actions_menu_item_css.format(asg_name),"#delete_scalinggroup_submit_button")
 
     def click_action_manage_instances_on_lp(self, asg_name):
         self.tester.click_element_by_id(self._asg_action_menu_id.format(asg_name))
