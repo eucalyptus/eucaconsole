@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage('${instances_by_zone}')"
-    tal:define="using_expando True;
+    tal:define="using_expando False;
                 expando_data_url request.route_path('volumes_expando_details', id='__id__');
                 expando_data_id '{{item.id}}'">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"

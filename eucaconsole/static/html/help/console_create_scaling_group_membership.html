@@ -3,12 +3,21 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<title>Create a Scaling Group</title>
+<title>Create a Scaling Group - Membership</title>
 </head>
 <body id="create_scaling_group_ui_help_context">
 
 
-    <h1 class="title topictitle1">Create a Scaling Group</h1>
+    <h1 class="title topictitle1">Create a Scaling Group - Membership</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> This page allows you to create a scaling group. An Auto Scaling group defines the
+        parameters for the Eucalyptus instances that are used for scaling, as well as the minimum,
+        maximum, and the desired number of instances to use for Auto Scaling your application. In
+        order to create a scaling group, you must first have a launch configuration created. For
+        more information on Auto Scaling, please see <em class="ph i">Using Auto Scaling</em> in the <em class="ph i">Eucalyptus
+            User Guide</em>. </p>
+</div>
 
     <div class="topic task nested1" id="create_scaling_group_ui_help_steps_membership">
         <h2 class="title topictitle2">Membership</h2>
@@ -25,11 +34,11 @@
 </div>
                     <div class="itemgroup info">You can remove a selected availability zone by clicking on the
                             <span class="ph uicontrol">x</span> next to the availability zone's name in the
-                            <span class="ph uicontrol">Availability Zones</span> field.</div>
+                            <span class="ph uicontrol">Availability Zone(s)</span> field.</div>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd">Select one or more load balancers for you new scaling group from the
-                            <span class="ph uicontrol">Load balancers</span> drop-down list box.</span>
+                            <span class="ph uicontrol">Load balancer(s)</span> drop-down list box.</span>
                     <div class="itemgroup info">You can add another load balancer to the new auto scaling group by
                         clicking the <strong class="ph b">+</strong> button next to the drop-down list box.</div>
                     <div class="itemgroup info">The auto scaling health check uses EC2 instance status checks to determine
@@ -40,7 +49,7 @@
 <li class="li step stepexpand">
                     
                     <span class="ph cmd">Type the amount of grace period, in seconds, into the <span class="ph uicontrol">Health
-                            check grace period</span> text box or use the scroll bars to
+                            check grace period (secs)</span> text box or use the scroll bars to
                         incrementally adjust the values. This is the amount of time after a new
                         instance is launched in your auto scaling group before health checks start
                         for the instance. </span>
@@ -51,6 +60,7 @@
 
     </div>
 
+   
     
     <div class="topic task nested1" id="create_scaling_group_ui_help_steps_finishing">
         <h2 class="title topictitle2">Saving the Scaling Group</h2>
