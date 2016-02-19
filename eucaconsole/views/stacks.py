@@ -186,7 +186,18 @@ class StacksJsonView(LandingPageView):
     def stacks_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        transitional_states = ['CREATE_IN_PROGRESS', 'ROLLBACK_IN_PROGRESS', 'DELETE_IN_PROGRESS', 'CREATE_FAILED']
+        transitional_states = [
+            'CREATE_IN_PROGRESS',
+            'ROLLBACK_IN_PROGRESS',
+            'DELETE_IN_PROGRESS',
+            'CREATE_FAILED',
+            'UPDATE_IN_PROGRESS',
+            'UPDATE_COMPLETE_CLEANUP_IN_PROGRESS',
+            'UPDATE_ROLLBACK_IN_PROGRESS',
+            'UPDATE_ROLLBACK_FAILED',
+            'UPDATE_ROLLBACK_COMPLETED_CLEANUP_IN_PROGRESS',
+            'UPDATE_FAILED'
+        ]
         with boto_error_handler(self.request):
             stacks_array = []
             for stack in self.filter_items(self.items):
@@ -442,7 +453,7 @@ class StackWizardView(BaseView, StackMixin):
         return self.render_dict
 
     @view_config(route_name='stack_update', renderer=TEMPLATE_UPDATE, request_method='GET')
-    def stack_update(self):
+    def stack_update_view(self):
         """Displays the Stack update wizard"""
         stack_name = self.request.matchdict.get('name')
         self.title_parts = [_(u'Stack'), stack_name, _(u'Update')]
@@ -453,6 +464,46 @@ class StackWizardView(BaseView, StackMixin):
         ret.update(template_info)
         ret.update(self.render_dict)
         return ret
+
+    @view_config(route_name='stack_update', renderer=TEMPLATE_UPDATE, request_method='POST')
+    def stack_update(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        stack_name = self.request.matchdict.get('name')
+        location = self.request.route_path('stack_update', name=stack_name)
+        (template_url, template_name, parsed) = self.parse_store_template()
+        capabilities = ['CAPABILITY_IAM']
+        params = []
+        if 'Parameters' in parsed.keys():
+            for name in parsed['Parameters']:
+                val = self.request.params.get(name)
+                if val:
+                    params.append((name, val))
+        with boto_error_handler(self.request, location):
+            self.log_request(u"Updating stack:{0}".format(stack_name))
+            result = self.cloudformation_conn.update_stack(
+                stack_name, template_url=template_url, capabilities=capabilities,
+                parameters=params
+            )
+            stack_id = result[result.rfind('/') + 1:]
+            d = hashlib.md5()
+            d.update(stack_id)
+            md5 = d.digest()
+            stack_hash = base64.b64encode(md5, '--').replace('=', '')
+            bucket = self.get_create_template_bucket(create=True)
+            bucket.copy_key(
+                new_key_name="{0}-{1}".format(stack_hash, template_name),
+                src_key_name=template_name,
+                src_bucket_name=bucket.name
+            )
+            bucket.delete_key(template_name)
+
+            msg = _(u'Successfully sent update stack request. '
+                    u'It may take a moment to update the stack.')
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            location = self.request.route_path('stack_view', name=stack_name)
+            return HTTPFound(location=location)
 
     @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
     def stack_template_parse(self):
@@ -739,9 +790,8 @@ class StackWizardView(BaseView, StackMixin):
             if tags_json:
                 tags = json.loads(tags_json)
             with boto_error_handler(self.request, location):
-                cloudformation_conn = self.get_connection(conn_type='cloudformation')
                 self.log_request(u"Creating stack:{0}".format(stack_name))
-                result = cloudformation_conn.create_stack(
+                result = self.cloudformation_conn.create_stack(
                     stack_name, template_url=template_url, capabilities=capabilities,
                     parameters=params, tags=tags
                 )

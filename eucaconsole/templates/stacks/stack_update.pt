@@ -142,7 +142,7 @@
                                     <button type="submit" class="button"
                                             id="stack-update-btn-step2"
                                             ng-disabled="isNotValid">
-                                        <span i18n:translate="">Create Stack</span>
+                                        <span i18n:translate="">Update Stack</span>
                                     </button>
                                     <a href="${request.route_path('stacks')}"
                                        class="cancel-link" i18n:translate="">Cancel</a>
@@ -151,7 +151,7 @@
                             <div class="row" ng-show="isCreating">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns">
-                                    <span i18n:translate="">Creating stack</span>&nbsp;<i class="busy"></i>
+                                    <span i18n:translate="">Updating stack</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
                         </div>
