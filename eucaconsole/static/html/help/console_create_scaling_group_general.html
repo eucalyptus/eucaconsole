@@ -3,12 +3,12 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<title>Create a Scaling Group</title>
+<title>Create a Scaling Group - General</title>
 </head>
 <body id="create_scaling_group_ui_help_context">
 
 
-    <h1 class="title topictitle1">Create a Scaling Group</h1>
+    <h1 class="title topictitle1">Create a Scaling Group - General</h1>
 
     
     <div class="body taskbody"><p class="shortdesc"> This page allows you to create a scaling group. An Auto Scaling group defines the
@@ -72,8 +72,8 @@
                     <span class="ph cmd">A termination policy defines how instances that are no longer needed in the scaling group are terminated. A default termination policy is already pre-selected but 
                         you can change the policy to a different one, or add more termination policies from the <span class="ph uicontrol">Termination policies</span> text box.
                       Termination policies are executed in the order they are listed. </span>
-                    <div class="itemgroup info">For information on termination policies, see <a class="xref" href="http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/us-termination-policy.html" target="_blank">
-                        Configure Instance Termination Policy for Your Auto Scaling Group</a></div>
+                    <div class="itemgroup info">For information on termination policies, see <a class="xref" href="http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/us-termination-policy.html" target="_blank"> Configure Instance Termination Policy for Your Auto
+                            Scaling Group</a>.</div>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd">To apply tags, proceed to the next section. Otherwise, click
@@ -91,36 +91,35 @@
         
         <div class="body taskbody"><p class="shortdesc">A tag is a key/value pair containing data that you can attach to resources in
             your cloud. This section of the <span class="ph uicontrol">Create Scaling Group</span> wizard
-            allows you to define tags for for your scaling group and for instances that run in your
+            allows you to define tags for your scaling group and for instances that run in your
             scaling group.</p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd">If you want to apply the new tag to instances running in the scaling group,
                         select the <span class="ph uicontrol">Propagate</span> check box.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">Key</span> text
+<li class="li step stepexpand">
+                    <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">name...</span> text
+                        box.</span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> Tags cannot start with "<samp class="ph codeph">euca:</samp>" or "<samp class="ph codeph">aws:</samp>".</div>
+</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">value...</span> text
                         box.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">Value</span> text
-                        box.</span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Add Tag</span> button.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">To add this tag, click the <span class="ph uicontrol">Add Tag</span> button.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd">If you wish to delete a tag that you've already entered, click the <span class="ph uicontrol">x</span>
-                        on the tag icon.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd">Click <span class="ph uicontrol">Next</span> to proceed to the Membership tab.</span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">If you wish to add additional tags, repeat the preceding steps.</span>
                 </li>
 </ol>
 
         </div>
 
     </div>
+
 
 </body>
 </html>
