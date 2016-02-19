@@ -15,7 +15,8 @@ class AllocateEipDialog(BasePage):
         """
         self.tester.send_keys_by_css(self._allocate_elastic_ips_number_input_css, str(number))
         time.sleep(2)
-        self.tester.click_element_by_id(self._allocate_elastic_ips_button_id)
+        self.tester.click_element_by_css_resilient(self._allocate_elastic_ips_button_id,
+                                                   self._allocate_elastic_ips_button_id)
         notification = self.tester.store_text_by_css(self._notification_css)
         notification = notification.replace('Successfully allocated IPs', '').strip()
         return sorted([ip.strip() for ip in notification.split(',')])
