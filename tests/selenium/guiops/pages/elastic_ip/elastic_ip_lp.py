@@ -3,7 +3,7 @@ from pages.landingpage import LandingPage
 
 class EipLanding(LandingPage):
     _elastic_ip_allocate_button_id = 'allocate-ipaddresses-btn'
-    _elastic_ip_checkbox_css = '#tableview tr[data-item-id="{0}"] input.row-checkbox'  # Requires EIP
+    _elastic_ip_checkbox_css = '#tableview tr[data-item-id="{0}"] input.item-checkbox'  # Requires EIP
     _elastic_ip_item_row_css_prefix = '#tableview tr[data-item-id="{0}"] td:last-child .actions'  # Requires EIP
     _elastic_ip_actions_menu_css = '{0} a.dropdown'.format(_elastic_ip_item_row_css_prefix)
     _elastic_ip_release_item_css = '{0} a.action-release '.format(_elastic_ip_item_row_css_prefix)
