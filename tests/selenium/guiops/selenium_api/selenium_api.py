@@ -1019,6 +1019,16 @@ class SeleniumApi(object):
         print "Selecting element with value = {1} by name = {0}".format(name, value)
         Select(self.driver.find_element_by_name(name)).select_by_value(value)
 
+    def select_by_id_and_value(self, element_id, option_value):
+        """
+        Select an option by value
+        :param element_id: The id attribute of the select element
+        :param option_value: the option value to select
+        """
+        self.wait_for_element_present_by_id(element_id)
+        print "Selecting element {0} with value = {1}".format(element_id, option_value)
+        Select(self.driver.find_element_by_id(element_id)).select_by_value(option_value)
+
     def get_attribute_by_css(self, css, attribute_name):
         """
         Finds element by css. Returns specified attribute.

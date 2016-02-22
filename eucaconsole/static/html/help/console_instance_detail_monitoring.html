@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Instance Detail - Monitoring</title>
+</head>
+<body id="instance_details_monitoring">
+
+
+    <h1 class="title topictitle1">Instance Detail - Monitoring</h1>
+
+
+    <div class="body taskbody"><p class="shortdesc">This tab allows you to view and create alarms based on criteria you define, and provides a graphical view of various data points being monitored for your instance.</p>
+</div>
+
+
+    <div class="topic task nested1" id="instance_details_monitoring_alarms">
+        <h2 class="title topictitle2">Alarms</h2>
+
+
+        <div class="body taskbody"><p class="shortdesc">This section displays a list of configured alarms and allows you to create a new alarm.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">To view the details of currently configured CloudWatch alarms, expand it by clicking the plus symbol <span class="ph uicontrol">(+)</span> next to
+                        the Cloudwatch alarms summary.</span>
+                    <div class="itemgroup stepresult">The expanded view displays the state of each alarm, the alarm name, and their thresholds.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">To create a new alarm you must first select a metric, unless you are within the scaling policy creation workflow:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click <span class="ph uicontrol">Create Alarm</span>.</span>
+                            <div class="itemgroup stepresult">An instructional message opens.</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Either close the message and view a metric from the Monitoring tab of any resource's Details page or click the
+                                <span class="ph uicontrol">Take Me to the Metrics Landing Page</span> button to be taken directly to the Metrics page.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select a metric to view and click <span class="ph uicontrol">Create Alarm</span>.</span>
+                            <div class="itemgroup stepresult">The Create alarm page opens. Refer to the Help in the Create alarm page for further instructions.</div>
+                        </li>
+
+
+                    </ol>
+
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+        <div class="topic task nested1" id="instances_details_monitoring_actions">
+    <h2 class="title topictitle2">Context menu actions</h2>
+
+
+    <div class="body taskbody"><p class="shortdesc">A context menu, accessible by clicking the menu icon (row of three dots), contains actions associated with the monitoring of your instance.</p>
+
+        <div class="section context">The following context menu actions are available:</div>
+
+        <ul class="ul steps-unordered"><li class="li step stepexpand">
+                <span class="ph cmd"><span class="ph uicontrol">Turn monitoring on</span> displays monitoring data associated with your instance.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd"><span class="ph uicontrol">Turn monitoring off</span> disables monitoring data completely.</span>
+                <div class="itemgroup stepresult">When you select this option, no charts display. Instead, a reminder that monitoring is currently
+                    turned off, but you can turn it back on by clicking the <span class="ph uicontrol">Enable Monitoring for this Instance</span> button. </div>
+            </li>
+</ul>
+
+    </div>
+
+</div>
+
+        <div class="topic task nested1" id="instances_detail_monitoring_ui_view_graphs">
+                    <h2 class="title topictitle2">CloudWatch metrics</h2>
+
+
+                    <div class="body taskbody"><p class="shortdesc">This part of the page displays the CloudWatch data when you enabled monitoring for your instance.</p>
+
+                        <ol class="ol steps"><li class="li step stepexpand" id="instances_detail_monitoring_ui_view_graphs__instance_monitoring_graphs">
+                <span class="ph cmd">The graphs displayed by default are:</span>
+                <ul class="ul choices">
+                    <li class="li choice"><strong class="ph b">CPU utilization %</strong>. Represents the percentage of processing power
+                        currently in use by the instance.</li>
+
+                    <li class="li choice"><strong class="ph b">Disk read bytes</strong>. The amount of data that is being read from the instance's hard disk.</li>
+
+                    <li class="li choice"><strong class="ph b">Disk read operations</strong>. The number of read operations that has completed on all ephemeral disks availble to the instance.</li>
+
+                    <li class="li choice"><strong class="ph b">Disk write bytes</strong>. The amount of data that is being written to the instance's hard disk.</li>
+
+                    <li class="li choice"><strong class="ph b">Disk write operations</strong>. The number of write operations that has completed on all ephemeral disks availble to the instance.</li>
+
+                    <li class="li choice"><strong class="ph b">Network in</strong>. The amount of incoming network traffic to an application on this instance.</li>
+
+                    <li class="li choice"><strong class="ph b">Network out</strong>. The amount of outgoing network traffic to an application on this instance.</li>
+
+                </ul>
+
+                <div class="itemgroup info">Each of the graphs default to the <em class="ph i">average</em> statistic for the best output results.</div>
+            </li>
+<li class="li step stepexpand">
+           <span class="ph cmd">The various ways to view the data in the graphs are:</span>
+           <ul class="ul choices">
+               <li class="li choice">Click on a graph to expand it.</li>
+
+               <li class="li choice">Hover inside the graph to display a read-out of data-points desired.</li>
+
+               <li class="li choice">Use the drop-down list boxes for <span class="ph uicontrol">Statistic</span>, <span class="ph uicontrol">Show data for</span>, and
+                   <span class="ph uicontrol">Measurement period</span> to focus in on specific set of data points. For example,
+                   to view the combined number of healthy hosts within the last hour in 5-minute readings, select <strong class="ph b">Sum</strong> from
+                   <span class="ph uicontrol">Statistic</span>, <strong class="ph b">Last hour</strong> from <span class="ph uicontrol">Show data for</span>, and <strong class="ph b">5 minutes</strong>
+                   from <span class="ph uicontrol">Measurement period</span>.</li>
+
+           </ul>
+
+       </li>
+</ol>
+
+                    </div>
+
+                </div>
+
+
+</body>
+</html>

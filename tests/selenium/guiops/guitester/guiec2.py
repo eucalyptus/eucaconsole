@@ -236,7 +236,7 @@ class GuiEC2(GuiTester):
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_instance_view_page(self, image = "centos",availability_zone = None,
-                                               instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                               instance_type = "t1.micro",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
                                                security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """
@@ -263,7 +263,7 @@ class GuiEC2(GuiTester):
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_image_view_page(self, image_id_or_type, availability_zone = None,
-                                               instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                               instance_type="t1.micro",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
                                                security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """

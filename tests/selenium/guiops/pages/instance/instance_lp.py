@@ -21,6 +21,7 @@ class InstanceLanding(LandingPage):
     _associate_ip_address_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(8)>a"  #instance_id required
     _disassociate_ip_address_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(9)>a"  #instance_id required
     _terminate_all_instances_btn_id = "terminate-instances-btn"
+    _more_actions_menu_terminate_instances_css = "#more-actions-dropdown .more-actions-terminate"
     _search_input_field_css = ".search-input"
     _elastic_ip_link_css = 'a[href="/ipaddresses/{0}"]'
 
@@ -76,7 +77,9 @@ class InstanceLanding(LandingPage):
         return instance_name
 
     def click_terminate_all_instances_button(self):
-        self.tester.click_element_by_id(self._terminate_all_instances_btn_id)
+        self.tester.click_element_by_id(LandingPage._select_all_items_tableview_checkbox_id)
+        self.tester.click_element_by_id(LandingPage._more_actions_button_id)
+        self.tester.click_element_by_css(self._more_actions_menu_terminate_instances_css)
 
     def verify_there_are_no_running_instances(self):
         self.tester.send_keys_by_css(self._search_input_field_css, "running")

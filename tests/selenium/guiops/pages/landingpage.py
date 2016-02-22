@@ -1,5 +1,6 @@
 from basepage import BasePage
 
+
 class LandingPage(BasePage):
 
     def __init__(self, tester):
@@ -14,6 +15,8 @@ class LandingPage(BasePage):
     _view_page_title_id = "pagetitle"
     _search_input_field_css = ".search-input"
     _resource_action_menu_id = "table-item-dropdown_{0}"  # resource id or name if no id required
+    _more_actions_button_id = "more-actions-btn"
+    _select_all_items_tableview_checkbox_id = "select-all-items-tableview"
 
     def goto_dashboard_via_icon(self):
         self.tester.click_element_by_css(self._dashboard_icon_css)
