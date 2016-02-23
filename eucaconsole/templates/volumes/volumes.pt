@@ -30,7 +30,19 @@
                                 View details
                             </a>
                         </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'available'}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-attach"
+                               ng-click="revealModal('attach', (items | filter:{selected: true, status: 'available'})[0])">
+                                Attach to instance
+                            </a>
+                        </li>
                         <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-snapshots"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/snapshots">
+                                Manage snapshots
+                            </a>
+                        </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
                             <a i18n:translate="" class="more-actions-monitoring"
                                ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/monitoring">
