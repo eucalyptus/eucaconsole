@@ -7,7 +7,6 @@ angular.module('AlarmDetailPage', [
         restrict: 'A',
         link: function (scope, element, attrs) {
             scope.alarm = JSON.parse(attrs.alarmDetail);
-            console.log('link', scope.alarm);
         },
         controller: ['$scope', '$window', 'AlarmService', 'ScalingGroupsService',
         function ($scope, $window, AlarmService, ScalingGroupsService) {
@@ -15,14 +14,11 @@ angular.module('AlarmDetailPage', [
 
             $scope.saveChanges = function (event) {
                 var servicePath = event.target.dataset.servicePath;
-                console.log('before save', $scope.alarm);
 
                 AlarmService.updateAlarm($scope.alarm, servicePath, csrf_token)
                     .then(function success (response) {
-                        console.log('success');
                         Notify.success(response.data.message);
                     }, function error (response) {
-                        console.log('error');
                         Notify.failure(response.data.message);
                     });
             };

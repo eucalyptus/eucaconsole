@@ -44,7 +44,7 @@
                     </metal:block>
                     <form name="alarmUpdateForm">
                         ${structure:alarm_form['csrf_token']}
-                        <h4>State</h4>
+                        <h6>State</h6>
                         <div class="row controls-wrapper">
                             <div class="large-2 small-4 columns">
                                 <label i18n:translate="">State</label>
@@ -58,22 +58,20 @@
                             <div class="large-10 small-8 columns value">${alarm.state_reason}</div>
                         </div>
                         <hr/>
-                        <h4>Alarm</h4>
+                        <h6>Alarm</h6>
                         <div class="row inline  controls-wrapper" id="controls_description">
-                                <div class="large-2 small-2 columns">
-                                    <label class="right">
-                                        Description&nbsp;
-                                    </label>
+                                <div class="large-3 small-3 columns">
+                                    <label class="right" i18n:translate="">Description</label>
                                 </div>
-                                <div class="large-10 small-10 columns field">
+                                <div class="large-9 small-9 columns field">
                                     <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
                                 </div>
                         </div>    
                         <div class="row controls-wrapper">
-                            <div class="large-2 small-4 columns">
-                                <label i18n:translate="">Dimensions</label>
+                            <div class="large-3 small-4 columns">
+                                <label class="right" i18n:translate="">Dimensions</label>
                             </div>
-                            <div class="large-10 small-8 columns value">
+                            <div class="large-9 small-8 columns value">
                                 <select multiple="true" ng-model="alarm.dimensions" chosen="">
                                     <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected"></option>
                                 </select>
@@ -137,7 +135,7 @@
                             </div>
                         </div>
                         <div class="metric-chart chart-wrapper">
-                            <h4></h4>
+                            <h6></h6>
                             <svg class="cwchart"
                                 metric-chart=""
                                 metric="{{ alarm.metric }}"
@@ -149,7 +147,7 @@
                         </div>
                         <hr/>
                         <div class="actions" ng-form="alarmActionsForm" alarm-actions="">
-                            <h4>Actions</h4>
+                            <h6>Actions</h6>
                             <div class="item-list">
                                 <span class="item" tal:repeat="action alarm_actions" data-item-value="${action.arn}">
                                     For group
@@ -161,7 +159,7 @@
                                     </a>
                                 </span>
                             </div>
-                            <h5>Add an action:</h5>
+                            <span>Add an action:</span>
                             <div>
                                 <div class="row">
                                     <div class="columns large-2 large-offset-1 small-2">
