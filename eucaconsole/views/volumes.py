@@ -124,14 +124,20 @@ class VolumesView(LandingPageView, BaseVolumeView):
 
     @view_config(route_name='volumes_delete', request_method='POST')
     def volumes_delete(self):
-        volume_id = self.request.params.get('volume_id')
-        volume = self.get_volume(volume_id)
-        if volume and self.delete_form.validate():
-            with boto_error_handler(self.request, self.location):
+        volume_id_param = self.request.params.get('volume_id')
+        volume_ids = [volume_id.strip() for volume_id in volume_id_param.split(',')]
+        if self.delete_form.validate():
+            for volume_id in volume_ids:
+                volume = self.get_volume(volume_id)
                 self.log_request(_(u"Deleting volume {0}").format(volume_id))
-                volume.delete()
+                with boto_error_handler(self.request, self.location):
+                    volume.delete()
+            if len(volume_ids) == 1:
                 msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            else:
+                prefix = _(u'Successfully sent request to delete volumes')
+                msg = u'{0} {1}'.format(prefix, ', '.join(volume_ids))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to delete volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)

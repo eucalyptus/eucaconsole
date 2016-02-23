@@ -12,6 +12,7 @@ angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table']
         $scope.instanceName = '';
         $scope.instancesByZone = '';
         $scope.instanceChoices = {};
+        $scope.multipleItemsSelected = false;
         $scope.initPage = function (instancesByZone) {
             $scope.instancesByZone = JSON.parse(eucaUnescapeJson(instancesByZone));
         };
@@ -42,6 +43,19 @@ angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table']
                     }, 50);
                 });
             }
+            modal.foundation('reveal', 'open');
+        };
+        $scope.revealMultiSelectModal = function (action, selectedItems) {
+            var modal = $('#' + action + '-volume-modal');
+            var itemIDs = [];
+            var itemNames = [];
+            selectedItems.forEach(function (item) {
+                itemIDs.push(item.id);
+                itemNames.push(item.name || item.id);
+            });
+            $scope.multipleItemsSelected = itemIDs.length > 1;
+            $scope.volumeID = itemIDs.join(', ');
+            $scope.volumeName = itemNames.join(', ');
             modal.foundation('reveal', 'open');
         };
         $scope.detachModal = function (item, url) {
