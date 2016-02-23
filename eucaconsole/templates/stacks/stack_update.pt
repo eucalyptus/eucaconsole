@@ -111,27 +111,28 @@
                                     </div>
                                     <div class="small-9 columns field">
                                         <input type="text" name="{{ item.name }}" id="{{ item.name }}"
-                                            value="{{ paramModels[item.name] }}" ng-if="!item.options"
+                                            value="{{ item.model }}" ng-if="!item.options"
                                             min="{{ item.min }}" max="{{ item.max }}" pattern="{{ item.regex }}"
-                                            ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"/>
+                                            ng-model="item.model" ng-change="checkRequiredInput()"/>
                                         <small class="error" ng-hide="">{{ item.constraint }}</small>
                                         <div ng-if="item.options">
-                                            <select name="{{ item.name }}" id="{{ item.name }}" 
+                                            <select ng-attr-name="{{ item.name }}" ng-attr-id="{{ item.name }}" 
                                                 ng-if="item.chosen"
                                                 chosen="true" search-contains="true" width="100"
                                                 data-placeholder="Select an option"
                                                 i18n:attributes="data-placeholder"
-                                                ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
+                                                ng-model="item.model" ng-change="checkRequiredInput()"
                                                 ng-options="option[1] for option in item.options track by option[0]">
                                                 <option ng-if="!item.default" value=""></option>
                                             </select>
-                                            <select name="{{ item.name }}" id="{{ item.name }}" 
+                                            <select ng-attr-name="{{ item.name }}" ng-attr-id="{{ item.name }}" 
                                                 ng-if="!item.chosen"
-                                                ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
+                                                ng-model="item.model" ng-change="checkRequiredInput()"
                                                 ng-options="option[1] for option in item.options track by option[0]">
                                                 <option ng-if="!item.default" value="" i18n:translate="">Select an option</option>
                                             </select>
                                         </div>
+                                        {{ item.model }}
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +180,7 @@
                 <span ng-show="loading"><i class="busy"></i>
                     <span i18n:translate="">Reading template</span>
                 </span>
-                <div class="section step1" ng-show="templateIdent">
+                <div class="section step1" ng-show="templateBucket || templateIdent">
                     <div class="row" ng-show="templateBucket">
                         <label i18n:translate="">Template bucket</label>
                         <div class="columns value">{{ templateBucket }}</div>
@@ -192,7 +193,7 @@
                 <div class="section step2 hide">
                     <div class="row" ng-repeat="param in parameters">
                         <label>{{ param.name }}</label>
-                        <div class='columns value'>{{ paramValue(param.name) }}</div>
+                        <div class='columns value'>{{ param.model }}</div>
                     </div>
                 </div>
             </div>
@@ -304,10 +305,10 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_update.js')}"></script>
 </div>
 

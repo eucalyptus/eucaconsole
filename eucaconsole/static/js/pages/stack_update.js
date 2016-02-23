@@ -37,7 +37,6 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
         $scope.loading = false;
-        $scope.paramModels = [];
         $scope.serviceList = undefined;
         $scope.resourceList = undefined;
         $scope.propertyList = undefined;
@@ -53,6 +52,7 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
             $scope.setWatchers();
             $scope.setFocus();
             $scope.initCodeMirror();
+            $scope.getStackTemplateInfo();
         };
         $scope.toggleContent = function () {
             $scope.expanded = !$scope.expanded;
@@ -90,10 +90,6 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                 var val;
                 switch ($scope.inputtype) {
                     case 'current':
-                        val = $scope.stackTemplate;
-                        if (val === undefined || val === '') {
-                            $scope.isNotValid = true;
-                        }
                         break;
                     case 'file':
                         val = $scope.templateFiles;
@@ -117,7 +113,7 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
             } else if ($scope.currentStepIndex === 2) {
                 $scope.isNotValid = false;
                 angular.forEach($scope.parameters, function(param, idx) {
-                    var val = $scope.paramModels[param.name];
+                    var val = param.model;
                     if (val === undefined) {
                         $scope.isNotValid = true;
                     }
@@ -326,8 +322,9 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                     }
                     $scope.parameters = results.parameters;
                     angular.forEach($scope.parameters, function(param, idx) {
-                        $scope.paramModels[param.name] = param.default;
+                        param.model = param.default;
                     });
+                    $scope.summarySection.find('.step2').removeClass('hide');
                     $scope.checkRequiredInput();
                     $timeout(function() {
                         $(document).foundation('tooltip', 'reflow');
@@ -378,7 +375,7 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                     $scope.s3TemplateKey = results.template_key;
                     $scope.parameters = results.parameters;
                     angular.forEach($scope.parameters, function(param, idx) {
-                        $scope.paramModels[param.name] = param.default;
+                        param.model = param.default;
                     });
                     $scope.checkRequiredInput();
                 }
@@ -387,13 +384,6 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                 $scope.loading = false;
                 eucaHandleError(oData, status);
             });
-        };
-        $scope.paramValue = function(name) {
-            var ret = $scope.paramModels[name];
-            if (Array.isArray(ret)) {
-                ret = ret[0];
-            }
-            return ret;
         };
         $scope.initCodeMirror = function () {
             var templateTextarea = document.getElementById('template-area');

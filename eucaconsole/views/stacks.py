@@ -460,7 +460,7 @@ class StackWizardView(BaseView, StackMixin):
         ret = dict(
             stack_name=stack_name,
         )
-        template_info = self.get_template_location(self.stack.stack_id, default_name=_(u'current template'))
+        template_info = self.get_template_location(self.stack.stack_id, default_name=_(u'Edit template'))
         ret.update(template_info)
         ret.update(self.render_dict)
         return ret
@@ -867,6 +867,11 @@ class StackWizardView(BaseView, StackMixin):
             elif template_body:
                 # just proceed if body provided with request
                 template_name = 'current'
+            elif template_name is None and self.stack:
+                # loading template from existing stack
+                template_name = 'current'
+                response = self.cloudformation_conn.get_template(self.stack.stack_name)
+                template_body = response['GetTemplateResponse']['GetTemplateResult']['TemplateBody']
             else:
                 s3_bucket = self.get_template_samples_bucket()
                 mgr = CFSampleTemplateManager(s3_bucket)
