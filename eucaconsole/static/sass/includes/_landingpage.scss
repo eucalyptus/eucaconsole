@@ -81,6 +81,24 @@ $dropdown-border-color: $hp-gray-65;
         }
     }
 }
+#more-actions-dropdown {
+    &.f-dropdown {
+        li.disabled {
+            cursor: default;
+            a {
+                color: $hp-gray-20;
+                pointer-events: none;
+            }
+            &:hover {
+                background-color: #fff;
+            }
+        }
+    }
+    hr {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
 
 .gridwrapper {
     margin-top: 0.5rem;
@@ -171,6 +189,11 @@ $dropdown-border-color: $hp-gray-65;
         }
         strong {
             font-weight: normal;
+        }
+        .item-checkbox {
+            position: relative;
+            left: -2px;
+            margin-right: 2px;
         }
         .f-dropdown a {
             color: $euca-darkgrey;
@@ -415,6 +438,11 @@ $dropdown-border-color: $hp-gray-65;
     -webkit-box-flex: 0.1;
     -webkit-flex: 0 0 10%;
     flex: 0 0 10%;
+}
+
+// Select all checkbox wrapper for tile/grid view
+.select-all-wrapper {
+    margin-left: 1rem;
 }
 
 // tableview/gridview icon switcher

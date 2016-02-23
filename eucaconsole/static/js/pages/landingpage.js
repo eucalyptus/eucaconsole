@@ -340,7 +340,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
         };
         $scope.handleItemSelection = function() {
             // set all checkbox state based on state of items.selected
-            var allItemsCheckbox = document.getElementById('select-all-items-tableview');
+            var allItemsCheckbox = document.getElementById('select-all-items-tableview') ||
+                document.getElementById('select-all-items-tileview');
             var checkedIems = $scope.items.filter(function (item) {
                 return item.selected;
             });
