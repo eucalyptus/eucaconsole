@@ -32,6 +32,7 @@ from ..i18n import _
 
 
 METRIC_TYPES = [
+    # NOTE: AWS/AutoScaling metrics expect 'None' (not 'Count' or None) as the unit
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupDesiredCapacity', 'unit': 'None'},
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupInServiceInstances', 'unit': 'None'},
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupMaxSize', 'unit': 'None'},
