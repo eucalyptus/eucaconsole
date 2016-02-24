@@ -110,7 +110,6 @@ class VolumesView(LandingPageView, BaseVolumeView):
         search_facets = filters_form.facets
         controller_options_json = BaseView.escape_json(json.dumps({
             'instances_by_zone': self.get_instances_by_zone(self.instances),
-            'instance_json_url': self.request.route_path('instance_json', id='_id_')
         }))
         self.render_dict.update(dict(
             filters_form=filters_form,
@@ -249,10 +248,13 @@ class VolumesJsonView(LandingPageView):
             for volume in filtered_items:
                 status = volume.status
                 attach_status = volume.attach_data.status
+                is_root_volume = False
                 instance_name = None
                 if volume.attach_data is not None and volume.attach_data.instance_id is not None:
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
                     instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
+                    if instance.root_device_type == 'ebs' and volume.attach_data.device == instance.root_device_name:
+                        is_root_volume = True
                 if status != 'deleted':
                     snapshot_name = [snap.tags.get('Name') for snap in snapshots if snap.id == volume.snapshot_id]
                     if len(snapshot_name) == 0:
@@ -276,6 +278,7 @@ class VolumesJsonView(LandingPageView):
                         size=volume.size,
                         status=status,
                         attach_status=attach_status,
+                        is_root_volume=is_root_volume,
                         zone=volume.zone,
                         tags=TaggedItemView.get_tags_display(volume.tags),
                         real_tags=volume.tags,

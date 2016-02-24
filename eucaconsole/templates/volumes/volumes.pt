@@ -39,7 +39,7 @@
                         </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true, attach_status: 'attached'}).length &lt; 1}">
                             <a i18n:translate="" class="more-actions-detach"
-                               ng-click="revealMultiSelectModal('detach', (items | filter:{selected: true, attach_status: 'attached'}))">
+                               ng-click="revealMultiSelectDetachModal((items | filter:{selected: true, attach_status: 'attached'}))">
                                 Detach from instance
                             </a>
                         </li>

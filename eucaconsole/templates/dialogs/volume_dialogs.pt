@@ -50,10 +50,34 @@
             <span i18n:translate="" ng-if="!multipleItemsSelected">Detach volume</span>
             <span i18n:translate="" ng-if="multipleItemsSelected">Detach volumes</span>
         </h3>
-        <p>
+        <div ng-if="rootVolumes.length" tal:condition="landingpage">
+            <p i18n:translate="">
+                The volume(s) below are the root volume of an EBS-backed instance and cannot be detached.
+                To delete the volume(s), terminate the respective instance.
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th i18n:translate="">Volume</th>
+                        <th i18n:translate="">Instance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="vol in rootVolumes">
+                        <td><strong>{{ vol.volume }}</strong></td>
+                        <td><strong>{{ vol.instance }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+        </div>
+        <!-- The ng-if here and elsewhere is to handle multi-select detach operations where some of the volumes
+             are root volumes for EBS-backed instances.  The first condition handles the landing page case,
+             while the remainder is for the detail page !-->
+        <p ng-if="volumeName || volumeAttachStatus &amp;&amp; volumeAttachStatus === 'attached'">
             <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.</span>
         </p>
-        <p>
+        <p ng-if="volumeName || volumeAttachStatus &amp;&amp; volumeAttachStatus === 'attached'">
             <span i18n:translate="">Are you sure you want to detach volume</span>
             <span ng-if="!multipleItemsSelected">
                 <span tal:condition="volume"><b>${volume_name}</b></span>
@@ -70,15 +94,15 @@
                 </span>
             </span>
         </p>
-        <form method="post" id="detach-form" data-abide="" action="${action}">
+        <form method="post" id="detach-form" data-abide="" action="${action}"
+              ng-if="volumeName || volumeAttachStatus &amp;&amp; volumeAttachStatus === 'attached'">
             ${structure:detach_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="detach_volume_submit_button" class="button expand">
-                    <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Detach Volume</span>
-                    <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Detach Volumes</span>
+                    <span i18n:translate="">Yes, Detach</span>
                 </button>
             </div>
             <div class="dialog-progress-display hide">

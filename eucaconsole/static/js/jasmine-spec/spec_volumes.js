@@ -70,11 +70,6 @@ describe("VolumesPage", function() {
             scope.revealModal('a', {name: "vol"});
             expect(scope.volumeName).toEqual('vol');
         });
-
-        it("Should set instanceName when revealModal() is called and action is detach", function() {
-            scope.revealModal('detach', {instance_name: "inst"});
-            expect(scope.instanceName).toEqual('inst');
-        });
     });
 
     describe("Function detachModal() Test", function() {
