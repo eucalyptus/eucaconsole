@@ -254,7 +254,7 @@ class VolumesJsonView(LandingPageView):
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
                     instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
                     if instance.root_device_type == 'ebs' and volume.attach_data.device == instance.root_device_name:
-                        is_root_volume = True
+                        is_root_volume = True  # Note: Check for 'True' when passed to JS via Chameleon template
                 if status != 'deleted':
                     snapshot_name = [snap.tags.get('Name') for snap in snapshots if snap.id == volume.snapshot_id]
                     if len(snapshot_name) == 0:
@@ -322,14 +322,18 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         self.attach_data = self.volume.attach_data if self.volume else None
         self.volume_name = self.get_volume_name()
         self.instance_name = None
+        is_root_volume = False
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
             self.instance_name = TaggedItemView.get_display_name(instance)
+            if instance.root_device_type == 'ebs' and self.volume.attach_data.device == instance.root_device_name:
+                is_root_volume = True
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
             instance_name=self.instance_name,
             device_name=self.attach_data.device if self.attach_data else None,
+            is_root_volume=is_root_volume,
             attachment_time=self.get_attachment_time(),
             volume_form=self.volume_form,
             delete_form=self.delete_form,

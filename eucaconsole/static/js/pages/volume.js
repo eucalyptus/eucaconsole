@@ -231,25 +231,19 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
                }
             });
         };
-        $scope.detachModal = function (device_name, url) {
+        $scope.detachModal = function (isRootVolume) {
             var warnModalID = 'detach-volume-warn-modal',
                 detachModalID = 'detach-volume-modal';
-
-            $http.get(url).success(function(oData) {
-                var results = oData ? oData.results : '';
-                if (results) {
-                    if (results.root_device_name === device_name) {
-                        $scope.pendingModalID = warnModalID;
-                    } else {
-                        $scope.pendingModalID = detachModalID;
-                    }
-                    if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
-                        $scope.openModalById('unsaved-changes-warning-modal');
-                        return;
-                    } 
-                    $scope.openModalById($scope.pendingModalID);
-                }
-            });
+            if (isRootVolume === 'True') {
+                $scope.pendingModalID = warnModalID;
+            } else {
+                $scope.pendingModalID = detachModalID;
+            }
+            if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                $scope.openModalById('unsaved-changes-warning-modal');
+                return;
+            }
+            $scope.openModalById($scope.pendingModalID);
         };
     })
 ;

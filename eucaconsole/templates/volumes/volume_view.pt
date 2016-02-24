@@ -43,7 +43,7 @@
                             <a href="#" id="attach-volume-action" i18n:translate="">Attach to instance</a>
                         </li>
                         <li ng-show="volumeStatus == 'in-use' &amp;&amp; volumeAttachStatus != 'detaching'">
-                            <a ng-click="detachModal('${device_name}', '${request.route_path('instance_json', id=instance_id)}')"
+                            <a ng-click="detachModal('${is_root_volume}')"
                                id="detach-volume-action" i18n:translate="">Detach from instance</a>
                         </li>
                         <li ng-show="volumeStatus === 'available' || volumeStatus === 'failed'">
