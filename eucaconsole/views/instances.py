@@ -54,7 +54,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
+    InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
     AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import ChoicesManager, GenerateFileForm
 from ..forms.keypairs import KeyPairForm
@@ -180,7 +180,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
-        self.batch_terminate_form = BatchTerminateInstancesForm(self.request, formdata=self.request.params or None)
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
@@ -196,7 +195,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
             stop_form=self.stop_form,
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
-            batch_terminate_form=self.batch_terminate_form,
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             is_vpc_supported=self.is_vpc_supported,
@@ -246,14 +244,23 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_start', request_method='POST')
     def instances_start(self):
-        instance_id = self.request.params.get('instance_id')
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.start_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Starting instance {0}").format(instance_id))
+                self.log_request(_(u"Starting instances {0}").format(instance_id_param))
                 # Can only start an instance if it has a volume attached
-                self.conn.start_instances([instance_id])
-                msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                started = self.conn.start_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
+                    msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to start the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if started:
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                else:
+                    msg = _(u'Unable to start instances')
+                    self.request.session.flash(msg, queue=Notification.ERROR)
         else:
             msg = _(u'Unable to start instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -261,19 +268,22 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_stop', request_method='POST')
     def instances_stop(self):
-        instance_id = self.request.params.get('instance_id')
-        instance = self.get_instance(instance_id)
-        if instance and self.stop_form.validate():
-            # Only EBS-backed instances can be stopped
-            if instance.root_device_type == 'ebs':
-                with boto_error_handler(self.request, self.location):
-                    self.log_request(_(u"Stopping instance {0}").format(instance_id))
-                    instance.stop()
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
+        if self.stop_form.validate():
+            self.log_request(_(u"Stopping instance(s) {0}").format(instance_id_param))
+            with boto_error_handler(self.request, self.location):
+                stopped = self.conn.stop_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to stop the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if stopped:
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-            else:
-                msg = _(u'Only EBS-backed instances can be stopped')
-                self.request.session.flash(msg, queue=Notification.ERROR)
+                else:
+                    msg = _(u'Unable to stop the instance(s).')
+                    self.request.session.flash(msg, queue=Notification.ERROR)
         else:
             msg = _(u'Unable to stop instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -281,51 +291,47 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_reboot', request_method='POST')
     def instances_reboot(self):
-        instance_id = self.request.params.get('instance_id')
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.reboot_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Rebooting instance {0}").format(instance_id))
-                rebooted = self.conn.reboot_instances([instance_id])
-                msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-                if not rebooted:
+                self.log_request(_(u"Rebooting instance(s) {0}").format(instance_id_param))
+                rebooted = self.conn.reboot_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
+                    msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to reboot the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if rebooted:
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                else:
                     msg = _(u'Unable to reboot the instance.')
                     self.request.session.flash(msg, queue=Notification.ERROR)
         else:
-            msg = _(u'Unable to reboot instance')
+            msg = _(u'Unable to reboot instance(s)')
             self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_terminate', request_method='POST')
     def instances_terminate(self):
-        instance_id = self.request.params.get('instance_id')
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.terminate_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Terminating instance {0}").format(instance_id))
-                self.conn.terminate_instances([instance_id])
-                msg = _(
-                    u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
+                self.log_request(_(u"Terminating instance {0}").format(instance_id_param))
+                self.conn.terminate_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
+                    msg = _(
+                        u'Successfully sent terminate request.  It may take a moment to shut down the instance(s).')
+                else:
+                    prefix = _(u'Successfully sent request to terminate the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
                 if self.request.is_xhr:
                     return JSONResponse(status=200, message=msg)
                 else:
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
-            msg = _(u'Unable to terminate instance')
-            self.request.session.flash(msg, queue=Notification.ERROR)
-        return HTTPFound(location=self.location)
-
-    @view_config(route_name='instances_batch_terminate', request_method='POST')
-    def instances_batch_terminate(self):
-        instance_ids = self.request.params.getall('instance_ids')
-        if self.batch_terminate_form.validate():
-            with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Terminating instances {0}").format(str(instance_ids)))
-                self.conn.terminate_instances(instance_ids=instance_ids)
-                prefix = _(u'Successfully sent request to terminate the following instances:')
-                msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-        else:
-            msg = _(u'Unable to terminate instances')
+            msg = _(u'Unable to terminate instance(s)')
             self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
@@ -351,15 +357,21 @@ class InstancesView(LandingPageView, BaseInstanceView):
     @view_config(route_name='instances_disassociate', request_method='POST')
     def instances_disassociate_ip_address(self):
         if self.disassociate_ip_form.validate():
+            ip_address_param = self.request.params.get('ip_address')
+            ip_addresses = [ip_address.strip() for ip_address in ip_address_param.split(',')]
             with boto_error_handler(self.request, self.location):
-                ip_address = self.request.params.get('ip_address')
-                self.log_request(_(u"Disassociating IP {0}").format(ip_address))
-                address = self.get_ip_address(ip_address)
-                if address and address.association_id:
-                    self.conn.disassociate_address(ip_address, association_id=address.association_id)
+                for ip_address in ip_addresses:
+                    self.log_request(_(u"Disassociating IP {0}").format(ip_address))
+                    address = self.get_ip_address(ip_address)
+                    if address and address.association_id:
+                        self.conn.disassociate_address(ip_address, association_id=address.association_id)
+                    else:
+                        self.conn.disassociate_address(ip_address)
+                if len(ip_addresses) == 1:
+                    msg = _(u'Successfully disassociated the IP from the instance.')
                 else:
-                    self.conn.disassociate_address(ip_address)
-                msg = _(u'Successfully disassociated the IP from the instance.')
+                    prefix = _(u'Successfully sent request to disassociate the follow IP addresses:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(ip_addresses))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         msg = _(u'Failed to disassociate the IP address from the instance.')

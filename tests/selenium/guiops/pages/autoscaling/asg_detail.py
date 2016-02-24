@@ -1,9 +1,29 @@
 import time
 
 from pages.detailpage import DetailPage
+from selenium.common.exceptions import ElementNotVisibleException
 
 
 class ASGDetailPage(DetailPage):
+    MONITORING_CHARTS_LIST = [
+        # ASG Metrics
+        {'metric': 'GroupTotalInstances', 'statistic': 'Maximum'},
+        {'metric': 'GroupInServiceInstances', 'statistic': 'Maximum'},
+        {'metric': 'GroupMinSize', 'statistic': 'Maximum'},
+        {'metric': 'GroupMaxSize', 'statistic': 'Maximum'},
+        {'metric': 'GroupDesiredCapacity', 'statistic': 'Maximum'},
+        {'metric': 'GroupPendingInstances', 'statistic': 'Maximum'},
+        {'metric': 'GroupTerminatingInstances', 'statistic': 'Maximum'},
+        # Instance metrics
+        {'metric': 'CPUUtilization', 'statistic': 'Average'},
+        {'metric': 'DiskReadBytes', 'statistic': 'Average'},
+        {'metric': 'DiskReadOps', 'statistic': 'Average'},
+        {'metric': 'DiskWriteBytes', 'statistic': 'Average'},
+        {'metric': 'DiskWriteOps', 'statistic': 'Average'},
+        {'metric': 'NetworkIn', 'statistic': 'Average'},
+        {'metric': 'NetworkOut', 'statistic': 'Average'},
+    ]
+
     def __init__(self, tester):
         self.tester = tester
         self.print_test_context()
@@ -15,8 +35,12 @@ class ASGDetailPage(DetailPage):
     _scaling_history_tab_css = "[href='/scalinggroups/{0}/history']"  # asg name required
     _scaling_policies_tab_css = "[href='/scalinggroups/{0}/policies']"  # asg name required
     _instances_tab_css = "[href='/scalinggroups/{0}/instances']"  # asg name required
+    _monitoring_tab_css = "[href='/scalinggroups/{0}/monitoring']"  # asg name required
     _general_tab_css = '[href="/scalinggroups/{0}"]'  # asg name required
     _active_tab_css = "dd.active"
+    _ec2_charts_container_id = 'charts-container-ec2'
+    _autoscaling_charts_container_id = 'charts-container-autoscaling'
+    _enable_metrics_collection_button_id = "enable-metrics-collection-btn"
     _delete_asg_action_menuitem_id = "delete-scalinggroup-action"
     _save_changes_button_id = "save-changes-btn"
     _min_capacity_field_id = "min_size"
@@ -32,21 +56,7 @@ class ASGDetailPage(DetailPage):
         """
         Waits for the asg detail page title to appear; waits for actions menu to become visible. Closes the next step modal.
         """
-        if self.tester.check_visibility_by_id(self._next_step_modal_id):
-            self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
-            is_selected = self.verify_selected_by_id(self._do_notshow_again_checkbox_id)
-            i=1
-            while (i<3) and not is_selected:
-                try:
-                    time.sleep(1)
-                    is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
-                    if is_selected:
-                        break
-                    self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
-                except Exception,e:
-                    print "Click on Do not show again dialog checkbox failed"
-                is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
-            self.tester.click_element_by_css_resilisnt(self._close_modal_x_css, self._close_modal_x_css)
+        self.confirm_scaling_policy_modal()
         self.tester.wait_for_text_present_by_id(DetailPage(self)._detail_page_title_id,
                                                 self._asg_detail_page_title.format(asg_name))
         self.tester.wait_for_element_present_by_css(DetailPage(self)._actions_menu_css)
@@ -71,6 +81,18 @@ class ASGDetailPage(DetailPage):
         print "Found active tab {0}".format(tab)
         if tab != "Instances":
             self.tester.click_element_by_css(self._instances_tab_css.format(asg_name))
+        else:
+            pass
+
+    def goto_monitoring_tab(self, asg_name):
+        """
+        Checks if Monitoring tab is already open. Opens tab if not.
+        :param asg_name:
+        """
+        tab = self.tester.store_text_by_css(self._active_tab_css)
+        print "Found active tab {0}".format(tab)
+        if tab != "Monitoring":
+            self.tester.click_element_by_css(self._monitoring_tab_css.format(asg_name))
         else:
             pass
 
@@ -138,7 +160,7 @@ class ASGDetailPage(DetailPage):
         self.tester.click_element_by_id(self._save_changes_button_id)
 
     def verify_scaling_history(self, asg_name):
-        self._confirm_scaling_policy_modal()
+        self.confirm_scaling_policy_modal()
         self.goto_scaling_history_tab(asg_name)
         self.tester.click_element_by_css_robust(
             self._scaling_history_first_row_expando_css, self._scaling_history_first_cause_css)
@@ -148,7 +170,59 @@ class ASGDetailPage(DetailPage):
         else:
             print "ERROR: couldn't find expected scaling history cause text"
 
-    def _confirm_scaling_policy_modal(self):
+    def enable_metrics_collection(self, asg_name):
+        self.confirm_scaling_policy_modal()
+        self.goto_monitoring_tab(asg_name)
+        if self.tester.check_visibility_by_id(self._enable_metrics_collection_button_id):
+            self.tester.click_element_by_id(self._enable_metrics_collection_button_id)
+
+    def verify_charts_on_monitoring_page(self, asg_name):
+        self.confirm_scaling_policy_modal()
+        self.goto_monitoring_tab(asg_name)
+        self.tester.wait_for_element_present_by_id(self._ec2_charts_container_id)
+        self.tester.wait_for_element_present_by_id(self._autoscaling_charts_container_id)
+        for chart in self.MONITORING_CHARTS_LIST:
+            chart_id = 'cwchart-{0}-{1}'.format(chart.get('metric'), chart.get('statistic'))
+            self.tester.wait_for_element_present_by_id(chart_id)
+
+   # def _confirm_scaling_policy_modal(self):
+   #     if self.tester.check_visibility_by_id(self._next_step_modal_id):
+   #         self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
+   #         self.tester.click_element_by_css(self._close_modal_x_css)
+
+    def confirm_scaling_policy_modal(self):
+        """
+        Selects "do not show me again" on the scaling policy modal.
+        """
         if self.tester.check_visibility_by_id(self._next_step_modal_id):
-            self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
-            self.tester.click_element_by_css(self._close_modal_x_css)
+            time.sleep(1)
+            if self.tester.check_visibility_by_id(self._do_notshow_again_checkbox_id):
+                print "Confirmed: Scaling policy modal checkbox is visible"
+
+                if self.tester.check_visibility_by_css(self._close_modal_x_css):
+                    print "Confirmed: Scaling policy modal close button is visible"
+
+                    try:
+                        self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
+                    except ElementNotVisibleException:
+                        print "ERROR: element by id = {0} not visible".format(self._do_notshow_again_checkbox_id)
+
+                    finally:
+                        is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+                        i=1
+                        while (i<3) and not is_selected:
+                            try:
+                                time.sleep(1)
+                                is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+                                time.sleep(1)
+                                if is_selected:
+                                    break
+                                self.tester.click_element_by_id(self._do_notshow_again_checkbox_id)
+                            except Exception,e:
+                                print "Click on Do not show again dialog checkbox failed"
+                            is_selected = self.tester.verify_selected_by_id(self._do_notshow_again_checkbox_id)
+                        self.tester.click_element_by_css_resilient(self._close_modal_x_css, self._close_modal_x_css)
+                else:
+                    print "Confirmed: Scaling policy modal close button is NOT visible"
+            else:
+                print "Confirmed: Scaling policy modal checkbox is NOT visible"
