@@ -177,7 +177,7 @@ th.metric-action { text-align: right !important; }
 
 magic-search .f-dropdown { min-width: 15rem; }
 
-div.absolute-grouping { float: left; }
+#metric-time-range { margin: 0; display: inline; }
 
 input.datefield { width: 9rem; float: left; margin-bottom: 0; margin-right: 1rem; }
 

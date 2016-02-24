@@ -80,7 +80,11 @@ magic-search .f-dropdown {
 }
 
 div.absolute-grouping {
-    float: left;
+}
+
+#metric-time-range {
+    margin: 0;
+    display: inline;
 }
 
 input.datefield {

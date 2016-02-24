@@ -208,7 +208,7 @@
                                             </option>
                                         </select>
                                     </div>
-                                    <div class="absolute-grouping" ng-if="chartsCtrl.timeRange == 'absolute'">
+                                    <div ng-if="chartsCtrl.timeRange == 'absolute'">
                                         <label class="left stack-label" i18n:translate="">From</label>
                                         <input type="text" class="datefield" datepicker=""
                                             ng-model="chartsCtrl.largeChartStartTime" ng-change="chartsCtrl.handleAbsoluteChange()"
