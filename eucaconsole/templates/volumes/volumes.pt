@@ -4,7 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volumes.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage('${instances_by_zone}')"
+<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl"
+     ng-init="initController('${controller_options_json}')"
     tal:define="using_expando False;
                 expando_data_url request.route_path('volumes_expando_details', id='__id__');
                 expando_data_id '{{item.id}}'">
@@ -34,6 +35,12 @@
                             <a i18n:translate="" class="more-actions-attach"
                                ng-click="revealModal('attach', (items | filter:{selected: true, status: 'available'})[0])">
                                 Attach to instance
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, attach_status: 'attached'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-detach"
+                               ng-click="revealMultiSelectModal('detach', (items | filter:{selected: true, attach_status: 'attached'}))">
+                                Detach from instance
                             </a>
                         </li>
                         <hr />
@@ -84,8 +91,8 @@
                         </a>
                     </li>
                     <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
-                        <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
-                               class="detach-volume-action" i18n:translate="">Detach from instance</a>
+                        <a ng-click="detachModal(item)"
+                           class="detach-volume-action" i18n:translate="">Detach from instance</a>
                     </li>
                     <li ng-show="item.status === 'available' || item.status === 'failed'">
                         <a i18n:translate="" ng-click="revealModal('delete', item)" class="delete-volume-action">
@@ -188,7 +195,7 @@
                                 </a>
                             </li>
                             <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
-                                <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
+                                <a ng-click="detachModal(item)"
                                    class="detach-volume-action" i18n:translate="">Detach from instance</a>
                             </li>
                             <li ng-show="item.status === 'available' || item.status === 'failed'">

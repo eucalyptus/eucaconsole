@@ -13,8 +13,10 @@ angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table']
         $scope.instancesByZone = '';
         $scope.instanceChoices = {};
         $scope.multipleItemsSelected = false;
-        $scope.initPage = function (instancesByZone) {
-            $scope.instancesByZone = JSON.parse(eucaUnescapeJson(instancesByZone));
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.instancesByZone = options.instances_by_zone;
+            $scope.instanceJsonUrl = options.instance_json_url;
         };
         $scope.revealModal = function (action, volume) {
             var modal = $('#' + action + '-volume-modal'),
@@ -58,14 +60,15 @@ angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table']
             $scope.volumeName = itemNames.join(', ');
             modal.foundation('reveal', 'open');
         };
-        $scope.detachModal = function (item, url) {
+        $scope.detachModal = function (item) {
             $scope.volumeID = item.id;
             $scope.instanceName = item.instance_name;
+            var url = $scope.instanceJsonUrl;
             url = url.replace('_id_', item.instance);
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    if (results.root_device_name == item.device) {
+                    if (results.root_device_name === item.device) {
                         $('#detach-volume-warn-modal').foundation('reveal', 'open');
                     } else {
                         $('#detach-volume-modal').foundation('reveal', 'open');

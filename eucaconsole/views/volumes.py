@@ -108,7 +108,10 @@ class VolumesView(LandingPageView, BaseVolumeView):
         ]
         filters_form = VolumesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
         search_facets = filters_form.facets
-        # filter_keys are passed to client-side filtering in search box
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'instances_by_zone': self.get_instances_by_zone(self.instances),
+            'instance_json_url': self.request.route_path('instance_json', id='_id_')
+        }))
         self.render_dict.update(dict(
             filters_form=filters_form,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
@@ -118,7 +121,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             delete_form=self.delete_form,
-            instances_by_zone=BaseView.escape_json(json.dumps(self.get_instances_by_zone(self.instances))),
+            controller_options_json=controller_options_json,
         ))
         return self.render_dict
 
@@ -165,13 +168,19 @@ class VolumesView(LandingPageView, BaseVolumeView):
 
     @view_config(route_name='volumes_detach', request_method='POST')
     def volumes_detach(self):
-        volume_id = self.request.params.get('volume_id')
+        volume_id_param = self.request.params.get('volume_id')
+        volume_ids = [volume_id.strip() for volume_id in volume_id_param.split(',')]
         if self.detach_form.validate():
-            with boto_error_handler(self.request, self.location):
+            for volume_id in volume_ids:
                 self.log_request(_(u"Detaching volume {0}").format(volume_id))
-                self.conn.detach_volume(volume_id)
+                with boto_error_handler(self.request, self.location):
+                    self.conn.detach_volume(volume_id)
+            if len(volume_ids) == 1:
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            else:
+                prefix = _(u'Successfully sent request to detach volumes')
+                msg = u'{0} {1}'.format(prefix, ', '.join(volume_ids))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
