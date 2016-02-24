@@ -51,17 +51,23 @@ angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table']
             var modal = $('#' + action + '-volume-modal');
             var itemIDs = [];
             var itemNames = [];
+            var instanceNames = [];
             selectedItems.forEach(function (item) {
                 itemIDs.push(item.id);
                 itemNames.push(item.name || item.id);
+                if (action === 'detach') {
+                    instanceNames.push(item.instance_name);
+                }
             });
             $scope.multipleItemsSelected = itemIDs.length > 1;
             $scope.volumeID = itemIDs.join(', ');
             $scope.volumeName = itemNames.join(', ');
+            $scope.instanceName = instanceNames.join(', ');
             modal.foundation('reveal', 'open');
         };
         $scope.detachModal = function (item) {
             $scope.volumeID = item.id;
+            $scope.volumeName = item.name;
             $scope.instanceName = item.instance_name;
             var url = $scope.instanceJsonUrl;
             url = url.replace('_id_', item.instance);
