@@ -12,6 +12,7 @@ angular.module('VolumesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table']
         $scope.instanceName = '';
         $scope.instancesByZone = '';
         $scope.instanceChoices = {};
+        $scope.instanceJsonUrl = '';
         $scope.multipleItemsSelected = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
