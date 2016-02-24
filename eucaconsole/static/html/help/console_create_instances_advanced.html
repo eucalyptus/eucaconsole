@@ -23,27 +23,29 @@
             You can override the kernel and RAM disk IDs, enable monitoring, and add additional storage, 
             if applicable.</p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd"> You can override the kernel ID in the selected image with the
                         <span class="ph uicontrol">Kernel ID</span> drop-down list box. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> You can override the RAM disk ID in the selected image with the
                         <span class="ph uicontrol">RAM disk ID (RAMFS)</span> drop-down list box. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Enable monitoring</span> check box to specify that
                         detailed CloudWatch metric gathering should be enabled for your new
                         instance(s).</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">TBD</span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Use private addressing only</span> check box to 
+                        assign only private IP addresses from the range of IP addresses in your subnet to your new instance(s).</span>
+                    <div class="itemgroup info">For more information, see <a class="xref" href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html" target="_blank"> Amazon EC2 Instance IP Addressing</a>.  </div>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> The Storage section will only display if you have an EBS-backed image. If
                         this is the case, you can configure additional storage for your
                         instance:</span>
-                    <ol type="a" class="ol substeps" id="create_instances_ui_advanced_steps__d30e182">
+                    <ol type="a" class="ol substeps" id="create_instances_ui_advanced_steps__d30e191">
                         <li class="li substep">
                             <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
                                 drop-down list box. </span>
