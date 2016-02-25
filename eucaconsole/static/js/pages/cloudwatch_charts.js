@@ -137,7 +137,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 });
 
             if (params.noXLabels) {
-                $(".time-shift svg").empty();
+                var svg = $(".time-shift svg");
+                svg.empty();
                 var minMax = d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text");
                 var middle = d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .tick text");
                 var labels = minMax[0].slice(0, 2).concat(middle[0]);
@@ -147,7 +148,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                     trans.value = label.parentElement.attributes.transform.value;
                     label.attributes.setNamedItem(trans);
                 });
-                $(".time-shift svg").attr('class', 'nvd3').attr('transform', 'translate(58,0)').append(labels);
+                var context = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                context.setAttribute("class", "nvd3");
+                context.setAttribute("transform", "translate(58,0)");
+                context = $(context);
+                context.append(labels);
+                svg.append(context);
                 //minMax.remove();
                 //middle.remove();
             }
