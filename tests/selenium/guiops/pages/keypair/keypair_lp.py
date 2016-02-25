@@ -7,6 +7,7 @@ class KeypairLanding(LandingPage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_keypair_view_page_loaded()
 
     _keypair_view_page_title = "Key Pairs"

@@ -18,7 +18,7 @@ class BasePage(SeleniumApi):
     _instance_types_menuitem_id = "resource-menuitem-instance_types"
     _stacks_menuitem_id = "resource-menuitem-stacks"
     _autoscaling_menuitem_id = "resource-menuitem-scalinggroups"
-    _launchconfigs_menuitem_id =  "resource-menuitem-launchconfigs"
+    _launchconfigs_menuitem_id = "resource-menuitem-launchconfigs"
     _volumes_meniuitem_id = "resource-menuitem-volumes"
     _snapshot_menuitem_id = "resource-menuitem-snapshots"
     _buckets_menuitem_id = "resource-menuitem-buckets"
@@ -60,10 +60,10 @@ class BasePage(SeleniumApi):
         Gets regions list.
         """
         self.tester.click_element_by_id(self._region_selector_id)
-        list = self.tester.store_text_by_id(self._region_dropdown_id)
+        rlist = self.tester.store_text_by_id(self._region_dropdown_id)
         self.tester.click_element_by_id(self._region_selector_id)
-        list = str(list)
-        region_list = list.split()
+        rlist = str(rlist)
+        region_list = rlist.split()
         return region_list
 
     def goto_dashboard_via_menu(self):
@@ -83,14 +83,14 @@ class BasePage(SeleniumApi):
 
     def goto_instances_via_menu(self):
         self.tester.scroll_to_element_by_id(self._instances_menuitem_id)
-        self.tester.click_element_by_id_robust(self._instances_menuitem_id, "terminate-instances-btn")
+        self.tester.click_element_by_id_robust(self._instances_menuitem_id, "launch-instance-btn")
         self.tester.scroll_to_element_by_id(self._dashboard_menuitem_id)
 
     def goto_stacks_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._stacks_menuitem_id)
         self.tester.send_keys_by_id(self._stacks_menuitem_id, "\n", clear_field=False)
 
-    def goto_elestic_ip_view_via_menu(self):
+    def goto_elastic_ip_view_via_menu(self):
         self.tester.scroll_to_element_by_id(self._elastic_ips_menuitem_id)
         self.tester.send_keys_by_id(self._elastic_ips_menuitem_id, "\n", clear_field=False)
 
@@ -141,6 +141,3 @@ class BasePage(SeleniumApi):
         self.tester.wait_for_visible_by_id(BasePage._notification_id)
         notification = self.tester.store_text_by_id(BasePage._notification_id)
         print("Notification on page: " + notification)
-
-
-

@@ -77,7 +77,6 @@ urls = [
     Route(name='instances_stop', pattern='/instances/stop'),
     Route(name='instances_reboot', pattern='/instances/reboot'),
     Route(name='instances_terminate', pattern='/instances/terminate'),
-    Route(name='instances_batch_terminate', pattern='/instances/batch-terminate'),
     Route(name='instances_associate', pattern='/instances/associate'),
     Route(name='instances_disassociate', pattern='/instances/disassociate'),
     # Detail page
