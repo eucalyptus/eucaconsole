@@ -90,9 +90,9 @@ class SnapshotsView(LandingPageView):
             location = self.request.route_path('volume_snapshots', id=volume_id)
         if self.delete_form.validate():
             for snapshot_id in snapshot_ids:
-                snapshot = self.get_snapshot(snapshot_id)
-                snapshot_names.append(TaggedItemView.get_display_name(snapshot))
                 with boto_error_handler(self.request, location):
+                    snapshot = self.get_snapshot(snapshot_id)
+                    snapshot_names.append(TaggedItemView.get_display_name(snapshot))
                     images_registered = self.get_images_registered(snapshot_id)
                     if images_registered is not None:
                         for img in images_registered:
