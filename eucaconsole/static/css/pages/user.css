@@ -46,8 +46,9 @@
 .tile .header { position: relative; height: 24px; }
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #5a5a5a; font-weight: bold; }
 .tile .header a:hover { color: #007dba; }
+.tile .header a.has-checkbox { padding-left: 24px; }
 .tile .header strong { font-weight: normal; }
-.tile .header .item-checkbox { position: relative; left: -2px; margin-right: 2px; }
+.tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
 .tile .header .f-dropdown a { color: #444; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .content { padding: 8px; font-size: 0.9em; }
 .tile .content a { color: #007dba; }
