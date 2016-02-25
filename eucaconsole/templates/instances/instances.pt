@@ -114,8 +114,8 @@
                 <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.id }}">
-                    <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <a ng-href="${prefix}/{{ item.id }}" class="has-checkbox">
                     {{ item.name }}
                 </a>
             </div>
