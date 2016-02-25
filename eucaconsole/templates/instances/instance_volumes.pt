@@ -45,7 +45,7 @@
                         <ul id="item-dropdown_{{ volume.id }}" class="f-dropdown" data-dropdown-content=""
                             ng-show="volume.attach_status == 'attached'">
                             <li>
-                                <a ng-click="detachModal(volume.id, volume.device, '${request.route_path('instance_json', id=instance.id)}', volume.detach_form_action)"
+                                <a ng-click="detachModal(volume.id, volume.is_root_volume, volume.detach_form_action)"
                                     i18n:translate="">Detach volume</a>
                             </li>
                         </ul>
