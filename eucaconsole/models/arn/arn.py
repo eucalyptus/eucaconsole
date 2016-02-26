@@ -1,4 +1,10 @@
 class MetaARN(type):
+    """Metaclass for AmazonResourceName subclasses.
+
+    MetaARN provides a factory method for AmazonResourceName.  All classes that
+    inherit from AmazonResourceName will be cataloged by the metaclass, so no
+    further management of the factory method is necessary.
+    """
 
     arn_types = []
 
@@ -9,6 +15,13 @@ class MetaARN(type):
 
     @classmethod
     def factory(meta, arn):
+        """AmazonResourceName factory method.
+
+        Given an ARN string provided by AWS or Euca, return an instance of the
+        appropriate AmazonResourceName subclass.
+
+        instance = AmazonResourceName.factory(<arn>)
+        """
         (_, partition, service, _) = arn.split(':', 3)
         for arn_type in meta.arn_types:
             if arn_type.match(service):
@@ -16,6 +29,12 @@ class MetaARN(type):
 
 
 class ServiceNamespace(object):
+    """AmazonResourceName service namespace class decorator.
+
+    Decorates AmazonResourceName subclasses with the matching AWS service namespace.
+
+    http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces
+    """
     def __init__(self, arntype):
         self._arntype = arntype
 
@@ -25,6 +44,11 @@ class ServiceNamespace(object):
 
 
 class AmazonResourceName(dict):
+    """Parse an Amazon Resource Name string into its component parts.
+
+    Not to be instantiated directly, use the AmazonResourceName.factory() method
+    to return an object of the correct type.
+    """
     __metaclass__ = MetaARN
     _arntype = None
 
@@ -37,6 +61,7 @@ class AmazonResourceName(dict):
 
     @classmethod
     def match(cls, service):
+        """Match the ARN service namespace to the decorated ServiceNamespace."""
         return service == cls._arntype
 
     def parse(self, arn):

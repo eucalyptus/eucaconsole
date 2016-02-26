@@ -3,6 +3,7 @@ from arn import AmazonResourceName, ServiceNamespace
 
 @ServiceNamespace('autoscaling')
 class AutoScaling(AmazonResourceName):
+    """AmazonResourceName for AutoScaling namespace."""
 
     def __init__(self, arn=None):
         super(AutoScaling, self).__init__(arn)

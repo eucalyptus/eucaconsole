@@ -159,8 +159,6 @@ class CloudWatchAlarmsView(LandingPageView):
         description = alarm.get('description')
         dimensions = alarm.get('dimensions')
 
-        print comparison
-
         updated = MetricAlarm(
             name=name, metric=metric, namespace=namespace, statistic=statistic,
             comparison=comparison, threshold=threshold, period=period,

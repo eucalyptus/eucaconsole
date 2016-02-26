@@ -36,7 +36,7 @@
                             </li>
                             <li>
                                 <a href="#" ng-click="delete($event)"
-                                    data-service-path="${request.route_path('cloudwatch_alarms_delete')}"
+                                    data-service-path="${request.route_path('cloudwatch_alarms')}"
                                     data-redirect-path="${request.route_path('cloudwatch_alarms')}"
                                     i18n:translate="">Delete</a>
                             </li>

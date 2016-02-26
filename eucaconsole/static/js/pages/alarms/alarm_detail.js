@@ -28,11 +28,11 @@ angular.module('AlarmDetailPage', [
                 var redirectPath = event.target.dataset.redirectPath;
                 var servicePath = event.target.dataset.servicePath;
 
-                var alarm = {
-                    name: $scope.name
-                };
+                var alarms = [{
+                    name: $scope.alarm.name
+                }];
 
-                AlarmService.deleteAlarms([alarm], servicePath, csrf_token, true)
+                AlarmService.deleteAlarms(alarms, servicePath, csrf_token, true)
                     .then(function success (response) {
                         $window.location.href = redirectPath;
                     }, function error (response) {
