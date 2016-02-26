@@ -4,7 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volumes.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage('${instances_by_zone}')"
+<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl"
+     ng-init="initController('${controller_options_json}')"
     tal:define="using_expando False;
                 expando_data_url request.route_path('volumes_expando_details', id='__id__');
                 expando_data_id '{{item.id}}'">
@@ -22,6 +23,55 @@
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-volume-btn"
                    href="${request.route_path('volume_view', id='new')}">Create New Volume</a>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-details"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}">
+                                View details
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'available'}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-attach"
+                               ng-click="revealModal('attach', (items | filter:{selected: true, status: 'available'})[0])">
+                                Attach to instance
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, attach_status: 'attached'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-detach"
+                               ng-click="revealMultiSelectDetachModal((items | filter:{selected: true, attach_status: 'attached'}))">
+                                Detach from instance
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-snapshots"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/snapshots">
+                                Manage snapshots
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-monitoring"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/monitoring">
+                                View monitoring
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'available'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-delete"
+                               ng-click="revealMultiSelectModal('delete', (items | filter:{selected: true, status: 'available'}))">
+                                Delete
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
+            </div>
+            <div metal:fill-slot="tile_header">
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <a ng-href="${prefix}/{{ item.id }}" class="has-checkbox">
+                    {{ item.name }}
+                </a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
@@ -41,8 +91,8 @@
                         </a>
                     </li>
                     <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
-                        <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
-                               class="detach-volume-action" i18n:translate="">Detach from instance</a>
+                        <a ng-click="detachModal(item)"
+                           class="detach-volume-action" i18n:translate="">Detach from instance</a>
                     </li>
                     <li ng-show="item.status === 'available' || item.status === 'failed'">
                         <a i18n:translate="" ng-click="revealModal('delete', item)" class="delete-volume-action">
@@ -89,6 +139,7 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="name">Name (ID)</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="status">Status</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="size">Size</th>
@@ -100,6 +151,7 @@
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td class="breakword" id="table-id-column-{{item.id}}">
                     <span ng-show="item.status === 'deleting'">{{ item.name || item.id | ellipsis: 30 }}</span>
                     <a ng-show="item.status !== 'deleting'" ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a>
@@ -143,7 +195,7 @@
                                 </a>
                             </li>
                             <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
-                                <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
+                                <a ng-click="detachModal(item)"
                                    class="detach-volume-action" i18n:translate="">Detach from instance</a>
                             </li>
                             <li ng-show="item.status === 'available' || item.status === 'failed'">
