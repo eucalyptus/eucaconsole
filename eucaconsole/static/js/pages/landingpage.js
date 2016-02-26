@@ -373,10 +373,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             if (query.length > 0) {
                 url = url + "?" + query;
             }
-            window.history.pushState(query, "", url);
-            // preferred code (to above), but adds extra hash between path and search
-            //$location.search(query);
-            //window.history.pushState(null, "", $location.absUrl());
+            $location.search(query);
+            window.history.pushState(null, "", $location.absUrl());
             if ($scope.serverFilter === true) {
                 url = $scope.jsonEndpoint;
                 if (url.indexOf("?") > -1) {
