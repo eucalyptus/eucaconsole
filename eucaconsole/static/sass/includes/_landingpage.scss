@@ -81,8 +81,10 @@ $dropdown-border-color: $hp-gray-65;
         }
     }
 }
+
 #more-actions-dropdown {
     &.f-dropdown {
+        @include dropdown-shadow-mixin;
         li.disabled {
             cursor: default;
             a {
@@ -186,14 +188,17 @@ $dropdown-border-color: $hp-gray-65;
             &:hover {
                 color: $hp-accessible-blue;
             }
+            &.has-checkbox {
+                padding-left: 24px;
+            }
         }
         strong {
             font-weight: normal;
         }
         .item-checkbox {
-            position: relative;
-            left: -2px;
-            margin-right: 2px;
+            position: absolute;
+            top: 10px;
+            left: 7px;
         }
         .f-dropdown a {
             color: $euca-darkgrey;
