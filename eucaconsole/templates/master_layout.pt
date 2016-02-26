@@ -9,6 +9,7 @@
         <span tal:omit-tag="" tal:repeat="part reversed(title_parts)">${part} |</span>
         <span tal:omit-tag="" i18n:translate="">Eucalyptus Management Console</span>
     </title>
+    <base href="/"/>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width" />

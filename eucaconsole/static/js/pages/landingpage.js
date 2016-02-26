@@ -6,6 +6,9 @@
 
 
 angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando'])
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode({enabled:true});
+    })
     .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];

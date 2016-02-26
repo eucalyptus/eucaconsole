@@ -154,8 +154,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils'])
                 context = $(context);
                 context.append(labels);
                 svg.append(context);
-                //minMax.remove();
-                //middle.remove();
             }
 
             return chart;
