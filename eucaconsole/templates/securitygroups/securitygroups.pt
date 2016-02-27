@@ -35,6 +35,7 @@
                         </li>
                     </div>
                 </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
             </div>
             <div metal:fill-slot="tile_header">
                 <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
