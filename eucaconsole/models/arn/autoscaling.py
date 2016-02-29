@@ -6,6 +6,12 @@ class AutoScaling(AmazonResourceName):
     """AmazonResourceName for AutoScaling namespace."""
 
     def __init__(self, arn=None):
+        self.resource_type = None
+        self.autoscaling_group_name = None
+        self.policy_name = None
+        self.policy_id = None
+        self.group_id = None
+
         super(AutoScaling, self).__init__(arn)
 
     def parse(self, arn):

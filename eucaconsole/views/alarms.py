@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus and AWS CloudWatch alarms
 
 """
+import re
 import simplejson as json
 
 from boto.ec2.cloudwatch import MetricAlarm
@@ -143,6 +144,7 @@ class CloudWatchAlarmsView(LandingPageView):
         message = json.loads(self.request.body)
         alarm = message.get('alarm', {})
         token = message.get('csrf_token')
+        flash = message.get('flash')
 
         if not self.is_csrf_valid(token):
             return JSONResponse(status=400, message="missing CSRF token")
@@ -159,11 +161,20 @@ class CloudWatchAlarmsView(LandingPageView):
         description = alarm.get('description')
         dimensions = alarm.get('dimensions')
 
+        metric_dimensions = {}
+        for selected in dimensions:
+            decoded = json.loads(selected)
+            for key, value in decoded.iteritems():
+                if key in metric_dimensions:
+                    metric_dimensions[key] += value
+                else:
+                    metric_dimensions[key] = value
+
         updated = MetricAlarm(
             name=name, metric=metric, namespace=namespace, statistic=statistic,
             comparison=comparison, threshold=threshold, period=period,
             evaluation_periods=evaluation_periods, unit=unit, description=description,
-            dimensions=dimensions)
+            dimensions=metric_dimensions)
 
         with boto_error_handler(self.request):
             self.log_request(_(u'Updating alarm {0}').format(alarm.get('name')))
@@ -174,7 +185,10 @@ class CloudWatchAlarmsView(LandingPageView):
             else:
                 prefix = _(u'There was a problem deleting alarm')
 
-            msg = u'{0} {1}'.format(prefix, alarm)
+            msg = u'{0} {1}'.format(prefix, alarm.get('name'))
+
+        if flash is not None:
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
 
         return dict(success=action, message=msg)
 
@@ -284,9 +298,8 @@ class CloudWatchAlarmsJsonView(BaseView):
 
 
 class CloudWatchAlarmDetailView(BaseView):
-    '''
-    CloudWatch Alarm detail page view.
-    '''
+    """CloudWatch Alarm detail page view."""
+
     TEMPLATE = '../templates/cloudwatch/alarms_detail.pt'
 
     def __init__(self, request, **kwargs):
@@ -315,7 +328,7 @@ class CloudWatchAlarmDetailView(BaseView):
             for name, value in d.items():
                 option = {
                     'label': '{0} = {1}'.format(name, ', '.join(value)),
-                    'value': d,
+                    'value': re.sub(r'\s+', '', json.dumps(d)),
                     'selected': value == self.alarm.dimensions.get(name)
                 }
                 options.append(option)

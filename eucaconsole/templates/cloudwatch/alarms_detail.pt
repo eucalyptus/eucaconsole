@@ -73,7 +73,7 @@
                             </div>
                             <div class="large-9 small-8 columns value">
                                 <select multiple="true" ng-model="alarm.dimensions" chosen="">
-                                    <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected"></option>
+                                    <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected; value dims.value"></option>
                                 </select>
                             </div>
                         </div>
@@ -217,7 +217,7 @@
                                 data-service-path="${request.route_path('cloudwatch_alarms')}">
                                 <span i18n:translate="">Save Changes</span>
                             </button>
-                            <a href="${request.route_path('instances')}" id="cancel-update-link"
+                            <a href="${request.route_path('cloudwatch_alarms')}" id="cancel-update-link"
                                class="cancel-link"
                                i18n:translate="">Cancel</a>
                         </div>

@@ -14,7 +14,7 @@ class MetaARN(type):
         return cls
 
     @classmethod
-    def factory(meta, arn):
+    def factory(mcs, arn):
         """AmazonResourceName factory method.
 
         Given an ARN string provided by AWS or Euca, return an instance of the
@@ -23,7 +23,7 @@ class MetaARN(type):
         instance = AmazonResourceName.factory(<arn>)
         """
         (_, partition, service, _) = arn.split(':', 3)
-        for arn_type in meta.arn_types:
+        for arn_type in mcs.arn_types:
             if arn_type.match(service):
                 return arn_type(arn)
 
@@ -53,6 +53,12 @@ class AmazonResourceName(dict):
     _arntype = None
 
     def __init__(self, arn=None):
+        self.arn = None
+        self.partition = None
+        self.service = None
+        self.region = None
+        self.accountid = None
+
         if arn is not None:
             self.parse(arn)
 

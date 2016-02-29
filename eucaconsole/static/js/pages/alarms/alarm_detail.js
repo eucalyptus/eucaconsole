@@ -7,6 +7,18 @@ angular.module('AlarmDetailPage', [
         restrict: 'A',
         link: function (scope, element, attrs) {
             scope.alarm = JSON.parse(attrs.alarmDetail);
+
+            var dimensions = [];
+            Object.keys(scope.alarm.dimensions).forEach(function (key) {
+                var val = scope.alarm.dimensions[key],
+                    result;
+                val.forEach(function (current) {
+                    result = {};
+                    result[key] = [current];
+                    dimensions.push(JSON.stringify(result));
+                });
+            });
+            scope.alarm.dimensions = dimensions;
         },
         controller: ['$scope', '$window', 'AlarmService', 'ScalingGroupsService',
         function ($scope, $window, AlarmService, ScalingGroupsService) {
@@ -15,11 +27,11 @@ angular.module('AlarmDetailPage', [
             $scope.saveChanges = function (event) {
                 var servicePath = event.target.dataset.servicePath;
 
-                AlarmService.updateAlarm($scope.alarm, servicePath, csrf_token)
+                AlarmService.updateAlarm($scope.alarm, servicePath, csrf_token, true)
                     .then(function success (response) {
-                        Notify.success(response.data.message);
+                        $window.location.href = servicePath;
                     }, function error (response) {
-                        Notify.failure(response.data.message);
+                        $window.location.href = servicePath;
                     });
             };
 
