@@ -569,25 +569,6 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         return filtered_items
 
 
-class InstanceJsonView(BaseInstanceView):
-    def __init__(self, request):
-        super(InstanceJsonView, self).__init__(request)
-
-    @view_config(route_name='instance_json', renderer='json', request_method='GET')
-    def instance_json(self):
-        instance = self.get_instance()
-        # Only included a few fields here. Feel free to include more as needed.
-        return dict(results=dict(
-            id=instance.id,
-            instance_type=instance.instance_type,
-            image_id=instance.image_id,
-            platform=instance.platform,
-            state_reason=instance.state_reason,
-            ip_address=instance.ip_address,
-            root_device_name=instance.root_device_name,
-            root_device_type=instance.root_device_type))
-
-
 class InstanceView(TaggedItemView, BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
 
@@ -992,8 +973,11 @@ class InstanceVolumesView(BaseInstanceView):
             status = volume.status
             attach_status = volume.attach_data.status
             is_transitional = status in transitional_states or attach_status in transitional_states
+            is_root_volume = False
             detach_form_action = self.request.route_path(
                 'instance_volume_detach', id=self.instance.id, volume_id=volume.id)
+            if self.instance.root_device_type == 'ebs' and volume.attach_data.device == self.instance.root_device_name:
+                is_root_volume = True  # Note: Check for 'True' when passed to JS via Chameleon template
             volumes.append(dict(
                 id=volume.id,
                 name=TaggedItemView.get_display_name(volume),
@@ -1001,6 +985,7 @@ class InstanceVolumesView(BaseInstanceView):
                 device=volume.attach_data.device,
                 attach_time=volume.attach_data.attach_time,
                 attach_instance_id=volume.attach_data.instance_id,
+                is_root_volume=is_root_volume,
                 status=status,
                 attach_status=volume.attach_data.status,
                 detach_form_action=detach_form_action,
