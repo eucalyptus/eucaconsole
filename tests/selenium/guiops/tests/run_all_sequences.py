@@ -4,7 +4,7 @@ from keypair import Keypair_operations_sequence
 from security_groups import Security_group_operations_sequence
 from instances import Instance_operations_sequence
 from volumes import VolumeOperationsSequence
-from snapshots import Snapshot_operations_sequence
+from snapshots import SnapshotOperationsSequence
 from autoscaling import AutoScalingOperationsSequence
 from buckets import Buckets_operations_sequence
 from elastic_ips import ElasticIPsOperationsSequence
@@ -34,7 +34,7 @@ class Complete_sequence(GuiOps):
         all_tests_lowercase = ["keypair", "security group", "instance", "volume", "snapshot", "bucket", "autoscaling", "elastic IPs"]
         sequences = [Keypair_operations_sequence().keypair_ops_test(), Security_group_operations_sequence().security_group_ops_test(),
                      Instance_operations_sequence().instance_ops_test(), VolumeOperationsSequence().volume_ops_test(),
-                     Snapshot_operations_sequence().snapshot_ops_test(), Buckets_operations_sequence().bucket_ops_test(),
+                     SnapshotOperationsSequence().snapshot_ops_test(), Buckets_operations_sequence().bucket_ops_test(),
                      AutoScalingOperationsSequence().asg_ops_test(), ElasticIPsOperationsSequence().elastic_ip_ops_test()]
 
         f = open('results.html','w')

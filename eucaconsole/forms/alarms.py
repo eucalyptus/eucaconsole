@@ -186,7 +186,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
 
     @staticmethod
     def get_unit_choices():
-        choices = [BLANK_CHOICE]
+        choices = [BLANK_CHOICE, ('None', 'None')]
         for choice in Metric.Units:
             if choice is not None:
                 choices.append((choice, choice))
