@@ -87,7 +87,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             });
             // When unfilteredItems[] is updated, run it through the filter and build items[]
             $scope.$watch('unfilteredItems', function() {
-                $scope.detectOpenDropdown();
                 $scope.searchFilterItems();
             }, true); 
         };
@@ -166,6 +165,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
         $scope.getItems = function (okToRefresh) {
             var csrf_token = $('#csrf_token').val();
             var data = "csrf_token="+csrf_token;
+            $scope.detectOpenDropdown();
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
