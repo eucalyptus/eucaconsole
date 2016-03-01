@@ -1,6 +1,6 @@
 
 angular.module('EucaRoutes', [])
-.service('eucaRoutes', function($http) {
+.service('eucaRoutes', function($http, $interpolate) {
     var routes = null;
     var promise = $http.get('/static/json/routes.json').then(
         function successCallback(data) {
@@ -15,10 +15,7 @@ angular.module('EucaRoutes', [])
         getRoute: function(routeName, params) {
             var ret = routes[routeName];
             if (params !== undefined) {
-                // replace route variables
-                params.forEach(function(param) {
-                    ret = ret.replace("{"+param+"}", params[param]);
-                });
+                ret = $interpolate(ret)(params);
             }
             return ret;
         }
