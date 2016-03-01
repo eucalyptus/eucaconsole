@@ -118,6 +118,7 @@ class StackMixin(object):
                 ret['template_name'] = name
         return ret
 
+
 class StacksView(LandingPageView):
     def __init__(self, request):
         super(StacksView, self).__init__(request)

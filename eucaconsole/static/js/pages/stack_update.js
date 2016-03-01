@@ -323,7 +323,7 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives', 'Sta
                             if (param.options !== undefined) {
                                 for (var i=0; i<param.options.length; i++) {
                                     param.options[i] = {id:param.options[i][0], label:param.options[i][1]};
-                                };
+                                }
                             }
                         });
                     }

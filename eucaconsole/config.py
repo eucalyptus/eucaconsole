@@ -100,12 +100,14 @@ def check_config(settings):
             "Stack creation and object download will not work properly until this is fixed."
         )
 
+
 def write_routes_json(path):
     url_dict = {}
     for url in urls:
         url_dict[url.name] = url.pattern
     with open(os.path.join(path, 'routes.json'), 'w') as outfile:
         json.dump(url_dict, outfile)
+
 
 def get_configurator(settings, enable_auth=True):
     check_config(settings)

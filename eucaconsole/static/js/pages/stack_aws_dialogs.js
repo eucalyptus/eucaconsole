@@ -56,6 +56,6 @@ angular.module('StackAWSDialogs', ['EucaRoutes', 'EucaConsoleUtils'])
                     });
                 };
             }]
-        }
+        };
     })
 ;
