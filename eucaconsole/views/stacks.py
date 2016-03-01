@@ -908,13 +908,13 @@ class StackWizardView(BaseView, StackMixin):
             'AWS::AutoScaling::ScheduledAction',
             'AWS::CloudFront',
             'AWS::CloudTrail',
-            'AWS::DynamoDB'
-            'AWS::EC2::NetworkInterfaceAttachment'
-            'AWS::EC2::VPCPeeringConnection'
-            'AWS::EC2::VPCConnection'
-            'AWS::EC2::VPCConnectionRoute'
-            'AWS::EC2::VPCGateway'
-            'AWS::EC2::VPCGatewayRoutePropagation'
+            'AWS::DynamoDB',
+            'AWS::EC2::NetworkInterfaceAttachment',
+            'AWS::EC2::VPCPeeringConnection',
+            'AWS::EC2::VPCConnection',
+            'AWS::EC2::VPCConnectionRoute',
+            'AWS::EC2::VPCGateway',
+            'AWS::EC2::VPCGatewayRoutePropagation',
             'AWS::ElastiCache',
             'AWS::ElasticBeanstalk',
             'AWS::Kinesis',

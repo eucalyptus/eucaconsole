@@ -5,7 +5,7 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
+angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives', 'StackAWSDialogs'])
     .directive('file', function(){
         return {
             restrict: 'A',
@@ -28,7 +28,6 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
         $scope.stackForm = $('#stack-update-form');
         $scope.s3TemplateKey = undefined;
         $scope.stackTemplateEndpoint = '';
-        $scope.convertTemplateEndpoint = '';
         $scope.templateFiles = [];
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
@@ -47,16 +46,12 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
-            $scope.convertTemplateEndpoint = options.convert_template_url;
             $scope.templateReadEndpoint = options.stack_template_read_url;
             $scope.setInitialValues();
             $scope.setWatchers();
             $scope.setFocus();
             $scope.initCodeMirror();
             $scope.getStackTemplateInfo();
-        };
-        $scope.toggleContent = function () {
-            $scope.expanded = !$scope.expanded;
         };
         $scope.setFocus = function () {
             $timeout(function() {
@@ -322,27 +317,31 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
                         $scope.showAWSWarn();
                     }
                     $scope.parameters = results.parameters;
-                    angular.forEach($scope.parameters, function(param, idx) {
-                        $scope.paramModels[param.name] = param.default;
-                        if (param.options !== undefined) {
-                            for (var i=0; i<param.options.length; i++) {
-                                param.options[i] = {id:param.options[i][0], label:param.options[i][1]};
-                            };
-                        }
-                    });
-                    $scope.summarySection.find('.step2').removeClass('hide');
-                    $scope.checkRequiredInput();
-                    $timeout(function() {
-                        $scope.parameters.forEach(function(param) {
+                    if ($scope.parameters !== undefined) {
+                        angular.forEach($scope.parameters, function(param, idx) {
+                            $scope.paramModels[param.name] = param.default;
                             if (param.options !== undefined) {
-                                param.options.forEach(function(option) {
-                                    if (option.id == param.default) {
-                                        $scope.paramModels[param.name] = option;
-                                    }
-                                });
+                                for (var i=0; i<param.options.length; i++) {
+                                    param.options[i] = {id:param.options[i][0], label:param.options[i][1]};
+                                };
                             }
                         });
-                    });
+                    }
+                    $scope.summarySection.find('.step2').removeClass('hide');
+                    $scope.checkRequiredInput();
+                    if ($scope.parameters !== undefined) {
+                        $timeout(function() {
+                            $scope.parameters.forEach(function(param) {
+                                if (param.options !== undefined) {
+                                    param.options.forEach(function(option) {
+                                        if (option.id == param.default) {
+                                            $scope.paramModels[param.name] = option;
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    }
                     $timeout(function() {
                         $(document).foundation('tooltip', 'reflow');
                     }, 1000);
@@ -370,37 +369,6 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives'])
             else {
                 $scope.convertTemplate();
             }
-        };
-        $scope.convertTemplate = function () {
-            var fd = new FormData();
-            // fill from actual form
-            angular.forEach($('form').serializeArray(), function(value, key) {
-                this.append(value.name, value.value);
-            }, fd);
-            // skip file param since we're relying on template already being in S3
-            $scope.loading = true;
-            $scope.parameters = undefined;
-            $http.post($scope.convertTemplateEndpoint, fd, {
-                    headers: {'Content-Type': undefined},
-                    transformRequest: angular.identity
-            }).
-            success(function(oData) {
-                var results = oData ? oData.results : '';
-                if (results) {
-                    $scope.loading = false;
-                    $('#aws-warn-modal').foundation('reveal', 'close');
-                    $scope.s3TemplateKey = results.template_key;
-                    $scope.parameters = results.parameters;
-                    angular.forEach($scope.parameters, function(param, idx) {
-                        $scope.paramModels[param.name] = param.default;
-                    });
-                    $scope.checkRequiredInput();
-                }
-            }).
-            error(function (oData, status) {
-                $scope.loading = false;
-                eucaHandleError(oData, status);
-            });
         };
         $scope.paramValue = function(name) {
             var ret = $scope.paramModels[name];
