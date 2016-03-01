@@ -1,0 +1,34 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+    <head metal:fill-slot="head_css">
+    </head>
+
+    <div metal:fill-slot="main_content">
+        <div class="row" id="contentwrap" ng-app="AlarmHistoryPage">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
+                            CloudWatchAlarms</a></li>
+                    <li><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}">${alarm_id}</a></li>
+                    <li class="current"><a href="#">History</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
+            <metal:block metal:use-macro="layout.global_macros['notifications']" />
+            <h3 id="pagetitle">
+                <strong i18n:translate="">History for alarm:</strong>
+                <em>${alarm_id}</em>
+            </h3>
+            <div class="large-12 columns">
+                <dl class="tabs" id="alarm-subnav">
+                    <dd><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}" i18n:translate="">General</a><dd>
+                    <dd class="active">
+                        <a href="">
+                            History</a>
+                    </dd>
+                </dl>
+                <div class="panel">
+                </div>
+            </div>
+        </div>
+    </div>
+</metal:block>

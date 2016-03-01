@@ -388,3 +388,21 @@ class CloudWatchAlarmDetailView(BaseView):
         with boto_error_handler(self.request):
             groups = conn.get_all_groups()
             return groups
+
+
+class CloudWatchAlarmHistoryView(BaseView):
+    """CloudWatch Alarm History page view."""
+
+    TEMPLATE = '../templates/cloudwatch/alarms_history.pt'
+
+    def __init__(self, request, **kwargs):
+        super(CloudWatchAlarmHistoryView, self).__init__(request, **kwargs)
+
+        alarm_id = self.request.matchdict.get('alarm_id')
+        self.render_dict = dict(
+            alarm_id=alarm_id
+        )
+
+    @view_config(route_name='cloudwatch_alarm_history', renderer=TEMPLATE, request_method='GET')
+    def cloudwatch_alarm_history_view(self):
+        return self.render_dict
