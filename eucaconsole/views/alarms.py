@@ -399,10 +399,20 @@ class CloudWatchAlarmHistoryView(BaseView):
         super(CloudWatchAlarmHistoryView, self).__init__(request, **kwargs)
 
         alarm_id = self.request.matchdict.get('alarm_id')
+        history = self.get_alarm_history(alarm_id)
+
         self.render_dict = dict(
-            alarm_id=alarm_id
+            alarm_id=alarm_id,
+            history=history
         )
 
     @view_config(route_name='cloudwatch_alarm_history', renderer=TEMPLATE, request_method='GET')
     def cloudwatch_alarm_history_view(self):
         return self.render_dict
+
+    def get_alarm_history(self, alarm_id):
+        history = None
+        conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            history = conn.describe_alarm_history(alarm_name=alarm_id)
+        return history
