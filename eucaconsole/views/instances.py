@@ -183,6 +183,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True
         controller_options_json = BaseView.escape_json(json.dumps({
             'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
             'roles_json_items_endpoint': self.request.route_path('instances_roles_json'),
@@ -433,16 +434,19 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 'id': group.id,
                 'rules_count': self.get_security_group_rules_count_by_id(security_groups, group.id)
             } for group in instance.groups)
+            security_group_names = [group.name for group in instance.groups]  # Needed for sortable tables
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
             exists_key = True if self.get_keypair_by_name(keypairs, instance.key_name) else False
+            sortable_ip = int(instance.ip_address.replace('.', '')) if instance.ip_address else 0
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
                 instance_type=instance.instance_type,
                 image_id=instance.image_id,
                 ip_address=instance.ip_address,
+                sortable_ip=sortable_ip,
                 has_elastic_ip=has_elastic_ip,
                 public_dns_name=instance.public_dns_name,
                 launch_time=instance.launch_time,
@@ -450,6 +454,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 platform=instance.platform,
                 root_device_type=instance.root_device_type,
                 security_groups=security_groups_array,
+                sortable_secgroups=','.join(security_group_names),
                 key_name=instance.key_name,
                 exists_key=exists_key,
                 vpc_name=instance.vpc_name,

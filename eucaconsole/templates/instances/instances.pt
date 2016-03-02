@@ -235,14 +235,14 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="">NAME (ID)</th>
-                <th i18n:translate="">STATUS</th>
-                <th i18n:translate="">IMAGE ID</th>
-                <th i18n:translate="">AVAIL ZONE</th>
-                <th tal:condition="is_vpc_supported" i18n:translate="">VPC NETWORK</th>
-                <th i18n:translate="">PUBLIC ADDR</th>
-                <th i18n:translate="">KEY NAME</th>
-                <th i18n:translate="">SECURITY GROUP</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="status">STATUS</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="image_id">IMAGE ID</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="availability_zone">AVAIL ZONE</th>
+                <th tal:condition="is_vpc_supported" i18n:translate="" st-skip-natural="true" st-sort="vpc_name">VPC NETWORK</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="sortable_ip">PUBLIC ADDR</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="key_name">KEY NAME</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="sortable_secgroups">SECURITY GROUP</th>
                 <th i18n:translate="" class="actions">ACTIONS</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -355,6 +355,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instances.js')}"></script>
 </div>
 
