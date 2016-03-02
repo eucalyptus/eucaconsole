@@ -117,7 +117,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="" st-skip-natural="true" st-sort="name">Snapshot</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">Snapshot</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="status">Status</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="volume_size">Size</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="sortable_volume">Volume</th>
