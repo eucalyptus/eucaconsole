@@ -24,32 +24,31 @@
                 <dl class="tabs" id="alarm-subnav">
                     <dd><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}" i18n:translate="">General</a><dd>
                     <dd class="active">
-                        <a href="">
-                            History</a>
+                        <a href="" i18n:translate="">History</a>
                     </dd>
                 </dl>
-                <div class="panel">
+                <div class="panel" alarm-history="${history_json}">
                     <div>
                         <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
                             strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
                             facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                     </div>
-                    <p tal:condition="history is None">
+                    <p ng-show="!historicEvents.length" i18n:translate="">
                     No recent alarm activity.
                     </p>
-                    <table class="table" tal:condition="history">
+                    <table class="table" ng-show="historicEvents.length">
                         <thead>
                             <tr>
-                                <th>Timestamp</th>
-                                <th>Type</th>
-                                <th>Description</th>
+                                <th i18n:translate="">Timestamp</th>
+                                <th i18n:translate="">Type</th>
+                                <th i18n:translate="">Description</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr tal:repeat="item history">
-                                <td ng-cloak="">{{ '${item.timestamp.isoformat()}' | date: '${layout.angular_date_format}' }}</td>
-                                <td>${item.tem_type}</td>
-                                <td>${item.summary}</td>
+                        <tbody id="historyBody">
+                            <tr ng-repeat="item in historicEvents track by $index">
+                                <td ng-cloak="">{{ item.timestamp | date: '${layout.angular_date_format}' }}</td>
+                                <td>{{ item.history_item_type }}</td>
+                                <td>{{ item.summary }}</td>
                             </tr>
                         </tbody>
                     </table>

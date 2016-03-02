@@ -400,9 +400,13 @@ class CloudWatchAlarmHistoryView(BaseView):
 
         alarm_id = self.request.matchdict.get('alarm_id')
         history = self.get_alarm_history(alarm_id)
+        history = [{
+            'timestamp': item.timestamp.isoformat(),
+            'history_item_type': item.tem_type,
+            'summary': item.summary} for item in history]
 
         search_facets = [
-            {'name': 'type', 'label': _(u"Type"), 'options': [
+            {'name': 'history_item_type', 'label': _(u"Type"), 'options': [
                 {'key': 'ConfigurationUpdate', 'label': _("ConfigurationUpdate")},
                 {'key': 'StateUpdate', 'label': _("StateUpdate")},
                 {'key': 'Action', 'label': _("Action")}
@@ -412,6 +416,7 @@ class CloudWatchAlarmHistoryView(BaseView):
         self.render_dict = dict(
             alarm_id=alarm_id,
             history=history,
+            history_json=json.dumps(history),
             filter_keys=[],
             search_facets=BaseView.escape_json(json.dumps(search_facets))
         )
