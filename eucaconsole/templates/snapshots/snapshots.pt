@@ -117,13 +117,13 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="">Snapshot</th>
-                <th i18n:translate="">Status</th>
-                <th i18n:translate="">Size</th>
-                <th i18n:translate="">Volume</th>
-                <th i18n:translate="">Description</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name">Snapshot</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="status">Status</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="volume_size">Size</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="sortable_volume">Volume</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="description">Description</th>
                 <th i18n:translate="">Tags</th>
-                <th i18n:translate="">Time Started</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="start_time">Time Started</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -192,6 +192,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/snapshots.js')}"></script>
 </div>
 
