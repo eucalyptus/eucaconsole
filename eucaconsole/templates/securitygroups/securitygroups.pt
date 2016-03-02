@@ -70,7 +70,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">NAME</th>
                 <th tal:condition="is_vpc_supported" i18n:translate=""
                     st-skip-natural="true" st-sort="vpc_name">VPC NAME (ID)</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="description">DESCRIPTION</th>

@@ -73,7 +73,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="" st-skip-natural="true" st-sort="name">Name</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">Name</th>
                 <th i18n:translate="">Fingerprint</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
