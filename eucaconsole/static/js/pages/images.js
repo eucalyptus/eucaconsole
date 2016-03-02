@@ -9,6 +9,8 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.imageID = '';
         $scope.disabledExplanationVisible = false;
         $scope.snapshotImagesRegistered = [];
+        $scope.multipleItemsSelected = false;
+        $scope.ebsSnapshotNames = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.imagesUrl = options.snapshot_images_json_url;
@@ -33,13 +35,33 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
             $scope.imageRootDeviceType = image.root_device_type;
             $scope.imageSnapshotID = image.snapshot_id;
             $scope.snapshotImagesRegistered = [];
-            if (action == "deregister") {
+            if (action === "deregister") {
                 $scope.getSnapshotImages($scope.imageSnapshotID, $scope.imagesUrl);
             }
             modal.foundation('reveal', 'open');
             var form = $('#deregister-form');
             var formAction = form.attr('action').replace("_id_", image.id);
             form.attr('action', formAction);
+        };
+        $scope.revealMultiSelectDeregisterModal = function (selectedItems) {
+            $scope.snapshotImagesRegistered = [];
+            var modal = $('#deregister-image-modal'),
+                itemIDs = [],
+                itemNames = [],
+                ebsSnapshotNames = [];
+            selectedItems.forEach(function (item) {
+                itemIDs.push(item.id);
+                itemNames.push(item.name_id);
+                if (item.root_device_type === 'ebs') {
+                    ebsSnapshotNames.push(item.id);
+                }
+                // TODO: Add to snapshotImagesRegistered list here
+            });
+            $scope.multipleItemsSelected = itemIDs.length > 1;
+            $scope.imageID = itemIDs.join(', ');
+            $scope.imageNameID = itemNames.join(', ');
+            $scope.ebsSnapshotNames = ebsSnapshotNames;
+            modal.foundation('reveal', 'open');
         };
         $scope.getSnapshotImages = function (snapshot_id, url) {
             url = url.replace('_id_', snapshot_id);

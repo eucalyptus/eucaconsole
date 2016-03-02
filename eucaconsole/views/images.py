@@ -214,6 +214,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
             return JSONResponse(status=400, message="missing CSRF token")
         # actual images
         items = self.get_items()
+        account_id = User.get_account_id(self.conn, self.request)
         # fetch instances that have been marked for bundling
         instances = self.conn.get_only_instances(filters={'tag-key': 'ec_bundling'})
         for instance in instances:
@@ -239,11 +240,13 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 name=image.name,
                 state=image.state,
                 transitional=transitional,
-                progress=image.progress if hasattr(image, 'progress') else 0,  # this is valid for transitional images till we get something better
+                # this is valid for transitional images till we get something better
+                progress=image.progress if hasattr(image, 'progress') else 0,
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 name_id=ImageView.get_image_name_id(image),
                 owner_id=image.owner_id,
+                can_remove=True if account_id == image.owner_id else False,
                 owner_alias=image.owner_alias,
                 platform='windows' if image.platform == 'windows' else 'linux',
                 platform_name=ImageView.get_platform_name(platform),
@@ -374,7 +377,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
             tags = self.serialize_tags(self.image.tags)
         else:
             tags = '{}'
-        #tags = BaseView.escape_json(json.dumps(tags))
+        # tags = BaseView.escape_json(json.dumps(tags))
 
         self.render_dict = dict(
             image=self.image,

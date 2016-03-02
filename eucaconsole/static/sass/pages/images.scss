@@ -4,6 +4,10 @@
 @import "../includes/landingpage";
 
 
+#primary-buttons #more-actions-btn {
+    margin-left: 0;
+}
+
 // Tile/grid view
 .tile {
     .header a {

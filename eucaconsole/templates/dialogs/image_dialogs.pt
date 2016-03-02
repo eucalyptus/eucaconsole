@@ -25,7 +25,7 @@
                     &nbsp;${structure:deregister_form.delete_snapshot(**html_attrs)}
                     ${structure:deregister_form.delete_snapshot.label}
                 </span>
-                <span tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs'">
+                <span tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs' || ebsSnapshotNames.length">
                     &nbsp;
                     ${structure:deregister_form.delete_snapshot(**{'ng-disabled': 'snapshotImagesRegistered.length > 1'})}
                     ${structure:deregister_form.delete_snapshot.label}
