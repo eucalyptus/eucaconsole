@@ -102,12 +102,13 @@
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Name (ID)</th>
-                <th i18n:translate="">Status</th>
-                <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span i18n:translate="">Name</span></th>
-                <th i18n:translate="">Description</th>
-                <th i18n:translate="">Root Device</th>
-                <th i18n:translate="">Platform</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="id">Name (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="state">Status</th>
+                <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span
+                        i18n:translate="" st-skip-natural="true" st-sort="name">Name</span></th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="description">Description</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="root_device_type">Root Device</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="platform_name">Platform</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -176,6 +177,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/images.js')}"></script>
 </div>
 
