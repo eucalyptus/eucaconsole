@@ -105,7 +105,7 @@
                 <th i18n:translate="" st-skip-natural="true" st-sort="id">Name (ID)</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="state">Status</th>
                 <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span
-                        i18n:translate="" st-skip-natural="true" st-sort="name">Name</span></th>
+                        i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">Name</span></th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="description">Description</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="root_device_type">Root Device</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="platform_name">Platform</th>
