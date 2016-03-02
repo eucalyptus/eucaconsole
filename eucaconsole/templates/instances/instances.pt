@@ -235,7 +235,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">NAME (ID)</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="status">STATUS</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="image_id">IMAGE ID</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="availability_zone">AVAIL ZONE</th>
