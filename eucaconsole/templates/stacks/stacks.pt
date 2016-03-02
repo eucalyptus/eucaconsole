@@ -27,7 +27,7 @@
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                     <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
-                        <a ng-href="{{ update_stack_url | stringular: item.name | escapeURL }}"
+                        <a ng-href="{{ update_stack_url | stringular: (item.name | escapeURL) }}"
                            i18n:translate="">Update stack</a>
                     </li>
                     <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
@@ -66,7 +66,7 @@
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                             <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
-                                <a ng-href="{{ update_stack_url | stringular: item.name | escapeURL }}"
+                                <a ng-href="{{ update_stack_url | stringular: (item.name | escapeURL) }}"
                                    i18n:translate="">Update stack</a>
                             </li>
                             <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">

@@ -198,14 +198,15 @@
             </div>
         </div>
         <div id="edit-template-modal" class="reveal-modal large" data-reveal="">
-            <h3>${stack_name} <span i18n:translate="">template</span></h3>
+            <h3><span i18n:translate="">View/Edit Template</span> ${stack_name}</h3>
             <form ng-submit="saveTemplate($event)">
                 <textarea id="template-area" class="template-area" ng-model="stackTemplate"></textarea>
                 <small id="json-error" class="error" style="display:none;"></small>
                 <div>&nbsp;</div>
-                <button class="button" id="save-policy-btn" type="submit" i18n:translate="">
+                <button ng-if="!savingTemplate" class="button" id="save-policy-btn" type="submit" i18n:translate="">
                     Save Changes
                 </button>
+                <div ng-if="savingTemplate"><i class="busy" ></i>&nbsp;<span i18n:translate="">Validating template...</span></div>
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>

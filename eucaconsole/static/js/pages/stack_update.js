@@ -280,12 +280,11 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives', 'Sta
                 return;
             }
             $scope.loading = true;
-            $http.post($scope.stackTemplateEndpoint, fd, {
+            var promise = $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
-            }).
-            success(function(oData) {
-                var results = oData ? oData.results : '';
+            }).then(function successCallback(oData) {
+                var results = oData.data ? oData.data.results : [];
                 if (results) {
                     $scope.loading = false;
                     $scope.s3TemplateKey = results.template_key;
@@ -347,11 +346,11 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives', 'Sta
                     }, 1000);
                     $scope.updateChosenIds();
                 }
-            }).
-            error(function (oData, status) {
+            }, function errorCallback(errData) {
                 $scope.loading = false;
-                eucaHandleError(oData, status);
+                eucaHandleError(errData.statusText, errData.status);
             });
+            return promise;
         };
         $scope.showAWSWarn = function () {
             var thisKey = "do-not-show-aws-template-warning";
@@ -395,6 +394,7 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives', 'Sta
             $event.preventDefault();
             $('#json-error').css('display', 'none');
             $scope.clearCodeEditor();
+            $scope.savingTemplate = false;
             var editModal = $('#edit-template-modal');
             editModal.foundation('reveal', 'open');
             editModal.on('close.fndtn.reveal', function() {
@@ -416,10 +416,14 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives', 'Sta
                 $('#json-error').css('display', 'none');
                 var policy_json = $scope.codeEditor.getValue();
                 JSON.parse(policy_json);
-                $('#edit-template-modal').foundation('reveal', 'close');
                 // now, save the template
-                $scope.getStackTemplateInfo();
+                $scope.savingTemplate = true;
+                $scope.getStackTemplateInfo().then(function successCallback(oData) {
+                    $('#edit-template-modal').foundation('reveal', 'close');
+                    $scope.visitNextStep(2);
+                });
             } catch (e) {
+                $scope.savingTemplate = false;
                 $('#json-error').text(e);
                 $('#json-error').css('display', 'block');
             }
