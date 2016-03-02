@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
     <head metal:fill-slot="head_css">
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
         <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm_history.css')}"/>
     </head>
 
@@ -28,6 +29,11 @@
                     </dd>
                 </dl>
                 <div class="panel">
+                    <div>
+                        <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                            strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                            facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                    </div>
                     <p tal:condition="history is None">
                     No recent alarm activity.
                     </p>
@@ -42,7 +48,7 @@
                         <tbody>
                             <tr tal:repeat="item history">
                                 <td ng-cloak="">{{ '${item.timestamp.isoformat()}' | date: '${layout.angular_date_format}' }}</td>
-                                <td>${item.data.get('type')}</td>
+                                <td>${item.tem_type}</td>
                                 <td>${item.summary}</td>
                             </tr>
                         </tbody>
@@ -52,6 +58,7 @@
         </div>
     </div>
     <div metal:fill-slot="tail_js">
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_history.js')}"></script>
     </div>
 </metal:block>

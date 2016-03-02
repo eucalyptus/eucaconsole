@@ -401,9 +401,19 @@ class CloudWatchAlarmHistoryView(BaseView):
         alarm_id = self.request.matchdict.get('alarm_id')
         history = self.get_alarm_history(alarm_id)
 
+        search_facets = [
+            {'name': 'type', 'label': _(u"Type"), 'options': [
+                {'key': 'ConfigurationUpdate', 'label': _("ConfigurationUpdate")},
+                {'key': 'StateUpdate', 'label': _("StateUpdate")},
+                {'key': 'Action', 'label': _("Action")}
+            ]}
+        ]
+
         self.render_dict = dict(
             alarm_id=alarm_id,
-            history=history
+            history=history,
+            filter_keys=[],
+            search_facets=BaseView.escape_json(json.dumps(search_facets))
         )
 
     @view_config(route_name='cloudwatch_alarm_history', renderer=TEMPLATE, request_method='GET')
