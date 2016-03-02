@@ -12,7 +12,8 @@ class StacksLandingPage(LandingPage):
     _stack_link_css = 'a[href="/stacks/{0}"]'
     _stack_actions_menu_id = "table-item-dropdown_{0}"
     _view_details_stack_actions_menuitem_css ="#item-dropdown_{0}>li>a"
-    _delete_stack_actions_menuitem_css ="#item-dropdown_{0}>li:nth-of-type(2)>a"
+    _update_stack_actions_menuitem_css ="#item-dropdown_{0}>li:nth-of-type(2)>a"
+    _delete_stack_actions_menuitem_css ="#item-dropdown_{0}>li:nth-of-type(3)>a"
 
     def verify_stacks_lp_loaded(self):
         """
@@ -56,6 +57,14 @@ class StacksLandingPage(LandingPage):
         """
         self.tester.click_element_by_id(self._stack_actions_menu_id.format(stack_name))
         self.tester.click_element_by_css(self._view_details_stack_actions_menuitem_css.format(stack_name))
+
+    def click_action_update_stack_on_landing_page(self, stack_name):
+        """
+        Clicks action menu for a given stack on Stacks landing page. Clicks "Update Stack" action.
+        :param stack_name:
+        """
+        self.tester.click_element_by_id(self._stack_actions_menu_id.format(stack_name))
+        self.tester.click_element_by_css(self._update_stack_actions_menuitem_css.format(stack_name))
 
     def click_action_delete_stack_on_landing_page(self, stack_name):
         """

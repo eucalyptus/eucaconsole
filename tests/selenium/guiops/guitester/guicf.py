@@ -4,6 +4,7 @@ from pages.loginpage import LoginPage
 from pages.dashboard import Dashboard
 from dialogs.stack_dialogs import DeleteStackDialog
 from pages.stacks.create_stack import CreateStackWizard
+from pages.stacks.update_stack import UpdateStack
 from pages.stacks.stacks_lp import StacksLandingPage
 from pages.stacks.stacksdetail import StackDetailPage
 
@@ -26,11 +27,19 @@ class GuiCF(GuiTester):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_stack_link()
         CreateStackWizard(self).create_stack(name, template_url)
+        StackDetailPage(self, name).wait_for_create_complete()
 
     def create_stack_from_lp(self, name):
         BasePage(self).goto_stacks_view_via_menu()
         StacksLandingPage(self).click_create_stack_button_on_landing_page()
         CreateStackWizard(self).create_stack(name)
+        StackDetailPage(self, name).wait_for_create_complete()
+
+    def update_stack_from_lp(self, name):
+        BasePage(self).goto_stacks_view_via_menu()
+        StacksLandingPage(self).click_action_update_stack_on_landing_page(name)
+        UpdateStack(self).update_stack()
+        StackDetailPage(self, name).wait_for_update_complete()
 
     def delete_stack_from_lp(self, name):
         BasePage(self).goto_stacks_view_via_menu()

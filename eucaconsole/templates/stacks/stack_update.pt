@@ -56,7 +56,7 @@
                                     <input type="radio" id="inputtype-current" name="inputtype" value="current" ng-model="inputtype"/>
                                     <label i18n:translate="">Use current template</label>
                                     <div id="current-template-div" ng-show="inputtype=='current'">
-                                        <a class="circle remove has-tip policy-row-item" ng-click="editTemplate($event)"
+                                        <a class="circle remove has-tip edit-template" ng-click="editTemplate($event)"
                                            title="View/edit template" i18n:attributes="title"><i class="fi-pencil"></i></a><span>${template_name}</span>
                                     </div>
                                     <br ng-hide="inputtype=='current'"/>
@@ -203,7 +203,7 @@
                 <textarea id="template-area" class="template-area" ng-model="stackTemplate"></textarea>
                 <small id="json-error" class="error" style="display:none;"></small>
                 <div>&nbsp;</div>
-                <button ng-if="!savingTemplate" class="button" id="save-policy-btn" type="submit" i18n:translate="">
+                <button ng-if="!savingTemplate" class="button save-template-btn" ng-disabled="stackTemplate==''" type="submit" i18n:translate="">
                     Save Changes
                 </button>
                 <div ng-if="savingTemplate"><i class="busy" ></i>&nbsp;<span i18n:translate="">Validating template...</span></div>
