@@ -1,7 +1,7 @@
 <!--! Modal dialogs for Images on landing and detail page -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="deregister-image-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('image_deregister', id='_id_');
+         tal:define="landingpage_action request.route_path('images_deregister');
                      detailpage_action request.route_path('image_deregister', id=image.id) if image else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Remove image from cloud</h3>
@@ -25,7 +25,7 @@
                     &nbsp;${structure:deregister_form.delete_snapshot(**html_attrs)}
                     ${structure:deregister_form.delete_snapshot.label}
                 </span>
-                <span tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs' || ebsSnapshotNames.length">
+                <span tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs' || ebsImageIDs.length">
                     &nbsp;
                     ${structure:deregister_form.delete_snapshot(**{'ng-disabled': 'snapshotImagesRegistered.length > 1'})}
                     ${structure:deregister_form.delete_snapshot.label}

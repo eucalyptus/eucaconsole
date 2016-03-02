@@ -5,12 +5,12 @@
  */
 
 angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
-    .controller('ImagesCtrl', function ($scope, $http, eucaUnescapeJson, eucaHandleError) {
+    .controller('ImagesCtrl', function ($scope, $http, $q, eucaUnescapeJson, eucaHandleError) {
         $scope.imageID = '';
         $scope.disabledExplanationVisible = false;
         $scope.snapshotImagesRegistered = [];
         $scope.multipleItemsSelected = false;
-        $scope.ebsSnapshotNames = [];
+        $scope.ebsImageIDs = [];
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.imagesUrl = options.snapshot_images_json_url;
@@ -48,20 +48,41 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
             var modal = $('#deregister-image-modal'),
                 itemIDs = [],
                 itemNames = [],
-                ebsSnapshotNames = [];
+                ebsImageIDs = [],
+                snapshotIDs = [],
+                snapshotImagesRegistered = [],
+                apiPromises = [];
             selectedItems.forEach(function (item) {
                 itemIDs.push(item.id);
                 itemNames.push(item.name_id);
                 if (item.root_device_type === 'ebs') {
-                    ebsSnapshotNames.push(item.id);
+                    ebsImageIDs.push(item.id);
+                    if (snapshotIDs.indexOf(item.snapshot_id) === -1) {
+                       snapshotIDs.push(item.snapshot_id);
+                    }
                 }
-                // TODO: Add to snapshotImagesRegistered list here
             });
-            $scope.multipleItemsSelected = itemIDs.length > 1;
-            $scope.imageID = itemIDs.join(', ');
-            $scope.imageNameID = itemNames.join(', ');
-            $scope.ebsSnapshotNames = ebsSnapshotNames;
-            modal.foundation('reveal', 'open');
+            snapshotIDs.forEach(function (snapshotId) {
+                var url = $scope.imagesUrl;
+                var promise = $http.get(url.replace('_id_', snapshotId)); // Fetch images registered for snapshot
+                apiPromises.push(promise);
+            });
+            // Wait for all API calls for snapshot Images registered to complete before setting scope variables
+            $q.all(apiPromises).then(function(combinedResults) {
+                combinedResults.forEach(function(oData) {
+                    // NOTE: $q.all hoists results in a data attribute on completion, so use oData.data.results
+                    //       instead of the usual oData.results
+                    Array.prototype.push.apply(snapshotImagesRegistered, oData.data.results);
+                });
+                $scope.snapshotImagesRegistered = snapshotImagesRegistered;
+                $scope.multipleItemsSelected = itemIDs.length > 1;
+                $scope.imageID = itemIDs.join(', ');
+                $scope.imageNameID = itemNames.join(', ');
+                $scope.ebsImageIDs = ebsImageIDs;
+                modal.foundation('reveal', 'open');
+            }).catch(function(oData, status) {
+                eucaHandleError(oData, status);
+            });
         };
         $scope.getSnapshotImages = function (snapshot_id, url) {
             url = url.replace('_id_', snapshot_id);
