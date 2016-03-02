@@ -73,7 +73,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="">Name</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name">Name</th>
                 <th i18n:translate="">Fingerprint</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
@@ -108,6 +108,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/keypairs.js')}"></script>
 </div>
 

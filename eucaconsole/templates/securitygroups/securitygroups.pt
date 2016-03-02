@@ -70,9 +70,10 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="">NAME</th>
-                <th tal:condition="is_vpc_supported" i18n:translate="">VPC NAME (ID)</th>
-                <th i18n:translate="">DESCRIPTION</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME</th>
+                <th tal:condition="is_vpc_supported" i18n:translate=""
+                    st-skip-natural="true" st-sort="vpc_name">VPC NAME (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="description">DESCRIPTION</th>
                 <th i18n:translate="">INBOUND RULES</th>
                 <th tal:condition="is_vpc_supported" i18n:translate="">OUTBOUND RULES</th>
                 <th i18n:translate="" class="actions">ACTIONS</th>
@@ -110,6 +111,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/securitygroups.js')}"></script>
 </div>
 

@@ -60,6 +60,7 @@ class SecurityGroupsView(LandingPageView):
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         if not self.is_vpc_supported:
             del self.filters_form.vpc_id
+        self.enable_smart_table = True
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
