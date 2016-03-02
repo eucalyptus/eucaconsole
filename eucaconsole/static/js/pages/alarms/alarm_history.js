@@ -1,1 +1,1 @@
-angular.module('AlarmHistoryPage', []);
+angular.module('AlarmHistoryPage', ['MagicSearch']);
