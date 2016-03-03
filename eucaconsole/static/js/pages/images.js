@@ -93,8 +93,8 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table'])
                     }
                 });
                 modal.foundation('reveal', 'open');
-            }).catch(function(oData, status) {
-                eucaHandleError(oData, status);
+            }).catch(function(errData) {
+                eucaHandleError(errData.statusText, errData.status);
             });
         };
         $scope.getSnapshotImages = function (snapshot_id, url) {
