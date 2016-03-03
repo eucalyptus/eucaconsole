@@ -55,6 +55,7 @@ class SnapshotsView(LandingPageView):
         self.initial_sort_key = '-start_time'
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
@@ -230,6 +231,7 @@ class SnapshotsJsonView(LandingPageView):
                 tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
                 volume_id=snapshot.volume_id,
                 volume_name=volume_name,
+                sortable_volume=volume_name or snapshot.volume_id,
                 volume_size=snapshot.volume_size,
                 exists_volume=exists_volume,
             ))
