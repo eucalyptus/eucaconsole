@@ -26,6 +26,12 @@
                                 View details
                             </a>
                         </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true} | pendingOnly).length !== 1}">
+                            <a i18n:translate="" class="more-actions-cancelcreate"
+                               ng-click="cancelCreate($event, (items | filter: {selected: true } | pendingOnly)[0])">
+                                Cancel image creation
+                            </a>
+                        </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
                             <a i18n:translate="" class="more-actions-launchinstance"
                                ng-href="instances/new?image_id={{ (items | filter: {selected: true})[0].id }}">

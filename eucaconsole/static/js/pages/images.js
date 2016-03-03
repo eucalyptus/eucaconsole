@@ -125,5 +125,11 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
               });
         };
     })
+    .filter('pendingOnly', function() {
+        return function (items) {
+            return items.filter(function (item) {
+                return !!item.fake_id;
+            });
+        };
+    })
 ;
-
