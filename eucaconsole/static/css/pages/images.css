@@ -155,8 +155,8 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 #delete-snapshot-wrapper { position: relative; }
 #delete-snapshot-wrapper input#delete_snapshot { float: left; margin-top: 3px; }
-#delete-snapshot-wrapper label[for='delete_snapshot'] { float: left; width: 90%; margin-right: 0; }
-#delete-snapshot-wrapper label[for='delete_snapshot'] strong { color: #000; }
+#delete-snapshot-wrapper label[for="delete_snapshot"] { float: left; width: 90%; margin-right: 0; }
+#delete-snapshot-wrapper label[for="delete_snapshot"] strong { color: #000; }
 
 .tile .header a { padding-right: 4px; }
 .tile .label.has-tip { background: white; color: #03405f; font-weight: bold; border-bottom: 1px solid #444; }
