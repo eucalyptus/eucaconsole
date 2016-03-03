@@ -180,28 +180,30 @@ class ImagesView(LandingPageView):
     def images_deregister(self):
         image_id_param = self.request.params.get('image_id')
         image_ids = [image_id.strip() for image_id in image_id_param.split(',')]
-        delete_snapshots = self.request.params.get('delete_snapshot') == 'y'
+        delete_snapshot_param = self.request.params.get('delete_snapshot') == 'y'
         snapshots_deleted = []
         if self.deregister_form.validate():
             with boto_error_handler(self.request):
-                images = self.conn.get_all_images(image_ids=image_ids)
+                images = self.conn.get_all_images(image_ids=image_ids, owners='self')
                 for image in images:
                     delete_snapshot = False
                     root_dev = None
-                    if image.root_device_type == 'ebs' and delete_snapshots:
-                        delete_snapshot = True
-                        root_dev = panels.get_root_device_name(image)
+                    if image.root_device_type == 'ebs' and delete_snapshot_param:
+                        snapshot_id = ImageView.get_image_snapshot_id(image)
+                        registered_images = self.get_images_registered(snapshot_id)
+                        if len(registered_images) == 1:
+                            delete_snapshot = True
+                            root_dev = panels.get_root_device_name(image)
                     self.conn.deregister_image(image.id, delete_snapshot=delete_snapshot)
                     if delete_snapshot:
                         for key in image.block_device_mapping:
                             if root_dev and key == root_dev:
-                                snapshot_id = image.block_device_mapping[key].snapshot_id
                                 self.conn.delete_snapshot(snapshot_id)
                                 snapshots_deleted.append(snapshot_id)
                                 break
             self.invalidate_images_cache()  # clear images cache
             location = self.request.route_path('images')
-            prefix = _(u'Successfully sent request to deregistered image')
+            prefix = _(u'Successfully sent request to deregister image')
             msg = '{0} {1}'.format(prefix, ', '.join(image_ids))
             if snapshots_deleted:
                 snapshots_prefix = _(u'The following snapshots were deleted:')
@@ -209,6 +211,16 @@ class ImagesView(LandingPageView):
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
+
+    def get_images_registered(self, snap_id):
+        ret = []
+        images = self.conn.get_all_images(owners='self')
+        for img in images:
+            if img.block_device_mapping is not None:
+                vol = img.block_device_mapping.get(panels.get_root_device_name(img), None)
+                if vol is not None and snap_id == vol.snapshot_id:
+                    ret.append(img)
+        return ret or None
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({

@@ -9,6 +9,8 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
         $scope.imageID = '';
         $scope.disabledExplanationVisible = false;
         $scope.snapshotImagesRegistered = [];
+        $scope.snapshotsWithOtherRegisteredImages = [];
+        $scope.snapshotsWithoutOtherRegisteredImages = [];
         $scope.multipleItemsSelected = false;
         $scope.ebsImageIDs = [];
         $scope.initController = function (optionsJson) {
@@ -30,6 +32,7 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.revealModal = function (action, image) {
             var modal = $('#' + action + '-image-modal');
+            $scope.multipleItemsSelected = false;
             $scope.imageID = image.id;
             $scope.imageNameID = image.name_id;
             $scope.imageRootDeviceType = image.root_device_type;
@@ -44,14 +47,15 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
             form.attr('action', formAction);
         };
         $scope.revealMultiSelectDeregisterModal = function (selectedItems) {
-            $scope.snapshotImagesRegistered = [];
             var modal = $('#deregister-image-modal'),
                 itemIDs = [],
                 itemNames = [],
                 ebsImageIDs = [],
                 snapshotIDs = [],
-                snapshotImagesRegistered = [],
-                apiPromises = [];
+                promises = [];
+            $scope.snapshotImagesRegistered = [];
+            $scope.snapshotsWithOtherRegisteredImages = [];
+            $scope.snapshotsWithoutOtherRegisteredImages = [];
             selectedItems.forEach(function (item) {
                 itemIDs.push(item.id);
                 itemNames.push(item.name_id);
@@ -62,23 +66,32 @@ angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                 }
             });
+            $scope.multipleItemsSelected = itemIDs.length > 1;
+            $scope.imageID = itemIDs.join(', ');
+            $scope.imageNameID = itemNames.join(', ');
+            $scope.ebsImageIDs = ebsImageIDs;
+            // Fetch images registered for each snapshot
             snapshotIDs.forEach(function (snapshotId) {
                 var url = $scope.imagesUrl;
-                var promise = $http.get(url.replace('_id_', snapshotId)); // Fetch images registered for snapshot
-                apiPromises.push(promise);
+                var promise = $http.get(url.replace('_id_', snapshotId));
+                promises.push(promise);
             });
             // Wait for all API calls for snapshot Images registered to complete before setting scope variables
-            $q.all(apiPromises).then(function(combinedResults) {
+            $q.all(promises).then(function(combinedResults) {
                 combinedResults.forEach(function(oData) {
                     // NOTE: $q.all hoists results in a data attribute on completion, so use oData.data.results
                     //       instead of the usual oData.results
-                    Array.prototype.push.apply(snapshotImagesRegistered, oData.data.results);
+                    var snapshotId = oData.config.url.split('/')[2];
+                    var imagesRegistered = oData.data.results;
+                    Array.prototype.push.apply($scope.snapshotImagesRegistered, imagesRegistered);
+                    var snapshotImagesMapping = {'snapid': snapshotId, 'images': imagesRegistered};
+                    if (oData.data.results.length > 1) {
+                        $scope.snapshotsWithOtherRegisteredImages.push(snapshotImagesMapping);
+                    } else {
+                        $scope.snapshotsWithoutOtherRegisteredImages.push(snapshotImagesMapping);
+                        $scope.imageSnapshotID = snapshotId;
+                    }
                 });
-                $scope.snapshotImagesRegistered = snapshotImagesRegistered;
-                $scope.multipleItemsSelected = itemIDs.length > 1;
-                $scope.imageID = itemIDs.join(', ');
-                $scope.imageNameID = itemNames.join(', ');
-                $scope.ebsImageIDs = ebsImageIDs;
                 modal.foundation('reveal', 'open');
             }).catch(function(oData, status) {
                 eucaHandleError(oData, status);
