@@ -513,9 +513,9 @@ class StackWizardView(BaseView, StackMixin):
         stack_name = self.request.matchdict.get('name')
         with boto_error_handler(self.request):
             self.log_request(u"Cancelling update of stack:{0}".format(stack_name))
-            result = self.cloudformation_conn.cancel_update_stack(stack_name)
+            self.cloudformation_conn.cancel_update_stack(stack_name)
             msg = _(u'Successfully sent cancel update request. '
-                u'It may take a moment to cancel the stack update.')
+                    u'It may take a moment to cancel the stack update.')
             return JSONResponse(status=200, message=msg)
 
     @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
