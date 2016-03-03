@@ -5,7 +5,7 @@
  */
 
 // Pull in common landing page module
-angular.module('KeypairsPage', ['LandingPage'])
+angular.module('KeypairsPage', ['LandingPage', 'smart-table'])
     .controller('KeypairsCtrl', function ($scope) {
         $scope.keypairName= '';
         $scope.multipleItemsSelected = false;

@@ -5,7 +5,7 @@
  */
 
 // Pull in common landing page module
-angular.module('SecurityGroupsPage', ['LandingPage'])
+angular.module('SecurityGroupsPage', ['LandingPage', 'smart-table'])
     .controller('SecurityGroupsCtrl', function ($scope) {
         $scope.securitygroupID = '';
         $scope.multipleItemsSelected = false;
