@@ -17,5 +17,9 @@ class GenericDirectiveView(object):
         self.request = request
     
     @view_config(route_name='stack_aws_dialogs', renderer='../templates/stacks/stack_aws_dialogs.pt')
-    def aws_dialogs_template(self):
+    def stack_aws_dialogs_template(self):
+        return dict()
+    
+    @view_config(route_name='stack_cancel_update_dialog', renderer='../templates/stacks/stack_cancel_update_dialog.pt')
+    def stack_cancel_update_dialogs_template(self):
         return dict()

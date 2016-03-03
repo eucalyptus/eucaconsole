@@ -362,7 +362,7 @@ class StackStateView(BaseView):
                 if len(status) == 0 or stack_status in status:
                     events.append({
                         'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                        'status': event.resource_status.lower().capitalize().replace('_', '-'),
+                        'status': stack_status,
                         'status_reason': event.resource_status_reason,
                         'type': event.resource_type,
                         'logical_id': event.logical_resource_id,
@@ -505,6 +505,18 @@ class StackWizardView(BaseView, StackMixin):
             self.request.session.flash(msg, queue=queue)
             location = self.request.route_path('stack_view', name=stack_name)
             return HTTPFound(location=location)
+
+    @view_config(route_name='stack_cancel_update', request_method='POST', xhr=True)
+    def stack_cancel_update(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        stack_name = self.request.matchdict.get('name')
+        with boto_error_handler(self.request):
+            self.log_request(u"Cancelling update of stack:{0}".format(stack_name))
+            result = self.cloudformation_conn.cancel_update_stack(stack_name)
+            msg = _(u'Successfully sent cancel update request. '
+                u'It may take a moment to cancel the stack update.')
+            return JSONResponse(status=200, message=msg)
 
     @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
     def stack_template_parse(self):

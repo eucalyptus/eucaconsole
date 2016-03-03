@@ -376,7 +376,9 @@ urls = [
     Route(name='stack_events', pattern='/stacks/{name}/events'),
     # Update
     Route(name='stack_update', pattern='/stacks/{name}/update'),
+    Route(name='stack_cancel_update', pattern='/stacks/{name}/cancelupdate'),
     Route(name='stack_aws_dialogs', pattern='/templates/aws-dialogs'),
+    Route(name='stack_cancel_update_dialog', pattern='/templates/cancel-stack-update-dialog'),
 
     # Tag Editor #####
     # Directive Template

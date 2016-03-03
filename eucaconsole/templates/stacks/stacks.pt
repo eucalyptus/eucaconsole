@@ -30,6 +30,10 @@
                         <a ng-href="{{ update_stack_url | stringular: (item.name | escapeURL) }}"
                            i18n:translate="">Update stack</a>
                     </li>
+                    <li ng-show="stackStatus === 'Update-in-progress'">
+                        <a id="cancel-update-stack-action" ng-click="revealModal('cancel-update', item)"
+                           i18n:translate="">Cancel update</a>
+                    </li>
                     <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
                     </li>
@@ -55,7 +59,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
                 <td class="status">
-                    <span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span>
+                    <span class="label radius status {{ item.status }}">{{ displayStatus(item.status) }}</span>
                     <span class="busy" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td class="breakword">{{ item.description }}</td>
@@ -69,6 +73,10 @@
                                 <a ng-href="{{ update_stack_url | stringular: (item.name | escapeURL) }}"
                                    i18n:translate="">Update stack</a>
                             </li>
+                            <li ng-show="stackStatus === 'Update-in-progress'">
+                                <a id="cancel-update-stack-action" ng-click="revealModal('cancel-update', item)"
+                                   i18n:translate="">Cancel update</a>
+                            </li>
                             <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
                             </li>
@@ -80,6 +88,8 @@
         <!--! Modal dialogs -->
         ${panel('stack_dialogs', delete_form=delete_form, landingpage=True)}
         ${panel('ufshost_warn_dialog')}
+        <stack-cancel-update-dialog template="${request.route_path('stack_cancel_update_dialog')}" stack-name="stackName">
+        </stack-cancel-update-dialog>
     </div>
 </div>
 
@@ -88,6 +98,8 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-filter.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/stack_cancel_update_dialog.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stacks.js')}"></script>
 </div>
 
