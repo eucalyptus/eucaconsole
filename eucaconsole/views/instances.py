@@ -183,7 +183,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
-        self.enable_smart_table = True
+        self.enable_smart_table = True  # Enables sortable tables via macros.pt
         controller_options_json = BaseView.escape_json(json.dumps({
             'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
             'roles_json_items_endpoint': self.request.route_path('instances_roles_json'),
@@ -439,7 +439,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
             exists_key = True if self.get_keypair_by_name(keypairs, instance.key_name) else False
-            sortable_ip = int(instance.ip_address.replace('.', '')) if instance.ip_address else 0
+            sortable_ip = self.get_sortable_ip(instance.ip_address)
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
@@ -548,6 +548,12 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 if image.id == image_id:
                     return image
         return None
+
+    @staticmethod
+    def get_sortable_ip(ip_address):
+        if not ip_address:
+            return 0
+        return long("".join(["{0:08b}".format(int(num)) for num in ip_address.split('.')]), 2)
 
     def filter_by_scaling_group(self, items):
         filtered_items = []
