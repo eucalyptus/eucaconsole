@@ -42,7 +42,7 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <form name="alarmUpdateForm">
+                    <form name="alarmUpdateForm" novalidate="">
                         ${structure:alarm_form['csrf_token']}
                         <h6 i18n:translate="">State</h6>
                         <div class="row controls-wrapper">
@@ -146,15 +146,17 @@
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
-                        <div class="actions" ng-form="alarmActionsForm" alarm-actions="">
+                        <div class="actions" ng-form="alarmActionsForm"
+                                             alarm-actions="${alarm_actions_json}"
+                                             service-path="${request.route_path('cloudwatch_alarm_actions', alarm_id=alarm_id)}">
                             <h6>Actions</h6>
                             <div class="item-list">
-                                <span class="item" tal:repeat="action alarm_actions" data-item-value="${action.arn}">
+                                <span class="item" ng-repeat="action in alarmActions" data-item-value="{{ action.arn }}">
                                     <span i18n:translate="">For group</span>
-                                    <strong>${action.autoscaling_group_name}</strong>
+                                    <strong>{{ action.autoscaling_group_name }}</strong>
                                     <span i18n:translate="">execute policy</span>
-                                    <strong>${action.policy_name}</strong>
-                                    <a class="remove" title="Remove action">
+                                    <strong>{{ action.policy_name }}</strong>
+                                    <a class="remove" title="Remove action" ng-click="removeAction($index)">
                                         <i class="fi-x"></i>
                                     </a>
                                 </span>
@@ -174,7 +176,7 @@
                                         <label class="right" i18n:translate="">When alarm state is</label>
                                     </div>
                                     <div class="columns large-9 small-10">
-                                        <select>
+                                        <select ng-model="action.alarmState" ng-init="action.alarmState = 'ALARM'">
                                             <option>ALARM</option>
                                         </select>
                                     </div>
@@ -184,7 +186,7 @@
                                         <label class="right" i18n:translate="">For scaling group</label>
                                     </div>
                                     <div class="columns large-9 small-10">
-                                        <select ng-model="scalingGroup" ng-init="scalingGroup = ''" ng-change="updatePolicies()">
+                                        <select ng-model="action.scalingGroup" ng-init="action.scalingGroup = ''" ng-change="updatePolicies()">
                                             <option value="">Select scaling group...</option>
                                             <option tal:repeat="group scaling_groups" tal:content="group.name" required=""></option>
                                         </select>
@@ -195,9 +197,9 @@
                                         <label class="right" i18n:translate="">Execute scaling policy</label>
                                     </div>
                                     <div class="columns large-9 small-10">
-                                        <select ng-model="scalingGroupPolicy" ng-init="scalingGroupPolicy = ''" ng-disabled="policiesAvailable()" required="">
+                                        <select ng-model="action.scalingGroupPolicy" ng-init="action.scalingGroupPolicy = ''" ng-disabled="policiesAvailable()" required="">
                                             <option value="">Select policy...</option>
-                                            <option ng-repeat="(policy, arn) in scalingGroupPolicies" ng-bind="policy" ng-value="arn"></option>
+                                            <option ng-repeat="(policy, arn) in scalingGroupPolicies" ng-bind="policy" ng-value="{{ policy }}" data-arn="{{ arn }}"></option>
                                         </select>
                                     </div>
                                 </div>

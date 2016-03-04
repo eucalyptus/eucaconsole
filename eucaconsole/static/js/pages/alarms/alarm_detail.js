@@ -58,7 +58,7 @@ angular.module('AlarmDetailPage', [
             };
 
             $scope.updatePolicies = function () {
-                ScalingGroupsService.getPolicies($scope.scalingGroup)
+                ScalingGroupsService.getPolicies($scope.action.scalingGroup)
                     .then(function success (response) {
                         if(response.data) {
                             $scope.scalingGroupPolicies = response.data.policies;
@@ -122,12 +122,49 @@ angular.module('AlarmDetailPage', [
 .directive('alarmActions', function () {
     return {
         restrict: 'A',
-        controller: ['$scope', function ($scope) {
+        link: function (scope, element, attrs) {
+            scope.alarmActions = JSON.parse(attrs.alarmActions);
+            scope.servicePath = attrs.servicePath;
+        },
+        controller: ['$scope', 'AlarmService', function ($scope, AlarmService) {
             $scope.addAction = function () {
-                console.log($scope);
                 if($scope.alarmActionsForm.$invalid) {
                     return;
                 }
+
+                var policy = $scope.action.scalingGroupPolicy,
+                    arn = $scope.scalingGroupPolicies[policy];
+
+                var action = {
+                    autoscaling_group_name: $scope.action.scalingGroup,
+                    policy_name: policy,
+                    arn: arn
+                };
+                $scope.alarmActions.push(action);
+
+                $scope.updateActions();
+            };
+
+            $scope.removeAction = function ($index) {
+                $scope.alarmActions.splice($index, 1);
+                $scope.updateActions();
+            };
+
+            $scope.updateActions = function () {
+                AlarmService.updateActions($scope.alarmActions, $scope.servicePath).then(function success () {
+                    $scope.resetForm();
+                }, function error (response) {
+                    console.log(response);
+                });
+            };
+
+            $scope.resetForm = function () {
+                $scope.action = {
+                    alarmState: 'ALARM'
+                };
+                $scope.scalingGroupPolicies = [];
+                $scope.alarmActionsForm.$setPristine();
+                $scope.alarmActionsForm.$setUntouched();
             };
         }]
     };
