@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils'])
+angular.module('ImagesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table'])
     .controller('ImagesCtrl', function ($scope, $http, eucaUnescapeJson, eucaHandleError) {
         $scope.imageID = '';
         $scope.disabledExplanationVisible = false;

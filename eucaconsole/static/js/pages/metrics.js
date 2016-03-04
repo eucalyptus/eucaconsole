@@ -35,7 +35,6 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 startDate.setHours(-(14 * 24));  // move back 2 weeks
                 var endDate = new Date();
                 $(element).fdatepicker({format: scope.format, pickTime: true, startDate:startDate, endDate:endDate}).on('changeDate', function(ev){
-                    console.log("date from datepicker directive: "+ev.date);
                     scope.$apply(function(){
                         ngModel.$setViewValue(ev.date);
                     }); 
@@ -126,6 +125,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             if (params.graph !== undefined) {
                 // parse graph params
                 var graph = purl("?"+$.base64.decode(params.graph)).param();
+                console.log("chart from URL = "+$.base64.decode(params.graph));
                 graph.dimensions = JSON.parse(graph.dimensions);
                 items.forEach(function(metric, idx) {
                     if (metric.heading === true) return;
@@ -194,7 +194,6 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     }
                 }
                 else {
-                    //console.log(idx + value.res_ids[0] + " ".repeat(200 - value.res_ids[0].length));
                     return idx + value.res_ids[0] + " ".repeat(200 - value.res_ids[0].length);
                 }
             },
@@ -217,7 +216,6 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     }
                 }
                 else {
-                    //console.log(idx + value.metric_name + " ".repeat(30 - value.metric_name.length));
                     return idx + value.metric_name + " ".repeat(30 - value.metric_name.length);
                 }
                 return value;
