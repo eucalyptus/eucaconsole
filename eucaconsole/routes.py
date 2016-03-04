@@ -61,6 +61,7 @@ urls = [
     # Images #####
     Route(name='images', pattern='/images'),
     Route(name='images_json', pattern='/images/json'),
+    Route(name='images_deregister', pattern='/images/deregister'),
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
     Route(name='image_state_json', pattern='/images/{id}/state/json'),
