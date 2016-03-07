@@ -57,6 +57,7 @@ urls = [
     # Common #####
     Route(name='region_select', pattern='/region/select'),
     Route(name='file_download', pattern='/_getfile'),
+    Route(name='render_template', pattern='/_template/*subpath'),
 
     # Images #####
     Route(name='images', pattern='/images'),
@@ -377,10 +378,4 @@ urls = [
     # Update
     Route(name='stack_update', pattern='/stacks/{name}/update'),
     Route(name='stack_cancel_update', pattern='/stacks/{name}/cancelupdate'),
-    Route(name='stack_aws_dialogs', pattern='/templates/aws-dialogs'),
-    Route(name='stack_cancel_update_dialog', pattern='/templates/cancel-stack-update-dialog'),
-
-    # Tag Editor #####
-    # Directive Template
-    Route(name='tag_editor_template', pattern='/templates/tag-editor'),
 ]

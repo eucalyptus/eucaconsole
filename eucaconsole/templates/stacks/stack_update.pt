@@ -211,7 +211,7 @@
             <a class="close-reveal-modal">&#215;</a>
         </div>
         <aws-template-dialogs
-            template="${request.route_path('stack_aws_dialogs')}"
+            template="${request.route_path('render_template', subpath='stacks/stack_aws_dialogs')}"
             service-list="serviceList"
             resource-list="resourceList"
             property-list="propertyList"

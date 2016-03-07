@@ -88,7 +88,7 @@
         <!--! Modal dialogs -->
         ${panel('stack_dialogs', delete_form=delete_form, landingpage=True)}
         ${panel('ufshost_warn_dialog')}
-        <stack-cancel-update-dialog template="${request.route_path('stack_cancel_update_dialog')}" stack-name="stackName">
+        <stack-cancel-update-dialog template="${request.route_path('render_template', subpath='stacks/stack_cancel_update_dialog')}" tack-name="stackName">
         </stack-cancel-update-dialog>
     </div>
 </div>
