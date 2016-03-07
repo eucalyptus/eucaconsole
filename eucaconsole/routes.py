@@ -57,6 +57,7 @@ urls = [
     # Common #####
     Route(name='region_select', pattern='/region/select'),
     Route(name='file_download', pattern='/_getfile'),
+    Route(name='render_template', pattern='/_template/*subpath'),
 
     # Images #####
     Route(name='images', pattern='/images'),
@@ -377,8 +378,4 @@ urls = [
     Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),
     Route(name='stack_template', pattern='/stacks/{name}/template'),
     Route(name='stack_events', pattern='/stacks/{name}/events'),
-
-    # Tag Editor #####
-    # Directive Template
-    Route(name='tag_editor_template', pattern='/templates/tag-editor'),
 ]
