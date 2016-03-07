@@ -57,6 +57,7 @@ urls = [
     # Common #####
     Route(name='region_select', pattern='/region/select'),
     Route(name='file_download', pattern='/_getfile'),
+    Route(name='render_template', pattern='/_template/*subpath'),
 
     # Images #####
     Route(name='images', pattern='/images'),
