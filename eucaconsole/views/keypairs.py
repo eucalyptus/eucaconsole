@@ -49,6 +49,7 @@ class KeyPairsView(LandingPageView):
         self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
     def keypairs_landing(self):

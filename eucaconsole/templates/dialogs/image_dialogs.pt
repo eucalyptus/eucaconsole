@@ -1,7 +1,7 @@
 <!--! Modal dialogs for Images on landing and detail page -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="deregister-image-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('image_deregister', id='_id_');
+         tal:define="landingpage_action request.route_path('images_deregister');
                      detailpage_action request.route_path('image_deregister', id=image.id) if image else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Remove image from cloud</h3>
@@ -25,17 +25,40 @@
                     &nbsp;${structure:deregister_form.delete_snapshot(**html_attrs)}
                     ${structure:deregister_form.delete_snapshot.label}
                 </span>
-                <span tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs'">
+                <span tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs' || ebsImageIDs.length">
                     &nbsp;
-                    ${structure:deregister_form.delete_snapshot(**{'ng-disabled': 'snapshotImagesRegistered.length > 1'})}
-                    ${structure:deregister_form.delete_snapshot.label}
+                    <span ng-if="!multipleItemsSelected">
+                        ${structure:deregister_form.delete_snapshot(**{'ng-disabled': 'snapshotImagesRegistered.length > 1'})}
+                        <label for="delete_snapshot">
+                            <span i18n:translate="">Delete associated snapshot</span>
+                            <span>{{ imageSnapshotID }}</span>
+                        </label>
+                    </span>
+                    <span ng-if="multipleItemsSelected" id="delete-snapshot-wrapper">
+                        <input id="delete_snapshot" name="delete_snapshot" type="checkbox" value="y"
+                               ng-if="snapshotsWithoutOtherRegisteredImages.length" />
+                        <label for="delete_snapshot">
+                            <span i18n:translate="" ng-if="snapshotsWithoutOtherRegisteredImages.length === 1">
+                                Delete associated snapshot
+                            </span>
+                            <span i18n:translate="" ng-if="snapshotsWithoutOtherRegisteredImages.length &gt; 1">
+                                Delete associated snapshots
+                            </span>
+                            <span ng-repeat="snapshot in snapshotsWithoutOtherRegisteredImages">
+                                <strong>{{ snapshot.snapid }}</strong>
+                                <span i18n:translate="">for image</span>
+                                <strong ng-repeat="image in snapshot.images">{{ image.id }}</strong><span ng-hide="$last">, </span>
+                            </span>
+                            <br /><br />
+                        </label>
+                    </span>
                 </span>
                 <a tal:condition="(snapshot_images_registered > 1) or landingpage"
                    ng-click="disabledExplanationVisible = !disabledExplanationVisible"
-                   ng-show="${'snapshotImagesRegistered.length > 1' if landingpage else 'true'}">
+                   ng-show="${'snapshotImagesRegistered.length > 1 &amp;&amp; !multipleItemsSelected' if landingpage else 'true'}">
                     Why is this disabled?
                 </a>
-                <div ng-show="disabledExplanationVisible">
+                <div ng-show="disabledExplanationVisible &amp;&amp; !multipleItemsSelected">
                     <span i18n:translate="">
                         The snapshot for this image cannot be deleted when there are other images registered from the snapshot
                     </span>
