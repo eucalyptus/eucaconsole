@@ -46,11 +46,6 @@ $instance-tile-height-adjustment: 24px;
 .tile {
     height: $tile-height + $instance-tile-height-adjustment;
     max-height: $tile-height + $instance-tile-height-adjustment;
-    .alarm-status {
-        padding: 2px 6px;
-        color: white;
-        border-radius: 3px;
-    }
 }
 
 
