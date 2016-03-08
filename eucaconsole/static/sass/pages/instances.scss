@@ -12,6 +12,9 @@ $instance-status-color-stopping: lighten(red, 20%);
 $instance-status-color-terminated: $euca-darkgrey;
 $instance-status-color-terminating: lightgrey;
 
+$alarm-status-color-alarm: $hp-red;
+$alarm-status-color-insufficient: $hp-gray-65;
+$alarm-status-color-ok: $hp-green;
 
 
 // Tile/table view
@@ -21,6 +24,10 @@ $instance-status-color-terminating: lightgrey;
 .status.stopping { background-color: $instance-status-color-stopping; }
 .status.terminated { background-color: $instance-status-color-terminated; }
 .status.shutting-down { background-color: $instance-status-color-terminating; }
+
+.alarm-status.alarm { background-color: $alarm-status-color-alarm; }
+.alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient; }
+.alarm-status.ok { background-color: $alarm-status-color-ok; }
 
 
 $instance-tile-height-adjustment: 24px;
@@ -39,6 +46,11 @@ $instance-tile-height-adjustment: 24px;
 .tile {
     height: $tile-height + $instance-tile-height-adjustment;
     max-height: $tile-height + $instance-tile-height-adjustment;
+    .alarm-status {
+        padding: 2px 6px;
+        color: white;
+        border-radius: 3px;
+    }
 }
 
 

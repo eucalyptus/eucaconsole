@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 import base64
+import itertools
 import re
 import simplejson as json
 
@@ -385,6 +386,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
         self.vpcs = self.get_all_vpcs()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
@@ -394,6 +396,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         vpc_subnets = self.vpc_conn.get_all_subnets()
         keypairs = self.get_all_keypairs()
         security_groups = self.get_all_security_groups()
+        alarms = [alarm for alarm in self.cw_conn.describe_alarms() if 'InstanceId' in alarm.dimensions]
         instances = []
         filters = {}
         availability_zone_param = self.request.params.getall('availability_zone')
@@ -462,6 +465,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=vpc_subnets) if
                 instance.subnet_id else None,
                 status=instance.state,
+                alarm_status=self.get_instance_alarm_status(instance, alarms),
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
                 running_create=True if instance.tags.get('ec_bundling') else False,
@@ -554,6 +558,32 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         if not ip_address:
             return 0
         return long("".join(["{0:08b}".format(int(num)) for num in ip_address.split('.')]), 2)
+
+    @staticmethod
+    def get_instance_alarm_status(instance, alarms):
+        """ Get alarm status for a given instance
+            Return 'Alarm' if at least one alarm is in ALARM state
+            Fall back to 'Insufficient data' if at least one is insufficient and none are in ALARM state
+            Return OK only if all alarms are in that state
+
+        :param alarms: list of Alarm objects
+        :param instance: EC2 Instance object
+        :returns: Alarm status
+        :rtype: str
+
+        """
+        alarm_states = set([
+            alarm.state_value for alarm in alarms if instance.id in
+            itertools.chain.from_iterable(alarm.dimensions.values())
+        ])
+        if alarm_states:
+            if 'ALARM' in alarm_states:
+                return _(u'Alarm')
+            elif 'INSUFFICIENT_DATA' in alarm_states:
+                return _(u'Insufficient data')
+            else:
+                return _(u'OK')
+        return ''  # Default to when instance has no alarms set
 
     def filter_by_scaling_group(self, items):
         filtered_items = []
