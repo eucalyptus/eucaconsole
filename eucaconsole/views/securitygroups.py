@@ -60,6 +60,7 @@ class SecurityGroupsView(LandingPageView):
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         if not self.is_vpc_supported:
             del self.filters_form.vpc_id
+        self.enable_smart_table = True
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
@@ -89,17 +90,24 @@ class SecurityGroupsView(LandingPageView):
 
     @view_config(route_name='securitygroups_delete', request_method='POST')
     def securitygroups_delete(self):
-        securitygroup_id = self.request.params.get('securitygroup_id')
-        security_group = self.get_security_group(securitygroup_id)
+        securitygroup_id_param = self.request.params.get('securitygroup_id')
+        securitygroup_ids = [sgroup_id.strip() for sgroup_id in securitygroup_id_param.split(',')]
+        securitygroup_names = []
         location = self.get_redirect_location('securitygroups')
-        if security_group and self.delete_form.validate():
-            name = security_group.name
-            with boto_error_handler(self.request, location):
-                self.log_request(_(u"Deleting security group {0}").format(name))
-                security_group.delete()
-                prefix = _(u'Successfully deleted security group')
-                msg = u'{0} {1}'.format(prefix, name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+        if self.delete_form.validate():
+            for securitygroup_id in securitygroup_ids:
+                security_group = self.get_security_group(securitygroup_id)
+                name = security_group.name
+                securitygroup_names.append(name)
+                with boto_error_handler(self.request, location):
+                    self.log_request(_(u"Deleting security group {0}").format(name))
+                    security_group.delete()
+            prefix = _(u'Successfully deleted security group')
+            if len(securitygroup_ids) == 1:
+                msg = prefix
+            else:
+                msg = u'{0} {1}'.format(prefix, ', '.join(securitygroup_names))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to delete security group')

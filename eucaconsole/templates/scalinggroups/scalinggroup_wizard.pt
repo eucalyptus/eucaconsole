@@ -73,7 +73,10 @@
                             </div>
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}
-                            <tag-editor ng-model="tags" template="${request.route_path('tag_editor_template')}"></tag-editor>
+                            <tag-editor
+                                ng-model="tags"
+                                template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}">
+                            </tag-editor>
                             <hr />
                             <div>
                                 <label>

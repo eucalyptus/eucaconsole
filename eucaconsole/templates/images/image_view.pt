@@ -202,7 +202,7 @@
                     ${panel('bdmapping_editor', image=image, read_only=True)}
                     <tag-editor
                             ng-model="tags"
-                            template="${request.route_path('tag_editor_template')}"
+                            template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
                             tal:content="tags | structure">
                     </tag-editor>
                     <hr/>

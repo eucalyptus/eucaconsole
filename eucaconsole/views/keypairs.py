@@ -49,6 +49,7 @@ class KeyPairsView(LandingPageView):
         self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
     def keypairs_landing(self):
@@ -209,16 +210,20 @@ class KeyPairView(BaseView):
     @view_config(route_name='keypair_delete', request_method='POST', renderer=TEMPLATE)
     def keypair_delete(self):
         if self.delete_form.validate():
-            name = self.request.params.get('name')
+            keypair_name_param = self.request.params.get('name')
+            keypair_names = [keypair.strip() for keypair in keypair_name_param.split(',')]
             location = self.request.route_path('keypairs')
             with boto_error_handler(self.request, location):
-                self.log_request(_(u"Deleting keypair ") + name)
-                self.conn.delete_key_pair(name)
+                for keypair_name in keypair_names:
+                    self.log_request(_(u"Deleting keypair ") + keypair_name)
+                    self.conn.delete_key_pair(keypair_name)
                 prefix = _(u'Successfully deleted keypair')
-                msg = u'{0} {1}'.format(prefix, name)
+                if len(keypair_names) == 1:
+                    msg = prefix
+                else:
+                    msg = u'{0} {1}'.format(prefix, ', '.join(keypair_names))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
-
         return self.render_dict
 
 

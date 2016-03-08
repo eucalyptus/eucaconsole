@@ -146,7 +146,7 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
         scaling_groups = self.autoscale_conn.get_all_groups(names) if self.autoscale_conn else []
         if scaling_groups:
             return scaling_groups[0]
-        return [] 
+        return []
 
     @staticmethod
     def get_sort_keys():
@@ -384,7 +384,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         if scaling_group_tags:
             # cull tags that start with aws: or euca:
             scaling_group_tags = [
-                tag for tag in self.scaling_group.tags if 
+                tag for tag in self.scaling_group.tags if
                 tag.key.find('aws:') == -1 and tag.key.find('euca:') == -1
             ]
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
@@ -802,6 +802,24 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
         return metric_units
 
 
+class ScalingGroupPolicyJsonView(BaseScalingGroupView):
+
+    def __init__(self, request):
+        super(ScalingGroupPolicyJsonView, self).__init__(request)
+        self.scaling_group_name = request.matchdict.get('id')
+
+    @view_config(route_name='scalinggroup_policies_json', renderer='json', request_method='GET')
+    def get_policies_for_scaling_group(self):
+        scaling_group = self.get_scaling_group()
+        policies = self.get_policies(scaling_group)
+        policy_names = {}
+        for policy in policies:
+            policy_names[policy.name] = policy.policy_arn
+        return dict(
+            policies=policy_names
+        )
+
+
 class ScalingGroupWizardView(BaseScalingGroupView):
     """View for Create Scaling Group wizard"""
     TEMPLATE = '../templates/scalinggroups/scalinggroup_wizard.pt'
@@ -834,7 +852,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
     def get_default_vpc_network(self):
         default_vpc = self.request.session.get('default_vpc', [])
         if self.is_vpc_supported:
-            if 'none' in default_vpc or 'None' in default_vpc: 
+            if 'none' in default_vpc or 'None' in default_vpc:
                 if self.cloud_type == 'aws':
                     return 'None'
                 # for euca, return the first vpc on the list
@@ -962,7 +980,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
                 location = self.request.route_path('scalinggroup_monitoring', id=self.scaling_group.name)
                 with boto_error_handler(self.request, location):
                     self.log_request(_(u"Metrics collection for scaling group {0} {1}").format(
-                            self.scaling_group.name, action))
+                        self.scaling_group.name, action))
                     if enabled_metrics:
                         self.autoscale_conn.disable_metrics_collection(self.scaling_group.name)
                     else:
