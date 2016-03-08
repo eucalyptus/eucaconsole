@@ -31,7 +31,6 @@ Core views
 import base64
 import hashlib
 import hmac
-import itertools
 import logging
 import pylibmc
 import simplejson as json
@@ -44,6 +43,7 @@ import threading
 from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
+from itertools import chain
 from markupsafe import Markup
 from random import choice
 from urllib import urlencode
@@ -719,9 +719,7 @@ class LandingPageView(BaseView):
         if resource_id is None:
             resource_id = getattr(resource, 'name', None)  # ELB or ASG
         alarm_states = set([
-            alarm.state_value for alarm in alarms if resource_id in
-            itertools.chain.from_iterable(alarm.dimensions.values())
-        ])
+            alarm.state_value for alarm in alarms if resource_id in chain.from_iterable(alarm.dimensions.values())])
         if alarm_states:
             if 'ALARM' in alarm_states:
                 return _(u'Alarm')

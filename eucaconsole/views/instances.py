@@ -32,6 +32,7 @@ import base64
 import re
 import simplejson as json
 
+from itertools import chain
 from M2Crypto import RSA
 from operator import attrgetter
 from urllib2 import HTTPError, URLError
@@ -395,7 +396,11 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         vpc_subnets = self.vpc_conn.get_all_subnets()
         keypairs = self.get_all_keypairs()
         security_groups = self.get_all_security_groups()
+        # Get alarms for instances and build a list of instance ids to optimize alarm status fetch
         alarms = [alarm for alarm in self.cw_conn.describe_alarms() if 'InstanceId' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         instances = []
         filters = {}
         availability_zone_param = self.request.params.getall('availability_zone')
@@ -438,6 +443,9 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
             has_elastic_ip = instance.ip_address in elastic_ips
             exists_key = True if self.get_keypair_by_name(keypairs, instance.key_name) else False
             sortable_ip = self.get_sortable_ip(instance.ip_address)
+            alarm_status = ''
+            if instance.id in alarm_resource_ids:
+                alarm_status = self.get_resource_alarm_status(instance, alarms)
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
@@ -460,7 +468,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=vpc_subnets) if
                 instance.subnet_id else None,
                 status=instance.state,
-                alarm_status=self.get_resource_alarm_status(instance, alarms),
+                alarm_status=alarm_status,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
                 running_create=True if instance.tags.get('ec_bundling') else False,
