@@ -1,0 +1,18 @@
+<!--! Modal dialogs for cloudformations on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div class="expando" id="details-section" ng-cloak="">
+        <h6 class="title" >
+            <a ng-click="toggleContent()">
+                <i class="fi-plus" ng-show="!expanded"></i>
+                <i class="fi-minus" ng-show="expanded"></i>
+                &nbsp;
+            </a>
+            <span i18n:translate="">Cloudwatch alarms: </span>
+            <span ng-if="alarms.length == 0">&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">total</span></span>
+            <span ng-if="alarms.length > 0">&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">in state</span></span>
+        </h6>
+        <div class="content" ng-show="expanded">
+            <div>alarms list</div>
+        </div>
+    </div>
+</div>
