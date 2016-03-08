@@ -425,10 +425,6 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
             filtered_items = self.filter_by_roles(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
         elastic_ips = [ip.public_ip for ip in self.conn.get_all_addresses()]
-        owner_alias = None
-        if not owner_alias and self.cloud_type == 'aws':
-            # Set default alias to 'amazon' for AWS
-            owner_alias = 'amazon'
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
             security_groups_array = sorted({
