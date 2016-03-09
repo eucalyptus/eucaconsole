@@ -12,10 +12,6 @@ $instance-status-color-stopping: lighten(red, 20%);
 $instance-status-color-terminated: $euca-darkgrey;
 $instance-status-color-terminating: lightgrey;
 
-$alarm-status-color-alarm: $hp-red;
-$alarm-status-color-insufficient: $hp-gray-65;
-$alarm-status-color-ok: $hp-green;
-
 
 // Tile/table view
 .status.running { background-color: $instance-status-color-running; }
