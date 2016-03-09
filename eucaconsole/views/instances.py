@@ -447,6 +447,9 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
             alarm_status = ''
             if instance.id in alarm_resource_ids:
                 alarm_status = Alarm.get_resource_alarm_status(instance.id, alarms)
+            vpc_subnet_display = self.get_vpc_subnet_display(
+                instance.subnet_id, vpc_subnet_list=vpc_subnets) if instance.subnet_id else ''
+            sortable_subnet_zone = "{0}{1}{2}".format(vpc_subnet_display, instance.vpc_name, instance.placement)
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
@@ -462,12 +465,12 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 root_device_type=instance.root_device_type,
                 security_groups=security_groups_array,
                 sortable_secgroups=','.join(security_group_names),
+                sortable_subnet_zone=sortable_subnet_zone,
                 key_name=instance.key_name,
                 exists_key=exists_key,
                 vpc_name=instance.vpc_name,
                 subnet_id=instance.subnet_id if instance.subnet_id else None,
-                vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=vpc_subnets) if
-                instance.subnet_id else None,
+                vpc_subnet_display=vpc_subnet_display,
                 status=instance.state,
                 alarm_status=alarm_status,
                 tags=TaggedItemView.get_tags_display(instance.tags),
