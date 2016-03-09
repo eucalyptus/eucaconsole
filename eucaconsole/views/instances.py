@@ -62,6 +62,7 @@ from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.roles import RoleView
@@ -445,7 +446,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
             sortable_ip = self.get_sortable_ip(instance.ip_address)
             alarm_status = ''
             if instance.id in alarm_resource_ids:
-                alarm_status = self.get_resource_alarm_status(instance, alarms)
+                alarm_status = Alarm.get_resource_alarm_status(instance.id, alarms)
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),

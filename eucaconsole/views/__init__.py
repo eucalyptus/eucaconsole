@@ -43,7 +43,6 @@ import threading
 from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
-from itertools import chain
 from markupsafe import Markup
 from random import choice
 from urllib import urlencode
@@ -701,33 +700,6 @@ class LandingPageView(BaseView):
         if self.request.GET:
             location = u'{0}?{1}'.format(location, urlencode(encoded_get_params))
         return location
-
-    @staticmethod
-    def get_resource_alarm_status(resource, alarms):
-        """ Get alarm status for a given resource
-            Return 'Alarm' if at least one alarm is in ALARM state
-            Fall back to 'Insufficient data' if at least one is insufficient and none are in ALARM state
-            Return OK only if all alarms are in that state
-
-        :param alarms: list of Alarm objects
-        :param resource: Resource object (e.g. EC2 Instance object)
-        :returns: Alarm status
-        :rtype: str
-
-        """
-        resource_id = getattr(resource, 'id', None)  # Instance or Volume
-        if resource_id is None:
-            resource_id = getattr(resource, 'name', None)  # ELB or ASG
-        alarm_states = set([
-            alarm.state_value for alarm in alarms if resource_id in chain.from_iterable(alarm.dimensions.values())])
-        if alarm_states:
-            if 'ALARM' in alarm_states:
-                return _(u'Alarm')
-            elif 'INSUFFICIENT_DATA' in alarm_states:
-                return _(u'Insufficient data')
-            else:
-                return _(u'OK')
-        return ''  # Default to when resource has no alarms set
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')

@@ -60,6 +60,13 @@ class ResourceAlarmsTestCase(unittest.TestCase, MockAlarmMixin):
         self.assertEqual(len(instance_alarms), 1)
 
     @mock_cloudwatch
+    def test_fetch_alarms_for_unknown_instance(self):
+        instance_id = 'i-123456'
+        cw_conn, alarm_created = self.make_alarm(dimensions={'InstanceId': [instance_id]})
+        instance_alarms = Alarm.get_alarms_for_resource('unlikely-id', dimension_key='InstanceId', cw_conn=cw_conn)
+        self.assertEqual(len(instance_alarms), 0)
+
+    @mock_cloudwatch
     def test_fetch_alarms_for_load_balancer(self):
         elb_name = 'test_elb'
         alarm_kwargs = dict(
