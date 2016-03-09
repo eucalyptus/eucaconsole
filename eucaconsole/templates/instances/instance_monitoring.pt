@@ -3,6 +3,7 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -27,6 +28,12 @@
                 <dd class="active"><a>${monitoring_tab_title}</a></dd>
             </dl>
             <div class="panel no-title cloudwatch-charts">
+                <div>
+                    <a ng-click="chartsCtrl.revealCreateModal()" class="button" id="create-alarm-btn">Create Alarm</a>
+                    <div modal="createAlarm" class="modal">
+                        <h3>Create Alarm</h3>
+                    </div>
+                </div>
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">
@@ -118,6 +125,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
 </div>
 
