@@ -31,14 +31,17 @@ from boto.ec2.cloudwatch import MetricAlarm
 from moto import mock_cloudwatch
 
 from eucaconsole.models.alarms import Alarm
+from tests import Mock
 
 
 class MockAlarmMixin(object):
+    """Creates a mock Alarm via moto"""
+
     @staticmethod
     @mock_cloudwatch
-    def make_alarm(name='test-alarm', metric='CPUUtilization', namespace='AWS/EC2', statistic='Average',
-                   comparison='>=', threshold=90, period=500, evaluation_periods=1, unit='Percent',
-                   description='Test Alarm', dimensions=None):
+    def create_alarm(name='test-alarm', metric='CPUUtilization', namespace='AWS/EC2', statistic='Average',
+                     comparison='>=', threshold=90, period=500, evaluation_periods=1, unit='Percent',
+                     description='Test Alarm', dimensions=None):
         if dimensions is None:
             dimensions = {}
         cw_conn = boto.connect_cloudwatch('us-east')
@@ -47,22 +50,30 @@ class MockAlarmMixin(object):
             threshold=threshold, period=period, evaluation_periods=evaluation_periods, unit=unit,
             description=description, dimensions=dimensions
         )
-        alarm = cw_conn.put_metric_alarm(metric_alarm)
-        return cw_conn, alarm
+        alarm_created = cw_conn.put_metric_alarm(metric_alarm)
+        return cw_conn, alarm_created
+
+
+class MockAlarmStatusMixin(object):
+    """Creates a simple mock Alarm without moto"""
+    @staticmethod
+    def make_alarm(resource_id, dimension_key='InstanceId', state_value='OK'):
+        dimensions = {dimension_key: [resource_id]}
+        return Mock(state_value=state_value, dimensions=dimensions)
 
 
 class ResourceAlarmsTestCase(unittest.TestCase, MockAlarmMixin):
     @mock_cloudwatch
     def test_fetch_alarms_for_instance(self):
         instance_id = 'i-123456'
-        cw_conn, alarm_created = self.make_alarm(dimensions={'InstanceId': [instance_id]})
+        cw_conn, alarm_created = self.create_alarm(dimensions={'InstanceId': [instance_id]})
         instance_alarms = Alarm.get_alarms_for_resource(instance_id, dimension_key='InstanceId', cw_conn=cw_conn)
         self.assertEqual(len(instance_alarms), 1)
 
     @mock_cloudwatch
     def test_fetch_alarms_for_unknown_instance(self):
         instance_id = 'i-123456'
-        cw_conn, alarm_created = self.make_alarm(dimensions={'InstanceId': [instance_id]})
+        cw_conn, alarm_created = self.create_alarm(dimensions={'InstanceId': [instance_id]})
         instance_alarms = Alarm.get_alarms_for_resource('unlikely-id', dimension_key='InstanceId', cw_conn=cw_conn)
         self.assertEqual(len(instance_alarms), 0)
 
@@ -73,6 +84,41 @@ class ResourceAlarmsTestCase(unittest.TestCase, MockAlarmMixin):
             metric='RequestCount', namespace='AWS/ELB', statistic='Sum', unit=None,
             dimensions={'LoadBalancerName': elb_name},
         )
-        cw_conn, alarm_created = self.make_alarm(**alarm_kwargs)
+        cw_conn, alarm_created = self.create_alarm(**alarm_kwargs)
         elb_alarms = Alarm.get_alarms_for_resource(elb_name, dimension_key='LoadBalancerName', cw_conn=cw_conn)
         self.assertEqual(len(elb_alarms), 1)
+
+
+class AlarmStatusTestCase(unittest.TestCase, MockAlarmStatusMixin):
+    """Test alarm status returned when resource has alarms in various states"""
+
+    def test_fetch_resource_alarm_status_ok(self):
+        """Status should display OK if resource has alarms and none are insufficient or in alarm state"""
+        item_id = 'i-123456'
+        alarms = [
+            self.make_alarm(item_id, state_value='OK'),
+            self.make_alarm(item_id, state_value='OK')
+        ]
+        alarm_status = Alarm.get_resource_alarm_status(item_id, alarms)
+        self.assertEqual(alarm_status, 'OK')
+
+    def test_fetch_resource_alarm_status_insufficient(self):
+        """Status should display 'Insufficient data' when at least one is insufficient and none are in alarm state"""
+        item_id = 'i-123456'
+        alarms = [
+            self.make_alarm(item_id, state_value='OK'),
+            self.make_alarm(item_id, state_value='INSUFFICIENT_DATA'),
+        ]
+        alarm_status = Alarm.get_resource_alarm_status(item_id, alarms)
+        self.assertEqual(alarm_status, 'Insufficient data')
+
+    def test_fetch_resource_alarm_status_alarm(self):
+        """Status should display 'Alarm' when at least one is in alarm state"""
+        item_id = 'i-123456'
+        alarms = [
+            self.make_alarm(item_id, state_value='OK'),
+            self.make_alarm(item_id, state_value='INSUFFICIENT_DATA'),
+            self.make_alarm(item_id, state_value='ALARM'),
+        ]
+        alarm_status = Alarm.get_resource_alarm_status(item_id, alarms)
+        self.assertEqual(alarm_status, 'Alarm')
