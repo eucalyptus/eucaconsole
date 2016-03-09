@@ -8,11 +8,36 @@
                 &nbsp;
             </a>
             <span i18n:translate="">Cloudwatch alarms: </span>
-            <span ng-if="alarms.length == 0">&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">total</span></span>
-            <span ng-if="alarms.length > 0">&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">in state</span></span>
+            <span class="busy" ng-show="loading"></span>
+            <span ng-show="!loading">
+                <span ng-if="(alarms | filter:{state:'ALARM'}).length == 0">
+                    &nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">total</span>
+                </span>
+                <span ng-if="(alarms | filter:{state:'ALARM'}).length > 0">
+                    &nbsp;{{ (alarms | filter:{state:"ALARM"}).length }}&nbsp;<span i18n:translate="">of</span>&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">in state</span>&nbsp;<span class="status ALARM">ALARM</span>
+                </span>
+            </span>
         </h6>
         <div class="content" ng-show="expanded">
-            <div>alarms list</div>
+            <div class="alarm-listing" ng-repeat="alarm in alarms">
+                <a ng-click="showDeleteModal(alarm)"><i class="delete-icon fa fa-minus-circle fa-lg"></i></a>
+                <span class="status" ng-class="alarm.state">{{ alarm.state }}</span>&nbsp;{{ alarm.name }},&nbsp;{{ alarm.threshold }}
+            </div>
+        </div>
+    </div>
+    <div id="remove-alarm-modal" class="reveal-modal small" data-reveal="">
+        <a class="close-reveal-modal" href="#">&#215;</a>
+
+        <h3 i18n:translate="">Remove alarm from {{ resourceType }}</h3>
+
+        <p i18n:translate="">Are you sure you want to remove alarm {{ alarmToDelete.name }} from {{ resourceType }} {{ resourceName }}?</p>
+
+        <p i18n:translate="">If this resource is the only dimension associated with this alarm, the alarm will also be deleted.</p>
+
+        <div class="row buttons">
+            <button id="remove-alarm-btn" class="button expand" ng-click="removeAlarm($event)" i18n:translate="">
+                <span i18n:translate="">Yes, Remove Alarm from {{ resourceType }}</span>
+            </button>
         </div>
     </div>
 </div>

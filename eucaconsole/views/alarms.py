@@ -41,6 +41,7 @@ from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPU
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..models.arn import AmazonResourceName
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
@@ -283,6 +284,27 @@ class CloudWatchAlarmsJsonView(BaseView):
                     threshold=alarm.threshold,
                     unit=alarm.unit,
                 ))
+
+            return dict(results=alarms)
+
+    @view_config(route_name="cloudwatch_alarms_for_resource_json", renderer='json', request_method='GET')
+    def cloudwatch_alarms_for_resource_json(self):
+        with boto_error_handler(self.request):
+            res_id = self.request.matchdict.get('id')
+            res_type = self.request.params.get('resource-type')
+
+            items = Alarm.get_alarms_for_resource(
+                res_id,
+                cw_conn=self.get_connection(conn_type="cloudwatch"),
+                dimension_key=res_type)
+            alarms = []
+            if items:
+                for alarm in items:
+                    alarms.append(dict(
+                        name=alarm.name,
+                        threshold=alarm.threshold,
+                        state=alarm.state_value
+                    ))
 
             return dict(results=alarms)
 

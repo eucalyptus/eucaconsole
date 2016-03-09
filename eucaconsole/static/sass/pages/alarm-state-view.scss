@@ -1,0 +1,25 @@
+@import "../includes/eucavariables";
+
+// Status colors
+$alarm-status-color-alarm: $hp-red;
+$alarm-status-color-insufficient-data: lighten($euca-grey, 25%);
+$alarm-status-color-ok: $hp-green;
+
+// Stack status
+.status.ALARM { background-color: $alarm-status-color-alarm; }
+.status.INSUFFICIENT_DATA { background-color: $alarm-status-color-insufficient-data; }
+.status.OK { background-color: $alarm-status-color-ok; }
+
+.status {
+    margin: 0 0.25rem 0 0.25rem;
+    padding: .25rem .5rem .25rem .5rem;
+    color: white;
+}
+
+.alarm-listing {
+    margin-top: 1.0rem;
+}
+
+i.delete-icon {
+    color: $euca-grey !important;
+}

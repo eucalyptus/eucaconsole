@@ -3,6 +3,7 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="InstanceMonitoring">
@@ -56,7 +57,8 @@
                     </div>
                 </div>
                 <alarm-state-view
-                    template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}">
+                    template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
+                    resource-id="${instance.id}" resource-name="${instance_name}" resource-type="Instance" i18n:attributes="resource-type">
                 </alarm-state-view>
                 <hr/>
                 <h4 i18n:translate="">CloudWatch metric charts</h4>
@@ -131,6 +133,7 @@
     <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance_monitoring.js')}"></script>
