@@ -139,6 +139,7 @@ requires = [
     'python-magic >= 0.4.6',
     'simplejson >= 2.0.9',
     'WTForms >= 1.0.2',
+    'eventlet >= 0.15.2',
 ]
 
 i18n_extras = [
@@ -147,7 +148,6 @@ i18n_extras = [
 ]
 
 dev_extras = [
-    'gevent',
     'moto',
     'pylibmc',
     'pyramid_debugtoolbar',
