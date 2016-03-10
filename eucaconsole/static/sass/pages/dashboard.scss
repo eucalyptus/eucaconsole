@@ -3,8 +3,6 @@
 
 $dashboard-panel-tile-height: 240px;
 $dashboard-panel-padding: 4px;
-$dashboard-panel-border-width: 4px;
-$dashboard-panel-border-color: $euca-lightgrey;
 $dashboard-panel-icon-size: 100px;
 
 
@@ -15,7 +13,8 @@ $dashboard-panel-icon-size: 100px;
         margin-left: 0;
         margin-top: 1rem;
         h3 {
-            font-weight: bold;
+            font-family: $euca-header-font-family;
+            font-size: $euca-xl-font-size;
             margin-top: 0;
             display: inline-block;
         }
@@ -43,13 +42,13 @@ $tile-row-height: 24px;
     font-size: 0.825rem;
     .tile {
         background-color: white;
-        border: 1px solid $hp-gray-20;
         position: relative;
         height: $dashboard-panel-tile-height;
         padding: 4px 8px;
         .subheader {
-            font-size: 1rem;
-            font-weight: 500;
+            font-family: $euca-text-font-family;
+            font-size: $euca-font-size;
+            color: $hpe-gray;
             margin: 0 0 0 0;
         }
         i.fa-bell {
@@ -112,12 +111,12 @@ $tile-row-height: 24px;
             position: absolute;
             width: 30px; height: $tile-row-height;
             top: 0; right: 0;
-            color: $hp-gray-65;
+            color: $hpe-gray;
             font-size: 1.1rem;
             padding: 0 0 0 0;
             border: none;
             &:hover {
-                color: $hp-hover-blue;
+                color: $hpe-green;
             }
             &::before, &::after {
                 border: none;

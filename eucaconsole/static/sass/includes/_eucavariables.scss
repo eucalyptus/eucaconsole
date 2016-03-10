@@ -35,14 +35,21 @@ $euca-extrasmall-breakpoint: 480px;
 $euca-contentwrap-width: 1040px;
 
 // HPE Colors
-$hpe-gray: #333333;
-$hpe-lightgray: #666666;
-$hpe-extralightgray: #cccccc;
+$hpe-black: #333333;
+$hpe-gray: #666666;
+$hpe-lightgray: #cccccc;
 $hpe-backgroundgray: #F2F2F2; 
+$hpe-hovergray: #F0F0F0;
+$hpe-disabledgray: #EDEDED;
+$hpe-disabledgreen: #CCEEE6;
 $hpe-black: #000000;
 $hpe-green: #01a982;
-$hpe-slate: #666666;
+$hpe-slate: #425563;
 $hpe-turq: #2ad2c9;
+$hpe-purple: #614767;
+$hpe-bronze: #80746E;
+$hpe-steel: #5F7A76;
+
 
 // Colors
 $euca-darkblue: #03405f;
@@ -99,7 +106,7 @@ $euca-s-font-size: 14px;
 $euca-font-size: 16px;
 $euca-l-font-size: 18 px;
 $euca-xl-font-size: 24 px;
-$euca-text-color: $hpe-gray;
+$euca-text-color: $hpe-black;
 $euca-link-color: $hpe-green;
 
 // Prevent Google Fonts API call
@@ -123,13 +130,13 @@ $row-width: rem-calc(1040);
 
 // Colors
 $primary-color: $hpe-green;
-$secondary-color: $hpe-gray;
+$secondary-color: $hpe-black;
 $success-color: $hpe-green;
 $code-color: darkred;
 
 // Dropdown menus
 $f-dropdown-bg: white;
-$f-dropdown-triangle-color: $hpe-gray;
+$f-dropdown-triangle-color: $hpe-black;
 
 // Navigation bar settings ============
 // Breakpoint handling
@@ -168,12 +175,12 @@ $crumb-border-style: solid;
 $crumb-border-color: transparent;
 $crumb-radius: 0;
 $crumb-font-size: 1.1rem;
-$crumb-font-color: $primary-color;
-$crumb-font-color-current: #333;
+$crumb-font-color: $hpe-gray;
+$crumb-font-family-current: $euca-text-font-family;
 $crumb-font-color-unavailable: #999;
 $crumb-font-transform: normal;
 $crumb-link-decor: underline;
-$crumb-slash-color: $hpe-lightgray;
+$crumb-slash-color: $hpe-gray;
 $crumb-slash: "/";
 
 // Buttons
@@ -181,7 +188,7 @@ $button-tny: rem-calc(6);
 $button-sml: rem-calc(8);
 $button-med: rem-calc(10);
 $button-lrg: rem-calc(12);
-$button-border-width: 1px;
+$button-border-width: 2px;
 $button-border-style: solid;
 
 // Tables
@@ -264,7 +271,7 @@ $tooltip-padding: rem-calc(5);
             padding-left: 6px;
             padding-right: 6px;
             vertical-align: top;
-            color: $hpe-gray;
+            color: $hpe-black;
             text-transform: uppercase;
             &.actions {
                 text-align: right;
@@ -322,20 +329,20 @@ $tooltip-padding: rem-calc(5);
         z-index: 999;
         a {
             padding: 10px 32px 6px 24px;
-            color: $hpe-lightgray;
+            color: $hpe-gray;
             background-color: transparent;
             font-family: $euca-header-font-family;
             &:hover {
-                color: $hpe-gray;
+                color: $hpe-black;
                 background-color: transparent;
             }
         }
         &.active {
             a {
-                color: $hpe-gray;
+                color: $hpe-black;
                 font-family: $euca-header-font-family;
                 background-color: transparent;
-                border-bottom-: 5px solid $hpe-gray;
+                border-bottom-: 5px solid $hpe-black;
             }
         }
     }
@@ -343,11 +350,11 @@ $tooltip-padding: rem-calc(5);
 
 @mixin wizard-tabs-mixin {
     a {  // Visited tabs
-        color: $hpe-lightgray;
+        color: $hpe-gray;
         font-family: $euca-header-font-family
         background-color;
         &:hover {
-            color: $hpe-gray;
+            color: $hpe-black;
         }
         box-shadow: none;
         white-space: nowrap;
@@ -358,11 +365,11 @@ $tooltip-padding: rem-calc(5);
             color: transparent;
             font-family: $euca-header-font-family;
             background-color: transparent;
-            border-bottom: 5px solid $hpe-gray;
+            border-bottom: 5px solid $hpe-black;
         }
     }
     &.disabled {  // Unvisited tabs
-        color: $hpe-extralightgray;
+        color: $hpe-lightgray;
         font-family: $euca-header-font-family;
         padding: $wizard-tab-padding;
         .cir {
@@ -379,7 +386,7 @@ $tooltip-padding: rem-calc(5);
         padding: 0 0 0 0;
         text-align: center;
         vertical-align: middle;
-        background-color: $hpe-gray;
+        background-color: $hpe-black;
         color: white;
         margin-right: 4px;
     }

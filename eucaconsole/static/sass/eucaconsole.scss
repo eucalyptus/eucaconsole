@@ -106,7 +106,7 @@ html {
 
 body {
     position: relative;
-    color: $hpe-gray;
+    color: $hpe-black;
     min-height: 100%;
     font-family: $euca-text-font-family;
     overflow-y: scroll;
@@ -114,12 +114,12 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: $euca-header-font-family;
-    color: $hpe-gray;
+    color: $hpe-black;
 }
 
 .panel {
     h1, h2, h3, h4, h5, h6 {
-        color: $hpe-gray;
+        color: $hpe-black;
     }
 
 }
@@ -134,14 +134,14 @@ a {
 
 // Logo bar (top-most bar)
 #logobar-wrapper {
-    border-bottom: 1px solid $hpe-extralightgray;
+    border-bottom: 1px solid $hpe-lightgray;
 }
 #logobar {
     padding: 6px 0 0 0;
     margin-top: 8px;
     background-color: #fff;
     font-family: $euca-header-font-family;
-    color: $hpe-gray;
+    color: $hpe-black;
     a {
         font-size: 0.9rem;
         color: #333;
@@ -165,7 +165,7 @@ a {
         }
     }
     .f-dropdown {
-        box-shadow: 0 0 1px 1px $hpe-extralightgray;
+        box-shadow: 0 0 1px 1px $hpe-lightgray;
         width: auto;
         min-width: 8rem;
         &.open {
@@ -218,7 +218,7 @@ a {
     padding-left: 16px;
     padding-top: 6px;
     padding-bottom: 1px;
-    color: $hpe-gray;
+    color: $hpe-black;
     letter-spacing: 1px;
     font-weight: normal;
     li {
@@ -309,13 +309,13 @@ a {
         font-style: normal;
         font-weight: 700;
         font-family: Metric-Regular, Helvetica, Arial, sans-serif;
-        color: $hpe-gray;
+        color: $hpe-black;
     }
 }
 
 .subsection-label {
     font-size: $euca-l-font-size;
-    color: $hpe-gray;
+    color: $hpe-black;
     margin-bottom: 6px;
 }
 
@@ -335,7 +335,6 @@ a.has-tip {
 .tooltip {
     font-family: $euca-text-font-family;
     font-size: $euca-s-font-size;
-    font-family: Metric-Regular, Geneva, Helvetica, sans-serif;
     max-width: 260px;
 }
 
@@ -418,9 +417,9 @@ a.circle {
             }
         }
         &.info{
-            border: 2px solid $hpe-gray;
+            border: 2px solid $hpe-black;
             .icon {
-                background-color: $hpe-gray;
+                background-color: $hpe-black;
                 span:before {
                     content: "\24D8"
                 }
@@ -509,22 +508,22 @@ textarea.policy-area {
 }
 
 .helptext-icon {
-    color: $hpe-gray;
+    color: $hpe-black;
     font-size: 1.2rem;
 }
 
 .expando {
     i {
-        color: $hpe-gray;
+        color: $hpe-black;
         &.helptext-icon {
-            color: $hpe-gray;
+            color: $hpe-black;
         }
     }
     .title {
         font-family: $euca-header-font-family;
         font-size: $euca-l-font-size;
         a {
-            color: $hpe-gray;
+            color: $hpe-black;
             &:hover {
                 color: $hpe-green;
                 border-bottom: 1px solid $hpe-green;
@@ -537,7 +536,7 @@ textarea.policy-area {
 .action-icon {
     display: inline-block;
     font-size: 1.4rem;
-    color: $hpe-gray;
+    color: $hpe-black;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     &:hover {
@@ -570,7 +569,7 @@ textarea.policy-area {
     }
     .add-label {
         margin-bottom: 6px;
-        color: $hpe-gray;
+        color: $hpe-black;
     }
     #add-tag-btn {
         margin-bottom: 0;
@@ -693,7 +692,7 @@ textarea.policy-area {
 
 form {
     label {
-        color: $hpe-lightgray;
+        color: $hpe-gray;
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
         cursor: default;
@@ -717,7 +716,7 @@ form {
         background-color: #fff;
     }
     .req {
-        color: $hpe-lightgray;
+        color: $hpe-gray;
     }
     .row {
         .inline-label {
@@ -858,7 +857,7 @@ form .controls-wrapper > [class*='small-'] label {
 
 [data-abide] .controls-wrapper .error, [data-abide] .controls-wrapper.error {
     label {
-        color: $hpe-gray;
+        color: $hpe-black;
     }
     input, select {
         border: 1px solid darkred;
@@ -949,7 +948,7 @@ textarea.hidden {
     background-color: white;
     position: relative;
     h6 {
-        color: $hpe-gray;
+        color: $hpe-black;
     }
     .tabs-content {
         border: none;
@@ -965,7 +964,7 @@ textarea.hidden {
             top: 0; left: 0; right: 0;
             line-height: 2rem;
             padding-left: 8px;
-            background-color: $hpe-gray;
+            background-color: $hpe-black;
             color: white;
             @include ellipsis-overflow;
         }
@@ -982,7 +981,7 @@ textarea.hidden {
                 }
             }
             .f-dropdown {
-                box-shadow: 0 0 1px 1px $hpe-gray;
+                box-shadow: 0 0 1px 1px $hpe-black;
                 min-width: 12rem;
                 width: auto;
             }
@@ -1067,7 +1066,7 @@ table.table {
    Footer
 ----------------------------------------- */
 footer {
-    background-color: $hpe-gray;
+    background-color: $hpe-black;
     padding: 15px 0 3rem 1rem;
     .copyright {
         font-size: 0.9em;
@@ -1082,7 +1081,7 @@ footer {
     background-color: #fff;
     font-family: $euca-header-font-family;
     text-transform: uppercase;
-    color: $hpe-gray;
+    color: $hpe-black;
     border-color: $hpe-green;
     border-width: 2px;
     &:hover {
@@ -1097,7 +1096,7 @@ footer {
         }
         font-family: $euca-header-font-family;
         text-transform: uppercase;
-        color: $hpe-gray;
+        color: $hpe-black;
         &.disabled, &[disabled] {
             @include disabled-button-mixin;
         }

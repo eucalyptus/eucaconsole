@@ -5,13 +5,13 @@
 ----------------------------------------- */
 #maincontent { padding-top: 1rem; }
 #maincontent #pagetitle { margin-bottom: 0.5rem; margin-left: 0; margin-top: 1rem; }
-#maincontent #pagetitle h3 { font-weight: bold; margin-top: 0; display: inline-block; }
+#maincontent #pagetitle h3 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 24 px; margin-top: 0; display: inline-block; }
 #maincontent #pagetitle #zone-selector { display: inline-block; margin-left: 1rem; }
 #maincontent #pagetitle #reset-dash { margin-top: 1.25rem; font-size: 0.825rem; display: inline-block; float: right; }
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }
-.panel .tile { background-color: white; border: 1px solid #cccccc; position: relative; height: 240px; padding: 4px 8px; }
-.panel .tile .subheader { font-size: 1rem; font-weight: 500; margin: 0 0 0 0; }
+.panel .tile { background-color: white; position: relative; height: 240px; padding: 4px 8px; }
+.panel .tile .subheader { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; color: #666666; margin: 0 0 0 0; }
 .panel .tile i.fa-bell { color: white !important; }
 .panel .tile i.dash-no-alarms { color: #5a5a5a !important; }
 .panel .tile i.dash-alarms { color: red !important; }
@@ -24,8 +24,8 @@
 .panel .tile .footer a:hover { text-decoration: underline; }
 .panel .tile .footer .button { display: inline-block; font-weight: bold; }
 .panel .tile .footer .button:hover { text-decoration: none; }
-.panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #5a5a5a; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
-.panel .tile .dropdown.button.tiny:hover { color: #006699; }
+.panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #666666; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
+.panel .tile .dropdown.button.tiny:hover { color: #01a982; }
 .panel .tile .dropdown.button.tiny::before, .panel .tile .dropdown.button.tiny::after { border: none; }
 .panel .tile .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #6a737b; }
 .panel .tile .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
