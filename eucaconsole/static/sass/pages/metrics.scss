@@ -105,7 +105,7 @@ input.datefield {
         position: relative;
         bottom: 1rem;
         left: 61rem;
-        color: $euca-grey;
+        color: $hp-gray-65;
         font-size: rem-calc(35);
         line-height: 0.5rem;
         font-weight: bold;
@@ -117,7 +117,7 @@ input.datefield {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
         left: 58rem;
-        color: $euca-grey;
+        color: $hp-gray-65;
         cursor: pointer;
     }
     svg {
@@ -128,13 +128,13 @@ input.datefield {
     .graph-shift-left {
         position: relative;
         left: 0.25rem;
-        color: $euca-grey;
+        color: $hp-gray-65;
         cursor: pointer;
     }
     .graph-shift-right {
         position: relative;
         left: 59rem;
-        color: $euca-grey;
+        color: $hp-gray-65;
         cursor: pointer;
     }
 }
