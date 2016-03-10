@@ -98,7 +98,7 @@ class StackMixin(object):
     def get_template_location(self, stack_id, default_name=None):
         bucket = None
         try:
-            bucket = self.get_create_template_bucket()
+            bucket = self.get_create_template_bucket(create=False)
         except:
             pass
         stack_id = stack_id[stack_id.rfind('/') + 1:]
@@ -106,8 +106,7 @@ class StackMixin(object):
         d.update(stack_id)
         md5 = d.digest()
         stack_hash = base64.b64encode(md5, '--').replace('=', '')
-        ret = {}
-        ret['template_name'] = default_name
+        ret = {'template_name': default_name}
         if bucket is not None:
             keys = list(bucket.list(prefix=stack_hash))
             if len(keys) > 0:
