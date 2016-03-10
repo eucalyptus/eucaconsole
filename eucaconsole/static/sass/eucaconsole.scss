@@ -82,18 +82,19 @@
    Fonts
 ----------------------------------------- */
 @font-face {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Lato Regular'), local('Lato-Regular'), url(../fonts/Lato/Lato-Regular.woff) format('woff');
+    font-family: 'Metric-Regular';
+    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Regular.woff) format('woff');
 }
 
 @font-face {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 700;
-    src: local('Lato Bold'), local('Lato-Bold'), url(../fonts/Lato/Lato-Bold.woff) format('woff');
+    font-family: 'Metric-Light';
+    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Light.woff) format('woff');
 }
+@font-face {
+    font-family: 'Metric-Semibold';
+    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Semibold.woff) format('woff');
+}
+
 
 
 /* -----------------------------------------
@@ -105,7 +106,7 @@ html {
 
 body {
     position: relative;
-    color: #333;
+    color: $hpe-gray;
     min-height: 100%;
     font-family: $euca-text-font-family;
     overflow-y: scroll;
@@ -118,13 +119,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .panel {
     h1, h2, h3, h4, h5, h6 {
-        color: $hp-gray-65;
+        color: $hpe-gray;
     }
 
 }
 
 a {
-    color: $hp-accessible-blue;
+    color: $hpe-green;
 }
 
 /* -----------------------------------------
@@ -133,13 +134,14 @@ a {
 
 // Logo bar (top-most bar)
 #logobar-wrapper {
-    border-bottom: 1px solid $hp-gray-20;
+    border-bottom: 1px solid $hpe-lightgray;
 }
 #logobar {
     padding: 6px 0 0 0;
     margin-top: 8px;
     background-color: #fff;
-    color: #333;
+    font-family: $euca-header-font-family;
+    color: $hpe-gray;
     a {
         font-size: 0.9rem;
         color: #333;
@@ -157,7 +159,7 @@ a {
     .dropdown {
         display: inline-block;
         margin-left: 1.3rem;
-        color: $hp-accessible-blue;
+        color: $hpe-green;
         .icon {
             display: inline-block;
         }
@@ -209,8 +211,6 @@ a {
 
 
 // Breadcrumbs
-$breadcrumb-background-color: $euca-extralightgreen;
-$breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 #breadcrumbs {
     position: relative;
     overflow: hidden;
@@ -218,7 +218,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     padding-left: 16px;
     padding-top: 6px;
     padding-bottom: 1px;
-    color: $euca-darkgrey;
+    color: $hpe-gray;
     letter-spacing: 1px;
     font-weight: normal;
     li {
@@ -238,7 +238,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     .help-icon {
         position: relative;
         padding: 8px 16px;
-        border-left: 1px solid $breadcrumb-border-color;
+        border-left: 1px solid $hpe-lightgray;
         font-weight: bold;
         text-align: center;
     }
@@ -260,14 +260,12 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
             font-weight: bold;
             margin-right: 0.5rem;
             &:hover {
-                color: $hp-accessible-blue;
                 text-decoration: underline;
             }
         }
         &.active a:hover {
             color: white;
             text-decoration: none;
-            background-color: $hp-accessible-blue;
         }
     }
 }
@@ -277,7 +275,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
    Main Content
 ----------------------------------------- */
 #maincontent {
-    background: $hp-gray-5;
+    background: $hpe-extralightgray;
     position: relative;
     padding-bottom: 3rem;
 }
@@ -298,8 +296,8 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
    Misc
 ----------------------------------------- */
 #pagetitle, .pagetitle {
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-family: $euca-header-font-family;
+    font-size: $euca-xl-font-size;
     margin-left: 1rem;
     margin-bottom: 1rem;
     &.landingpage {
@@ -310,13 +308,14 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     em {
         font-style: normal;
         font-weight: 700;
-        font-family: Lato, Helvetica, Arial, sans-serif;
-        color: $euca-darkgrey;
+        font-family: Metric-Regular, Helvetica, Arial, sans-serif;
+        color: $hpe-gray;
     }
 }
 
 .subsection-label {
-    color: $hp-gray-65;
+    font-size: $euca-l-font-size;
+    color: $hpe-gray;
     margin-bottom: 6px;
 }
 
@@ -325,7 +324,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 }
 
 hr {
-    border: 1px solid $hp-gray-20;
+    border: 1px solid $hpe-lightgray;
     border-width: 1px 0 0;
 }
 
@@ -334,9 +333,9 @@ a.has-tip {
 }
 
 .tooltip {
-    font-weight: normal;
-    font-size: 0.825rem;
-    font-family: Lato, Geneva, Helvetica, sans-serif;
+    font-family: $euca-text-font-family;
+    font-size: $euca-s-font-size;
+    font-family: Metric-Regular, Geneva, Helvetica, sans-serif;
     max-width: 260px;
 }
 
@@ -368,7 +367,7 @@ a.circle {
     top: -1px;
     display: inline-block;
     border-right: 6px solid transparent;
-    border-top: 6px solid $hp-accessible-blue;
+    border-top: 6px solid $hpe-green;
     border-left: 6px solid transparent;
     content: '';
 }
@@ -378,7 +377,7 @@ a.circle {
     top: -1px;
     display: inline-block;
     border-right: 6px solid transparent;
-    border-bottom: 6px solid $hp-accessible-blue;
+    border-bottom: 6px solid $hpe-green;
     border-left: 6px solid transparent;
     content: '';
 }
@@ -401,9 +400,9 @@ a.circle {
         background-color: white;
         box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15);
         &.success {
-            border: 2px solid $hp-green;
+            border: 2px solid $hpe-green;
             .icon {
-                background-color: $hp-green;
+                background-color: $hpe-green;
                 span:before {
                     content: "\2713"
                 }
@@ -419,9 +418,9 @@ a.circle {
             }
         }
         &.info{
-            border: 2px solid $hp-accessible-blue;
+            border: 2px solid $hpe-gray;
             .icon {
-                background-color: $hp-accessible-blue;
+                background-color: $hpe-gray;
                 span:before {
                     content: "\24D8"
                 }
@@ -510,24 +509,25 @@ textarea.policy-area {
 }
 
 .helptext-icon {
-    color: $euca-grey;
+    color: $hpe-gray;
     font-size: 1.2rem;
 }
 
 .expando {
     i {
-        color: $hp-accessible-blue;
+        color: $hpe-gray;
         &.helptext-icon {
-            color: $hp-gray-65;
+            color: $hpe-gray;
         }
     }
     .title {
-        font-size: 1.1rem;
+        font-family: $euca-header-font-family;
+        font-size: $euca-l-font-size;
         a {
-            color: $hp-gray-65;
+            color: $hpe-gray;
             &:hover {
-                color: $hp-accessible-blue;
-                border-bottom: 1px solid $hp-accessible-blue;
+                color: $hpe-green;
+                border-bottom: 1px solid $hpe-green;
             }
         }
     }
@@ -537,12 +537,12 @@ textarea.policy-area {
 .action-icon {
     display: inline-block;
     font-size: 1.4rem;
-    color: $hp-gray-65;
+    color: $hpe-gray;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     &:hover {
         cursor: pointer;
-        color: $hp-accessible-blue;
+        color: $hpe-green;
     }
 }
 
@@ -561,7 +561,7 @@ textarea.policy-area {
 ----------------------------------------- */
 #tag-editor {
     small {
-        font-size: 0.825rem;
+        font-size: $euca-s-font-size;
     }
     @include item-list;
     .propagates {
@@ -570,7 +570,7 @@ textarea.policy-area {
     }
     .add-label {
         margin-bottom: 6px;
-        color: $hp-gray-65;
+        color: $hpe-gray;
     }
     #add-tag-btn {
         margin-bottom: 0;
@@ -693,20 +693,21 @@ textarea.policy-area {
 
 form {
     label {
-        color: $euca-grey;
-        font-weight: bold;
+        color: $hpe-gray;
+        font-family: $euca-text-font-family;
+        font-size: $euca-font-size;
         cursor: default;
         &.inline {
             display: inline-block;
         }
     }
     input {
-        border-color: $hp-gray-20;
-        background-color: $hp-gray-5;
+        border-color: $hpe-lightgray;
+        background-color: #fff;
         &[type=text],
         &[type=password],
         &[type=number] {
-            background-color: $hp-gray-5;
+            background-color: $hpe-lightgray;
         }
         &[type=file] {
             background-color: transparent;
@@ -718,7 +719,7 @@ form {
         }
     }
     select, textarea {
-        background-color: $hp-gray-5;
+        background-color: #fff;
     }
     .req {
         color: darkred;
@@ -747,7 +748,7 @@ form {
         margin-left: 2rem;
         color: $euca-grey;
         &:hover {
-            color: $hp-hover-blue;
+            color: $hpe-green;
         }
     }
     .controls_csrf_token {
@@ -862,7 +863,7 @@ form .controls-wrapper > [class*='small-'] label {
 
 [data-abide] .controls-wrapper .error, [data-abide] .controls-wrapper.error {
     label {
-        color: $euca-grey;
+        color: $hpe-gray;
     }
     input, select {
         border: 1px solid darkred;
@@ -894,11 +895,11 @@ textarea.hidden {
 .chosen-container {
     &.chosen-container-multi {
         background: none;
-        background-color: $hp-gray-5 !important;
+        background-color: #fff !important;
         .chosen-choices  {
             background: none;
-            background-color: $hp-gray-5 !important;
-            border: 1px solid $euca-lightgrey;
+            background-color: #fff !important;
+            border: 1px solid $hpe-lightgray;
             li {
                 &.search-field  {
                     input[type=text] {
@@ -929,7 +930,7 @@ textarea.hidden {
     &.chosen-container-single {
         .chosen-single {
             background-image: none;
-            background-color: $hp-gray-5 !important;
+            background-color: #fff !important;
             border-radius: 0;
             height: 2rem;
             line-height: 2rem;
@@ -951,11 +952,10 @@ textarea.hidden {
 ----------------------------------------- */
 .panel {
     background-color: white;
-    border: 1px solid $hp-gray-20;
+    border: 1px solid $hpe-lightgray;
     position: relative;
     h6 {
-        font-weight: bold;
-        color: $hp-gray-65;
+        color: $hpe-gray;
     }
     .tabs-content {
         border: none;
@@ -971,9 +971,8 @@ textarea.hidden {
             top: 0; left: 0; right: 0;
             line-height: 2rem;
             padding-left: 8px;
-            background-color: $hp-gray-65;
+            background-color: $hpe-gray;
             color: white;
-            font-weight: normal;
             @include ellipsis-overflow;
         }
         .label.status {
@@ -989,7 +988,7 @@ textarea.hidden {
                 }
             }
             .f-dropdown {
-                box-shadow: 0 0 1px 1px $hp-gray-20;
+                box-shadow: 0 0 1px 1px $hpe-gray;
                 min-width: 12rem;
                 width: auto;
             }
@@ -1007,9 +1006,8 @@ textarea.hidden {
         z-index: 99999999;
     }
     h3 {
-        font-weight: bold;
         &#about-cloud:hover {
-            color: $hp-hover-blue;
+            color: $hpe-green;
         }
         &.pagetitle {
             margin-left: 0;
@@ -1035,7 +1033,7 @@ textarea.hidden {
     }
     .close-reveal-modal {
         &:hover {
-            color: $hp-accessible-blue;
+            color: $hpe-green;
         }
     }
 }
@@ -1075,7 +1073,6 @@ table.table {
    Footer
 ----------------------------------------- */
 footer {
-    border-top: 1px solid $hp-gray-20;
     padding: 15px 0 3rem 1rem;
     .copyright {
         font-size: 0.9em;
@@ -1087,29 +1084,30 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
-    background-color: $hp-accessible-blue;
-    border-color: $hp-hover-blue;
+    background-color: #fff;
+    font-family: $euca-header-font-family;
+    text-transform: uppercase;
+    color: $hpe-gray;
+    border-color: $hpe-green;
     a {
         color: white;
     }
     &.secondary {
-        background-color: $white;
-        border-color: $hp-gray-65;
-            &:hover {
-                background-color: white;
-                border-color: $hp-hover-blue;
-                color: $hp-hover-blue;
-            }
-        color: $hp-gray-65;
+        background-color: #fff;
+        border-color: $hpe-gray;
+        &:hover {
+            background-color: white;
+            color: $hpe-green;
+        }
+        font-family: $euca-header-font-family;
+        text-transform: uppercase;
+        color: $hpe-gray;
         &.disabled, &[disabled] {
             @include disabled-button-mixin;
         }
     }
     &.disabled, &[disabled] {
         @include disabled-button-mixin;
-    }
-    &:hover {
-        background-color: $hp-hover-blue;
     }
     &:focus {
         background-color: $hp-hover-blue;

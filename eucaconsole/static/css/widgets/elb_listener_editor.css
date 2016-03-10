@@ -27,7 +27,7 @@
 #select-certificate-modal #new-certificate-wrapper { padding-left: 1rem; }
 
 #elb-security-policy-modal #new-policy-wrapper { padding-left: 1rem; }
-#elb-security-policy-modal #new-policy-wrapper h6, #elb-security-policy-modal #new-policy-wrapper label { text-transform: uppercase; font-family: Lato, Helvetica, Arial, sans-serif; font-size: 0.9rem; font-weight: bold; }
+#elb-security-policy-modal #new-policy-wrapper h6, #elb-security-policy-modal #new-policy-wrapper label { text-transform: uppercase; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 0.9rem; font-weight: bold; }
 #elb-security-policy-modal #new-policy-wrapper label[for='server_order_preference'] { text-transform: none; }
 #elb-security-policy-modal #new-policy-wrapper h6 { position: relative; left: 14px; }
 #elb-security-policy-modal #new-policy-wrapper #ssl-options-header { color: #6a737b; margin-bottom: 0; }

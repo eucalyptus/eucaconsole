@@ -16,12 +16,12 @@
 #login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
 #login-wrapper .tabs { max-height: 2.6rem !important; }
 #login-wrapper .tabs dd { position: relative; top: 1px; z-index: 999; }
-#login-wrapper .tabs dd a { padding: 10px 32px 6px 24px; color: #5a5a5a; background-color: transparent; font-weight: bold; }
-#login-wrapper .tabs dd a:hover { color: #007dba; background-color: transparent; }
-#login-wrapper .tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom-color: white; padding: 9px 31px 5px 23px; }
+#login-wrapper .tabs dd a { padding: 10px 32px 6px 24px; color: #333333; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+#login-wrapper .tabs dd a:hover { color: #333333; background-color: transparent; }
+#login-wrapper .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom-: 5px solid #333333; padding: 9px 31px 5px 23px; }
 #login-wrapper .tabs-content { padding: 1rem; background-color: white; border: 1px solid #cccccc; }
 #login-wrapper .tabs-content .content { width: 95%; margin: 0 auto; }
-#login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #007dba; }
+#login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; }
 #login-wrapper #euca-tab.active, #login-wrapper #aws-tab.active { background-color: white; }
 
 #password, #secret_key { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }

@@ -34,6 +34,16 @@ $experimental: false;
 $euca-extrasmall-breakpoint: 480px;
 $euca-contentwrap-width: 1040px;
 
+// HPE Colors
+$hpe-gray: #333333;
+$hpe-lightgray: #cccccc;
+$hpe-extralightgray: #eeeeee;
+$hpe-highlightgray: #F0F0F0; 
+$hpe-black: #000000;
+$hpe-green: #01a982;
+$hpe-slate: #666666;
+$hpe-turq: #2ad2c9;
+
 // Colors
 $euca-darkblue: #03405f;
 $euca-extralightblue: #ecf4f7;
@@ -82,11 +92,15 @@ $hp-gold: #e6a818;
 $euca-input-field-height: 2rem;
 
 // Text
-$euca-text-font-family: Lato, Helvetica, Arial, sans-serif;
-$euca-header-font-family: Lato, Helvetica, Arial, sans-serif;
-$euca-font-size: 0.8125rem;
-$euca-text-color: #333;
-$euca-link-color: $hp-accessible-blue;
+$euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;
+$euca-header-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;
+$euca-xs-font-size: 12 px;
+$euca-s-font-size: 14px;
+$euca-font-size: 16px;
+$euca-l-font-size: 18 px;
+$euca-xl-font-size: 24 px;
+$euca-text-color: $hpe-gray;
+$euca-link-color: $hpe-green;
 
 // Prevent Google Fonts API call
 $include-open-sans: false;
@@ -108,14 +122,14 @@ $wizard-tab-padding: 8px 1rem;
 $row-width: rem-calc(1040);
 
 // Colors
-$primary-color: $hp-accessible-blue;
-$secondary-color: $hp-gray-65;
-$success-color: $hp-green;
+$primary-color: $hpe-green;
+$secondary-color: $hpe-gray;
+$success-color: $hpe-green;
 $code-color: darkred;
 
 // Dropdown menus
-$f-dropdown-bg: #fff;
-$f-dropdown-triangle-color: #fff;
+$f-dropdown-bg: white;
+$f-dropdown-triangle-color: $hpe-gray;
 
 // Navigation bar settings ============
 // Breakpoint handling
@@ -124,8 +138,8 @@ $topbar-breakpoint: 1020px !default; // Change to 9999px for always mobile layou
 // Colors
 $topbar-bg-color: white;
 $topbar-bg: $topbar-bg-color;
-$topbar-dropdown-link-bg: $hp-accessible-blue;
-$topbar-link-bg-hover: $hp-hover-blue;
+$topbar-dropdown-link-bg: $hpe-green;
+$topbar-link-bg-hover: $hpe-green;
 /* Dropdown elements */
 $topbar-dropdown-bg: white;
 $topbar-dropdown-link-color: #000;
@@ -159,7 +173,7 @@ $crumb-font-color-current: #333;
 $crumb-font-color-unavailable: #999;
 $crumb-font-transform: normal;
 $crumb-link-decor: underline;
-$crumb-slash-color: $hp-gray-40;
+$crumb-slash-color: $hpe-lightgray;
 $crumb-slash: "/";
 
 // Buttons
@@ -171,13 +185,13 @@ $button-border-width: 1px;
 $button-border-style: solid;
 
 // Tables
-$table-even-row-bg: #f5f5f5;
+$table-even-row-bg: #white;
 
 // Tabs
 $tabs-navigation-padding: rem-calc(4) !default;
-$tabs-navigation-bg-color: $hp-accessible-blue;
+$tabs-navigation-bg-color: transparent;
 $tabs-content-margin-bottom: rem-calc(1) !default;
-$tabs-navigation-hover-bg-color: lighten($tabs-navigation-bg-color, 5%);
+
 
 // Tooltips
 $tooltip-padding: rem-calc(5);
@@ -193,7 +207,7 @@ $tooltip-padding: rem-calc(5);
 // Tiles within panels (e.g. instance_volumes.pt and volume_snapshots.pt page)
 @mixin panel-tile-mixin {
     background-color: white;
-    border: 1px solid $hp-gray-20;
+    border: 1px solid $hpe-lightgray;
     width: 190px; height: 160px;
     .footer {
         height: 24px;
@@ -242,7 +256,7 @@ $tooltip-padding: rem-calc(5);
 @mixin table-styles-mixin {
     border: none;
     thead tr {
-        background-color: $hp-gray-5;
+        background-color: white;
         th {
             // Note: Do not use shorthand padding rules here since we need to override Foundation styles
             padding-top: 0.5rem;
@@ -250,7 +264,7 @@ $tooltip-padding: rem-calc(5);
             padding-left: 6px;
             padding-right: 6px;
             vertical-align: top;
-            color: $euca-darkgrey;
+            color: $hpe-gray;
             text-transform: uppercase;
             &.actions {
                 text-align: right;
@@ -308,20 +322,20 @@ $tooltip-padding: rem-calc(5);
         z-index: 999;
         a {
             padding: 10px 32px 6px 24px;
-            color: $hp-gray-65;
+            color: $hpe-gray;
             background-color: transparent;
-            font-weight: bold;
+            font-family: $euca-header-font-family;
             &:hover {
-                color: $hp-accessible-blue;
+                color: $hpe-gray;
                 background-color: transparent;
             }
         }
         &.active {
             a {
-                color: $hp-accessible-blue;
-                background-color: white;
-                border: 1px solid $hp-gray-20;
-                border-bottom-color: white;
+                color: $hpe-gray;
+                font-family: $euca-header-font-family;
+                background-color: transparent;
+                border-bottom-: 5px solid $hpe-gray;
                 padding: 9px 31px 5px 23px;
             }
         }
@@ -330,8 +344,9 @@ $tooltip-padding: rem-calc(5);
 
 @mixin wizard-tabs-mixin {
     a {  // Visited tabs
-        color: $hp-gray-65;
-        background-color: transparent;
+        color: $hpe-extralightgray;
+        font-family: $euca-header-font-family
+        background-color;
         &:hover {
             color: $hp-accessible-blue;
         }
@@ -341,17 +356,17 @@ $tooltip-padding: rem-calc(5);
     }
     &.active {  // Active tab
         a {
-            color: $hp-accessible-blue;
-            background-color: white;
-            border: 1px solid $hp-gray-20;
-            border-bottom: none;
+            color: transparent;
+            font-family: $euca-header-font-family
+            background-color;
+            border-bottom: 5px solid $hpe-gray;
         }
     }
     &.disabled {  // Unvisited tabs
-        color: darken($hp-gray-20, 30%);
-        padding: $wizard-tab-padding;
+        color: $hpe-lightgray;
+        font-family: $euca-header-font-family
+        padding;
         .cir {
-            background-color: $hp-gray-65;
             margin-right: 8px;
         }
     }
@@ -365,7 +380,7 @@ $tooltip-padding: rem-calc(5);
         padding: 0 0 0 0;
         text-align: center;
         vertical-align: middle;
-        background-color: $hp-accessible-blue;
+        background-color: $hpe-gray;
         color: white;
         margin-right: 4px;
     }
