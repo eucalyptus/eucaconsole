@@ -331,7 +331,7 @@ class CloudWatchMetricsJsonView(BaseView):
 
             return dict(results=metrics)
 
-    @view_config(route_name='cloudwatch_resource_names_json', renderer='json', request_method='POST')
+    @view_config(route_name='cloudwatch_resource_names_json', renderer='json', xhr=True, request_method='POST')
     def cloudwatch_resource_names_json(self):
         ids = self.request.params.getall('id')
         res_type = self.request.params.get('restype')
