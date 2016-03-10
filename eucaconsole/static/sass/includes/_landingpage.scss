@@ -39,7 +39,7 @@ $tile-label-padding: 28px;
 $grid-dropdown-width: 160px;
 $gridwrapper-table-width: 100%;
 
-$dropdown-border-color: $hpe-extralightgray;
+$dropdown-border-color: $hpe-lightgray;
 
 
 .columns.datagrid {
@@ -59,9 +59,9 @@ $dropdown-border-color: $hpe-extralightgray;
 }
 
 .clear-link {
-    color: $euca-grey;
+    color: $hpe-gray;
     &:hover {
-        color: $hp-hover-blue;
+        color: $hpe-green;
     }
 }
 
@@ -88,7 +88,7 @@ $dropdown-border-color: $hpe-extralightgray;
         li.disabled {
             cursor: default;
             a {
-                color: $hp-gray-20;
+                color: $hpe-gray;
                 pointer-events: none;
             }
             &:hover {
@@ -107,9 +107,9 @@ $dropdown-border-color: $hpe-extralightgray;
 }
 
 #refresh-btn {
-    color: $hp-gray-65;
+    color: $hpe-gray;
     &:hover {
-        color: $hp-hover-blue;
+        color: $hpe-green;
     }
 }
 
@@ -122,12 +122,12 @@ $dropdown-border-color: $hpe-extralightgray;
         position: absolute;
         width: 30px; height: $tile-row-height;
         top: 0; right: 0;
-        color: $hp-gray-65;
+        color: $hpe-gray;
         font-size: 1.1rem;
         padding: 0 0 0 0;
         border: none;
         &:hover {
-            color: $hp-hover-blue;
+            color: $hpe-green;
         }
         &::before, &::after {
             border: none;
@@ -145,7 +145,7 @@ $dropdown-border-color: $hpe-extralightgray;
 
 // Tile/grid view
 .tile {
-    border: 1px solid $hp-gray-20;
+    border: 1px solid $hpe-lightgray;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
@@ -184,7 +184,7 @@ $dropdown-border-color: $hpe-extralightgray;
             display: block;
             padding: 6px 30px 4px 10px;
             color: $hp-gray-65;
-            font-weight: bold;
+            font-family: Metric-Semibold;
             &:hover {
                 color: $hp-accessible-blue;
             }
@@ -201,7 +201,7 @@ $dropdown-border-color: $hpe-extralightgray;
             left: 7px;
         }
         .f-dropdown a {
-            color: $euca-darkgrey;
+            color: $hpe-gray;
             font-weight: normal;
             overflow: visible;
             white-space: normal;
@@ -210,7 +210,8 @@ $dropdown-border-color: $hpe-extralightgray;
     }
     .content {
         padding: 8px;
-        font-size: 0.9em;
+        font-family: $euca-text-font-family;
+        font-size: $euca-font-size;
         a { color: $hp-accessible-blue; }
         a:hover { text-decoration: underline; }
         div {
@@ -221,8 +222,8 @@ $dropdown-border-color: $hpe-extralightgray;
         .label {
             padding: 1px 3px;
             margin-left: -$tile-label-padding;
-            background-color: #e6e7e8;
-            color: #555;
+            font-family: $euca-text-font-family;
+            font-size: $euca-font-size;
             margin-right: 0.2rem;
             min-width: 22px;
             text-align: center;
@@ -236,7 +237,7 @@ $dropdown-border-color: $hpe-extralightgray;
         }
     }
     .link {
-        color: $hp-accessible-blue;
+        color: $hpe-green;
         text-transform: uppercase;
         padding: 1px 3px;
         margin-bottom: 2px;
@@ -248,7 +249,7 @@ $dropdown-border-color: $hpe-extralightgray;
         left: 0; right: 0;
         padding: 5px;
         color: white;
-        background-color: $euca-grey;
+        background-color: $hpe-gray;
         text-align: center;
         line-height: 1.4rem;
         text-transform: capitalize;
