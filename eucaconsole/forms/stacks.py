@@ -65,7 +65,7 @@ class StacksUpdateForm(BaseSecureForm):
     template_file = wtforms.FileField(label='')
 
     def __init__(self, request, s3_bucket, **kwargs):
-        super(StacksCreateForm, self).__init__(request, **kwargs)
+        super(StacksUpdateForm, self).__init__(request, **kwargs)
         self.template_file.help_text = self.template_file_helptext
 
 

@@ -257,7 +257,7 @@ class StackView(BaseView, StackMixin):
             controller_options_json=self.get_controller_options_json(),
         )
 
-    @view_config(route_name='stack_view', renderer=TEMPLATE)
+    @view_config(route_name='stack_view', request_method='GET', renderer=TEMPLATE)
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('name') != 'new':
             raise HTTPNotFound
@@ -444,7 +444,8 @@ class StackWizardView(BaseView, StackMixin):
         return BaseView.escape_json(json.dumps({
             'stack_template_url': self.request.route_path('stack_template_parse'),
             'convert_template_url': self.request.route_path('stack_template_convert'),
-            'stack_template_read_url': self.request.route_path('stack_template', name=self.stack.stack_name) if self.stack else '',
+            'stack_template_read_url':
+                self.request.route_path('stack_template', name=self.stack.stack_name) if self.stack else '',
             'sample_templates': self.create_form.sample_template.choices
         }))
 

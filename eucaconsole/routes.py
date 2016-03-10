@@ -381,8 +381,4 @@ urls = [
     # Update
     Route(name='stack_update', pattern='/stacks/{name}/update'),
     Route(name='stack_aws_dialogs', pattern='/templates/aws-dialogs'),
-
-    # Tag Editor #####
-    # Directive Template
-    Route(name='tag_editor_template', pattern='/templates/tag-editor'),
 ]
