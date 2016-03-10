@@ -71,7 +71,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
             ).then( function success(oData) {
                 var results = oData.data ? oData.data.results : [];
-                $scope.items.forEach(function(item) {
+                vm.items.forEach(function(item) {
                     if (item.resources !== undefined) {
                         item.resources.forEach(function(res) {
                             if (results[res.res_id] !== undefined) {
@@ -85,7 +85,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
         }
         $scope.$on('itemsLoaded', function($event, items) {
-            $scope.items = items;
+            vm.items = items;
             // clear previous filters
             resource_list = [];
             items.forEach(function(metric, idx) {
@@ -164,17 +164,17 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             //$(".nv-x g.nvd3.nv-wrap.nv-axis .tick text").detach()
             //$(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text").detach()
         });
-        $scope.clearSelections = function() {
-            $scope.items.forEach(function(metric) {
+        vm.clearSelections = function() {
+            vm.items.forEach(function(metric) {
                 metric._selected = false;
             });
         };
-        $scope.clearThisChart = function(charts) {
+        vm.clearThisChart = function(charts) {
             charts.forEach(function(metric) {
                 metric._selected = false;
             });
         };
-        $scope.sortGetters = {
+        vm.sortGetters = {
             resources: function(value) {
                 if (headResources === undefined) {
                     headResources = $("tr>th:nth-of-type(2)");
@@ -221,7 +221,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 return value;
             }
         };
-        $scope.chartDimensions = function(chart) {
+        vm.chartDimensions = function(chart) {
             var ret = [];
             chart.forEach(function(row) {
                 var label = '';
@@ -234,7 +234,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
             return ret;
         };
-        $scope.copyUrl = function(chart) {
+        vm.copyUrl = function(chart) {
             var metric = '';
             var dims = [];
             if (Array.isArray(chart)) {
@@ -263,7 +263,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             if (url.indexOf("#") > -1) {
                 url = url.split("#")[0];
             }
-            $scope.graphURL = url+"?graph="+$.base64.encode(chartString);
+            vm.graphURL = url+"?graph="+$.base64.encode(chartString);
             $("#metrics-copy-url-modal").foundation("reveal", "open");
             $timeout(function() {
                 $(".metrics-url-field").select();
