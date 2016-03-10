@@ -183,7 +183,7 @@ select#zone { width: 50%; }
 
 .reveal-modal #device { width: 10rem; }
 
-.tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
+.tile { background-color: white; border: 1px solid #666666; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
 .tile .footer.has-progress .progress { padding-right: 0; }
 .tile .footer.has-progress .progress .meter { color: black; text-align: left; }

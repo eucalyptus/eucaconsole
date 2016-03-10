@@ -181,7 +181,7 @@ form .row.controls-wrapper { margin-bottom: 0; }
 
 .fi-alert { color: darkred; }
 
-.tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
+.tile { background-color: white; border: 1px solid #666666; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
 .tile .footer.attached { background-color: #03405f; }
 .tile .footer.attaching { background-color: #0683c2; }

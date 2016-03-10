@@ -320,7 +320,7 @@ select { width: 100%; }
 .breadcrumbs > *.unavailable { color: #999; }
 .breadcrumbs > *.unavailable a { color: #999; }
 .breadcrumbs > *.unavailable:hover, .breadcrumbs > *.unavailable:hover a, .breadcrumbs > *.unavailable:focus, .breadcrumbs > *.unavailable a:focus { text-decoration: none; color: #999; cursor: not-allowed; }
-.breadcrumbs > *:before { content: "/"; color: #cccccc; margin: 0 0.375rem; position: relative; top: 1px; }
+.breadcrumbs > *:before { content: "/"; color: #666666; margin: 0 0.375rem; position: relative; top: 1px; }
 .breadcrumbs > *:first-child:before { content: " "; margin: 0; }
 
 /* Accessibility - hides the forward slash */
@@ -1606,7 +1606,7 @@ html { background-color: white; }
 
 body { position: relative; color: #333333; min-height: 100%; font-family: Metric-Regular, Helvetica, Arial, sans-serif; overflow-y: scroll; }
 
-h1, h2, h3, h4, h5, h6 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #5a5a5a; }
+h1, h2, h3, h4, h5, h6 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #333333; }
 
 .panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 { color: #333333; }
 
@@ -1637,7 +1637,7 @@ a { color: #01a982; }
 #breadcrumbs li { margin-top: 0.3rem; font-size: 0.9rem; }
 #breadcrumbs li.current a { color: #444; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
-#breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #cccccc; font-weight: bold; text-align: center; }
+#breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #666666; font-weight: bold; text-align: center; }
 #breadcrumbs .breadcrumbs > ::before { position: relative; top: -1px; font-size: 0.7rem; }
 
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
@@ -1647,7 +1647,7 @@ a { color: #01a982; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
-#maincontent { background: #eeeeee; position: relative; padding-bottom: 3rem; }
+#maincontent { background: #F2F2F2; position: relative; padding-bottom: 3rem; }
 
 #contentwrap { position: relative; padding-bottom: 3rem; min-height: 30rem; }
 
@@ -1663,7 +1663,7 @@ a { color: #01a982; }
 
 .upper { text-transform: uppercase; }
 
-hr { border: 1px solid #cccccc; border-width: 1px 0 0; }
+hr { border: 1px solid #666666; border-width: 1px 0 0; }
 
 a.has-tip { border-bottom: none !important; }
 
@@ -1774,14 +1774,13 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 /* ----------------------------------------- Forms
 ----------------------------------------- */
-form label { color: #333333; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
+form label { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
 form label.inline { display: inline-block; }
-form input { border-color: #cccccc; background-color: #fff; }
-form input[type=text], form input[type=password], form input[type=number] { background-color: #cccccc; }
+form input { border-color: #666666; background-color: #fff; }
 form input[type=file] { background-color: transparent; }
 form input[type=password] { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
 form select, form textarea { background-color: #fff; }
-form .req { color: darkred; }
+form .req { color: #666666; }
 form .row .inline-label { line-height: 2rem; }
 form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; }
 form .row input[type='number'] { width: 3rem; }
@@ -1830,7 +1829,7 @@ textarea.hidden.debug { display: block; }
 /* ----------------------------------------- Chosen widget
 ----------------------------------------- */
 .chosen-container.chosen-container-multi { background: none; background-color: #fff !important; }
-.chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #fff !important; border: 1px solid #cccccc; }
+.chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #fff !important; border: 1px solid #666666; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: 34px; padding-left: 10px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field .default { color: #999; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice { background-image: none; background-color: #d1d3d4; border: none; font-size: 0.9rem; padding: 4px 20px 4px 8px; color: #555; }
@@ -1842,7 +1841,7 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
-.panel { background-color: white; border: 1px solid #cccccc; position: relative; }
+.panel { background-color: white; position: relative; }
 .panel h6 { color: #333333; }
 .panel .tabs-content { border: none; }
 .panel.no-title { margin-top: 0; }
@@ -1887,20 +1886,19 @@ table.table.smart-table .st-sort-descent:after { content: '\25BC'; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */
-footer { padding: 15px 0 3rem 1rem; }
+footer { background-color: #333333; padding: 15px 0 3rem 1rem; }
 footer .copyright { font-size: 0.9em; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
-.button { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #333333; border-color: #01a982; }
-.button a { color: white; }
-.button.secondary { background-color: #fff; border-color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #333333; }
-.button.secondary:hover { background-color: white; color: #01a982; }
+.button { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #333333; border-color: #01a982; border-width: 2px; }
+.button:hover { border-width: 4px; }
+.button.secondary { background-color: #fff; border-color: #333333; border-width: 2px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #333333; }
+.button.secondary:hover { border-width: 4px; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #b3b3b3; color: #b3b3b3; }
 .button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; border-color: #b3b3b3; color: #b3b3b3; }
 .button.disabled, .button[disabled] { background-color: white; border-color: #b3b3b3; color: #b3b3b3; }
 .button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #b3b3b3; color: #b3b3b3; }
-.button:focus { background-color: #006699; }
 
 /* ----------------------------------------- Button groups (Foundation's button groups seem broken)
 ----------------------------------------- */
@@ -1915,11 +1913,11 @@ footer .copyright { font-size: 0.9em; }
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; }
 .tabs dd { position: relative; top: 1px; z-index: 999; }
-.tabs dd a { padding: 10px 32px 6px 24px; color: #333333; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+.tabs dd a { padding: 10px 32px 6px 24px; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
 .tabs dd a:hover { color: #333333; background-color: transparent; }
-.tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom-: 5px solid #333333; padding: 9px 31px 5px 23px; }
+.tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom-: 5px solid #333333; }
 
-.tabs-content { border: 1px solid #cccccc; background-color: white; }
+.tabs-content { background-color: white; }
 .tabs-content .panel { border: none; }
 
 .tabs-content > .content { padding: 1rem; }

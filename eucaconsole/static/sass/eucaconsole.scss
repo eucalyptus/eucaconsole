@@ -114,7 +114,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: $euca-header-font-family;
-    color: $hp-gray-65;
+    color: $hpe-gray;
 }
 
 .panel {
@@ -134,7 +134,7 @@ a {
 
 // Logo bar (top-most bar)
 #logobar-wrapper {
-    border-bottom: 1px solid $hpe-lightgray;
+    border-bottom: 1px solid $hpe-extralightgray;
 }
 #logobar {
     padding: 6px 0 0 0;
@@ -165,7 +165,7 @@ a {
         }
     }
     .f-dropdown {
-        box-shadow: 0 0 1px 1px $hp-gray-20;
+        box-shadow: 0 0 1px 1px $hpe-extralightgray;
         width: auto;
         min-width: 8rem;
         &.open {
@@ -275,7 +275,7 @@ a {
    Main Content
 ----------------------------------------- */
 #maincontent {
-    background: $hpe-extralightgray;
+    background: $hpe-backgroundgray;
     position: relative;
     padding-bottom: 3rem;
 }
@@ -693,7 +693,7 @@ textarea.policy-area {
 
 form {
     label {
-        color: $hpe-gray;
+        color: $hpe-lightgray;
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
         cursor: default;
@@ -704,11 +704,6 @@ form {
     input {
         border-color: $hpe-lightgray;
         background-color: #fff;
-        &[type=text],
-        &[type=password],
-        &[type=number] {
-            background-color: $hpe-lightgray;
-        }
         &[type=file] {
             background-color: transparent;
         }
@@ -722,7 +717,7 @@ form {
         background-color: #fff;
     }
     .req {
-        color: darkred;
+        color: $hpe-lightgray;
     }
     .row {
         .inline-label {
@@ -952,7 +947,6 @@ textarea.hidden {
 ----------------------------------------- */
 .panel {
     background-color: white;
-    border: 1px solid $hpe-lightgray;
     position: relative;
     h6 {
         color: $hpe-gray;
@@ -1073,6 +1067,7 @@ table.table {
    Footer
 ----------------------------------------- */
 footer {
+    background-color: $hpe-gray;
     padding: 15px 0 3rem 1rem;
     .copyright {
         font-size: 0.9em;
@@ -1089,15 +1084,16 @@ footer {
     text-transform: uppercase;
     color: $hpe-gray;
     border-color: $hpe-green;
-    a {
-        color: white;
-    }
+    border-width: 2px;
+    &:hover {
+            border-width: 4px;
+        }
     &.secondary {
         background-color: #fff;
         border-color: $hpe-gray;
+        border-width: 2px;
         &:hover {
-            background-color: white;
-            color: $hpe-green;
+            border-width: 4px;
         }
         font-family: $euca-header-font-family;
         text-transform: uppercase;
@@ -1108,9 +1104,6 @@ footer {
     }
     &.disabled, &[disabled] {
         @include disabled-button-mixin;
-    }
-    &:focus {
-        background-color: $hp-hover-blue;
     }
 }
 
@@ -1165,7 +1158,6 @@ $btn-group-radius: 10px;
 }
 
 .tabs-content {
-    border: 1px solid $hp-gray-20;
     background-color: white;
     .panel {
         border: none;

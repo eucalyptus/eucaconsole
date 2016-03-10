@@ -36,9 +36,9 @@ $euca-contentwrap-width: 1040px;
 
 // HPE Colors
 $hpe-gray: #333333;
-$hpe-lightgray: #cccccc;
-$hpe-extralightgray: #eeeeee;
-$hpe-highlightgray: #F0F0F0; 
+$hpe-lightgray: #666666;
+$hpe-extralightgray: #cccccc;
+$hpe-backgroundgray: #F2F2F2; 
 $hpe-black: #000000;
 $hpe-green: #01a982;
 $hpe-slate: #666666;
@@ -322,7 +322,7 @@ $tooltip-padding: rem-calc(5);
         z-index: 999;
         a {
             padding: 10px 32px 6px 24px;
-            color: $hpe-gray;
+            color: $hpe-lightgray;
             background-color: transparent;
             font-family: $euca-header-font-family;
             &:hover {
@@ -336,7 +336,6 @@ $tooltip-padding: rem-calc(5);
                 font-family: $euca-header-font-family;
                 background-color: transparent;
                 border-bottom-: 5px solid $hpe-gray;
-                padding: 9px 31px 5px 23px;
             }
         }
     }
@@ -344,11 +343,11 @@ $tooltip-padding: rem-calc(5);
 
 @mixin wizard-tabs-mixin {
     a {  // Visited tabs
-        color: $hpe-extralightgray;
+        color: $hpe-lightgray;
         font-family: $euca-header-font-family
         background-color;
         &:hover {
-            color: $hp-accessible-blue;
+            color: $hpe-gray;
         }
         box-shadow: none;
         white-space: nowrap;
@@ -357,15 +356,15 @@ $tooltip-padding: rem-calc(5);
     &.active {  // Active tab
         a {
             color: transparent;
-            font-family: $euca-header-font-family
-            background-color;
+            font-family: $euca-header-font-family;
+            background-color: transparent;
             border-bottom: 5px solid $hpe-gray;
         }
     }
     &.disabled {  // Unvisited tabs
-        color: $hpe-lightgray;
-        font-family: $euca-header-font-family
-        padding;
+        color: $hpe-extralightgray;
+        font-family: $euca-header-font-family;
+        padding: $wizard-tab-padding;
         .cir {
             margin-right: 8px;
         }

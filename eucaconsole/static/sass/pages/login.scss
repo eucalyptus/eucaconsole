@@ -27,7 +27,6 @@
         white-space: nowrap;
     }
     input {
-        background-color: $euca-extralightgrey;
         height: 2.25rem;
     }
     .hide-aws {
@@ -40,7 +39,6 @@
     .tabs-content {
         padding: 1rem;
         background-color: white;
-        border: 1px solid $hp-gray-20;
         .content {
             width: 95%;
             margin: 0 auto;
@@ -51,11 +49,6 @@
         width: 100%;
         margin-top: 12px;
         margin-bottom: 12px;
-
-    }
-    #euca-tab.active, #aws-tab.active {
-        background-color: white;
-    }
 }
 
 #password, #secret_key {
@@ -94,4 +87,5 @@
         box-shadow: none;
         top: 0; left: 0; right: 0;
     }
+}
 }
