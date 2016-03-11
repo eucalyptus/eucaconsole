@@ -185,7 +185,7 @@
                 </div>
                 <div ng-show="item.alarm_status">
                     <span class="label" title="CloudWatch alarm status" i18n:attributes="title" data-tooltip="">CW</span>
-                    <a class="alarm-status" ng-class="item.alarm_status | toClassName" ng-href="/instances/{{item.id}}/monitoring">
+                    <a class="alarm-status" ng-class="item.alarm_status | toClassName" ng-href="${prefix}/{{item.id}}/monitoring">
                         {{ item.alarm_status }}
                     </a>
                 </div>
@@ -265,7 +265,7 @@
                 </td>
                 <td class="alarm-status">
                     <a class="label radius alarm-status" ng-class="item.alarm_status | toClassName"
-                          ng-if="item.alarm_status" ng-href="/instances/{{item.id}}/monitoring">
+                          ng-if="item.alarm_status" ng-href="${prefix}/{{item.id}}/monitoring">
                         {{ item.alarm_status }}
                     </a>
                 </td>

@@ -34,6 +34,7 @@ import re
 import simplejson as json
 import time
 
+from itertools import chain
 from urllib import quote
 
 import boto.utils
@@ -62,6 +63,7 @@ from ..forms.elbs import (
 )
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from ..views.cloudwatchapi import CloudWatchAPIMixin
 from . import boto_error_handler
@@ -154,9 +156,17 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
     def elbs_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        # Get alarms for ELBs and build a list of resource ids to optimize alarm status fetch
+        alarms = [alarm for alarm in self.cw_conn.describe_alarms() if 'LoadBalancerName' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         with boto_error_handler(self.request):
             elbs_array = []
             for elb in self.items:
+                alarm_status = ''
+                if elb.name in alarm_resource_ids:
+                    alarm_status = Alarm.get_resource_alarm_status(elb.name, alarms)
                 name = elb.name
                 health_counts = self.get_elb_health_counts(elb)
                 elbs_array.append(dict(
@@ -166,6 +176,7 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
                     healthy_hosts=health_counts.get('healthy'),
                     unhealthy_hosts=health_counts.get('unhealthy'),
                     latency=self.get_average_latency(elb),
+                    alarm_status=alarm_status,
                 ))
             return dict(results=elbs_array)
 
