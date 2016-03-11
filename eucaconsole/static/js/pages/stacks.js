@@ -5,12 +5,13 @@
  */
 
 // Pull in common landing page module
-angular.module('StacksPage', ['LandingPage', 'EucaConsoleUtils'])
+angular.module('StacksPage', ['LandingPage', 'EucaConsoleUtils', 'angular.filter'])
     .controller('StacksPageCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.stackName = '';
-        $scope.initController = function(delete_stack_url) {
+        $scope.initController = function(delete_stack_url, update_stack_url) {
             $scope.delete_stack_url = delete_stack_url;
+            $scope.update_stack_url = update_stack_url.replace("_name_", "{0}");
         };
         $scope.revealModal = function (action, stack) {
             $scope.stackName = stack.name;
