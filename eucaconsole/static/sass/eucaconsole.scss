@@ -218,14 +218,15 @@ a {
     padding-left: 16px;
     padding-top: 6px;
     padding-bottom: 1px;
-    color: $hpe-black;
+    color: $hpe-gray;
+    font-family: $euca-header-font-family;
     letter-spacing: 1px;
     font-weight: normal;
     li {
         margin-top: 0.3rem;
-        font-size: 0.9rem;
+        font-size: $euca-l-font-size;
         &.current a {
-            color: #444;
+            font-family: $euca-text-font-family;
         }
     }
     .icon-block{

@@ -186,7 +186,7 @@ $dropdown-border-color: $hpe-lightgray;
             color: $hp-gray-65;
             font-family: $euca-header-font-family;
             &:hover {
-                color: $hp-accessible-blue;
+                color: $hpe-green;
             }
             &.has-checkbox {
                 padding-left: 24px;
@@ -212,7 +212,7 @@ $dropdown-border-color: $hpe-lightgray;
         padding: 8px;
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
-        a { color: $hp-accessible-blue; }
+        a { color: $hpe-green; }
         a:hover { text-decoration: underline; }
         div {
             margin-bottom: 2px;
@@ -306,7 +306,7 @@ $dropdown-border-color: $hpe-lightgray;
             padding: 8px 4px 8px 6px;
             vertical-align: top;
             a {
-                color: $hp-accessible-blue;
+                color: $hpe-green;
                 &:hover {
                     text-decoration: underline;
                 }
@@ -363,7 +363,7 @@ $dropdown-border-color: $hpe-lightgray;
         position: relative;
         input {
             background-color: transparent;
-            border-color: $euca-grey;
+            border-color: $hpe-lightgray;
         }
     }
     .go {
@@ -461,7 +461,7 @@ $dropdown-border-color: $hpe-lightgray;
         color: $hp-gray-65;
         &:hover {
             border-bottom: none;
-            color: $hp-hover-blue;
+            color: $hpe-green;
         }
     }
     label {
@@ -471,9 +471,9 @@ $dropdown-border-color: $hpe-lightgray;
     }
     .selected {
         background-color: white;
-        color: $hp-accessible-blue;
+        color: $hpe-green;
         &:hover {
-            color: $hp-accessible-blue;
+            color: $hpe-green;
             cursor: inherit;
         }
     }
@@ -530,15 +530,15 @@ $dropdown-border-color: $hpe-lightgray;
 }
 
 .euca-split {
-    border-color: $euca-extralightgrey !important;
+    border-color: $hpe-hovergray !important;
     width: 2.0rem !important;
 }
 
 .secondary {
     .euca-split {
-        border-color: $hp-gray-65 !important;
+        border-color: $hpe-gray !important;
         &:hover {
-            border-color: $hp-hover-blue !important;
+            border-color: $hpe-green !important;
         }
     }
 }

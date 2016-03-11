@@ -228,13 +228,28 @@ $tooltip-padding: rem-calc(5);
 
 @mixin disabled-button-mixin {
     background-color: white;
-    border-color: $hp-gray-40;
+    border-color: $hpe-disabledgray;
         &:hover {
             background-color: white;
-            border-color: $hp-gray-40;
-            color: $hp-gray-40;
+            border-color: $hpe-disabledgray;
+            border-width: 2px;
+            color: $hpe-disabledgray;
+
         }
-    color: $hp-gray-40;
+    color: $hpe-disabledgray;
+}
+
+@mixin primary-disabled-button-mixin {
+    background-color: white;
+    border-color: $hpe-disabledgreen;
+        &:hover {
+            background-color: white;
+            border-color: $hpe-disabledgreen;
+            border-width: 2px;
+            color: $hpe-disabledgreen;
+
+        }
+    color: $hpe-lightgray;
 }
 
 @mixin dropdown-shadow-mixin {

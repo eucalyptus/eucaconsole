@@ -1633,9 +1633,9 @@ a { color: #01a982; }
 #logobar #offcanvas-icon i { font-size: 1.8rem; }
 #logobar #user-dropdown-section { position: relative; left: -10px; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; color: #000000; letter-spacing: 1px; font-weight: normal; }
-#breadcrumbs li { margin-top: 0.3rem; font-size: 0.9rem; }
-#breadcrumbs li.current a { color: #444; }
+#breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; letter-spacing: 1px; font-weight: normal; }
+#breadcrumbs li { margin-top: 0.3rem; font-size: 18px; }
+#breadcrumbs li.current a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
 #breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #cccccc; font-weight: bold; text-align: center; }
 #breadcrumbs .breadcrumbs > ::before { position: relative; top: -1px; font-size: 0.7rem; }
@@ -1895,10 +1895,10 @@ footer .copyright { font-size: 0.9em; }
 .button:hover { border-width: 4px; }
 .button.secondary { background-color: #fff; border-color: #666666; border-width: 2px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
 .button.secondary:hover { border-width: 4px; }
-.button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #b3b3b3; color: #b3b3b3; }
-.button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; border-color: #b3b3b3; color: #b3b3b3; }
-.button.disabled, .button[disabled] { background-color: white; border-color: #b3b3b3; color: #b3b3b3; }
-.button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #b3b3b3; color: #b3b3b3; }
+.button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; }
+.button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; border-color: #EDEDED; border-width: 2px; color: #EDEDED; }
+.button.disabled, .button[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; }
+.button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #EDEDED; border-width: 2px; color: #EDEDED; }
 
 /* ----------------------------------------- Button groups (Foundation's button groups seem broken)
 ----------------------------------------- */
