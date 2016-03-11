@@ -184,7 +184,7 @@ $dropdown-border-color: $hpe-lightgray;
             display: block;
             padding: 6px 30px 4px 10px;
             color: $hp-gray-65;
-            font-family: Metric-Semibold;
+            font-family: $euca-header-font-family;
             &:hover {
                 color: $hp-accessible-blue;
             }

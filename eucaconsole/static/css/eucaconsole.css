@@ -1655,11 +1655,11 @@ a { color: #01a982; }
   #maincontent { min-height: 65rem; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
-#pagetitle, .pagetitle { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 24 px; margin-left: 1rem; margin-bottom: 1rem; }
+#pagetitle, .pagetitle { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 24px; margin-left: 1rem; margin-bottom: 1rem; }
 #pagetitle.landingpage, .pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
 #pagetitle em, .pagetitle em { font-style: normal; font-weight: 700; font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #000000; }
 
-.subsection-label { font-size: 18 px; color: #000000; margin-bottom: 6px; }
+.subsection-label { font-size: 18px; color: #000000; margin-bottom: 6px; }
 
 .upper { text-transform: uppercase; }
 
@@ -1716,7 +1716,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 .expando i { color: #000000; }
 .expando i.helptext-icon { color: #000000; }
-.expando .title { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 18 px; }
+.expando .title { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 18px; }
 .expando .title a { color: #000000; }
 .expando .title a:hover { color: #01a982; border-bottom: 1px solid #01a982; }
 
