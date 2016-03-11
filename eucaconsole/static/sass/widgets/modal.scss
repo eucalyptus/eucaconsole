@@ -7,9 +7,18 @@
 
     &.open {
         display: block;
+
+        .modal-content {
+            top: 0px;
+        }
     }
 
     .modal-content {
+        top: -1000px;
+        //-moz-transition-property: all;
+        //transition-duration: 2s;
+        transition: all 2.0s ease-in-out;
+
         opacity: 1;
         background-color: #FFF;
         z-index: 100000;

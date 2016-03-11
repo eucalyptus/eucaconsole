@@ -1,0 +1,107 @@
+<div class="modal" modal="createAlarm"
+                   create-alarm=""
+                   resource-type="${resource_type}"
+                   resource-id="${resource_type_value}"
+                   default-metric="${default_metric}">
+    <h3>Create Alarm</h3>
+    <h6>Alarm</h6>
+    <div class="row inline controls-wrapper">
+        <div class="large-3 small-3 columns">
+            <label class="right">Name</label>
+        </div>
+        <div class="large-9 small-9 columns field">
+            <input class="" name="name" ng-model="alarm.name" required="required" type="text">
+        </div>
+    </div>
+    <div class="row inline controls-wrapper">
+        <div class="large-3 small-3 columns">
+            <label class="right">Description</label>
+        </div>
+        <div class="large-9 small-9 columns field">
+            <textarea class=""
+                maxlength="255" name="description" ng-model="alarm.description"></textarea>
+        </div>
+    </div>
+    <div class="row controls-wrapper">
+        <div class="small-2 columns">
+            <label class="right" i18n:translate="">Trigger alarm when the</label>
+        </div>
+        <div class="small-4 columns">
+            <select name="statistic" ng-model="alarm.statistic"
+                                     ng-options="statistic for statistic in alarm.metric.statistics">
+            </select>
+        </div>
+        <div class="small-6 columns">
+            <select name="metric" ng-model="alarm.metric"
+                                  ng-init="alarm.metric = defaultMetric"
+                                  ng-options="metric.name as metric.name for metric in metrics"></select>
+        </div>
+    </div>
+    <div class="row controls-wrapper">
+        <div class="small-2 columns">
+            <label class="right" i18n:translate="">for</label>
+        </div>
+        <div class="small-10 columns">
+            <select aria-invalid="false" class="" id="dimension" name="dimension" ng-model="alarm.dimension">
+                <option value="">select...</option>
+            </select>
+        </div>
+    </div>
+        <div class="small-10 columns">
+        <div class="row">
+            <div class="large-6 columns">
+                <!-- Pull in select fields for dimension value choices.
+                     The appropriate field is displayed based on the dimension choice above -->
+                <span ng-show="dimension == &quot;availability_zone&quot;">
+                    <select id="availability_zone" name="availability_zone">
+                        <option value="">Select...</option><option value="one">one</option></select>
+                </span>
+                <span ng-show="dimension === &quot;image&quot;">
+                    <input id="image_id" name="image_id" placeholder="Image ID" value="" type="text">
+                </span>
+                <span ng-show="dimension === &quot;instance&quot;">
+                    <select id="instance_id" name="instance_id">
+                        <option value="">Select instance...</option>
+                    </select>
+                </span>
+                <span ng-show="dimension === &quot;instance_type&quot;">
+                    <select id="instance_type" name="instance_type">
+                    </select>
+                </span>
+                <span ng-show="dimension === &quot;load_balancer&quot;">
+                    <select id="load_balancer_name" name="load_balancer_name">
+                    </select>
+                </span>
+                <span ng-show="dimension === &quot;volume&quot;">
+                    <select id="volume_id" name="volume_id">
+                        <option value="">Select volume...</option>
+                    </select>
+                </span>
+                <span ng-show="dimension === &quot;scaling_group&quot;">
+                    <select id="scaling_group_name" name="scaling_group_name">
+                        <option value="">Select...</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-1 columns">
+                <span class="inline-label">is</span>
+            </div>
+            <div class="small-2 columns">
+                <select id="comparison" name="comparison">
+                </select>
+            </div>
+            <div class="small-3 columns">
+                <input name="threshold" pattern="^[1-9]\d*$" placeholder="amount..." required="required" type="number">
+                <small class="error">Trigger threshold amount is required</small>
+            </div>
+            <div class="small-6 columns">
+                <div class="unit-label"></div>
+                <select class="" id="unit" name="unit" ng-model="alarm.unit">
+                    <option value="">Select...</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

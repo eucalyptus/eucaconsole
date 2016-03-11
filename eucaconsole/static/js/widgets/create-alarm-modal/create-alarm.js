@@ -1,9 +1,8 @@
 angular.module('CreateAlarmModal', [])
-.directive('modal', ['ModalService', function (ModalService) {
+.directive('modal', ['ModalService', '$document', function (ModalService, $document) {
     return {
         restrict: 'A',
         template: '<div class="modal-bg"></div><div class="modal-content"><a ng-click="closeModal()" class="close-modal">×</a><ng-transclude></ng-transclude></div>',
-                        
         transclude: true,
         link: function (scope, element, attrs) {
             scope.modalName = attrs.modal;
@@ -16,8 +15,50 @@ angular.module('CreateAlarmModal', [])
         }]
     };
 }])
-.directive('createAlarm', function () {
-})
+.directive('createAlarm', ['MetricService', function (MetricService) {
+    return {
+        restrict: 'A',
+        require: 'modal',
+        link: function (scope, element, attrs) {
+            scope.resourceType = attrs.resourceType;
+            scope.resourceId = attrs.resourceId;
+            scope.defaultMetric = attrs.defaultMetric;
+
+            MetricService.getMetrics(scope.resourceType, scope.resourceId)
+                .then(function (result) {
+                    scope.metrics = result.data.metrics || [];
+                });
+        },
+        controller: ['$scope', function ($scope) {
+            console.log($scope);
+            $scope.alarm = {};
+
+            $scope.$watchCollection('alarm', function () {
+                console.log($scope.alarm);
+            });
+
+            $scope.alarmName = function () {
+                // Name field updates when metric selection changes,
+                // unless the user has changed the value themselves.
+            };
+        }]
+    };
+}])
+.factory('MetricService', ['$http', '$interpolate', function ($http, $interpolate) {
+    var metricsUrl = $interpolate('/metrics/available/{{ resourceType }}/{{ resourceValue }}');
+
+    return {
+        getMetrics: function (resourceType, resourceValue) {
+            return $http({
+                method: 'GET',
+                url: metricsUrl({
+                    resourceType: resourceType,
+                    resourceValue: resourceValue
+                })
+            });
+        }
+    };
+}])
 .factory('ModalService', function () {
     var _modals = {};
 
@@ -27,11 +68,9 @@ angular.module('CreateAlarmModal', [])
             return;
         }
         _modals[name] = element;
-        console.log(name, 'registered');
     }
 
     function openModal (name) {
-        console.log('open modal: ', name);
         var modal = _modals[name];
         if(!modal) {
             return;
@@ -41,7 +80,6 @@ angular.module('CreateAlarmModal', [])
     }
 
     function closeModal (name) {
-        console.log('close modal: ', name);
         var modal = _modals[name];
         if(!modal) {
             return;

@@ -29,10 +29,8 @@
             </dl>
             <div class="panel no-title cloudwatch-charts">
                 <div>
-                    <a ng-click="chartsCtrl.revealCreateModal()" class="button" id="create-alarm-btn">Create Alarm</a>
-                    <div modal="createAlarm" class="modal">
-                        <h3>Create Alarm</h3>
-                    </div>
+                    <a ng-click="chartsCtrl.revealCreateModal()" class="button">Create Alarm</a>
+                    ${panel('create_alarm_dialog_new', resource_type='InstanceId', resource_type_value=instance.id, default_metric='CPUUtilization')}
                 </div>
                 <div class="toprow">
                     <div class="blurb">
