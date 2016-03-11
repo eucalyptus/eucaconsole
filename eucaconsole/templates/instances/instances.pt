@@ -233,6 +233,10 @@
                     </span>
                     <a ng-href="${prefix}/{{ item.id }}">{{ item.security_groups.length }}</a>
                 </div>
+                <div>
+                    <span class="label" title="Launch time" i18n:attributes="title" data-tooltip="">LT</span>
+                    {{ item.launch_time | date: '${layout.angular_date_format}' }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tile_footer">
                 <div ng-show="item.status"
@@ -243,7 +247,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">NAME (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME (ID)</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="status">STATUS</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="alarm_status">ALARMS</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="image_id">IMAGE ID</th>
@@ -254,6 +258,7 @@
                 <th i18n:translate="" st-skip-natural="true" st-sort="sortable_ip">PUBLIC ADDR</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="key_name">KEY NAME</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="sortable_secgroups">SECURITY GROUP</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="launch_time" st-sort-default="reverse">LAUNCH TIME</th>
                 <th i18n:translate="" class="actions">ACTIONS</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -295,6 +300,9 @@
                             title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                         <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name | ellipsis: 30 }}</a>
                     </div>
+                </td>
+                <td class="breakword">
+                    {{ item.launch_time | date: '${layout.angular_date_format}' }}
                 </td>
                 <td>
                     <span class="actions">
