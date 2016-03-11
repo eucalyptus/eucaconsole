@@ -280,7 +280,7 @@
             <div>
                 <p>
                     <span i18n:translate="">
-                        Are you sure you want to dissassociate 
+                        Are you sure you want to disassociate 
                     </span>
                     <span ng-if="!multipleItemsSelected">
                         <span tal:condition="instance"><b>{{ instancePublicIP }}</b></span>
