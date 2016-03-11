@@ -1,0 +1,94 @@
+<!--! Modal dialogs for cloudformations on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="aws-error-modal" class="reveal-modal medium" data-reveal="">
+        <h3 class="warn-dialog" i18n:translate="">Warning: Unsupported items detected</h3>
+        <p i18n:translate="">
+            This AWS template contains services or resources that Eucalyptus does not yet support.
+        </p>
+        <p i18n:translate="">
+            Please edit the template to remove the unsupported items and try again.
+        </p>
+        <div class="expando" id="details-section" ng-cloak="">
+            <h6 class="title" >
+                <a ng-click="toggleContent()">
+                    <i class="fi-plus" ng-show="!expanded"></i>
+                    <i class="fi-minus" ng-show="expanded"></i>
+                    &nbsp;<span i18n:translate="">Details</span>
+                </a>
+            </h6>
+            <div class="content" ng-show="expanded">
+                <div class="flex-space">
+                    <div class="flex-column-1" ng-show="serviceList">
+                        <h6 i18n:translate="">UNSUPPORTED SERVICES</h6>
+                        <ul class="bullet-list">
+                            <li ng-repeat="item in serviceList" ng-cloak="true">
+                                {{ item }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="flex-column-1" ng-show="resourceList">
+                        <h6 i18n:translate="">UNSUPPORTED RESOURCES</h6>
+                        <ul class="bullet-list">
+                            <li ng-repeat="item in resourceList" ng-cloak="true">
+                                {{ item }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" id="convert_template_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="aws-warn-modal" class="reveal-modal medium" data-reveal="">
+        <h3 class="warn-dialog" i18n:translate="">Warning: AWS template detected</h3>
+        <p i18n:translate="">
+            It appears you have selected an AWS template to create a stack on a Eucalyptus cloud.
+        </p>
+        <p i18n:translate="">
+            Supported parameters (for example, machine images or instance types) will be converted to maintain compatibility with this cloud.
+        </p>
+        <div class="expando" id="details-section" ng-cloak="">
+            <h6 class="title" >
+                <a ng-click="toggleContent()">
+                    <i class="fi-plus" ng-show="!expanded"></i>
+                    <i class="fi-minus" ng-show="expanded"></i>
+                    &nbsp;<span i18n:translate="">Details</span>
+                </a>
+            </h6>
+            <div class="content" ng-show="expanded">
+                <div class="flex-space">
+                    <div class="flex-column-1" ng-show="parameterList">
+                        <h6 i18n:translate="">PARAMETERS TO CONVERT</h6>
+                        <ul class="bullet-list">
+                            <li ng-repeat="item in parameterList" ng-cloak="true">
+                                {{ item }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="flex-column-1" ng-show="propertyList">
+                        <h6 i18n:translate="">UNSUPPORTED PROPERTIES</h6>
+                        <ul class="bullet-list">
+                            <li ng-repeat="item in propertyList" ng-cloak="true">
+                                {{ item }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dialog-option">
+            <input type="checkbox" id="check-do-not-show-me-again" />&nbsp;<span i18n:translate="">Do not show me this again</span>
+        </div>
+        <div class="dialog-submit-button">
+            <a ng-click="convertTemplate()" id="convert_template_submit_button" class="button expand" i18n:translate="">I Understand, Use This Template</a>
+            <div ng-show="loading">
+                <span i18n:translate="">Converting Template</span>&nbsp;<i class="busy"></i>
+            </div>
+            <!-- also, do busy indicator
+            <a class="cancel-link" i18n:translate="">Go back, I want to select a different template</a>
+            -->
+        </div>
+        <a href="#" id="convert_template_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+

@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="StacksPage" ng-controller="StacksPageCtrl"
-    ng-init="initController('${delete_stack_url}')">
+    ng-init="initController('${delete_stack_url}', '${update_stack_url}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('stacks', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -26,6 +26,10 @@
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                    <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
+                        <a ng-href="{{ update_stack_url | stringular: (item.name | escapeURL) }}"
+                           i18n:translate="">Update stack</a>
+                    </li>
                     <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
                     </li>
@@ -62,6 +66,10 @@
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                             <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
+                                <a ng-href="{{ update_stack_url | stringular: (item.name | escapeURL) }}"
+                                   i18n:translate="">Update stack</a>
+                            </li>
+                            <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
                             </li>
                         </ul>
@@ -77,6 +85,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-filter.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stacks.js')}"></script>
