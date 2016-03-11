@@ -28,17 +28,20 @@
 Pyramid views for Eucalyptus and AWS CloudWatch alarms
 
 """
+import re
 import simplejson as json
 
 from boto.ec2.cloudwatch import MetricAlarm
 
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
-from ..forms.alarms import CloudWatchAlarmCreateForm
+
+from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
+from ..models.arn import AmazonResourceName
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
 
@@ -46,6 +49,13 @@ from . import boto_error_handler
 class CloudWatchAlarmsView(LandingPageView):
     """CloudWatch Alarms landing page view"""
     TEMPLATE = '../templates/cloudwatch/alarms.pt'
+
+    comparison_operators = {
+        '>': 'GreaterThanThreshold',
+        '<': 'LessThanThreshold',
+        '>=': 'GreaterThanOrEqualToThreshold',
+        '<=': 'LessThanOrEqualToThreshold'
+    }
 
     def __init__(self, request):
         super(CloudWatchAlarmsView, self).__init__(request)
@@ -129,12 +139,66 @@ class CloudWatchAlarmsView(LandingPageView):
             self.request.error_messages = error_msg_list
         return self.render_dict
 
-    @view_config(route_name='cloudwatch_alarms_delete', renderer='json', request_method='DELETE')
+    @view_config(route_name='cloudwatch_alarms', renderer='json', request_method='PUT')
+    def cloudwatch_alarms_update(self):
+        message = json.loads(self.request.body)
+        alarm = message.get('alarm', {})
+        token = message.get('csrf_token')
+        flash = message.get('flash')
+
+        if not self.is_csrf_valid(token):
+            return JSONResponse(status=400, message="missing CSRF token")
+
+        name = alarm.get('name')
+        metric = alarm.get('metric')
+        namespace = alarm.get('namespace')
+        statistic = alarm.get('statistic')
+        comparison = alarm.get('comparison')
+        threshold = alarm.get('threshold')
+        period = alarm.get('period')
+        evaluation_periods = alarm.get('evaluation_periods')
+        unit = alarm.get('unit')
+        description = alarm.get('description')
+        dimensions = alarm.get('dimensions')
+
+        metric_dimensions = {}
+        for selected in dimensions:
+            decoded = json.loads(selected)
+            for key, value in decoded.iteritems():
+                if key in metric_dimensions:
+                    metric_dimensions[key] += value
+                else:
+                    metric_dimensions[key] = value
+
+        updated = MetricAlarm(
+            name=name, metric=metric, namespace=namespace, statistic=statistic,
+            comparison=comparison, threshold=threshold, period=period,
+            evaluation_periods=evaluation_periods, unit=unit, description=description,
+            dimensions=metric_dimensions)
+
+        with boto_error_handler(self.request):
+            self.log_request(_(u'Updating alarm {0}').format(alarm.get('name')))
+            action = self.cloudwatch_conn.put_metric_alarm(updated)
+
+            if action:
+                prefix = _(u'Successfully updated alarm')
+            else:
+                prefix = _(u'There was a problem deleting alarm')
+
+            msg = u'{0} {1}'.format(prefix, alarm.get('name'))
+
+        if flash is not None:
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+
+        return dict(success=action, message=msg)
+
+    @view_config(route_name='cloudwatch_alarms', renderer='json', request_method='DELETE')
     def cloudwatch_alarms_delete(self):
 
         message = json.loads(self.request.body)
         alarms = message.get('alarms', [])
         token = message.get('csrf_token')
+        flash = message.get('flash')
 
         if not self.is_csrf_valid(token):
             return JSONResponse(status=400, message="missing CSRF token")
@@ -149,6 +213,9 @@ class CloudWatchAlarmsView(LandingPageView):
                 prefix = _(u'There was a problem deleting alarm(s)')
 
             msg = u'{0} {1}'.format(prefix, ', '.join(alarms))
+
+        if flash is not None:
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
 
         return dict(success=action, message=msg)
 
@@ -228,3 +295,96 @@ class CloudWatchAlarmsJsonView(BaseView):
         return conn.describe_alarms_for_metric(
             metric_name, namespace,
             period=period, statistic=statistic) if conn else []
+
+
+class CloudWatchAlarmDetailView(BaseView):
+    """CloudWatch Alarm detail page view."""
+
+    TEMPLATE = '../templates/cloudwatch/alarms_detail.pt'
+
+    def __init__(self, request, **kwargs):
+        super(CloudWatchAlarmDetailView, self).__init__(request, **kwargs)
+
+        alarm_id = self.request.matchdict.get('alarm_id')
+        self.alarm = self.get_alarm(alarm_id)
+        self.alarm_form = CloudWatchAlarmUpdateForm(
+            request)
+
+        self.render_dict = dict(
+            alarm=self.alarm,
+            alarm_id=alarm_id,
+            alarm_form=self.alarm_form,
+            search_facets=[]
+        )
+
+    @view_config(route_name='cloudwatch_alarm_view', renderer=TEMPLATE, request_method='GET')
+    def cloudwatch_alarm_view(self):
+        if not self.alarm:
+            raise HTTPNotFound()
+
+        dimensions = self.get_available_dimensions(self.alarm.metric)
+        options = []
+        for d in dimensions:
+            for name, value in d.items():
+                option = {
+                    'label': '{0} = {1}'.format(name, ', '.join(value)),
+                    'value': re.sub(r'\s+', '', json.dumps(d)),
+                    'selected': value == self.alarm.dimensions.get(name)
+                }
+                options.append(option)
+
+        alarm_json = json.dumps({
+            'name': self.alarm.name,
+            'state': self.alarm.state_value,
+            'stateReason': self.alarm.state_reason,
+            'metric': self.alarm.metric,
+            'namespace': self.alarm.namespace,
+            'statistic': self.alarm.statistic,
+            'unit': self.alarm.unit,
+            'dimensions': self.alarm.dimensions,
+            'period': self.alarm.period,
+            'evaluation_periods': self.alarm.evaluation_periods,
+            'comparison': self.alarm.comparison,
+            'threshold': self.alarm.threshold,
+            'description': self.alarm.description
+        })
+
+        alarm_actions = []
+        for arn in self.alarm.alarm_actions:
+            alarm_actions.append(AmazonResourceName.factory(arn))
+
+        scaling_groups = self.get_scaling_groups()
+
+        self.render_dict.update(
+            alarm_json=alarm_json,
+            dimensions=dimensions,
+            alarm_actions=alarm_actions,
+            scaling_groups=scaling_groups,
+            options=options
+        )
+        return self.render_dict
+
+    def get_alarm(self, alarm_id):
+        alarm = None
+        conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            alarms = conn.describe_alarms(alarm_names=[alarm_id])
+            if len(alarms) > 0:
+                alarm = alarms[0]
+        return alarm
+
+    def get_available_dimensions(self, metric):
+        dimensions = []
+        conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            metrics = conn.list_metrics(metric_name=metric)
+            for m in metrics:
+                dimensions.append(m.dimensions)
+
+        return dimensions
+
+    def get_scaling_groups(self):
+        conn = self.get_connection(conn_type='autoscale')
+        with boto_error_handler(self.request):
+            groups = conn.get_all_groups()
+            return groups

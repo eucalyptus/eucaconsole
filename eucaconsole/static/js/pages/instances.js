@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
+angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table'])
     .controller('InstancesCtrl', function ($scope, $timeout, $http, eucaUnescapeJson, eucaHandleError) {
         $scope.instanceID = '';
         $scope.fileName = '';

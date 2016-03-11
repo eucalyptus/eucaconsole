@@ -4,6 +4,27 @@
 @import "../includes/landingpage";
 
 
+#primary-buttons #more-actions-btn {
+    margin-left: 0;
+}
+
+#delete-snapshot-wrapper {
+    position: relative;
+    input#delete_snapshot {
+        float: left;
+        margin-top: 3px;
+    }
+    label[for="delete_snapshot"] {
+        float: left;
+        width: 90%;
+        margin-right: 0;
+        strong {
+            color: #000;
+        }
+    }
+}
+
+
 // Tile/grid view
 .tile {
     .header a {

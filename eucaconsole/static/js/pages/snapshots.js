@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('SnapshotsPage', ['LandingPage', 'EucaConsoleUtils'])
+angular.module('SnapshotsPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table'])
     .controller('SnapshotsCtrl', function ($scope, $http, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.snapshotID = '';

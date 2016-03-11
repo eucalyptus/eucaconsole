@@ -11,7 +11,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('stacks')}" i18n:translate="">Stacks</a></li>
-                <li class="current"><a href="#">${stack_name}</a></li>
+                <li><a href="${request.route_path('stack_view', name=stack_name)}">${stack_name}</a></li>
                 <li class="current"><a href="#" i18n:translate="">Update stack</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -204,7 +204,7 @@
                 <small id="json-error" class="error" style="display:none;"></small>
                 <div>&nbsp;</div>
                 <button ng-if="!savingTemplate" class="button save-template-btn" ng-disabled="stackTemplate==''" type="submit" i18n:translate="">
-                    Save Changes
+                    Save Template
                 </button>
                 <div ng-if="savingTemplate"><i class="busy" ></i>&nbsp;<span i18n:translate="">Validating template...</span></div>
             </form>

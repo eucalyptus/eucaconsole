@@ -62,6 +62,7 @@ urls = [
     # Images #####
     Route(name='images', pattern='/images'),
     Route(name='images_json', pattern='/images/json'),
+    Route(name='images_deregister', pattern='/images/deregister'),
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
     Route(name='image_state_json', pattern='/images/{id}/state/json'),
@@ -131,6 +132,7 @@ urls = [
     Route(name='scalinggroup_history_json', pattern='/scalinggroups/{id}/history/json'),
     Route(name='scalinggroup_history_details_json', pattern='/scalinggroups/{id}/history/{activity}/json'),
     Route(name='scalinggroup_policies', pattern='/scalinggroups/{id}/policies'),
+    Route(name='scalinggroup_policies_json', pattern='/scalinggroups/{id}/policies/json'),
     Route(name='scalinggroup_policy_new', pattern='/scalinggroups/{id}/policies/new'),
     Route(name='scalinggroup_policy_create', pattern='/scalinggroups/{id}/policies/create'),
     Route(name='scalinggroup_policy_delete', pattern='/scalinggroups/{id}/policies/delete'),
@@ -275,8 +277,9 @@ urls = [
     # Alarms Landing page
     Route(name='cloudwatch_alarms', pattern='/alarms'),
     Route(name='cloudwatch_alarms_json', pattern='/alarms/json'),
+    Route(name='cloudwatch_alarm_history', pattern='/alarms/{alarm_id}/history'),
     Route(name='cloudwatch_alarms_create', pattern='/alarms/create'),
-    Route(name='cloudwatch_alarms_delete', pattern='/alarms/delete'),
+    Route(name='cloudwatch_alarm_view', pattern='/alarms/{alarm_id}'),
     Route(name='cloudwatch_alarms_for_metric_json', pattern='/alarms/json/{metric}'),
     # REST API - this route is hard-coded elsewhere, do not change.
     Route(name='cloudwatch_api', pattern='/cloudwatch/api'),

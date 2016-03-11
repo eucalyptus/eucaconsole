@@ -98,7 +98,7 @@ class StackMixin(object):
     def get_template_location(self, stack_id, default_name=None):
         bucket = None
         try:
-            bucket = self.get_create_template_bucket()
+            bucket = self.get_create_template_bucket(create=False)
         except:
             pass
         stack_id = stack_id[stack_id.rfind('/') + 1:]
@@ -106,8 +106,7 @@ class StackMixin(object):
         d.update(stack_id)
         md5 = d.digest()
         stack_hash = base64.b64encode(md5, '--').replace('=', '')
-        ret = {}
-        ret['template_name'] = default_name
+        ret = {'template_name': default_name}
         if bucket is not None:
             keys = list(bucket.list(prefix=stack_hash))
             if len(keys) > 0:
@@ -257,7 +256,7 @@ class StackView(BaseView, StackMixin):
             controller_options_json=self.get_controller_options_json(),
         )
 
-    @view_config(route_name='stack_view', renderer=TEMPLATE)
+    @view_config(route_name='stack_view', request_method='GET', renderer=TEMPLATE)
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('name') != 'new':
             raise HTTPNotFound
@@ -444,7 +443,8 @@ class StackWizardView(BaseView, StackMixin):
         return BaseView.escape_json(json.dumps({
             'stack_template_url': self.request.route_path('stack_template_parse'),
             'convert_template_url': self.request.route_path('stack_template_convert'),
-            'stack_template_read_url': self.request.route_path('stack_template', name=self.stack.stack_name) if self.stack else '',
+            'stack_template_read_url':
+                self.request.route_path('stack_template', name=self.stack.stack_name) if self.stack else '',
             'sample_templates': self.create_form.sample_template.choices
         }))
 

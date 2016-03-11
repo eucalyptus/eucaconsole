@@ -138,15 +138,17 @@
 
 
         <!--! Delete Alarm modal dialog -->
-        ${panel('delete_alarm_dialog', modal_size='small', service_path=request.route_path('cloudwatch_alarms_delete'))} <!--, alarm_form=alarm_form, redirect_location=create_alarm_redirect, metric_unit_mapping=metric_unit_mapping)}-->
+        ${panel('delete_alarm_dialog', modal_size='small', service_path=request.route_path('cloudwatch_alarms'))}
         <!--! /end modal dialogs -->
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/alarms.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarms_landing.js')}"></script>
 </div>
 
 </metal:block>
