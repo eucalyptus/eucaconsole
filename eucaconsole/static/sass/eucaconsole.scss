@@ -509,7 +509,7 @@ textarea.policy-area {
 }
 
 .helptext-icon {
-    color: $hpe-black;
+    color: $hpe-gray;
     font-size: 1.2rem;
 }
 
@@ -570,7 +570,8 @@ textarea.policy-area {
     }
     .add-label {
         margin-bottom: 6px;
-        color: $hpe-black;
+        color: $hpe-gray;
+        font-family: $euca-header-font-family;
     }
     #add-tag-btn {
         margin-bottom: 0;
@@ -949,7 +950,9 @@ textarea.hidden {
     background-color: white;
     position: relative;
     h6 {
-        color: $hpe-black;
+        color: $hpe-gray;
+        text-transform: uppercase;
+        font-family: $euca-text-font-family;
     }
     .tabs-content {
         border: none;
@@ -978,7 +981,7 @@ textarea.hidden {
             .button.dropdown {
                 padding: 12px 38px 12px 22px;
                 a {
-                    color: white;
+                    color: $hpe-black;
                 }
             }
             .f-dropdown {
@@ -1086,6 +1089,8 @@ footer {
     border-color: $hpe-green;
     border-width: 2px;
     &:hover {
+            background-color: #fff;
+            color: $hpe-black;
             border-width: 4px;
         }
     &.secondary {
@@ -1093,6 +1098,8 @@ footer {
         border-color: $hpe-gray;
         border-width: 2px;
         &:hover {
+            background-color: #fff;
+            color: $hpe-gray;
             border-width: 4px;
         }
         font-family: $euca-header-font-family;
@@ -1103,7 +1110,7 @@ footer {
         }
     }
     &.disabled, &[disabled] {
-        @include disabled-button-mixin;
+        @include primary-disabled-button-mixin;
     }
 }
 

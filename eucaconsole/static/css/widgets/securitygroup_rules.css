@@ -14,8 +14,8 @@ form .groupname { display: inline; width: 50%; }
 form label.protocol { margin-bottom: 1.5rem; }
 
 #rules-editor .item-list { margin-bottom: 6px; }
-#rules-editor .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
-#rules-editor .item-list .item a { color: white; }
+#rules-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 4px solid #cccccc; background-color: #fff; margin-right: 8px; }
+#rules-editor .item-list .item a { color: #666666; }
 #rules-editor .add-label { margin-bottom: 6px; color: #5a5a5a; }
 #rules-editor .tabs-content { margin-top: 0.5rem; }
 

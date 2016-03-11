@@ -145,7 +145,7 @@ $dropdown-border-color: $hpe-lightgray;
 
 // Tile/grid view
 .tile {
-    border: 1px solid $hpe-lightgray;
+    box-shadow: 0 2px 2px 0 $hpe-hovergray;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
@@ -168,7 +168,7 @@ $dropdown-border-color: $hpe-lightgray;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
-                background-color: lighten($hp-accessible-blue, 60%);
+                background-color: $hpe-disabledgreen;
             }
         }
         .plus {
@@ -224,6 +224,8 @@ $dropdown-border-color: $hpe-lightgray;
             margin-left: -$tile-label-padding;
             font-family: $euca-text-font-family;
             font-size: $euca-font-size;
+            background-color: #FFFFFF;
+            color: $hpe-gray;
             margin-right: 0.2rem;
             min-width: 22px;
             text-align: center;
@@ -237,8 +239,8 @@ $dropdown-border-color: $hpe-lightgray;
         }
     }
     .link {
-        color: $hpe-green;
         text-transform: uppercase;
+        color: $hpe-green;
         padding: 1px 3px;
         margin-bottom: 2px;
         font-size: 0.9em;

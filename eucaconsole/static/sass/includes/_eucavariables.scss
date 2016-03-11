@@ -116,7 +116,7 @@ $include-open-sans: false;
 $euca-footer-height: 80px;
 
 // Misc decorations
-$euca-box-shadow: 0 2px 2px 0 $euca-grey;
+$euca-box-shadow: 0 2px 2px 0 $hpe-hovergray;
 
 // Wizards
 $wizard-tab-padding: 8px 1rem;
@@ -136,7 +136,7 @@ $code-color: darkred;
 
 // Dropdown menus
 $f-dropdown-bg: white;
-$f-dropdown-triangle-color: $hpe-black;
+$f-dropdown-triangle-color: $hpe-lightgray;
 
 // Navigation bar settings ============
 // Breakpoint handling
@@ -214,7 +214,7 @@ $tooltip-padding: rem-calc(5);
 // Tiles within panels (e.g. instance_volumes.pt and volume_snapshots.pt page)
 @mixin panel-tile-mixin {
     background-color: white;
-    border: 1px solid $hpe-lightgray;
+    box-shadow: 0 2px 2px 0 $hpe-hovergray;
     width: 190px; height: 160px;
     .footer {
         height: 24px;
@@ -223,12 +223,13 @@ $tooltip-padding: rem-calc(5);
 }
 
 @mixin button-shadow-mixin {
-    box-shadow: 1px 1px 5px 0 lighten($euca-grey, 10%);
+    box-shadow: 1px 1px 5px 0 $hpe-hovergray;
 }
 
 @mixin disabled-button-mixin {
     background-color: white;
     border-color: $hpe-disabledgray;
+    color: $hpe-disabledgray;
         &:hover {
             background-color: white;
             border-color: $hpe-disabledgray;
@@ -242,26 +243,27 @@ $tooltip-padding: rem-calc(5);
 @mixin primary-disabled-button-mixin {
     background-color: white;
     border-color: $hpe-disabledgreen;
+    color: $hpe-disabledgray;
         &:hover {
             background-color: white;
             border-color: $hpe-disabledgreen;
             border-width: 2px;
-            color: $hpe-disabledgreen;
+            color: $hpe-disabledgray;
 
         }
     color: $hpe-lightgray;
 }
 
 @mixin dropdown-shadow-mixin {
-    border-color: $hp-gray-20;
-    box-shadow: 2px 2px 5px $euca-grey;
+    border-color: $hpe-lightgray;
+    box-shadow: 2px 2px 5px $hpe-hovergray;
 }
 
 @mixin helptext-icon-position-mixin {
     .helptext-icon {
         position: relative;
         left: -1rem;
-        color: $euca-grey;
+        color: $hpe-gray;
     }
 }
 
@@ -325,11 +327,13 @@ $tooltip-padding: rem-calc(5);
     .item-list {
         margin-bottom: 6px;
         .item {
-            color: #333;
-            background-color: $euca-extralightgrey;
+            color: $hpe-gray;
+            font-family: $euca-header-font-family;
+            border: 4px solid $hpe-lightgray;
+            background-color: #fff;
             margin-right: 8px;
             a {
-                color: white;
+                color: $hpe-gray;
             }
         }
     }
@@ -348,7 +352,7 @@ $tooltip-padding: rem-calc(5);
             background-color: transparent;
             font-family: $euca-header-font-family;
             &:hover {
-                color: $hpe-black;
+                border-bottom: 2px solid $hpe-gray;
                 background-color: transparent;
             }
         }
@@ -357,7 +361,7 @@ $tooltip-padding: rem-calc(5);
                 color: $hpe-black;
                 font-family: $euca-header-font-family;
                 background-color: transparent;
-                border-bottom-: 5px solid $hpe-black;
+                border-bottom: 2px solid $hpe-black;
             }
         }
     }
@@ -366,10 +370,11 @@ $tooltip-padding: rem-calc(5);
 @mixin wizard-tabs-mixin {
     a {  // Visited tabs
         color: $hpe-gray;
-        font-family: $euca-header-font-family
-        background-color;
+        font-family: $euca-header-font-family;
+        background-color: transparent;
         &:hover {
-            color: $hpe-black;
+            color: $hpe-gray;
+            border-bottom: 2px solid $hpe-gray;
         }
         box-shadow: none;
         white-space: nowrap;
@@ -380,7 +385,7 @@ $tooltip-padding: rem-calc(5);
             color: transparent;
             font-family: $euca-header-font-family;
             background-color: transparent;
-            border-bottom: 5px solid $hpe-black;
+            border-bottom: 2px solid $hpe-black;
         }
     }
     &.disabled {  // Unvisited tabs

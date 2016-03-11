@@ -21,7 +21,7 @@
 #primary-buttons .button { padding: 8px 1rem; }
 #primary-buttons .button.more-actions { margin-left: 1rem; padding-right: 3rem; }
 
-#more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #6a737b; }
+#more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
 #more-actions-dropdown.f-dropdown li.disabled { cursor: default; }
 #more-actions-dropdown.f-dropdown li.disabled a { color: #666666; pointer-events: none; }
 #more-actions-dropdown.f-dropdown li.disabled:hover { background-color: #fff; }
@@ -35,13 +35,13 @@
 .gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #666666; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #01a982; }
 .gridwrapper .dropdown.button.tiny::before, .gridwrapper .dropdown.button.tiny::after { border: none; }
-.gridwrapper .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #6a737b; }
+.gridwrapper .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
 .gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
 
-.tile { border: 1px solid #cccccc; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile { box-shadow: 0 2px 2px 0 #F0F0F0; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #edf9ff; }
+.tile.add a:hover { background-color: #CCEEE6; }
 .tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
 .tile .header { position: relative; height: 24px; }
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #5a5a5a; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
@@ -54,10 +54,10 @@
 .tile .content a { color: #01a982; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
-.tile .content .label { padding: 1px 3px; margin-left: -28px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; margin-right: 0.2rem; min-width: 22px; text-align: center; }
+.tile .content .label { padding: 1px 3px; margin-left: -28px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; background-color: #FFFFFF; color: #666666; margin-right: 0.2rem; min-width: 22px; text-align: center; }
 .tile .content .label.ellipsis { margin-left: 0; }
 .tile .content .fi-alert { color: darkred; }
-.tile .link { color: #01a982; text-transform: uppercase; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
+.tile .link { text-transform: uppercase; color: #01a982; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #666666; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
 .tile .footer.has-progress { padding: 0 0 0 0; text-align: left; }
 .tile .footer .completed { padding: 4px 0 4px 10px; text-align: center; }
@@ -124,7 +124,7 @@
 #filters form button { box-shadow: none; }
 
 #sorting-controls { padding-top: 10px; text-align: right; font-size: 14px; }
-#sorting-controls .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #6a737b; }
+#sorting-controls .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
 #sorting-controls #sorting-dropdown { text-align: left; }
 
 #results-count { padding-top: 0.25rem; text-align: right; }
@@ -173,5 +173,5 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .password-set { font-size: 0.875rem; padding-top: 4px; font-weight: bold; line-height: 1rem; }
 
-.tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
+.tile { background-color: white; box-shadow: 0 2px 2px 0 #F0F0F0; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
