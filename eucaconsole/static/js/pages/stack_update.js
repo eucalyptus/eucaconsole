@@ -1,11 +1,11 @@
 /**
- * @fileOverview Stack wizard page JS
+ * @fileOverview Stack update page JS
  * @requires AngularJS
  *
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.directives', 'StackAWSDialogs'])
+angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives', 'StackAWSDialogs'])
     .directive('file', function(){
         return {
             restrict: 'A',
@@ -22,17 +22,13 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             }
         };
     })
-    .controller('StackWizardCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
+    .controller('StackUpdateCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.expanded = false;
-        $scope.stackForm = $('#stack-wizard-form');
-        $scope.stackName = '';
+        $scope.stackForm = $('#stack-update-form');
         $scope.s3TemplateKey = undefined;
         $scope.stackTemplateEndpoint = '';
-        $scope.convertTemplateEndpoint = '';
-        $scope.tagsObject = {};
         $scope.templateFiles = [];
-        $scope.templateSample = undefined;
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -40,24 +36,22 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
         $scope.loading = false;
-        $scope.paramModels = [];
+        $scope.paramModels = {};
         $scope.serviceList = undefined;
         $scope.resourceList = undefined;
         $scope.propertyList = undefined;
         $scope.parameterList = undefined;
         $scope.isCreating = false;
+        $scope.codeEditor = null;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.stackTemplateEndpoint = options.stack_template_url;
-            $scope.convertTemplateEndpoint = options.convert_template_url;
-            $scope.templates = options.sample_templates;
+            $scope.templateReadEndpoint = options.stack_template_read_url;
             $scope.setInitialValues();
-            $scope.watchTags();
             $scope.setWatchers();
             $scope.setFocus();
-        };
-        $scope.toggleContent = function () {
-            $scope.expanded = !$scope.expanded;
+            $scope.initCodeMirror();
+            $scope.getStackTemplateInfo();
         };
         $scope.setFocus = function () {
             $timeout(function() {
@@ -83,26 +77,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             }, 1000);
         });
         $scope.setInitialValues = function () {
-            $scope.inputtype = 'sample';
-        };
-        $scope.updateTagsPreview = function () {
-            // Need timeout to give the tags time to capture in hidden textarea
-            $timeout(function() {
-                var tagsTextarea = $('textarea#tags'),
-                    tagsJson = tagsTextarea.val(),
-                    removeButtons = $('.item .remove');
-                removeButtons.on('click', function () {
-                    $scope.updateTagsPreview();
-                });
-                $scope.tagsObject = JSON.parse(tagsJson);
-                $scope.tagsLength = Object.keys($scope.tagsObject).length;
-            }, 300);
-        };
-        $scope.watchTags = function () {
-            var addTagButton = $('#add-tag-btn');
-            addTagButton.on('click', function () {
-                $scope.updateTagsPreview();
-            });
+            $scope.inputtype = 'current';
         };
         $scope.checkRequiredInput = function () {
             if ($scope.currentStepIndex === 1) {
@@ -110,11 +85,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 $('#size-error').css('display', 'none');
                 var val;
                 switch ($scope.inputtype) {
-                    case 'sample':
-                        val = $scope.templateSample;
-                        if (val === undefined || val === '') {
-                            $scope.isNotValid = true;
-                        }
+                    case 'current':
                         break;
                     case 'file':
                         val = $scope.templateFiles;
@@ -135,10 +106,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                     default:
                         $scope.isNotValid = true;
                 }
-                if ($scope.stackName.length > 255 || $scope.stackName.length === 0) {
-                    // Once invalid name has been entered, do not enable the button unless the name length is valid
-                    $scope.isNotValid = true;
-                }
             } else if ($scope.currentStepIndex === 2) {
                 $scope.isNotValid = false;
                 angular.forEach($scope.parameters, function(param, idx) {
@@ -150,12 +117,9 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             }
         };
         $scope.setWatchers = function () {
-            $scope.$watch('stackName', function(){
-                $scope.checkRequiredInput();
-            });
             $scope.$watch('inputtype', function(){
                 switch ($scope.inputtype) {
-                    case 'sample':
+                    case 'current':
                         $scope.templateFiles = undefined;
                         $('#template-file').val(undefined);
                         $scope.templateUrl = undefined;
@@ -163,13 +127,11 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         $scope.description = '';
                         break;
                     case 'file':
-                        $scope.templateSample = undefined;
                         $scope.templateUrl = undefined;
                         $scope.templateIdent = undefined;
                         $scope.description = '';
                         break;
                     case 'url':
-                        $scope.templateSample = undefined;
                         $scope.templateFiles = undefined;
                         $('#template-file').val(undefined);
                         $scope.templateIdent = undefined;
@@ -188,7 +150,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 }
             });
             $scope.$watch('currentStepIndex', function(){
-                 $scope.setWizardFocus($scope.currentStepIndex);
+                 $scope.setUpdateFocus($scope.currentStepIndex);
             });
             $scope.$watch('inputtype', function() {
                 if ($scope.inputtype === 'text') {
@@ -205,7 +167,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 }
             });
         };
-        $scope.setWizardFocus = function (stepIdx) {
+        $scope.setUpdateFocus = function (stepIdx) {
             var tabElement = $(document).find('#tabStep'+stepIdx).get(0);
             if (!!tabElement) {
                 tabElement.focus();
@@ -246,7 +208,7 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 // since clicking invokes this method again (via ng-click) and
                 // one ng action must complete before another can start
                 var hash = "step"+nextStep;
-                $("#wizard-tabs").children("dd").each(function() {
+                $("#update-tabs").children("dd").each(function() {
                     var link = $(this).find("a");
                     if (link.length !== 0) {
                         var id = link.attr("href").substring(1);
@@ -300,6 +262,11 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             angular.forEach($('form').serializeArray(), function(value, key) {
                 this.append(value.name, value.value);
             }, fd);
+            if ($scope.inputtype === 'current') {
+                if ($scope.stackTemplate) {
+                    fd.append('template-body', $scope.stackTemplate);
+                }
+            }
             // Add file
             if ($scope.inputtype === 'file') {
                 var file = $scope.templateFiles[0];
@@ -313,12 +280,11 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                 return;
             }
             $scope.loading = true;
-            $http.post($scope.stackTemplateEndpoint, fd, {
+            var promise = $http.post($scope.stackTemplateEndpoint, fd, {
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity
-            }).
-            success(function(oData) {
-                var results = oData ? oData.results : '';
+            }).then(function successCallback(oData) {
+                var results = oData.data ? oData.data.results : [];
                 if (results) {
                     $scope.loading = false;
                     $scope.s3TemplateKey = results.template_key;
@@ -350,20 +316,41 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
                         $scope.showAWSWarn();
                     }
                     $scope.parameters = results.parameters;
-                    angular.forEach($scope.parameters, function(param, idx) {
-                        $scope.paramModels[param.name] = param.default;
-                    });
+                    if ($scope.parameters !== undefined) {
+                        angular.forEach($scope.parameters, function(param, idx) {
+                            $scope.paramModels[param.name] = param.default;
+                            if (param.options !== undefined) {
+                                for (var i=0; i<param.options.length; i++) {
+                                    param.options[i] = {id:param.options[i][0], label:param.options[i][1]};
+                                }
+                            }
+                        });
+                    }
+                    $scope.summarySection.find('.step2').removeClass('hide');
                     $scope.checkRequiredInput();
+                    if ($scope.parameters !== undefined) {
+                        $timeout(function() {
+                            $scope.parameters.forEach(function(param) {
+                                if (param.options !== undefined) {
+                                    param.options.forEach(function(option) {
+                                        if (option.id == param.default) {
+                                            $scope.paramModels[param.name] = option;
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    }
                     $timeout(function() {
                         $(document).foundation('tooltip', 'reflow');
                     }, 1000);
                     $scope.updateChosenIds();
                 }
-            }).
-            error(function (oData, status) {
+            }, function errorCallback(errData) {
                 $scope.loading = false;
-                eucaHandleError(oData, status);
+                eucaHandleError(errData.statusText, errData.status);
             });
+            return promise;
         };
         $scope.showAWSWarn = function () {
             var thisKey = "do-not-show-aws-template-warning";
@@ -384,10 +371,62 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
         };
         $scope.paramValue = function(name) {
             var ret = $scope.paramModels[name];
-            if (Array.isArray(ret)) {
-                ret = ret[0];
+            if (typeof ret == "object") {
+                ret = ret.label;
             }
             return ret;
+        };
+        $scope.initCodeMirror = function () {
+            var templateTextarea = document.getElementById('template-area');
+            $scope.codeEditor = CodeMirror.fromTextArea(templateTextarea, {
+                mode: {name:"javascript", json:true},
+                lineWrapping: true,
+                styleActiveLine: true,
+                lineNumbers: true,
+                readOnly: false
+            });
+        };
+        $scope.clearCodeEditor = function () {
+            $scope.codeEditor.setValue('');
+            $scope.codeEditor.clearHistory();
+        };
+        $scope.editTemplate = function ($event) {
+            $event.preventDefault();
+            $('#json-error').css('display', 'none');
+            $scope.clearCodeEditor();
+            $scope.savingTemplate = false;
+            var editModal = $('#edit-template-modal');
+            editModal.foundation('reveal', 'open');
+            editModal.on('close.fndtn.reveal', function() {
+                $scope.clearCodeEditor();
+            });
+            $scope.stackTemplate = ''; // clear any previous policy
+            $http.get($scope.templateReadEndpoint).success(function(oData) {
+                var results = oData ? oData.results : '';
+                $scope.stackTemplate = results;
+                $scope.codeEditor.setValue($scope.stackTemplate);
+                $scope.codeEditor.focus();
+            }).error(function (oData, status) {
+                eucaHandleError(oData, status);
+            });
+        };
+        $scope.saveTemplate = function ($event) {
+            $event.preventDefault();
+            try {
+                $('#json-error').css('display', 'none');
+                var policy_json = $scope.codeEditor.getValue();
+                JSON.parse(policy_json);
+                // now, save the template
+                $scope.savingTemplate = true;
+                $scope.getStackTemplateInfo().then(function successCallback(oData) {
+                    $('#edit-template-modal').foundation('reveal', 'close');
+                    $scope.visitNextStep(2);
+                });
+            } catch (e) {
+                $scope.savingTemplate = false;
+                $('#json-error').text(e);
+                $('#json-error').css('display', 'block');
+            }
         };
     })
 ;

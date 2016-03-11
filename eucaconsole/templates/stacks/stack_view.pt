@@ -33,6 +33,10 @@
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="stack">
                         <metal:actions metal:fill-slot="actions">
                             <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
+                                <a id="update-stack-action" href="${request.route_path('stack_update', name=stack_name)}"
+                                   i18n:translate="">Update stack</a>
+                            </li>
+                            <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
                                 <a id="delete-stack-action" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
                             </li>
@@ -155,6 +159,10 @@
                             <span i18n:translate="">Actions</span>
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
+                            <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
+                                <a id="update-stack-action" href="${request.route_path('stack_update', name=stack_name)}"
+                                   i18n:translate="">Update stack</a>
+                            </li>
                             <li>
                                 <a id="delete-stack-action-2" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
@@ -193,6 +201,10 @@
                             <span i18n:translate="">Actions</span>
                         </span>
                         <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
+                            <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
+                                <a id="update-stack-action" href="${request.route_path('stack_update', name=stack_name)}"
+                                   i18n:translate="">Update stack</a>
+                            </li>
                             <li>
                                 <a id="delete-stack-action-3" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
