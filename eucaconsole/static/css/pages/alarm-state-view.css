@@ -8,8 +8,11 @@
 
 .status.OK { background-color: #008424; }
 
-.status { margin: 0 0.25rem 0 0.25rem; padding: .25rem .5rem .25rem .5rem; color: white; }
+.status { margin: 0 0.25rem 0 0.25rem; }
 
-.alarm-listing { margin-top: 1.0rem; }
+.alarm-listing { margin-top: 0.5rem; }
 
-i.delete-icon { color: #6a737b !important; }
+i.delete-icon { color: #5a5a5a !important; }
+i.delete-icon:hover { color: darkred !important; }
+
+strong.capital { text-transform: capitalize; }

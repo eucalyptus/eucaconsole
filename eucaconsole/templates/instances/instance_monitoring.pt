@@ -58,7 +58,7 @@
                 </div>
                 <alarm-state-view
                     template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
-                    resource-id="${instance.id}" resource-name="${instance_name}" resource-type="Instance" i18n:attributes="resource-type">
+                    resource-id="${instance.id}" resource-name="${instance_name}" resource-type="instance" i18n:attributes="resource-type">
                 </alarm-state-view>
                 <hr/>
                 <h6 i18n:translate="">CloudWatch metric charts</h6>
@@ -134,6 +134,7 @@
     <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance_monitoring.js')}"></script>

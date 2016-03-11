@@ -302,7 +302,10 @@ class CloudWatchAlarmsJsonView(BaseView):
                 for alarm in items:
                     alarms.append(dict(
                         name=alarm.name,
+                        metric=alarm.metric,
+                        comparison=alarm.comparison,
                         threshold=alarm.threshold,
+                        unit=alarm.unit,
                         state=alarm.state_value
                     ))
 

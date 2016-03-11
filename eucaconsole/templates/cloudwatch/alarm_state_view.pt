@@ -20,8 +20,15 @@
         </h6>
         <div class="content" ng-show="expanded">
             <div class="alarm-listing" ng-repeat="alarm in alarms">
-                <a ng-click="showDeleteModal(alarm)"><i class="delete-icon fa fa-minus-circle fa-lg"></i></a>
-                <span class="status" ng-class="alarm.state">{{ alarm.state }}</span>&nbsp;{{ alarm.name }},&nbsp;{{ alarm.threshold }}
+                <a class="has-tip" data-tooltip="" title="Remove alarm from instance" i18n:attributes="title" ng-click="showDeleteModal(alarm)">
+                    <i class="delete-icon fa fa-minus-circle fa-lg"></i>
+                </a>
+                <td alarm-state="{{ item.state }}"></td>
+                <span alarm-state="{{ alarm.state }}"></span>&nbsp;{{ alarm.name }},&nbsp;
+                    {{ alarm.metric }}
+                    {{ alarm.comparison }}
+                    {{ alarm.threshold }}
+                    {{ alarm.unit !== 'None' ? alarm.unit : '' }}
             </div>
         </div>
     </div>
@@ -30,13 +37,14 @@
 
         <h3 i18n:translate="">Remove alarm from {{ resourceType }}</h3>
 
-        <p i18n:translate="">Are you sure you want to remove alarm {{ alarmToDelete.name }} from {{ resourceType }} {{ resourceName }}?</p>
+        <p><span i18n:translate="">Are you sure you want to remove alarm</span>&nbsp;{{ alarmToDelete.name }}&nbsp;<span i18n:translate="">from</span>&nbsp;<strong>{{ resourceType }}&nbsp;{{ resourceName }}</strong>?
+        </p>
 
         <p i18n:translate="">If this resource is the only dimension associated with this alarm, the alarm will also be deleted.</p>
 
         <div class="row buttons">
             <button id="remove-alarm-btn" class="button expand" ng-click="removeAlarm($event)" i18n:translate="">
-                <span i18n:translate="">Yes, Remove Alarm from {{ resourceType }}</span>
+                <span i18n:translate="">Yes, Remove Alarm from</span><strong class="capital"> {{ resourceType }}</strong>
             </button>
         </div>
     </div>

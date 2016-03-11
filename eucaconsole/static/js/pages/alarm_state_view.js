@@ -1,4 +1,4 @@
-angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServiceModule'])
+angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServiceModule', 'AlarmsComponents'])
     .directive('alarmStateView', function() {
         return {
             scope: {
@@ -11,7 +11,7 @@ angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServic
             templateUrl: function (element, attributes) {
                 return attributes.template;
             },
-            controller: ['$scope', '$http', 'eucaRoutes', 'eucaHandleError', 'AlarmService', function($scope, $http, eucaRoutes, eucaHandleError, AlarmService) {
+            controller: ['$scope', '$http', '$timeout', 'eucaRoutes', 'eucaHandleError', 'AlarmService', function($scope, $http, $timeout, eucaRoutes, eucaHandleError, AlarmService) {
                 $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 $scope.alarms = [];
                 $scope.toggleContent = function() {
@@ -39,6 +39,9 @@ angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServic
                 $scope.showDeleteModal = function(alarm) {
                     $scope.alarmToDelete = alarm;
                     $('#remove-alarm-modal').foundation('reveal', 'open');
+                    $timeout(function() {
+                        $('#remove-alarm-btn').focus();
+                    }, 500);
                 };
                 $scope.removeAlarm = function(event) {
                     $('#remove-alarm-modal').foundation('reveal', 'close');
