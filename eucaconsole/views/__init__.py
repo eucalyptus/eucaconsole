@@ -76,7 +76,7 @@ from ..models.auth import ConnectionManager, RegionCache
 def escape_braces(event):
     """Escape double curly braces in template variables to prevent AngularJS expression injections"""
     for k, v in event.rendering_val.items():
-        if not k.endswith('_json'):
+        if not k.endswith('_json') and event.get('renderer_name') != 'json':
             if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
                 event.rendering_val[k] = BaseView.escape_braces(v)
 

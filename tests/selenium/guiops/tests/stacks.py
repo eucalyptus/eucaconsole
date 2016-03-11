@@ -24,15 +24,18 @@ class Stack_operations_sequence(GuiOps):
         self.tester.create_keypair_from_dashboard(keypair_name)
 
         # test stack from sample
-        stack1_name = self.id_generator()+"-stack"
+        stack1_name = "test-" + self.id_generator() + "-stack"
         self.tester.create_stack_from_dashboard(stack1_name)
-        stack2_name = self.id_generator()+"-stack"
+        stack2_name = "test-" + self.id_generator() + "-stack"
         self.tester.create_stack_from_lp(stack2_name)
+        # update a stack
+        self.tester.update_stack_from_lp(stack2_name)
+        # delete the stacks
         self.tester.delete_stack_from_lp(stack1_name)
         self.tester.delete_stack_from_detail_page(stack2_name)
 
         #test stack from uploaded template
-        stack3_name = self.id_generator()+"-stack"
+        stack3_name = "test-" + self.id_generator() + "-stack"
         self.tester.create_stack_from_dashboard(stack3_name, template_url=self.TEMPLATE_URL)
         self.tester.delete_stack_from_lp(stack3_name)
 

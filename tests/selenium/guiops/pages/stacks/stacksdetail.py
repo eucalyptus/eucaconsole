@@ -17,6 +17,8 @@ class StackDetailPage(DetailPage):
     _delete_stack_action_menuitem_id = 'delete-stack-action'
     _template_tab_css ='.tabs>dd:nth-of-type(2)>a'
     _events_tab_css ='.tabs>dd:nth-of-type(3)>a'
+    _create_complete_status_css = "div>span.Create-complete"
+    _update_complete_status_css = "div>span.Update-complete"
 
     def verify_stack_detail_page_loaded(self):
         """
@@ -43,3 +45,15 @@ class StackDetailPage(DetailPage):
         Clicks "Events" tab on Stacks Detail page.
         """
         self.tester.click_element_by_css(self._events_tab_css)
+
+    def wait_for_create_complete(self):
+        """
+        Waits for stack status to be "Create complete"
+        """
+        self.tester.wait_for_visible_by_css(self._create_complete_status_css)
+
+    def wait_for_update_complete(self):
+        """
+        Waits for stack status to be "Create complete"
+        """
+        self.tester.wait_for_visible_by_css(self._update_complete_status_css)
