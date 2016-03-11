@@ -50,4 +50,10 @@ angular.module('CustomFilters', [])
         input = input.replace(sub_delims, '');
         return input.toLowerCase();
     };
-});
+})
+.filter('toClassName', function () {
+    return function (input) {
+        return input.replace(' ', '_').toLowerCase();
+    };
+})
+;
