@@ -11,7 +11,7 @@ from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-
+from datetime import datetime
 
 class UICheckException(Exception):
     def __init__(self, message):
@@ -55,6 +55,7 @@ class SeleniumApi(object):
         url = self.driver.current_url.encode('ascii', 'ignore')
         url = str(url)
         return url
+
 
     def wait_for_element_present_by_id(self, element_id):
         """
@@ -1076,3 +1077,21 @@ class SeleniumApi(object):
         """
         element = self.driver.find_element_by_xpath(xpath)
         self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
+
+    def take_screenshot_as_file(self, screenshot_file_path):
+        print "Executing: take_screenshot_as_file"
+        self.driver.implicitly_wait(self.implicit_wait_default_in_seconds)
+        self.driver.save_screenshot(screenshot_file_path)
+
+    def save_dated_screenshot(self, name):
+        print "Executing: save_dated_screenshot"
+        now = datetime.now().strftime('-%Y-%m-%d_%H-%M-%S')
+        img_file_name = "screenshot"+"-"+name+now+".png"
+        screen = self.driver.get_screenshot_as_base64()
+        with open(img_file_name, 'wb') as img_file:
+            img_file.write(screen.decode('base64'))
+
+
+
+
+

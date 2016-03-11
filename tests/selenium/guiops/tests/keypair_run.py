@@ -1,8 +1,7 @@
 from guiops.guiops import GuiOps
 from option_parser import Option_parser
-import string, random, time, sys
+import string, random, time
 import logging, traceback
-
 
 
 class Keypair_operations_sequence(GuiOps):
@@ -29,40 +28,18 @@ class Keypair_operations_sequence(GuiOps):
 
     def keypair_ops_test(self):
 
-        try:
-            self.keypair_sequence()
-        except Exception as e:
-            print "Exited at exceptiony"
-            self.tester.save_dated_screenshot("keypair")
-        finally:
-            print "Exited at finally"
-            #self.tester.take_screenshot_as_file("/Users/ahubenko/screenshot.png")
-            #self.tester.save_dated_screenshot("keypair")
-            try:
-                self.tester.exit_browser()
-            except Exception as e:
-                print e
-                pass
-
-
-    def keypair_sequence(self):
-
-
-        #self.tester.exit_browser()
-        #raise Exception("Test for screenshot on fail")
-
-       # keypair1_name=self.id_generator()+"-key"
+        keypair1_name=self.id_generator()+"-key"
         self.tester.login(self.account, self.user, self.password)
-       # self.tester.create_keypair_from_keypair_view_page(keypair1_name)
-       # self.tester.delete_keypair_from_detail_page(keypair1_name)
-       # keypair2_name=self.id_generator()+"-key"
-       # self.tester.create_keypair_from_dashboard(keypair2_name)
-       # self.tester.delete_keypair_from_view_page(keypair2_name)
-       # keypair3_name=self.id_generator()+"-key"
-       # self.tester.import_keypair(self.keypair, keypair3_name)
-       # self.tester.delete_keypair_from_detail_page(keypair3_name)
+        self.tester.create_keypair_from_keypair_view_page(keypair1_name)
+        self.tester.delete_keypair_from_detail_page(keypair1_name)
+        keypair2_name=self.id_generator()+"-key"
+        self.tester.create_keypair_from_dashboard(keypair2_name)
+        self.tester.delete_keypair_from_view_page(keypair2_name)
+        keypair3_name=self.id_generator()+"-key"
+        self.tester.import_keypair(self.keypair, keypair3_name)
+        self.tester.delete_keypair_from_detail_page(keypair3_name)
         self.tester.logout()
-
+        self.tester.exit_browser()
 
 if __name__ == '__main__':
         tester = Keypair_operations_sequence()
