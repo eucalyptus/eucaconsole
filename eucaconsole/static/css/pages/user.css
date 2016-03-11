@@ -41,7 +41,7 @@
 .tile { box-shadow: 0 2px 2px 0 #F0F0F0; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #CCEEE6; }
+.tile.add a:hover { background-color: #F0F0F0; }
 .tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
 .tile .header { position: relative; height: 24px; }
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #5a5a5a; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
@@ -173,5 +173,5 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .password-set { font-size: 0.875rem; padding-top: 4px; font-weight: bold; line-height: 1rem; }
 
-.tile { background-color: white; box-shadow: 0 2px 2px 0 #F0F0F0; width: 190px; height: 160px; }
+.tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }

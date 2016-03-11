@@ -214,7 +214,7 @@ $tooltip-padding: rem-calc(5);
 // Tiles within panels (e.g. instance_volumes.pt and volume_snapshots.pt page)
 @mixin panel-tile-mixin {
     background-color: white;
-    box-shadow: 0 2px 2px 0 $hpe-hovergray;
+    border: 1px solid $hpe-lightgray;
     width: 190px; height: 160px;
     .footer {
         height: 24px;

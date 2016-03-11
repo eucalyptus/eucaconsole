@@ -41,7 +41,7 @@
 .tile { box-shadow: 0 2px 2px 0 #F0F0F0; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #CCEEE6; }
+.tile.add a:hover { background-color: #F0F0F0; }
 .tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
 .tile .header { position: relative; height: 24px; }
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #5a5a5a; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
@@ -151,17 +151,17 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-.row .status.running { background-color: #008424; }
+.row .status.running { background-color: #01a982; }
 
-.row .status.pending { background-color: #0683c2; }
+.row .status.pending { background-color: #CCEEE6; }
 
-.row .status.stopped { background-color: #990000; }
+.row .status.stopped { background-color: darkred; }
 
 .row .status.stopping { background-color: #ff6666; }
 
-.row .status.terminated { background-color: #444; }
+.row .status.terminated { background-color: #666666; }
 
-.row .status.shutting-down { background-color: lightgrey; }
+.row .status.shutting-down { background-color: #cccccc; }
 
 select { width: 50%; }
 
@@ -181,11 +181,11 @@ form .row.controls-wrapper { margin-bottom: 0; }
 
 .fi-alert { color: darkred; }
 
-.tile { background-color: white; box-shadow: 0 2px 2px 0 #F0F0F0; width: 190px; height: 160px; }
+.tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
-.tile .footer.attached { background-color: #03405f; }
-.tile .footer.attaching { background-color: #0683c2; }
-.tile .footer.detaching { background-color: #df98dd; }
+.tile .footer.attached { background-color: #614767; }
+.tile .footer.attaching { background-color: #9774a0; }
+.tile .footer.detaching { background-color: #CCEEE6; }
 
 #attach-volume-modal [data-abide] .inline .error small.error { display: block !important; margin-bottom: 0; }
 #attach-volume-modal #device { width: 10rem; }
