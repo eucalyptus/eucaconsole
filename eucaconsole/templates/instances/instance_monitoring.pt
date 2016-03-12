@@ -30,7 +30,7 @@
             <div class="panel no-title cloudwatch-charts">
                 <div class="flex-space">
                     <div class="flex-column-1">
-                        <button class="create-button">Create Alarm</button>
+                        <button class="create-button" i18n:translate="">Create Alarm</button>
                     </div>
                     <div class="flex-column-0 actions">
                         <span id="enable-monitoring-icon" class="action-icon dropdown"

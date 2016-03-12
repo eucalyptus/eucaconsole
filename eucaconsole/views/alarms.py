@@ -261,19 +261,16 @@ class CloudWatchAlarmsJsonView(BaseView):
                 ))
             return dict(results=alarms)
 
-    @view_config(route_name="cloudwatch_alarms_for_metric_json",
-                 renderer='json',
-                 request_method='GET')
+    @view_config(route_name="cloudwatch_alarms_for_metric_json", renderer='json', request_method='GET')
     def cloudwatch_alarm_for_metric_json(self):
         with boto_error_handler(self.request):
             metric_name = self.request.params.get('metric_name')
             namespace = self.request.params.get('namespace')
             statistic = self.request.params.get('statistic')
             period = self.request.params.get('period')
-
-            items = self.get_alarms_for_metric(metric_name, namespace,
-                                               statistic, period)
+            items = self.get_alarms_for_metric(metric_name, namespace, statistic, period)
             alarms = []
+
             for alarm in items:
                 alarms.append(dict(
                     name=alarm.name,

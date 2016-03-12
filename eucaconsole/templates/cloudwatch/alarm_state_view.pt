@@ -1,4 +1,4 @@
-<!--! Modal dialogs for cloudformations on landing and detail page -->
+<!--! Manage alarms for a given resource -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div class="expando" id="details-section" ng-cloak="">
         <h6 class="title" >
