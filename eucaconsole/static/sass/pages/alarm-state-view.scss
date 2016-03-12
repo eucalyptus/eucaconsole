@@ -1,9 +1,5 @@
 @import "../includes/eucavariables";
 
-// Status colors
-$alarm-status-color-alarm: $hp-red;
-$alarm-status-color-insufficient-data: lighten($euca-grey, 25%);
-$alarm-status-color-ok: $hp-green;
 
 // Stack status
 .status.ALARM { background-color: $alarm-status-color-alarm; }
