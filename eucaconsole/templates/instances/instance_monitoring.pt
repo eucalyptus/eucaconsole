@@ -30,7 +30,7 @@
             <div class="panel no-title cloudwatch-charts">
                 <div>
                     <a ng-click="chartsCtrl.revealCreateModal()" class="button">Create Alarm</a>
-                    ${panel('create_alarm_dialog_new', resource_type='InstanceId', resource_type_value=instance.id, default_metric='CPUUtilization')}
+                    ${panel('create_alarm_dialog_new', resource_type='InstanceId', resource_type_value=instance.id, resource_name=instance_name, default_metric='CPUUtilization', default_statistic='Average', default_unit='Percent')}
                 </div>
                 <div class="toprow">
                     <div class="blurb">

@@ -22,40 +22,78 @@ angular.module('CreateAlarmModal', [])
         link: function (scope, element, attrs) {
             scope.resourceType = attrs.resourceType;
             scope.resourceId = attrs.resourceId;
-            scope.defaultMetric = attrs.defaultMetric;
+            scope.resourceName = attrs.resourceName;
 
             MetricService.getMetrics(scope.resourceType, scope.resourceId)
-                .then(function (result) {
-                    scope.metrics = result.data.metrics || [];
-                    scope.alarm.metric = attrs.defaultMetric;
+                .then(function (metrics) {
+                    scope.metrics = metrics || [];
+
+                    scope.alarm.metric = (function (metrics, defaultMetric) {
+                        var metric;
+                        for(var i = 0; i < metrics.length; i++ ) {
+                            metric = metrics[i];
+                            if(metric.name == defaultMetric) {
+                                break;
+                            }
+                        }
+                        return metric;
+                    }(scope.metrics, attrs.defaultMetric));
+
+                    scope.alarm.statistic = attrs.defaultStatistic;
+                    scope.alarm.unit = attrs.defaultUnit;
+                    scope.alarm.comparison = '>=';
                 });
         },
         controller: ['$scope', function ($scope) {
-            console.log($scope);
             $scope.alarm = {};
 
             $scope.$watchCollection('alarm', function () {
-                console.log($scope.alarm);
+                if($scope.alarm.metric) {
+                    $scope.alarm.name = $scope.alarmName();
+                }
             });
 
             $scope.alarmName = function () {
                 // Name field updates when metric selection changes,
                 // unless the user has changed the value themselves.
+                /*
+                if($scope.createAlarm.name.$touched) {
+                    return $scope.alarm.name;
+                }
+                */
+                
+                var alarm = $scope.alarm;
+                var name = [
+                    alarm.metric.namespace,
+                    $scope.resourceName || $scope.resourceId,
+                    alarm.metric.name].join(' - ');
+
+                return name;
             };
         }]
     };
 }])
 .factory('MetricService', ['$http', '$interpolate', function ($http, $interpolate) {
     var metricsUrl = $interpolate('/metrics/available/{{ resourceType }}/{{ resourceValue }}');
+    var _metrics = {};
 
     return {
         getMetrics: function (resourceType, resourceValue) {
+            if(resourceValue in _metrics) {
+                return _metrics[resourceValue];
+            }
+
             return $http({
                 method: 'GET',
                 url: metricsUrl({
                     resourceType: resourceType,
                     resourceValue: resourceValue
                 })
+            }).then(function (result) {
+                if(result && result.data) {
+                    _metrics[resourceValue] = result.data.metrics;
+                }
+                return _metrics[resourceValue];
             });
         }
     };
