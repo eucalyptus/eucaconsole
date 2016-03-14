@@ -60,8 +60,8 @@
         padding: 4px 6px;
         &.i386 { background-color: $hpe-turq; }
         &.x86_64 { background-color: $hpe-bronze; }
-        &.ebs { background-color: $hpe-purple; text-transform: uppercase; }
-        &.instance-store { background-color: hpe-steel; }
+        &.ebs { background-color: $hpe-bronze; text-transform: uppercase; }
+        &.instance-store { background-color: $hpe-steel; }
     }
     .emi-name {
         display: inline-block;

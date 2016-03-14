@@ -530,6 +530,7 @@ textarea.policy-area {
             color: $hpe-gray;
             &:hover {
                 color: $hpe-green;
+                text-decoration: none;
                 border-bottom: 1px solid $hpe-green;
             }
         }
@@ -952,6 +953,7 @@ textarea.hidden {
 ----------------------------------------- */
 .panel {
     background-color: white;
+    border: none;
     position: relative;
     h6 {
         color: $hpe-gray;
@@ -1095,6 +1097,7 @@ footer {
     &:hover {
             background-color: #fff;
             color: $hpe-black;
+            text-decoration: none;
             border-width: 4px;
         }
     &.secondary {
@@ -1103,7 +1106,8 @@ footer {
         border-width: 2px;
         &:hover {
             background-color: #fff;
-            color: $hpe-gray;
+            color: $hpe-black;
+            text-decoration: none;
             border-width: 4px;
         }
         font-family: $euca-header-font-family;

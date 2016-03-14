@@ -1719,7 +1719,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .expando i.helptext-icon { color: #666666; }
 .expando .title { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 18px; }
 .expando .title a { color: #666666; }
-.expando .title a:hover { color: #01a982; border-bottom: 1px solid #01a982; }
+.expando .title a:hover { color: #01a982; text-decoration: none; border-bottom: 1px solid #01a982; }
 
 .action-icon { display: inline-block; font-size: 1.4rem; color: #000000; padding-right: 0.5rem; padding-left: 0.5rem; }
 .action-icon:hover { cursor: pointer; color: #01a982; }
@@ -1842,7 +1842,7 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
-.panel { background-color: white; position: relative; }
+.panel { background-color: white; border: none; position: relative; }
 .panel h6 { color: #666666; text-transform: uppercase; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
 .panel .tabs-content { border: none; }
 .panel.no-title { margin-top: 0; }
@@ -1893,9 +1893,9 @@ footer .copyright { font-size: 0.9em; }
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
 .button { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; border-color: #01a982; border-width: 2px; }
-.button:hover { background-color: #fff; color: #000000; border-width: 4px; }
+.button:hover { background-color: #fff; color: #000000; text-decoration: none; border-width: 4px; }
 .button.secondary { background-color: #fff; border-color: #666666; border-width: 2px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
-.button.secondary:hover { background-color: #fff; color: #666666; border-width: 4px; }
+.button.secondary:hover { background-color: #fff; color: #000000; text-decoration: none; border-width: 4px; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; color: #EDEDED; }
 .button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; border-color: #EDEDED; border-width: 2px; color: #EDEDED; }
 .button.disabled, .button[disabled] { background-color: white; border-color: #CCEEE6; color: #EDEDED; color: #cccccc; }
