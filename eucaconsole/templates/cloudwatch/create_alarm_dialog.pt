@@ -68,10 +68,10 @@
             <label class="right" i18n:translate="">for at least</label>
         </div>
         <div class="small-2 columns">
-            <input name="evaluation_periods" ng-model="alarm.evaluation_periods" type="number"/>
+            <input name="evaluation_periods" ng-model="alarm.evaluation_periods" type="number" required="required"/>
         </div>
         <div class="small-4 columns">
-            <label class="right" i18n:translate="">consecutive periods of</label>
+            <label i18n:translate="">consecutive periods of</label>
         </div>
         <div class="small-3 columns">
             <select name="period" ng-model="alarm.period">
