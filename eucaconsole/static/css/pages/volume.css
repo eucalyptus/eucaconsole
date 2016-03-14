@@ -41,7 +41,7 @@
 .tile { box-shadow: 0 2px 2px 0 #F0F0F0; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #F0F0F0; }
+.tile.add a:hover { background-color: #F0F0F0; text-decoration: none; }
 .tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
 .tile .header { position: relative; height: 24px; }
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #5a5a5a; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
@@ -161,25 +161,25 @@ select#zone { width: 50%; }
 
 .status { background-color: #b3b3b3; text-transform: capitalize; }
 
-.status.creating { background-color: #9aa84b; }
+.status.creating { background-color: #9774a0; }
 
-.status.available { background-color: #822980; }
+.status.available { background-color: #614767; }
 
-.status.in-use { background-color: #03405f; }
+.status.in-use { background-color: #425563; }
 
-.status.deleting { background-color: #ccc; }
+.status.deleting { background-color: #cccccc; }
 
-.status.deleted { background-color: #6a737b; }
+.status.deleted { background-color: #666666; }
 
 .status.failed { background-color: darkred; }
 
-.status.attaching { background-color: #0683c2; }
+.status.attaching { background-color: #6d899e; }
 
-.status.attached { background-color: #03405f; }
+.status.attached { background-color: #425563; }
 
-.status.detached { background-color: #822980; }
+.status.detached { background-color: #614767; }
 
-.status.detaching { background-color: #c64bc3; }
+.status.detaching { background-color: #9774a0; }
 
 .reveal-modal #device { width: 10rem; }
 

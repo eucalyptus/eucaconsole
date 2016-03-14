@@ -41,7 +41,7 @@
 .tile { box-shadow: 0 2px 2px 0 #F0F0F0; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #F0F0F0; }
+.tile.add a:hover { background-color: #F0F0F0; text-decoration: none; }
 .tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
 .tile .header { position: relative; height: 24px; }
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #5a5a5a; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
@@ -154,7 +154,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 h6.section-label { margin-top: 1.5rem; }
 
 #elb-form .item-list { margin-bottom: 6px; }
-#elb-form .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 4px solid #cccccc; background-color: #fff; margin-right: 8px; }
+#elb-form .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
 #elb-form .item-list .item a { color: #666666; }
 #elb-form input.text-input { width: 300px; }
 #elb-form input.timeout-field { width: 60px; }

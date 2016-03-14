@@ -17,7 +17,7 @@
 #login-wrapper .tabs { max-height: 2.6rem !important; }
 #login-wrapper .tabs dd { position: relative; top: 1px; z-index: 999; }
 #login-wrapper .tabs dd a { padding: 10px 32px 6px 24px; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
-#login-wrapper .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; }
+#login-wrapper .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
 #login-wrapper .tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
 #login-wrapper .tabs-content { padding: 1rem; background-color: white; }
 #login-wrapper .tabs-content .content { width: 95%; margin: 0 auto; }

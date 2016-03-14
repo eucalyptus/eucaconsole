@@ -10,7 +10,7 @@
 /* ----------------------------------------- IAM User Icons
 ----------------------------------------- */
 #users-in-group .item-list { margin-bottom: 6px; }
-#users-in-group .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 4px solid #cccccc; background-color: #fff; margin-right: 8px; }
+#users-in-group .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
 #users-in-group .item-list .item a { color: #666666; }
 
 /* ----------------------------------------- Extra Element Padding

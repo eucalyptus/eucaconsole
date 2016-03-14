@@ -329,7 +329,7 @@ $tooltip-padding: rem-calc(5);
         .item {
             color: $hpe-gray;
             font-family: $euca-header-font-family;
-            border: 4px solid $hpe-lightgray;
+            border: 2px solid $hpe-lightgray;
             background-color: #fff;
             margin-right: 8px;
             a {
@@ -354,6 +354,7 @@ $tooltip-padding: rem-calc(5);
             &:hover {
                 border-bottom: 2px solid $hpe-gray;
                 background-color: transparent;
+                text-decoration: none;
             }
         }
         &.active {

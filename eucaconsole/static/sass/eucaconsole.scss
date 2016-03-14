@@ -126,6 +126,9 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
     color: $hpe-green;
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 /* -----------------------------------------
@@ -515,16 +518,16 @@ textarea.policy-area {
 
 .expando {
     i {
-        color: $hpe-black;
+        color: $hpe-gray;
         &.helptext-icon {
-            color: $hpe-black;
+            color: $hpe-gray;
         }
     }
     .title {
         font-family: $euca-header-font-family;
         font-size: $euca-l-font-size;
         a {
-            color: $hpe-black;
+            color: $hpe-gray;
             &:hover {
                 color: $hpe-green;
                 border-bottom: 1px solid $hpe-green;
@@ -571,7 +574,8 @@ textarea.policy-area {
     .add-label {
         margin-bottom: 6px;
         color: $hpe-gray;
-        font-family: $euca-header-font-family;
+        text-transform: uppercase;
+        font-family: $euca-text-font-family;
     }
     #add-tag-btn {
         margin-bottom: 0;

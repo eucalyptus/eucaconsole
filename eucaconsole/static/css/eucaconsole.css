@@ -1611,6 +1611,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Metric-Semibold, Helvetica, Arial, sans-se
 .panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 { color: #000000; }
 
 a { color: #01a982; }
+a:hover { text-decoration: underline; }
 
 /* ----------------------------------------- Header
 ----------------------------------------- */
@@ -1714,10 +1715,10 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 .helptext-icon { color: #666666; font-size: 1.2rem; }
 
-.expando i { color: #000000; }
-.expando i.helptext-icon { color: #000000; }
+.expando i { color: #666666; }
+.expando i.helptext-icon { color: #666666; }
 .expando .title { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 18px; }
-.expando .title a { color: #000000; }
+.expando .title a { color: #666666; }
 .expando .title a:hover { color: #01a982; border-bottom: 1px solid #01a982; }
 
 .action-icon { display: inline-block; font-size: 1.4rem; color: #000000; padding-right: 0.5rem; padding-left: 0.5rem; }
@@ -1731,10 +1732,10 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 ----------------------------------------- */
 #tag-editor small { font-size: 14px; }
 #tag-editor .item-list { margin-bottom: 6px; }
-#tag-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 4px solid #cccccc; background-color: #fff; margin-right: 8px; }
+#tag-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
 #tag-editor .item-list .item a { color: #666666; }
 #tag-editor .propagates { color: #777; font-size: 0.7em; }
-#tag-editor .add-label { margin-bottom: 6px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+#tag-editor .add-label { margin-bottom: 6px; color: #666666; text-transform: uppercase; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 #tag-editor #propagate-wrapper { white-space: nowrap; }
 
@@ -1914,7 +1915,7 @@ footer .copyright { font-size: 0.9em; }
 .tabs { max-height: 2.6rem !important; }
 .tabs dd { position: relative; top: 1px; z-index: 999; }
 .tabs dd a { padding: 10px 32px 6px 24px; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
-.tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; }
+.tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
 .tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
 
 .tabs-content { background-color: white; }

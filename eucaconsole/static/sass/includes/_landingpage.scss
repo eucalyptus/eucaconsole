@@ -169,6 +169,7 @@ $dropdown-border-color: $hpe-lightgray;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
                 background-color: $hpe-hovergray;
+                text-decoration: none;
             }
         }
         .plus {

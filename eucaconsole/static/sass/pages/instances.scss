@@ -5,8 +5,8 @@
 
 
 // Status colors
-$instance-status-color-running: $hpe-green;
-$instance-status-color-pending: $hpe-disabledgreen;
+$instance-status-color-running: $hpe-slate;
+$instance-status-color-pending: lighten($hpe-slate, 20%);
 $instance-status-color-stopped: darkred;
 $instance-status-color-stopping: lighten(red, 20%);
 $instance-status-color-terminated: $hpe-gray;
