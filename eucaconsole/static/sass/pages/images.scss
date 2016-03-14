@@ -32,9 +32,9 @@
     }
     .label.has-tip {
         background: white;
-        color: $euca-darkblue;
+        color: $hpe-gray;
         font-weight: bold;
-        border-bottom: 1px solid $euca-darkgrey;
+        border-bottom: 1px solid $hpe-gray;
     }
     .footer .action {
         display: block;
@@ -42,10 +42,10 @@
         left: 0; right: 0; bottom: 0;
         line-height: 1.5rem;
         text-align: center;
-        background-color: $hp-accessible-blue;
+        background-color: $hpe-gray;
         color: white;
         &:hover {
-            background-color: $hp-hover-blue;
+            background-color: $hpe-hovergray;
         }
     }
 }
@@ -58,10 +58,10 @@
     }
     .label {
         padding: 4px 6px;
-        &.i386 { background-color: $hp-orange; }
-        &.x86_64 { background-color: $hp-accessible-blue; }
-        &.ebs { background-color: $hp-purple; text-transform: uppercase; }
-        &.instance-store { background-color: darken($euca-grey, 15%); }
+        &.i386 { background-color: $hpe-turq; }
+        &.x86_64 { background-color: $hpe-bronze; }
+        &.ebs { background-color: $hpe-purple; text-transform: uppercase; }
+        &.instance-store { background-color: hpe-steel; }
     }
     .emi-name {
         display: inline-block;
@@ -71,9 +71,9 @@
 }
 
 // Status colors
-$snapshot-status-color-pending: lighten($euca-darkblue, 20%);
-$snapshot-status-color-available: $hp-green;
-$snapshot-status-color-failed: darken(red, 20%);
+$snapshot-status-color-pending: lighten($hpe-purple, 20%);
+$snapshot-status-color-available: $hpe-purple;
+$snapshot-status-color-failed: darkred;
 
 
 .status.pending { background-color: $snapshot-status-color-pending; }
@@ -90,9 +90,9 @@ $snapshot-status-color-failed: darken(red, 20%);
             font-size: 0.825rem;
             margin-bottom: 0;
             .meter {
-                background-color: lighten($euca-darkblue, 20%);
+                background-color: $hpe-disabledgreen;
                 padding-left: 4px;
-                color: black;
+                color: $hpe-black;
                 font-weight: bold;
             }
         }
@@ -113,8 +113,8 @@ $snapshot-status-color-failed: darken(red, 20%);
             position: relative;
             border: none;
             .meter {
-                background-color: lighten($euca-darkblue, 20%);
-                color: black;
+                background-color: $hpe-disabledgreen;
+                color: $hpe-black;
                 position: relative;
                 top: -2px; left: -2px;
                 padding: 1px 0 1px 8px;
