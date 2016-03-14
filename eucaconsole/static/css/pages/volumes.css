@@ -156,24 +156,24 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-.status.creating { background-color: #c64bc3; }
+.status.creating { background-color: #9774a0; }
 
-.status.available { background-color: #822980; }
+.status.available { background-color: #614767; }
 
-.status.in-use { background-color: #03405f; }
+.status.in-use { background-color: #425563; }
 
-.status.deleting { background-color: #838d95; }
+.status.deleting { background-color: #cccccc; }
 
-.status.deleted { background-color: #525960; }
+.status.deleted { background-color: #666666; }
 
 .status.failed { background-color: darkred; }
 
-.status.attaching { background-color: #0683c2; }
+.status.attaching { background-color: #6d899e; }
 
-.status.attached { background-color: #03405f; }
+.status.attached { background-color: #425563; }
 
-.status.detached { background-color: #822980; }
+.status.detached { background-color: #614767; }
 
-.status.detaching { background-color: #c64bc3; }
+.status.detaching { background-color: #9774a0; }
 
 .table td.instance { white-space: nowrap; }
