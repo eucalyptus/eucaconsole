@@ -18,6 +18,13 @@ table td input[type="checkbox"] {
 
 .chart-wrapper {
     background: #ffffff;
+    border: 1px solid $hp-gray-40;
+    h6 {
+        border: 0px none;
+    }
+    svg {
+        border: 0px none;
+    }
 }
 
 .split-container {

@@ -161,7 +161,9 @@ table td input[type="checkbox"] { margin: 0 0 0; }
 
 #graph-area { padding-top: 0.0rem; }
 
-.chart-wrapper { background: #ffffff; }
+.chart-wrapper { background: #ffffff; border: 1px solid #b3b3b3; }
+.chart-wrapper h6 { border: 0px none; }
+.chart-wrapper svg { border: 0px none; }
 
 .split-top { height: 250px; overflow: auto; }
 
