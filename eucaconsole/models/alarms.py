@@ -26,6 +26,8 @@
 
 from itertools import chain
 
+from ..i18n import _
+
 
 class Alarm(object):
 
@@ -52,3 +54,28 @@ class Alarm(object):
         if alarms is None and dimension_key is not None:
             alarms = [alarm for alarm in cw_conn.describe_alarms() if dimension_key in alarm.dimensions]
         return set([alarm for alarm in alarms if resource_id in chain.from_iterable(alarm.dimensions.values())])
+
+    @classmethod
+    def get_resource_alarm_status(cls, resource_id, alarms):
+        """ Get alarm status for a given resource
+            Return 'Alarm' if at least one alarm is in ALARM state
+            Fall back to 'Insufficient data' if at least one is insufficient and none are in ALARM state
+            Return OK only if all alarms are in that state
+
+        :param alarms: list of Alarm objects
+        :param resource_id: resource id or name (e.g. 'i-123456' for an EC2 instance)
+        :returns: Alarm status
+        :rtype: str
+
+        """
+        resource_alarms = cls.get_alarms_for_resource(resource_id, alarms=alarms)
+        alarm_states = set([alarm.state_value for alarm in resource_alarms])
+        if alarm_states:
+            if 'ALARM' in alarm_states:
+                return _(u'Alarm')
+            elif 'INSUFFICIENT_DATA' in alarm_states:
+                return _(u'Insufficient data')
+            else:
+                return _(u'OK')
+        return ''  # Default to when resource has no alarms set
+

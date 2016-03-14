@@ -183,6 +183,12 @@
                     <span class="label" title="Instance ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.id }}
                 </div>
+                <div ng-show="item.alarm_status">
+                    <span class="label" title="CloudWatch alarm status" i18n:attributes="title" data-tooltip="">CW</span>
+                    <a class="alarm-status {{ item.alarm_status.replace(' ', '_').toLowerCase() }}" ng-href="/instances/{{item.id}}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                </div>
                 <div>
                     <span class="label" title="Image" i18n:attributes="title" data-tooltip="">IM</span>
                     <a ng-href="/images/{{ item.image_id }}">
@@ -198,8 +204,14 @@
                     <span ng-show="!item.has_elastic_ip">{{ item.ip_address }}</span>
                 </div>
                 <div>
-                    <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
-                    {{ item.availability_zone }}
+                    <div tal:omit-tag="" tal:condition="not: is_vpc_supported">
+                        <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                        {{ item.availability_zone }}
+                    </div>
+                    <div tal:omit-tag="" tal:condition="is_vpc_supported">
+                        <span class="label" title="VPC subnet" i18n:attributes="title" data-tooltip="">VS</span>
+                        {{ item.vpc_subnet_display }} | {{ item.vpc_name }} ({{ item.availability_zone }})
+                    </div>
                 </div>
                 <div>
                     <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">RD</span>
@@ -221,9 +233,9 @@
                     </span>
                     <a ng-href="${prefix}/{{ item.id }}">{{ item.security_groups.length }}</a>
                 </div>
-                <div tal:condition="is_vpc_supported">
-                    <span class="label" title="VPC network" i18n:attributes="title" data-tooltip="">VN</span>
-                    {{ item.vpc_name }}
+                <div>
+                    <span class="label" title="Launch time" i18n:attributes="title" data-tooltip="">LT</span>
+                    {{ item.launch_time | date: '${layout.angular_date_format}' }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tile_footer">
@@ -235,14 +247,18 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
-                <th i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">NAME (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME (ID)</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="status">STATUS</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="alarm_status">ALARMS</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="image_id">IMAGE ID</th>
-                <th i18n:translate="" st-skip-natural="true" st-sort="availability_zone">AVAIL ZONE</th>
-                <th tal:condition="is_vpc_supported" i18n:translate="" st-skip-natural="true" st-sort="vpc_name">VPC NETWORK</th>
+                <th st-skip-natural="true" st-sort="availability_zone"
+                    tal:attributes="st-sort 'sortable_subnet_zone' if is_vpc_supported else 'availability_zone'">
+                    <span i18n:translate="" tal:condition="is_vpc_supported">VPC SUBNET/</span><span i18n:translate="">ZONE</span>
+                </th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="sortable_ip">PUBLIC ADDR</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="key_name">KEY NAME</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="sortable_secgroups">SECURITY GROUP</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="launch_time" st-sort-default="reverse">LAUNCH TIME</th>
                 <th i18n:translate="" class="actions">ACTIONS</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -252,9 +268,21 @@
                     <span class="label radius status {{ item.status }}">{{ item.status }}</span>
                     <span class="busy" ng-show="item.transitional"></span>
                 </td>
+                <td class="alarm-status">
+                    <a class="label radius alarm-status {{ item.alarm_status.replace(' ', '_').toLowerCase() }}"
+                          ng-if="item.alarm_status" ng-href="/instances/{{item.id}}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                </td>
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
-                <td>{{ item.availability_zone }}</td>
-                <td tal:condition="is_vpc_supported">{{ item.vpc_name }}</td>
+                <td>
+                    <span tal:condition="is_vpc_supported">
+                        {{ item.vpc_subnet_display }} | {{ item.vpc_name }} ({{ item.availability_zone }})
+                    </span>
+                    <span tal:condition="not: is_vpc_supported">
+                        {{ item.availability_zone }}
+                    </span>
+                </td>
                 <td>
                     <a ng-href="/ipaddresses/{{ item.ip_address }}" ng-show="item.has_elastic_ip">{{ item.ip_address }}</a>
                     <span ng-show="!item.has_elastic_ip">{{ item.ip_address }}</span>
@@ -272,6 +300,9 @@
                             title="Warning: No rules defined for security group. Instance may be unreachable."></i>
                         <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name | ellipsis: 30 }}</a>
                     </div>
+                </td>
+                <td class="breakword">
+                    {{ item.launch_time | date: '${layout.angular_date_format}' }}
                 </td>
                 <td>
                     <span class="actions">
