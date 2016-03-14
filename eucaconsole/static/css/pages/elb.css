@@ -156,35 +156,6 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-h6.section-label { margin-top: 1.5rem; }
-
-#elb-form .item-list { margin-bottom: 6px; }
-#elb-form .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
-#elb-form .item-list .item a { color: #666666; }
-#elb-form input.text-input { width: 300px; }
-#elb-form input.timeout-field { width: 60px; }
-#elb-form input[type="number"] { width: 80px; }
-#elb-form .stack-label { margin-bottom: 0.5rem; }
-#elb-form .sub-section-label { color: black; }
-#elb-form .helptext-icon { color: #6a737b; font-size: 1.3rem; }
-#elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
-#elb-form .checkbox-with-helptext-icon label { margin-right: 0; }
-#elb-form .cancel-link { margin-right: 1.5rem; }
-#elb-form .description { margin-bottom: 1.0rem; }
-#elb-form .enable-button { height: 37px; padding-top: 0.5rem; }
-
-#advanced-section { margin-top: 1.5rem; }
-
-a.nolink { color: #5a5a5a; }
-a.nolink:hover { color: #5a5a5a !important; cursor: inherit; }
-
-p.error { color: darkred; }
-
-table.table { width: 100%; }
-table.table .status-descr { width: 20%; }
-
-#controls_cross_zone_enabled { margin-top: 0.75rem; margin-bottom: 0.75rem; }
-
 .magic-search { margin-top: 0.5rem; }
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
@@ -193,11 +164,10 @@ table.table .status-descr { width: 20%; }
 .tile .footer.has-progress .progress .meter { color: black; text-align: left; }
 .tile .footer.has-progress .completed { position: relative; top: -3px; }
 .tile .footer.status { text-transform: none; }
-.tile .footer.status.allhealthy { background-color: #03405f; }
+.tile .footer.status.allhealthy { background-color: #425563; }
 .tile .footer.status.unhealthy { background-color: darkred; }
 
-#instance-section .actions { text-align: right; }
-#instance-section #refresh-instances-icon { display: none; }
+#refresh-instances-icon { display: none; }
 
 select[name="ping_protocol"] { width: 100px; }
 
