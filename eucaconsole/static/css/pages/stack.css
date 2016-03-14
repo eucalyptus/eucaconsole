@@ -45,7 +45,7 @@
 .tile .header a.has-checkbox { padding-left: 24px; }
 .tile .header strong { font-weight: normal; }
 .tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
-.tile .header .f-dropdown a { color: #666666; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
+.tile .header .f-dropdown a { color: #666666; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
 .tile .content a { color: #01a982; }
 .tile .content a:hover { text-decoration: underline; }
@@ -65,10 +65,11 @@
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: white; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #000000; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #000000; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table thead tr th.count { text-align: center; }
 .gridwrapper .table thead tr th.checkbox-header { width: 1.5rem; }
+.gridwrapper .table tr { border-bottom: 1px solid #cccccc; }
 .gridwrapper .table tr td.count { text-align: center; }
 .gridwrapper .table th { white-space: nowrap; }
 .gridwrapper .table tr { position: relative; width: 100%; }
@@ -154,8 +155,6 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .content { width: 100%; padding-left: 10px; padding-right: 10px; }
 
 .panel { overflow: hidden; min-height: 400px; }
-
-label { font-weight: bold; color: #6a737b; }
 
 /* override for height of template view dialog */
 .CodeMirror { height: 450px; }

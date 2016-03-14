@@ -168,7 +168,6 @@ a {
         }
     }
     .f-dropdown {
-        box-shadow: 0 0 1px 1px $hpe-lightgray;
         width: auto;
         min-width: 8rem;
         &.open {
@@ -988,10 +987,12 @@ textarea.hidden {
                 padding: 12px 38px 12px 22px;
                 a {
                     color: $hpe-black;
+                    &:hover { 
+                    text-decoration: none;
+                    }
                 }
             }
             .f-dropdown {
-                box-shadow: 0 0 1px 1px $hpe-black;
                 min-width: 12rem;
                 width: auto;
             }

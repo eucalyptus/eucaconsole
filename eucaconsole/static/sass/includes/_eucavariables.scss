@@ -233,6 +233,7 @@ $tooltip-padding: rem-calc(5);
         &:hover {
             background-color: white;
             border-color: $hpe-disabledgray;
+            text-decoration: none;
             border-width: 2px;
             color: $hpe-disabledgray;
 
@@ -247,6 +248,7 @@ $tooltip-padding: rem-calc(5);
         &:hover {
             background-color: white;
             border-color: $hpe-disabledgreen;
+            text-decoration: none;
             border-width: 2px;
             color: $hpe-disabledgray;
 
@@ -287,6 +289,7 @@ $tooltip-padding: rem-calc(5);
             padding-bottom: 0.5rem;
             padding-left: 6px;
             padding-right: 6px;
+            border-bottom: 1px solid $hpe-lightgray;
             vertical-align: top;
             color: $hpe-black;
             text-transform: uppercase;
@@ -302,6 +305,7 @@ $tooltip-padding: rem-calc(5);
         }
     }
     tr {
+        border-bottom: 1px solid $hpe-lightgray;
         td.count {
             text-align: center;
         }

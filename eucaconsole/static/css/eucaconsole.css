@@ -1623,7 +1623,7 @@ a:hover { text-decoration: underline; }
 #logobar section .icon { font-size: 1.5rem; }
 #logobar .dropdown { display: inline-block; margin-left: 1.3rem; color: #01a982; }
 #logobar .dropdown .icon { display: inline-block; }
-#logobar .f-dropdown { box-shadow: 0 0 1px 1px #cccccc; width: auto; min-width: 8rem; }
+#logobar .f-dropdown { width: auto; min-width: 8rem; }
 #logobar .f-dropdown.open { width: auto !important; }
 #logobar .fi-list { margin-left: 8px; position: relative; top: -10px; }
 #logobar .product-name { font-size: 1.4rem; position: relative; top: -8px; padding-left: 0.5rem; }
@@ -1852,7 +1852,8 @@ textarea.hidden.debug { display: block; }
 .panel.has-actions .actions-menu { position: absolute; top: 10px; right: 10px; }
 .panel.has-actions .actions-menu .button.dropdown { padding: 12px 38px 12px 22px; }
 .panel.has-actions .actions-menu .button.dropdown a { color: #000000; }
-.panel.has-actions .actions-menu .f-dropdown { box-shadow: 0 0 1px 1px #000000; min-width: 12rem; width: auto; }
+.panel.has-actions .actions-menu .button.dropdown a:hover { text-decoration: none; }
+.panel.has-actions .actions-menu .f-dropdown { min-width: 12rem; width: auto; }
 
 .reveal-modal-bg { z-index: 9999990; }
 
@@ -1872,10 +1873,11 @@ textarea.hidden.debug { display: block; }
 ----------------------------------------- */
 table.table { border: none; }
 table.table thead tr { background-color: white; }
-table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #000000; text-transform: uppercase; }
+table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #000000; text-transform: uppercase; }
 table.table thead tr th.actions { text-align: right; }
 table.table thead tr th.count { text-align: center; }
 table.table thead tr th.checkbox-header { width: 1.5rem; }
+table.table tr { border-bottom: 1px solid #cccccc; }
 table.table tr td.count { text-align: center; }
 table.table tr td { vertical-align: top; }
 table.table td.breakall { word-break: break-all !important; }
@@ -1897,9 +1899,9 @@ footer .copyright { font-size: 0.9em; }
 .button.secondary { background-color: #fff; border-color: #666666; border-width: 2px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
 .button.secondary:hover { background-color: #fff; color: #000000; text-decoration: none; border-width: 4px; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; color: #EDEDED; }
-.button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; border-color: #EDEDED; border-width: 2px; color: #EDEDED; }
+.button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; border-color: #EDEDED; text-decoration: none; border-width: 2px; color: #EDEDED; }
 .button.disabled, .button[disabled] { background-color: white; border-color: #CCEEE6; color: #EDEDED; color: #cccccc; }
-.button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #CCEEE6; border-width: 2px; color: #EDEDED; }
+.button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #CCEEE6; text-decoration: none; border-width: 2px; color: #EDEDED; }
 
 /* ----------------------------------------- Button groups (Foundation's button groups seem broken)
 ----------------------------------------- */

@@ -45,7 +45,7 @@
 .tile .header a.has-checkbox { padding-left: 24px; }
 .tile .header strong { font-weight: normal; }
 .tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
-.tile .header .f-dropdown a { color: #666666; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
+.tile .header .f-dropdown a { color: #666666; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
 .tile .content a { color: #01a982; }
 .tile .content a:hover { text-decoration: underline; }
@@ -65,10 +65,11 @@
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: white; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; vertical-align: top; color: #000000; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #000000; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table thead tr th.count { text-align: center; }
 .gridwrapper .table thead tr th.checkbox-header { width: 1.5rem; }
+.gridwrapper .table tr { border-bottom: 1px solid #cccccc; }
 .gridwrapper .table tr td.count { text-align: center; }
 .gridwrapper .table th { white-space: nowrap; }
 .gridwrapper .table tr { position: relative; width: 100%; }
@@ -151,34 +152,34 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-.status.Create-in-progress { background-color: #0683c2; }
+.status.Create-in-progress { background-color: #6d899e; }
 
-.status.Create-complete { background-color: #008424; }
+.status.Create-complete { background-color: #425563; }
 
-.status.Create-failed { background-color: #ff0000; }
+.status.Create-failed { background-color: darkred; }
 
-.status.Rollback-in-progress { background-color: #6a737b; }
+.status.Rollback-in-progress { background-color: #cccccc; }
 
-.status.Rollback-complete { background-color: #444; }
+.status.Rollback-complete { background-color: #666666; }
 
-.status.Rollback-failed { background-color: #ff0000; }
+.status.Rollback-failed { background-color: darkred; }
 
-.status.Delete-in-progress { background-color: #6a737b; }
+.status.Delete-in-progress { background-color: #cccccc; }
 
-.status.Delete-complete { background-color: #444; }
+.status.Delete-complete { background-color: #666666; }
 
-.status.Delete-failed { background-color: #ff0000; }
+.status.Delete-failed { background-color: darkred; }
 
-.status.Update-in-progress { background-color: #6a737b; }
+.status.Update-in-progress { background-color: #6d899e; }
 
-.status.Update-complete-cleanup-in-progress { background-color: #6a737b; }
+.status.Update-complete-cleanup-in-progress { background-color: #6d899e; }
 
-.status.Update-complete { background-color: #444; }
+.status.Update-complete { background-color: #425563; }
 
-.status.Update-rollback-in-progress { background-color: #6a737b; }
+.status.Update-rollback-in-progress { background-color: #cccccc; }
 
-.status.Update-rollback-failed { background-color: #ff0000; }
+.status.Update-rollback-failed { background-color: darkred; }
 
-.status.Update-rollback-complete-cleanup-in-progress { background-color: #6a737b; }
+.status.Update-rollback-complete-cleanup-in-progress { background-color: #cccccc; }
 
-.status.Update-rollback-complete { background-color: #444; }
+.status.Update-rollback-complete { background-color: #666666; }
