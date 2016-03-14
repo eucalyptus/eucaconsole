@@ -44,7 +44,7 @@
 
         <div class="row buttons">
             <button id="remove-alarm-btn" class="button expand" ng-click="removeAlarm($event)" i18n:translate="">
-                <span i18n:translate="">Yes, Remove Alarm from</span><strong class="capital"> {{ resourceType }}</strong>
+                <span i18n:translate="">Yes, Remove Alarm from</span><span class="capital"> {{ resourceType }}</span>
             </button>
         </div>
     </div>
