@@ -234,6 +234,14 @@ $dropdown-border-color: $hp-gray-65;
         .fi-alert {
             color: darkred;
         }
+        a.alarm-status {
+            padding: 2px 6px;
+            color: white;
+            border-radius: 3px;
+            &:hover {
+                text-decoration: none;
+            }
+        }
     }
     .link {
         color: $hp-accessible-blue;
@@ -334,6 +342,12 @@ $dropdown-border-color: $hp-gray-65;
                 width: 0.9rem;
                 height: 0.9rem;
                 margin-left: 0.2rem;
+            }
+            a.alarm-status {
+                color: white;
+                &:hover {
+                    text-decoration: none;
+                }
             }
         }
     }
