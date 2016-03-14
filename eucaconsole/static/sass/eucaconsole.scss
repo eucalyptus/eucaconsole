@@ -131,6 +131,16 @@ a {
     }
 }
 
+label {
+    color: $hpe-gray;
+    font-family: $euca-text-font-family;
+    font-size: $euca-font-size;
+    cursor: default;
+    &.inline {
+        display: inline-block;
+    }
+}
+
 /* -----------------------------------------
    Header
 ----------------------------------------- */
@@ -1367,15 +1377,15 @@ ul.resources-nav {
     li {
         a {
             background-color: transparent;
-            color: $hp-gray-65;
+            color: $hpe-gray;
             padding: 0.5rem 8rem 1.0rem 2.6rem;
             line-height: 1.5rem;
             border-bottom: 0;
             position: static;
         }
         &:hover {
-            background-color: $hp-gray-5;
-            color: $hp-hover-blue;
+            background-color: $hpe-hovergray;
+            color: $hpe-gray;
         }
         span {
             padding-left: 0.5rem;
