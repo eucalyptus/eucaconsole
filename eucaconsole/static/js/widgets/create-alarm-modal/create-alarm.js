@@ -27,6 +27,7 @@ angular.module('CreateAlarmModal', [])
             MetricService.getMetrics(scope.resourceType, scope.resourceId)
                 .then(function (result) {
                     scope.metrics = result.data.metrics || [];
+                    scope.alarm.metric = attrs.defaultMetric;
                 });
         },
         controller: ['$scope', function ($scope) {
