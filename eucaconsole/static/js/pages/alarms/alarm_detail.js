@@ -109,6 +109,7 @@ angular.module('AlarmDetailPage', [
         link: function (scope, element, attrs) {
             scope.alarmActions = JSON.parse(attrs.alarmActions);
             scope.servicePath = attrs.servicePath;
+            scope.defaultOptionValue = 'Select policy...';
         },
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
             $scope.addAction = function () {
@@ -156,6 +157,7 @@ angular.module('AlarmDetailPage', [
                 $scope.action = {
                     alarmState: 'ALARM'
                 };
+                $scope.defaultOptionValue = 'Select policy...';
                 $scope.scalingGroupPolicies = [];
                 $scope.alarmActionsForm.$setPristine();
                 $scope.alarmActionsForm.$setUntouched();
@@ -167,9 +169,14 @@ angular.module('AlarmDetailPage', [
             };
 
             $scope.updatePolicies = function () {
+                if($scope.action.scalingGroup === '') {
+                    $scope.resetForm();
+                    return;
+                }
+
                 ScalingGroupsService.getPolicies($scope.action.scalingGroup)
                     .then(function success (data) {
-                        var policies = data.policies,
+                        var policies = data.policies || {},
                             filtered = {};
 
                         var availableKeys = Object.keys(policies).filter(function (key) {
@@ -182,6 +189,10 @@ angular.module('AlarmDetailPage', [
                         availableKeys.forEach(function (key) {
                             $scope.scalingGroupPolicies[key] = policies[key];
                         });
+
+                        if(Object.keys(availableKeys).length < 1) {
+                            $scope.defaultOptionValue = 'No policies available';
+                        }
                     }, function error (response) {
                         console.log(response);
                     });

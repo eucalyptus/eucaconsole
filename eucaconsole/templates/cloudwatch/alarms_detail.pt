@@ -197,8 +197,10 @@
                                         <label class="right" i18n:translate="">Execute scaling policy</label>
                                     </div>
                                     <div class="columns large-10 small-10">
-                                        <select ng-model="action.scalingGroupPolicy" ng-init="action.scalingGroupPolicy = ''" ng-disabled="policiesAvailable()" required="">
-                                            <option value="" i18n:translate="">Select policy...</option>
+                                        <select name="policies" ng-model="action.scalingGroupPolicy"
+                                                                ng-init="action.scalingGroupPolicy = ''"
+                                                                ng-disabled="policiesAvailable()" required="">
+                                            <option value="" i18n:translate="">{{ defaultOptionValue }}</option>
                                             <option ng-repeat="(name, details) in scalingGroupPolicies"
                                                     ng-bind="name" 
                                                     ng-value="{{ name }}" 
