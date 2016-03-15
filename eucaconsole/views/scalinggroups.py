@@ -812,9 +812,14 @@ class ScalingGroupPolicyJsonView(BaseScalingGroupView):
     def get_policies_for_scaling_group(self):
         scaling_group = self.get_scaling_group()
         policies = self.get_policies(scaling_group)
+
         policy_names = {}
         for policy in policies:
-            policy_names[policy.name] = policy.policy_arn
+            policy_names[policy.name] = {
+                'arn': policy.policy_arn,
+                'scaling_adjustment': policy.scaling_adjustment
+            }
+
         return dict(
             policies=policy_names
         )

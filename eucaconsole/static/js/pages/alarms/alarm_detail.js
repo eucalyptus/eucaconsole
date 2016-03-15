@@ -132,13 +132,14 @@ angular.module('AlarmDetailPage', [
                     return;
                 }
 
-                var policy = $scope.action.scalingGroupPolicy,
-                    arn = $scope.scalingGroupPolicies[policy];
+                var policyName = $scope.action.scalingGroupPolicy,
+                    policy = $scope.scalingGroupPolicies[policyName];
 
                 var action = {
                     autoscaling_group_name: $scope.action.scalingGroup,
-                    policy_name: policy,
-                    arn: arn
+                    policy_name: policyName,
+                    arn: policy.arn,
+                    scaling_adjustment: policy.scaling_adjustment
                 };
                 $scope.alarmActions.push(action);
 
@@ -180,4 +181,13 @@ angular.module('AlarmDetailPage', [
             });
         }
     };
-}]);
+}])
+.filter('signed', function () {
+    return function (input) {
+        input = Number(input);
+        if(input > 0) {
+            return '+' + input.toString(10);
+        }
+        return input.toString(10);
+    };
+});

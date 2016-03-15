@@ -352,12 +352,19 @@ class CloudWatchAlarmDetailView(BaseView):
         alarm_actions = []
         for action in self.alarm.alarm_actions:
             arn = AmazonResourceName.factory(action)
+            policy_details = self.get_policies_for_scaling_group(arn.autoscaling_group_name, [arn.policy_name])
+            policy_details.reverse()
+            policy = policy_details.pop()
 
-            alarm_actions.append({
+            detail = {
                 'arn': arn.arn,
                 'autoscaling_group_name': arn.autoscaling_group_name,
                 'policy_name': arn.policy_name
-            })
+            }
+
+            if policy:
+                detail['scaling_adjustment'] = policy.scaling_adjustment
+            alarm_actions.append(detail)
 
         scaling_groups = self.get_scaling_groups()
 
@@ -395,6 +402,12 @@ class CloudWatchAlarmDetailView(BaseView):
         with boto_error_handler(self.request):
             groups = conn.get_all_groups()
             return groups
+
+    def get_policies_for_scaling_group(self, scaling_group, policy_names=None):
+        conn = self.get_connection(conn_type='autoscale')
+        with boto_error_handler(self.request):
+            policies = conn.get_all_policies(as_group=scaling_group, policy_names=policy_names)
+            return policies
 
 
 class CloudWatchAlarmActionsView(BaseView):
