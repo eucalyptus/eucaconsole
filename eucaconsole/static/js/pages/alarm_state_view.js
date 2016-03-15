@@ -40,7 +40,7 @@ angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServic
                     $scope.alarmToDelete = alarm;
                     $('#remove-alarm-modal').foundation('reveal', 'open');
                     $timeout(function() {
-                        $('#remove-alarm-btn').focus();
+                        $('.close-reveal-modal').focus();
                     }, 500);
                 };
                 $scope.removeAlarm = function(event) {

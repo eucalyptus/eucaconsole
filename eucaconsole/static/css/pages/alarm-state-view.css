@@ -15,4 +15,4 @@
 i.delete-icon { color: #5a5a5a !important; }
 i.delete-icon:hover { color: darkred !important; }
 
-strong.capital { text-transform: capitalize; }
+span.capital { text-transform: capitalize; }
