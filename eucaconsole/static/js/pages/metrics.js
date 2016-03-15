@@ -26,10 +26,10 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
     })
     .directive('datepicker', function () {
         return {
+            require: 'ngModel',
             restrict: 'A',
             scope: {
-                format: "=",
-                model: "=ngModel"
+                format: "@",
             },
             link: function(scope, element, attrs){
                 if(typeof(scope.format) == "undefined"){ scope.format = "yyyy/mm/dd hh:ii"; }
@@ -37,7 +37,9 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 startDate.setHours(-(14 * 24));  // move back 2 weeks
                 var endDate = new Date();
                 $(element).fdatepicker({format: scope.format, pickTime: true, startDate:startDate, endDate:endDate}).on('changeDate', function(ev){
-                    scope.model = ev.date;
+                    scope.$apply(function() {
+                        ngModel.$setViewValue(ev.date);
+                    });
                 });
             }
         }; 
