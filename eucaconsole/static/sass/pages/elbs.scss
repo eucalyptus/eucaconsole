@@ -2,5 +2,5 @@
 @import "../includes/landingpage";
 
 .alarm-status.alarm { background-color: $alarm-status-color-alarm; }
-.alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient; }
+.alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient-data; }
 .alarm-status.ok { background-color: $alarm-status-color-ok; }
