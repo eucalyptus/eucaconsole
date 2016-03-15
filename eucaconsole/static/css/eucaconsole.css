@@ -1836,17 +1836,17 @@ textarea.hidden.debug { display: block; }
 .chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #fff !important; border: 1px solid #cccccc; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: 34px; padding-left: 10px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field .default { color: #999; }
-.chosen-container.chosen-container-multi .chosen-choices li.search-choice { background-image: none; background-color: #d1d3d4; border: none; font-size: 0.9rem; padding: 4px 20px 4px 8px; color: #555; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-choice { background-image: none; background-color: #fff; border: 2px solid #cccccc; font-size: 0.9rem; padding: 4px 20px 4px 8px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12 px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice .search-choice-close { top: 8px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice span { line-height: 20px; }
 .chosen-container.chosen-container-single .chosen-single { background-image: none; background-color: #fff !important; border-radius: 0; height: 2rem; line-height: 2rem; font-size: 0.875rem; }
 .chosen-container.chosen-container-single .chosen-single b { position: relative; top: 4px; }
-.chosen-container .chosen-drop .chosen-results { font-size: 0.875rem; }
+.chosen-container .chosen-drop .chosen-results { font-size: euca-font-size; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
 .panel { background-color: white; border: none; position: relative; }
-.panel h6 { color: #666666; text-transform: uppercase; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
+.panel h6 { color: #666666; text-transform: uppercase; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 18px; }
 .panel .tabs-content { border: none; }
 .panel.no-title { margin-top: 0; }
 .panel.has-actions { position: relative; padding-top: 60px !important; }

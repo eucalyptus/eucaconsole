@@ -922,11 +922,13 @@ textarea.hidden {
                 }
                 &.search-choice {
                     background-image: none;
-                    background-color: #d1d3d4;
-                    border: none;
+                    background-color: #fff;
+                    border: 2px solid $hpe-lightgray;
                     font-size: 0.9rem;
                     padding: 4px 20px 4px 8px;
-                    color: #555;
+                    color: $hpe-gray;
+                    font-family: $euca-header-font-family;
+                    font-size: $euca-xs-font-size;
                     .search-choice-close {
                         top: 8px;
                     }
@@ -952,7 +954,7 @@ textarea.hidden {
         }
     }
     .chosen-drop .chosen-results {
-        font-size: 0.875rem;
+        font-size: euca-font-size;
     }
 }
 
@@ -968,6 +970,7 @@ textarea.hidden {
         color: $hpe-gray;
         text-transform: uppercase;
         font-family: $euca-text-font-family;
+        font-size: $euca-l-font-size;
     }
     .tabs-content {
         border: none;

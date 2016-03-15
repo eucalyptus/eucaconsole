@@ -72,7 +72,7 @@ h3.warn-dialog:before {
     @extend .fa;
     @extend .fa-exclamation-triangle;
     @extend .fa-lg;
-    color: $euca-orange;
+    color: darkred;
     padding-right: 0.5rem;
 }
 
@@ -83,6 +83,7 @@ h3.warn-dialog:before {
     @extend .fa-lg;
     margin-left: 5px;
     text-align: center;
+    color: $hpe-gray;
 }
 
 .table-expando-open {
@@ -91,4 +92,5 @@ h3.warn-dialog:before {
     @extend .fa-lg;
     margin-left: 1px;
     text-align: center;
+    color: $hpe-gray;
 }
