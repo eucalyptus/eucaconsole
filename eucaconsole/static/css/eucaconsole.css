@@ -1623,7 +1623,8 @@ label.inline { display: inline-block; }
 #logobar-wrapper { border-bottom: 1px solid #cccccc; }
 
 #logobar { padding: 6px 0 0 0; margin-top: 8px; background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
-#logobar a { font-size: 0.9rem; color: #333; }
+#logobar a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; color: #000000; }
+#logobar a:hover { text-decoration: none; }
 #logobar section { position: relative; line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
 #logobar section .icon { font-size: 1.5rem; }
 #logobar .dropdown { display: inline-block; margin-left: 1.3rem; color: #01a982; }
@@ -1642,7 +1643,7 @@ label.inline { display: inline-block; }
 #breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; letter-spacing: 1px; font-weight: normal; }
 #breadcrumbs li { margin-top: 0.3rem; font-size: 18px; }
 #breadcrumbs li.current a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
-#breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
+#breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: -2px; }
 #breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #cccccc; font-weight: bold; text-align: center; }
 #breadcrumbs .breadcrumbs > ::before { position: relative; top: -1px; font-size: 0.7rem; }
 
@@ -1738,8 +1739,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 ----------------------------------------- */
 #tag-editor small { font-size: 14px; }
 #tag-editor .item-list { margin-bottom: 6px; }
-#tag-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
+#tag-editor .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
 #tag-editor .item-list .item a { color: #666666; }
+#tag-editor .item-list .item a:hover { text-decoration: none; }
 #tag-editor .propagates { color: #777; font-size: 0.7em; }
 #tag-editor .add-label { margin-bottom: 6px; color: #666666; text-transform: uppercase; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
@@ -1904,9 +1906,9 @@ footer .copyright { font-size: 0.9em; }
 .button:hover { background-color: #fff; color: #000000; text-decoration: none; border-width: 4px; }
 .button.secondary { background-color: #fff; border-color: #666666; border-width: 2px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
 .button.secondary:hover { background-color: #fff; color: #000000; text-decoration: none; border-width: 4px; }
-.button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; color: #EDEDED; }
+.button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; }
 .button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; border-color: #EDEDED; text-decoration: none; border-width: 2px; color: #EDEDED; }
-.button.disabled, .button[disabled] { background-color: white; border-color: #CCEEE6; color: #EDEDED; color: #cccccc; }
+.button.disabled, .button[disabled] { background-color: white; border-color: #CCEEE6; color: #EDEDED; }
 .button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #CCEEE6; text-decoration: none; border-width: 2px; color: #EDEDED; }
 
 /* ----------------------------------------- Button groups (Foundation's button groups seem broken)

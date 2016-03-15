@@ -161,8 +161,12 @@ label {
     font-family: $euca-header-font-family;
     color: $hpe-black;
     a {
-        font-size: 0.9rem;
-        color: #333;
+        font-family: $euca-text-font-family;
+        font-size: $euca-font-size;
+        color: $hpe-black;
+        &:hover {
+            text-decoration: none;
+        }
     }
     section {
         position: relative;
@@ -251,7 +255,7 @@ label {
         position: absolute;
         top: 0; bottom: 0; right: 0;
         vertical-align: middle;
-        padding-top: 8px;
+        padding-top: -2px;
     }
     .help-icon {
         position: relative;

@@ -238,7 +238,6 @@ $tooltip-padding: rem-calc(5);
             color: $hpe-disabledgray;
 
         }
-    color: $hpe-disabledgray;
 }
 
 @mixin primary-disabled-button-mixin {
@@ -253,7 +252,6 @@ $tooltip-padding: rem-calc(5);
             color: $hpe-disabledgray;
 
         }
-    color: $hpe-lightgray;
 }
 
 @mixin dropdown-shadow-mixin {
@@ -332,12 +330,15 @@ $tooltip-padding: rem-calc(5);
         margin-bottom: 6px;
         .item {
             color: $hpe-gray;
-            font-family: $euca-header-font-family;
+            font-family: $euca-text-font-family;
             border: 2px solid $hpe-lightgray;
             background-color: #fff;
             margin-right: 8px;
             a {
                 color: $hpe-gray;
+                &:hover {
+                text-decoration: none;
+                }
             }
         }
     }
