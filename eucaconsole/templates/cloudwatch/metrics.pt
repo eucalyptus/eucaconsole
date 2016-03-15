@@ -193,11 +193,13 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="field-wrapper">
+                                <div class="field-wrapper timepicker">
                                     <div>
                                         <label class="left stack-label" i18n:translate="">Time range</label>
-                                        <input id="metric-time-range" type="radio" name="range" value="relative" ng-model="chartsCtrl.timeRange"/><label i18n:translate="">Relative</label>
-                                        <input id="metric-time-range" type="radio" name="range" value="absolute" ng-model="chartsCtrl.timeRange"/><label i18n:translate="">Absolute</label>
+                                        <input id="metric-time-range" type="radio" name="range" value="relative"
+                                               ng-model="chartsCtrl.timeRange" /><label i18n:translate="">Relative</label>
+                                        <input id="metric-time-range" type="radio" name="range" value="absolute"
+                                               ng-model="chartsCtrl.timeRange" /><label i18n:translate="">Absolute</label>
                                     </div>
                                     <div ng-if="chartsCtrl.timeRange == 'relative'">
                                         <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration"

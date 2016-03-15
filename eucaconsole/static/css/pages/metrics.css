@@ -177,7 +177,7 @@ select { width: 20rem; }
 .tile input[type="checkbox"] { position: relative; float: left; top: 9px; left: 5px; }
 .tile .dropdown.button.tiny { top: 5px !important; right: 2px !important; }
 
-#primary-buttons .button.more-actions { margin-left: 0px !important; }
+#primary-buttons .button.more-actions { margin-left: 0 !important; }
 
 th.metric-action { text-align: right !important; }
 
@@ -199,3 +199,5 @@ input.datefield { width: 9rem; float: left; margin-bottom: 0; margin-right: 1rem
 .time-shift .graph-shift-right { position: relative; left: 59rem; color: #5a5a5a; cursor: pointer; }
 
 .metrics-url-field { width: 100%; }
+
+.field-wrapper.timepicker { position: absolute; }

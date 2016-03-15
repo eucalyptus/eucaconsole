@@ -70,7 +70,7 @@ select {
 }
 
 #primary-buttons .button.more-actions {
-    margin-left: 0px !important;
+    margin-left: 0 !important;
 }
 
 th.metric-action {
@@ -148,4 +148,10 @@ input.datefield {
 
 .metrics-url-field {
     width: 100%;
+}
+
+.field-wrapper {
+    &.timepicker {
+        position: absolute;
+    }
 }
