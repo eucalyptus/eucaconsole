@@ -176,7 +176,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .table th, .table td { padding: 4px 7px; }
 .table .label { margin: 0 0 0 0; }
 
-.tile { height: 268px; max-height: 268px; }
+.tile { height: 288px; max-height: 288px; }
 
 #terminate-instances-btn { margin-left: 1rem; }
 
