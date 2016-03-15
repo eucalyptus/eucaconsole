@@ -1613,6 +1613,8 @@ h1, h2, h3, h4, h5, h6 { font-family: Metric-Semibold, Helvetica, Arial, sans-se
 a { color: #01a982; }
 a:hover { text-decoration: underline; }
 
+p { color: #000000; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
+
 label { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
 label.inline { display: inline-block; }
 
@@ -1688,7 +1690,7 @@ a.circle { color: black; display: inline-block; }
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; font-weight: bold; }
 #notifications .marked { position: relative; }
-#notifications .alert-box { position: fixed; padding: 0 0; top: 0px; left: 50%; transform: translateX(-50%); z-index: 9999999; width: 100%; color: black; background-color: white; box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15); }
+#notifications .alert-box { position: fixed; padding: 0 0; top: 0px; left: 50%; transform: translateX(-50%); z-index: 9999999; width: 100%; color: #000000; background-color: white; box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15); }
 #notifications .alert-box.success { border: 2px solid #01a982; }
 #notifications .alert-box.success .icon { background-color: #01a982; }
 #notifications .alert-box.success .icon span:before { content: "✓"; }
@@ -1698,6 +1700,7 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.info { border: 2px solid #000000; }
 #notifications .alert-box.info .icon { background-color: #000000; }
 #notifications .alert-box.info .icon span:before { content: "ⓘ"; }
+#notifications .alert-box.secondary { border: 2px solid #666666; color: #000000; }
 #notifications .alert-box.alert { border: 2px solid darkred; }
 #notifications .alert-box.alert .icon { background-color: darkred; }
 #notifications .alert-box.alert .icon span:before { content: "!"; }

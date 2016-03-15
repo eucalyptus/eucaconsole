@@ -158,9 +158,9 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status { background-color: transparent; }
 
-.status.Inactive { background-color: #6a737b; }
+.status.Inactive { background-color: #666666; }
 
-.status.Active { background-color: #03405f; }
+.status.Active { background-color: #425563; }
 
 .reveal-modal #device { width: 10rem; }
 

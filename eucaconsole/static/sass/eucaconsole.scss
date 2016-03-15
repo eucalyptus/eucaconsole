@@ -131,6 +131,11 @@ a {
     }
 }
 
+p {
+    color: $hpe-black;
+    font-family: $euca-text-font-family;
+    font-size: $euca-font-size;
+}
 label {
     color: $hpe-gray;
     font-family: $euca-text-font-family;
@@ -408,7 +413,7 @@ a.circle {
         transform: translateX(-50%);
         z-index: 9999999;
         width: 100%;
-        color: black;
+        color: $hpe-black;
         background-color: white;
         box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15);
         &.success {
@@ -437,6 +442,10 @@ a.circle {
                     content: "\24D8"
                 }
             }
+        }
+        &.secondary{
+            border: 2px solid $hpe-gray;
+            color: $hpe-black;
         }
         &.alert {
             border: 2px solid darkred;

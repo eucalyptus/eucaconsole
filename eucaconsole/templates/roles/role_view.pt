@@ -50,15 +50,16 @@
                     <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
                         ${structure:role_form['csrf_token']}
                         <div class="section columns">
-                            <div class="row">
-                                <p><span class="subsection-label" i18n:translate="">Add role to account:</span>&nbsp;${layout.account}</p>
+                            <div class="row controls-wrapper readonly">
+                            <div class="large-2 small-4 columns"><label i18n:translate="">Add role to account</label></div>
+                            <div class="large-10 small-8 columns value">${layout.account}</div>
                             </div>
                             ${panel('form_field', field=role_form.role_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
                             <div class="row controls-wrapper">
-                                <div class="small-1 columns">
+                                <div class="large-2 small-4 columns">
                                     <label class="right" i18n:translate="">Type</label>
                                 </div>
-                                <div class="small-11 columns">
+                                <div class="large-10 small-8 columns">
                                     <div class="ipaddress">
                                         <div class="ec2-block">
                                             <input type="radio" name="roletype" value="ec2" checked="checked" ng-model="roleType"/>
