@@ -20,8 +20,7 @@ angular.module('AlarmDetailPage', [
             });
             scope.alarm.dimensions = dimensions;
         },
-        controller: ['$scope', '$window', 'AlarmService', 'ScalingGroupsService',
-        function ($scope, $window, AlarmService, ScalingGroupsService) {
+        controller: ['$scope', '$window', 'AlarmService', function ($scope, $window, AlarmService) {
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
@@ -52,21 +51,6 @@ angular.module('AlarmDetailPage', [
                     }); 
             };
 
-            $scope.policiesAvailable = function () {
-                var policies = $scope.scalingGroupPolicies || {};
-                return !Object.keys(policies).length;
-            };
-
-            $scope.updatePolicies = function () {
-                ScalingGroupsService.getPolicies($scope.action.scalingGroup)
-                    .then(function success (response) {
-                        if(response.data) {
-                            $scope.scalingGroupPolicies = response.data.policies;
-                        }
-                    }, function error (response) {
-                        console.log(response);
-                    });
-            };
         }]
     };
 })
@@ -126,14 +110,23 @@ angular.module('AlarmDetailPage', [
             scope.alarmActions = JSON.parse(attrs.alarmActions);
             scope.servicePath = attrs.servicePath;
         },
-        controller: ['$scope', 'AlarmService', function ($scope, AlarmService) {
+        controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
             $scope.addAction = function () {
+                //  Do not add action if form is invalid
                 if($scope.alarmActionsForm.$invalid) {
                     return;
                 }
 
                 var policyName = $scope.action.scalingGroupPolicy,
                     policy = $scope.scalingGroupPolicies[policyName];
+
+                //  Do not add action if duplicate
+                var duplicate = $scope.alarmActions.some(function (current) {
+                    return current.arn == policy.arn;
+                });
+                if(duplicate) {
+                    return;
+                }
 
                 var action = {
                     autoscaling_group_name: $scope.action.scalingGroup,
@@ -167,6 +160,32 @@ angular.module('AlarmDetailPage', [
                 $scope.alarmActionsForm.$setPristine();
                 $scope.alarmActionsForm.$setUntouched();
             };
+
+            $scope.policiesAvailable = function () {
+                var policies = $scope.scalingGroupPolicies || {};
+                return !Object.keys(policies).length;
+            };
+
+            $scope.updatePolicies = function () {
+                ScalingGroupsService.getPolicies($scope.action.scalingGroup)
+                    .then(function success (data) {
+                        var policies = data.policies,
+                            filtered = {};
+
+                        var availableKeys = Object.keys(policies).filter(function (key) {
+                            return !$scope.alarmActions.some(function (action) {
+                                return action.policy_name == key;
+                            });
+                        });
+
+                        $scope.scalingGroupPolicies = {};
+                        availableKeys.forEach(function (key) {
+                            $scope.scalingGroupPolicies[key] = policies[key];
+                        });
+                    }, function error (response) {
+                        console.log(response);
+                    });
+            };
         }]
     };
 })
@@ -178,6 +197,13 @@ angular.module('AlarmDetailPage', [
             return $http({
                 method: 'GET',
                 url: policyUrl
+            }).then(function success (response) {
+                var data = response.data || {
+                    policies: {}
+                };
+                return data;
+            }, function error (response) {
+                return response;
             });
         }
     };
