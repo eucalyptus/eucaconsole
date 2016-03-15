@@ -22,11 +22,11 @@ $instance-status-color-terminating: lightgrey;
 .status.shutting-down { background-color: $instance-status-color-terminating; }
 
 .alarm-status.alarm { background-color: $alarm-status-color-alarm; }
-.alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient; }
+.alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient-data; }
 .alarm-status.ok { background-color: $alarm-status-color-ok; }
 
 
-$instance-tile-height-adjustment: 48px;
+$instance-tile-height-adjustment: 68px;
 
 // Table view
 .table {
