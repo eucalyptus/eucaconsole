@@ -385,13 +385,19 @@ $tooltip-padding: rem-calc(5);
         box-shadow: none;
         white-space: nowrap;
         padding: $wizard-tab-padding;
+        .cir {
+            background-color: $hpe-gray;
+        }
     }
     &.active {  // Active tab
         a {
-            color: transparent;
+            color: $hpe-black;
             font-family: $euca-header-font-family;
             background-color: transparent;
             border-bottom: 2px solid $hpe-black;
+        }
+        .cir {
+            background-color: $hpe-black;
         }
     }
     &.disabled {  // Unvisited tabs
@@ -412,7 +418,7 @@ $tooltip-padding: rem-calc(5);
         padding: 0 0 0 0;
         text-align: center;
         vertical-align: middle;
-        background-color: $hpe-black;
+        background-color: $hpe-lightgray;
         color: white;
         margin-right: 4px;
     }
