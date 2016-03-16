@@ -29,6 +29,8 @@ Pyramid views for Eucalyptus and AWS volumes
 
 """
 from dateutil import parser
+from itertools import chain
+
 import simplejson as json
 
 from boto.exception import BotoServerError
@@ -49,6 +51,7 @@ from ..forms.volumes import (
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
@@ -231,6 +234,12 @@ class VolumesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in VolumesFiltersForm
         ignore_params = ['zone']
+        # Get alarms for volumes and build a list of resource ids to optimize alarm status fetch
+        cw_conn = self.get_connection(conn_type='cloudwatch')
+        alarms = [alarm for alarm in cw_conn.describe_alarms() if 'VolumeId' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         with boto_error_handler(self.request):
             if self.enable_filters:
                 filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
@@ -247,6 +256,7 @@ class VolumesJsonView(LandingPageView):
 
             for volume in filtered_items:
                 status = volume.status
+                alarm_status = ''
                 attach_status = volume.attach_data.status
                 is_root_volume = False
                 instance_name = None
@@ -263,6 +273,8 @@ class VolumesJsonView(LandingPageView):
                         snapshot_name = ''
                     else:
                         snapshot_name = snapshot_name[0]
+                    if volume.id in alarm_resource_ids:
+                        alarm_status = Alarm.get_resource_alarm_status(volume.id, alarms)
                     volumes.append(dict(
                         create_time=volume.create_time,
                         id=volume.id,
@@ -278,6 +290,7 @@ class VolumesJsonView(LandingPageView):
                         size=volume.size,
                         status=status,
                         attach_status=attach_status,
+                        alarm_status=alarm_status,
                         is_root_volume=is_root_volume,
                         zone=volume.zone,
                         tags=TaggedItemView.get_tags_display(volume.tags),
