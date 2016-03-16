@@ -3,10 +3,10 @@
     <div id="cancel-update-stack-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Cancel stack update</h3>
         <p>
-            <span i18n:translate="">Cancelling a stack update will cause CloudFormation to attempt to roll back  your stack's resource to their previous state.</span>
+            <span i18n:translate="">Cancelling a stack update will cause CloudFormation to attempt to roll back  your stack's resources to their previous state.</span>
         </p>
         <p>
-            <span i18n:translate="">Are you sure you want to cancel update for the stack</span>
+            <span i18n:translate="">Are you sure you want to cancel update for stack</span>
             <span class="breakword"><b>{{ stackName }}</b></span>
             ?
         </p>

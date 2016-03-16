@@ -9,7 +9,7 @@ angular.module('StackCancelUpdateDialog', ['EucaRoutes', 'EucaConsoleUtils'])
             templateUrl: function (element, attributes) {
                 return attributes.template;
             },
-            controller: ['$scope', '$http', 'eucaRoutes', 'eucaHandleError', function($scope, $http, eucaRoutes, eucaHandleError) {
+            controller: ['$scope', '$http', '$timeout', 'eucaRoutes', 'eucaHandleError', function($scope, $http, $timeout, eucaRoutes, eucaHandleError) {
                 $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 $scope.cancelUpdateStack = function($event) {
                     $event.preventDefault();

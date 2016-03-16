@@ -21,6 +21,13 @@ angular.module('StacksPage', ['LandingPage', 'EucaConsoleUtils', 'angular.filter
         $scope.displayStatus = function(stackStatus) {
             return stackStatus.replace(/-/g, ' ');
         };
+        $scope.showCancelUpdateModal = function (stack) {
+            $scope.stackName = stack.name;
+            $("#cancel-update-stack-modal").foundation('reveal', 'open');
+            $timeout(function() {
+                $('.close-reveal-modal').focus();
+            }, 500);
+        };
         $scope.deleteStack = function($event) {
             $event.preventDefault();
             var form = $($event.target);

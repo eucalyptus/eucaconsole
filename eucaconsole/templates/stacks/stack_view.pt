@@ -37,7 +37,7 @@
                                    i18n:translate="">Update stack</a>
                             </li>
                             <li ng-show="stackStatus === 'Update-in-progress'">
-                                <a id="cancel-update-stack-action" data-reveal-id="cancel-update-stack-modal"
+                                <a id="cancel-update-stack-action" ng-click="showCancelUpdateModal()"
                                    i18n:translate="">Cancel update</a>
                             </li>
                             <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
@@ -168,7 +168,7 @@
                                    i18n:translate="">Update stack</a>
                             </li>
                             <li ng-show="stackStatus === 'update-in-progress'">
-                                <a id="cancel-update-stack-action-2" data-reveal-id="cancel-update-stack-modal"
+                                <a id="cancel-update-stack-action-2" ng-click="showCancelUpdateModal()"
                                    i18n:translate="">Cancel update</a>
                             </li>
                             <li>
@@ -214,7 +214,7 @@
                                    i18n:translate="">Update stack</a>
                             </li>
                             <li ng-show="stackStatus === 'update-in-progress'">
-                                <a id="cancel-update-stack-action-3" data-reveal-id="cancel-update-stack-modal"
+                                <a id="cancel-update-stack-action-3" ng-click="showCancelUpdateModal()"
                                    i18n:translate="">Cancel update</a>
                             </li>
                             <li>

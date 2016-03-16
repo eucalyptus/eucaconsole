@@ -73,6 +73,12 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils', 'StackCancelUpda
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
         };
+        $scope.showCancelUpdateModal = function () {
+            $("#cancel-update-stack-modal").foundation('reveal', 'open');
+            $timeout(function() {
+                $('.close-reveal-modal').focus();
+            }, 500);
+        };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 $('.actions-menu').find('a').get(0).focus();
