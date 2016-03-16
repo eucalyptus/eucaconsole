@@ -53,7 +53,7 @@ angular.module('CustomFilters', [])
 })
 .filter('toClassName', function () {
     return function (input) {
-        return input.replace(' ', '_').toLowerCase();
+        return input.replace(/\s+/g, '_').toLowerCase();
     };
 })
 ;
