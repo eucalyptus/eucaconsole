@@ -192,6 +192,8 @@ angular.module('AlarmDetailPage', [
 
                         if(Object.keys(availableKeys).length < 1) {
                             $scope.defaultOptionValue = 'No policies available';
+                        } else {
+                            $scope.defaultOptionValue = 'Select policy...';
                         }
                     }, function error (response) {
                         console.log(response);
