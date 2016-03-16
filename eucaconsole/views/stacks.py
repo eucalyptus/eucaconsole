@@ -60,6 +60,8 @@ class StackMixin(object):
         if self.cloudformation_conn:
             try:
                 stack_param = self.request.matchdict.get('name')
+                if not(stack_param):
+                    stack_param = self.request.params.get('stack-name')
                 stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
                 return stacks[0] if stacks else None
             except BotoServerError:
@@ -524,6 +526,7 @@ class StackWizardView(BaseView, StackMixin):
         Fetches then parses template to return information needed by wizard,
         namely description and parameters.
         """
+        import pdb; pdb.set_trace()
         with boto_error_handler(self.request):
             try:
                 (template_url, template_name, parsed) = self.parse_store_template()
