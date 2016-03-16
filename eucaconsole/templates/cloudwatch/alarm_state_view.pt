@@ -37,14 +37,14 @@
 
         <h3 i18n:translate="">Remove alarm from {{ resourceTypeName }}</h3>
 
-        <p><span i18n:translate="">Are you sure you want to remove alarm</span>&nbsp;{{ alarmToDelete.name }}&nbsp;<span i18n:translate="">from</span>&nbsp;<strong>{{ resourceTypeName }}&nbsp;{{ resourceName }}</strong>?
+        <p><span i18n:translate="">Are you sure you want to remove alarm</span>&nbsp;{{ alarmToDelete.name }}&nbsp;<span i18n:translate="">from</span>&nbsp;{{ resourceTypeName }}&nbsp;<strong>{{ resourceName }}</strong>?
         </p>
 
         <p i18n:translate="">If this resource is the only dimension associated with this alarm, the alarm will also be deleted.</p>
 
         <div class="row buttons">
             <button id="remove-alarm-btn" class="button expand" ng-click="removeAlarm($event)" i18n:translate="">
-                <span i18n:translate="">Yes, Remove Alarm from</span><strong class="capital"> {{ resourceTypeName }}</strong>
+                <span i18n:translate="">Yes, Remove Alarm from</span><span class="capital"> {{ resourceTypeName }}</span>
             </button>
         </div>
     </div>
