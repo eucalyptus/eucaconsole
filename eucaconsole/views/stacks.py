@@ -526,7 +526,6 @@ class StackWizardView(BaseView, StackMixin):
         Fetches then parses template to return information needed by wizard,
         namely description and parameters.
         """
-        import pdb; pdb.set_trace()
         with boto_error_handler(self.request):
             try:
                 (template_url, template_name, parsed) = self.parse_store_template()
