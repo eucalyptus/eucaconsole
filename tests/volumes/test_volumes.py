@@ -39,7 +39,7 @@ from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm)
 from eucaconsole.views import TaggedItemView
-from eucaconsole.views.volumes import VolumesView, VolumeView, VolumesJsonView, VolumeStateView, VolumeSnapshotsView
+from eucaconsole.views.volumes import VolumesView, VolumeView, VolumeStateView, VolumeSnapshotsView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
@@ -190,26 +190,6 @@ class VolumeDeleteSnapshotFormTestCase(BaseFormTestCase):
     def test_secure_form(self):
         self.has_field('csrf_token')
         self.assertTrue(issubclass(self.form_class, BaseSecureForm))
-
-
-class MockVolumesJsonViewTestCase(BaseViewTestCase, MockVolumeMixin):
-
-    @mock_ec2
-    def test_volumes_json_view(self):
-        request = self.create_request()
-        request.path = '/volumes/json'
-        request.params['csrf_token'] = request.session.get_csrf_token()
-        volume, conn = self.make_volume()
-        volume.add_tag('Name', 'volume_one')
-        view = VolumesJsonView(request, conn=conn, zone='us-east-1a', enable_filters=False).volumes_json()
-        results = view.get('results')
-        self.assertEqual(len(results), 1)
-        volume = results[0]
-        self.assertEqual(volume.get('instance'), None)
-        self.assertEqual(volume.get('name'), u'{0} ({1})'.format('volume_one', volume.get('id')))
-        self.assertEqual(volume.get('size'), 1)
-        self.assertEqual(volume.get('status'), 'available')
-        self.assertEqual(volume.get('attach_status'), None)
 
 
 class MockVolumeViewTestCase(BaseViewTestCase, MockVolumeMixin):
