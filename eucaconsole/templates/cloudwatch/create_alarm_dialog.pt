@@ -1,12 +1,14 @@
 <form class="modal" modal="createAlarm"
-                    name="createAlarm"
+                    name="createAlarmForm"
                     create-alarm=""
                     resource-type="${resource_type}"
                     resource-id="${resource_type_value}"
                     resource-name="${resource_name}"
                     default-metric="${default_metric}"
                     default-statistic="${default_statistic}"
-                    default-unit="${default_unit}">
+                    default-unit="${default_unit}"
+                    ng-submit="createAlarm()"
+                    novalidate="">
     <h3>Create Alarm</h3>
     <h6>Alarm</h6>
     <div class="row inline controls-wrapper">
@@ -53,7 +55,8 @@
             </select>
         </div>
         <div class="small-3 columns">
-            <input name="threshold" pattern="^[1-9]\d*$" placeholder="amount..." required="required" type="number"/>
+            <input ng-model="alarm.threshold" name="threshold"
+                   pattern="^[1-9]\d*$" placeholder="amount..." required="required" type="number"/>
         </div>
         <div class="small-4 columns">
             <div class="unit-label"></div>
@@ -74,7 +77,7 @@
             <label i18n:translate="">consecutive periods of</label>
         </div>
         <div class="small-3 columns">
-            <select name="period" ng-model="alarm.period">
+            <select name="period" ng-model="alarm.period" required="required">
                 <option value="60" i18n:translate="">1 minute</option>
                 <option value="300" i18n:translate="">5 minutes</option>
                 <option value="900" i18n:translate="">15 minutes</option>
@@ -85,7 +88,7 @@
         </div>
     </div>
     <div class="controls">
-        <button type="submit" class="button expand" ng-click="saveChanges($event)" ng-disabled="isNotChanged">
+        <button type="submit" class="button expand">
             Create Alarm
         </button>
     </div>

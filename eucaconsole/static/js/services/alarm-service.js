@@ -1,6 +1,11 @@
 angular.module('AlarmServiceModule', [])
 .factory('AlarmService', ['$http', function ($http) {
     return {
+        createAlarm: function (alarm, csrf_token) {
+            console.log('create alarm on service');
+            console.log(alarm);
+        },
+
         updateAlarm: function (alarm, path, csrf_token, flash) {
             return $http({
                 method: 'PUT',
@@ -27,12 +32,6 @@ angular.module('AlarmServiceModule', [])
                     flash: flash
                 }
             });
-        },
-
-        addAction: function () {
-        },
-
-        removeAction: function () {
         }
     };
 }]);

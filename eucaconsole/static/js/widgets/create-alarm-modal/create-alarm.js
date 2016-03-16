@@ -1,5 +1,5 @@
-angular.module('CreateAlarmModal', [])
-.directive('modal', ['ModalService', '$document', function (ModalService, $document) {
+angular.module('CreateAlarmModal', ['AlarmServiceModule'])
+.directive('modal', ['ModalService', function (ModalService) {
     return {
         restrict: 'A',
         template: '<div class="modal-bg"></div><div class="modal-content"><a ng-click="closeModal()" class="close-modal">×</a><ng-transclude></ng-transclude></div>',
@@ -44,7 +44,7 @@ angular.module('CreateAlarmModal', [])
                     scope.alarm.comparison = '>=';
                 });
         },
-        controller: ['$scope', function ($scope) {
+        controller: ['$scope', 'AlarmService', function ($scope, AlarmService) {
             $scope.alarm = {};
 
             $scope.$watchCollection('alarm', function () {
@@ -69,6 +69,33 @@ angular.module('CreateAlarmModal', [])
                     alarm.metric.name].join(' - ');
 
                 return name;
+            };
+
+            $scope.createAlarm = function () {
+                if($scope.createAlarmForm.$invalid) {
+                    return;
+                }
+
+                var alarm = $scope.alarm;
+                console.log($scope.createAlarmForm);
+                console.log('alarm at controller', alarm);
+
+                AlarmService.createAlarm({
+                    name: alarm.name,
+                    metric: alarm.metric.name,
+                    namespace: alarm.metric.namespace,
+                    statistic: alarm.statistic,
+                    comparison: alarm.comparison,
+                    threshold: alarm.threshold,
+                    period: alarm.period,
+                    evaluation_periods: alarm.evaluation_periods,
+                    unit: alarm.unit,
+                    description: alarm.description,
+                    dimensions: alarm.dimensions
+                });
+            };
+
+            $scope.resetForm = function () {
             };
         }]
     };
