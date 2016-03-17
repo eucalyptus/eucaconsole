@@ -8,6 +8,10 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             scope.defaultOptionValue = 'Select policy...';
         },
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
+            ScalingGroupsService.getScalingGroups().then(function (result) {
+                $scope.scalingGroups = result;
+            });
+
             $scope.addAction = function () {
                 //  Do not add action if form is invalid
                 if($scope.alarmActionsForm.$invalid) {

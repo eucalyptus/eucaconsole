@@ -203,6 +203,14 @@ class ScalingGroupsJsonView(LandingPageView):
             ))
         return dict(results=scalinggroups)
 
+    @view_config(route_name='scalinggroups_json', renderer='json', request_method='GET')
+    def scalinggroups_json_get(self):
+        items = self.get_items()
+        names = [item.name for item in items]
+        return dict(
+            scalinggroups=names
+        )
+
     def get_items(self):
         conn = self.get_connection(conn_type='autoscale')
         return conn.get_all_groups() if conn else []

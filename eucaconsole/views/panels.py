@@ -460,3 +460,11 @@ def create_alarm_dialog_new(context, request, resource_type=None, resource_type_
         default_statistic=default_statistic,
         default_unit=default_unit
     )
+
+
+@panel_config('alarm_actions_panel', renderer='../templates/cloudwatch/alarm_actions.pt')
+def alarm_actions_panel(context, request, alarm_actions_json='[]', alarm_id=None):
+    return dict(
+        alarm_actions_json=alarm_actions_json,
+        alarm_id=alarm_id
+    )

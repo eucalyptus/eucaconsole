@@ -388,14 +388,10 @@ class CloudWatchAlarmDetailView(BaseView):
                 detail['scaling_adjustment'] = policy.scaling_adjustment
             alarm_actions.append(detail)
 
-        scaling_groups = self.get_scaling_groups()
-
         self.render_dict.update(
             alarm_json=alarm_json,
             dimensions=dimensions,
-            alarm_actions=alarm_actions,
             alarm_actions_json=json.dumps(alarm_actions),
-            scaling_groups=scaling_groups,
             options=options
         )
         return self.render_dict
