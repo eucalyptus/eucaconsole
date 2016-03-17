@@ -1,6 +1,6 @@
 <div class="actions" ng-form="alarmActionsForm"
-                     alarm-actions="${alarm_actions_json}"
-                     service-path="${request.route_path('cloudwatch_alarm_actions', alarm_id=alarm_id)}">
+                     alarm-id="${alarm_id}"
+                     alarm-actions="${alarm_actions_json}">
     <h6>Actions</h6>
     <div class="item-list">
         <span class="item" ng-repeat="action in alarmActions" data-item-value="{{ action.arn }}">

@@ -42,13 +42,15 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
             });
         },
 
-        updateActions: function (actions, path) {
-            return $http({
-                method: 'PUT',
-                url: path,
-                data: {
-                    actions: actions
-                }
+        updateActions: function (id, actions) {
+            return eucaRoutes.getRouteDeferred('cloudwatch_alarm_actions', { alarm_id: id }).then(function (path) {
+                return $http({
+                    method: 'PUT',
+                    url: path,
+                    data: {
+                        actions: actions
+                    }
+                });
             });
         }
     };

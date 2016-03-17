@@ -3,8 +3,8 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
+            scope.alarmId = attrs.alarmId;
             scope.alarmActions = JSON.parse(attrs.alarmActions);
-            scope.servicePath = attrs.servicePath;
             scope.defaultOptionValue = 'Select policy...';
         },
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
@@ -46,7 +46,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             };
 
             $scope.updateActions = function () {
-                AlarmService.updateActions($scope.alarmActions, $scope.servicePath).then(function success () {
+                AlarmService.updateActions($scope.alarmId, $scope.alarmActions).then(function success () {
                     $scope.resetForm();
                 }, function error (response) {
                     console.log(response);
