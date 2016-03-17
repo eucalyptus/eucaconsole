@@ -25,6 +25,7 @@
                 <form action="${request.route_path('stack_update', name=stack_name)}" id="stack-update-form"
                       method="post" data-abide="abide" enctype="multipart/form-data" ng-submit="isCreating=true">
                     ${structure:create_form['csrf_token']}
+                    <input id="stack-name" name="stack-name" type="hidden" value="${stack_name}"/>
                     <input id="s3-template-key" name="s3-template-key" type="hidden" value="{{ s3TemplateKey }}"/>
                     <dl id="update-tabs" class="tabs" data-tab="">
                         <dd class="active">
@@ -211,7 +212,7 @@
             <a class="close-reveal-modal">&#215;</a>
         </div>
         <aws-template-dialogs
-            template="${request.route_path('stack_aws_dialogs')}"
+            template="${request.route_path('render_template', subpath='stacks/stack_aws_dialogs')}"
             service-list="serviceList"
             resource-list="resourceList"
             property-list="propertyList"

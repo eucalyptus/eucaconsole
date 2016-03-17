@@ -5,7 +5,7 @@
  */
 
 // Pull in common landing page module
-angular.module('StacksPage', ['LandingPage', 'EucaConsoleUtils', 'angular.filter'])
+angular.module('StacksPage', ['LandingPage', 'EucaConsoleUtils', 'angular.filter', 'StackCancelUpdateDialog'])
     .controller('StacksPageCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.stackName = '';
@@ -17,6 +17,16 @@ angular.module('StacksPage', ['LandingPage', 'EucaConsoleUtils', 'angular.filter
             $scope.stackName = stack.name;
             var modal = $('#' + action + '-stack-modal');
             modal.foundation('reveal', 'open');
+        };
+        $scope.displayStatus = function(stackStatus) {
+            return stackStatus.replace(/-/g, ' ');
+        };
+        $scope.showCancelUpdateModal = function (stack) {
+            $scope.stackName = stack.name;
+            $("#cancel-update-stack-modal").foundation('reveal', 'open');
+            $timeout(function() {
+                $('.close-reveal-modal').focus();
+            }, 500);
         };
         $scope.deleteStack = function($event) {
             $event.preventDefault();
