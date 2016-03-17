@@ -391,7 +391,7 @@ class BaseView(object):
         if location is None:
             location = request.current_route_url()
         if status == 504:
-            request.session.flash(_(u'No reponse from host'), queue=Notification.WARNING)
+            request.session.flash(_(u'No response from host'), queue=Notification.ERROR)
             raise HTTPFound(request.route_path('login'))
         else:
             request.session.flash(message, queue=Notification.ERROR)
