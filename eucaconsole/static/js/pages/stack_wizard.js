@@ -5,7 +5,7 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.directives'])
+angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.directives', 'StackAWSDialogs'])
     .directive('file', function(){
         return {
             restrict: 'A',
@@ -381,37 +381,6 @@ angular.module('StackWizard', ['TagEditor', 'EucaConsoleUtils', 'localytics.dire
             else {
                 $scope.convertTemplate();
             }
-        };
-        $scope.convertTemplate = function () {
-            var fd = new FormData();
-            // fill from actual form
-            angular.forEach($('form').serializeArray(), function(value, key) {
-                this.append(value.name, value.value);
-            }, fd);
-            // skip file param since we're relying on template already being in S3
-            $scope.loading = true;
-            $scope.parameters = undefined;
-            $http.post($scope.convertTemplateEndpoint, fd, {
-                    headers: {'Content-Type': undefined},
-                    transformRequest: angular.identity
-            }).
-            success(function(oData) {
-                var results = oData ? oData.results : '';
-                if (results) {
-                    $scope.loading = false;
-                    $('#aws-warn-modal').foundation('reveal', 'close');
-                    $scope.s3TemplateKey = results.template_key;
-                    $scope.parameters = results.parameters;
-                    angular.forEach($scope.parameters, function(param, idx) {
-                        $scope.paramModels[param.name] = param.default;
-                    });
-                    $scope.checkRequiredInput();
-                }
-            }).
-            error(function (oData, status) {
-                $scope.loading = false;
-                eucaHandleError(oData, status);
-            });
         };
         $scope.paramValue = function(name) {
             var ret = $scope.paramModels[name];

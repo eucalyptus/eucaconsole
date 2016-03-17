@@ -40,6 +40,16 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
                     flash: flash
                 }
             });
+        },
+
+        updateActions: function (actions, path) {
+            return $http({
+                method: 'PUT',
+                url: path,
+                data: {
+                    actions: actions
+                }
+            });
         }
     };
 }]);
