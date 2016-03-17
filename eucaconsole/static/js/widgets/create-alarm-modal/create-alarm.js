@@ -92,6 +92,8 @@ angular.module('CreateAlarmModal', ['AlarmServiceModule'])
                     unit: alarm.unit,
                     description: alarm.description,
                     dimensions: alarm.dimensions
+                }).then(function () {
+                    console.log('blah', arguments);
                 });
             };
 

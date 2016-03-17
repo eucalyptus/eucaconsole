@@ -18,6 +18,12 @@ angular.module('EucaRoutes', [])
                 ret = $interpolate(ret)(params);
             }
             return ret;
+        },
+        getRouteDeferred: function (routeName, params) {
+            var getRoute = this.getRoute;
+            return promise.then(function () {
+                return getRoute(routeName, params);
+            });
         }
     };
 });
