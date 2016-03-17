@@ -46,6 +46,7 @@ angular.module('CreateAlarmModal', ['AlarmServiceModule'])
         },
         controller: ['$scope', 'AlarmService', function ($scope, AlarmService) {
             $scope.alarm = {};
+            var csrf_token = $('#csrf_token').val();
 
             $scope.$watchCollection('alarm', function () {
                 if($scope.alarm.metric) {
@@ -77,8 +78,6 @@ angular.module('CreateAlarmModal', ['AlarmServiceModule'])
                 }
 
                 var alarm = $scope.alarm;
-                console.log($scope.createAlarmForm);
-                console.log('alarm at controller', alarm);
 
                 AlarmService.createAlarm({
                     name: alarm.name,
@@ -91,9 +90,11 @@ angular.module('CreateAlarmModal', ['AlarmServiceModule'])
                     evaluation_periods: alarm.evaluation_periods,
                     unit: alarm.unit,
                     description: alarm.description,
-                    dimensions: alarm.dimensions
-                }).then(function () {
+                    dimensions: alarm.metric.dimensions
+                }, csrf_token).then(function () {
                     console.log('blah', arguments);
+                }, function () {
+                    console.log('error', arguments);
                 });
             };
 

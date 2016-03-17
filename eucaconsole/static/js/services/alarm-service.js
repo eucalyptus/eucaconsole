@@ -1,15 +1,14 @@
 angular.module('AlarmServiceModule', ['EucaRoutes'])
 .factory('AlarmService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
     return {
-        createAlarm: function (alarm, csrf_token, flash) {
-            eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
+        createAlarm: function (alarm, csrf_token) {
+            return eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
                 return $http({
                     method: 'PUT',
                     url: path,
                     data: {
                         alarm: alarm,
-                        csrf_token: csrf_token,
-                        flash: flash
+                        csrf_token: csrf_token
                     }
                 });
             });
