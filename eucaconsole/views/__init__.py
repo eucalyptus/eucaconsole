@@ -33,6 +33,7 @@ import hashlib
 import hmac
 import logging
 import pylibmc
+import socket
 import simplejson as json
 import string
 import textwrap
@@ -133,22 +134,25 @@ class BaseView(object):
         if self.request.registry.settings:  # do this to pass tests
             validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
             certs_file = self.request.registry.settings.get('connection.ssl.certfile', None)
-        if cloud_type == 'aws':
-            conn = ConnectionManager.aws_connection(
-                region, access_key, secret_key, security_token, conn_type, validate_certs)
-        elif cloud_type == 'euca':
-            host = self._get_ufs_host_setting_()
-            port = self._get_ufs_port_setting_()
-            dns_enabled = self.request.session.get('dns_enabled', True)
-            regions = RegionCache(None).regions()
-            if len(regions) > 0:
-                for region in regions:
-                    if region['endpoints']['ec2'].find(host) > -1:
-                        self.default_region = region['name']
-            conn = ConnectionManager.euca_connection(
-                host, port, region, access_key, secret_key, security_token,
-                conn_type, dns_enabled, validate_certs, certs_file
-            )
+        try:
+            if cloud_type == 'aws':
+                conn = ConnectionManager.aws_connection(
+                    region, access_key, secret_key, security_token, conn_type, validate_certs)
+            elif cloud_type == 'euca':
+                host = self._get_ufs_host_setting_()
+                port = self._get_ufs_port_setting_()
+                dns_enabled = self.request.session.get('dns_enabled', True)
+                regions = RegionCache(None).regions()
+                if len(regions) > 0:
+                    for region in regions:
+                        if region['endpoints']['ec2'].find(host) > -1:
+                            self.default_region = region['name']
+                conn = ConnectionManager.euca_connection(
+                    host, port, region, access_key, secret_key, security_token,
+                    conn_type, dns_enabled, validate_certs, certs_file
+                )
+        except socket.error as err:
+            BaseView.handle_error(err=BotoServerError(504, str(err)), request=self.request)
 
         return conn
 
@@ -384,10 +388,14 @@ class BaseView(object):
                        u'Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             raise HTTPFound(location=request.route_path('login'))
-        request.session.flash(message, queue=Notification.ERROR)
         if location is None:
             location = request.current_route_url()
-        raise HTTPFound(location)
+        if status == 504:
+            request.session.flash(_(u'No reponse from host'), queue=Notification.WARNING)
+            raise HTTPFound(request.route_path('login'))
+        else:
+            request.session.flash(message, queue=Notification.ERROR)
+            raise HTTPFound(location)
 
     @staticmethod
     def escape_json(json_string):
@@ -725,6 +733,8 @@ def boto_error_handler(request, location=None, template="{0}"):
         yield
     except BotoServerError as err:
         BaseView.handle_error(err=err, request=request, location=location, template=template)
+    except socket.error as err:
+        BaseView.handle_error(err=BotoServerError(504, str(err)), request=request, location=location, template=template)
 
 
 @view_config(route_name='file_download', request_method='POST')

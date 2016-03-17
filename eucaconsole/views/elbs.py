@@ -74,15 +74,17 @@ class ELBsView(LandingPageView):
         self.ec2_conn = self.get_connection(conn_type="ec2")
         self.elb_conn = self.get_connection(conn_type="elb")
         self.vpc_conn = self.get_connection(conn_type="vpc")
+        self.location = self.get_redirect_location('elbs')
         self.initial_sort_key = 'name'
         self.prefix = '/elbs'
         self.filter_keys = ['name']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('elbs_json')
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
-        self.filters_form = ELBsFiltersForm(
-            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, vpc_conn=self.vpc_conn,
-            is_vpc_supported=self.is_vpc_supported(self.request), formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.filters_form = ELBsFiltersForm(
+                self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, vpc_conn=self.vpc_conn,
+                is_vpc_supported=self.is_vpc_supported(self.request), formdata=self.request.params or None)
         self.render_dict = dict(
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(self.filters_form.facets)),
