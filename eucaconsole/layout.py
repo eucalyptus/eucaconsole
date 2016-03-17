@@ -29,6 +29,8 @@ Layout configuration via pyramid_layout
 See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
+import socket
+
 from collections import namedtuple
 from urllib import urlencode
 from boto.exception import BotoServerError
@@ -91,6 +93,8 @@ class MasterLayout(object):
                             if region['endpoints']['ec2'].find(host) > -1:
                                 self.default_region = region['name']
                 except BotoServerError:
+                    self.has_regions = False
+                except socket.error:
                     self.has_regions = False
         if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
