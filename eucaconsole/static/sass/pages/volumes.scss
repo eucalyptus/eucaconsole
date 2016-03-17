@@ -17,6 +17,9 @@ $volume-status-color-error: darkred;
 $volume-status-color-creating: lighten($hp-purple, 20%);
 $volume-status-color-available: $hp-purple;
 
+.alarm-status.alarm { background-color: $alarm-status-color-alarm; }
+.alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient-data; }
+.alarm-status.ok { background-color: $alarm-status-color-ok; }
 
 // Volume status
 .status.creating { background-color: $volume-status-color-creating; }
