@@ -112,16 +112,26 @@ body {
     overflow-y: scroll;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: $euca-header-font-family;
-    color: $hpe-black;
-}
-
-.panel {
-    h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5 {
+        font-family: $euca-header-font-family;
         color: $hpe-black;
     }
+    h6 {
+        font-family: $euca-text-font-family;
+        color: $hpe-gray;
+        text-transform: uppercase;
+    }
 
+.panel {
+    h1, h2, h3, h4, h5 {
+        font-family: $euca-header-font-family;
+        color: $hpe-black;
+    }
+    h6 {
+        font-family: $euca-text-font-family;
+        color: $hpe-gray;
+        text-transform: uppercase;
+    }
 }
 
 a {
@@ -546,8 +556,9 @@ textarea.policy-area {
         }
     }
     .title {
-        font-family: $euca-header-font-family;
+        font-family: $euca-text-font-family;
         font-size: $euca-l-font-size;
+        text-transform: none;
         a {
             color: $hpe-gray;
             &:hover {

@@ -1606,9 +1606,12 @@ html { background-color: white; }
 
 body { position: relative; color: #000000; min-height: 100%; font-family: Metric-Regular, Helvetica, Arial, sans-serif; overflow-y: scroll; }
 
-h1, h2, h3, h4, h5, h6 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
+h1, h2, h3, h4, h5 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
 
-.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 { color: #000000; }
+h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #666666; text-transform: uppercase; }
+
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
+.panel h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #666666; text-transform: uppercase; }
 
 a { color: #01a982; }
 a:hover { text-decoration: underline; }
@@ -1724,7 +1727,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 .expando i { color: #666666; }
 .expando i.helptext-icon { color: #666666; }
-.expando .title { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 18px; }
+.expando .title { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 18px; text-transform: none; }
 .expando .title a { color: #666666; }
 .expando .title a:hover { color: #01a982; text-decoration: none; border-bottom: 1px solid #01a982; }
 

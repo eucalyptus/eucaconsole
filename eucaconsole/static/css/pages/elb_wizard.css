@@ -45,10 +45,7 @@
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
-/* @section Elasitc Load Balancer Wizard styles */
-#wizard-tabs dd a b { font-size: 0.85rem; }
-#wizard-tabs dd span b { font-size: 0.85rem; }
-
+/* @section Elastic Load Balancer Wizard styles */
 #elb-form input.text-input { width: 300px; }
 #elb-form input[type="number"] { width: 100px; }
 #elb-form select.ip-protocol { width: 100px; }
@@ -56,8 +53,7 @@
 #elb-form select.ping-threshold { width: 100px; }
 #elb-form table { margin-left: auto; margin-right: auto; }
 #elb-form table.table { width: 100%; }
-#elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #5a5a5a; }
-#elb-form .sub-section-label { color: black; }
+#elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; }
 #elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0; }
 

@@ -168,11 +168,11 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status.shutting-down { background-color: #cccccc; }
 
-.alarm-status.alarm { background-color: #ff0000; }
+.alarm-status.alarm { background-color: darkred; }
 
-.alarm-status.insufficient_data { background-color: #5a5a5a; }
+.alarm-status.insufficient_data { background-color: #666666; }
 
-.alarm-status.ok { background-color: #008424; }
+.alarm-status.ok { background-color: #01a982; }
 
 .table th, .table td { padding: 4px 7px; }
 .table .label { margin: 0 0 0 0; }

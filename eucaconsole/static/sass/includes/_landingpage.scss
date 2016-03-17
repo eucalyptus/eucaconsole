@@ -41,9 +41,9 @@ $gridwrapper-table-width: 100%;
 
 $dropdown-border-color: $hpe-lightgray;
 
-$alarm-status-color-alarm: $hp-red;
-$alarm-status-color-insufficient: $hp-gray-65;
-$alarm-status-color-ok: $hp-green;
+$alarm-status-color-alarm: darkred;
+$alarm-status-color-insufficient: $hpe-gray;
+$alarm-status-color-ok: $hpe-green;
 
 .columns.datagrid {
     padding-left: 0;
