@@ -29,10 +29,14 @@ angular.module('AlarmServiceModule', [])
             });
         },
 
-        addAction: function () {
-        },
-
-        removeAction: function () {
+        updateActions: function (actions, path) {
+            return $http({
+                method: 'PUT',
+                url: path,
+                data: {
+                    actions: actions
+                }
+            });
         }
     };
 }]);

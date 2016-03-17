@@ -65,6 +65,15 @@ class AmazonResourceName(dict):
     def __str__(self):
         pass
 
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name)
+
+    def __setattr__(self, name, value):
+        self[name] = value
+
     @classmethod
     def match(cls, service):
         """Match the ARN service namespace to the decorated ServiceNamespace."""
