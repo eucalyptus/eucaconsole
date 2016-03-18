@@ -14,7 +14,7 @@
                     &nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">total</span>
                 </span>
                 <span ng-if="(alarms | filter:{state:'ALARM'}).length > 0">
-                    &nbsp;{{ (alarms | filter:{state:"ALARM"}).length }}&nbsp;<span i18n:translate="">of</span>&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">in state</span>&nbsp;<span class="status ALARM">ALARM</span>
+                    &nbsp;{{ (alarms | filter:{state:"ALARM"}).length }}&nbsp;<span i18n:translate="">of</span>&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">in state</span>&nbsp;<span alarm-state="ALARM"></span>
                 </span>
             </span>
         </h6>
