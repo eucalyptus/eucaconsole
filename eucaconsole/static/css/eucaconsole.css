@@ -1614,7 +1614,6 @@ h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #666666; 
 .panel h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #666666; text-transform: uppercase; }
 
 a { color: #01a982; }
-a:hover { text-decoration: underline; }
 
 p { color: #000000; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
 
@@ -1646,7 +1645,7 @@ label.inline { display: inline-block; }
 #breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; letter-spacing: 1px; font-weight: normal; }
 #breadcrumbs li { margin-top: 0.3rem; font-size: 18px; }
 #breadcrumbs li.current a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
-#breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: -2px; }
+#breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-bottom: 2px; }
 #breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #cccccc; font-weight: bold; text-align: center; }
 #breadcrumbs .breadcrumbs > ::before { position: relative; top: -1px; font-size: 0.7rem; }
 
@@ -1669,7 +1668,7 @@ label.inline { display: inline-block; }
 #pagetitle.landingpage, .pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
 #pagetitle em, .pagetitle em { font-style: normal; font-weight: 700; font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #000000; }
 
-.subsection-label { font-size: 18px; color: #000000; margin-bottom: 6px; }
+.subsection-label { font-size: 16px; color: #666666; margin-bottom: 6px; }
 
 .upper { text-transform: uppercase; }
 
@@ -1744,9 +1743,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #tag-editor .item-list { margin-bottom: 6px; }
 #tag-editor .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
 #tag-editor .item-list .item a { color: #666666; }
-#tag-editor .item-list .item a:hover { text-decoration: none; }
-#tag-editor .propagates { color: #777; font-size: 0.7em; }
-#tag-editor .add-label { margin-bottom: 6px; color: #666666; text-transform: uppercase; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
+#tag-editor .item-list .item a:hover { color: #01a982; text-decoration: none; }
+#tag-editor .propagates { color: #666666; font-size: 0.7em; }
+#tag-editor .add-label { margin-bottom: 6px; color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 #tag-editor #propagate-wrapper { white-space: nowrap; }
 
@@ -1878,7 +1877,7 @@ textarea.hidden.debug { display: block; }
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
 .reveal-modal .top-margin { margin-top: 0.7rem; }
 .reveal-modal .center { text-align: center; }
-.reveal-modal .close-reveal-modal:hover { color: #01a982; }
+.reveal-modal .close-reveal-modal:hover { color: #01a982; text-decoration: none; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
@@ -1905,8 +1904,8 @@ footer .copyright { font-size: 0.9em; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
-.button { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; border-color: #01a982; border-width: 2px; }
-.button:hover { background-color: #fff; color: #000000; text-decoration: none; border-width: 4px; }
+.button { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; outline-color: #01a982; outline-width: 2px; }
+.button:hover { background-color: #fff; color: #000000; text-decoration: none; outline-width: 4px; }
 .button.secondary { background-color: #fff; border-color: #666666; border-width: 2px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
 .button.secondary:hover { background-color: #fff; color: #000000; text-decoration: none; border-width: 4px; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; }

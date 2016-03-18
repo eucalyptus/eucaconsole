@@ -337,6 +337,7 @@ $tooltip-padding: rem-calc(5);
             a {
                 color: $hpe-gray;
                 &:hover {
+                color: $hpe-green;
                 text-decoration: none;
                 }
             }

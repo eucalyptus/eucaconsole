@@ -3,11 +3,13 @@
     margin-bottom: 6px;
 
     .item {
-      color: #333;
-      background-color: #E6E7E8;
+      color: $hpe-gray;
+      font-family: $euca-header-font-family;
+      font-size: $euca-xs-font-size;
+      background-color: white;
+      border: 2px solid $hpe-lightgray;
       margin-right: 8px;
       padding: 0.25rem 0.5rem;
-      font-size: 0.6875rem;
       border-radius: 3px;
       white-space: nowrap;
       line-height: 1;
@@ -17,14 +19,18 @@
       }
 
       a.remove {
-        color: #FFF;
+        color: $hpe-gray;
+                &:hover {
+                    color: $hpe-green;
+                }
         margin-left: 5px;
       }
     }
   }
 
   .add-label {
-    color: #5A5A5A;
+    color: $hpe-gray;
+    font-size: $euca-l-font-size; 
     margin-bottom: 6px;
   }
 

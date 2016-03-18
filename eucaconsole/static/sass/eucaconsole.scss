@@ -136,9 +136,6 @@ h1, h2, h3, h4, h5 {
 
 a {
     color: $hpe-green;
-    &:hover {
-        text-decoration: underline;
-    }
 }
 
 p {
@@ -265,7 +262,7 @@ label {
         position: absolute;
         top: 0; bottom: 0; right: 0;
         vertical-align: middle;
-        padding-top: -2px;
+        padding-bottom: 2px;
     }
     .help-icon {
         position: relative;
@@ -346,8 +343,8 @@ label {
 }
 
 .subsection-label {
-    font-size: $euca-l-font-size;
-    color: $hpe-black;
+    font-size: $euca-font-size;
+    color: $hpe-gray;
     margin-bottom: 6px;
 }
 
@@ -602,13 +599,12 @@ textarea.policy-area {
     }
     @include item-list;
     .propagates {
-        color: #777;
+        color: $hpe-gray;
         font-size: 0.7em;
     }
     .add-label {
         margin-bottom: 6px;
         color: $hpe-gray;
-        text-transform: uppercase;
         font-family: $euca-text-font-family;
     }
     #add-tag-btn {
@@ -1075,6 +1071,7 @@ textarea.hidden {
     .close-reveal-modal {
         &:hover {
             color: $hpe-green;
+            text-decoration: none;
         }
     }
 }
@@ -1130,13 +1127,13 @@ footer {
     font-family: $euca-header-font-family;
     text-transform: uppercase;
     color: $hpe-black;
-    border-color: $hpe-green;
-    border-width: 2px;
+    outline-color: $hpe-green;
+    outline-width: 2px;
     &:hover {
             background-color: #fff;
             color: $hpe-black;
             text-decoration: none;
-            border-width: 4px;
+            outline-width: 4px;
         }
     &.secondary {
         background-color: #fff;
