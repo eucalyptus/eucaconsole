@@ -10,6 +10,8 @@
 
 .status { margin: 0 0.25rem 0 0.25rem; position: relative; bottom: 2px; }
 
+.top-state { position: relative; bottom: 1px; }
+
 .alarm-listing { margin-top: 0.5rem; }
 
 i.delete-icon { color: #5a5a5a !important; }
