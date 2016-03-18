@@ -6,6 +6,9 @@
 
 
 angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando'])
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
+    })
     .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
@@ -242,7 +245,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             }
             var val = item[this.key];
             if (val === undefined || val === null) {
-                return false;
+                return true;
             }
             if (Array.isArray(val)) {
                 for (var i=0; i<val.length; i++) {
@@ -401,10 +404,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             if (query.length > 0) {
                 url = url + "?" + query;
             }
-            window.history.pushState(query, "", url);
-            // preferred code (to above), but adds extra hash between path and search
-            //$location.search(query);
-            //window.history.pushState(null, "", $location.absUrl());
+            $location.search(query);
+            window.history.pushState(null, "", $location.absUrl());
             if ($scope.serverFilter === true) {
                 url = $scope.jsonEndpoint;
                 if (url.indexOf("?") > -1) {
