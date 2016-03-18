@@ -10,6 +10,26 @@
  */
 
 angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'ChartServiceModule'])
+.directive('datepicker', function () {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        scope: {
+            format: "@",
+        },
+        link: function(scope, element, attrs){
+            if(typeof(scope.format) == "undefined"){ scope.format = "yyyy/mm/dd hh:ii"; }
+            var startDate = new Date();
+            startDate.setHours(-(14 * 24));  // move back 2 weeks
+            var endDate = new Date();
+            $(element).fdatepicker({format: scope.format, pickTime: true, startDate:startDate, endDate:endDate}).on('changeDate', function(ev){
+                scope.$apply(function() {
+                    ngModel.$setViewValue(ev.date);
+                });
+            });
+        }
+    }; 
+})
 .controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
