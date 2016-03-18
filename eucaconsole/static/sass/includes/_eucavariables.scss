@@ -203,6 +203,11 @@ $tabs-content-margin-bottom: rem-calc(1) !default;
 // Tooltips
 $tooltip-padding: rem-calc(5);
 
+// Alarm status colors
+$alarm-status-color-alarm: $hp-red;
+$alarm-status-color-insufficient-data: $hp-gray-65;
+$alarm-status-color-ok: $hp-green;
+
 // Mixins
 // Text overflow (e.g. for handling long resource names)
 @mixin ellipsis-overflow {

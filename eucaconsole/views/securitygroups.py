@@ -50,13 +50,15 @@ class SecurityGroupsView(LandingPageView):
         self.title_parts = [_(u'Security Groups')]
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.location = self.get_redirect_location('securitygroups')
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
         self.json_items_endpoint = self.get_json_endpoint('securitygroups_json')
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
-        self.filters_form = SecurityGroupsFiltersForm(
-            self.request, vpc_conn=self.vpc_conn, cloud_type=self.cloud_type,
-            formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.filters_form = SecurityGroupsFiltersForm(
+                self.request, vpc_conn=self.vpc_conn, cloud_type=self.cloud_type,
+                formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         if not self.is_vpc_supported:
             del self.filters_form.vpc_id

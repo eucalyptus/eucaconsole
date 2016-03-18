@@ -278,9 +278,11 @@ urls = [
     Route(name='cloudwatch_alarms', pattern='/alarms'),
     Route(name='cloudwatch_alarms_json', pattern='/alarms/json'),
     Route(name='cloudwatch_alarm_history', pattern='/alarms/{alarm_id}/history'),
+    Route(name='cloudwatch_alarm_actions', pattern='/alarms/{alarm_id}/actions'),
     Route(name='cloudwatch_alarms_create', pattern='/alarms/create'),
     Route(name='cloudwatch_alarm_view', pattern='/alarms/{alarm_id}'),
     Route(name='cloudwatch_alarms_for_metric_json', pattern='/alarms/json/{metric}'),
+    Route(name='cloudwatch_alarms_for_resource_json', pattern='/alarms/resource/{id}/json'),
     # REST API - this route is hard-coded elsewhere, do not change.
     Route(name='cloudwatch_api', pattern='/cloudwatch/api'),
     # Metrics Landing page
@@ -380,5 +382,5 @@ urls = [
     Route(name='stack_events', pattern='/stacks/{name}/events'),
     # Update
     Route(name='stack_update', pattern='/stacks/{name}/update'),
-    Route(name='stack_aws_dialogs', pattern='/templates/aws-dialogs'),
+    Route(name='stack_cancel_update', pattern='/stacks/{name}/cancelupdate'),
 ]

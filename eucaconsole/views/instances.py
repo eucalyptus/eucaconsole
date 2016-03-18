@@ -182,9 +182,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
-        self.associate_ip_form = AssociateIpToInstanceForm(
-            self.request, conn=self.conn, formdata=self.request.params or None)
-        self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.associate_ip_form = AssociateIpToInstanceForm(
+                self.request, conn=self.conn, formdata=self.request.params or None)
+            self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.enable_smart_table = True  # Enables sortable tables via macros.pt
         controller_options_json = BaseView.escape_json(json.dumps({
             'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),

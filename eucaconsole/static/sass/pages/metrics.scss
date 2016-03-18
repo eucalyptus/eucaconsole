@@ -13,10 +13,18 @@ table td input[type="checkbox"] {
 }
 
 #graph-area {
+    padding-top: 0.0rem;
 }
 
 .chart-wrapper {
     background: #ffffff;
+    border: 1px solid $hp-gray-40;
+    h6 {
+        border: 0px none;
+    }
+    svg {
+        border: 0px none;
+    }
 }
 
 .split-container {
@@ -41,6 +49,7 @@ table td input[type="checkbox"] {
 
 .split-bottom {
     position: relative;
+    padding-top: 1.0rem;
 }
 
 select {
@@ -61,7 +70,7 @@ select {
 }
 
 #primary-buttons .button.more-actions {
-    margin-left: 0px !important;
+    margin-left: 0 !important;
 }
 
 th.metric-action {
@@ -75,4 +84,74 @@ th.metric-action {
 
 magic-search .f-dropdown {
     min-width: 15rem;
+}
+
+div.absolute-grouping {
+}
+
+#metric-time-range {
+    margin: 0;
+    display: inline;
+}
+
+input.datefield {
+    width: 9rem;
+    float: left;
+    margin-bottom: 0;
+    margin-right: 1rem;
+}
+
+.toprow {
+    select {
+        margin-bottom: 1px;
+    }
+}
+
+.chart-wrapper {
+    .graph-close {
+        position: relative;
+        bottom: 1rem;
+        left: 61rem;
+        color: $hp-gray-65;
+        font-size: rem-calc(35);
+        line-height: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .metric-chart-menu {
+        position: relative;
+        bottom: 1.3rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        left: 58rem;
+        color: $hp-gray-65;
+        cursor: pointer;
+    }
+    svg {
+        height: 300px !important;
+    }
+}
+.time-shift {
+    .graph-shift-left {
+        position: relative;
+        left: 0.25rem;
+        color: $hp-gray-65;
+        cursor: pointer;
+    }
+    .graph-shift-right {
+        position: relative;
+        left: 59rem;
+        color: $hp-gray-65;
+        cursor: pointer;
+    }
+}
+
+.metrics-url-field {
+    width: 100%;
+}
+
+.field-wrapper {
+    &.timepicker {
+        position: absolute;
+    }
 }

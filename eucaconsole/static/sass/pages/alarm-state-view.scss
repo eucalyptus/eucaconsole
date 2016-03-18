@@ -1,0 +1,33 @@
+@import "../includes/eucavariables";
+
+
+// Stack status
+.status.ALARM { background-color: $alarm-status-color-alarm; }
+.status.INSUFFICIENT_DATA { background-color: $alarm-status-color-insufficient-data; }
+.status.OK { background-color: $alarm-status-color-ok; }
+
+.status {
+    margin: 0 0.25rem 0 0.25rem;
+    position: relative;
+    bottom: 2px;
+}
+
+.top-state {
+    position: relative;
+    bottom: 1px;
+}
+
+.alarm-listing {
+    margin-top: 0.5rem;
+}
+
+i.delete-icon {
+    color: $hp-gray-65 !important;
+    &:hover {
+        color: darkred !important;
+    }
+}
+
+span.capital {
+    text-transform: capitalize;
+}

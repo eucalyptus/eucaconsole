@@ -170,7 +170,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .alarm-status.alarm { background-color: darkred; }
 
-.alarm-status.insufficient_data { background-color: #666666; }
+.alarm-status.insufficient_data { background-color: #5a5a5a; }
 
 .alarm-status.ok { background-color: #01a982; }
 
