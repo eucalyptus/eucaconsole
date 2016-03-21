@@ -1,0 +1,51 @@
+<!--! Manage alarms for a given resource -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div class="expando" id="manage-resource-alarms" ng-cloak="">
+        <h6 class="title">
+            <a ng-click="toggleContent()">
+                <i class="fi-plus" ng-show="!expanded"></i>
+                <i class="fi-minus" ng-show="expanded"></i>
+                &nbsp;
+            </a>
+            <span i18n:translate="">Cloudwatch alarms: </span>
+            <span class="busy" ng-show="loading"></span>
+            <span ng-show="!loading">
+                <span ng-if="(alarms | filter:{state:'ALARM'}).length == 0">
+                    &nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">total</span>
+                </span>
+                <span ng-if="(alarms | filter:{state:'ALARM'}).length > 0">
+                    &nbsp;{{ (alarms | filter:{state:"ALARM"}).length }}&nbsp;<span i18n:translate="">of</span>&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">in state</span>&nbsp;<span alarm-state="ALARM" class="top-state"></span>
+                </span>
+            </span>
+        </h6>
+        <div class="content" ng-show="expanded">
+            <div class="alarm-listing" ng-repeat="alarm in alarms">
+                <a class="has-tip" data-tooltip="" title="Remove alarm from instance" i18n:attributes="title" ng-click="showDeleteModal(alarm)">
+                    <i class="delete-icon fa fa-minus-circle fa-lg"></i>
+                </a>
+                <td alarm-state="{{ item.state }}"></td>
+                <span alarm-state="{{ alarm.state }}"></span>&nbsp;{{ alarm.name }},&nbsp;
+                    {{ alarm.metric }}
+                    {{ alarm.comparison }}
+                    {{ alarm.threshold }}
+                    {{ alarm.unit !== 'None' ? alarm.unit : '' }}
+            </div>
+        </div>
+    </div>
+    <div id="remove-alarm-modal" class="reveal-modal small" data-reveal="">
+        <a class="close-reveal-modal" href="#">&#215;</a>
+
+        <h3 i18n:translate="">Remove alarm from {{ resourceTypeName }}</h3>
+
+        <p><span i18n:translate="">Are you sure you want to remove alarm</span>&nbsp;{{ alarmToDelete.name }}&nbsp;<span i18n:translate="">from</span>&nbsp;{{ resourceTypeName }}&nbsp;<strong>{{ resourceName }}</strong>?
+        </p>
+
+        <p i18n:translate="">If this resource is the only dimension associated with this alarm, the alarm will also be deleted.</p>
+
+        <div class="row buttons">
+            <button id="remove-alarm-btn" class="button expand" ng-click="removeAlarm($event)" i18n:translate="">
+                <span i18n:translate="">Yes, Remove Alarm from</span><span class="capital"> {{ resourceTypeName }}</span>
+            </button>
+        </div>
+    </div>
+</div>

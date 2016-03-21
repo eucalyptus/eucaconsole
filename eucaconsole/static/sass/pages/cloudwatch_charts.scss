@@ -71,9 +71,8 @@
     svg {
         width: 100%;
         height: 300px;
-        border: 1px solid $euca-lightgrey;
+        border: 1px solid $hp-gray-20;
         border-top: none;
-        @include line-dots-mixin;
     }
     &:hover {
         cursor: pointer;
@@ -94,11 +93,10 @@ svg {
     svg {
         width: 100%;
         height: 500px;
-        @include line-dots-mixin;
     }
     .busy.loading {
         position: absolute;
-        top: 50%;
+        top: 12rem;
         left: 48%;
         width: 3rem;
         height: 3rem;
@@ -107,3 +105,9 @@ svg {
     }
 }
 
+.time-shift{
+    svg {
+        width: 100%;
+        height: 18px;
+    }
+}

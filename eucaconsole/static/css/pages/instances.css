@@ -57,6 +57,8 @@
 .tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #e6e7e8; color: #555; margin-right: 0.2rem; min-width: 22px; text-align: center; }
 .tile .content .label.ellipsis { margin-left: 0; }
 .tile .content .fi-alert { color: darkred; }
+.tile .content a.alarm-status { padding: 2px 6px; color: white; border-radius: 3px; }
+.tile .content a.alarm-status:hover { text-decoration: none; }
 .tile .link { color: #007dba; text-transform: uppercase; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #6a737b; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
 .tile .footer.has-progress { padding: 0 0 0 0; text-align: left; }
@@ -84,6 +86,8 @@
 .gridwrapper .table tr td .f-dropdown a { color: #444; }
 .gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
 .gridwrapper .table tr td .busy { font-size: 0.9rem; width: 0.9rem; height: 0.9rem; margin-left: 0.2rem; }
+.gridwrapper .table tr td a.alarm-status { color: white; }
+.gridwrapper .table tr td a.alarm-status:hover { text-decoration: none; }
 .gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
 .gridwrapper .table .fi-alert { color: darkred; }
@@ -163,10 +167,16 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status.shutting-down { background-color: lightgrey; }
 
+.alarm-status.alarm { background-color: #ff0000; }
+
+.alarm-status.insufficient_data { background-color: #5a5a5a; }
+
+.alarm-status.ok { background-color: #008424; }
+
 .table th, .table td { padding: 4px 7px; }
 .table .label { margin: 0 0 0 0; }
 
-.tile { height: 244px; max-height: 244px; }
+.tile { height: 288px; max-height: 288px; }
 
 #terminate-instances-btn { margin-left: 1rem; }
 

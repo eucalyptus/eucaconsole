@@ -16,6 +16,7 @@ dist/
 bin/
 lib/
 include/
+run/
 .idea/
 distribute-*.tar.gz
 bookenv/

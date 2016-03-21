@@ -1,0 +1,24 @@
+<!--! cancel stack update dialog -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="cancel-update-stack-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Cancel stack update</h3>
+        <p>
+            <span i18n:translate="">Cancelling a stack update will cause CloudFormation to attempt to roll back  your stack's resources to their previous state.</span>
+        </p>
+        <p>
+            <span i18n:translate="">Are you sure you want to cancel update for stack</span>
+            <span class="breakword"><b>{{ stackName }}</b></span>
+            ?
+        </p>
+        <form ng-submit="cancelUpdateStack($event)">
+            <div class="dialog-submit-button">
+                <button type="submit" class="cancel_stack_update_button button expand" i18n:translate="">Yes, Cancel Stack Update</button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
+            </div>
+        </form>
+        <a href="#" id="cancel_update_stack_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+

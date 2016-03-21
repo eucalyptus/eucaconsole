@@ -21,7 +21,8 @@
                    class="button" i18n:translate="" id="create-scalinggroup-btn">Create New Scaling Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <span id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
+                <span id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown"
+                      data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate="">View details</a>
@@ -70,6 +71,13 @@
                     <span class="label" title="Termination policies" i18n:attributes="title" data-tooltip="">TP</span>
                     {{ item.termination_policies }}
                 </div>
+                <div ng-show="item.alarm_status">
+                    <span class="label" title="CloudWatch alarm status" i18n:attributes="title" data-tooltip="">CW</span>
+                    <a class="alarm-status" ng-class="item.alarm_status | toClassName"
+                       ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
@@ -78,6 +86,7 @@
                 <th i18n:translate="">Avail zones</th>
                 <th i18n:translate="">Capacity</th>
                 <th i18n:translate="">Status</th>
+                <th i18n:translate="">Alarms</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -104,9 +113,16 @@
                         {{ item.status }}
                     </span>
                 </td>
+                <td class="alarm-status">
+                    <a class="label radius alarm-status" ng-class="item.alarm_status | toClassName"
+                       ng-if="item.alarm_status" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                </td>
                 <td>
                     <span class="actions">
-                        <span id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
+                        <span id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown round"
+                              data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate=""

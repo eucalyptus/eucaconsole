@@ -6,6 +6,9 @@
 
 
 angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando'])
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
+    })
     .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
@@ -14,6 +17,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
         $scope.runningSmartRefresh = false;
         $scope.facetItems = [];
         $scope.unfilteredItems = [];
+        $scope.selectedItems = [];
         $scope.filterKeys = [];
         $scope.sortBy = '';
         $scope.landingPageView = "tableview";
@@ -86,7 +90,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             });
             // When unfilteredItems[] is updated, run it through the filter and build items[]
             $scope.$watch('unfilteredItems', function() {
-                $scope.detectOpenDropdown();
                 $scope.searchFilterItems();
             }, true); 
         };
@@ -139,9 +142,33 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                     regionKey, $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id'));
             }
         };
+        $scope.restoreSelectedItemsState = function () {
+            // Avoid wiping out selected items and automatically closing More Actions menu during smart refresh
+            // NOTE: Do not wrap this in a $scope.runningSmartRefresh check since that would prevent
+            //       the selected items from being restored after the final smart refresh cycle
+            var moreActionsBtn = $('#more-actions-btn');
+            var dropdownOpen = moreActionsBtn.hasClass('open');
+            var selectedItemIds = $scope.selectedItems.map(function (item) {
+                return item.id || item.name;
+            });
+            $timeout(function () {
+                angular.forEach($scope.items, function(item) {
+                    var itemId = item.id || item.name;
+                    if (selectedItemIds.indexOf(itemId) !== -1) {
+                        item.selected = true;
+                    }
+                });
+                if (dropdownOpen) {
+                    $timeout(function () {
+                        moreActionsBtn.click();
+                    });
+                }
+            });
+        };
         $scope.getItems = function (okToRefresh) {
             var csrf_token = $('#csrf_token').val();
             var data = "csrf_token="+csrf_token;
+            $scope.detectOpenDropdown();
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -169,6 +196,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                     $scope.$emit('itemsLoaded', $scope.items);
                     // and re-open any action menus
                     $scope.clickOpenDropdown();
+                    $scope.restoreSelectedItemsState();
                     $(document).foundation('tab', 'reflow');
                 });
                 if ($scope.serverFilter === false) {
@@ -217,7 +245,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             }
             var val = item[this.key];
             if (val === undefined || val === null) {
-                return false;
+                return true;
             }
             if (Array.isArray(val)) {
                 for (var i=0; i<val.length; i++) {
@@ -353,12 +381,18 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             if (!$scope.state.allSelected && checkedIems.length === $scope.items.length) {
                 $scope.state.allSelected = true;
             }
+            $scope.selectedItems = checkedIems;
         };
         $scope.setAllState = function() {
             $timeout(function() {
                 angular.forEach($scope.items, function(item) {
                     item.selected = $scope.state.allSelected;
                 });
+                if ($scope.state.allSelected) {
+                    $scope.selectedItems = $scope.items;
+                } else {
+                    $scope.selectedItems = [];
+                }
             });
         };
         $scope.$on('searchUpdated', function($event, query) {
@@ -370,10 +404,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             if (query.length > 0) {
                 url = url + "?" + query;
             }
-            window.history.pushState(query, "", url);
-            // preferred code (to above), but adds extra hash between path and search
-            //$location.search(query);
-            //window.history.pushState(null, "", $location.absUrl());
+            $location.search(query);
+            window.history.pushState(null, "", $location.absUrl());
             if ($scope.serverFilter === true) {
                 url = $scope.jsonEndpoint;
                 if (url.indexOf("?") > -1) {

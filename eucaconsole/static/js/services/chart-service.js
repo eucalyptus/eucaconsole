@@ -1,7 +1,9 @@
 angular.module('ChartServiceModule', [])
 .factory('ChartService', function () {
     var margin = {
+        top: 15,
         left: 68,
+        bottom: 60,
         right: 38
     };
     var timeFormat = '%m/%d %H:%M';
@@ -67,7 +69,31 @@ angular.module('ChartServiceModule', [])
                 svc.renderAlarms(s, params);
             }
 
+            if (params.noXLabels) {
+                svc.moveXAxisLabels(target);
+            }
+
             return chart;
+        },
+
+        moveXAxisLabels: function(target) {
+            var svg = $(".time-shift svg");
+            svg.empty();
+            var minMax = d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text");
+            var middle = d3.select(target).selectAll(".nv-x g.nvd3.nv-wrap.nv-axis .tick text");
+            var labels = minMax[0].slice(0, 2).concat(middle[0]);
+            // get translation from parent
+            labels.forEach(function(label) {
+                var trans = document.createAttribute('transform');
+                trans.value = label.parentElement.attributes.transform.value;
+                label.attributes.setNamedItem(trans);
+            });
+            var context = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            context.setAttribute("class", "nvd3");
+            context.setAttribute("transform", "translate(58,0)");
+            context = $(context);
+            context.append(labels);
+            svg.append(context);
         },
 
         renderAlarms: function (selection, params) {

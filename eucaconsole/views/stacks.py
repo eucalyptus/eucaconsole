@@ -56,6 +56,18 @@ TEMPLATE_BODY_LIMIT = 460800
 
 
 class StackMixin(object):
+    def get_stack(self):
+        if self.cloudformation_conn:
+            try:
+                stack_param = self.request.matchdict.get('name')
+                if not(stack_param):
+                    stack_param = self.request.params.get('stack-name')
+                stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
+                return stacks[0] if stacks else None
+            except BotoServerError:
+                pass
+        return None
+
     def get_create_template_bucket(self, create=False):
         s3_conn = self.get_connection(conn_type="s3")
         account_id = User.get_account_id(ec2_conn=self.get_connection(), request=self.request)
@@ -85,6 +97,28 @@ class StackMixin(object):
             u'Please contact your cloud administrator.'
         ))
 
+    def get_template_location(self, stack_id, default_name=None):
+        bucket = None
+        try:
+            bucket = self.get_create_template_bucket(create=False)
+        except:
+            pass
+        stack_id = stack_id[stack_id.rfind('/') + 1:]
+        d = hashlib.md5()
+        d.update(stack_id)
+        md5 = d.digest()
+        stack_hash = base64.b64encode(md5, '--').replace('=', '')
+        ret = {'template_name': default_name}
+        if bucket is not None:
+            keys = list(bucket.list(prefix=stack_hash))
+            if len(keys) > 0:
+                key = keys[0].key
+                name = key[key.rfind('-') + 1:]
+                ret['template_bucket'] = bucket.name
+                ret['template_key'] = key
+                ret['template_name'] = name
+        return ret
+
 
 class StacksView(LandingPageView):
     def __init__(self, request):
@@ -109,6 +143,7 @@ class StacksView(LandingPageView):
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
             delete_stack_url=request.route_path('stacks_delete'),
+            update_stack_url=request.route_path('stack_update', name='_name_'),
             ufshost_error=utils.is_ufshost_error(self.cloudformation_conn, self.cloud_type)
         )
 
@@ -153,7 +188,18 @@ class StacksJsonView(LandingPageView):
     def stacks_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        transitional_states = ['CREATE_IN_PROGRESS', 'ROLLBACK_IN_PROGRESS', 'DELETE_IN_PROGRESS', 'CREATE_FAILED']
+        transitional_states = [
+            'CREATE_IN_PROGRESS',
+            'ROLLBACK_IN_PROGRESS',
+            'DELETE_IN_PROGRESS',
+            'CREATE_FAILED',
+            'UPDATE_IN_PROGRESS',
+            'UPDATE_COMPLETE_CLEANUP_IN_PROGRESS',
+            'UPDATE_ROLLBACK_IN_PROGRESS',
+            'UPDATE_ROLLBACK_FAILED',
+            'UPDATE_ROLLBACK_COMPLETED_CLEANUP_IN_PROGRESS',
+            'UPDATE_FAILED'
+        ]
         with boto_error_handler(self.request):
             stacks_array = []
             for stack in self.filter_items(self.items):
@@ -212,30 +258,13 @@ class StackView(BaseView, StackMixin):
             controller_options_json=self.get_controller_options_json(),
         )
 
-    @view_config(route_name='stack_view', renderer=TEMPLATE)
+    @view_config(route_name='stack_view', request_method='GET', renderer=TEMPLATE)
     def stack_view(self):
         if self.stack is None and self.request.matchdict.get('name') != 'new':
             raise HTTPNotFound
-        bucket = None
-        try:
-            bucket = self.get_create_template_bucket()
-        except:
-            pass
-        stack_id = self.stack.stack_id[self.stack.stack_id.rfind('/') + 1:]
-        d = hashlib.md5()
-        d.update(stack_id)
-        md5 = d.digest()
-        stack_hash = base64.b64encode(md5, '--').replace('=', '')
-        self.render_dict['template_name'] = None
-        if bucket is not None:
-            keys = list(bucket.list(prefix=stack_hash))
-            if len(keys) > 0:
-                key = keys[0].key
-                name = key[key.rfind('-') + 1:]
-                self.render_dict['template_bucket'] = bucket.name
-                self.render_dict['template_key'] = key
-                self.render_dict['template_name'] = name
-        return self.render_dict
+        template_info = self.get_template_location(self.stack.stack_id)
+        template_info.update(self.render_dict)
+        return template_info
 
     @view_config(route_name='stack_delete', request_method='POST', renderer=TEMPLATE)
     def stack_delete(self):
@@ -256,16 +285,6 @@ class StackView(BaseView, StackMixin):
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
-
-    def get_stack(self):
-        if self.cloudformation_conn:
-            try:
-                stack_param = self.request.matchdict.get('name')
-                stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
-                return stacks[0] if stacks else None
-            except BotoServerError:
-                pass
-        return None
 
     def get_controller_options_json(self):
         if self.stack is None:
@@ -328,7 +347,7 @@ class StackStateView(BaseView):
             template = response['GetTemplateResponse']['GetTemplateResult']['TemplateBody']
             
             return dict(
-                results=BaseView.escape_json(template)
+                results=template
             )
 
     @view_config(route_name='stack_events', renderer='json', request_method='GET')
@@ -344,7 +363,7 @@ class StackStateView(BaseView):
                 if len(status) == 0 or stack_status in status:
                     events.append({
                         'timestamp': event.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                        'status': event.resource_status.lower().capitalize().replace('_', '-'),
+                        'status': stack_status,
                         'status_reason': event.resource_status_reason,
                         'type': event.resource_type,
                         'logical_id': event.logical_resource_id,
@@ -394,15 +413,18 @@ class StackStateView(BaseView):
 class StackWizardView(BaseView, StackMixin):
     """View for Create Stack wizard"""
     TEMPLATE = '../templates/stacks/stack_wizard.pt'
+    TEMPLATE_UPDATE = '../templates/stacks/stack_update.pt'
 
     def __init__(self, request):
         super(StackWizardView, self).__init__(request)
+        self.cloudformation_conn = self.get_connection(conn_type='cloudformation')
         self.title_parts = [_(u'Stack'), _(u'Create')]
         self.create_form = None
         location = self.request.route_path('stacks')
         with boto_error_handler(self.request, location):
             s3_bucket = self.get_template_samples_bucket()
             self.create_form = StacksCreateForm(request, s3_bucket)
+            self.stack = self.get_stack()
         self.render_dict = dict(
             create_form=self.create_form,
             controller_options_json=self.get_controller_options_json(),
@@ -423,6 +445,8 @@ class StackWizardView(BaseView, StackMixin):
         return BaseView.escape_json(json.dumps({
             'stack_template_url': self.request.route_path('stack_template_parse'),
             'convert_template_url': self.request.route_path('stack_template_convert'),
+            'stack_template_read_url':
+                self.request.route_path('stack_template', name=self.stack.stack_name) if self.stack else '',
             'sample_templates': self.create_form.sample_template.choices
         }))
 
@@ -430,6 +454,71 @@ class StackWizardView(BaseView, StackMixin):
     def stack_new(self):
         """Displays the Stack wizard"""
         return self.render_dict
+
+    @view_config(route_name='stack_update', renderer=TEMPLATE_UPDATE, request_method='GET')
+    def stack_update_view(self):
+        """Displays the Stack update wizard"""
+        stack_name = self.request.matchdict.get('name')
+        self.title_parts = [_(u'Stack'), stack_name, _(u'Update')]
+        ret = dict(
+            stack_name=stack_name,
+        )
+        template_info = self.get_template_location(self.stack.stack_id, default_name=_(u'Edit template'))
+        ret.update(template_info)
+        ret.update(self.render_dict)
+        return ret
+
+    @view_config(route_name='stack_update', renderer=TEMPLATE_UPDATE, request_method='POST')
+    def stack_update(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        stack_name = self.request.matchdict.get('name')
+        location = self.request.route_path('stack_update', name=stack_name)
+        (template_url, template_name, parsed) = self.parse_store_template()
+        capabilities = ['CAPABILITY_IAM']
+        params = []
+        if 'Parameters' in parsed.keys():
+            for name in parsed['Parameters']:
+                val = self.request.params.get(name)
+                if val:
+                    params.append((name, val))
+        with boto_error_handler(self.request, location):
+            self.log_request(u"Updating stack:{0}".format(stack_name))
+            result = self.cloudformation_conn.update_stack(
+                stack_name, template_url=template_url, capabilities=capabilities,
+                parameters=params
+            )
+            stack_id = result[result.rfind('/') + 1:]
+            d = hashlib.md5()
+            d.update(stack_id)
+            md5 = d.digest()
+            stack_hash = base64.b64encode(md5, '--').replace('=', '')
+            bucket = self.get_create_template_bucket(create=True)
+            bucket.copy_key(
+                new_key_name="{0}-{1}".format(stack_hash, template_name),
+                src_key_name=template_name,
+                src_bucket_name=bucket.name
+            )
+            bucket.delete_key(template_name)
+
+            msg = _(u'Successfully sent update stack request. '
+                    u'It may take a moment to update the stack.')
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            location = self.request.route_path('stack_view', name=stack_name)
+            return HTTPFound(location=location)
+
+    @view_config(route_name='stack_cancel_update', request_method='POST', xhr=True)
+    def stack_cancel_update(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        stack_name = self.request.matchdict.get('name')
+        with boto_error_handler(self.request):
+            self.log_request(u"Cancelling update of stack:{0}".format(stack_name))
+            self.cloudformation_conn.cancel_update_stack(stack_name)
+            msg = _(u'Successfully sent cancel update request. '
+                    u'It may take a moment to cancel the stack update.')
+            return JSONResponse(status=200, message=msg)
 
     @view_config(route_name='stack_template_parse', renderer='json', request_method='POST')
     def stack_template_parse(self):
@@ -480,6 +569,10 @@ class StackWizardView(BaseView, StackMixin):
                 params = []
                 if 'Parameters' in parsed.keys():
                     params = self.generate_param_list(parsed)
+                    if self.stack:
+                        # populate defaults with actual values from stack
+                        for param in params:
+                            param['default'] = [p.value for p in self.stack.parameters if p.key == param['name']][0]
                 return dict(
                     results=dict(
                         template_key=template_name,
@@ -593,7 +686,7 @@ class StackWizardView(BaseView, StackMixin):
                 param_vals['options'] = self.get_cert_options()  # fetch server cert names
             if 'instance' in name_l and 'profile' in name_l:
                 param_vals['options'] = self.get_instance_profile_options()
-            if 'instance' in name_l or param_type == 'AWS::EC2::Instance::Id':
+            if ('instance' in name_l and 'instancetype' not in name_l) or param_type == 'AWS::EC2::Instance::Id':
                 param_vals['options'] = self.get_instance_options()  # fetch instances
             if 'volume' in name_l or param_type == 'AWS::EC2::Volume::Id':
                 param_vals['options'] = self.get_volume_options()  # fetch volumes
@@ -712,9 +805,8 @@ class StackWizardView(BaseView, StackMixin):
             if tags_json:
                 tags = json.loads(tags_json)
             with boto_error_handler(self.request, location):
-                cloudformation_conn = self.get_connection(conn_type='cloudformation')
                 self.log_request(u"Creating stack:{0}".format(stack_name))
-                result = cloudformation_conn.create_stack(
+                result = self.cloudformation_conn.create_stack(
                     stack_name, template_url=template_url, capabilities=capabilities,
                     parameters=params, tags=tags
                 )
@@ -754,7 +846,7 @@ class StackWizardView(BaseView, StackMixin):
             template_name = self.request.params.get('sample-template')
             template_url = self.request.params.get('template-url')
             files = self.request.POST.getall('template-file')
-            template_body = ''
+            template_body = self.request.params.get('template-body')
 
             if len(files) > 0 and len(str(files[0])) > 0:  # read from file
                 files[0].file.seek(0, 2)  # seek to end
@@ -787,6 +879,14 @@ class StackWizardView(BaseView, StackMixin):
                 template_name = template_url[template_url.rindex('/') + 1:]
                 if len(template_body) > TEMPLATE_BODY_LIMIT:
                     raise JSONError(status=400, message=_(u'Template too large: ') + template_name)
+            elif template_body:
+                # just proceed if body provided with request
+                template_name = 'current'
+            elif template_name is None and self.stack:
+                # loading template from existing stack
+                template_name = 'current'
+                response = self.cloudformation_conn.get_template(self.stack.stack_name)
+                template_body = response['GetTemplateResponse']['GetTemplateResult']['TemplateBody']
             else:
                 s3_bucket = self.get_template_samples_bucket()
                 mgr = CFSampleTemplateManager(s3_bucket)
@@ -823,13 +923,13 @@ class StackWizardView(BaseView, StackMixin):
             'AWS::AutoScaling::ScheduledAction',
             'AWS::CloudFront',
             'AWS::CloudTrail',
-            'AWS::DynamoDB'
-            'AWS::EC2::NetworkInterfaceAttachment'
-            'AWS::EC2::VPCPeeringConnection'
-            'AWS::EC2::VPCConnection'
-            'AWS::EC2::VPCConnectionRoute'
-            'AWS::EC2::VPCGateway'
-            'AWS::EC2::VPCGatewayRoutePropagation'
+            'AWS::DynamoDB',
+            'AWS::EC2::NetworkInterfaceAttachment',
+            'AWS::EC2::VPCPeeringConnection',
+            'AWS::EC2::VPCConnection',
+            'AWS::EC2::VPCConnectionRoute',
+            'AWS::EC2::VPCGateway',
+            'AWS::EC2::VPCGatewayRoutePropagation',
             'AWS::ElastiCache',
             'AWS::ElasticBeanstalk',
             'AWS::Kinesis',

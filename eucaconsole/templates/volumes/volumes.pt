@@ -74,7 +74,8 @@
                 </a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="" ng-show="item.status !== 'deleting'">
                     <li ng-show="item.status !== 'deleting'">
                         <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
@@ -105,6 +106,13 @@
                 <div>
                     <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.id }}
+                </div>
+                <div ng-show="item.alarm_status">
+                    <span class="label" title="CloudWatch alarm status" i18n:attributes="title" data-tooltip="">CW</span>
+                    <a class="alarm-status" ng-class="item.alarm_status | toClassName"
+                       ng-href="${prefix}/{{ item.id | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
                 </div>
                 <div>
                     <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
@@ -142,6 +150,7 @@
                 <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="name">Name (ID)</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="status">Status</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="alarm_status">Alarms</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="size">Size</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="instance_name">Instance</th>
                 <th i18n:translate="" st-skip-natural="true" st-sort="snapshots">Snapshots</th>
@@ -162,6 +171,12 @@
                     </span>
                     <span class="busy" ng-show="item.transitional"></span>
                 </td>
+                <td class="alarm-status">
+                    <a class="label radius alarm-status" ng-class="item.alarm_status | toClassName"
+                          ng-if="item.alarm_status" ng-href="${prefix}/{{ item.id | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                  </td>
                 <td>{{ item.size }}&nbsp;GB</td>
                 <td class="breakword">
                     <a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">
@@ -178,7 +193,8 @@
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions" ng-show="item.status !== 'deleting'">
-                        <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                        <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.status !== 'deleting'">
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
