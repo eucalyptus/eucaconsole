@@ -13,7 +13,6 @@ $instance-status-color-terminated: $euca-darkgrey;
 $instance-status-color-terminating: lightgrey;
 
 
-
 // Tile/table view
 .status.running { background-color: $instance-status-color-running; }
 .status.pending { background-color: $instance-status-color-pending; }
@@ -22,8 +21,12 @@ $instance-status-color-terminating: lightgrey;
 .status.terminated { background-color: $instance-status-color-terminated; }
 .status.shutting-down { background-color: $instance-status-color-terminating; }
 
+.alarm-status.alarm { background-color: $alarm-status-color-alarm; }
+.alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient-data; }
+.alarm-status.ok { background-color: $alarm-status-color-ok; }
 
-$instance-tile-height-adjustment: 24px;
+
+$instance-tile-height-adjustment: 68px;
 
 // Table view
 .table {

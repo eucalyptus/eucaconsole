@@ -8,6 +8,10 @@
 $status-color-healthy: $hp-accessible-blue;
 $status-color-unhealthy: darkred;
 
+.alarm-status.alarm { background-color: $alarm-status-color-alarm; }
+.alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient-data; }
+.alarm-status.ok { background-color: $alarm-status-color-ok; }
+
 
 // Tile view
 .tile .status.healthy { background-color: $status-color-healthy; }

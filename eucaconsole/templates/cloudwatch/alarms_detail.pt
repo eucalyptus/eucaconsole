@@ -42,18 +42,18 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <form name="alarmUpdateForm">
+                    <form name="alarmUpdateForm" class="alarm-update" novalidate="">
                         ${structure:alarm_form['csrf_token']}
                         <h6 i18n:translate="">State</h6>
                         <div class="row controls-wrapper">
                             <div class="large-2 small-4 columns">
-                                <label i18n:translate="">State</label>
+                                <label class="right" i18n:translate="">State</label>
                             </div>
                             <div class="large-10 small-8 columns value" alarm-state="${alarm.state_value}"></div>
                         </div>
                         <div class="row controls-wrapper">
                             <div class="large-2 small-4 columns">
-                                <label i18n:translate="">State details</label>
+                                <label class="right" i18n:translate="">State details</label>
                             </div>
                             <div class="large-10 small-8 columns value">${alarm.state_reason}</div>
                         </div>
@@ -77,65 +77,67 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row controls-wrapper">
-                            <div class="large-3 small-4 columns">
-                                <label class="right" i18n:translate="">Trigger alarm when the</label>
+                        <div class="trigger-conditions">
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-4 columns">
+                                    <label class="right" i18n:translate="">Trigger alarm when the</label>
+                                </div>
+                                <div class="large-3 small-4 columns value">
+                                    <select ng-model="alarm.statistic">
+                                        <option i18n:translate="">Average</option>
+                                        <option i18n:translate="">Minimum</option>
+                                        <option i18n:translate="">Maximum</option>
+                                        <option i18n:translate="">Sum</option>
+                                        <option i18n:translate="">Sample Count</option>
+                                    </select>
+                                </div>
+                                <div class="large-6 small-4 columns">
+                                    ${alarm.metric}
+                                </div>
                             </div>
-                            <div class="large-3 small-4 columns value">
-                                <select ng-model="alarm.statistic">
-                                    <option i18n:translate="">Average</option>
-                                    <option i18n:translate="">Minimum</option>
-                                    <option i18n:translate="">Maximum</option>
-                                    <option i18n:translate="">Sum</option>
-                                    <option i18n:translate="">Sample Count</option>
-                                </select>
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-3 columns">
+                                    <label class="right" i18n:translate="">is</label>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    <select ng-model="alarm.comparison">
+                                        <option>&gt;</option>
+                                        <option>&gt;&#61;</option>
+                                        <option>&lt;</option>
+                                        <option>&lt;&#61;</option>
+                                    </select>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    <input type="text" value="${alarm.threshold}" ng-model="alarm.threshold"/>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    ${alarm.unit}
+                                </div>
                             </div>
-                            <div class="large-6 small-4 columns">
-                                ${alarm.metric}
-                            </div>
-                        </div>
-                        <div class="row controls-wrapper">
-                            <div class="large-3 small-3 columns">
-                                <label class="right" i18n:translate="">is</label>
-                            </div>
-                            <div class="large-3 small-3 columns value">
-                                <select ng-model="alarm.comparison">
-                                    <option>&gt;</option>
-                                    <option>&gt;&#61;</option>
-                                    <option>&lt;</option>
-                                    <option>&lt;&#61;</option>
-                                </select>
-                            </div>
-                            <div class="large-3 small-3 columns value">
-                                <input type="text" value="${alarm.threshold}" ng-model="alarm.threshold"/>
-                            </div>
-                            <div class="large-3 small-3 columns value">
-                                ${alarm.unit}
-                            </div>
-                        </div>
-                        <div class="row controls-wrapper">
-                            <div class="large-3 small-3 columns">
-                                <label class="right" i18n:translate="">for at least</label>
-                            </div>
-                            <div class="large-3 small-3 columns">
-                                <input type="text" value="${alarm.evaluation_periods}" ng-model="alarm.evaluation_periods"/>
-                            </div>
-                            <div class="large-3 small-3 columns" i18n:translate="">
-                                <label i18n:translate="">consecutive periods of</label>
-                            </div>
-                            <div class="large-3 small-3 columns">
-                                <select ng-model="alarm.period">
-                                    <option value="60" i18n:translate="">1 minute</option>
-                                    <option value="300" i18n:translate="">5 minutes</option>
-                                    <option value="900" i18n:translate="">15 minutes</option>
-                                    <option value="3600" i18n:translate="">1 hour</option>
-                                    <option value="21600" i18n:translate="">6 hours</option>
-                                    <option value="86400" i18n:translate="">1 day</option>
-                                </select>
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-3 columns">
+                                    <label class="right" i18n:translate="">for at least</label>
+                                </div>
+                                <div class="large-3 small-3 columns">
+                                    <input type="text" value="${alarm.evaluation_periods}" ng-model="alarm.evaluation_periods"/>
+                                </div>
+                                <div class="large-3 small-3 columns" i18n:translate="">
+                                    <label i18n:translate="">consecutive periods of</label>
+                                </div>
+                                <div class="large-3 small-3 columns">
+                                    <select ng-model="alarm.period">
+                                        <option value="60" i18n:translate="">1 minute</option>
+                                        <option value="300" i18n:translate="">5 minutes</option>
+                                        <option value="900" i18n:translate="">15 minutes</option>
+                                        <option value="3600" i18n:translate="">1 hour</option>
+                                        <option value="21600" i18n:translate="">6 hours</option>
+                                        <option value="86400" i18n:translate="">1 day</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div class="metric-chart chart-wrapper">
-                            <h6></h6>
+                            <h6>${metric_display_name}</h6>
                             <svg class="cwchart"
                                 metric-chart=""
                                 metric="{{ alarm.metric }}"
@@ -146,64 +148,72 @@
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
-                        <div class="actions" ng-form="alarmActionsForm" alarm-actions="">
+                        <div class="actions" ng-form="alarmActionsForm"
+                                             alarm-actions="${alarm_actions_json}"
+                                             service-path="${request.route_path('cloudwatch_alarm_actions', alarm_id=alarm_id)}">
                             <h6>Actions</h6>
                             <div class="item-list">
-                                <span class="item" tal:repeat="action alarm_actions" data-item-value="${action.arn}">
+                                <span class="item" ng-repeat="action in alarmActions" data-item-value="{{ action.arn }}">
                                     <span i18n:translate="">For group</span>
-                                    <strong>${action.autoscaling_group_name}</strong>
+                                    <strong>{{ action.autoscaling_group_name }}</strong>
                                     <span i18n:translate="">execute policy</span>
-                                    <strong>${action.policy_name}</strong>
-                                    <a class="remove" title="Remove action">
+                                    <strong>{{ action.policy_name }}</strong>
+                                    <span>({{ action.scaling_adjustment | signed }} instances)</span>
+                                    <a class="remove" title="Remove action" ng-click="removeAction($index)">
                                         <i class="fi-x"></i>
                                     </a>
                                 </span>
                             </div>
-                            <span>Add an action:</span>
+                            <span ng-show="alarmActions.length < 1" i18n:translate="">Add an action:</span>
+                            <span ng-show="alarmActions.length > 0" i18n:translate="">Add another action:</span>
                             <div>
-                                <div class="row">
-                                    <div class="columns large-2 large-offset-1 small-2">
+                                <div class="row controls-wrapper">
+                                    <div class="columns large-2 small-2">
                                         <label class="right" i18n:translate="">Action type</label>
                                     </div>
-                                    <div class="columns large-9 small-10" i18n:translate="">
+                                    <div class="columns large-10 small-10" i18n:translate="">
                                         Autoscaling
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="columns large-2 large-offset-1 small-2">
+                                <div class="row controls-wrapper">
+                                    <div class="columns large-2 small-2">
                                         <label class="right" i18n:translate="">When alarm state is</label>
                                     </div>
-                                    <div class="columns large-9 small-10">
-                                        <select>
-                                            <option>ALARM</option>
-                                        </select>
+                                    <div class="columns large-10 small-10">
+                                        <span class="label status radius alert" i18n:translate="">ALARM</span>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="columns large-2 large-offset-1 small-2">
+                                <div class="row controls-wrapper">
+                                    <div class="columns large-2 small-2">
                                         <label class="right" i18n:translate="">For scaling group</label>
                                     </div>
-                                    <div class="columns large-9 small-10">
-                                        <select ng-model="scalingGroup" ng-init="scalingGroup = ''" ng-change="updatePolicies()">
-                                            <option value="">Select scaling group...</option>
+                                    <div class="columns large-10 small-10">
+                                        <select ng-model="action.scalingGroup" ng-init="action.scalingGroup = ''" ng-change="updatePolicies()">
+                                            <option value="" i18n:translate="">Select scaling group...</option>
                                             <option tal:repeat="group scaling_groups" tal:content="group.name" required=""></option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="columns large-2 large-offset-1 small-2">
+                                <div class="row controls-wrapper">
+                                    <div class="columns large-2 small-2">
                                         <label class="right" i18n:translate="">Execute scaling policy</label>
                                     </div>
-                                    <div class="columns large-9 small-10">
-                                        <select ng-model="scalingGroupPolicy" ng-init="scalingGroupPolicy = ''" ng-disabled="policiesAvailable()" required="">
-                                            <option value="">Select policy...</option>
-                                            <option ng-repeat="(policy, arn) in scalingGroupPolicies" ng-bind="policy" ng-value="arn"></option>
+                                    <div class="columns large-10 small-10">
+                                        <select name="policies" ng-model="action.scalingGroupPolicy"
+                                                                ng-init="action.scalingGroupPolicy = ''"
+                                                                ng-disabled="policiesAvailable()" required="">
+                                            <option value="" i18n:translate="">{{ defaultOptionValue }}</option>
+                                            <option ng-repeat="(name, details) in scalingGroupPolicies"
+                                                    ng-bind="name" 
+                                                    ng-value="{{ name }}" 
+                                                    data-arn="{{ details.arn }}"></option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="columns large-offset-1">
-                                        <button class="button round tiny" ng-click="addAction()">Add Action</button>
+                                <div class="row controls-wrapper">
+                                    <div class="columns">
+                                        <button class="button round tiny" ng-click="addAction()" i18n:translate="">Add Action</button>
+                                        <a class="cancel" ng-click="resetForm()" i18n:translate="">Cancel</a>
                                     </div>
                                 </div>
                             </div>
@@ -233,8 +243,10 @@
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_detail.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/chosen.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
     </div>
 </metal:block>

@@ -33,6 +33,7 @@ import simplejson as json
 import time
 
 from hashlib import md5
+from itertools import chain
 from markupsafe import escape
 from operator import attrgetter
 
@@ -55,6 +56,7 @@ from ..forms.scalinggroups import (
     ScalingGroupPolicyDeleteForm, ScalingGroupsFiltersForm)
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse, JSONError
 from . import boto_error_handler
 
@@ -173,7 +175,16 @@ class ScalingGroupsJsonView(LandingPageView):
                 items = self.filter_by_availability_zones(items)
             if self.request.params.getall('vpc_zone_identifier'):
                 items = self.filter_by_vpc_zone_identifier(items)
+        cw_conn = self.get_connection(conn_type='cloudwatch')
+        # Get alarms for ASGs and build a list of resource ids to optimize alarm status fetch
+        alarms = [alarm for alarm in cw_conn.describe_alarms() if 'AutoScalingGroupName' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         for group in items:
+            alarm_status = ''
+            if group.name in alarm_resource_ids:
+                alarm_status = Alarm.get_resource_alarm_status(group.name, alarms)
             group_instances = group.instances or []
             all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
             scalinggroups.append(dict(
@@ -188,6 +199,7 @@ class ScalingGroupsJsonView(LandingPageView):
                 termination_policies=', '.join(group.termination_policies),
                 current_instances_count=len(group_instances),
                 status='Healthy' if all_healthy else 'Unhealthy',
+                alarm_status=alarm_status,
             ))
         return dict(results=scalinggroups)
 
@@ -198,27 +210,27 @@ class ScalingGroupsJsonView(LandingPageView):
     def filter_by_availability_zones(self, items):
         filtered_items = []
         for item in items:
-            isMatched = False
+            is_matched = False
             for zone in self.request.params.getall('availability_zones'):
                 for selected_zone in item.availability_zones:
                     if selected_zone == zone:
-                        isMatched = True
-            if isMatched:
+                        is_matched = True
+            if is_matched:
                 filtered_items.append(item)
         return filtered_items
 
     def filter_by_vpc_zone_identifier(self, items):
         filtered_items = []
         for item in items:
-            isMatched = False
+            is_matched = False
             for vpc_zone in self.request.params.getall('vpc_zone_identifier'):
                 if item.vpc_zone_identifier is None or item.vpc_zone_identifier == '':
                     # Handle the 'No subnets' Case
                     if vpc_zone == 'None':
-                        isMatched = True
+                        is_matched = True
                 elif item.vpc_zone_identifier and item.vpc_zone_identifier.find(vpc_zone) != -1:
-                    isMatched = True
-            if isMatched:
+                    is_matched = True
+            if is_matched:
                 filtered_items.append(item)
         return filtered_items
 
@@ -812,9 +824,14 @@ class ScalingGroupPolicyJsonView(BaseScalingGroupView):
     def get_policies_for_scaling_group(self):
         scaling_group = self.get_scaling_group()
         policies = self.get_policies(scaling_group)
+
         policy_names = {}
         for policy in policies:
-            policy_names[policy.name] = policy.policy_arn
+            policy_names[policy.name] = {
+                'arn': policy.policy_arn,
+                'scaling_adjustment': policy.scaling_adjustment
+            }
+
         return dict(
             policies=policy_names
         )

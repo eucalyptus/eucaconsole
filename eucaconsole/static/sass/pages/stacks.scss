@@ -11,6 +11,13 @@ $stack-status-color-rollback-failed: $hp-red;
 $stack-status-color-delete-in-progress: $euca-grey;
 $stack-status-color-delete-complete: $euca-darkgrey;
 $stack-status-color-delete-failed: $hp-red;
+$stack-status-update-in-progress: $euca-grey;
+$stack-status-update-complete-cleanup-in-progress: $euca-grey;
+$stack-status-update-complete: $euca-darkgrey;
+$stack-status-update-rollback-in-progress: $euca-grey;
+$stack-status-update-rollback-failed: $hp-red;
+$stack-status-update-rollback-complete-cleanup-in-progress: $euca-grey;
+$stack-status-update-rollback-complete: $euca-darkgrey;
 
 // Stack status
 .status.Create-in-progress { background-color: $stack-status-color-create-in-progress; }
@@ -22,3 +29,10 @@ $stack-status-color-delete-failed: $hp-red;
 .status.Delete-in-progress { background-color: $stack-status-color-delete-in-progress; }
 .status.Delete-complete { background-color: $stack-status-color-delete-complete; }
 .status.Delete-failed { background-color: $stack-status-color-delete-failed; }
+.status.Update-in-progress { background-color: $stack-status-update-in-progress; }
+.status.Update-complete-cleanup-in-progress { background-color: $stack-status-update-complete-cleanup-in-progress; }
+.status.Update-complete { background-color: $stack-status-update-complete; }
+.status.Update-rollback-in-progress { background-color: $stack-status-update-rollback-in-progress; }
+.status.Update-rollback-failed { background-color: $stack-status-update-rollback-failed; }
+.status.Update-rollback-complete-cleanup-in-progress { background-color: $stack-status-update-rollback-complete-cleanup-in-progress; }
+.status.Update-rollback-complete { background-color: $stack-status-update-rollback-complete; }

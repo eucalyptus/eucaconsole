@@ -3,9 +3,10 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
+<div metal:fill-slot="main_content" ng-app="ResourceMonitoring">
     <div class="row" id="contentwrap" ng-app="CloudWatchCharts" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
          ng-init="chartsCtrl.initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -29,6 +30,12 @@
                 <dd class="active"><a href="#">Monitoring</a></dd>
             </dl>
             <div class="panel no-title cloudwatch-charts">
+                <alarm-state-view
+                    template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
+                    resource-id="${scaling_group.name}" resource-name="${scaling_group.name}"
+                    resource-type="AutoScalingGroupName" resource-type-name="scaling group" i18n:attributes="resource-type-name">
+                </alarm-state-view>
+                <hr/>
                 <h4 i18n:translate="" tal:condition="launchconfig_monitoring_enabled">CloudWatch instance metrics</h4>
                 <div class="toprow">
                     <div class="blurb">
@@ -78,7 +85,7 @@
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
                              cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
                              ids="${scaling_group.name}" idtype="AutoScalingGroupName" metric="{{ chart.metric }}" title="{{ chart.title }}"
-                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="EC2"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="AWS/EC2"
                              statistic="{{ chart.statistic }}" empty="{{ chart.empty_msg }}">
                         </svg>
                     </li>
@@ -140,7 +147,7 @@
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
                              cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
                              ids="${scaling_group.name}" idtype="AutoScalingGroupName" metric="{{ chart.metric }}" title="{{ chart.title }}"
-                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="AutoScaling"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="AWS/AutoScaling"
                              statistic="{{ chart.statistic }}" empty="{{ chart.empty_msg }}">
                         </svg>
                     </li>
@@ -170,6 +177,11 @@
     <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/resource_monitoring.js')}"></script>
 </div>
 
 </metal:block>

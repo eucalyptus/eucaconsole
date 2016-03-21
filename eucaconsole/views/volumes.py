@@ -29,6 +29,8 @@ Pyramid views for Eucalyptus and AWS volumes
 
 """
 from dateutil import parser
+from itertools import chain
+
 import simplejson as json
 
 from boto.exception import BotoServerError
@@ -49,6 +51,7 @@ from ..forms.volumes import (
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
@@ -108,7 +111,9 @@ class VolumesView(LandingPageView, BaseVolumeView):
         ]
         filters_form = VolumesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
         search_facets = filters_form.facets
-        # filter_keys are passed to client-side filtering in search box
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'instances_by_zone': self.get_instances_by_zone(self.instances),
+        }))
         self.render_dict.update(dict(
             filters_form=filters_form,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
@@ -118,20 +123,26 @@ class VolumesView(LandingPageView, BaseVolumeView):
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             delete_form=self.delete_form,
-            instances_by_zone=BaseView.escape_json(json.dumps(self.get_instances_by_zone(self.instances))),
+            controller_options_json=controller_options_json,
         ))
         return self.render_dict
 
     @view_config(route_name='volumes_delete', request_method='POST')
     def volumes_delete(self):
-        volume_id = self.request.params.get('volume_id')
-        volume = self.get_volume(volume_id)
-        if volume and self.delete_form.validate():
-            with boto_error_handler(self.request, self.location):
+        volume_id_param = self.request.params.get('volume_id')
+        volume_ids = [volume_id.strip() for volume_id in volume_id_param.split(',')]
+        if self.delete_form.validate():
+            for volume_id in volume_ids:
+                volume = self.get_volume(volume_id)
                 self.log_request(_(u"Deleting volume {0}").format(volume_id))
-                volume.delete()
+                with boto_error_handler(self.request, self.location):
+                    volume.delete()
+            if len(volume_ids) == 1:
                 msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            else:
+                prefix = _(u'Successfully sent request to delete volumes')
+                msg = u'{0} {1}'.format(prefix, ', '.join(volume_ids))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to delete volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -159,13 +170,19 @@ class VolumesView(LandingPageView, BaseVolumeView):
 
     @view_config(route_name='volumes_detach', request_method='POST')
     def volumes_detach(self):
-        volume_id = self.request.params.get('volume_id')
+        volume_id_param = self.request.params.get('volume_id')
+        volume_ids = [volume_id.strip() for volume_id in volume_id_param.split(',')]
         if self.detach_form.validate():
-            with boto_error_handler(self.request, self.location):
+            for volume_id in volume_ids:
                 self.log_request(_(u"Detaching volume {0}").format(volume_id))
-                self.conn.detach_volume(volume_id)
+                with boto_error_handler(self.request, self.location):
+                    self.conn.detach_volume(volume_id)
+            if len(volume_ids) == 1:
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            else:
+                prefix = _(u'Successfully sent request to detach volumes')
+                msg = u'{0} {1}'.format(prefix, ', '.join(volume_ids))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -217,6 +234,12 @@ class VolumesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in VolumesFiltersForm
         ignore_params = ['zone']
+        # Get alarms for volumes and build a list of resource ids to optimize alarm status fetch
+        cw_conn = self.get_connection(conn_type='cloudwatch')
+        alarms = [alarm for alarm in cw_conn.describe_alarms() if 'VolumeId' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         with boto_error_handler(self.request):
             if self.enable_filters:
                 filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
@@ -233,11 +256,15 @@ class VolumesJsonView(LandingPageView):
 
             for volume in filtered_items:
                 status = volume.status
+                alarm_status = ''
                 attach_status = volume.attach_data.status
+                is_root_volume = False
                 instance_name = None
                 if volume.attach_data is not None and volume.attach_data.instance_id is not None:
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
                     instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
+                    if instance.root_device_type == 'ebs' and volume.attach_data.device == instance.root_device_name:
+                        is_root_volume = True  # Note: Check for 'True' when passed to JS via Chameleon template
                 if status != 'deleted':
                     snapshot_name = [snap.tags.get('Name') for snap in snapshots if snap.id == volume.snapshot_id]
                     if len(snapshot_name) == 0:
@@ -246,6 +273,8 @@ class VolumesJsonView(LandingPageView):
                         snapshot_name = ''
                     else:
                         snapshot_name = snapshot_name[0]
+                    if volume.id in alarm_resource_ids:
+                        alarm_status = Alarm.get_resource_alarm_status(volume.id, alarms)
                     volumes.append(dict(
                         create_time=volume.create_time,
                         id=volume.id,
@@ -261,6 +290,8 @@ class VolumesJsonView(LandingPageView):
                         size=volume.size,
                         status=status,
                         attach_status=attach_status,
+                        alarm_status=alarm_status,
+                        is_root_volume=is_root_volume,
                         zone=volume.zone,
                         tags=TaggedItemView.get_tags_display(volume.tags),
                         real_tags=volume.tags,
@@ -304,14 +335,18 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         self.attach_data = self.volume.attach_data if self.volume else None
         self.volume_name = self.get_volume_name()
         self.instance_name = None
+        is_root_volume = False
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
             self.instance_name = TaggedItemView.get_display_name(instance)
+            if instance.root_device_type == 'ebs' and self.volume.attach_data.device == instance.root_device_name:
+                is_root_volume = True
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
             instance_name=self.instance_name,
             device_name=self.attach_data.device if self.attach_data else None,
+            is_root_volume=is_root_volume,
             attachment_time=self.get_attachment_time(),
             volume_form=self.volume_form,
             delete_form=self.delete_form,

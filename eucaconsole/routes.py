@@ -57,10 +57,12 @@ urls = [
     # Common #####
     Route(name='region_select', pattern='/region/select'),
     Route(name='file_download', pattern='/_getfile'),
+    Route(name='render_template', pattern='/_template/*subpath'),
 
     # Images #####
     Route(name='images', pattern='/images'),
     Route(name='images_json', pattern='/images/json'),
+    Route(name='images_deregister', pattern='/images/deregister'),
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
     Route(name='image_state_json', pattern='/images/{id}/state/json'),
@@ -83,7 +85,6 @@ urls = [
     Route(name='instance_create', pattern='/instances/new'),
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
-    Route(name='instance_json', pattern='/instances/{id}/json'),
     Route(name='instance_userdata_json', pattern='/instances/{id}/userdata'),
     Route(name='instance_more', pattern='/instances/{id}/more'),
     Route(name='instance_more_launch', pattern='/instances/{id}/more/launch'),
@@ -277,9 +278,11 @@ urls = [
     Route(name='cloudwatch_alarms', pattern='/alarms'),
     Route(name='cloudwatch_alarms_json', pattern='/alarms/json'),
     Route(name='cloudwatch_alarm_history', pattern='/alarms/{alarm_id}/history'),
+    Route(name='cloudwatch_alarm_actions', pattern='/alarms/{alarm_id}/actions'),
     Route(name='cloudwatch_alarms_create', pattern='/alarms/create'),
     Route(name='cloudwatch_alarm_view', pattern='/alarms/{alarm_id}'),
     Route(name='cloudwatch_alarms_for_metric_json', pattern='/alarms/json/{metric}'),
+    Route(name='cloudwatch_alarms_for_resource_json', pattern='/alarms/resource/{id}/json'),
     # REST API - this route is hard-coded elsewhere, do not change.
     Route(name='cloudwatch_api', pattern='/cloudwatch/api'),
     # Metrics Landing page
@@ -377,8 +380,7 @@ urls = [
     Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),
     Route(name='stack_template', pattern='/stacks/{name}/template'),
     Route(name='stack_events', pattern='/stacks/{name}/events'),
-
-    # Tag Editor #####
-    # Directive Template
-    Route(name='tag_editor_template', pattern='/templates/tag-editor'),
+    # Update
+    Route(name='stack_update', pattern='/stacks/{name}/update'),
+    Route(name='stack_cancel_update', pattern='/stacks/{name}/cancelupdate'),
 ]
