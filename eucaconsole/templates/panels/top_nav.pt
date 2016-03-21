@@ -23,10 +23,10 @@
             <span i18n:translate="">INSTANCE TYPES</span>
         </a>
     </li>
-    <h6><i class="icon stacks"></i><span i18n:translate="">CLOUDFORMATION</span></h6>
+    <label i18n:translate="">CLOUDFORMATION</label>
     <li>
         <a id="resource-menuitem-stacks" href="${request.route_path('stacks')}">
-
+            <i class="icon stacks"></i>
             <span i18n:translate="">STACKS</span>
         </a>
     </li>

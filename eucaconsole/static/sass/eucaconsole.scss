@@ -1119,6 +1119,17 @@ footer {
     }
 }
 
+#hpe-logo {
+    position: relative;
+    margin-top: 0.5rem;
+    margin-right: 0.8rem;
+    margin-left: 0.5rem;
+    display: inline-block;
+    width: 178px;
+    height: 40px;
+    background: url(../img/hpe_pri_grn_rev_rgb.svg) no-repeat;
+}
+
 
 /* -----------------------------------------
    Buttons
@@ -1333,7 +1344,7 @@ div.left-nav {
     overflow: hidden;
     border-style: solid;
     border-width: 0 1px 0 0;
-    border-color: $hp-gray-20;
+    border-color: $hpe-lightgray;
 }
 
 // Off-canvas Nav adjustments
@@ -1363,23 +1374,12 @@ $expanded-nav-width: 225px;
 .nav-collapsed.left-nav {
     width: 50px !important;
     overflow-y: hidden !important;
-    h6 {
+    label {
         visibility: hidden;
     }
     hr {
         width: 7.5%;
     }
-}
-
-#hpe-logo {
-    position: relative;
-    margin-top: 0.5rem;
-    margin-right: 0.8rem;
-    margin-left: 0.5rem;
-    display: inline-block;
-    width: 178px;
-    height: 40px;
-    background: url(../img/hpe_pri_grn_rev_rgb.svg) no-repeat;
 }
 
 ul.resources-nav {
@@ -1388,10 +1388,10 @@ ul.resources-nav {
     line-height: 3.0rem;
     margin-left: 0;
     left: 0;
-    h6 {
+    label {
         padding-left: 0.5rem;
         background-color: white;
-        color: $hp-gray-65;
+        color: $hpe-gray;
         padding-top: 0.5rem;
         border-top: 0;
     }
@@ -1419,7 +1419,8 @@ ul.resources-nav {
             vertical-align: middle;
         }
         span.active {
-            color: $hp-hover-blue;
+            background-color: $hpe-green;
+            color: white;
         }
         i.icon {
             position: absolute;
@@ -1429,9 +1430,7 @@ ul.resources-nav {
             width: 2rem;
         }
         i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
-        i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
         i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
-        i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
         i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
         i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
         i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }

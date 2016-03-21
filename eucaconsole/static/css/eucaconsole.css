@@ -1902,6 +1902,8 @@ table.table.smart-table .st-sort-descent:after { content: '\25BC'; }
 footer { background-color: #000000; color: white; padding: 15px 0 3rem 1rem; }
 footer .copyright { font-size: 12px; }
 
+#hpe-logo { position: relative; margin-top: 0.5rem; margin-right: 0.8rem; margin-left: 0.5rem; display: inline-block; width: 178px; height: 40px; background: url(../img/hpe_pri_grn_rev_rgb.svg) no-repeat; }
+
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
 .button { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; outline-color: #01a982; outline-width: 2px; }
@@ -1977,23 +1979,19 @@ div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; 
 .inner-wrap { padding-left: 50px; }
 
 .nav-collapsed.left-nav { width: 50px !important; overflow-y: hidden !important; }
-.nav-collapsed.left-nav h6 { visibility: hidden; }
+.nav-collapsed.left-nav label { visibility: hidden; }
 .nav-collapsed.left-nav hr { width: 7.5%; }
 
-#hpe-logo { position: relative; margin-top: 0.5rem; margin-right: 0.8rem; margin-left: 0.5rem; display: inline-block; width: 178px; height: 40px; background: url(../img/hpe_pri_grn_rev_rgb.svg) no-repeat; }
-
 ul.resources-nav { width: 450px; list-style-type: none; line-height: 3.0rem; margin-left: 0; left: 0; }
-ul.resources-nav h6 { padding-left: 0.5rem; background-color: white; color: #5a5a5a; padding-top: 0.5rem; border-top: 0; }
+ul.resources-nav label { padding-left: 0.5rem; background-color: white; color: #666666; padding-top: 0.5rem; border-top: 0; }
 ul.resources-nav hr { margin: 0 0.5rem 0 0.5rem; width: 42.5%; }
 ul.resources-nav li a { background-color: transparent; color: #666666; padding: 0.5rem 8rem 1.0rem 2.6rem; line-height: 1.5rem; border-bottom: 0; position: static; }
 ul.resources-nav li:hover { background-color: #F0F0F0; color: #666666; }
 ul.resources-nav li span { padding-left: 0.5rem; white-space: nowrap; display: inline-block; vertical-align: middle; }
-ul.resources-nav li span.active { color: #006699; }
+ul.resources-nav li span.active { background-color: #01a982; color: white; }
 ul.resources-nav li i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; }
 ul.resources-nav li i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
-ul.resources-nav li i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
 ul.resources-nav li i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
-ul.resources-nav li i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
 ul.resources-nav li i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
 ul.resources-nav li i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
 ul.resources-nav li i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
