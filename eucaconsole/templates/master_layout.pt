@@ -97,7 +97,7 @@
     <!-- Footer -->
     <footer>
         <div class="row">
-        <i id="hpe-logo"></i>
+            <div id="hpe-logo"></div>
         </div>
         <div class="row">
            <span>HPE Helion Eucalyptus</span><span class="copyright subheader">
