@@ -1340,7 +1340,7 @@ div.left-nav {
 div.left-off-canvas-menu {
     z-index: 999999 !important;
     background-color: white;
-    border: 0 solid $hp-gray-20;
+    border: 0 solid $hpe-lightgray;
     border-right-width: 1px;
 }
 
@@ -1363,7 +1363,7 @@ $expanded-nav-width: 225px;
 .nav-collapsed.left-nav {
     width: 50px !important;
     overflow-y: hidden !important;
-    label {
+    h6 {
         visibility: hidden;
     }
     hr {
@@ -1378,7 +1378,7 @@ $expanded-nav-width: 225px;
     margin-left: 0.5rem;
     display: inline-block;
     width: 178px;
-//    height: 40px;
+    height: 40px;
     background: url(../img/hpe_pri_grn_rev_rgb.svg) no-repeat;
 }
 
@@ -1388,7 +1388,7 @@ ul.resources-nav {
     line-height: 3.0rem;
     margin-left: 0;
     left: 0;
-    label {
+    h6 {
         padding-left: 0.5rem;
         background-color: white;
         color: $hp-gray-65;
