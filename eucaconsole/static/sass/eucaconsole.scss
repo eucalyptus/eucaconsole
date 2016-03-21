@@ -548,6 +548,10 @@ textarea.policy-area {
 .expando {
     i {
         color: $hpe-gray;
+        &:hover {
+                color: $hpe-green;
+                text-decoration: none;
+        }
         &.helptext-icon {
             color: $hpe-gray;
         }
@@ -1430,7 +1434,9 @@ ul.resources-nav {
             width: 2rem;
         }
         i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
+        i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
         i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
+        i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
         i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
         i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
         i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }

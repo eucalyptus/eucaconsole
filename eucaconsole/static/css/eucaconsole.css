@@ -1725,6 +1725,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .helptext-icon { color: #666666; font-size: 1.2rem; }
 
 .expando i { color: #666666; }
+.expando i:hover { color: #01a982; text-decoration: none; }
 .expando i.helptext-icon { color: #666666; }
 .expando .title { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 18px; text-transform: none; }
 .expando .title a { color: #666666; }
@@ -1991,7 +1992,9 @@ ul.resources-nav li span { padding-left: 0.5rem; white-space: nowrap; display: i
 ul.resources-nav li span.active { background-color: #01a982; color: white; }
 ul.resources-nav li i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; }
 ul.resources-nav li i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
+ul.resources-nav li i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
 ul.resources-nav li i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
+ul.resources-nav li i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
 ul.resources-nav li i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
 ul.resources-nav li i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
 ul.resources-nav li i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
