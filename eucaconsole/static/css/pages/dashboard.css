@@ -72,6 +72,8 @@ li#alarms .tile .content { padding-top: 0.8rem; width: 100%; text-align: center;
 
 #service-unknown { margin-top: 13px; }
 
+#instances-running .footer .button { position: relative; bottom: 8px; }
+
 #health .statusrow { font-size: 10pt; text-align: left; color: #666666; margin-top: 10px; line-height: 1.2rem; }
 #health .statusrow .status { position: relative; left: 8px; }
 #health .statusrow i.service-up { color: #01a982; font-size: 16pt; text-align: left; }

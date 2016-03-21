@@ -198,6 +198,14 @@ li#alarms {
     margin-top: 13px;
 }
 
+#instances-running {
+    .footer .button {
+        // Launch Instance button
+        position: relative;
+        bottom: 8px;
+    }
+}
+
 
 // Health status tile
 #health {
