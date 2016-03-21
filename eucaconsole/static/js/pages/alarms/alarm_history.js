@@ -34,6 +34,10 @@ angular.module('AlarmHistoryPage', ['MagicSearch'])
                     return item[field] == value;
                 });
             };
+
+            $scope.getItems = function () {
+                $scope.itemsLoading = false;
+            };
         }]
     };
 });

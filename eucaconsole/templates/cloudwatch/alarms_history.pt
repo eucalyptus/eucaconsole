@@ -27,31 +27,45 @@
                         <a href="" i18n:translate="">History</a>
                     </dd>
                 </dl>
-                <div class="panel" alarm-history="${history_json}">
-                    <div>
-                        <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-                            strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
-                            facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                <div class="panel">
+                    <div class="lp-header" alarm-history="${history_json}">
+                        <div class="lp-search">
+                            <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                                strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                                facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                        </div>
+                        <div class="lp-reload" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+                            <a id="refresh-btn" ng-show="!itemsLoading" ng-cloak="" ng-click="itemsLoading=true; getItems()">
+                                <i class="fa fa-refresh fa-lg"></i>
+                            </a>
+                            &nbsp;
+                            <span ng-show="!itemsLoading" class="items-found">
+                                <strong>{{ historicEvents.length }}</strong>
+                                <span i18n:translate="">found</span>
+                            </span>
+                        </div>
                     </div>
-                    <p ng-show="!historicEvents.length" i18n:translate="">
-                    No recent alarm activity.
-                    </p>
-                    <table class="table" ng-show="historicEvents.length">
-                        <thead>
-                            <tr>
-                                <th i18n:translate="">Timestamp</th>
-                                <th i18n:translate="">Type</th>
-                                <th i18n:translate="">Description</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyBody">
-                            <tr ng-repeat="item in historicEvents track by $index">
-                                <td ng-cloak="">{{ item.timestamp | date: '${layout.angular_date_format}' }}</td>
-                                <td>{{ item.history_item_type }}</td>
-                                <td>{{ item.summary }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div>
+                        <p ng-show="!historicEvents.length" i18n:translate="">
+                        No recent alarm activity.
+                        </p>
+                        <table class="table" ng-show="historicEvents.length">
+                            <thead>
+                                <tr>
+                                    <th i18n:translate="">Timestamp</th>
+                                    <th i18n:translate="">Type</th>
+                                    <th i18n:translate="">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyBody">
+                                <tr ng-repeat="item in historicEvents track by $index">
+                                    <td ng-cloak="">{{ item.timestamp | date: '${layout.angular_date_format}' }}</td>
+                                    <td>{{ item.history_item_type }}</td>
+                                    <td>{{ item.summary }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

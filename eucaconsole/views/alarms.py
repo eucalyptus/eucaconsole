@@ -400,7 +400,7 @@ class CloudWatchAlarmHistoryView(BaseView):
 
         alarm_id = self.request.matchdict.get('alarm_id')
         history = self.get_alarm_history(alarm_id)
-        history = [{
+        self.history = [{
             'timestamp': item.timestamp.isoformat(),
             'history_item_type': item.tem_type,
             'summary': item.summary} for item in history]
@@ -415,8 +415,8 @@ class CloudWatchAlarmHistoryView(BaseView):
 
         self.render_dict = dict(
             alarm_id=alarm_id,
-            history=history,
-            history_json=json.dumps(history),
+            history=self.history,
+            history_json=json.dumps(self.history),
             filter_keys=[],
             search_facets=BaseView.escape_json(json.dumps(search_facets))
         )
@@ -424,6 +424,12 @@ class CloudWatchAlarmHistoryView(BaseView):
     @view_config(route_name='cloudwatch_alarm_history', renderer=TEMPLATE, request_method='GET')
     def cloudwatch_alarm_history_view(self):
         return self.render_dict
+
+    @view_config(route_name='cloudwatch_alarm_history_json', renderer='json', request_method='GET')
+    def cloudwatch_alarm_history_json_view(self):
+        return dict(
+            history=json.dumps(self.history)
+        )
 
     def get_alarm_history(self, alarm_id):
         history = None
