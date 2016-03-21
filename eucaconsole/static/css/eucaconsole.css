@@ -1069,7 +1069,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 
 /* Tooltips */
 .has-tip { border-bottom: dotted 1px #CCCCCC; cursor: help; font-weight: bold; color: #333333; }
-.has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #004c3b; color: #01a982; }
+.has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #004c3a; color: #01a982; }
 .has-tip.tip-left, .has-tip.tip-right { float: none !important; }
 
 .tooltip { display: none; position: absolute; z-index: 1006; font-weight: normal; font-size: 0.875rem; line-height: 1.3; padding: 0.3125rem; max-width: 300px; left: 50%; width: 100%; color: #FFFFFF; background: #333333; }
@@ -1078,7 +1078,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 .tooltip.radius { border-radius: 3px; }
 .tooltip.round { border-radius: 1000px; }
 .tooltip.round > .nub { left: 2rem; }
-.tooltip.opened { color: #01a982 !important; border-bottom: dotted 1px #004c3b !important; }
+.tooltip.opened { color: #01a982 !important; border-bottom: dotted 1px #004c3a !important; }
 
 .tap-to-close { display: block; font-size: 0.625rem; color: #777777; font-weight: normal; }
 
@@ -1744,7 +1744,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #tag-editor .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
 #tag-editor .item-list .item a { color: #666666; }
 #tag-editor .item-list .item a:hover { color: #01a982; text-decoration: none; }
-#tag-editor .propagates { color: #666666; font-size: 0.7em; }
+#tag-editor .propagates { color: #666666; font-size: 16px; }
 #tag-editor .add-label { margin-bottom: 6px; color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 #tag-editor #propagate-wrapper { white-space: nowrap; }
@@ -1772,7 +1772,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .help-content h2 { font-size: 1.1rem; }
 .help-content h3, .help-content h4 { font-size: 1rem; }
 .help-content .p, .help-content .section { line-height: 1.4rem; }
-.help-content .topictitle1 { margin-top: 2rem; }
+.help-content .topictitle1 { margin-top: 1rem; }
 .help-content p { margin-bottom: 0.5rem; }
 .help-content ol ul { list-style-position: inside; }
 .help-content ol ul li { text-indent: -1rem; margin-left: 1rem; }
@@ -1899,8 +1899,8 @@ table.table.smart-table .st-sort-descent:after { content: '\25BC'; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */
-footer { background-color: #000000; padding: 15px 0 3rem 1rem; }
-footer .copyright { font-size: 0.9em; }
+footer { background-color: #000000; color: white; padding: 15px 0 3rem 1rem; }
+footer .copyright { font-size: 12 px; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
@@ -1980,7 +1980,7 @@ div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; 
 .nav-collapsed.left-nav label { visibility: hidden; }
 .nav-collapsed.left-nav hr { width: 7.5%; }
 
-#hp-logo { position: relative; margin-top: 0.5rem; margin-right: 0.8rem; margin-left: 0.5rem; display: inline-block; width: 36px; height: 36px; background: url(../img/hp-logo-36x36.png) no-repeat; }
+#hpe-logo { position: relative; margin-top: 0.5rem; margin-right: 0.8rem; margin-left: 0.5rem; display: inline-block; width: 178px; background: url(../img/hpe_pri_grn_rev_rgb.svg) no-repeat; }
 
 ul.resources-nav { width: 450px; list-style-type: none; line-height: 3.0rem; margin-left: 0; left: 0; }
 ul.resources-nav label { padding-left: 0.5rem; background-color: white; color: #5a5a5a; padding-top: 0.5rem; border-top: 0; }

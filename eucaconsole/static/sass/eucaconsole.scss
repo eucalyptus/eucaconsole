@@ -2,7 +2,7 @@
 
 /* @fileOverview Koala application-wide Sass CSS styles */
 
-// Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+// Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 //
 // Redistribution and use of this software in source and binary forms,
 // with or without modification, are permitted provided that the following
@@ -600,7 +600,7 @@ textarea.policy-area {
     @include item-list;
     .propagates {
         color: $hpe-gray;
-        font-size: 0.7em;
+        font-size: $euca-font-size;
     }
     .add-label {
         margin-bottom: 6px;
@@ -1112,9 +1112,10 @@ table.table {
 ----------------------------------------- */
 footer {
     background-color: $hpe-black;
+    color: white;
     padding: 15px 0 3rem 1rem;
     .copyright {
-        font-size: 0.9em;
+        font-size: $euca-xs-font-size;
     }
 }
 
@@ -1370,15 +1371,15 @@ $expanded-nav-width: 225px;
     }
 }
 
-#hp-logo {
+#hpe-logo {
     position: relative;
     margin-top: 0.5rem;
     margin-right: 0.8rem;
     margin-left: 0.5rem;
     display: inline-block;
-    width: 36px;
-    height: 36px;
-    background: url(../img/hp-logo-36x36.png) no-repeat;
+    width: 178px;
+//    height: 40px;
+    background: url(../img/hpe_pri_grn_rev_rgb.svg) no-repeat;
 }
 
 ul.resources-nav {
