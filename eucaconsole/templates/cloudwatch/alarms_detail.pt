@@ -68,10 +68,10 @@
                                 </div>
                         </div>    
                         <div class="row controls-wrapper">
-                            <div class="large-3 small-4 columns">
+                            <div class="large-3 small-3 columns">
                                 <label class="right" i18n:translate="">Dimensions</label>
                             </div>
-                            <div class="large-9 small-8 columns value">
+                            <div class="large-9 small-9 columns value">
                                 <select multiple="true" ng-model="alarm.dimensions" chosen="">
                                     <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected; value dims.value"></option>
                                 </select>
@@ -79,7 +79,7 @@
                         </div>
                         <div class="row controls-wrapper">
                             <div class="large-3 small-4 columns">
-                                <label i18n:translate="">Trigger alarm when the</label>
+                                <label class="right" i18n:translate="">Trigger alarm when the</label>
                             </div>
                             <div class="large-3 small-4 columns value">
                                 <select ng-model="alarm.statistic">
@@ -95,10 +95,10 @@
                             </div>
                         </div>
                         <div class="row controls-wrapper">
-                            <div class="large-3 columns">
-                                <label i18n:translate="">is</label>
+                            <div class="large-3 small-3 columns">
+                                <label class="right" i18n:translate="">is</label>
                             </div>
-                            <div class="large-3 columns value">
+                            <div class="large-3 small-3 columns value">
                                 <select ng-model="alarm.comparison">
                                     <option>&gt;</option>
                                     <option>&gt;&#61;</option>
@@ -106,24 +106,24 @@
                                     <option>&lt;&#61;</option>
                                 </select>
                             </div>
-                            <div class="large-3 columns value">
+                            <div class="large-3 small-3 columns value">
                                 <input type="text" value="${alarm.threshold}" ng-model="alarm.threshold"/>
                             </div>
-                            <div class="large-3 columns value">
+                            <div class="large-3 small-3 columns value">
                                 ${alarm.unit}
                             </div>
                         </div>
                         <div class="row controls-wrapper">
-                            <div class="large-3 columns">
-                                <label i18n:translate="">for at least</label>
+                            <div class="large-3 small-3 columns">
+                                <label class="right" i18n:translate="">for at least</label>
                             </div>
-                            <div class="large-3 columns">
+                            <div class="large-3 small-3 columns">
                                 <input type="text" value="${alarm.evaluation_periods}" ng-model="alarm.evaluation_periods"/>
                             </div>
-                            <div class="large-3 columns" i18n:translate="">
-                                consecutive periods of
+                            <div class="large-3 small-3 columns" i18n:translate="">
+                                <label i18n:translate="">consecutive periods of</label>
                             </div>
-                            <div class="large-3 columns">
+                            <div class="large-3 small-3 columns">
                                 <select ng-model="alarm.period">
                                     <option value="60" i18n:translate="">1 minute</option>
                                     <option value="300" i18n:translate="">5 minutes</option>
@@ -165,7 +165,7 @@
                                     <div class="columns large-2 large-offset-1 small-2">
                                         <label class="right" i18n:translate="">Action type</label>
                                     </div>
-                                    <div class="columns large-9 small-10">
+                                    <div class="columns large-9 small-10" i18n:translate="">
                                         Autoscaling
                                     </div>
                                 </div>
