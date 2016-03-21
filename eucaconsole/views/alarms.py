@@ -470,7 +470,7 @@ class CloudWatchAlarmHistoryView(BaseView):
     @view_config(route_name='cloudwatch_alarm_history_json', renderer='json', request_method='GET')
     def cloudwatch_alarm_history_json_view(self):
         return dict(
-            history=json.dumps(self.history)
+            history=self.history
         )
 
     def get_alarm_history(self, alarm_id):

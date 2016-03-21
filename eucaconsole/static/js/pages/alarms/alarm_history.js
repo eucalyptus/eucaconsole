@@ -1,14 +1,15 @@
-angular.module('AlarmHistoryPage', ['MagicSearch'])
+angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule'])
 .directive('alarmHistory', function () {
     return {
         link: function (scope, element, attrs) {
+            scope.alarmId = attrs.alarmId;
             scope.historicEvents = JSON.parse(attrs.alarmHistory);
             scope.unfilteredEvents = angular.copy(scope.historicEvents);
 
             scope.$on('searchUpdated', scope.searchUpdatedHandler);
             scope.$on('textSearch', scope.textSearchHandler);
         },
-        controller: ['$scope', function ($scope) {
+        controller: ['$scope', 'AlarmService', function ($scope, AlarmService) {
             $scope.textSearchHandler = function (event, filterText) {
                 if(filterText === '') {
                     $scope.historicEvents = $scope.unfilteredEvents;
@@ -36,7 +37,10 @@ angular.module('AlarmHistoryPage', ['MagicSearch'])
             };
 
             $scope.getItems = function () {
-                $scope.itemsLoading = false;
+                AlarmService.getHistory($scope.alarmId).then(function (items) {
+                    $scope.historicEvents = items;
+                    $scope.itemsLoading = false;
+                });
             };
         }]
     };
