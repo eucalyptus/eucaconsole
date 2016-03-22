@@ -106,7 +106,6 @@ METRIC_TITLE_MAPPING = {
     'NetworkOut': _(u'Network out'),
     # ELB Metrics
     'RequestCount': _(u'Sum request count'),
-    'SumRequestCount': _(u'Sum request count'),
     'Latency': _(u'Avg latency (ms)'),
     'UnHealthyHostCount': _(u'Unhealthy hosts'),
     'HealthyHostCount': _(u'Healthy hosts'),

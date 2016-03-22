@@ -393,7 +393,7 @@ class CloudWatchAlarmDetailView(BaseView):
 
         self.render_dict.update(
             alarm_json=alarm_json,
-            metric_display_name=METRIC_TITLE_MAPPING[self.alarm.metric],
+            metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
             dimensions=dimensions,
             alarm_actions=alarm_actions,
             alarm_actions_json=json.dumps(alarm_actions),
