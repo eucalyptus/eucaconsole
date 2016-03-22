@@ -1182,6 +1182,11 @@ footer {
             outline: none;
         }
     }
+    &.dropdown {
+        &:after {
+            border-color: $hpe-black transparent transparent transparent;
+        }
+    }
 }
 
 /* -----------------------------------------

@@ -20,6 +20,7 @@
 
 #primary-buttons .button { padding: 8px 1rem; }
 #primary-buttons .button.more-actions { margin-left: 1rem; padding-right: 3rem; }
+#primary-buttons .button.more-actions[disabled]:after { border-color: #cccccc transparent transparent transparent; }
 
 #more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
 #more-actions-dropdown.f-dropdown li.disabled { cursor: default; }

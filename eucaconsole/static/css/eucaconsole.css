@@ -1919,6 +1919,7 @@ footer .copyright { font-size: 12px; }
 .button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #CCEEE6; text-decoration: none; border-width: 2px; color: #EDEDED; }
 .button.tiny { white-space: nowrap; }
 .button.round:hover { outline: none; }
+.button.dropdown:after { border-color: #000000 transparent transparent transparent; }
 
 /* ----------------------------------------- Button groups (Foundation's button groups seem broken)
 ----------------------------------------- */
