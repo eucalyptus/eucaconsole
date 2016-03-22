@@ -1908,12 +1908,12 @@ footer .copyright { font-size: 12px; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
-.button { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; outline-color: #01a982; outline-width: 2px; }
-.button:hover { background-color: #fff; color: #000000; text-decoration: none; outline-width: 4px; }
-.button.secondary { background-color: #fff; border-color: #666666; border-width: 2px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
-.button.secondary:hover { background-color: #fff; color: #000000; text-decoration: none; border-width: 4px; }
+.button { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; border: 2px solid #01a982; }
+.button:hover { background-color: #fff; color: #000000; text-decoration: none; outline: 2px solid #01a982; }
+.button.secondary { background-color: #fff; border: 2px #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
+.button.secondary:hover { background-color: #fff; color: #000000; text-decoration: none; outline: 4px solid #01a982; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; }
-.button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; border-color: #EDEDED; text-decoration: none; border-width: 2px; color: #EDEDED; }
+.button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; text-decoration: none; border: 2px #EDEDED; outline: none; color: #EDEDED; }
 .button.disabled, .button[disabled] { background-color: white; border-color: #CCEEE6; color: #EDEDED; }
 .button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #CCEEE6; text-decoration: none; border-width: 2px; color: #EDEDED; }
 

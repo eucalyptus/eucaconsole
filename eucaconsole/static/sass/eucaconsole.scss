@@ -1144,23 +1144,21 @@ footer {
     font-family: $euca-header-font-family;
     text-transform: uppercase;
     color: $hpe-black;
-    outline-color: $hpe-green;
-    outline-width: 2px;
+    border: 2px solid $hpe-green;
     &:hover {
-            background-color: #fff;
-            color: $hpe-black;
-            text-decoration: none;
-            outline-width: 4px;
-        }
+        background-color: #fff;
+        color: $hpe-black;
+        text-decoration: none;
+        outline: 2px solid $hpe-green;
+    }
     &.secondary {
         background-color: #fff;
-        border-color: $hpe-gray;
-        border-width: 2px;
+        border: 2px $hpe-gray;
         &:hover {
             background-color: #fff;
             color: $hpe-black;
             text-decoration: none;
-            border-width: 4px;
+            outline: 4px solid $hpe-green;
         }
         font-family: $euca-header-font-family;
         text-transform: uppercase;

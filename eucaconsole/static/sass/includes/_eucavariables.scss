@@ -238,9 +238,9 @@ $alarm-status-color-ok: $hp-green;
     color: $hpe-disabledgray;
         &:hover {
             background-color: white;
-            border-color: $hpe-disabledgray;
             text-decoration: none;
-            border-width: 2px;
+            border: 2px $hpe-disabledgray;
+            outline: none;
             color: $hpe-disabledgray;
 
         }
