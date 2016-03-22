@@ -1917,6 +1917,8 @@ footer .copyright { font-size: 12px; }
 .button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; text-decoration: none; border: 2px #EDEDED; outline: none; color: #EDEDED; }
 .button.disabled, .button[disabled] { background-color: white; border-color: #CCEEE6; color: #EDEDED; }
 .button.disabled:hover, .button[disabled]:hover { background-color: white; border-color: #CCEEE6; text-decoration: none; border-width: 2px; color: #EDEDED; }
+.button.tiny { white-space: nowrap; }
+.button.round:hover { outline: none; }
 
 /* ----------------------------------------- Button groups (Foundation's button groups seem broken)
 ----------------------------------------- */

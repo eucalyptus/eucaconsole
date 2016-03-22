@@ -1174,6 +1174,14 @@ footer {
     &.disabled, &[disabled] {
         @include primary-disabled-button-mixin;
     }
+    &.tiny {
+        white-space: nowrap;
+    }
+    &.round {
+        &:hover {
+            outline: none;
+        }
+    }
 }
 
 /* -----------------------------------------
