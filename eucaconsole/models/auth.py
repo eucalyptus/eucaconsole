@@ -32,6 +32,7 @@ import base64
 import httplib
 import pylibmc
 import socket
+import ssl
 import urllib2
 from urlparse import urlparse
 
@@ -100,10 +101,10 @@ class RegionCache(object):
 
     def regions(self, regions=None):
         """Returns a list of region choices. Will fetch regions if not passed"""
-        choices = []
         regions = regions or []
         if not regions:
             regions.extend(self.get_regions(self.conn.host if self.conn else None))
+        choices = []
         for region in regions:
             choices.append(dict(
                 name=region.name,
@@ -123,11 +124,22 @@ class RegionCache(object):
             regions = []
             if self.conn is not None:
                 regions = self.conn.get_all_regions()
+            for region in regions:
+                del region.connection
             return regions
         try:
             return _get_regions_cache_(self, host)
         except pylibmc.Error:
             return _get_regions_(self)
+
+
+class HttpsConnectionFactory(object):
+    def __init__(self, port):
+        self.port = port
+
+    def https_connection_factory(self, host, **kwargs):
+        context = ssl._create_unverified_context()
+        return httplib.HTTPSConnection(host, port=self.port, context=context, **kwargs)
 
 
 class ConnectionManager(object):
@@ -269,11 +281,25 @@ class ConnectionManager(object):
             # IAM and S3 connections need host instead of region info
             if _conn_type in ['iam', 's3']:
                 conn = conn_class(
-                    _access_id, _secret_key, host=_ufshost, port=_port, path=path, is_secure=True, security_token=_token
+                    _access_id,
+                    _secret_key,
+                    host=_ufshost,
+                    port=_port,
+                    path=path,
+                    is_secure=True,
+                    security_token=_token,
+                    https_connection_factory=(HttpsConnectionFactory(_port).https_connection_factory, ())
                 )
             else:
                 conn = conn_class(
-                    _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
+                    _access_id,
+                    _secret_key,
+                    region=region,
+                    port=_port,
+                    path=path,
+                    is_secure=True,
+                    security_token=_token,
+                    https_connection_factory=(HttpsConnectionFactory(_port).https_connection_factory, ())
                 )
             if _conn_type == 's3':
                 conn.calling_format = OrdinaryCallingFormat()
@@ -357,7 +383,8 @@ class EucaAuthenticator(object):
         if self.validate_certs:
             conn = CertValidatingHTTPSConnection(host, self.port, timeout=timeout, **self.kwargs)
         else:
-            conn = httplib.HTTPSConnection(host, self.port, timeout=timeout)
+            context = ssl._create_unverified_context()
+            conn = httplib.HTTPSConnection(host, self.port, timeout=timeout, context=context)
 
         if new_passwd:
             auth_string = u"{user}@{account};{pw}@{new_pw}".format(
