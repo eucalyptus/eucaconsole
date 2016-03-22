@@ -24,16 +24,16 @@
 #more-actions-dropdown.f-dropdown li.disabled:hover { background-color: #fff; }
 #more-actions-dropdown hr { margin-top: 0; margin-bottom: 0; }
 
-.gridwrapper { margin-top: 0.5rem; }
-
 #refresh-btn { color: #666666; }
 #refresh-btn:hover { color: #01a982; }
 
+.gridwrapper { margin-top: 0.5rem; }
 .gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #666666; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #01a982; }
 .gridwrapper .dropdown.button.tiny::before, .gridwrapper .dropdown.button.tiny::after { border: none; }
 .gridwrapper .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
 .gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
+.gridwrapper .alert-box.secondary { color: #666666; background-color: white; border: 1px solid #666666; }
 
 .tile { box-shadow: 0 2px 2px 0 #F0F0F0; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }

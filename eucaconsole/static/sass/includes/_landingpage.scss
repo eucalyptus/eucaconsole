@@ -108,10 +108,6 @@ $alarm-status-color-ok: $hpe-green;
     }
 }
 
-.gridwrapper {
-    margin-top: 0.5rem;
-}
-
 #refresh-btn {
     color: $hpe-gray;
     &:hover {
@@ -119,8 +115,9 @@ $alarm-status-color-ok: $hpe-green;
     }
 }
 
-// Dropdown buttons on landing page tile/table view
 .gridwrapper {
+    margin-top: 0.5rem;
+    // Dropdown buttons on landing page tile/table view
     .dropdown.button.tiny {
         z-index: 99999;
         background: none;
@@ -145,6 +142,13 @@ $alarm-status-color-ok: $hpe-green;
             top: 34px;
             min-width: 10rem;
             padding-top: 0;
+        }
+    }
+    .alert-box {
+        &.secondary {
+            color: $hpe-gray;
+            background-color: white;
+            border: 1px solid $hpe-gray;
         }
     }
 }

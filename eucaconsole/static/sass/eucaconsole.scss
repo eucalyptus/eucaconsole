@@ -423,7 +423,7 @@ a.circle {
     .alert-box {
         position: fixed;
         padding: 0 0;
-        top: 0px;
+        top: 0;
         left: 50%;
         transform: translateX(-50%);
         z-index: 9999999;
@@ -1338,7 +1338,7 @@ $btn-group-radius: 10px;
             display: none;
         }
         #offcanvas-icon {
-            left: 0px;
+            left: 0;
             display: inline-block !important;
             margin-right: 12px;
             i {
