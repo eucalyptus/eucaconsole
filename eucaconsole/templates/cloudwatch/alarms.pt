@@ -9,7 +9,7 @@
          ng-init="initController('alarms', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">CloudWatch Alarms</a></li>
+                <li class="current"><a href="#" i18n:translate="">Alarms</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
