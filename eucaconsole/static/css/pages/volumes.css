@@ -24,7 +24,7 @@
 
 #more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
 #more-actions-dropdown.f-dropdown li.disabled { cursor: default; }
-#more-actions-dropdown.f-dropdown li.disabled a { color: #666666; pointer-events: none; }
+#more-actions-dropdown.f-dropdown li.disabled a { color: #cccccc; pointer-events: none; }
 #more-actions-dropdown.f-dropdown li.disabled:hover { background-color: #fff; }
 #more-actions-dropdown hr { margin-top: 0; margin-bottom: 0; }
 

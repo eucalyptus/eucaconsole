@@ -94,7 +94,7 @@ $alarm-status-color-ok: $hpe-green;
         li.disabled {
             cursor: default;
             a {
-                color: $hpe-gray;
+                color: $hpe-lightgray;
                 pointer-events: none;
             }
             &:hover {
