@@ -630,9 +630,20 @@ textarea.policy-area {
 #bdmapping-editor {
     .bdmapping-table {
         width: 100%;
+        input.number {
+            padding: 0 1px 0 6px;
+        }
     }
     th {
         padding-left: 9px;
+        &.size {
+            text-align: center;
+        }
+    }
+    td {
+        &.count {
+            text-align: center;
+        }
     }
     .storage-label {
         text-align: left;
@@ -650,6 +661,9 @@ textarea.policy-area {
     }
     input.number {
         width: 2rem;
+        padding: 6px 3px 5px 8px;
+        line-height: 1.5rem;
+        border: 1px solid $hpe-lightgray;
     }
     .delete-on-terminate {
         text-align: center;

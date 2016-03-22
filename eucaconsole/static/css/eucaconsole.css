@@ -1754,11 +1754,14 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 /* ----------------------------------------- Block device mapping (BDM) editor
 ----------------------------------------- */
 #bdmapping-editor .bdmapping-table { width: 100%; }
+#bdmapping-editor .bdmapping-table input.number { padding: 0 1px 0 6px; }
 #bdmapping-editor th { padding-left: 9px; }
+#bdmapping-editor th.size { text-align: center; }
+#bdmapping-editor td.count { text-align: center; }
 #bdmapping-editor .storage-label { text-align: left; }
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
 #bdmapping-editor #new-blockdevice-entry .chosen-single { line-height: 34px; min-height: 37px; }
-#bdmapping-editor input.number { width: 2rem; }
+#bdmapping-editor input.number { width: 2rem; padding: 6px 3px 5px 8px; line-height: 1.5rem; border: 1px solid #cccccc; }
 #bdmapping-editor .delete-on-terminate { text-align: center; }
 #bdmapping-editor .delete-on-terminate span.hide-for-small { display: inline !important; }
 
