@@ -711,6 +711,8 @@ def file_download(request):
         response = Response(content_type=mime_type)
         response.body = str(contents)
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        response.cache_control = 'no-store'
+        response.pragma = 'no-cache'
         return response
     # no file found ...
     # this isn't handled on on client anyway, so we can return pretty much anything
