@@ -131,6 +131,7 @@ $alarm-status-color-ok: $hpe-green;
         border: none;
         &:hover {
             color: $hpe-green;
+            outline: none;
         }
         &::before, &::after {
             border: none;

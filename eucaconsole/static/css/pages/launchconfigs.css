@@ -29,7 +29,7 @@
 
 .gridwrapper { margin-top: 0.5rem; }
 .gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #666666; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
-.gridwrapper .dropdown.button.tiny:hover { color: #01a982; }
+.gridwrapper .dropdown.button.tiny:hover { color: #01a982; outline: none; }
 .gridwrapper .dropdown.button.tiny::before, .gridwrapper .dropdown.button.tiny::after { border: none; }
 .gridwrapper .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
 .gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
