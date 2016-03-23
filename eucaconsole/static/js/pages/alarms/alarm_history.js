@@ -27,12 +27,24 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule'])
                     return;
                 }
 
-                var q = query.split('=');
-                var field = q.shift().toLowerCase(),
-                    value = q.shift();
+                var facets = {};
+                query.split('&').forEach(function (item) {
+                    var q = item.split('=');
+                    var field = q.shift().toLowerCase(),
+                        value = q.shift();
+
+                    if(!(field in facets)) {
+                        facets[field] = [];
+                    }
+                    facets[field].push(value);
+                });
 
                 $scope.historicEvents = $scope.unfilteredEvents.filter(function (item) {
-                    return item[field] == value;
+                    return Object.keys(facets).some(function (key) {
+                        return facets[key].some(function (value) {
+                            return item[key] == value;
+                        });
+                    });
                 });
             };
 
