@@ -368,7 +368,13 @@ a.has-tip {
 .tooltip {
     font-family: $euca-text-font-family;
     font-size: $euca-s-font-size;
+    border: 2px solid $hpe-lightgray;
     max-width: 260px;
+    > .nub {
+        border: 6px solid $hpe-lightgray;
+        border-color: transparent transparent $hpe-lightgray transparent;
+        top: -12px;
+    }
 }
 
 .breakword {
