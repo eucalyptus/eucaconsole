@@ -36,7 +36,8 @@ from boto.ec2.cloudwatch import MetricAlarm
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
+from ..constants.cloudwatch import (
+    METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES, METRIC_TITLE_MAPPING)
 
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
@@ -392,6 +393,7 @@ class CloudWatchAlarmDetailView(BaseView):
 
         self.render_dict.update(
             alarm_json=alarm_json,
+            metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
             dimensions=dimensions,
             alarm_actions=alarm_actions,
             alarm_actions_json=json.dumps(alarm_actions),
