@@ -32,6 +32,7 @@ import base64
 import httplib
 import pylibmc
 import socket
+import ssl
 import urllib2
 from urlparse import urlparse
 
@@ -44,7 +45,7 @@ from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
-# uncomment to enable boto request logger. Use only for development (see ref in _euca_connection)
+# uncomment to enable boto request logger. Use only for development (see ref in euca_connection)
 # from boto.requestlog import RequestLogger
 import boto
 import boto.ec2.autoscale
@@ -100,10 +101,10 @@ class RegionCache(object):
 
     def regions(self, regions=None):
         """Returns a list of region choices. Will fetch regions if not passed"""
-        choices = []
         regions = regions or []
         if not regions:
             regions.extend(self.get_regions(self.conn.host if self.conn else None))
+        choices = []
         for region in regions:
             choices.append(dict(
                 name=region.name,
@@ -123,11 +124,22 @@ class RegionCache(object):
             regions = []
             if self.conn is not None:
                 regions = self.conn.get_all_regions()
+            for region in regions:
+                del region.connection
             return regions
         try:
             return _get_regions_cache_(self, host)
         except pylibmc.Error:
             return _get_regions_(self)
+
+
+class HttpsConnectionFactory(object):
+    def __init__(self, port):
+        self.port = port
+
+    def https_connection_factory(self, host, **kwargs):
+        context = ssl._create_unverified_context()
+        return httplib.HTTPSConnection(host, port=self.port, context=context, **kwargs)
 
 
 class ConnectionManager(object):
@@ -153,37 +165,33 @@ class ConnectionManager(object):
         :param validate_certs: indicates to check the ssl cert the server provides
 
         """
-
-        def _aws_connection(_region, _access_key, _secret_key, _token, _conn_type):
-            conn = None
-            if conn_type == 'ec2':
-                conn = ec2.connect_to_region(
-                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            elif conn_type == 'autoscale':
-                conn = ec2.autoscale.connect_to_region(
-                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            elif conn_type == 'cloudwatch':
-                conn = ec2.cloudwatch.connect_to_region(
-                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            elif conn_type == 'cloudformation':
-                conn = boto.cloudformation.connect_to_region(
-                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            elif conn_type == 's3':
-                conn = boto.connect_s3(  # Don't specify region when connecting to S3
-                    aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            elif conn_type == 'elb':
-                conn = ec2.elb.connect_to_region(
-                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            elif conn_type == 'vpc':
-                conn = vpc.connect_to_region(
-                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
-            elif conn_type == 'iam':
-                return None
-            if conn:
-                conn.https_validate_certificates = validate_certs
-            return conn
-
-        return _aws_connection(region, access_key, secret_key, token, conn_type)
+        conn = None
+        if conn_type == 'ec2':
+            conn = ec2.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'autoscale':
+            conn = ec2.autoscale.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'cloudwatch':
+            conn = ec2.cloudwatch.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'cloudformation':
+            conn = boto.cloudformation.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 's3':
+            conn = boto.connect_s3(  # Don't specify region when connecting to S3
+                aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'elb':
+            conn = ec2.elb.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'vpc':
+            conn = vpc.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'iam':
+            return None
+        if conn:
+            conn.https_validate_certificates = validate_certs
+        return conn
 
     @staticmethod
     def euca_connection(ufshost, port, region, access_id, secret_key, token, conn_type,
@@ -216,83 +224,94 @@ class ConnectionManager(object):
         :param certs_file: indicates the location of the certificates file, if otherthan standard
 
         """
-        def _euca_connection(_ufshost, _port, _region, _access_id, _secret_key, _token, _conn_type, _dns_enabled):
-            path = 'compute'
-            conn_class = EC2Connection
-            api_version = '2012-12-01'
-            if _region != 'euca':
-                # look up region endpoint
-                conn = _euca_connection(
-                    _ufshost, _port, 'euca', _access_id, _secret_key, _token, 'ec2', _dns_enabled
-                )
-                regions = RegionCache(conn).get_regions(_ufshost)
-                region = [region.endpoint for region in regions if region.name == _region]
-                if region:
-                    endpoint = region[0]
-                    parsed = urlparse(endpoint)
-                    _ufshost = parsed.hostname[4:]  # remove 'ec2.' prefix
-                    _port = parsed.port
+        path = 'compute'
+        conn_class = EC2Connection
+        api_version = '2012-12-01'
+        if region != 'euca':
+            # look up region endpoint
+            conn = ConnectionManager.euca_connection(
+                ufshost, port, 'euca', access_id, secret_key, token, 'ec2', dns_enabled
+            )
+            regions = RegionCache(conn).get_regions(ufshost)
+            region = [region.endpoint for region in regions if region.name == region]
+            if region:
+                endpoint = region[0]
+                parsed = urlparse(endpoint)
+                ufshost = parsed.hostname[4:]  # remove 'ec2.' prefix
+                port = parsed.port
 
-            # special case since this is our own class, not boto's
-            if _conn_type == 'admin':
-                return EucalyptusAdmin(_ufshost, _port, _access_id, _secret_key, _token, _dns_enabled)
+        # special case since this is our own class, not boto's
+        if conn_type == 'admin':
+            return EucalyptusAdmin(ufshost, port, access_id, secret_key, token, dns_enabled)
 
-            # Configure based on connection type
-            if _conn_type == 'autoscale':
-                api_version = '2011-01-01'
-                conn_class = boto.ec2.autoscale.AutoScaleConnection
-                path = 'AutoScaling'
-            elif _conn_type == 'cloudwatch':
-                path = 'CloudWatch'
-                conn_class = boto.ec2.cloudwatch.CloudWatchConnection
-            elif _conn_type == 'cloudformation':
-                path = 'CloudFormation'
-                conn_class = boto.cloudformation.CloudFormationConnection
-            elif _conn_type == 'elb':
-                path = 'LoadBalancing'
-                conn_class = boto.ec2.elb.ELBConnection
-            elif _conn_type == 'iam':
-                path = 'Euare'
-                conn_class = boto.iam.IAMConnection
-            elif _conn_type == 's3':
-                path = 'objectstorage'
-                conn_class = S3Connection
-            elif _conn_type == 'vpc':
-                conn_class = boto.vpc.VPCConnection
+        # Configure based on connection type
+        if conn_type == 'autoscale':
+            api_version = '2011-01-01'
+            conn_class = boto.ec2.autoscale.AutoScaleConnection
+            path = 'AutoScaling'
+        elif conn_type == 'cloudwatch':
+            path = 'CloudWatch'
+            conn_class = boto.ec2.cloudwatch.CloudWatchConnection
+        elif conn_type == 'cloudformation':
+            path = 'CloudFormation'
+            conn_class = boto.cloudformation.CloudFormationConnection
+        elif conn_type == 'elb':
+            path = 'LoadBalancing'
+            conn_class = boto.ec2.elb.ELBConnection
+        elif conn_type == 'iam':
+            path = 'Euare'
+            conn_class = boto.iam.IAMConnection
+        elif conn_type == 's3':
+            path = 'objectstorage'
+            conn_class = S3Connection
+        elif conn_type == 'vpc':
+            conn_class = boto.vpc.VPCConnection
 
-            if _dns_enabled:
-                _ufshost = "{0}.{1}".format(path.lower(), _ufshost)
-                path = '/'
-            else:
-                path = '/services/{0}/'.format(path)
-            region = RegionInfo(name='eucalyptus', endpoint=_ufshost)
-            # IAM and S3 connections need host instead of region info
-            if _conn_type in ['iam', 's3']:
-                conn = conn_class(
-                    _access_id, _secret_key, host=_ufshost, port=_port, path=path, is_secure=True, security_token=_token
-                )
-            else:
-                conn = conn_class(
-                    _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
-                )
-            if _conn_type == 's3':
-                conn.calling_format = OrdinaryCallingFormat()
+        if dns_enabled:
+            ufshost = "{0}.{1}".format(path.lower(), ufshost)
+            path = '/'
+        else:
+            path = '/services/{0}/'.format(path)
+        region = RegionInfo(name='eucalyptus', endpoint=ufshost)
+        # IAM and S3 connections need host instead of region info
+        if conn_type in ['iam', 's3']:
+            conn = conn_class(
+                access_id,
+                secret_key,
+                host=ufshost,
+                port=port,
+                path=path,
+                is_secure=True,
+                security_token=token,
+                https_connection_factory=(HttpsConnectionFactory(port).https_connection_factory, ())
+            )
+        else:
+            conn = conn_class(
+                access_id,
+                secret_key,
+                region=region,
+                port=port,
+                path=path,
+                is_secure=True,
+                security_token=token,
+                https_connection_factory=(HttpsConnectionFactory(port).https_connection_factory, ())
+            )
+        if conn_type == 's3':
+            conn.calling_format = OrdinaryCallingFormat()
 
-            # AutoScaling service needs additional auth info
-            if _conn_type == 'autoscale':
-                conn.auth_region_name = 'Eucalyptus'
+        # AutoScaling service needs additional auth info
+        if conn_type == 'autoscale':
+            conn.auth_region_name = 'Eucalyptus'
 
-            setattr(conn, 'APIVersion', api_version)
-            if conn:
-                conn.https_validate_certificates = validate_certs
-            if certs_file is not None:
-                conn.ca_certificates_file = certs_file
-            conn.http_connection_kwargs['timeout'] = 30
-            # uncomment to enable boto request logger. Use only for development
-            # conn.set_request_hook(RequestLogger())
-            return conn
-
-        return _euca_connection(ufshost, port, region, access_id, secret_key, token, conn_type, dns_enabled)
+        setattr(conn, 'APIVersion', api_version)
+        if conn:
+            conn.https_validate_certificates = validate_certs
+        if certs_file is not None:
+            conn.ca_certificates_file = certs_file
+        conn.http_connection_kwargs['timeout'] = 30
+        # uncomment to enable boto request logger. Use only for development
+        # conn.set_request_hook(RequestLogger())
+        return conn
 
 
 def groupfinder(user_id, request):
@@ -357,7 +376,8 @@ class EucaAuthenticator(object):
         if self.validate_certs:
             conn = CertValidatingHTTPSConnection(host, self.port, timeout=timeout, **self.kwargs)
         else:
-            conn = httplib.HTTPSConnection(host, self.port, timeout=timeout)
+            context = ssl._create_unverified_context()
+            conn = httplib.HTTPSConnection(host, self.port, timeout=timeout, context=context)
 
         if new_passwd:
             auth_string = u"{user}@{account};{pw}@{new_pw}".format(
