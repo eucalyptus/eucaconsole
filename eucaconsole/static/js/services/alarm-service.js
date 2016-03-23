@@ -1,5 +1,5 @@
-angular.module('AlarmServiceModule', [])
-.factory('AlarmService', ['$http', function ($http) {
+angular.module('AlarmServiceModule', ['EucaRoutes'])
+.factory('AlarmService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
     return {
         updateAlarm: function (alarm, path, csrf_token, flash) {
             return $http({
@@ -36,6 +36,20 @@ angular.module('AlarmServiceModule', [])
                 data: {
                     actions: actions
                 }
+            });
+        },
+
+        getHistory: function (id) {
+            return eucaRoutes.getRouteDeferred('cloudwatch_alarm_history_json', { alarm_id: id }).then(function (path) {
+                return $http({
+                    method: 'GET',
+                    url: path
+                }).then(function (response) {
+                    var data = response.data || {
+                        history: []
+                    };
+                    return data.history;
+                });
             });
         }
     };

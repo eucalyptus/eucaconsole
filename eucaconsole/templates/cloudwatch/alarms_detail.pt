@@ -242,6 +242,7 @@
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_detail.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/chosen.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>

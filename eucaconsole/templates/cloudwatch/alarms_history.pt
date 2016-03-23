@@ -1,0 +1,80 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+    <head metal:fill-slot="head_css">
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm_history.css')}"/>
+    </head>
+
+    <div metal:fill-slot="main_content">
+        <div class="row" id="contentwrap" ng-app="AlarmHistoryPage">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
+                            CloudWatchAlarms</a></li>
+                    <li><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}">${alarm_id}</a></li>
+                    <li class="current"><a href="#">History</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
+            <metal:block metal:use-macro="layout.global_macros['notifications']" />
+            <h3 id="pagetitle">
+                <strong i18n:translate="">History for alarm:</strong>
+                <em>${alarm_id}</em>
+            </h3>
+            <div class="large-12 columns">
+                <dl class="tabs" id="alarm-subnav">
+                    <dd><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}" i18n:translate="">General</a><dd>
+                    <dd class="active">
+                        <a href="" i18n:translate="">History</a>
+                    </dd>
+                </dl>
+                <div class="panel">
+                    <div class="lp-header" alarm-history="${history_json}" alarm-id="${alarm_id}">
+                        <div class="lp-search">
+                            <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                                strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                                facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                        </div>
+                        <div class="lp-reload" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+                            <a id="refresh-btn" ng-show="!itemsLoading" ng-cloak="" ng-click="itemsLoading=true; getItems()">
+                                <i class="fa fa-refresh fa-lg"></i>
+                            </a>
+                            &nbsp;
+                            <span ng-show="!itemsLoading" class="items-found">
+                                <strong>{{ historicEvents.length }}</strong>
+                                <span i18n:translate="">found</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
+                    <div ng-show="!itemsLoading">
+                        <p ng-show="!historicEvents.length" i18n:translate="">
+                        No recent alarm activity.
+                        </p>
+                        <table class="table" ng-show="historicEvents.length">
+                            <thead>
+                                <tr>
+                                    <th i18n:translate="">Timestamp</th>
+                                    <th i18n:translate="">Type</th>
+                                    <th i18n:translate="">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyBody">
+                                <tr ng-repeat="item in historicEvents track by $index">
+                                    <td ng-cloak="">{{ item.timestamp | date: '${layout.angular_date_format}' }}</td>
+                                    <td>{{ item.history_item_type }}</td>
+                                    <td>{{ item.summary }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div metal:fill-slot="tail_js">
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_history.js')}"></script>
+    </div>
+</metal:block>
