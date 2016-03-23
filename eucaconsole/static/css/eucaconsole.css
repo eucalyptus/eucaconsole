@@ -1829,7 +1829,7 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper.inline label { right: -6px; }
 .row.controls-wrapper.stacked .field select, .row.controls-wrapper.stacked .field textarea { margin-top: 0; }
 
-form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; }
+form .controls-wrapper > [class*='small-'] label { font-weight: bold; }
 form .controls-wrapper > [class*='small-'] label.right { position: relative; right: -1rem; }
 
 [data-abide] .controls-wrapper .error label, [data-abide] .controls-wrapper.error label { color: #000000; }
