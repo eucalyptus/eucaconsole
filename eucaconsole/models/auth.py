@@ -138,7 +138,7 @@ class HttpsConnectionFactory(object):
         self.port = port
 
     def https_connection_factory(self, host, **kwargs):
-        context = ssl._create_unverified_context()
+        context = ssl._create_unverified_context() if hasattr(ssl, '_create_unverified_context') else None
         return httplib.HTTPSConnection(host, port=self.port, context=context, **kwargs)
 
 
@@ -376,7 +376,7 @@ class EucaAuthenticator(object):
         if self.validate_certs:
             conn = CertValidatingHTTPSConnection(host, self.port, timeout=timeout, **self.kwargs)
         else:
-            context = ssl._create_unverified_context()
+            context = ssl._create_unverified_context() if hasattr(ssl, '_create_unverified_context') else None
             conn = httplib.HTTPSConnection(host, self.port, timeout=timeout, context=context)
 
         if new_passwd:
