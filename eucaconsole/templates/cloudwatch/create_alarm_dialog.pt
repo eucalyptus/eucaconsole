@@ -1,4 +1,4 @@
-<form class="modal" modal="createAlarm"
+<form class="modal create-alarm-modal" modal="createAlarm"
                     name="createAlarmForm"
                     create-alarm=""
                     resource-type="${resource_type}"
@@ -26,6 +26,16 @@
         <div class="large-9 small-9 columns field">
             <textarea class=""
                 maxlength="255" name="description" ng-model="alarm.description"></textarea>
+        </div>
+    </div>
+    <div class="row controls-wrapper dimensions">
+        <div class="large-3 small-3 columns">
+            <label class="right" i18n:translate="">Dimensions</label>
+        </div>
+        <div class="large-9 small-9 columns">
+            <ul>
+                <li ng-repeat="(key, val) in alarm.metric.dimensions">{{ key }} = {{ val.join(', ') }}</li>
+            </ul>
         </div>
     </div>
     <div class="row controls-wrapper">
