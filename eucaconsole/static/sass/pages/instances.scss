@@ -5,12 +5,12 @@
 
 
 // Status colors
-$instance-status-color-running: $hp-green;
-$instance-status-color-pending: lighten($euca-darkblue, 20%);
-$instance-status-color-stopped: darken(red, 20%);
+$instance-status-color-running: $hpe-slate;
+$instance-status-color-pending: lighten($hpe-slate, 20%);
+$instance-status-color-stopped: darkred;
 $instance-status-color-stopping: lighten(red, 20%);
-$instance-status-color-terminated: $euca-darkgrey;
-$instance-status-color-terminating: lightgrey;
+$instance-status-color-terminated: $hpe-gray;
+$instance-status-color-terminating: $hpe-lightgray;
 
 
 // Tile/table view

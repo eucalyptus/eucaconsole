@@ -1,7 +1,7 @@
 <!--! Manage alarms for a given resource -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
-    <div class="expando" id="details-section" ng-cloak="">
-        <h6 class="title" >
+    <div class="expando" id="manage-resource-alarms" ng-cloak="">
+        <h6 class="title">
             <a ng-click="toggleContent()">
                 <i class="fi-plus" ng-show="!expanded"></i>
                 <i class="fi-minus" ng-show="expanded"></i>
@@ -14,7 +14,7 @@
                     &nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">total</span>
                 </span>
                 <span ng-if="(alarms | filter:{state:'ALARM'}).length > 0">
-                    &nbsp;{{ (alarms | filter:{state:"ALARM"}).length }}&nbsp;<span i18n:translate="">of</span>&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">in state</span>&nbsp;<span class="status ALARM">ALARM</span>
+                    &nbsp;{{ (alarms | filter:{state:"ALARM"}).length }}&nbsp;<span i18n:translate="">of</span>&nbsp;{{ alarms.length }}&nbsp;<span i18n:translate="">in state</span>&nbsp;<span alarm-state="ALARM" class="top-state"></span>
                 </span>
             </span>
         </h6>

@@ -52,6 +52,20 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
                     }
                 });
             });
+        },
+
+        getHistory: function (id) {
+            return eucaRoutes.getRouteDeferred('cloudwatch_alarm_history_json', { alarm_id: id }).then(function (path) {
+                return $http({
+                    method: 'GET',
+                    url: path
+                }).then(function (response) {
+                    var data = response.data || {
+                        history: []
+                    };
+                    return data.history;
+                });
+            });
         }
     };
 }]);

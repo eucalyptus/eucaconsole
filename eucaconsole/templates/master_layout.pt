@@ -37,7 +37,6 @@
 <body>
 <div class="off-canvas-wrap" data-offcanvas="">
 <div class="left-nav nav-collapsed">
-    <i id="hp-logo"></i>
     ${panel('top_nav', off_canvas=False)}
 </div>
 <div id="canvaswrap" class="inner-wrap">
@@ -98,9 +97,12 @@
     <!-- Footer -->
     <footer>
         <div class="row">
-           <div class="copyright subheader">
-               © 2015 Hewlett-Packard Development Company, L.P.
-           </div>
+            <div id="hpe-logo"></div>
+        </div>
+        <div class="row">
+           <span>HPE Helion Eucalyptus</span><span class="copyright subheader">
+            &nbsp;| © 2015-2016 Hewlett Packard Enterprise Company, L.P.
+           </span>
         </div>
         <form id="euca-logout-form" method="post" action="${request.route_path('logout')}">
             ${structure:layout.euca_logout_form['csrf_token']}

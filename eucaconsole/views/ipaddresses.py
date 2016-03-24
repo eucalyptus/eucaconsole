@@ -50,11 +50,12 @@ class IPAddressesView(LandingPageView):
         self.title_parts = [_(u'IP Addresses')]
         self.prefix = '/ipaddresses'
         self.conn = self.get_connection()
-        self.allocate_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
-        self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
-        self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
-        self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location('ipaddresses')
+        self.allocate_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
+            self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
+        self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             prefix=self.prefix,

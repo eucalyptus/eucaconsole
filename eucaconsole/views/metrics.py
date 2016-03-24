@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS CloudWatch metrics
 
 """
 import copy
+import datetime
 import simplejson as json
 
 from pyramid.view import view_config
@@ -282,7 +283,7 @@ class CloudWatchMetricsJsonView(BaseView):
                 if cat['name'] == 'ec2allinstances':
                     tmp = set([met['name'] for met in tmp])
                 else:
-                    tmp = [(met['dimensions'].items(), met['name']) for met in tmp]
+                    tmp = [(met['dimensions'].items(), met['name'], met['namespace']) for met in tmp]
                 cat_metrics = []
                 for metric in tmp:
                     if cat['name'] == 'ec2allinstances':
@@ -300,10 +301,12 @@ class CloudWatchMetricsJsonView(BaseView):
                             continue
                         unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
                         if cat['name'] == 'custom':
-                            unit = "Count"
+                            unit = ['Count']
+                    if metric_name == 'UserCount':
+                        print "Hello"
                     cat_metrics.append(dict(
                         cat_name=cat['name'],
-                        namespace=cat['namespace'],
+                        namespace=metric[2],
                         unique_id=metric[1] + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
                         resources=[dict(
                             res_id=dim[1][0],
@@ -328,13 +331,13 @@ class CloudWatchMetricsJsonView(BaseView):
 
             return dict(results=metrics)
 
-    @view_config(route_name='cloudwatch_resource_names_json', renderer='json', request_method='POST')
+    @view_config(route_name='cloudwatch_resource_names_json', renderer='json', xhr=True, request_method='POST')
     def cloudwatch_resource_names_json(self):
         ids = self.request.params.getall('id')
         res_type = self.request.params.get('restype')
         names = {}
         if res_type == 'instance':
-            instances = self.get_connection().get_only_instances(ids)
+            instances = self.get_connection().get_only_instances(filters={'instance_id': ids})
             for instance in instances:
                 names[instance.id] = TaggedItemView.get_display_name(instance)
         elif res_type == 'image':

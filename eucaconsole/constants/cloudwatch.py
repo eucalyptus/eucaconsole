@@ -115,6 +115,17 @@ METRIC_TITLE_MAPPING = {
     'HTTPCode_Backend_3XX': _(u'Sum HTTP 3xxs'),
     'HTTPCode_Backend_4XX': _(u'Sum HTTP 4xxs'),
     'HTTPCode_Backend_5XX': _(u'Sum HTTP 5xxs'),
+    # EBS Metrics
+    'VolumeConsumedReadWriteOps': _(u'Volume consumed read/write operations'),
+    'VolumeIdleTime': _(u'Volume idle time'),
+    'VolumeQueueLength': _(u'Volume queue length'),
+    'VolumeReadBytes': _(u'Volume read bytes'),
+    'VolumeReadOps': _(u'Volume read operations'),
+    'VolumeThroughputPercentage': _(u'Volume throughput percentage'),
+    'VolumeTotalReadTime': _(u'Volume total read time'),
+    'VolumeTotalWriteTime': _(u'Volume total write time'),
+    'VolumeWriteBytes': _(u'Volume write bytes'),
+    'VolumeWriteOps': _(u'Volume write operations'),
 }
 
 # Statistic choices for CloudWatch charts

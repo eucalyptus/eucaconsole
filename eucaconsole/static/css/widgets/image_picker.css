@@ -3,10 +3,10 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-#image-picker .table { width: 100% !important; border: 1px solid #ccc; }
+#image-picker .table { width: 100% !important; border: 1px solid #cccccc; }
 #image-picker .table tbody { display: block; overflow-y: scroll; height: 22rem; }
-#image-picker .table tbody tr { display: block; border-bottom: 1px solid #ccc; }
-#image-picker .table tbody tr.selected { background-color: #edf9ff; }
+#image-picker .table tbody tr { display: block; border-bottom: 1px solid #cccccc; }
+#image-picker .table tbody tr.selected { background-color: #F0F0F0; }
 #image-picker .table tbody tr.selected:hover { cursor: inherit; }
 #image-picker .table tbody td { word-break: break-all; }
 #image-picker .table tbody td.desc { width: 100%; text-align: left; }
@@ -25,8 +25,8 @@
 #image-picker .table .icon .image.unknown { background-position: 0 -451px; }
 #image-picker .table .name a { line-height: 1rem; font-size: 1.1rem; }
 #image-picker .table .label { padding: 3px 4px; }
-#image-picker .table .label.i386 { background-color: #6a6a6a; }
-#image-picker .table .label.x86_64 { background-color: #40a8c6; }
+#image-picker .table .label.i386 { background-color: #2ad2c9; }
+#image-picker .table .label.x86_64 { background-color: #80746E; }
 #image-picker .cancel-link { margin-left: 1.5rem; }
 
 #filters label { margin-top: 8px; margin-bottom: 2px; }

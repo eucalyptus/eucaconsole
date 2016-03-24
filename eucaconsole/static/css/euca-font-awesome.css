@@ -1119,8 +1119,8 @@
 
 .helptext-icon { margin-left: 5px; text-align: center; }
 
-h3.warn-dialog:before { color: #f3901d; padding-right: 0.5rem; }
+h3.warn-dialog:before { color: darkred; padding-right: 0.5rem; }
 
-.table-expando-closed { margin-left: 5px; text-align: center; }
+.table-expando-closed { margin-left: 5px; text-align: center; color: #666666; }
 
-.table-expando-open { margin-left: 1px; text-align: center; }
+.table-expando-open { margin-left: 1px; text-align: center; color: #666666; }

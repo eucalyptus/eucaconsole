@@ -3,8 +3,6 @@
 
 $dashboard-panel-tile-height: 240px;
 $dashboard-panel-padding: 4px;
-$dashboard-panel-border-width: 4px;
-$dashboard-panel-border-color: $euca-lightgrey;
 $dashboard-panel-icon-size: 100px;
 
 
@@ -15,19 +13,29 @@ $dashboard-panel-icon-size: 100px;
         margin-left: 0;
         margin-top: 1rem;
         h3 {
-            font-weight: bold;
+            font-family: $euca-header-font-family;
+            font-size: $euca-xl-font-size;
             margin-top: 0;
             display: inline-block;
         }
         #zone-selector {
             display: inline-block;
             margin-left: 1rem;
+            font-family: $euca-text-font-family; 
+            font-size: $euca-font-size;
+            &:hover {
+            text-decoration: underline;
+            }
         }
         #reset-dash {
             margin-top: 1.25rem;
-            font-size: 0.825rem;
+            font-family: $euca-text-font-family;
+            font-size: $euca-font-size;
             display: inline-block;
             float: right;
+            &:hover {
+            text-decoration: underline;
+            }
         }
     }
 }
@@ -40,23 +48,23 @@ $tile-row-height: 24px;
     margin-bottom: 0;
     box-sizing: border-box;
     position: relative;
-    font-size: 0.825rem;
+    font-size: $euca-font-size;
     .tile {
         background-color: white;
-        border: 1px solid $hp-gray-20;
         position: relative;
         height: $dashboard-panel-tile-height;
         padding: 4px 8px;
         .subheader {
-            font-size: 1rem;
-            font-weight: 500;
+            font-family: $euca-text-font-family;
+            font-size: $euca-font-size;
+            color: $hpe-gray;
             margin: 0 0 0 0;
         }
         i.fa-bell {
             color: white !important;
         }
         i.dash-no-alarms {
-            color: $hp-gray-65 !important;
+            color: $hpe-gray !important;
         }
         i.dash-alarms {
             color: red !important;
@@ -71,15 +79,16 @@ $tile-row-height: 24px;
             color: white;
             font-size: 3rem;
             em {  // Item counts
-                font-size: 1.3rem;
-                font-weight: bold;
+                font-size: $euca-xl-font-size;
                 position: absolute;
                 bottom: -40%; left: 0; right: 0;
                 text-align: center;
-                color: $hp-accessible-blue;
+                color: $hpe-gray;
+                font-family: $euca-header-font-family;
                 font-style: normal;
                 &:hover {
                     text-decoration: underline;
+                    color: $hpe-green;
                 }
                 i { // busy
                     color: black;
@@ -92,7 +101,7 @@ $tile-row-height: 24px;
             left: 1rem; right: 1rem; bottom: 8px;
             text-align: center;
             a {
-                font-weight: bold;
+                font-size: $euca-font-size;
                 &:hover {
                     text-decoration: underline;
                 }
@@ -112,12 +121,12 @@ $tile-row-height: 24px;
             position: absolute;
             width: 30px; height: $tile-row-height;
             top: 0; right: 0;
-            color: $hp-gray-65;
+            color: $hpe-gray;
             font-size: 1.1rem;
             padding: 0 0 0 0;
             border: none;
             &:hover {
-                color: $hp-hover-blue;
+                color: $hpe-green;
             }
             &::before, &::after {
                 border: none;
@@ -140,7 +149,8 @@ $tile-row-height: 24px;
                 position: absolute;
                 top: 0; bottom: 0; left: 0; right: 0;
                 &:hover {
-                    background-color: lighten($hp-accessible-blue, 50%);
+                    background-color: $hpe-hovergray;
+                    text-decoration: none;
                 }
             }
             .plus {
@@ -163,7 +173,7 @@ li#alarms {
 
 // replace fa-4x or fa-5x
 .euca-dash-size {
-    font-size: 4.43em;
+    font-size: 3.65em;
 }
 
 // SVG icons
@@ -188,13 +198,21 @@ li#alarms {
     margin-top: 13px;
 }
 
+#instances-running {
+    .footer .button {
+        // Launch Instance button
+        position: relative;
+        bottom: 8px;
+    }
+}
+
 
 // Health status tile
 #health {
     .statusrow {
         font-size: 10pt;
         text-align: left;
-        color: $euca-grey;
+        color: $hpe-gray;
         margin-top: 10px;
         line-height: 1.2rem;
         .status {
@@ -202,7 +220,7 @@ li#alarms {
             left: 8px;
         }
         i.service-up {
-            color: $hp-green;
+            color: $hpe-green;
             font-size: 16pt;
             text-align: left;
         }
@@ -212,7 +230,7 @@ li#alarms {
             text-align: left;
         }
         i.service-denied {
-            color: $euca-darkgrey;
+            color: $hpe-gray;
             font-size: 16pt;
             text-align: left;
         }

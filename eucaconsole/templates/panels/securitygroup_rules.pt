@@ -8,14 +8,12 @@
         <h6 i18n:translate="">Rules</h6>
     </div>
     <div class="columns">
-        <ul class="btn-group" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'" ng-cloak="">
-            <li>
-                <a id="inbound-rules-tab" ng-class="inboundButtonClass"
-                   ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a>
-                <a id="outbound-rules-tab" ng-class="outboundButtonClass"
-                   ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a>
-            </li>
-        </ul>
+        <dl class="tabs" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'" ng-cloak="">
+            <dd ng-class="inboundButtonClass"><a id="inbound-rules-tab"
+               ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a></dd>
+            <dd ng-class="outboundButtonClass"><a id="outbound-rules-tab"
+               ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a></dd>
+        </dl>
         <div class="tabs-content">
             <div class="columns field" ng-cloak="">
                 <div class="item-list">
