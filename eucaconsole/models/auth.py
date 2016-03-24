@@ -138,8 +138,15 @@ class HttpsConnectionFactory(object):
         self.port = port
 
     def https_connection_factory(self, host, **kwargs):
-        context = ssl._create_unverified_context() if hasattr(ssl, '_create_unverified_context') else None
-        return httplib.HTTPSConnection(host, port=self.port, context=context, **kwargs)
+        """Returns HTTPS connection object with appropriate SSL context
+        :param host:
+
+        NOTE: Python < 2.7.9 is missing the ssl._create_unverified_context
+              and doesn't accept a 'context' kwarg in httplib.HTTPSConnection
+        """
+        if hasattr(ssl, '_create_unverified_context'):
+            kwargs.update(context=ssl._create_unverified_context())
+        return httplib.HTTPSConnection(host, port=self.port, **kwargs)
 
 
 class ConnectionManager(object):
@@ -376,8 +383,7 @@ class EucaAuthenticator(object):
         if self.validate_certs:
             conn = CertValidatingHTTPSConnection(host, self.port, timeout=timeout, **self.kwargs)
         else:
-            context = ssl._create_unverified_context() if hasattr(ssl, '_create_unverified_context') else None
-            conn = httplib.HTTPSConnection(host, self.port, timeout=timeout, context=context)
+            conn = HttpsConnectionFactory(self.port).https_connection_factory(host, timeout=timeout)
 
         if new_passwd:
             auth_string = u"{user}@{account};{pw}@{new_pw}".format(
