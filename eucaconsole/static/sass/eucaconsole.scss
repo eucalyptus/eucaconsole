@@ -624,10 +624,18 @@ textarea.policy-area {
     #add-tag-btn {
         margin-bottom: 0;
     }
-    #propagate-wrapper {
-        white-space: nowrap;
+    &.autoscale {
+        #autoscale-tag-name-input-div, #autoscale-tag-value-input-div {
+            position: relative;
+            left: 1rem;
+        }
+        #propagate-wrapper {
+            white-space: nowrap;
+            line-height: 2.2rem;
+        }
     }
 }
+
 
 /* -----------------------------------------
    Block device mapping (BDM) editor

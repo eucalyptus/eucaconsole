@@ -1750,7 +1750,8 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #tag-editor .propagates { color: #666666; font-size: 16px; }
 #tag-editor .add-label { margin-bottom: 6px; color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
-#tag-editor #propagate-wrapper { white-space: nowrap; }
+#tag-editor.autoscale #autoscale-tag-name-input-div, #tag-editor.autoscale #autoscale-tag-value-input-div { position: relative; left: 1rem; }
+#tag-editor.autoscale #propagate-wrapper { white-space: nowrap; line-height: 2.2rem; }
 
 /* ----------------------------------------- Block device mapping (BDM) editor
 ----------------------------------------- */
