@@ -56,4 +56,9 @@ angular.module('CustomFilters', [])
         return input.replace(/ /g, '_').toLowerCase();
     };
 })
+.filter('b64encode', function () {
+    return function (input) {
+        return btoa(input);
+    };
+})
 ;

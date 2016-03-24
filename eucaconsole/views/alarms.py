@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS CloudWatch alarms
 
 """
 import re
+import base64
 import simplejson as json
 
 from boto.ec2.cloudwatch import MetricAlarm
@@ -162,20 +163,11 @@ class CloudWatchAlarmsView(LandingPageView):
         description = alarm.get('description')
         dimensions = alarm.get('dimensions')
 
-        metric_dimensions = {}
-        for selected in dimensions:
-            decoded = json.loads(selected)
-            for key, value in decoded.iteritems():
-                if key in metric_dimensions:
-                    metric_dimensions[key] += value
-                else:
-                    metric_dimensions[key] = value
-
         updated = MetricAlarm(
             name=name, metric=metric, namespace=namespace, statistic=statistic,
             comparison=comparison, threshold=threshold, period=period,
             evaluation_periods=evaluation_periods, unit=unit, description=description,
-            dimensions=metric_dimensions)
+            dimensions=dimensions)
 
         with boto_error_handler(self.request):
             self.log_request(_(u'Updating alarm {0}').format(alarm.get('name')))
@@ -328,6 +320,8 @@ class CloudWatchAlarmDetailView(BaseView):
         super(CloudWatchAlarmDetailView, self).__init__(request, **kwargs)
 
         alarm_id = self.request.matchdict.get('alarm_id')
+        alarm_id = base64.decodestring(alarm_id)
+
         self.alarm = self.get_alarm(alarm_id)
         self.alarm_form = CloudWatchAlarmUpdateForm(
             request)

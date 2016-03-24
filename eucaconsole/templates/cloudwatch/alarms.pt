@@ -85,7 +85,7 @@
                 <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td alarm-state="{{ item.state }}"></td>
                 <td class="id">
-                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                    <a ng-href="${prefix}/{{ item.id || item.name | b64encode }}">
                         {{ item.name || item.id }}</a>
                 </td>
                 <td>

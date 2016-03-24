@@ -26,6 +26,21 @@ angular.module('AlarmDetailPage', [
             $scope.saveChanges = function (event) {
                 var servicePath = event.target.dataset.servicePath;
 
+                var dimensions = $scope.alarm.dimensions || [],
+                    newDimensions = {};
+
+                dimensions.forEach(function (dimension) {
+                    var d = JSON.parse(dimension);
+                    Object.keys(d).forEach(function (key) {
+                        if(!(key in newDimensions)) {
+                            newDimensions[key] = [];
+                        }
+                        newDimensions[key] = newDimensions[key].concat(d[key]);
+                    });
+                });
+
+                $scope.alarm.dimensions = newDimensions;
+
                 AlarmService.updateAlarm($scope.alarm, servicePath, csrf_token, true)
                     .then(function success (response) {
                         $window.location.href = servicePath;
