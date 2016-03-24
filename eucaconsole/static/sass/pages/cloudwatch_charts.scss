@@ -44,10 +44,11 @@
 
 .chart-wrapper {
     h6 {
-        color: $hp-gray-65;
+        color: $hpe-gray;
+        text-transform: none;
         margin-bottom: 0;
         padding: 8px 0 4px 8px;
-        border: 1px solid $hp-gray-20;
+        border: 1px solid $hpe-lightgray;
         border-bottom: none;
         .busy {
             margin-left: 1rem;

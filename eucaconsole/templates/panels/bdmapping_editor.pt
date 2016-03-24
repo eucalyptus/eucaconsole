@@ -30,7 +30,7 @@
                     </td>
                     <td>{{ key }}</td>
                     <td>{{ val.snapshot_id }}</td>
-                    <td tal:condition="not read_only">
+                    <td tal:condition="not read_only" class="count">
                         <span ng-if="!isEphemeral(val)">
                             <input class="number" value="{{ val.size }}" size="4" required="required" pattern="integer"
                                    ng-keyup="updateRootDeviceSize($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
@@ -90,7 +90,7 @@
             </div>
             <div class="medium-3 columns" ng-show="newVolumeType !== 'ephemeral'">
                 <label class="left" i18n:translate="">Delete on terminate</label>
-                <input style="margin-top:35px;margin-left:-70px;" type="checkbox" name="delete_on_termination"
+                <input type="checkbox" name="delete_on_termination"
                     checked="checked" ng-model="newDOT" ng-disabled="disableDOT"/>
             </div>
         </div>

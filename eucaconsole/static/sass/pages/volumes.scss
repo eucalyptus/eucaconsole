@@ -7,15 +7,15 @@
 // Attach status choices (volume.attach_data.status) are: attaching, attached, detaching, detached
 
 // Status colors
-$volume-status-color-attached: $euca-darkblue;
-$volume-status-color-attaching: lighten($euca-darkblue, 20%);
-$volume-status-color-detached: $hp-purple;
-$volume-status-color-detaching: lighten($hp-purple, 20%);
-$volume-status-color-deleting: lighten($euca-grey, 10%);
-$volume-status-color-deleted: darken($euca-grey, 10%);
+$volume-status-color-creating: lighten($hpe-purple, 20%);
+$volume-status-color-available: $hpe-purple;
+$volume-status-color-detached: $hpe-purple;
+$volume-status-color-detaching: lighten($hpe-purple, 20%);
+$volume-status-color-deleting: $hpe-lightgray;
+$volume-status-color-deleted: $hpe-gray;
 $volume-status-color-error: darkred;
-$volume-status-color-creating: lighten($hp-purple, 20%);
-$volume-status-color-available: $hp-purple;
+$volume-status-color-attached: $hpe-slate;
+$volume-status-color-attaching: lighten($hpe-slate, 20%);
 
 .alarm-status.alarm { background-color: $alarm-status-color-alarm; }
 .alarm-status.insufficient_data { background-color: $alarm-status-color-insufficient-data; }

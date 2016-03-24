@@ -30,6 +30,7 @@
                 <dd class="active"><a href="#">Monitoring</a></dd>
             </dl>
             <div class="panel no-title cloudwatch-charts">
+                <h6 i18n:translate="" tal:condition="launchconfig_monitoring_enabled">CloudWatch instance metrics</h6>
                 <alarm-state-view
                     template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
                     resource-id="${scaling_group.name}" resource-name="${scaling_group.name}"
@@ -91,7 +92,7 @@
                     </li>
                 </ul>
                 <hr tal:condition="launchconfig_monitoring_enabled" />
-                <h4 i18n:translate="" tal:condition="launchconfig_monitoring_enabled">CloudWatch scaling group metrics</h4>
+                <h6 i18n:translate="" tal:condition="launchconfig_monitoring_enabled">CloudWatch scaling group metrics</h6>
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="metrics_collection_enabled">

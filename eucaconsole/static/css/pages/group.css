@@ -10,8 +10,9 @@
 /* ----------------------------------------- IAM User Icons
 ----------------------------------------- */
 #users-in-group .item-list { margin-bottom: 6px; }
-#users-in-group .item-list .item { color: #333; background-color: #e6e7e8; margin-right: 8px; }
-#users-in-group .item-list .item a { color: white; }
+#users-in-group .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
+#users-in-group .item-list .item a { color: #666666; }
+#users-in-group .item-list .item a:hover { color: #01a982; text-decoration: none; }
 
 /* ----------------------------------------- Extra Element Padding
 ----------------------------------------- */
