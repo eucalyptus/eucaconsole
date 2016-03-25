@@ -997,21 +997,29 @@ textarea.hidden {
             background-image: none;
             background-color: #fff !important;
             border-radius: 0;
-            height: 2rem;
-            line-height: 2rem;
+            height: 2.5rem;
+            line-height: 2.5rem;
             font-size: 0.875rem;
             b {
                 position: relative;
-                top: 4px;
+                top: 10px;
             }
         }
     }
-    .chosen-drop .chosen-results {
-        font-size: $euca-font-size;
-        .active-result {
-            &.highlighted {
-                color: $hpe-black;
-                background: $hpe-hovergray none;
+    .chosen-drop {
+        .chosen-search {
+            input {
+                height: 2rem;
+                line-height: 2rem;
+            }
+        }
+        .chosen-results {
+            font-size: $euca-font-size;
+            .active-result {
+                &.highlighted {
+                    color: $hpe-black;
+                    background: $hpe-hovergray none;
+                }
             }
         }
     }
