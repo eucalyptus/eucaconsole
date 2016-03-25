@@ -97,6 +97,9 @@
             </select>
         </div>
     </div>
+    <hr/>
+    ${panel('alarm_actions_panel')}
+    <hr/>
     <div class="controls">
         <button type="submit" class="button expand">
             Create Alarm

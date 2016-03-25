@@ -14,7 +14,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 
             $scope.addAction = function () {
                 //  Do not add action if form is invalid
-                if($scope.alarmActionsForm.$invalid) {
+                if($scope.alarmActionsForm.$invalid || $scope.alarmActionsForm.$pristine) {
                     return;
                 }
 
@@ -46,11 +46,8 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             };
 
             $scope.updateActions = function () {
-                AlarmService.updateActions($scope.alarmId, $scope.alarmActions).then(function success () {
-                    $scope.resetForm();
-                }, function error (response) {
-                    console.log(response);
-                });
+                $scope.$emit('actionsUpdated', $scope.alarmActions);
+                $scope.resetForm();
             };
 
             $scope.resetForm = function () {
@@ -100,6 +97,20 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                     });
             };
         }]
+    };
+})
+.directive('requiredIfChanged', function () {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, element, attrs, ctrl) {
+            ctrl.$validators.requiredIfChanged = function (modelValue, viewValue) {
+                if(ctrl.$touched && ctrl.$isEmpty(modelValue)) {
+                    return false;
+                }
+                return true;
+            };
+        }
     };
 })
 .filter('signed', function () {

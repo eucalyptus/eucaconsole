@@ -164,11 +164,13 @@ class CloudWatchAlarmsView(LandingPageView):
         description = alarm.get('description')
         dimensions = alarm.get('dimensions')
 
+        alarm_actions = alarm.get('alarm_actions')
+
         updated = MetricAlarm(
             name=name, metric=metric, namespace=namespace, statistic=statistic,
             comparison=comparison, threshold=threshold, period=period,
             evaluation_periods=evaluation_periods, unit=unit, description=description,
-            dimensions=dimensions)
+            dimensions=dimensions, alarm_actions=alarm_actions)
 
         with boto_error_handler(self.request):
             self.log_request(_(u'Updating alarm {0}').format(alarm.get('name')))

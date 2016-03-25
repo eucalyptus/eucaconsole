@@ -28,7 +28,7 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
                     scope.alarm.comparison = '>=';
                 });
         },
-        controller: ['$scope', 'AlarmService', function ($scope, AlarmService) {
+        controller: ['$scope', 'AlarmService', 'ModalService', function ($scope, AlarmService, ModalService) {
             $scope.alarm = {};
             var csrf_token = $('#csrf_token').val();
 
@@ -74,13 +74,22 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
                     evaluation_periods: alarm.evaluation_periods,
                     unit: alarm.unit,
                     description: alarm.description,
-                    dimensions: alarm.metric.dimensions
-                }, csrf_token).then(function () {
-                    console.log('blah', arguments);
-                }, function () {
-                    console.log('error', arguments);
+                    dimensions: alarm.metric.dimensions,
+                    alarm_actions: alarm.alarm_actions
+                }, csrf_token).then(function success (response) {
+                    ModalService.closeModal('createAlarm');
+                    Notify.success(response.data.message);
+                }, function error (response) {
+                    ModalService.closeModal('createAlarm');
+                    Notify.failure(response.data.message);
                 });
             };
+
+            $scope.$on('actionsUpdated', function (event, actions) {
+                $scope.alarm.alarm_actions = actions.map(function (action) {
+                    return action.arn;
+                });
+            });
 
             $scope.resetForm = function () {
             };
