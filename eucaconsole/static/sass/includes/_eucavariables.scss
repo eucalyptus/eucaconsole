@@ -120,7 +120,7 @@ $euca-footer-height: 80px;
 $euca-box-shadow: 0 2px 2px 0 $hpe-hovergray;
 
 // Wizards
-$wizard-tab-padding: 8px 1rem;
+$wizard-tab-padding: 8px 0;
 
 
 // ####################
@@ -360,8 +360,10 @@ $alarm-status-color-ok: $hp-green;
         position: relative;
         top: 1px;
         z-index: 999;
+        padding-right: 10px;
+        padding-left: 10px;
         a {
-            padding: 10px 32px 6px 24px;
+            padding: 10px 0 6px 0;
             color: $hpe-gray;
             background-color: transparent;
             font-family: $euca-header-font-family;
@@ -383,6 +385,8 @@ $alarm-status-color-ok: $hp-green;
 }
 
 @mixin wizard-tabs-mixin {
+    padding-right: 1rem;
+    padding-left: 1rem;
     a {  // Visited tabs
         color: $hpe-gray;
         font-family: $euca-header-font-family;
@@ -412,7 +416,7 @@ $alarm-status-color-ok: $hp-green;
     &.disabled {  // Unvisited tabs
         color: $hpe-lightgray;
         font-family: $euca-header-font-family;
-        padding: $wizard-tab-padding;
+        padding: 8px 1rem;
         .cir {
             margin-right: 8px;
         }

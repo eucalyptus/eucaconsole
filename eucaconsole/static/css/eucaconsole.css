@@ -1938,8 +1938,8 @@ footer .copyright { font-size: 12px; }
 /* ----------------------------------------- Tabs (on detail pages) Note: Wizard tabs are at _wizards.scss
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; }
-.tabs dd { position: relative; top: 1px; z-index: 999; }
-.tabs dd a { padding: 10px 32px 6px 24px; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+.tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 10px; padding-left: 10px; }
+.tabs dd a { padding: 10px 0 6px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
 .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
 .tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
 
