@@ -157,6 +157,8 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
+h6.section-label { margin-top: 1.5rem; }
+
 .magic-search { margin-top: 0.5rem; }
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
@@ -168,7 +170,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .tile .footer.status.allhealthy { background-color: #425563; }
 .tile .footer.status.unhealthy { background-color: darkred; }
 
-#refresh-instances-icon { display: none; }
+#instance-section #refresh-instances-icon { display: none; }
 
 select[name="ping_protocol"] { width: 100px; }
 
