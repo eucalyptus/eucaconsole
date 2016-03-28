@@ -31,7 +31,7 @@
             <div class="panel no-title cloudwatch-charts">
                 <div class="flex-space">
                     <div class="flex-column-1">
-                        <button class="create-button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
+                        <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
                         ${panel('create_alarm_dialog_new', resource_type='InstanceId', resource_type_value=instance.id, resource_name=instance_name, default_metric='CPUUtilization', default_statistic='Average', default_unit='Percent')}
                     </div>
                     <div class="flex-column-0 actions">
