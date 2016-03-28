@@ -16,7 +16,7 @@
             <label class="right" i18n:translate="">Name</label>
         </div>
         <div class="large-9 small-9 columns field">
-            <input name="name" ng-model="alarm.name" required="required" type="text">
+            <input name="name" ng-model="alarm.name" required="required" type="text" ng-change="onNameChange()">
         </div>
     </div>
     <div class="row inline controls-wrapper">

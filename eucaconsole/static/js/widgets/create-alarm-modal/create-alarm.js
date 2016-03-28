@@ -1,12 +1,27 @@
 angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'ScalingGroupsServiceModule', 'AlarmActionsModule'])
 .directive('createAlarm', ['MetricService', function (MetricService) {
+    var defaults = {};
+
     return {
         restrict: 'A',
         require: 'modal',
         link: function (scope, element, attrs) {
+            defaults = {
+                statistic: attrs.defaultStatistic,
+                metric: attrs.defaultMetric,
+                unit: attrs.defaultUnit,
+                comparison: '>=',
+            };
+
             scope.resourceType = attrs.resourceType;
             scope.resourceId = attrs.resourceId;
             scope.resourceName = attrs.resourceName;
+
+            scope.$on('modal:close', function (event, name) {
+                if(name == 'createAlarm') {
+                    scope.resetForm();
+                }
+            });
 
             MetricService.getMetrics(scope.resourceType, scope.resourceId)
                 .then(function (metrics) {
@@ -26,14 +41,21 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
                     scope.alarm.statistic = attrs.defaultStatistic;
                     scope.alarm.unit = attrs.defaultUnit;
                     scope.alarm.comparison = '>=';
+
+                    defaults.metric = scope.alarm.metric;
                 });
+
         },
         controller: ['$scope', 'AlarmService', 'ModalService', function ($scope, AlarmService, ModalService) {
             $scope.alarm = {};
             var csrf_token = $('#csrf_token').val();
 
-            $scope.$watchCollection('alarm', function () {
-                if($scope.alarm.metric) {
+            $scope.onNameChange = function () {
+                $scope.createAlarmForm.name.$setTouched();
+            };
+
+            $scope.$watchCollection('alarm', function (newVal) {
+                if(newVal.metric && $scope.createAlarmForm.name.$untouched) {
                     $scope.alarm.name = $scope.alarmName();
                 }
             });
@@ -48,10 +70,11 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
                 */
                 
                 var alarm = $scope.alarm;
+                var metricName = [alarm.metric.name, alarm.comparison, (alarm.threshold || '?')].join(' ');
                 var name = [
                     alarm.metric.namespace,
                     $scope.resourceName || $scope.resourceId,
-                    alarm.metric.name].join(' - ');
+                    metricName].join(' - ');
 
                 return name;
             };
@@ -92,6 +115,9 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
             });
 
             $scope.resetForm = function () {
+                $scope.alarm = angular.copy(defaults);
+                $scope.createAlarmForm.$setPristine();
+                $scope.createAlarmForm.$setUntouched();
             };
         }]
     };
