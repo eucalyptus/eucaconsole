@@ -356,14 +356,15 @@ $alarm-status-color-ok: $hp-green;
 // Tab mixins (wizards, etc.)
 @mixin standard-tabs-mixin {
     max-height: 2.6rem !important;
+    border-bottom: 1px solid #ccc;
     dd {
         position: relative;
         top: 1px;
         z-index: 999;
-        padding-right: 10px;
-        padding-left: 10px;
+        padding-right: 2rem;
+        padding-left: 0;
         a {
-            padding: 10px 0 6px 0;
+            padding: 10px 0 4px 0;
             color: $hpe-gray;
             background-color: transparent;
             font-family: $euca-header-font-family;
