@@ -1190,6 +1190,10 @@ footer {
         text-decoration: none;
         outline: 2px solid $hpe-green;
     }
+    &:focus {
+        color: $hpe-black;
+        background-color: #fff;
+    }
     &.secondary {
         background-color: #fff;
         border: 2px $hpe-gray;
