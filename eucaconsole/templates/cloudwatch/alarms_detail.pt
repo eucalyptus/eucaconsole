@@ -11,7 +11,7 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
-                            CloudWatchAlarms</a></li>
+                            Alarms</a></li>
                     <li class="current"><a href="#">${alarm_id}</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
@@ -42,7 +42,7 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <form name="alarmUpdateForm" novalidate="">
+                    <form name="alarmUpdateForm" class="alarm-update" novalidate="">
                         ${structure:alarm_form['csrf_token']}
                         <h6 i18n:translate="">State</h6>
                         <div class="row controls-wrapper">
@@ -68,74 +68,76 @@
                                 </div>
                         </div>    
                         <div class="row controls-wrapper">
-                            <div class="large-3 small-4 columns">
+                            <div class="large-3 small-3 columns">
                                 <label class="right" i18n:translate="">Dimensions</label>
                             </div>
-                            <div class="large-9 small-8 columns value">
+                            <div class="large-9 small-9 columns value">
                                 <select multiple="true" ng-model="alarm.dimensions" chosen="">
                                     <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected; value dims.value"></option>
                                 </select>
                             </div>
                         </div>
-                        <div class="row controls-wrapper">
-                            <div class="large-3 small-4 columns">
-                                <label class="right" i18n:translate="">Trigger alarm when the</label>
+                        <div class="trigger-conditions">
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-4 columns">
+                                    <label class="right" i18n:translate="">Trigger alarm when the</label>
+                                </div>
+                                <div class="large-3 small-4 columns value">
+                                    <select ng-model="alarm.statistic">
+                                        <option i18n:translate="">Average</option>
+                                        <option i18n:translate="">Minimum</option>
+                                        <option i18n:translate="">Maximum</option>
+                                        <option i18n:translate="">Sum</option>
+                                        <option i18n:translate="">Sample Count</option>
+                                    </select>
+                                </div>
+                                <div class="large-6 small-4 columns">
+                                    ${alarm.metric}
+                                </div>
                             </div>
-                            <div class="large-3 small-4 columns value">
-                                <select ng-model="alarm.statistic">
-                                    <option i18n:translate="">Average</option>
-                                    <option i18n:translate="">Minimum</option>
-                                    <option i18n:translate="">Maximum</option>
-                                    <option i18n:translate="">Sum</option>
-                                    <option i18n:translate="">Sample Count</option>
-                                </select>
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-3 columns">
+                                    <label class="right" i18n:translate="">is</label>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    <select ng-model="alarm.comparison">
+                                        <option>&gt;</option>
+                                        <option>&gt;&#61;</option>
+                                        <option>&lt;</option>
+                                        <option>&lt;&#61;</option>
+                                    </select>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    <input type="text" value="${alarm.threshold}" ng-model="alarm.threshold"/>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    ${alarm.unit}
+                                </div>
                             </div>
-                            <div class="large-6 small-4 columns">
-                                ${alarm.metric}
-                            </div>
-                        </div>
-                        <div class="row controls-wrapper">
-                            <div class="large-3 columns">
-                                <label class="right" i18n:translate="">is</label>
-                            </div>
-                            <div class="large-3 columns value">
-                                <select ng-model="alarm.comparison">
-                                    <option>&gt;</option>
-                                    <option>&gt;&#61;</option>
-                                    <option>&lt;</option>
-                                    <option>&lt;&#61;</option>
-                                </select>
-                            </div>
-                            <div class="large-3 columns value">
-                                <input type="text" value="${alarm.threshold}" ng-model="alarm.threshold"/>
-                            </div>
-                            <div class="large-3 columns value">
-                                ${alarm.unit}
-                            </div>
-                        </div>
-                        <div class="row controls-wrapper">
-                            <div class="large-3 columns">
-                                <label class="right" i18n:translate="">for at least</label>
-                            </div>
-                            <div class="large-3 columns">
-                                <input type="text" value="${alarm.evaluation_periods}" ng-model="alarm.evaluation_periods"/>
-                            </div>
-                            <div class="large-3 columns" i18n:translate="">
-                                consecutive periods of
-                            </div>
-                            <div class="large-3 columns">
-                                <select ng-model="alarm.period">
-                                    <option value="60" i18n:translate="">1 minute</option>
-                                    <option value="300" i18n:translate="">5 minutes</option>
-                                    <option value="900" i18n:translate="">15 minutes</option>
-                                    <option value="3600" i18n:translate="">1 hour</option>
-                                    <option value="21600" i18n:translate="">6 hours</option>
-                                    <option value="86400" i18n:translate="">1 day</option>
-                                </select>
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-3 columns">
+                                    <label class="right" i18n:translate="">for at least</label>
+                                </div>
+                                <div class="large-3 small-3 columns">
+                                    <input type="text" value="${alarm.evaluation_periods}" ng-model="alarm.evaluation_periods"/>
+                                </div>
+                                <div class="large-3 small-3 columns" i18n:translate="">
+                                    <label i18n:translate="">consecutive periods of</label>
+                                </div>
+                                <div class="large-3 small-3 columns">
+                                    <select ng-model="alarm.period">
+                                        <option value="60" i18n:translate="">1 minute</option>
+                                        <option value="300" i18n:translate="">5 minutes</option>
+                                        <option value="900" i18n:translate="">15 minutes</option>
+                                        <option value="3600" i18n:translate="">1 hour</option>
+                                        <option value="21600" i18n:translate="">6 hours</option>
+                                        <option value="86400" i18n:translate="">1 day</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div class="metric-chart chart-wrapper">
-                            <h6></h6>
+                            <h6>${metric_display_name}</h6>
                             <svg class="cwchart"
                                 metric-chart=""
                                 metric="{{ alarm.metric }}"
@@ -169,7 +171,7 @@
                                     <div class="columns large-2 small-2">
                                         <label class="right" i18n:translate="">Action type</label>
                                     </div>
-                                    <div class="columns large-10 small-10">
+                                    <div class="columns large-10 small-10" i18n:translate="">
                                         Autoscaling
                                     </div>
                                 </div>
@@ -240,6 +242,7 @@
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_detail.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/chosen.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>

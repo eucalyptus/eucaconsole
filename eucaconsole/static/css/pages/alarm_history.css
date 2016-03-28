@@ -1,4 +1,3 @@
-/* @fileOverview single Load Balancer page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
@@ -157,33 +156,4 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-h6.section-label { margin-top: 1.5rem; }
-
-.magic-search { margin-top: 0.5rem; }
-
-.tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
-.tile .footer { height: 24px; padding-top: 2px; }
-.tile .footer.has-progress .progress { padding-right: 0; }
-.tile .footer.has-progress .progress .meter { color: black; text-align: left; }
-.tile .footer.has-progress .completed { position: relative; top: -3px; }
-.tile .footer.status { text-transform: none; }
-.tile .footer.status.allhealthy { background-color: #425563; }
-.tile .footer.status.unhealthy { background-color: darkred; }
-
-#instance-section #refresh-instances-icon { display: none; }
-
-select[name="ping_protocol"] { width: 100px; }
-
-select[name="response_timeout"] { width: 120px; }
-
-select[name="time_between_pings"] { width: 100px; }
-
-#ping-path { min-width: 12rem; max-width: 50%; }
-
-#ping_port, #response_timeout, #failures_until_unhealthy, #passes_until_healthy { width: 4rem; }
-
-#access-logs-wrapper { margin-left: 1.5rem; }
-#access-logs-wrapper #bucket_name, #access-logs-wrapper #bucket_prefix, #access-logs-wrapper #collection_interval { width: 12rem; }
-#access-logs-wrapper p { margin-bottom: 0.5rem; }
-#access-logs-wrapper #controls_bucket_name.stacked.controls-wrapper { margin-bottom: 0; }
-#access-logs-wrapper #controls_bucket_name.stacked.controls-wrapper small.error { margin-bottom: 0; padding-bottom: 0; }
+table.table { width: 100%; }

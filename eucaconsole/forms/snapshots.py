@@ -72,7 +72,7 @@ class SnapshotForm(BaseSecureForm):
             self.set_volume_choices()
 
     def set_volume_choices(self):
-        choices = self.choices_manager.volumes()
+        choices = self.choices_manager.volumes(add_blank=False)
         # Need to insert current choice since the source volume may have been removed after this snapshot was created
         if self.snapshot and self.snapshot.volume_id:
             vol_id = self.snapshot.volume_id

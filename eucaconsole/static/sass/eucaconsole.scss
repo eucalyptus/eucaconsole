@@ -368,7 +368,13 @@ a.has-tip {
 .tooltip {
     font-family: $euca-text-font-family;
     font-size: $euca-s-font-size;
+    border: 2px solid $hpe-lightgray;
     max-width: 260px;
+    > .nub {
+        border: 6px solid $hpe-lightgray;
+        border-color: transparent transparent $hpe-lightgray transparent;
+        top: -12px;
+    }
 }
 
 .breakword {
@@ -618,10 +624,18 @@ textarea.policy-area {
     #add-tag-btn {
         margin-bottom: 0;
     }
-    #propagate-wrapper {
-        white-space: nowrap;
+    &.autoscale {
+        #autoscale-tag-name-input-div, #autoscale-tag-value-input-div {
+            position: relative;
+            left: 1rem;
+        }
+        #propagate-wrapper {
+            white-space: nowrap;
+            line-height: 2.2rem;
+        }
     }
 }
+
 
 /* -----------------------------------------
    Block device mapping (BDM) editor
@@ -983,21 +997,29 @@ textarea.hidden {
             background-image: none;
             background-color: #fff !important;
             border-radius: 0;
-            height: 2rem;
-            line-height: 2rem;
+            height: 2.5rem;
+            line-height: 2.5rem;
             font-size: 0.875rem;
             b {
                 position: relative;
-                top: 4px;
+                top: 10px;
             }
         }
     }
-    .chosen-drop .chosen-results {
-        font-size: $euca-font-size;
-        .active-result {
-            &.highlighted {
-                color: $hpe-black;
-                background: $hpe-hovergray none;
+    .chosen-drop {
+        .chosen-search {
+            input {
+                height: 2rem;
+                line-height: 2rem;
+            }
+        }
+        .chosen-results {
+            font-size: $euca-font-size;
+            .active-result {
+                &.highlighted {
+                    color: $hpe-black;
+                    background: $hpe-hovergray none;
+                }
             }
         }
     }
