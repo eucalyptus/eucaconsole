@@ -59,8 +59,7 @@
             }
 
             var selected = $('ul.resources-nav').find("."+screen);
-            $(selected[0]).addClass('active');
-            $(selected[0]).next().addClass('active');
+            $(selected).addClass('active');
 
             // handlers for nav expand/collapse w/ mouse
             $('.left-nav').mouseenter(expand).mouseleave(collapse);

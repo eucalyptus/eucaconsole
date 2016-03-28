@@ -1444,10 +1444,11 @@ ul.resources-nav {
     margin-left: 0;
     left: 0;
     label {
-        padding-left: 2.75rem;
+        padding-left: 3.0rem;
         background-color: white;
         color: $hpe-gray;
         padding-top: 0.6rem;
+        margin-bottom: 0.6rem;
         border-top: 0;
     }
     hr {
@@ -1462,6 +1463,9 @@ ul.resources-nav {
             line-height: 1.5rem;
             border-bottom: 0;
             position: static;
+        }
+        a.active {
+            color: white !important;
         }
         &:hover {
             background-color: $hpe-hovergray;
@@ -1491,6 +1495,10 @@ ul.resources-nav {
         i.icon.instances { background-image: url(../img/nav/Instances.svg); }
         i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
     }
+    li.active {
+        background-color: $hpe-green !important;
+        color: white !important;
+    }
     i.icon {
         position: absolute;
         left: 0.5rem;
@@ -1499,16 +1507,12 @@ ul.resources-nav {
         width: 2rem;
         color: $hp-gray-65;
     }
+    i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
     i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
-    i.icon.autoscaling.active { background-image: url(../img/nav/Auto-Scaling-Groups_Active.svg); }
     i.icon.cloudformation { background-image: url(../img/nav/stacks.svg); }
-    i.icon.cloudformation.active { background-image: url(../img/nav/stacks_Active.svg); }
     i.icon.iam { background-image: url(../img/nav/Groups.svg); }
-    i.icon.iam.active { background-image: url(../img/nav/Groups_Active.svg); }
     i.icon.networksecurity { background-image: url(../img/nav/Security.svg); }
-    i.icon.networksecurity.active { background-image: url(../img/nav/Security_Active.svg); }
     i.icon.storage { background-image: url(../img/nav/Volumes.svg); }
-    i.icon.storage.active { background-image: url(../img/nav/Volumes_Active.svg); }
 }
 
 /* IE 10+ specific adjustments */
