@@ -59,11 +59,8 @@
             }
 
             var selected = $('ul.resources-nav').find("."+screen);
-            var idx = 1;
-            // do this since dashboard never gets added to recent list
-            if (screen == 'dashboard') idx = 0;
-            $(selected[idx]).addClass('active');
-            $(selected[idx]).next().addClass('active');
+            $(selected[0]).addClass('active');
+            $(selected[0]).next().addClass('active');
 
             // handlers for nav expand/collapse w/ mouse
             $('.left-nav').mouseenter(expand).mouseleave(collapse);

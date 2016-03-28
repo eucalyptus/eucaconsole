@@ -1994,7 +1994,7 @@ div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; 
 ul.resources-nav { width: 450px; list-style-type: none; line-height: 3.0rem; margin-left: 0; left: 0; }
 ul.resources-nav label { padding-left: 2.75rem; background-color: white; color: #666666; padding-top: 0.6rem; border-top: 0; }
 ul.resources-nav hr { margin: 0 0.5rem 0 0.5rem; width: 42.5%; }
-ul.resources-nav li a { background-color: transparent; color: #666666; padding: 0.5rem 8rem 1.0rem 2.6rem; line-height: 1.5rem; border-bottom: 0; position: static; }
+ul.resources-nav li a { background-color: transparent; color: #666666; margin-top: 1rem; padding: 0.5rem 8rem 1.0rem 2.6rem; line-height: 1.5rem; border-bottom: 0; position: static; }
 ul.resources-nav li:hover { background-color: #F0F0F0; color: #666666; }
 ul.resources-nav li span { padding-left: 0.5rem; white-space: nowrap; display: inline-block; vertical-align: middle; }
 ul.resources-nav li span.active { background-color: #01a982; color: white; }
