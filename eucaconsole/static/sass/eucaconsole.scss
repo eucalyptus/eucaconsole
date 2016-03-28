@@ -1437,6 +1437,16 @@ $expanded-nav-width: 225px;
     }
 }
 
+// replace fa-4x or fa-5x
+span.euca-nav-size {
+    font-size: 1.65em;
+}
+ul.off-canvas-list li{
+    a:hover {
+        background-color: $hpe-hovergray !important;
+        color: $hpe-gray !important;
+    }
+}
 ul.resources-nav {
     width: $expanded-nav-width*2;
     list-style-type: none;
@@ -1505,7 +1515,7 @@ ul.resources-nav {
         margin-top: 0.5rem;
         height: 2rem;
         width: 2rem;
-        color: $hp-gray-65;
+        color: #939598;
     }
     i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
     i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }

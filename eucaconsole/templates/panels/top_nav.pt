@@ -86,7 +86,7 @@
             <span i18n:translate="">Launch configurations</span>
         </a>
     </li>
-    <i class="icon fa fa-line-chart fa-lg"></i><label i18n:translate="">CLOUDWATCH</label>
+    <span class="euca-nav-size"><i class="icon fa fa-line-chart fa-1x"></i></span><label i18n:translate="">CLOUDWATCH</label>
     <li class="alarms">
         <a id="resource-menuitem-alarms" class="alarms" href="${request.route_path('cloudwatch_alarms')}">
             <span i18n:translate="">Alarms</span>

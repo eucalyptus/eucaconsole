@@ -1994,6 +1994,10 @@ div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; 
 .nav-collapsed.left-nav label { visibility: hidden; }
 .nav-collapsed.left-nav hr { width: 7.5%; }
 
+span.euca-nav-size { font-size: 1.65em; }
+
+ul.off-canvas-list li a:hover { background-color: #F0F0F0 !important; color: #666666 !important; }
+
 ul.resources-nav { width: 450px; list-style-type: none; line-height: 3.0rem; margin-left: 0; left: 0; }
 ul.resources-nav label { padding-left: 3.0rem; background-color: white; color: #666666; padding-top: 0.6rem; margin-bottom: 0.6rem; border-top: 0; }
 ul.resources-nav hr { margin: 0 0.5rem 0 0.5rem; width: 42.5%; }
@@ -2010,7 +2014,7 @@ ul.resources-nav li i.icon.images.active { background-image: url(../img/nav/Imag
 ul.resources-nav li i.icon.instances { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav li i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
 ul.resources-nav li.active { background-color: #01a982 !important; color: white !important; }
-ul.resources-nav i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; color: #5a5a5a; }
+ul.resources-nav i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; color: #939598; }
 ul.resources-nav i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
 ul.resources-nav i.icon.cloudformation { background-image: url(../img/nav/stacks.svg); }
