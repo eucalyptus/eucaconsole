@@ -138,7 +138,7 @@
 
 
         <!--! Delete Alarm modal dialog -->
-        ${panel('delete_alarm_dialog', modal_size='small', service_path=request.route_path('cloudwatch_alarms'))}
+        ${panel('delete_alarm_dialog', modal_size='small')}
         <!--! /end modal dialogs -->
     </div>
 </div>

@@ -46,7 +46,7 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
                 });
 
         },
-        controller: ['$scope', 'AlarmService', 'ModalService', function ($scope, AlarmService, ModalService) {
+        controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
             $scope.alarm = {};
             var csrf_token = $('#csrf_token').val();
 
@@ -102,6 +102,7 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
                 }, csrf_token).then(function success (response) {
                     ModalService.closeModal('createAlarm');
                     Notify.success(response.data.message);
+                    $rootScope.$broadcast('alarmStateView:refreshList');
                 }, function error (response) {
                     ModalService.closeModal('createAlarm');
                     Notify.failure(response.data.message);
