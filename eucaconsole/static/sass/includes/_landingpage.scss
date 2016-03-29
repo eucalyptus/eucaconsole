@@ -220,6 +220,7 @@ $alarm-status-color-ok: $hpe-green;
         }
         .f-dropdown a {
             color: $hpe-gray;
+            font-family: $euca-text-font-family;
             text-decoration: none;
             font-weight: normal;
             overflow: visible;

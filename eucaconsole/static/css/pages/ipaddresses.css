@@ -48,7 +48,7 @@
 .tile .header a.has-checkbox { padding-left: 24px; }
 .tile .header strong { font-weight: normal; }
 .tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
-.tile .header .f-dropdown a { color: #666666; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
+.tile .header .f-dropdown a { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
 .tile .content a { color: #01a982; }
 .tile .content a:hover { text-decoration: underline; }
