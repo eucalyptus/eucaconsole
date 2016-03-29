@@ -3,13 +3,13 @@
 
 .search-bar {
     position: relative;
-    border: 1px solid black;
+    border: 1px solid $hpe-lightgray;
     background-color: white;
     margin-bottom: 0.5rem;
     padding: 4px;
     height: auto;
     i.fi-filter {
-        color: $euca-darkgrey;
+        color: $hpe-gray;
         position: absolute;
         top: 0.5rem;
         left: 0.65rem;
@@ -29,7 +29,7 @@
     }
     #search-selected {
         background-color: white;
-        color: $euca-darkgrey;
+        color: $hpe-gray;
     }
     #search-entry {
         display: inline-block;
@@ -50,7 +50,7 @@
         font-weight: bold;
     }
     i.cancel {
-        color: $euca-darkgrey;
+        color: $hpe-gray;
         &:hover {
             color: darkred;
         }

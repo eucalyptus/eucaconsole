@@ -8,15 +8,15 @@
 // Attach status choices (volume.attach_data.status) are: attaching, attached, detaching, detached
 
 // Status colors
-$volume-status-color-creating: lighten($euca-olive, 10%);
-$volume-status-color-available: $hp-purple;
-$volume-status-color-detached: $hp-purple;
-$volume-status-color-detaching: lighten($hp-purple, 20%);
-$volume-status-color-deleting: $euca-lightgrey;
-$volume-status-color-deleted: $euca-grey;
+$volume-status-color-creating: lighten($hpe-purple, 20%);
+$volume-status-color-available: $hpe-purple;
+$volume-status-color-detached: $hpe-purple;
+$volume-status-color-detaching: lighten($hpe-purple, 20%);
+$volume-status-color-deleting: $hpe-lightgray;
+$volume-status-color-deleted: $hpe-gray;
 $volume-status-color-error: darkred;
-$volume-status-color-attached: $euca-darkblue;
-$volume-status-color-attaching: lighten($euca-darkblue, 20%);
+$volume-status-color-attached: $hpe-slate;
+$volume-status-color-attaching: lighten($hpe-slate, 20%);
 
 
 // Hide "?" help icon in breadcrumbs
@@ -30,7 +30,7 @@ select#zone { width: 50%; }
 
 
 // Volume status
-.status { background-color: $hp-gray-40; text-transform: capitalize; }
+.status { background-color: $hpe-gray; text-transform: capitalize; }
 .status.creating { background-color: $volume-status-color-creating; }
 .status.available { background-color: $volume-status-color-available; }
 .status.in-use { background-color: $volume-status-color-attached; }
@@ -72,6 +72,6 @@ select#zone { width: 50%; }
     }
 }
 
-.status.pending { background-color: lighten($euca-darkblue, 10%); }
-.status.completed { background-color: $euca-darkblue; }
+.status.pending { background-color: lighten($hpe-slate, 10%); }
+.status.completed { background-color: $hpe-slate; }
 

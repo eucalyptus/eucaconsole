@@ -34,6 +34,24 @@ $experimental: false;
 $euca-extrasmall-breakpoint: 480px;
 $euca-contentwrap-width: 1040px;
 
+// HPE Colors
+$hpe-black: #333333;
+$hpe-gray: #666666;
+$hpe-lightgray: #cccccc;
+$hpe-backgroundgray: #F2F2F2; 
+$hpe-hovergray: #F0F0F0;
+$hpe-disabledgray: #EDEDED;
+$hpe-disabledgreen: #CCEEE6;
+$hpe-black: #000000;
+$hpe-green: #01a982;
+$hpe-slate: #425563;
+$hpe-turq: #2ad2c9;
+$hpe-purple: #614767;
+$hpe-bronze: #80746E;
+$hpe-steel: #5F7A76;
+$hpe-orange: #FF8D6D;
+
+
 // Colors
 $euca-darkblue: #03405f;
 $euca-extralightblue: #ecf4f7;
@@ -82,11 +100,15 @@ $hp-gold: #e6a818;
 $euca-input-field-height: 2rem;
 
 // Text
-$euca-text-font-family: Lato, Helvetica, Arial, sans-serif;
-$euca-header-font-family: Lato, Helvetica, Arial, sans-serif;
-$euca-font-size: 0.8125rem;
-$euca-text-color: #333;
-$euca-link-color: $hp-accessible-blue;
+$euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;
+$euca-header-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;
+$euca-xs-font-size: 12px;
+$euca-s-font-size: 14px;
+$euca-font-size: 16px;
+$euca-l-font-size: 18px;
+$euca-xl-font-size: 24px;
+$euca-text-color: $hpe-black;
+$euca-link-color: $hpe-green;
 
 // Prevent Google Fonts API call
 $include-open-sans: false;
@@ -95,7 +117,7 @@ $include-open-sans: false;
 $euca-footer-height: 80px;
 
 // Misc decorations
-$euca-box-shadow: 0 2px 2px 0 $euca-grey;
+$euca-box-shadow: 0 2px 2px 0 $hpe-hovergray;
 
 // Wizards
 $wizard-tab-padding: 8px 1rem;
@@ -108,14 +130,14 @@ $wizard-tab-padding: 8px 1rem;
 $row-width: rem-calc(1040);
 
 // Colors
-$primary-color: $hp-accessible-blue;
-$secondary-color: $hp-gray-65;
-$success-color: $hp-green;
+$primary-color: $hpe-green;
+$secondary-color: $hpe-gray;
+$success-color: $hpe-green;
 $code-color: darkred;
 
 // Dropdown menus
-$f-dropdown-bg: #fff;
-$f-dropdown-triangle-color: #fff;
+$f-dropdown-bg: white;
+$f-dropdown-triangle-color: $hpe-lightgray;
 
 // Navigation bar settings ============
 // Breakpoint handling
@@ -124,8 +146,8 @@ $topbar-breakpoint: 1020px !default; // Change to 9999px for always mobile layou
 // Colors
 $topbar-bg-color: white;
 $topbar-bg: $topbar-bg-color;
-$topbar-dropdown-link-bg: $hp-accessible-blue;
-$topbar-link-bg-hover: $hp-hover-blue;
+$topbar-dropdown-link-bg: $hpe-green;
+$topbar-link-bg-hover: $hpe-green;
 /* Dropdown elements */
 $topbar-dropdown-bg: white;
 $topbar-dropdown-link-color: #000;
@@ -154,12 +176,12 @@ $crumb-border-style: solid;
 $crumb-border-color: transparent;
 $crumb-radius: 0;
 $crumb-font-size: 1.1rem;
-$crumb-font-color: $primary-color;
-$crumb-font-color-current: #333;
+$crumb-font-color: $hpe-gray;
+$crumb-font-family-current: $euca-text-font-family;
 $crumb-font-color-unavailable: #999;
 $crumb-font-transform: normal;
 $crumb-link-decor: underline;
-$crumb-slash-color: $hp-gray-40;
+$crumb-slash-color: $hpe-gray;
 $crumb-slash: "/";
 
 // Buttons
@@ -167,19 +189,21 @@ $button-tny: rem-calc(6);
 $button-sml: rem-calc(8);
 $button-med: rem-calc(10);
 $button-lrg: rem-calc(12);
-$button-border-width: 1px;
+$button-border-width: 2px;
 $button-border-style: solid;
 
 // Tables
-$table-even-row-bg: #f5f5f5;
+$table-even-row-bg: #white;
 
 // Tabs
 $tabs-navigation-padding: rem-calc(4) !default;
-$tabs-navigation-bg-color: $hp-accessible-blue;
+$tabs-navigation-bg-color: transparent;
 $tabs-content-margin-bottom: rem-calc(1) !default;
-$tabs-navigation-hover-bg-color: lighten($tabs-navigation-bg-color, 5%);
+
 
 // Tooltips
+$tooltip-bg: white;
+$tooltip-font-color: $hpe-gray;
 $tooltip-padding: rem-calc(5);
 
 // Alarm status colors
@@ -198,7 +222,7 @@ $alarm-status-color-ok: $hp-green;
 // Tiles within panels (e.g. instance_volumes.pt and volume_snapshots.pt page)
 @mixin panel-tile-mixin {
     background-color: white;
-    border: 1px solid $hp-gray-20;
+    border: 1px solid $hpe-lightgray;
     width: 190px; height: 160px;
     .footer {
         height: 24px;
@@ -207,30 +231,47 @@ $alarm-status-color-ok: $hp-green;
 }
 
 @mixin button-shadow-mixin {
-    box-shadow: 1px 1px 5px 0 lighten($euca-grey, 10%);
+    box-shadow: 1px 1px 5px 0 $hpe-hovergray;
 }
 
 @mixin disabled-button-mixin {
     background-color: white;
-    border-color: $hp-gray-40;
+    border-color: $hpe-disabledgray;
+    color: $hpe-disabledgray;
         &:hover {
             background-color: white;
-            border-color: $hp-gray-40;
-            color: $hp-gray-40;
+            text-decoration: none;
+            border: 2px $hpe-disabledgray;
+            outline: none;
+            color: $hpe-disabledgray;
+
         }
-    color: $hp-gray-40;
+}
+
+@mixin primary-disabled-button-mixin {
+    background-color: white;
+    border-color: $hpe-disabledgreen;
+    color: $hpe-disabledgray;
+        &:hover {
+            background-color: white;
+            border-color: $hpe-disabledgreen;
+            text-decoration: none;
+            border-width: 2px;
+            color: $hpe-disabledgray;
+
+        }
 }
 
 @mixin dropdown-shadow-mixin {
-    border-color: $hp-gray-20;
-    box-shadow: 2px 2px 5px $euca-grey;
+    border-color: $hpe-lightgray;
+    box-shadow: 2px 2px 5px $hpe-hovergray;
 }
 
 @mixin helptext-icon-position-mixin {
     .helptext-icon {
         position: relative;
         left: -1rem;
-        color: $euca-grey;
+        color: $hpe-gray;
     }
 }
 
@@ -247,15 +288,16 @@ $alarm-status-color-ok: $hp-green;
 @mixin table-styles-mixin {
     border: none;
     thead tr {
-        background-color: $hp-gray-5;
+        background-color: white;
         th {
             // Note: Do not use shorthand padding rules here since we need to override Foundation styles
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
             padding-left: 6px;
             padding-right: 6px;
+            border-bottom: 1px solid $hpe-lightgray;
             vertical-align: top;
-            color: $euca-darkgrey;
+            color: $hpe-black;
             text-transform: uppercase;
             &.actions {
                 text-align: right;
@@ -269,6 +311,7 @@ $alarm-status-color-ok: $hp-green;
         }
     }
     tr {
+        border-bottom: 1px solid $hpe-lightgray;
         td.count {
             text-align: center;
         }
@@ -294,11 +337,17 @@ $alarm-status-color-ok: $hp-green;
     .item-list {
         margin-bottom: 6px;
         .item {
-            color: #333;
-            background-color: $euca-extralightgrey;
+            color: $hpe-gray;
+            font-family: $euca-text-font-family;
+            border: 2px solid $hpe-lightgray;
+            background-color: #fff;
             margin-right: 8px;
             a {
-                color: white;
+                color: $hpe-gray;
+                &:hover {
+                color: $hpe-green;
+                text-decoration: none;
+                }
             }
         }
     }
@@ -313,21 +362,21 @@ $alarm-status-color-ok: $hp-green;
         z-index: 999;
         a {
             padding: 10px 32px 6px 24px;
-            color: $hp-gray-65;
+            color: $hpe-gray;
             background-color: transparent;
-            font-weight: bold;
+            font-family: $euca-header-font-family;
             &:hover {
-                color: $hp-accessible-blue;
+                border-bottom: 2px solid $hpe-gray;
                 background-color: transparent;
+                text-decoration: none;
             }
         }
         &.active {
             a {
-                color: $hp-accessible-blue;
-                background-color: white;
-                border: 1px solid $hp-gray-20;
-                border-bottom-color: white;
-                padding: 9px 31px 5px 23px;
+                color: $hpe-black;
+                font-family: $euca-header-font-family;
+                background-color: transparent;
+                border-bottom: 2px solid $hpe-black;
             }
         }
     }
@@ -335,28 +384,36 @@ $alarm-status-color-ok: $hp-green;
 
 @mixin wizard-tabs-mixin {
     a {  // Visited tabs
-        color: $hp-gray-65;
+        color: $hpe-gray;
+        font-family: $euca-header-font-family;
         background-color: transparent;
         &:hover {
-            color: $hp-accessible-blue;
+            color: $hpe-gray;
+            border-bottom: 2px solid $hpe-gray;
         }
         box-shadow: none;
         white-space: nowrap;
         padding: $wizard-tab-padding;
+        .cir {
+            background-color: $hpe-gray;
+        }
     }
     &.active {  // Active tab
         a {
-            color: $hp-accessible-blue;
-            background-color: white;
-            border: 1px solid $hp-gray-20;
-            border-bottom: none;
+            color: $hpe-black;
+            font-family: $euca-header-font-family;
+            background-color: transparent;
+            border-bottom: 2px solid $hpe-black;
+        }
+        .cir {
+            background-color: $hpe-black;
         }
     }
     &.disabled {  // Unvisited tabs
-        color: darken($hp-gray-20, 30%);
+        color: $hpe-lightgray;
+        font-family: $euca-header-font-family;
         padding: $wizard-tab-padding;
         .cir {
-            background-color: $hp-gray-65;
             margin-right: 8px;
         }
     }
@@ -370,7 +427,7 @@ $alarm-status-color-ok: $hp-green;
         padding: 0 0 0 0;
         text-align: center;
         vertical-align: middle;
-        background-color: $hp-accessible-blue;
+        background-color: $hpe-lightgray;
         color: white;
         margin-right: 4px;
     }

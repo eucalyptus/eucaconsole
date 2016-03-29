@@ -49,7 +49,7 @@
                     <span>
                         <i ng-show="countsLoading[item.bucket_name]" class="busy" ></i>
                         <a ng-href="{{ item.contents_url }}">
-                            <b>{{ bucketCounts[item.bucket_name] }}</b>
+                            <span>{{ bucketCounts[item.bucket_name] }}</span>
                         </a>
                     </span>
                 </div>
@@ -57,13 +57,13 @@
                     <span class="label" title="Versioning" i18n:attributes="title" data-tooltip="">VE</span>
                     <span>
                         <i ng-show="versioningStatusLoading[item.bucket_name]" class="busy" ></i>
-                        <b>{{ bucketVersioningStatus[item.bucket_name] }}</b>
+                        <span>{{ bucketVersioningStatus[item.bucket_name] }}</span>
                     </span>
                 </div>
                 <div>
                     <span class="label" title="Creation Time" i18n:attributes="title" data-tooltip="">CT</span>
                     <span ng-show="item.creation_date">
-                        <b>{{ item.creation_date | date: '${layout.angular_date_format}' }}</b>
+                        <span>{{ item.creation_date | date: '${layout.angular_date_format}' }}</span>
                     </span>
                 </div>
             </div>

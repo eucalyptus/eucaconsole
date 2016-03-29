@@ -66,7 +66,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         var dd = this.getDate().toString();
         var hh = this.getHours().toString();
         var ii = this.getMinutes().toString();
-        return this.getFullYear()+"/"+(mm.length===2?mm:"0"+mm[0])+"/"+(dd.length===2?dd:"0"+dd[0])+" "+(hh.length===2?hh:"0"+hh[0])+":"+(ii.length===2?ii:"0"+ii[0]);
+        return this.getFullYear() + "/" + (mm.length===2?mm:"0" + mm[0]) + "/" + (dd.length===2?dd:"0" + dd[0]) +
+            " " + (hh.length===2?hh:"0" + hh[0]) + ":" + (ii.length===2?ii:"0" + ii[0]);
     };
     vm.largeChartStartTime = function(newDate) {
         //return arguments.length ? (vm._largeChartStartTime = new Date(newDate)) : vm._largeChartStartTime.datetime();

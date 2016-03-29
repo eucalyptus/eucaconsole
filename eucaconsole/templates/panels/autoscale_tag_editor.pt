@@ -19,7 +19,7 @@
                   ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
         </div>
         <div class="row tagentry controls-wrapper" ng-show="tagCount &lt; 10">
-            <div>
+            <div class="columns">
                 <div class="large-2 medium-3 small-3 columns" id="propagate-wrapper">
                     <input id="propagate-checkbox" class="taginput propagate" type="checkbox" ng-model="newTagPropagate" />
                     <span class="secondary" i18n:translate="" ng-click="togglePropagateCheckbox()">Propagate</span>
@@ -27,11 +27,11 @@
                           title="Propagate to instances launched by this scaling group"></span>
                 </div>
                 <div id="autoscale-tag-name-input-div" class="large-2 medium-2 small-4 columns">
-                    <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
+                    <input type="text" class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
                 </div>
                 <div id="autoscale-tag-value-input-div" class="large-8 medium-7 small-5 columns">
-                    <input class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
+                    <input type="text" class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length be longer than 128 chars</small>
                 </div>
             </div>

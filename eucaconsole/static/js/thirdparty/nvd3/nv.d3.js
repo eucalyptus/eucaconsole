@@ -4881,12 +4881,6 @@ nv.models.lineChart = function() {
                     .datum(data)
                     .call(legend);
 
-                if ( margin.top != legend.height()) {
-                    //margin.top = legend.height();
-                    //availableHeight = (height || parseInt(container.style('height')) || 400)
-                    //    - margin.top - margin.bottom;
-                }
-
                 wrap.select('.nv-legendWrap')
                     //.attr('transform', 'translate(0,' + (-margin.top) +')')
                     .attr('transform', 'translate(10, 240)')

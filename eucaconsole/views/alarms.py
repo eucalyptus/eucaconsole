@@ -36,7 +36,8 @@ from boto.ec2.cloudwatch import MetricAlarm
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES
+from ..constants.cloudwatch import (
+    METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES, METRIC_TITLE_MAPPING)
 
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
@@ -372,15 +373,30 @@ class CloudWatchAlarmDetailView(BaseView):
         })
 
         alarm_actions = []
-        for arn in self.alarm.alarm_actions:
-            alarm_actions.append(AmazonResourceName.factory(arn))
+        for action in self.alarm.alarm_actions:
+            arn = AmazonResourceName.factory(action)
+            policy_details = self.get_policies_for_scaling_group(arn.autoscaling_group_name, [arn.policy_name])
+            policy_details.reverse()
+            policy = policy_details.pop()
+
+            detail = {
+                'arn': arn.arn,
+                'autoscaling_group_name': arn.autoscaling_group_name,
+                'policy_name': arn.policy_name
+            }
+
+            if policy:
+                detail['scaling_adjustment'] = policy.scaling_adjustment
+            alarm_actions.append(detail)
 
         scaling_groups = self.get_scaling_groups()
 
         self.render_dict.update(
             alarm_json=alarm_json,
+            metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
             dimensions=dimensions,
             alarm_actions=alarm_actions,
+            alarm_actions_json=json.dumps(alarm_actions),
             scaling_groups=scaling_groups,
             options=options
         )
@@ -410,3 +426,94 @@ class CloudWatchAlarmDetailView(BaseView):
         with boto_error_handler(self.request):
             groups = conn.get_all_groups()
             return groups
+
+    def get_policies_for_scaling_group(self, scaling_group, policy_names=None):
+        conn = self.get_connection(conn_type='autoscale')
+        with boto_error_handler(self.request):
+            policies = conn.get_all_policies(as_group=scaling_group, policy_names=policy_names)
+            return policies
+
+
+class CloudWatchAlarmHistoryView(BaseView):
+    """CloudWatch Alarm History page view."""
+
+    TEMPLATE = '../templates/cloudwatch/alarms_history.pt'
+
+    def __init__(self, request, **kwargs):
+        super(CloudWatchAlarmHistoryView, self).__init__(request, **kwargs)
+
+        self.alarm_id = self.request.matchdict.get('alarm_id')
+        history = self.get_alarm_history(self.alarm_id)
+        self.history = [{
+            'timestamp': item.timestamp.isoformat(),
+            'history_item_type': item.tem_type,
+            'summary': item.summary} for item in history]
+
+    @view_config(route_name='cloudwatch_alarm_history', renderer=TEMPLATE, request_method='GET')
+    def cloudwatch_alarm_history_view(self):
+
+        search_facets = [
+            {'name': 'history_item_type', 'label': _(u"Type"), 'options': [
+                {'key': 'ConfigurationUpdate', 'label': _("ConfigurationUpdate")},
+                {'key': 'StateUpdate', 'label': _("StateUpdate")},
+                {'key': 'Action', 'label': _("Action")}
+            ]}
+        ]
+
+        return dict(
+            alarm_id=self.alarm_id,
+            history_json=json.dumps(self.history),
+            filter_keys=[],
+            search_facets=BaseView.escape_json(json.dumps(search_facets))
+        )
+
+    @view_config(route_name='cloudwatch_alarm_history_json', renderer='json', request_method='GET')
+    def cloudwatch_alarm_history_json_view(self):
+        return dict(
+            history=self.history
+        )
+
+    def get_alarm_history(self, alarm_id):
+        history = None
+        conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            history = conn.describe_alarm_history(alarm_name=alarm_id)
+        return history
+
+
+class CloudWatchAlarmActionsView(BaseView):
+    """CloudWatch Alarm Actions view."""
+
+    def __init__(self, request, **kwargs):
+        super(CloudWatchAlarmActionsView, self).__init__(request, **kwargs)
+
+        self.alarm_id = self.request.matchdict.get('alarm_id')
+        self.alarm = self.get_alarm(self.alarm_id)
+
+    @view_config(route_name='cloudwatch_alarm_actions', renderer='json', request_method='PUT')
+    def update_actions(self):
+        if not self.alarm:
+            raise HTTPNotFound()
+
+        request = json.loads(self.request.body)
+        request_actions = request.get('actions')
+        actions = [action.get('arn') for action in request_actions]
+
+        with boto_error_handler(self.request):
+            # See https://github.com/boto/boto/issues/1311
+            self.alarm.comparison = self.alarm._cmp_map.get(self.alarm.comparison)
+            self.alarm.alarm_actions = actions
+            self.alarm.update()
+
+        return dict(
+            success='success'
+        )
+
+    def get_alarm(self, alarm_id):
+        alarm = None
+        conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            alarms = conn.describe_alarms(alarm_names=[alarm_id])
+            if len(alarms) > 0:
+                alarm = alarms[0]
+        return alarm

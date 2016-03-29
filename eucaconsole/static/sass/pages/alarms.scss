@@ -48,7 +48,7 @@
 .tile {
     &.item {
         dl {
-            font-size: 0.9em;
+            font-size: $euca-font-size;
             display: inline-block;
             vertical-align: top;
             margin-bottom: 0;
@@ -60,13 +60,15 @@
         &.alarm,
         &.insufficient-data {
             text-transform: none;
+            background-color: $hpe-gray;
         }
 
         &.ok {
-            background-color: #008424;
+            background-color: $hpe-green;
+            text-transform: uppercase;
         }
         &.alarm {
-            background-color: #F04124;
+            background-color: darkred;
         }
     }
 }
@@ -78,7 +80,7 @@
     .header {
         color: #444;
         text-transform: uppercase;
-        font-size: 0.875rem;
+        font-size: $euca-font-size;
         font-weight: bold;
         .columns {
             padding: 0;
