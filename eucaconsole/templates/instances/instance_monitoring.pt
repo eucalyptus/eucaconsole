@@ -32,7 +32,7 @@
                 <div class="flex-space">
                     <div class="flex-column-1">
                         <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
-                        ${panel('create_alarm_dialog_new', resource_type='InstanceId', resource_type_value=instance.id, resource_name=instance_name, default_metric='CPUUtilization', default_statistic='Average', default_unit='Percent')}
+                        ${panel('create_alarm_dialog_new', resource_type='InstanceId', resource_type_value=instance.id, resource_name=instance_name, default_metric='CPUUtilization', default_statistic='Average')}
                     </div>
                     <div class="flex-column-0 actions">
                         <span id="enable-monitoring-icon" class="action-icon dropdown"
@@ -136,6 +136,7 @@
     <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/metric-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>

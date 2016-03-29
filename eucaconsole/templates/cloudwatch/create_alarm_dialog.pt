@@ -6,7 +6,6 @@
                     resource-name="${resource_name}"
                     default-metric="${default_metric}"
                     default-statistic="${default_statistic}"
-                    default-unit="${default_unit}"
                     ng-submit="createAlarm()"
                     novalidate="">
     <h3>Create Alarm</h3>
@@ -69,11 +68,7 @@
                    pattern="^[1-9]\d*$" placeholder="amount..." required="required" type="number"/>
         </div>
         <div class="small-4 columns">
-            <div class="unit-label"></div>
-            <select name="unit" ng-model="alarm.unit"
-                                ng-init="alarm.unit = ${default_unit}"
-                                ng-options="unit for unit in alarm.metric.units track by unit">
-            </select>
+            <div class="unit-label">{{ alarm.metric.unit }}</div>
         </div>
     </div>
     <div class="row controls-wrapper">

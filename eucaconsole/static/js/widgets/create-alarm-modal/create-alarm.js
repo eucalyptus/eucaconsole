@@ -1,4 +1,10 @@
-angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'ScalingGroupsServiceModule', 'AlarmActionsModule'])
+angular.module('CreateAlarmModal', [
+    'ModalModule',
+    'AlarmServiceModule',
+    'MetricServiceModule',
+    'ScalingGroupsServiceModule',
+    'AlarmActionsModule'
+])
 .directive('createAlarm', ['MetricService', function (MetricService) {
     var defaults = {};
 
@@ -9,7 +15,6 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
             defaults = {
                 statistic: attrs.defaultStatistic,
                 metric: attrs.defaultMetric,
-                unit: attrs.defaultUnit,
                 comparison: '>=',
             };
 
@@ -39,7 +44,6 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
                     }(scope.metrics, attrs.defaultMetric));
 
                     scope.alarm.statistic = attrs.defaultStatistic;
-                    scope.alarm.unit = attrs.defaultUnit;
                     scope.alarm.comparison = '>=';
 
                     defaults.metric = scope.alarm.metric;
@@ -121,30 +125,5 @@ angular.module('CreateAlarmModal', ['ModalModule', 'AlarmServiceModule', 'Scalin
                 $scope.createAlarmForm.$setUntouched();
             };
         }]
-    };
-}])
-.factory('MetricService', ['$http', '$interpolate', function ($http, $interpolate) {
-    var metricsUrl = $interpolate('/metrics/available/{{ resourceType }}/{{ resourceValue }}');
-    var _metrics = {};
-
-    return {
-        getMetrics: function (resourceType, resourceValue) {
-            if(resourceValue in _metrics) {
-                return _metrics[resourceValue];
-            }
-
-            return $http({
-                method: 'GET',
-                url: metricsUrl({
-                    resourceType: resourceType,
-                    resourceValue: resourceValue
-                })
-            }).then(function (result) {
-                if(result && result.data) {
-                    _metrics[resourceValue] = result.data.metrics;
-                }
-                return _metrics[resourceValue];
-            });
-        }
     };
 }]);
