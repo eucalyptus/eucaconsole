@@ -161,10 +161,14 @@ class BaseView(object):
             return self.request.session.get('account')
         return self.request.session.get('access_id')  # AWS
 
-    def is_csrf_valid(self, token=None):
+    @staticmethod
+    def is_csrf_valid_static(request, token=None):
         if token is None:
-            token = self.request.params.get('csrf_token')
-        return self.request.session.get_csrf_token() == token
+            token = request.params.get('csrf_token')
+        return request.session.get_csrf_token() == token
+
+    def is_csrf_valid(self, token=None):
+        return self.is_csrf_valid_static(self.request, token)
 
     def _store_file_(self, filename, mime_type, contents):
         # disable using memcache for file storage
@@ -739,6 +743,8 @@ def boto_error_handler(request, location=None, template="{0}"):
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
+    if not(BaseView.is_csrf_valid_static(request)):
+        return JSONResponse(status=400, message="missing CSRF token")
     session = request.session
     if session.get('file_cache'):
         (filename, mime_type, contents) = session['file_cache']
@@ -747,6 +753,8 @@ def file_download(request):
         response = Response(content_type=mime_type)
         response.body = str(contents)
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        response.cache_control = 'no-store'
+        response.pragma = 'no-cache'
         return response
     # no file found ...
     # this isn't handled on on client anyway, so we can return pretty much anything
