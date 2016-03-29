@@ -144,6 +144,7 @@
 .secondary .euca-split:hover { border-color: #01a982 !important; }
 
 .split.button { padding-right: 3.0rem !important; }
+.split.button .euca-split:after { border-color: #333333 transparent transparent transparent; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */

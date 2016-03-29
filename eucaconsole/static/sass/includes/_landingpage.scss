@@ -581,6 +581,11 @@ $alarm-status-color-ok: $hpe-green;
 
 .split.button {
     padding-right: 3.0rem !important;
+    .euca-split {
+        &:after {
+            border-color: $hpe-black transparent transparent transparent;
+        }
+    }
 }
 
 /* -----------------------------------------
