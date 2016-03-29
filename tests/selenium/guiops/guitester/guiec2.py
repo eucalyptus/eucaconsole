@@ -1,7 +1,10 @@
+import logging
+
 from guitester import GuiTester
 from pages.basepage import BasePage
 from pages.dashboard import Dashboard
-from pages.loginpage import LoginPage
+from pages.elastic_ip.elastic_ip_lp import EipLanding
+from pages.elastic_ip.elastic_ip_detail import EipDetailPage
 from pages.keypair.keypairdetail import KeypairDetailPage
 from pages.keypair.keypair_lp import KeypairLanding
 from pages.instance.instance_lp import InstanceLanding
@@ -17,11 +20,16 @@ from pages.security_group.security_group_lp import SecurityGroupLanding
 from pages.security_group.security_group_detail import SecurityGroupDetailPage
 from dialogs.security_group_dialogs import CreateScurityGroupDialog, DeleteScurityGroupDialog
 from dialogs.keypair_dialogs import CreateKeypairDialog, DeleteKeypairModal, ImportKeypairDialog
-from dialogs.instance_dialogs import LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal
-from dialogs.volume_dialogs import CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance, AttachVolumeModalSelectVolume, DetachVolumeModal
+from dialogs.instance_dialogs import (
+    LaunchInstanceWizard, LaunchMoreLikeThisDialog, TerminateInstanceModal, TerminateAllInstancesModal)
+from dialogs.volume_dialogs import (
+    CreateVolumeDialog, DeleteVolumeModal, AttachVolumeModalSelectInstance,
+    AttachVolumeModalSelectVolume, DetachVolumeModal)
 from dialogs.snapshot_dialogs import CreateSnapshotModal, DeleteSnapshotModal, RegisterSnapshotAsImageModal
 from dialogs.image_dialogs import RemoveImageFromCloudDialog
-import logging
+from dialogs.eip_dialogs import AllocateEipDialog, ReleaseEipDialog,AssociateEipDialog, DisassociateEipDialog
+from selenium.common.exceptions import NoSuchElementException, ElementNotVisibleException, TimeoutException
+
 
 logger = logging.getLogger('testlogger')
 hdlr = logging.FileHandler('/tmp/testlog.log')
@@ -29,10 +37,12 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.setLevel(logging.WARNING)
 
+
 class GuiEC2(GuiTester):
 
     def __init__(self, console_url, sauce=False, webdriver_url=None, browser=None, version=None, platform=None):
-        super(GuiEC2, self).__init__(console_url, webdriver_url=webdriver_url, sauce=sauce, browser=browser, version=version, platform=platform)
+        super(GuiEC2, self).__init__(console_url, webdriver_url=webdriver_url, sauce=sauce,
+                                     browser=browser, version=version, platform=platform)
 
     def set_implicit_wait(self, time_to_wait):
         """
@@ -50,6 +60,17 @@ class GuiEC2(GuiTester):
     def goto_images_page_via_nav(self):
         BasePage(self).goto_images_view_via_menu()
         ImageLanding(self)
+
+    def get_region_list(self):
+        return BasePage(self).get_region_list()
+
+    def change_region(self, region=None):
+        """
+        If region is passed, change to that region, otherwise select 1st from menu.
+        """
+        if region is None:
+            region = BasePage(self).get_region_list()[0]
+        BasePage(self).select_region(region)
 
     def create_keypair_from_dashboard(self, keypair_name):
         """
@@ -190,7 +211,7 @@ class GuiEC2(GuiTester):
 
     def launch_instance_from_dashboard(self, image="centos", availability_zone=None, instance_type="t1.micro",
                                        number_of_of_instances=None, instance_name=None, key_name="None (advanced option)",
-                                       security_group="default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+                                       security_group="default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """
         Navigates to dashboard via menu. Launches instance.
         :param image:
@@ -215,9 +236,9 @@ class GuiEC2(GuiTester):
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_instance_view_page(self, image = "centos",availability_zone = None,
-                                               instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                               instance_type = "t1.micro",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """
         Navigates to instance view page via menu. Launches instance.
         :param image:
@@ -242,9 +263,9 @@ class GuiEC2(GuiTester):
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_instance_from_image_view_page(self, image_id_or_type, availability_zone = None,
-                                               instance_type = "t1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)",
+                                               instance_type="t1.micro",
                                                number_of_of_instances = None, instance_name = None, key_name = "None (advanced option)",
-                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+                                               security_group = "default", user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=480):
         """
         Navigates to image view page via menu. Launches instance from given image.
         :param image_id_or_type:
@@ -269,21 +290,24 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def launch_more_like_this_from_view_page(self, inatance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
+    def launch_more_like_this_from_view_page(self, instance_id, instance_name=None, user_data=None, monitoring=False,
+                                             private_addressing=False, timeout_in_seconds=480):
         """
         Navigates to instances view page. Launches an instance like given instance.
-        :param inatance_id:
+        :param instance_id:
         :param instance_name:
         :param user_data:
         :param monitoring:
         :param private_addressing:
+        :param timeout_in_seconds:
         """
         BasePage(self).goto_instances_via_menu()
-        InstanceLanding(self).click_action_launch_more_like_this(inatance_id)
+        InstanceLanding(self).click_action_launch_more_like_this(instance_id)
         LaunchMoreLikeThisDialog(self).launch_more_like_this(instance_name, user_data, monitoring, private_addressing)
         instance_id = InstanceLanding(self).get_id_of_newly_launched_instance()
         InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(
+            timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
     def launch_more_like_this_from_detail_page(self, base_instance_id, instance_name=None, user_data=None, monitoring=False, private_addressing=False, timeout_in_seconds=240):
@@ -305,7 +329,7 @@ class GuiEC2(GuiTester):
         InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_in_running_state(timeout_in_seconds=timeout_in_seconds)
         return {'instance_name': instance_name, 'instance_id':instance_id}
 
-    def terminate_instance_from_view_page(self, instance_id, instance_name=None):
+    def terminate_instance_from_view_page(self, instance_id, instance_name=None,timeout_in_seconds=480):
         """
         Navigates to view page, terminates instance.
         :param instance_name:
@@ -315,9 +339,9 @@ class GuiEC2(GuiTester):
         InstanceLanding(self).click_action_terminate_instance_on_view_page(instance_id)
         TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
         InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated(timeout_in_seconds=timeout_in_seconds)
 
-    def terminate_instance_from_detail_page(self, instance_id):
+    def terminate_instance_from_detail_page(self, instance_id, timeout_in_seconds=480):
         """
         Navigates to detail page, terminates instance.
         :param instance_id:
@@ -328,7 +352,7 @@ class GuiEC2(GuiTester):
         InstanceLanding(self).goto_instance_detail_page_via_actions(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_terminate_instance_action_item_from_detail_page()
         TerminateInstanceModal(self).click_terminate_instance_submit_button(instance_id)
-        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated()
+        InstanceDetailPage(self, instance_id, instance_name).verify_instance_is_terminated(timeout_in_seconds=timeout_in_seconds)
 
     def batch_terminate_all_instances(self):
         """
@@ -393,6 +417,9 @@ class GuiEC2(GuiTester):
         :param volume_id:
         :param volume_name:
         """
+        print ""
+        print "====== Running delete_volume_from_detail_page ======"
+        print ""
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).goto_volume_detail_page_via_actions(volume_id)
         VolumeDetailPage(self).verify_volume_detail_page_loaded(volume_id, volume_name)
@@ -408,10 +435,16 @@ class GuiEC2(GuiTester):
         :param instance_id:
         :param volume_id:
         """
+
+        print ""
+        print "====== Running attach_volume_from_volume_lp ======"
+        print ""
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).click_action_attach_to_instance(volume_id)
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device)
         VolumeLanding(self).verify_volume_status_is_attached(volume_id, timeout_in_seconds)
+
+
 
     def attach_volume_from_volume_detail_page(self, instance_id, volume_id, device=None, timeout_in_seconds=240):
         """
@@ -421,11 +454,17 @@ class GuiEC2(GuiTester):
         :param device:
         :param timeout_in_seconds:
         """
+        print ""
+        print "====== Running attach_volume_from_volume_detail_page ======"
+        print ""
+
         BasePage(self).goto_volumes_view_via_menu()
         VolumeLanding(self).goto_volume_detail_page_via_link(volume_id)
         VolumeDetailPage(self).click_action_attach_volume_on_detail_page()
         AttachVolumeModalSelectInstance(self).attach_volume(instance_id, device=device)
         VolumeDetailPage(self).verify_volume_status_is_attached(timeout_in_seconds)
+
+
 
     def attach_volume_from_instance_detail_page(self, volume_id, instance_id, instance_name=None, device=None, timeout_in_seconds=240):
         """
@@ -435,6 +474,10 @@ class GuiEC2(GuiTester):
         :param device:
         :param timeout_in_seconds:
         """
+        print ""
+        print "====== Running attach_volume_from_instance_detail_page ======"
+        print ""
+
         BasePage(self).goto_instances_via_menu()
         InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
@@ -450,6 +493,10 @@ class GuiEC2(GuiTester):
         :param device:
         :param timeout_in_seconds:
         """
+        print ""
+        print "====== Running attach_volume_from_instance_lp ======"
+        print ""
+
         BasePage(self).goto_instances_via_menu()
         InstanceLanding(self).click_action_manage_volumes_on_view_page(instance_id)
         InstanceDetailPage(self, instance_id, instance_name).click_action_attach_volume()
@@ -492,6 +539,43 @@ class GuiEC2(GuiTester):
         :param timeout_in_seconds:
         """
         NotImplementedError
+
+    def click_sortable_column_header_on_volumes_landing_page(self, column_name='name'):
+        """
+        Sort volumes table by a given column (see <th> element's st-sort attr for possible column_name values)
+        :param column_name: header column name
+        :type column_name: str
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeLanding(self).click_sortable_column_header(column_name=column_name)
+
+    def verify_sort_position_for_volume(self, volume_id, position=1):
+        """
+        :param volume_id:
+        :param position: sorting position. Note: not zero-based (e.g. use 1 for first row)
+        :type position: int
+        """
+        VolumeLanding(self).verify_volume_id_by_sort_position(volume_id, position=position)
+
+    def verify_charts_on_volume_monitoring_page(self, volume_id):
+        """
+        Volume Monitoring page should display charts when attached to an instance
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeLanding(self).goto_volume_detail_page_via_actions(volume_id)
+        VolumeDetailPage(self).goto_monitoring_tab(volume_id)
+        VolumeDetailPage(self).verify_charts_on_volume_monitoring_page(volume_id)
+
+    def verify_attach_notice_on_volume_monitoring_page(self, volume_id):
+        """
+        Volume Monitoring page should display notice to attach volume to instance when unattached
+        :param volume_id:
+        """
+        BasePage(self).goto_volumes_view_via_menu()
+        VolumeLanding(self).goto_volume_detail_page_via_actions(volume_id)
+        VolumeDetailPage(self).goto_monitoring_tab(volume_id)
+        VolumeDetailPage(self).verify_attach_notice_on_volume_monitoring_page(volume_id)
 
     def create_snapshot_on_volumes_view_page(self, volume_id, snapshot_name=None, snapshot_description=None, timeout_in_seconds=240):
         """
@@ -582,6 +666,14 @@ class GuiEC2(GuiTester):
         DeleteSnapshotModal(self).delete_snapshot()
         SnapshotLanding(self).verify_snapshot_not_present(snapshot_id)
 
+    def verify_snapshot_not_present_on_lp(self, snapshot_id):
+        """
+        Navigates to snapshot landing page. Verifies snapshot not on landing page
+        :param snapshot_id:
+        """
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotLanding(self).verify_snapshot_not_present(snapshot_id)
+
     def create_volume_from_snapshot_on_snapshot_lp(self, snapshot_id, volume_name=None, availability_zone=None, volume_size=None, timeout_in_seconds=240):
         """
         Navigates to snapshot landing page. Goes to "create volume from snapshot" in the actions menu. Creates volume from snapshot.
@@ -637,53 +729,128 @@ class GuiEC2(GuiTester):
         ImageLanding(self).click_action_remove_image_from_cloud(image_id)
         RemoveImageFromCloudDialog(self).remove_image(delete_associated_snapshot)
 
-    def register_snapshot_as_an_image_from_snapshot_detail_page(self):
-        NotImplementedError()
+    def register_snapshot_as_an_image_from_snapshot_detail_page(self, snapshot_id, image_name, description=None,
+                                                                delete_on_terminate=True,
+                                                                register_as_windows_image=False
+                                                                ):
+        BasePage(self).goto_snapshots_view_via_menu()
+        SnapshotLanding(self).goto_snapshot_detail_page_via_link(snapshot_id)
+        SnapshotDetailPage(self).click_action_register_as_image_on_detail_page()
+        RegisterSnapshotAsImageModal(self).register_as_image(name=image_name, description=description,
+                                                             delete_on_terminate=delete_on_terminate,
+                                                             register_as_windows_image=register_as_windows_image)
+        if ImageDetailPage(self).is_image_detail_page_loaded():
+            image_id = ImageDetailPage(self).get_image_id()
+            image = {'image_name': image_name, 'image_id': image_id}
+        else:
+            BasePage(self).goto_images_view_via_menu()
+            image_id = ImageLanding(self).get_image_id_by_name(image_name)
+            image = {'image_name': image_name, 'image_id': image_id}
+        print image
+        return image
 
-    def allocate_ip_from_eip_lp(self):
-        NotImplementedError
+    def allocate_eip_from_lp(self, number=1):
+        """
+        :param number: how many IPs to allocate
+        :return: allocated IPs as a list of strings
+        """
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).click_allocate_elastic_ips_button()
+        return AllocateEipDialog(self).allocate_elastic_ips(number=number)
 
-    def allocate_eip_from_dashboard(self):
-        NotImplementedError
+    def allocate_eip_from_dashboard(self, number=1):
+        """
+        :param number: how many IPs to allocate
+        :return: allocated IPs as a list of strings
+        """
+        BasePage(self).goto_dashboard_via_menu()
+        Dashboard(self).click_allocate_elastic_ips_link()
+        return AllocateEipDialog(self).allocate_elastic_ips(number=number)
 
-    def release_eip_from_eip_lp(self):
-        NotImplementedError
+    def release_eip_from_eip_lp(self, elastic_ip):
+        """
+        Release a single Elastic IP via the item row's actions menu
+        :param elastic_ip: IP address to release
+        """
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).select_release_ip_actions_menu_item(elastic_ip)
+        ReleaseEipDialog(self).release_elastic_ips()
+        EipLanding(self).verify_elastic_ip_is_released(elastic_ip)
 
-    def release_eip_from_eip_detail_page(self):
-        NotImplementedError
+    def release_eips_from_eip_lp(self, elastic_ips):
+        """
+        Batch-release Elastic IPs from landing page via More Actions button
+        :param elastic_ips: List of Elastic IPs to be released
+        :return: released Elastic IPs as a list of strings
+        """
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).click_elastic_ips_checkboxes(elastic_ips)
+        EipLanding(self).select_release_ips_more_actions_item()
+        return ReleaseEipDialog(self).release_elastic_ips()
 
-    def associate_eip_from_eip_lp(self):
-        NotImplementedError
+    def release_eip_from_eip_detail_page(self, elastic_ip):
+        """
+        Release a single Elastic IP from the EIP detail page
+        :param elastic_ip: Elastic IP to be released
+        """
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).click_elastic_ip(elastic_ip)
+        EipDetailPage(self, elastic_ip)
+        EipDetailPage(self, elastic_ip).click_action_release_ip_address_on_detail_page()
+        ReleaseEipDialog(self).release_elastic_ips()
+        EipLanding(self).verify_elastic_ip_is_released(elastic_ip)
 
-    def associate_eip_from_instances_lp(self):
-        NotImplementedError
+    def associate_eip_from_eip_lp(self, elastic_ip, instance_id):
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).associate_with_instance_actions_menu_item(elastic_ip)
+        AssociateEipDialog(self).associate_eip_with_instance(instance_id)
+        EipLanding(self).verify_elastic_ip_associate_instance(instance_id, elastic_ip)
 
-    def associate_eip_from_instance_detail_page(self):
-        NotImplementedError
+    def associate_eip_from_instances_lp(self, elastic_ip, instance_id):
+        BasePage(self).goto_instances_via_menu()
+        InstanceLanding(self).click_action_associate_ip_address_from_landing_page(instance_id)
+        AssociateEipDialog(self).associate_eip_from_instance(elastic_ip)
+        InstanceLanding(self).verify_elastic_ip_address_on_instance_lp(elastic_ip)
 
-    def associate_eip_from_eip_detail_page(self):
-        NotImplementedError
+    def associate_eip_from_instance_detail_page(self, elastic_ip, instance_id):
+        BasePage(self).goto_instances_via_menu()
+        InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id).click_action_associate_ip_address()
+        AssociateEipDialog(self).associate_eip_from_instance(elastic_ip)
+        InstanceDetailPage(self, instance_id).verify_eip_address_associated_to_instance(elastic_ip)
 
-    def disassociate_eip_from_eip_lp(self):
-        NotImplementedError
+    def associate_eip_from_eip_detail_page(self, elastic_ip, instance_id):
+        EipLanding(self).click_elastic_ip(elastic_ip)
+        EipDetailPage(self, elastic_ip)
+        EipDetailPage(self, elastic_ip).click_action_associate_ip_address_on_detail_page()
+        AssociateEipDialog(self).associate_eip_with_instance(instance_id)
+        EipLanding(self).click_elastic_ip(elastic_ip)
+        EipDetailPage(self, elastic_ip).verify_instance_id_on_detail_page(instance_id)
 
-    def disassociate_eip_from_eip_detail_page(self):
-        NotImplementedError
+    def disassociate_eip_from_eip_lp(self, elastic_ip, instance_id):
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).disassociate_with_instance_actions_menu_item(elastic_ip, instance_id)
+        DisassociateEipDialog(self).disassociate_eip()
+        EipLanding(self).verify_disassociate_eip_from_lp(instance_id)
 
-    def disassociate_ip_from_instance_detail_page(self):
-        NotImplementedError
+    def disassociate_eip_from_eip_detail_page(self, elastic_ip, instance_id):
+        BasePage(self).goto_elastic_ip_view_via_menu()
+        EipLanding(self).click_elastic_ip(elastic_ip)
+        EipDetailPage(self, elastic_ip)
+        EipDetailPage(self, elastic_ip).click_action_disassociate_ip_address_on_detail_page()
+        DisassociateEipDialog(self).disassociate_eip()
+        EipLanding(self).click_elastic_ip(elastic_ip)
+        EipDetailPage(self, elastic_ip).verify_instance_id_off_detail_page(instance_id)
 
-    def disassociate_eip_from_instances_lp(self):
-        NotImplementedError
+    def disassociate_eip_from_instances_lp(self, elastic_ip, instance_id):
+        BasePage(self).goto_instances_via_menu()
+        InstanceLanding(self).click_action_disassociate_ip_address_from_landing_page(instance_id)
+        DisassociateEipDialog(self).disassociate_eip_from_instance()
+        InstanceLanding(self).verify_elastic_ip_address_off_instance_lp(elastic_ip)
 
-
-
-
-
-
-
-
-
-
-
-
+    def disassociate_eip_from_instance_detail_page(self, elastic_ip, instance_id):
+        BasePage(self).goto_instances_via_menu()
+        InstanceLanding(self).goto_instance_detail_page_via_link(instance_id)
+        InstanceDetailPage(self, instance_id).click_action_disassociate_ip_address()
+        DisassociateEipDialog(self).disassociate_eip_from_instance()
+        InstanceDetailPage(self, instance_id).verify_eip_address_disassociated_to_instance(elastic_ip)

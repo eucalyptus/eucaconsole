@@ -32,6 +32,7 @@ import base64
 import re
 import simplejson as json
 
+from itertools import chain
 from M2Crypto import RSA
 from operator import attrgetter
 from urllib2 import HTTPError, URLError
@@ -54,13 +55,14 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
+    InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
     AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import ChoicesManager, GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.roles import RoleView
@@ -180,12 +182,15 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
-        self.batch_terminate_form = BatchTerminateInstancesForm(self.request, formdata=self.request.params or None)
-        self.associate_ip_form = AssociateIpToInstanceForm(
-            self.request, conn=self.conn, formdata=self.request.params or None)
-        self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.associate_ip_form = AssociateIpToInstanceForm(
+                self.request, conn=self.conn, formdata=self.request.params or None)
+            self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True  # Enables sortable tables via macros.pt
         controller_options_json = BaseView.escape_json(json.dumps({
             'addresses_json_items_endpoint': self.request.route_path('ipaddresses_json'),
+            'roles_json_items_endpoint': self.request.route_path('instances_roles_json'),
+            'cloud_type': self.cloud_type,
         }))
         self.render_dict = dict(
             prefix=self.prefix,
@@ -194,7 +199,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
             stop_form=self.stop_form,
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
-            batch_terminate_form=self.batch_terminate_form,
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             is_vpc_supported=self.is_vpc_supported,
@@ -244,14 +248,23 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_start', request_method='POST')
     def instances_start(self):
-        instance_id = self.request.params.get('instance_id')
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.start_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Starting instance {0}").format(instance_id))
+                self.log_request(_(u"Starting instances {0}").format(instance_id_param))
                 # Can only start an instance if it has a volume attached
-                self.conn.start_instances([instance_id])
-                msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                started = self.conn.start_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
+                    msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to start the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if started:
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                else:
+                    msg = _(u'Unable to start instances')
+                    self.request.session.flash(msg, queue=Notification.ERROR)
         else:
             msg = _(u'Unable to start instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -259,19 +272,22 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_stop', request_method='POST')
     def instances_stop(self):
-        instance_id = self.request.params.get('instance_id')
-        instance = self.get_instance(instance_id)
-        if instance and self.stop_form.validate():
-            # Only EBS-backed instances can be stopped
-            if instance.root_device_type == 'ebs':
-                with boto_error_handler(self.request, self.location):
-                    self.log_request(_(u"Stopping instance {0}").format(instance_id))
-                    instance.stop()
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
+        if self.stop_form.validate():
+            self.log_request(_(u"Stopping instance(s) {0}").format(instance_id_param))
+            with boto_error_handler(self.request, self.location):
+                stopped = self.conn.stop_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to stop the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if stopped:
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-            else:
-                msg = _(u'Only EBS-backed instances can be stopped')
-                self.request.session.flash(msg, queue=Notification.ERROR)
+                else:
+                    msg = _(u'Unable to stop the instance(s).')
+                    self.request.session.flash(msg, queue=Notification.ERROR)
         else:
             msg = _(u'Unable to stop instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -279,51 +295,47 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_reboot', request_method='POST')
     def instances_reboot(self):
-        instance_id = self.request.params.get('instance_id')
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.reboot_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Rebooting instance {0}").format(instance_id))
-                rebooted = self.conn.reboot_instances([instance_id])
-                msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-                if not rebooted:
+                self.log_request(_(u"Rebooting instance(s) {0}").format(instance_id_param))
+                rebooted = self.conn.reboot_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
+                    msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
+                else:
+                    prefix = _(u'Successfully sent request to reboot the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
+                if rebooted:
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                else:
                     msg = _(u'Unable to reboot the instance.')
                     self.request.session.flash(msg, queue=Notification.ERROR)
         else:
-            msg = _(u'Unable to reboot instance')
+            msg = _(u'Unable to reboot instance(s)')
             self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_terminate', request_method='POST')
     def instances_terminate(self):
-        instance_id = self.request.params.get('instance_id')
+        instance_id_param = self.request.params.get('instance_id')
+        instance_ids = [instance_id.strip() for instance_id in instance_id_param.split(',')]
         if self.terminate_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Terminating instance {0}").format(instance_id))
-                self.conn.terminate_instances([instance_id])
-                msg = _(
-                    u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
+                self.log_request(_(u"Terminating instance {0}").format(instance_id_param))
+                self.conn.terminate_instances(instance_ids=instance_ids)
+                if len(instance_ids) == 1:
+                    msg = _(
+                        u'Successfully sent terminate request.  It may take a moment to shut down the instance(s).')
+                else:
+                    prefix = _(u'Successfully sent request to terminate the following instances:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
                 if self.request.is_xhr:
                     return JSONResponse(status=200, message=msg)
                 else:
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
-            msg = _(u'Unable to terminate instance')
-            self.request.session.flash(msg, queue=Notification.ERROR)
-        return HTTPFound(location=self.location)
-
-    @view_config(route_name='instances_batch_terminate', request_method='POST')
-    def instances_batch_terminate(self):
-        instance_ids = self.request.params.getall('instance_ids')
-        if self.batch_terminate_form.validate():
-            with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Terminating instances {0}").format(str(instance_ids)))
-                self.conn.terminate_instances(instance_ids=instance_ids)
-                prefix = _(u'Successfully sent request to terminate the following instances:')
-                msg = u'{0} {1}'.format(prefix, ', '.join(instance_ids))
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-        else:
-            msg = _(u'Unable to terminate instances')
+            msg = _(u'Unable to terminate instance(s)')
             self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
@@ -349,15 +361,21 @@ class InstancesView(LandingPageView, BaseInstanceView):
     @view_config(route_name='instances_disassociate', request_method='POST')
     def instances_disassociate_ip_address(self):
         if self.disassociate_ip_form.validate():
+            ip_address_param = self.request.params.get('ip_address')
+            ip_addresses = [ip_address.strip() for ip_address in ip_address_param.split(',')]
             with boto_error_handler(self.request, self.location):
-                ip_address = self.request.params.get('ip_address')
-                self.log_request(_(u"Disassociating IP {0}").format(ip_address))
-                address = self.get_ip_address(ip_address)
-                if address and address.association_id:
-                    self.conn.disassociate_address(ip_address, association_id=address.association_id)
+                for ip_address in ip_addresses:
+                    self.log_request(_(u"Disassociating IP {0}").format(ip_address))
+                    address = self.get_ip_address(ip_address)
+                    if address and address.association_id:
+                        self.conn.disassociate_address(ip_address, association_id=address.association_id)
+                    else:
+                        self.conn.disassociate_address(ip_address)
+                if len(ip_addresses) == 1:
+                    msg = _(u'Successfully disassociated the IP from the instance.')
                 else:
-                    self.conn.disassociate_address(ip_address)
-                msg = _(u'Successfully disassociated the IP from the instance.')
+                    prefix = _(u'Successfully sent request to disassociate the follow IP addresses:')
+                    msg = u'{0} {1}'.format(prefix, ', '.join(ip_addresses))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         msg = _(u'Failed to disassociate the IP address from the instance.')
@@ -370,15 +388,21 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
         self.vpcs = self.get_all_vpcs()
-        self.vpc_subnets = self.vpc_conn.get_all_subnets()
-        self.keypairs = self.get_all_keypairs()
-        self.security_groups = self.get_all_security_groups()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
         if not (self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        vpc_subnets = self.vpc_conn.get_all_subnets()
+        keypairs = self.get_all_keypairs()
+        security_groups = self.get_all_security_groups()
+        # Get alarms for instances and build a list of instance ids to optimize alarm status fetch
+        alarms = [alarm for alarm in self.cw_conn.describe_alarms() if 'InstanceId' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         instances = []
         filters = {}
         availability_zone_param = self.request.params.getall('availability_zone')
@@ -408,44 +432,52 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
             filtered_items = self.filter_by_roles(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
         elastic_ips = [ip.public_ip for ip in self.conn.get_all_addresses()]
-        owner_alias = None
-        if not owner_alias and self.cloud_type == 'aws':
-            # Set default alias to 'amazon' for AWS
-            owner_alias = 'amazon'
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
             security_groups_array = sorted({
                 'name': group.name,
                 'id': group.id,
-                'rules_count': self.get_security_group_rules_count_by_id(group.id)
+                'rules_count': self.get_security_group_rules_count_by_id(security_groups, group.id)
             } for group in instance.groups)
+            security_group_names = [group.name for group in instance.groups]  # Needed for sortable tables
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
-            exists_key = True if self.get_keypair_by_name(instance.key_name) else False
+            exists_key = True if self.get_keypair_by_name(keypairs, instance.key_name) else False
+            sortable_ip = self.get_sortable_ip(instance.ip_address)
+            alarm_status = ''
+            if instance.id in alarm_resource_ids:
+                alarm_status = Alarm.get_resource_alarm_status(instance.id, alarms)
+            vpc_subnet_display = self.get_vpc_subnet_display(
+                instance.subnet_id, vpc_subnet_list=vpc_subnets) if instance.subnet_id else ''
+            sortable_subnet_zone = "{0}{1}{2}".format(vpc_subnet_display, instance.vpc_name, instance.placement)
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance, escapebraces=False),
                 instance_type=instance.instance_type,
                 image_id=instance.image_id,
                 ip_address=instance.ip_address,
+                sortable_ip=sortable_ip,
                 has_elastic_ip=has_elastic_ip,
                 public_dns_name=instance.public_dns_name,
                 launch_time=instance.launch_time,
-                placement=instance.placement,
+                availability_zone=instance.placement,
                 platform=instance.platform,
-                root_device=instance.root_device_type,
+                root_device_type=instance.root_device_type,
                 security_groups=security_groups_array,
+                sortable_secgroups=','.join(security_group_names),
+                sortable_subnet_zone=sortable_subnet_zone,
                 key_name=instance.key_name,
                 exists_key=exists_key,
                 vpc_name=instance.vpc_name,
                 subnet_id=instance.subnet_id if instance.subnet_id else None,
-                vpc_subnet_display=self.get_vpc_subnet_display(instance.subnet_id, vpc_subnet_list=self.vpc_subnets) if
-                instance.subnet_id else None,
+                vpc_subnet_display=vpc_subnet_display,
                 status=instance.state,
+                alarm_status=alarm_status,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
                 running_create=True if instance.tags.get('ec_bundling') else False,
+                scaling_group=instance.tags.get('aws:autoscaling:groupName')
             ))
         image_ids = [i['image_id'] for i in instances]
         images = self.conn.get_all_images(filters={'image-id': image_ids})
@@ -458,6 +490,22 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                     u' ({0})'.format(image.id) if image.name else ''
                 )
             instance['image_name'] = image_name
+        return dict(results=instances)
+
+    @view_config(route_name='instances_roles_json', renderer='json', request_method='GET')
+    def instances_roles_json(self):
+        instances = {}
+        iam_conn = self.get_connection(conn_type='iam')
+        result = iam_conn.list_instance_profiles()
+        instance_profiles_list = result.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
+        for item in self.get_items():
+            if item.instance_profile:
+                arn = item.instance_profile['arn']
+                profile_name = arn[(arn.rindex('/') + 1):]
+                # look up profile in list
+                for profile in instance_profiles_list:
+                    if profile.instance_profile_name == profile_name:
+                        instances[item.id] = profile.roles.role_name
         return dict(results=instances)
 
     def get_items(self, filters=None):
@@ -486,21 +534,21 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
     def get_all_keypairs(self):
         return self.conn.get_all_key_pairs() if self.conn else []
 
-    def get_keypair_by_name(self, keypair_name):
-        for keypair in self.keypairs:
+    def get_keypair_by_name(self, keypairs, keypair_name):
+        for keypair in keypairs:
             if keypair_name == keypair.name:
                 return keypair
 
     def get_all_security_groups(self):
         return self.conn.get_all_security_groups() if self.conn else []
 
-    def get_security_group_by_id(self, id):
-        for sgroup in self.security_groups:
+    def get_security_group_by_id(self, security_groups, id):
+        for sgroup in security_groups:
             if sgroup.id == id:
                 return sgroup
 
-    def get_security_group_rules_count_by_id(self, id):
-        sgroup = self.get_security_group_by_id(id)
+    def get_security_group_rules_count_by_id(self, security_groups, id):
+        sgroup = self.get_security_group_by_id(security_groups, id)
         if sgroup:
             return len(sgroup.rules)
         return None
@@ -512,6 +560,12 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 if image.id == image_id:
                     return image
         return None
+
+    @staticmethod
+    def get_sortable_ip(ip_address):
+        if not ip_address:
+            return 0
+        return long("".join(["{0:08b}".format(int(num)) for num in ip_address.split('.')]), 2)
 
     def filter_by_scaling_group(self, items):
         filtered_items = []
@@ -536,25 +590,6 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
             if len(item.instance_profile) > 0 and item.instance_profile['id'] in profiles:
                 filtered_items.append(item)
         return filtered_items
-
-
-class InstanceJsonView(BaseInstanceView):
-    def __init__(self, request):
-        super(InstanceJsonView, self).__init__(request)
-
-    @view_config(route_name='instance_json', renderer='json', request_method='GET')
-    def instance_json(self):
-        instance = self.get_instance()
-        # Only included a few fields here. Feel free to include more as needed.
-        return dict(results=dict(
-            id=instance.id,
-            instance_type=instance.instance_type,
-            image_id=instance.image_id,
-            platform=instance.platform,
-            state_reason=instance.state_reason,
-            ip_address=instance.ip_address,
-            root_device_name=instance.root_device_name,
-            root_device_type=instance.root_device_type))
 
 
 class InstanceView(TaggedItemView, BaseInstanceView):
@@ -961,8 +996,11 @@ class InstanceVolumesView(BaseInstanceView):
             status = volume.status
             attach_status = volume.attach_data.status
             is_transitional = status in transitional_states or attach_status in transitional_states
+            is_root_volume = False
             detach_form_action = self.request.route_path(
                 'instance_volume_detach', id=self.instance.id, volume_id=volume.id)
+            if self.instance.root_device_type == 'ebs' and volume.attach_data.device == self.instance.root_device_name:
+                is_root_volume = True  # Note: Check for 'True' when passed to JS via Chameleon template
             volumes.append(dict(
                 id=volume.id,
                 name=TaggedItemView.get_display_name(volume),
@@ -970,6 +1008,7 @@ class InstanceVolumesView(BaseInstanceView):
                 device=volume.attach_data.device,
                 attach_time=volume.attach_data.attach_time,
                 attach_instance_id=volume.attach_data.instance_id,
+                is_root_volume=is_root_volume,
                 status=status,
                 attach_status=volume.attach_data.status,
                 detach_form_action=detach_form_action,

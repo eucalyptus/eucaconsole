@@ -33,6 +33,7 @@ import hashlib
 import hmac
 import logging
 import pylibmc
+import socket
 import simplejson as json
 import string
 import textwrap
@@ -70,13 +71,13 @@ from ..forms.login import EucaLogoutForm
 from ..models.auth import EucaAuthenticator
 from ..i18n import _
 from ..models import Notification
-from ..models.auth import ConnectionManager
+from ..models.auth import ConnectionManager, RegionCache
 
 
 def escape_braces(event):
     """Escape double curly braces in template variables to prevent AngularJS expression injections"""
     for k, v in event.rendering_val.items():
-        if not k.endswith('_json'):
+        if not k.endswith('_json') and event.get('renderer_name') != 'json':
             if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
                 event.rendering_val[k] = BaseView.escape_braces(v)
 
@@ -133,17 +134,25 @@ class BaseView(object):
         if self.request.registry.settings:  # do this to pass tests
             validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
             certs_file = self.request.registry.settings.get('connection.ssl.certfile', None)
-        if cloud_type == 'aws':
-            conn = ConnectionManager.aws_connection(
-                region, access_key, secret_key, security_token, conn_type, validate_certs)
-        elif cloud_type == 'euca':
-            host = self._get_ufs_host_setting_()
-            port = self._get_ufs_port_setting_()
-            dns_enabled = self.request.session.get('dns_enabled', True)
-            conn = ConnectionManager.euca_connection(
-                host, port, access_key, secret_key, security_token,
-                conn_type, dns_enabled, validate_certs, certs_file
-            )
+        try:
+            if cloud_type == 'aws':
+                conn = ConnectionManager.aws_connection(
+                    region, access_key, secret_key, security_token, conn_type, validate_certs)
+            elif cloud_type == 'euca':
+                host = self._get_ufs_host_setting_()
+                port = self._get_ufs_port_setting_()
+                dns_enabled = self.request.session.get('dns_enabled', True)
+                regions = RegionCache(None).regions()
+                if len(regions) > 0:
+                    for region in regions:
+                        if region['endpoints']['ec2'].find(host) > -1:
+                            self.default_region = region['name']
+                conn = ConnectionManager.euca_connection(
+                    host, port, region, access_key, secret_key, security_token,
+                    conn_type, dns_enabled, validate_certs, certs_file
+                )
+        except socket.error as err:
+            BaseView.handle_error(err=BotoServerError(504, str(err)), request=self.request)
 
         return conn
 
@@ -152,8 +161,10 @@ class BaseView(object):
             return self.request.session.get('account')
         return self.request.session.get('access_id')  # AWS
 
-    def is_csrf_valid(self):
-        return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
+    def is_csrf_valid(self, token=None):
+        if token is None:
+            token = self.request.params.get('csrf_token')
+        return self.request.session.get_csrf_token() == token
 
     def _store_file_(self, filename, mime_type, contents):
         # disable using memcache for file storage
@@ -251,9 +262,10 @@ class BaseView(object):
         acct = self.request.session.get('account', '')
         if acct == '':
             acct = self.request.session.get('access_id', '')
-        invalidate_cache(long_term, 'images', None, [], [], region, acct)
-        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
-        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
+        ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
+        invalidate_cache(long_term, 'images', None, [], [], region, acct, ufshost)
+        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct, ufshost)
+        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct, ufshost)
 
     def get_euca_authenticator(self):
         """
@@ -376,10 +388,14 @@ class BaseView(object):
                        u'Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             raise HTTPFound(location=request.route_path('login'))
-        request.session.flash(message, queue=Notification.ERROR)
         if location is None:
             location = request.current_route_url()
-        raise HTTPFound(location)
+        if status == 504:
+            request.session.flash(_(u'No response from host'), queue=Notification.ERROR)
+            raise HTTPFound(request.route_path('login'))
+        else:
+            request.session.flash(message, queue=Notification.ERROR)
+            raise HTTPFound(location)
 
     @staticmethod
     def escape_json(json_string):
@@ -458,8 +474,8 @@ class TaggedItemView(BaseView):
 
     def add_tags(self):
         if self.conn:
-            tags_json = self.request.params.get('tags')
-            tags_dict = json.loads(tags_json) if tags_json else {}
+            tags_json = self.request.params.get('tags', '{}')
+            tags_dict = self._normalize_tags(json.loads(tags_json))
             tags = {}
             for key, value in tags_dict.items():
                 key = self.unescape_braces(key.strip())
@@ -489,6 +505,27 @@ class TaggedItemView(BaseView):
                 if value and not value.startswith('aws:'):
                     tag_value = self.unescape_braces(value)
                     self.tagged_obj.add_tag('Name', tag_value)
+
+    def _normalize_tags(self, tags):
+        if type(tags) is dict:
+            return tags
+
+        new_tags = {}
+        for tag in tags:
+            name, value = tag['name'], tag['value']
+            new_tags[name] = value
+        return new_tags
+
+    @staticmethod
+    def serialize_tags(tags):
+        if tags is not None:
+            serialized_tags = [{
+                'name': key,
+                'value': value
+            } for key, value in tags.iteritems()]
+        else:
+            serialized_tags = []
+        return BaseView.escape_json(json.dumps(serialized_tags))
 
     @staticmethod
     def get_display_name(resource, escapebraces=True):
@@ -663,11 +700,7 @@ class LandingPageView(BaseView):
         return False
 
     def get_json_endpoint(self, route, path=False):
-        encoded_params = self.encode_unicode_dict(self.request.params)
-        return u'{0}{1}'.format(
-            self.request.route_path(route) if path is False else route,
-            u'?{0}'.format(urlencode(encoded_params)) if self.request.params else ''
-        )
+        return self.request.route_path(route) if path is False else route
 
     def get_redirect_location(self, route):
         location = u'{0}'.format(self.request.route_path(route))
@@ -680,6 +713,7 @@ class LandingPageView(BaseView):
 @notfound_view_config(renderer='../templates/notfound.pt')
 def notfound_view(request):
     """404 Not Found view"""
+    request.response.status = 404
     return dict()
 
 
@@ -699,6 +733,8 @@ def boto_error_handler(request, location=None, template="{0}"):
         yield
     except BotoServerError as err:
         BaseView.handle_error(err=err, request=request, location=location, template=template)
+    except socket.error as err:
+        BaseView.handle_error(err=BotoServerError(504, str(err)), request=request, location=location, template=template)
 
 
 @view_config(route_name='file_download', request_method='POST')

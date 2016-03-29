@@ -4,9 +4,10 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
+<div metal:fill-slot="main_content" ng-app="ResourceMonitoring">
     <div class="row" id="contentwrap" ng-app="CloudWatchCharts" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
          ng-init="chartsCtrl.initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -30,6 +31,13 @@
             </dl>
             <div class="panel">
                 <div class="cloudwatch-charts">
+                    <alarm-state-view
+                        template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
+                        resource-id="${elb.name}" resource-name="${elb.name}"
+                        resource-type="LoadBalancerName" resource-type-name="loadbalancer" i18n:attributes="resource-type-name">
+                    </alarm-state-view>
+                    <hr/>
+                    <h6 i18n:translate="">CloudWatch metrics</h6>
                     <div class="toprow">
                         <div class="blurb">
                             <div class="duration-wrapper">
@@ -56,9 +64,9 @@
                                 <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
                             </div>
                             <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
-                                 cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
+                                 cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
                                  ids="${elb_name}" idtype="LoadBalancerName" metric="{{ chart.metric }}"
-                                 duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="ELB"
+                                 duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="AWS/ELB"
                                  statistic="{{ chart.statistic || 'Average' }}" empty="{{ chart.empty_msg }}">
                             </svg>
                         </li>
@@ -83,7 +91,14 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/resource_monitoring.js')}"></script>
 </div>
 
 </metal:block>

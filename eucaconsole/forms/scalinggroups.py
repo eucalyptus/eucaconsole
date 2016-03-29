@@ -113,7 +113,6 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
-        region = request.session.get('region')
         cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.launch_config.choices = self.get_launch_config_choices()
@@ -122,7 +121,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         else:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
         self.vpc_subnet.choices = self.get_vpc_subnet_choices()
-        self.availability_zones.choices = self.get_availability_zone_choices(region)
+        self.availability_zones.choices = self.get_availability_zone_choices()
         self.load_balancers.choices = self.get_load_balancer_choices()
 
         # Set error messages
@@ -169,8 +168,8 @@ class BaseScalingGroupForm(BaseSecureForm):
             choices.append((sg_lc_name, sg_lc_name))
         return sorted(set(choices))
 
-    def get_availability_zone_choices(self, region):
-        return self.ec2_choices_manager.availability_zones(region, add_blank=False)
+    def get_availability_zone_choices(self):
+        return self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
 
     def get_load_balancer_choices(self):
         choices = []
@@ -394,6 +393,11 @@ class ScalingGroupInstancesTerminateForm(BaseSecureForm):
     decrement_capacity = wtforms.BooleanField(label=_(u'Also decrement desired capacity of scaling group'))
 
 
+class ScalingGroupMonitoringForm(BaseSecureForm):
+    """CSRF-protected form to enable/disable metrics collection for a scaling group"""
+    pass
+
+
 class ScalingGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))
@@ -412,8 +416,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.launch_config_name.choices = self.autoscale_choices_manager.launch_configs(add_blank=False)
-        region = request.session.get('region')
-        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
+        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
         self.vpc_zone_identifier.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
         self.cloud_type = request.session.get('cloud_type', 'euca')
         if self.cloud_type == 'aws':
@@ -422,7 +425,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         self.facets = [
             {'name': 'launch_config_name', 'label': self.launch_config_name.label.text,
                 'options': self.get_options_from_choices(self.launch_config_name.choices)},
-            {'name': 'availability_zone', 'label': self.availability_zones.label.text,
+            {'name': 'availability_zones', 'label': self.availability_zones.label.text,
                 'options': self.get_options_from_choices(self.availability_zones.choices)},
         ]
         if BaseView.is_vpc_supported(request):

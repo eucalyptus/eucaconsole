@@ -156,6 +156,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
                 $scope.loadImageInfo($scope.imageID);
+                $timeout(function() {
+                    document.getElementById('tabStep2').click();
+                    document.getElementById('name').focus();
+                });
             }
             $scope.isCreateSGChecked = $('#create_sg_from_lc').is(':checked');
             if ($("#userdata").val().length > 0) {

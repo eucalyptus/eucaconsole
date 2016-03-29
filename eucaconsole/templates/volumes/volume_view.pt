@@ -34,6 +34,7 @@
             <dl class="tabs" id="volume-subnav" tal:condition="volume">
                 <dd class="active"><a href="#" i18n:translate="">General</a></dd>
                 <dd><a href="${request.route_path('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
+                <dd><a href="${request.route_path('volume_monitoring', id=volume.id)}" i18n:translate="">Monitoring</a></dd>
             </dl>
             <div class="panel ${'has-actions' if volume else ''}">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="volume">
@@ -42,7 +43,7 @@
                             <a href="#" id="attach-volume-action" i18n:translate="">Attach to instance</a>
                         </li>
                         <li ng-show="volumeStatus == 'in-use' &amp;&amp; volumeAttachStatus != 'detaching'">
-                            <a ng-click="detachModal('${device_name}', '${request.route_path('instance_json', id=instance_id)}')"
+                            <a ng-click="detachModal('${is_root_volume}')"
                                id="detach-volume-action" i18n:translate="">Detach from instance</a>
                         </li>
                         <li ng-show="volumeStatus === 'available' || volumeStatus === 'failed'">

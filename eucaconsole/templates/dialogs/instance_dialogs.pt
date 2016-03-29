@@ -18,7 +18,9 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="reboot_instance_submit_button" class="button expand" i18n:translate="">Yes, Reboot</button>
+                    <button type="submit" id="reboot_instance_submit_button" class="button expand" i18n:translate="">
+                        Yes, Reboot
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -30,7 +32,10 @@
              tal:define="landingpage_action request.route_path('instances_start') + layout.querystring;
                          detailpage_action request.route_path('instance_start', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Start instance</h3>
+            <h3>
+                <span i18n:translate="" ng-if="!multipleItemsSelected">Start instance</span>
+                <span i18n:translate="" ng-if="multipleItemsSelected">Start instances</span>
+            </h3>
             <p>
                 <span i18n:translate="">Are you sure you want to start</span>
                 <strong tal:condition="not landingpage">${instance_name}</strong>
@@ -42,7 +47,9 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="start_instance_submit_button" class="button expand" i18n:translate="">Yes, Start Instance</button>
+                    <button type="submit" id="start_instance_submit_button" class="button expand" i18n:translate="">
+                        Yes, Start Instance(s)
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -54,7 +61,10 @@
              tal:define="landingpage_action request.route_path('instances_stop') + layout.querystring;
                          detailpage_action request.route_path('instance_stop', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Stop instance</h3>
+            <h3>
+                <span i18n:translate="" ng-if="!multipleItemsSelected">Stop instance</span>
+                <span i18n:translate="" ng-if="multipleItemsSelected">Stop instances</span>
+            </h3>
             <p>
                 <span i18n:translate="">Are you sure you want to stop</span>
                 <strong tal:condition="not landingpage">${instance_name}</strong>
@@ -66,7 +76,10 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="stop_instance_submit_button" class="button expand" i18n:translate="">Yes, Stop Instance</button>
+                    <button type="submit" id="stop_instance_submit_button" class="button expand">
+                        <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Stop Instance</span>
+                        <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Stop Instances</span>
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -78,13 +91,14 @@
              tal:define="landingpage_action request.route_path('instances_terminate') + layout.querystring;
                          detailpage_action request.route_path('instance_terminate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Terminate instance</h3>
+            <h3>
+                <span i18n:translate="" ng-if="!multipleItemsSelected">Terminate instance</span>
+                <span i18n:translate="" ng-if="multipleItemsSelected">Terminate instances</span>
+            </h3>
             <div ng-show="rootDevice == 'ebs'">
-                <p>
-                    <span i18n:translate="">
-                        Terminating an EBS-backed instance may also delete the root volume if the volume is set up to do so.
-                        Data on that volume will be lost. To keep the volume, you may stop the instance instead.
-                    </span>
+                <p i18n:translate="">
+                    Terminating an EBS-backed instance may also delete the root volume if the volume is set up to do so.
+                    Data on that volume will be lost. To keep the volume, you may stop the instance instead.
                 </p>
             </div>
             <div>
@@ -100,7 +114,9 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="terminate_instance_submit_button" class="button expand" i18n:translate="">Yes, Terminate</button>
+                    <button type="submit" id="terminate_instance_submit_button" class="button expand" i18n:translate="">
+                        Yes, Terminate
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -250,7 +266,10 @@
              tal:define="landingpage_action request.route_path('instances_disassociate') + layout.querystring;
                          detailpage_action request.route_path('instance_disassociate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>
+            <h3>
+                <span i18n:translate="" ng-if="!multipleItemsSelected">Disassociate elastic IP address from instance</span>
+                <span i18n:translate="" ng-if="multipleItemsSelected">Disassociate elastic IP addresses from instances</span>
+            </h3>
             <div>
                 <p>
                     <span i18n:translate=""> 
@@ -260,16 +279,23 @@
             </div>
             <div>
                 <p>
-                    <span i18n:translate=""> 
-                        Are you sure you want to dissassociate 
+                    <span i18n:translate="">
+                        Are you sure you want to disassociate 
                     </span>
-                    <span tal:condition="instance"><b>{{ instancePublicIP }}</b></span>
-                    <span tal:condition="not instance"><b>{{ ipAddress }}</b></span> 
-                    <span i18n:translate=""> 
-                    from instance
+                    <span ng-if="!multipleItemsSelected">
+                        <span tal:condition="instance"><b>{{ instancePublicIP }}</b></span>
+                        <span tal:condition="not instance"><b>{{ ipAddress }}</b></span>
+                        <span i18n:translate="">from instance</span>
+                        <span tal:condition="instance"><b>${instance.id}</b>?</span>
+                        <span tal:condition="not instance"><b>{{ instanceName }}</b>?</span>
                     </span>
-                    <span tal:condition="instance"><b>${instance.id}</b> ?</span>
-                    <span tal:condition="not instance"><b>{{ instanceName }}</b> ?</span>
+                    <span ng-if="multipleItemsSelected">
+                        <span ng-repeat="ip in ipAddress.split(', ')">
+                            <strong>{{ ip }}</strong>
+                            <span i18n:translate="">from instance</span>
+                            <strong>{{ instanceID.split(', ')[$index] }}</strong><span ng-hide="$last">, </span><span i18n:translate="" ng-show="$last">?</span>
+                        </span>
+                    </span>
                 </p>
             </div>
             <form method="post" action="${action}" id="disassociate-ip-to-instance-form">
@@ -281,7 +307,10 @@
                     <input type="hidden" name="ip_address" value="{{ instancePublicIP }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
+                    <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand">
+                        <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Disassociate Address from Instance</span>
+                        <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Disassociate Addresses from Instances</span>
+                    </button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>

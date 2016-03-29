@@ -113,10 +113,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.imageID = $scope.urlParams.image_id || '';
             if( $scope.imageID === '' ){
                 $scope.currentStepIndex = 1;
-            }else{
+            } else {
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
                 $scope.loadImageInfo($scope.imageID);
+                $timeout(function() {
+                    document.getElementById('tabStep2').click();
+                });
             }
         };
         $scope.restoreSecurityGroupsInitialValues = function () {

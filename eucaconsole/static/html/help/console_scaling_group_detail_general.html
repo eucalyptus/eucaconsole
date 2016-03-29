@@ -24,27 +24,26 @@
         
         <div class="body taskbody"><p class="shortdesc">Use the capacity values to manually scale your scaling groups.</p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd">Use the <span class="ph uicontrol">Min</span> control to change the minimum number of instances you want running in your auto
                         scaling group.</span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Use the <span class="ph uicontrol">Desired</span> control to change the desired number of instances you want running. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Use the <span class="ph uicontrol">Max</span> control to change the maximum number of instances you want running. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">A termination policy defines how instances that are no longer needed in the
                         scaling group are terminated. A default termination policy is already
                         pre-selected and you can add termination policies by selecting them from the
                             <span class="ph uicontrol">Termination policies</span> field. The termination
                         policies are executed in the order they are listed. </span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> You can remove a selected termination policy by clicking on the <span class="ph uicontrol">X</span> next to the policy name in the
+                        <span class="ph uicontrol">Termination policies</span> field.</div>
+</div>
                 </li>
-<li class="li step">
-                   <span class="ph cmd">You can remove a selected termination policy by clicking on the <span class="ph uicontrol">X</span> next to the policy name in the
-                       <span class="ph uicontrol">Termination policies</span> field.</span>  
-               </li>
 </ol>
 
         </div>
@@ -68,39 +67,43 @@
                         auto scaling group.</span>
                 </li>
 <li class="li step stepexpand">
-                    <span class="ph cmd"> You can add VPC subnets by selecting them from the <span class="ph uicontrol">VPC subnet(s)</span> field.
-                        </span>
-                </li>
-<li class="li step stepexpand">
-                    <span class="ph cmd"> You can remove a selected VPC subnet by clicking on the <span class="ph uicontrol">X</span> next to the IP address associated with each subnet in the
-                        <span class="ph uicontrol">VPC subnet(s)</span> field.</span>
-                </li>
-<li class="li step stepexpand">
-                    <span class="ph cmd">If a VPC network was associated with your scaling group, availability zones are view-only and are not editable. 
-                        Otherwise, you can add availability zones by selecting them from the <span class="ph uicontrol">Availability Zones</span> field.</span>
-                    
-                </li>
-<li class="li step stepexpand">
-                    <span class="ph cmd"> You can remove a selected availability zone by clicking on the
-                        <span class="ph uicontrol">x</span> next to the availability zone's name in the
-                        <span class="ph uicontrol">Availability Zones</span> field.</span>
+                    <span class="ph cmd">For VPC networks, the following options are available:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">You can add VPC subnets by selecting them from the <span class="ph uicontrol">VPC subnet(s)</span> field.</span>
+                            <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> You can remove a selected VPC subnet by clicking on the <span class="ph uicontrol">X</span> next to the IP address associated with each subnet in the
+                                <span class="ph uicontrol">VPC subnet(s)</span> field.</div>
+</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">If a VPC network was associated with your scaling group, availability zones are view-only and are not editable. 
+                                Otherwise, you can add availability zones by selecting them from the <span class="ph uicontrol">Availability Zones</span> field.</span>
+                            <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> You can remove a selected availability zone by clicking on the
+                                <span class="ph uicontrol">x</span> next to the availability zone's name in the
+                                <span class="ph uicontrol">Availability Zones</span> field.</div>
+</div>
+                        </li>
+
+                    </ol>
+
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd"> The <span class="ph uicontrol">Load balancer(s)</span> field lists all the load balancers associated with the scaling group.</span>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd">You can change the amount of time after a scaling activity completes before any new scaling activity can start 
-                        by editing the the cooldown period, in seconds, in the <span class="ph uicontrol">Default cooldown period (secs)</span> control.</span>
+                        by editing the cooldown period, in seconds, in the <span class="ph uicontrol">Default cooldown period (secs)</span> control.</span>
                 </li>
 <li class="li step stepexpand">
                     <span class="ph cmd">You can change the amount of time after a new instance is launched in your auto scaling group before health checks start
                         for the instance by editing the grace period, in seconds, in the <span class="ph uicontrol">Health check grace period (secs)</span> control. </span>
-                
-                <div class="itemgroup info">A view-only list of actions recently performed by the scaling group is displayed in the <strong class="ph b">Recent activity</strong> field. </div>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> The auto scaling health check uses EC2 instance status checks to determine the
+                        health state of each instance in your auto scaling group.</div>
+</div>
                 </li>
 </ol>
 
-                
         </div>
 
     </div>
@@ -113,33 +116,36 @@
             your cloud. This section allows you to view, add or delete tags for your scaling
             group and for instances that run in your scaling group.</p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd">If you want to apply a new tag to instances running in the scaling group,
                         select the <span class="ph uicontrol">Propagate</span> check box.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">Key</span> text
+<li class="li step stepexpand">
+                    <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">name...</span> text
+                        box.</span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> Tags cannot start with "<samp class="ph codeph">euca:</samp>" or "<samp class="ph codeph">aws:</samp>".</div>
+</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">value...</span> text
                         box.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">Value</span> text
-                        box.</span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Add Tag</span> button.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">If you wish to add additional tags, click the <span class="ph uicontrol">Add Tag</span> button.</span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">If you wish to add additional tags, repeat the preceding steps.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">If you wish to delete a tag that you have already entered, click the <span class="ph uicontrol">X</span>
-                        on the tag icon.</span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">To delete one or more tags, move your mouse over the tag you wish to delete, 
+                        and click the <span class="ph uicontrol">X</span> button.</span>
                 </li>
 </ol>
 
         </div>
 
-    </div>
-
-    <div class="topic task nested1" id="scaling_group_detail_ui_help_steps_finishing">
-        <h2 class="title topictitle2">Saving Your Changes</h2>
+    <div class="topic task nested2" id="scaling_group_detail_ui_help_steps_finishing">
+        <h3 class="title topictitle3">Saving Your Changes</h3>
 
         
         <div class="body taskbody"><p class="shortdesc"/>
@@ -151,11 +157,11 @@
                         updates.</span>
                 </div>
 
-            <div class="section result">For more information on Auto Scaling, see <em class="ph i">Eucalyptus User Guide.</em></div>
-
         </div>
 
     </div>
+
+</div>
 
 
 </body>

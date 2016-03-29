@@ -37,7 +37,7 @@
                             <h5 class="subheader" i18n:translate="">Running instances</h5>
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
-                                <a href="${request.route_path('instances')}?state=running">
+                                <a href="${request.route_path('instances')}?status=running">
                                     <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="running-instances-count" ng-cloak="">{{ totals.instances_running }}</span></em>
                                     </i>
@@ -53,7 +53,7 @@
                             <h5 class="subheader" i18n:translate="">Stopped instances</h5>
                             <metal:block metal:use-macro="layout.global_macros['dashaction']" />
                             <div class="content">
-                                <a href="${request.route_path('instances')}?state=stopped">
+                                <a href="${request.route_path('instances')}?status=stopped">
                                     <i class="icon"><em><i ng-show="itemsLoading" class="busy" ></i>
                                         <span ng-show="!itemsLoading" id="stopped-instances-count" ng-cloak="">{{ totals.instances_stopped }}</span></em>
                                     </i>
@@ -96,6 +96,26 @@
                             <div class="footer">
                                 <a tal:condition="not: ufshost_error" href="${request.route_path('stack_new')}" i18n:translate="">Create stack</a>
                                 <a tal:condition="ufshost_error" data-reveal-id="ufshost-warn-dialog" i18n:translate="">Create stack</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="panel" id="alarms" tal:case="'alarms'">
+                        <div class="tile">
+                            <h5 class="subheader">
+                                <span i18n:translate="">Alarms in alarm state</span>
+                            </h5>
+                            <metal:block metal:use-macro="layout.global_macros['dashaction']" />
+                            <div class="content">
+                                <a href="${request.route_path('cloudwatch_alarms')}">
+                                    <span class="fa-stack euca-dash-size">
+                                        <i tal:condition="alarms_triggered == 0" class="dash-no-alarms fa fa-circle fa-stack-2x"></i>
+                                        <i tal:condition="alarms_triggered > 0" class="dash-alarms fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                    <i class="icon"><em>
+                                        <span id="alarms-count" ng-cloak="">${alarms_triggered}</span></em>
+                                    </i>
+                                </a>
                             </div>
                         </div>
                     </li>

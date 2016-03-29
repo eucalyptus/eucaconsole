@@ -1,0 +1,253 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+    <head metal:fill-slot="head_css">
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-detail.css')}" />
+    </head>
+
+    <div metal:fill-slot="main_content">
+        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
+                            Alarms</a></li>
+                    <li class="current"><a href="#">${alarm_id}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
+            <metal:block metal:use-macro="layout.global_macros['notifications']" />
+            <h3 id="pagetitle">
+                <strong i18n:translate="">Details for alarm:</strong>
+                <em>${alarm_id}</em>
+            </h3>
+            <div class="large-12 columns">
+                <dl class="tabs" id="alarm-subnav">
+                    <dd class="active"><a href="#" i18n:translate="">General</a><dd>
+                    <dd>
+                        <a href="${request.route_path('cloudwatch_alarm_history', alarm_id=alarm_id)}">
+                            History</a>
+                    </dd>
+                </dl>
+                <div class="panel has-actions">
+                    <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                        <metal:actions metal:fill-slot="actions">
+                            <li>
+                                <a href="#" i18n:translate="">Create alarm like this one</a>
+                            </li>
+                            <li>
+                                <a href="#" ng-click="delete($event)"
+                                    data-service-path="${request.route_path('cloudwatch_alarms')}"
+                                    data-redirect-path="${request.route_path('cloudwatch_alarms')}"
+                                    i18n:translate="">Delete</a>
+                            </li>
+                        </metal:actions>
+                    </metal:block>
+                    <form name="alarmUpdateForm" class="alarm-update" novalidate="">
+                        ${structure:alarm_form['csrf_token']}
+                        <h6 i18n:translate="">State</h6>
+                        <div class="row controls-wrapper">
+                            <div class="large-2 small-4 columns">
+                                <label class="right" i18n:translate="">State</label>
+                            </div>
+                            <div class="large-10 small-8 columns value" alarm-state="${alarm.state_value}"></div>
+                        </div>
+                        <div class="row controls-wrapper">
+                            <div class="large-2 small-4 columns">
+                                <label class="right" i18n:translate="">State details</label>
+                            </div>
+                            <div class="large-10 small-8 columns value">${alarm.state_reason}</div>
+                        </div>
+                        <hr/>
+                        <h6 i18n:translate="">Alarm</h6>
+                        <div class="row inline  controls-wrapper" id="controls_description">
+                                <div class="large-3 small-3 columns">
+                                    <label class="right" i18n:translate="">Description</label>
+                                </div>
+                                <div class="large-9 small-9 columns field">
+                                    <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
+                                </div>
+                        </div>    
+                        <div class="row controls-wrapper">
+                            <div class="large-3 small-3 columns">
+                                <label class="right" i18n:translate="">Dimensions</label>
+                            </div>
+                            <div class="large-9 small-9 columns value">
+                                <select multiple="true" ng-model="alarm.dimensions" chosen="">
+                                    <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected; value dims.value"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="trigger-conditions">
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-4 columns">
+                                    <label class="right" i18n:translate="">Trigger alarm when the</label>
+                                </div>
+                                <div class="large-3 small-4 columns value">
+                                    <select ng-model="alarm.statistic">
+                                        <option i18n:translate="">Average</option>
+                                        <option i18n:translate="">Minimum</option>
+                                        <option i18n:translate="">Maximum</option>
+                                        <option i18n:translate="">Sum</option>
+                                        <option i18n:translate="">Sample Count</option>
+                                    </select>
+                                </div>
+                                <div class="large-6 small-4 columns">
+                                    ${alarm.metric}
+                                </div>
+                            </div>
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-3 columns">
+                                    <label class="right" i18n:translate="">is</label>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    <select ng-model="alarm.comparison">
+                                        <option>&gt;</option>
+                                        <option>&gt;&#61;</option>
+                                        <option>&lt;</option>
+                                        <option>&lt;&#61;</option>
+                                    </select>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    <input type="text" value="${alarm.threshold}" ng-model="alarm.threshold"/>
+                                </div>
+                                <div class="large-3 small-3 columns value">
+                                    ${alarm.unit}
+                                </div>
+                            </div>
+                            <div class="row controls-wrapper">
+                                <div class="large-3 small-3 columns">
+                                    <label class="right" i18n:translate="">for at least</label>
+                                </div>
+                                <div class="large-3 small-3 columns">
+                                    <input type="text" value="${alarm.evaluation_periods}" ng-model="alarm.evaluation_periods"/>
+                                </div>
+                                <div class="large-3 small-3 columns" i18n:translate="">
+                                    <label i18n:translate="">consecutive periods of</label>
+                                </div>
+                                <div class="large-3 small-3 columns">
+                                    <select ng-model="alarm.period">
+                                        <option value="60" i18n:translate="">1 minute</option>
+                                        <option value="300" i18n:translate="">5 minutes</option>
+                                        <option value="900" i18n:translate="">15 minutes</option>
+                                        <option value="3600" i18n:translate="">1 hour</option>
+                                        <option value="21600" i18n:translate="">6 hours</option>
+                                        <option value="86400" i18n:translate="">1 day</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="metric-chart chart-wrapper">
+                            <h6>${metric_display_name}</h6>
+                            <svg class="cwchart"
+                                metric-chart=""
+                                metric="{{ alarm.metric }}"
+                                namespace="{{ alarm.namespace }}"
+                                duration="alarm.duration"
+                                statistic="alarm.statistic"
+                                unit="{{ alarm.unit }}"
+                                dimensions="alarm.dimensions"></svg>
+                        </div>
+                        <hr/>
+                        <div class="actions" ng-form="alarmActionsForm"
+                                             alarm-actions="${alarm_actions_json}"
+                                             service-path="${request.route_path('cloudwatch_alarm_actions', alarm_id=alarm_id)}">
+                            <h6>Actions</h6>
+                            <div class="item-list">
+                                <span class="item" ng-repeat="action in alarmActions" data-item-value="{{ action.arn }}">
+                                    <span i18n:translate="">For group</span>
+                                    <strong>{{ action.autoscaling_group_name }}</strong>
+                                    <span i18n:translate="">execute policy</span>
+                                    <strong>{{ action.policy_name }}</strong>
+                                    <span>({{ action.scaling_adjustment | signed }} instances)</span>
+                                    <a class="remove" title="Remove action" ng-click="removeAction($index)">
+                                        <i class="fi-x"></i>
+                                    </a>
+                                </span>
+                            </div>
+                            <span ng-show="alarmActions.length < 1" i18n:translate="">Add an action:</span>
+                            <span ng-show="alarmActions.length > 0" i18n:translate="">Add another action:</span>
+                            <div>
+                                <div class="row controls-wrapper">
+                                    <div class="columns large-2 small-2">
+                                        <label class="right" i18n:translate="">Action type</label>
+                                    </div>
+                                    <div class="columns large-10 small-10" i18n:translate="">
+                                        Autoscaling
+                                    </div>
+                                </div>
+                                <div class="row controls-wrapper">
+                                    <div class="columns large-2 small-2">
+                                        <label class="right" i18n:translate="">When alarm state is</label>
+                                    </div>
+                                    <div class="columns large-10 small-10">
+                                        <span class="label status radius alert" i18n:translate="">ALARM</span>
+                                    </div>
+                                </div>
+                                <div class="row controls-wrapper">
+                                    <div class="columns large-2 small-2">
+                                        <label class="right" i18n:translate="">For scaling group</label>
+                                    </div>
+                                    <div class="columns large-10 small-10">
+                                        <select ng-model="action.scalingGroup" ng-init="action.scalingGroup = ''" ng-change="updatePolicies()">
+                                            <option value="" i18n:translate="">Select scaling group...</option>
+                                            <option tal:repeat="group scaling_groups" tal:content="group.name" required=""></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row controls-wrapper">
+                                    <div class="columns large-2 small-2">
+                                        <label class="right" i18n:translate="">Execute scaling policy</label>
+                                    </div>
+                                    <div class="columns large-10 small-10">
+                                        <select name="policies" ng-model="action.scalingGroupPolicy"
+                                                                ng-init="action.scalingGroupPolicy = ''"
+                                                                ng-disabled="policiesAvailable()" required="">
+                                            <option value="" i18n:translate="">{{ defaultOptionValue }}</option>
+                                            <option ng-repeat="(name, details) in scalingGroupPolicies"
+                                                    ng-bind="name" 
+                                                    ng-value="{{ name }}" 
+                                                    data-arn="{{ details.arn }}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row controls-wrapper">
+                                    <div class="columns">
+                                        <button class="button round tiny" ng-click="addAction()" i18n:translate="">Add Action</button>
+                                        <a class="cancel" ng-click="resetForm()" i18n:translate="">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="controls">
+                            <button type="submit" class="button"
+                                id="save-changes-btn"
+                                ng-click="saveChanges($event)"
+                                ng-disabled="isNotChanged"
+                                data-service-path="${request.route_path('cloudwatch_alarms')}">
+                                <span i18n:translate="">Save Changes</span>
+                            </button>
+                            <a href="${request.route_path('cloudwatch_alarms')}" id="cancel-update-link"
+                               class="cancel-link"
+                               i18n:translate="">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div metal:fill-slot="tail_js">
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_detail.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/chosen.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
+    </div>
+</metal:block>

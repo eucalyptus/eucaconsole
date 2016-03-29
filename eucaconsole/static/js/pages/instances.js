@@ -4,21 +4,16 @@
  *
  */
 
-angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
+angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table'])
     .controller('InstancesCtrl', function ($scope, $timeout, $http, eucaUnescapeJson, eucaHandleError) {
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.ipAddresses = [];
         $scope.ipAddressList = {};
-        $scope.batchTerminateModal = $('#batch-terminate-modal');
         $scope.associateIPModal = $('#associate-ip-to-instance-modal');
         $scope.addressesEndpoint = '';
+        $scope.multipleItemsSelected = false;
         $scope.initChosenSelectors = function () {
-            $scope.batchTerminateModal.on('open.fndtn.reveal', function () {
-                var instanceIdsSelect = $scope.batchTerminateModal.find('select');
-                instanceIdsSelect.chosen({'width': '100%', 'search_contains': true});
-                instanceIdsSelect.trigger('chosen:updated');
-            });
             $scope.associateIPModal.on('open.fndtn.reveal', function () {
                 $('#ip_address').chosen({'width': '80%'});
                 $('#ip_address').trigger('chosen:updated');
@@ -26,21 +21,21 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
         };
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            if (options.hasOwnProperty('addresses_json_items_endpoint')) {
-                $scope.addressesEndpoint = options.addresses_json_items_endpoint;
-            } 
+            $scope.cloudType = options.cloud_type;
+            $scope.addressesEndpoint = options.addresses_json_items_endpoint;
+            $scope.rolesEndpoint = options.roles_json_items_endpoint;
             $scope.getIPAddresses(); 
             $scope.initChosenSelectors();
             $('#file').on('change', $scope.getPassword);
         };
-        $scope.createImageClicked = function (running_create, instance_id) {
-            if (running_create) {
-                $scope.instanceID = instance_id;
+        $scope.createImageClicked = function (item) {
+            if (item.running_create) {
+                $scope.instanceID = item.id;
                 var modal = $('#create-image-denied-modal');
                 modal.foundation('reveal', 'open');
             }
             else {
-                window.location = '/instances/' + instance_id + '/createimage';
+                window.location = '/instances/' + item.id + '/createimage';
             }
         };
         $scope.revealModal = function (action, instance) {
@@ -69,6 +64,34 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             }
             modal.foundation('reveal', 'open');
         };
+        $scope.revealMultiSelectModal = function (action, selectedItems) {
+            var modal = $('#' + action + '-instance-modal');
+            var instanceIDs = [];
+            var instanceNames = [];
+            var instanceIPs = [];
+            if (action === 'disassociate-ip-from') {
+                // Disassociate IP action is a special case
+                selectedItems.forEach(function (item) {
+                    if (item.has_elastic_ip) {
+                        instanceIDs.push(item.id);
+                        instanceNames.push(item.name || item.id);
+                        instanceIPs.push(item.ip_address);
+                    }
+                });
+                $scope.ipAddress = instanceIPs.map(function (ipAddress) {
+                    return ipAddress;
+                }).join(', ');
+            } else {
+                selectedItems.forEach(function (item) {
+                    instanceIDs.push(item.id);
+                    instanceNames.push(item.name || item.id);
+                });
+            }
+            $scope.multipleItemsSelected = instanceIDs.length > 1;
+            $scope.instanceID = instanceIDs.join(', ');
+            $scope.instanceName = instanceNames.join(', ');
+            modal.foundation('reveal', 'open');
+        };
         $scope.removeFromView = function(instance, url) {
             url = url.replace("_id_", instance.id);
             var data = "csrf_token=" + $('#csrf_token').val() + "&instance_id=" + instance.id;
@@ -80,17 +103,12 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                 Notify.success("Successfully removed terminated instance");
               }).
               error(function (oData, status) {
-                if (status == 403) {
+                if (status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 var errorMsg = oData.message || '';
                 Notify.failure(errorMsg);
               });
-        };
-        $scope.unterminatedInstancesCount = function (items) {
-            return items.filter(function (item) {
-                return item.status !== 'terminated';
-            }).length;
         };
         $scope.promptFile = function (url) {
             $('#file').trigger('click');
@@ -101,7 +119,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
             var file = evt.target.files[0];
             var reader = new FileReader();
             reader.onloadend = function(evt) {
-                if (evt.target.readyState == FileReader.DONE) {
+                if (evt.target.readyState === FileReader.DONE) {
                     var key_contents = evt.target.result;
                     var url = $scope.password_url.replace("_id_", $scope.instanceID);
                     var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $.base64.encode(key_contents);
@@ -112,7 +130,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                         $('#the-password').text(results.password);
                       }).
                       error(function (oData, status) {
-                        if (status == 403) {
+                        if (status === 403) {
                             $('#timed-out-modal').foundation('reveal', 'open');
                         }
                         var errorMsg = oData.message || '';
@@ -185,6 +203,27 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils'])
                     }
                 }); 
             }
+        };
+        $scope.$on('itemsLoaded', function($event, items) {
+            var theItems = items;
+            if ($scope.cloudType === 'euca') {
+                $http.get($scope.rolesEndpoint).success(function(oData) {
+                    var results = oData ? oData.results : [];
+                    for (var k=0; k<theItems.length; k++) {
+                        if (results[theItems[k].id] !== undefined) {
+                            theItems[k].roles = results[theItems[k].id];
+                        }
+                    }
+                }).error(function (oData, status) {
+                    // ignore
+                });
+            }
+        });
+    }).filter('hasElasticIP', function() {
+        return function (items) {
+            return items.filter(function (item) {
+                return item.has_elastic_ip;
+            });
         };
     })
 ;

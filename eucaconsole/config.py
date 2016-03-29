@@ -30,6 +30,7 @@ Pyramid configuration helpers
 """
 
 import boto
+import json
 import logging
 import os
 import sys
@@ -100,6 +101,14 @@ def check_config(settings):
         )
 
 
+def write_routes_json(path):
+    url_dict = {}
+    for url in urls:
+        url_dict[url.name] = url.pattern.replace('{', '{{').replace('}', '}}')
+    with open(os.path.join(path, 'routes.json'), 'w') as outfile:
+        json.dump(url_dict, outfile)
+
+
 def get_configurator(settings, enable_auth=True):
     check_config(settings)
     connection_debug = asbool(settings.get('connection.debug'))
@@ -119,16 +128,26 @@ def get_configurator(settings, enable_auth=True):
     config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
+
+    route_dir = os.path.join(os.getcwd(), 'run')
+    if not os.path.exists(route_dir) and os.path.exists('/var/run/eucaconsole'):
+        route_dir = '/var/run/eucaconsole'
+    write_routes_json(route_dir)
+    config.add_static_view(name='static/json', path=route_dir, cache_max_age=cache_duration)
+
     locale_dir = os.path.join(os.getcwd(), 'locale')
     # use local locale directory over system one
     if not os.path.exists(locale_dir) and os.path.exists('/usr/share/locale'):
         locale_dir = '/usr/share/locale'
     config.add_translation_dirs(locale_dir)
     config.set_locale_negotiator(custom_locale_negotiator)
+
     for route in urls:
         config.add_route(route.name, route.pattern)
+
     setup_tweens(config, settings)
-    config.scan()
+    config.scan('.views')
+
     if not boto.config.has_section('Boto'):
         boto.config.add_section('Boto')
     boto.config.set('Boto', 'num_retries', settings.get('connection.retries', '2'))
@@ -185,17 +204,6 @@ def get_configurator(settings, enable_auth=True):
             'password': password
         },
     )
-    if not asbool(settings.get('connection.ssl.validation', False)):
-        """See https://www.python.org/dev/peps/pep-0476/#opting-out"""
-        import ssl
-        try:
-            _create_unverified_https_context = ssl._create_unverified_context
-        except AttributeError:
-            # Legacy Python that doesn't verify HTTPS certificates by default
-            pass
-        else:
-            # Handle target environment that doesn't support HTTPS verification
-            ssl._create_default_https_context = _create_unverified_https_context
     return config
 
 

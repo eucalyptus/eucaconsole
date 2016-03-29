@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/image.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -20,8 +21,7 @@
             <em>${image_display_name}</em>
         </h3>
         <div class="large-12 columns"
-            tal:define="image_tags image.tags if image else {};
-                        readonly True if image else False;
+            tal:define="readonly True if image else False;
                         image_id image.id if image else '';">
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
@@ -200,7 +200,11 @@
                     </div>
                     <hr />
                     ${panel('bdmapping_editor', image=image, read_only=True)}
-                    ${panel('tag_editor', tags=image_tags)}
+                    <tag-editor
+                            ng-model="tags"
+                            template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
+                            tal:content="tags | structure">
+                    </tag-editor>
                     <hr/>
                     <div>
                         <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged">
@@ -227,6 +231,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/image.js')}"></script>
 </div>
 

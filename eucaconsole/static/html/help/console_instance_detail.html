@@ -5,35 +5,100 @@
 <head>
 <title>Instance Detail - General</title>
 </head>
-<body id="instance_detail_ui_context">
+<body id="instance_detail_general_ui_context">
 
 
     <h1 class="title topictitle1">Instance Detail - General</h1>
 
     
-    <div class="body taskbody"><p class="shortdesc"> This page shows you the details for an instance.</p>
+    <div class="body taskbody"><p class="shortdesc"> This page provides the details of an instance.</p>
 </div>
 
-    <div class="topic task nested1" id="instance_detail_general">
-        <h2 class="title topictitle2">General</h2>
+    
+    <div class="topic task nested1" id="instance_detail_general_instances">
+        <h2 class="title topictitle2">Instance</h2>
 
-        <p class="shortdesc">This tab allows you to view general details about the instance, rename the
-            instance, and add tags.</p>
+        
+        <div class="body taskbody"><p class="shortdesc">This section allows you to view details about the instance. 
+            The name is the only attribute about the instance that can be edited. </p>
 
-        <div class="topic task nested2" id="instance_detail_general_rename">
-            <h3 class="title topictitle3">Rename the instance</h3>
+            <div class="section context">
+            <ul class="ul">
+                <li class="li">To rename the instance, type the new name of the instance in the <span class="ph uicontrol">Name</span> text
+                    field. </li>
 
-            <div class="body taskbody">
-                <div class="li step p">
-                        <span class="ph cmd">Type the new name of the volume in the <span class="ph uicontrol">Name</span> text
-                            field.</span>
-                    </div>
+            </ul>
 
             </div>
 
         </div>
-<div class="topic task nested2" id="tags">
-    <h3 class="title topictitle3">Add tags </h3>
+
+    <div class="topic task nested2" id="instance_detail_ui_context_menu">
+        <h3 class="title topictitle3">Actions menu</h3>
+
+        
+        <div class="body taskbody"><p class="shortdesc">Clicking the <span class="ph uicontrol">Actions</span> button brings up a menu of actions
+            that you can perform on the selected instance.</p>
+
+            <div class="section context">The following context menu actions are available:
+                <ul class="ul">
+                    <li class="li"><span class="ph uicontrol">Connect to instance</span>. Selecting this option displays a 
+                        dialog with instructions detailing how to connect to the selected instance. </li>
+
+                    <li class="li"><span class="ph uicontrol">Launch more like this</span>. Selecting this option displays a 
+                        dialog that allows you to create and customize one or more instances like the selected instance.</li>
+
+                    <li class="li"><span class="ph uicontrol">Create launch configuration</span>. A launch configuration is 
+                        used to define the parameters for new instances that are launched as part of your 
+                        auto scaling group. Selecting this option displays the <span class="ph uicontrol">Create new launch
+                            configuration</span> wizard. 
+                        <div class="note note"><span class="notetitle">Note:</span> For more information on Auto Scaling, see <a class="xref" href="../user-guide/autoscaling_intro.html" title="Eucalyptus Auto Scaling automatically adds and removes instances based on demand. Auto Scaling scales dynamically based on metrics (for example, CPU utilization). The Auto Scaling service works in conjunction with the ElasticLoad Balancing and CloudWatch services.">Using Auto Scaling</a> 
+                            in the <em class="ph i">Eucalyptus User Guide</em>.</div>
+ </li>
+
+                    <li class="li"><span class="ph uicontrol">Create image</span>. Selecting this option allows you to create a new image. 
+                        Refer to the Help on that page to complete the fields.</li>
+
+                    <li class="li"><span class="ph uicontrol">View console output</span>. Selecting this option displays a dialog box 
+                        showing the selected instance's console output.</li>
+
+                    <li class="li"><span class="ph uicontrol">Associate IP address</span>. Selecting this option opens the volume management
+                        page that will allow you to attach and detach volumes for the selected instance.</li>
+
+                    <li class="li"><span class="ph uicontrol">Stop</span>. This option displays for only EBS-backed instances that are active. 
+                        Select this option to stop the selected EBS-backed instance.</li>
+
+                    <li class="li"><span class="ph uicontrol">Start</span>. This option displays for only EBS-backed instances that are stopped. 
+                        Select this option to start the selected EBS-backed instance.</li>
+
+                    <li class="li"><span class="ph uicontrol">Reboot</span>. Select this option to reboot the selected instance.</li>
+
+                    <li class="li"><span class="ph uicontrol">Terminate</span>. Select this option to terminate the selected instance. 
+                        <div class="note note"><span class="notetitle">Note:</span> A terminated instance can't be restarted.</div>
+</li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+ 
+        <div class="topic task nested1" id="instance_detail_general_images">
+            <h2 class="title topictitle2">Image</h2>
+
+            <div class="body taskbody">
+               <div class="section context">This section provides information about the image used for this instance. </div>
+
+            </div>
+
+        </div>
+
+    <div class="topic task nested1" id="tags">
+    <h2 class="title topictitle2">Tags</h2>
 
     
     <div class="body taskbody"><p class="shortdesc"> To help you manage your cloud's instances, images, and other Eucalyptus resources,
@@ -43,15 +108,15 @@
         steps:</p>
 </div>
 
-    <div class="topic task nested3" id="d15e15">
-        <h4 class="title topictitle4"/>
+    <div class="topic task nested2" id="d15e15">
+        <h3 class="title topictitle3">Add tags</h3>
 
         
         <div class="body taskbody"><p class="shortdesc"/>
 
             <div class="section context">To add new tags:</div>
 
-            <ol class="ol steps"><li class="li step stepexpand">
+            <ol class="ol steps"><li class="li step stepexpand" id="d15e15__d15e29">
                     <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">name...</span> text
                         box.</span>
                     <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> Tags cannot start with "<samp class="ph codeph">euca:</samp>" or "<samp class="ph codeph">aws:</samp>".</div>
@@ -67,35 +132,20 @@
 <li class="li step stepexpand">
                     <span class="ph cmd">If you wish to add additional tags, repeat the preceding steps.</span>
                 </li>
+<li class="li step stepexpand" id="d15e15__d15e72">
+                    <span class="ph cmd">To delete one or more tags, move your mouse over the tag you wish to delete, 
+                        and click the <span class="ph uicontrol">X</span> button.</span>
+                </li>
 </ol>
 
         </div>
 
     </div>
 
-    
-    <div class="topic task nested3" id="d15e77">
-        <h4 class="title topictitle4"/>
-
-        
-        <div class="body taskbody"><p class="shortdesc"/>
-
-            <div class="section context">To delete one or more tags:</div>
-
-            <div class="li step p">
-                    <span class="ph cmd">Move your mouse over the tag you wish to delete and click the
-                            <span class="ph uicontrol">X</span> button.</span>
-                </div>
-
-        </div>
-
-    </div>
-
-    
 </div>
 
-        <div class="topic task nested2" id="volume_detail_ui_help_steps_finishing">
-            <h3 class="title topictitle3">Saving Your Changes</h3>
+        <div class="topic task nested1" id="volume_detail_ui_help_steps_finishing">
+            <h2 class="title topictitle2">Saving Your Changes</h2>
 
             
             <div class="body taskbody"><p class="shortdesc"/>
@@ -105,192 +155,10 @@
                                 <span class="ph uicontrol">Save changes</span> button.</span>
                     </div>
 
-                
             </div>
 
         </div>
-
-    </div>
 
     
-    
-
-    <div class="topic task nested1" id="instance_detail_ui_context_menu">
-        <h2 class="title topictitle2">Action menu</h2>
-
-        
-        <div class="body taskbody"><p class="shortdesc">Clicking the <span class="ph uicontrol">Actions</span> button brings up a menu of actions
-            that you can perform on the selected instance.</p>
-
-            <div class="section context">The following context menu actions are available:</div>
-
-        </div>
-
-        
-        
-        
-        <div class="topic task nested2" id="instance_detail_connect_steps">
-            <h3 class="title topictitle3">Connect to instance</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Selecting this menu will display a dialog with instructions detailing
-                            how to connect to the selected instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_launch_more_steps">
-            <h3 class="title topictitle3">Launch more like this</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Selecting this menu will display a dialog that allows you to create and
-                            customize one or more instances like the selected instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_launch_config_steps">
-            <h3 class="title topictitle3">Create launch configuration</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">A launch configuration is used to define the parameters for new
-                            instances that are launched as part of your auto scaling group.
-                            Selecting this menu displays the <span class="ph uicontrol">Create new launch
-                                configuration</span> wizard. </span>
-                        <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> For more information on Auto Scaling, please see <em class="ph i">Using Auto
-                            Scaling</em> in the <em class="ph i">Eucalyptus User Guide</em>.</div>
-</div>
-                        
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_console_output_steps">
-            <h3 class="title topictitle3">View console output</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Selecting this menu will display a dialog box showing the selected
-                            instance's console output.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_console_create_image_steps">
-            <h3 class="title topictitle3">Create image</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Selecting this option allows you to create a new image. 
-                            Refer to the Help on that page to complete the fields.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_associate_ip_steps">
-            <h3 class="title topictitle3">Associate IP address</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Select <span class="ph uicontrol">Associate IP address</span> from the
-                            <span class="ph uicontrol">Actions</span> menu to show the volume management
-                            page that will allow you to attach and detach volumes for the selected
-                            instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_ui_stop_steps">
-            <h3 class="title topictitle3">Stop</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Select this item to stop the selected EBS-backed instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_ui_start_steps">
-            <h3 class="title topictitle3">Start</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Select this item to start the selected EBS-backed instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        
-        <div class="topic task nested2" id="instance_detail_ui_reboot_steps">
-            <h3 class="title topictitle3">Reboot</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Select this item to reboot the selected instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        
-        
-        
-        <div class="topic task nested2" id="instance_detail_ui_terminate_steps">
-            <h3 class="title topictitle3">Terminate</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Select this to terminate the selected instance.</span>
-                        <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> A terminated instance can't be restarted.</div>
-</div>
-                    </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
 </body>
 </html>

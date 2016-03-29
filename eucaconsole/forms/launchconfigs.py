@@ -155,7 +155,6 @@ class CreateLaunchConfigForm(BaseSecureForm):
 
 class LaunchConfigsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
-    availability_zone = wtforms.SelectMultipleField(label=_(u'Availability zone'))
     instance_type = wtforms.SelectMultipleField(label=_(u'Instance type'))
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
     key_name = wtforms.SelectMultipleField(label=_(u'Key pair'))
@@ -169,8 +168,6 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
         self.ec2_conn = ec2_conn
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
-        region = request.session.get('region')
-        self.availability_zone.choices = self.get_availability_zone_choices(region)
         self.instance_type.choices = self.ec2_choices_manager.instance_types(
             add_blank=False, cloud_type=self.cloud_type, add_description=False)
         self.root_device_type.choices = self.get_root_device_type_choices()
@@ -178,22 +175,17 @@ class LaunchConfigsFiltersForm(BaseSecureForm):
         self.security_groups.choices = self.ec2_choices_manager.security_groups(use_id=True, add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
         self.facets = [
-            {'name': 'availability_zone', 'label': self.availability_zone.label.text,
-                'options': self.get_availability_zone_choices(region)},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
                 'options': self.get_options_from_choices(self.instance_type.choices)},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
             {'name': 'key_name', 'label': self.key_name.label.text,
                 'options': self.get_options_from_choices(self.key_name.choices)},
-            {'name': 'security_group', 'label': self.security_groups.label.text,
+            {'name': 'security_groups', 'label': self.security_groups.label.text,
                 'options': self.get_options_from_choices(self.security_groups.choices)},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
                 'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
-
-    def get_availability_zone_choices(self, region):
-        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
 
     @staticmethod
     def get_root_device_type_choices():

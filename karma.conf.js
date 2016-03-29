@@ -40,6 +40,7 @@ module.exports = function(config) {
       'static/js/thirdparty/angular/angular.min.js',
       'static/js/thirdparty/angular/angular-sanitize.min.js',
       'static/js/thirdparty/angular/angular-mocks.js',
+      'static/js/thirdparty/angular/angular-smart-table.js',
       'static/js/thirdparty/jquery/jquery.generateFile.js',
       'static/js/thirdparty/jquery/jquery.base64.js',
       'static/js/thirdparty/jquery/jquery.cookie.js',
@@ -59,6 +60,7 @@ module.exports = function(config) {
       'static/js/thirdparty/jasmine/jasmine-jquery.js',
       'static/js/thirdparty/magic-search/magic_search.js',
       'static/js/pages/custom_filters.js',
+      'static/js/widgets/form_components.js',
       'static/js/widgets/autoscale_tag_editor.js',
       'static/js/widgets/bdmapping_editor.js',
       'static/js/widgets/image_picker.js',
@@ -70,6 +72,8 @@ module.exports = function(config) {
       'static/js/widgets/securitygroup_rules.js',
       'static/js/widgets/tag_editor.js',
       'static/js/widgets/user_editor.js',
+      'static/js/widgets/tag-editor/tag-editor.js',
+      'static/js/widgets/expando.js',
       'static/js/pages/landingpage.js',
       'static/js/pages/account.js',
       'static/js/pages/account_new.js',
@@ -188,7 +192,8 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_user_view_quotas.js',
       'static/js/jasmine-spec/spec_volume.js',
       'static/js/jasmine-spec/spec_volumes.js',
-      'static/js/jasmine-spec/spec_volume_snapshots.js'
+      'static/js/jasmine-spec/spec_volume_snapshots.js',
+      'static/js/jasmine-spec/tag-editor/spec_tag_editor.js'
     ],
 
 

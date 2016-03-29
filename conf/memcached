@@ -1,6 +1,4 @@
-PORT="11211"
-USER="memcached"
-MAXCONN="1024"
-CACHESIZE="64"
-OPTIONS="-l 127.0.0.1"
+MEMCACHED_MAXCONN="1024"
+MEMCACHED_CACHESIZE="64"
+MEMCACHED_FLAGS="-s /var/run/eucaconsole/memcached.sock -a 0700"
 

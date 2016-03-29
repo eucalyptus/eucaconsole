@@ -12,6 +12,7 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         $scope.instanceID = '';
         $scope.isNotValid = true;
         $scope.urlParams = $.url().param();
+        $scope.multipleItemsSelected = false;
         $scope.initChosenSelectors = function () {
             $('#instance_id').chosen({'width': '80%', 'search_contains': true});
         };
@@ -46,6 +47,37 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.publicIP = eip.public_ip;
             $scope.allocationID = eip.allocation_id;
             modal.foundation('reveal', 'open');
+        };
+        $scope.revealReleaseIPsModal = function (checkedItems) {
+            var modal = $('#release-ip-modal');
+            var checkedIPs = checkedItems.map(function (item) {
+                return item.public_ip;
+            });
+            $scope.publicIP = checkedIPs.join(', ');
+            $scope.multipleItemsSelected = checkedIPs.length > 1;
+            modal.foundation('reveal', 'open');
+        };
+        $scope.revealDisassociateIPsModal = function (checkedItems) {
+            var modal = $('#disassociate-ip-modal');
+            var checkedIPs = [];
+            var instanceIDs = [];
+            checkedItems.forEach(function (item) {
+                if (item.instance_id) {
+                    checkedIPs.push(item.public_ip);
+                    instanceIDs.push(item.instance_id);
+                }
+            });
+            $scope.publicIP = checkedIPs.join(', ');
+            $scope.instanceID = instanceIDs.join(', ');
+            $scope.multipleItemsSelected = checkedIPs.length > 1;
+            modal.foundation('reveal', 'open');
+        };
+    })
+    .filter('attachedOnly', function() {
+        return function (items) {
+            return items.filter(function (item) {
+                return !!item.instance_id;
+            });
         };
     });
 

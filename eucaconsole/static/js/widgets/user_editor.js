@@ -3,20 +3,7 @@
  * @requires AngularJS
  *
  */
-angular.module('UserEditor', [])
-    .directive('reserved', function () {
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            link: function (scope, element, attrs, ctrl) {
-                var reserved = attrs.reserved.split(/\s+/);
-                ctrl.$validators.reserved = function (modelValue) {
-                    var isValid = reserved.indexOf(modelValue) === -1;
-                    return isValid;
-                };
-            }
-        };
-    })
+angular.module('UserEditor', ['FormComponents'])
     .controller('UserEditorCtrl', function ($scope) {
         $scope.isDisabled = function () {
             return $scope.newUserName === '' || $scope.userEditor.$invalid;

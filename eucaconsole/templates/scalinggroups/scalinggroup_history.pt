@@ -27,6 +27,7 @@
                 <dd class="active"><a href="#" i18n:translate="">Scaling history</a></dd>
                 <dd><a href="${request.route_path('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Scaling policies</a></dd>
                 <dd><a href="${request.route_path('scalinggroup_instances', id=scaling_group.name)}">Instances</a></dd>
+                <dd><a href="${request.route_path('scalinggroup_monitoring', id=scaling_group.name)}">Monitoring</a></dd>
             </dl>
             <div class="panel gridwrapper no-title">
                 <div class="content">

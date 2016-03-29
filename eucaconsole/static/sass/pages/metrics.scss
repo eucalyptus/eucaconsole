@@ -1,0 +1,157 @@
+/* @fileOverview CloudWatch Metrics landing page CSS */
+@import "../includes/eucavariables";
+
+@import "../includes/landingpage";
+
+
+table.expando td:nth-of-type(1) {
+    width: 1rem;
+}
+
+table td input[type="checkbox"] {
+    margin: 0 0 0;
+}
+
+#graph-area {
+    padding-top: 0.0rem;
+}
+
+.chart-wrapper {
+    background: #ffffff;
+    border: 1px solid $hp-gray-40;
+    h6 {
+        border: 0px none;
+    }
+    svg {
+        border: 0px none;
+    }
+}
+
+.split-container {
+}
+
+.split-top {
+    height: 250px;
+    overflow: auto;
+}
+
+.split-bar {
+    height: 0.6rem;
+    width: 100%;
+    color: grey;
+    background: #ffffff;
+    cursor: row-resize;
+    overflow-y: hidden;
+    hr {
+        margin: 4px 4px 4px 4px;
+    }
+}
+
+.split-bottom {
+    position: relative;
+    padding-top: 1.0rem;
+}
+
+select {
+    width: 20rem;
+}
+
+.tile {
+    input[type="checkbox"] {
+        position: relative;
+        float: left;
+        top: 9px;
+        left: 5px;
+    }
+    .dropdown.button.tiny {
+        top: 5px !important;
+        right: 2px !important;
+    }
+}
+
+#primary-buttons .button.more-actions {
+    margin-left: 0 !important;
+}
+
+th.metric-action {
+    text-align: right !important;
+}
+
+.metrics-selected {
+    padding-top: 1.5rem;
+    padding-left: 0.25rem;
+}
+
+magic-search .f-dropdown {
+    min-width: 15rem;
+}
+
+div.absolute-grouping {
+}
+
+#metric-time-range {
+    margin: 0;
+    display: inline;
+}
+
+input.datefield {
+    width: 9rem;
+    float: left;
+    margin-bottom: 0;
+    margin-right: 1rem;
+}
+
+.toprow {
+    select {
+        margin-bottom: 1px;
+    }
+}
+
+.chart-wrapper {
+    .graph-close {
+        position: relative;
+        bottom: 1rem;
+        left: 61rem;
+        color: $hp-gray-65;
+        font-size: rem-calc(35);
+        line-height: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .metric-chart-menu {
+        position: relative;
+        bottom: 1.3rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        left: 58rem;
+        color: $hp-gray-65;
+        cursor: pointer;
+    }
+    svg {
+        height: 300px !important;
+    }
+}
+.time-shift {
+    .graph-shift-left {
+        position: relative;
+        left: 0.25rem;
+        color: $hp-gray-65;
+        cursor: pointer;
+    }
+    .graph-shift-right {
+        position: relative;
+        left: 59rem;
+        color: $hp-gray-65;
+        cursor: pointer;
+    }
+}
+
+.metrics-url-field {
+    width: 100%;
+}
+
+.field-wrapper {
+    &.timepicker {
+        position: absolute;
+    }
+}

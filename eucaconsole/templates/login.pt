@@ -63,6 +63,7 @@
                         <form class="custom" id="euca-login-form" method="post" name="euca_login_form" ng-submit="isLoggingIn=true"
                               action="${request.route_path('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
+                            <input type="hidden" id="euca-region" name="euca-region" value="" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
                                 <div class="small-12 columns field">
                                     <label for="${field.id}" class="left stack-label">${field.label.text}<span class="req">*</span></label>

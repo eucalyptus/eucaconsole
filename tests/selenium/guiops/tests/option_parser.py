@@ -14,5 +14,8 @@ class Option_parser(object):
         parser.add_argument('--platform', type=str, help='Platform for SuceLabs Testing, can be "Windows XP", "Windows 7", "Windows 8", "Windows 8.1", "Linux" etc.')
         parser.add_argument('-s', '--sauce', dest='sauce', action='store_true', help='Use SauceLabs webdriver')
         parser.set_defaults(sauce=False)
+        parser.add_argument('-z', '--zones', dest='zones', type=str,
+                            help='Availability zones, pass as a comma-delimited list (e.g. "one,two")')
+        parser.set_defaults(zones='one,two')
         args = vars(parser.parse_args())
         return args

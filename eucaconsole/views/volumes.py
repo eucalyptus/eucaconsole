@@ -29,6 +29,8 @@ Pyramid views for Eucalyptus and AWS volumes
 
 """
 from dateutil import parser
+from itertools import chain
+
 import simplejson as json
 
 from boto.exception import BotoServerError
@@ -37,12 +39,19 @@ from boto.ec2.snapshot import Snapshot
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import (
+    MONITORING_DURATION_CHOICES, STATISTIC_CHOICES, GRANULARITY_CHOICES,
+    DURATION_GRANULARITY_CHOICES_MAPPING
+)
+from ..constants.volumes import VOLUME_MONITORING_CHARTS_LIST
 from ..forms import ChoicesManager
+from ..forms.instances import InstanceMonitoringForm
 from ..forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm,
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
@@ -63,6 +72,13 @@ class BaseVolumeView(BaseView):
                 return None
         return None
 
+    def get_instance(self, instance_id):
+        reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+        reservation = reservations_list[0] if reservations_list else None
+        if reservation:
+            return reservation.instances[0]
+        return None
+
 
 class VolumesView(LandingPageView, BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volumes.pt'
@@ -80,6 +96,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -94,7 +111,9 @@ class VolumesView(LandingPageView, BaseVolumeView):
         ]
         filters_form = VolumesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
         search_facets = filters_form.facets
-        # filter_keys are passed to client-side filtering in search box
+        controller_options_json = BaseView.escape_json(json.dumps({
+            'instances_by_zone': self.get_instances_by_zone(self.instances),
+        }))
         self.render_dict.update(dict(
             filters_form=filters_form,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
@@ -104,20 +123,26 @@ class VolumesView(LandingPageView, BaseVolumeView):
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             delete_form=self.delete_form,
-            instances_by_zone=BaseView.escape_json(json.dumps(self.get_instances_by_zone(self.instances))),
+            controller_options_json=controller_options_json,
         ))
         return self.render_dict
 
     @view_config(route_name='volumes_delete', request_method='POST')
     def volumes_delete(self):
-        volume_id = self.request.params.get('volume_id')
-        volume = self.get_volume(volume_id)
-        if volume and self.delete_form.validate():
-            with boto_error_handler(self.request, self.location):
+        volume_id_param = self.request.params.get('volume_id')
+        volume_ids = [volume_id.strip() for volume_id in volume_id_param.split(',')]
+        if self.delete_form.validate():
+            for volume_id in volume_ids:
+                volume = self.get_volume(volume_id)
                 self.log_request(_(u"Deleting volume {0}").format(volume_id))
-                volume.delete()
+                with boto_error_handler(self.request, self.location):
+                    volume.delete()
+            if len(volume_ids) == 1:
                 msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            else:
+                prefix = _(u'Successfully sent request to delete volumes')
+                msg = u'{0} {1}'.format(prefix, ', '.join(volume_ids))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to delete volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -145,13 +170,19 @@ class VolumesView(LandingPageView, BaseVolumeView):
 
     @view_config(route_name='volumes_detach', request_method='POST')
     def volumes_detach(self):
-        volume_id = self.request.params.get('volume_id')
+        volume_id_param = self.request.params.get('volume_id')
+        volume_ids = [volume_id.strip() for volume_id in volume_id_param.split(',')]
         if self.detach_form.validate():
-            with boto_error_handler(self.request, self.location):
+            for volume_id in volume_ids:
                 self.log_request(_(u"Detaching volume {0}").format(volume_id))
-                self.conn.detach_volume(volume_id)
+                with boto_error_handler(self.request, self.location):
+                    self.conn.detach_volume(volume_id)
+            if len(volume_ids) == 1:
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            else:
+                prefix = _(u'Successfully sent request to detach volumes')
+                msg = u'{0} {1}'.format(prefix, ', '.join(volume_ids))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -203,6 +234,12 @@ class VolumesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in VolumesFiltersForm
         ignore_params = ['zone']
+        # Get alarms for volumes and build a list of resource ids to optimize alarm status fetch
+        cw_conn = self.get_connection(conn_type='cloudwatch')
+        alarms = [alarm for alarm in cw_conn.describe_alarms() if 'VolumeId' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         with boto_error_handler(self.request):
             if self.enable_filters:
                 filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
@@ -219,25 +256,45 @@ class VolumesJsonView(LandingPageView):
 
             for volume in filtered_items:
                 status = volume.status
+                alarm_status = ''
                 attach_status = volume.attach_data.status
+                is_root_volume = False
                 instance_name = None
                 if volume.attach_data is not None and volume.attach_data.instance_id is not None:
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
                     instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
+                    if instance.root_device_type == 'ebs' and volume.attach_data.device == instance.root_device_name:
+                        is_root_volume = True  # Note: Check for 'True' when passed to JS via Chameleon template
                 if status != 'deleted':
+                    snapshot_name = [snap.tags.get('Name') for snap in snapshots if snap.id == volume.snapshot_id]
+                    if len(snapshot_name) == 0:
+                        snapshot_name = ''
+                    elif snapshot_name[0] is None:
+                        snapshot_name = ''
+                    else:
+                        snapshot_name = snapshot_name[0]
+                    if volume.id in alarm_resource_ids:
+                        alarm_status = Alarm.get_resource_alarm_status(volume.id, alarms)
                     volumes.append(dict(
                         create_time=volume.create_time,
                         id=volume.id,
                         instance=volume.attach_data.instance_id,
                         device=volume.attach_data.device,
                         instance_name=instance_name,
+                        instance_tag_name=instance.tags.get('Name') if instance_name else '',
                         name=TaggedItemView.get_display_name(volume, escapebraces=False),
+                        volume_tag_name=volume.tags.get('Name'),
                         snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
+                        snapshot_id=volume.snapshot_id,
+                        snapshot_name=snapshot_name,
                         size=volume.size,
                         status=status,
                         attach_status=attach_status,
+                        alarm_status=alarm_status,
+                        is_root_volume=is_root_volume,
                         zone=volume.zone,
                         tags=TaggedItemView.get_tags_display(volume.tags),
+                        real_tags=volume.tags,
                         transitional=status in transitional_states or attach_status in transitional_states,
                     ))
             return dict(results=volumes)
@@ -265,8 +322,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
             snapshots = self.conn.get_all_snapshots(owner='self') if self.conn else []
-            region = self.request.session.get('region')
-            zones = ChoicesManager(self.conn).get_availability_zones(region)
+            zones = ChoicesManager(self.conn).get_availability_zones(self.region)
             instances = self.conn.get_only_instances() if self.conn else []
         self.volume_form = VolumeForm(
             self.request, conn=self.conn, volume=self.volume, snapshots=snapshots,
@@ -279,14 +335,18 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         self.attach_data = self.volume.attach_data if self.volume else None
         self.volume_name = self.get_volume_name()
         self.instance_name = None
+        is_root_volume = False
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
             self.instance_name = TaggedItemView.get_display_name(instance)
+            if instance.root_device_type == 'ebs' and self.volume.attach_data.device == instance.root_device_name:
+                is_root_volume = True
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
             instance_name=self.instance_name,
             device_name=self.attach_data.device if self.attach_data else None,
+            is_root_volume=is_root_volume,
             attachment_time=self.get_attachment_time(),
             volume_form=self.volume_form,
             delete_form=self.delete_form,
@@ -450,6 +510,10 @@ class VolumeStateView(BaseVolumeView):
                          attach_instance=attach_instance)
         )
 
+    @view_config(route_name='volumes_expando_details', renderer='json', request_method='GET')
+    def volume_expando_details(self):
+        return self.volume_state_json()
+
 
 class VolumeSnapshotsView(BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_snapshots.pt'
@@ -556,3 +620,70 @@ class VolumeSnapshotsView(BaseVolumeView):
         if snapshot.status.lower() == 'completed':
             return False
         return int(snapshot.progress.replace('%', '')) < 100
+
+
+class VolumeMonitoringView(BaseVolumeView):
+    VIEW_TEMPLATE = '../templates/volumes/volume_monitoring.pt'
+
+    def __init__(self, request):
+        super(VolumeMonitoringView, self).__init__(request)
+        self.title_parts = [_(u'Volume'), request.matchdict.get('id'), _(u'Monitoring')]
+        self.cw_conn = self.get_connection(conn_type='cloudwatch')
+        with boto_error_handler(self.request):
+            self.volume = self.get_volume()
+        self.volume_name = TaggedItemView.get_display_name(self.volume)
+        self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
+        self.instance = None
+        attached_instance_id = self.volume.attach_data.instance_id
+        monitoring_enabled = False
+        if attached_instance_id:
+            self.instance = self.get_instance(attached_instance_id)
+            if self.instance:
+                attached_instance_id = TaggedItemView.get_display_name(self.instance)
+                monitoring_enabled = self.instance.monitoring_state == 'enabled'
+        self.render_dict = dict(
+            volume=self.volume,
+            volume_name=self.volume_name,
+            attached_instance_id=attached_instance_id,
+            monitoring_enabled=monitoring_enabled,
+            monitoring_form=self.monitoring_form,
+            is_attached=attached_instance_id is not None,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            statistic_choices=STATISTIC_CHOICES,
+            controller_options_json=self.get_controller_options_json()
+        )
+
+    @view_config(route_name='volume_monitoring', renderer=VIEW_TEMPLATE, request_method='GET')
+    def volume_monitoring(self):
+        if self.volume is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='volume_monitoring_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_monitoring_update(self):
+        """Update monitoring state for the volume's instance"""
+        if self.monitoring_form.validate():
+            if self.instance:
+                location = self.request.route_path('volume_monitoring', id=self.volume.id)
+                with boto_error_handler(self.request, location):
+                    monitoring_state = self.instance.monitoring_state
+                    action = 'disabled' if monitoring_state == 'enabled' else 'enabled'
+                    self.log_request(_(u"Monitoring for instance {0} {1}").format(self.instance.id, action))
+                    if monitoring_state == 'disabled':
+                        self.conn.monitor_instances([self.instance.id])
+                    else:
+                        self.conn.unmonitor_instances([self.instance.id])
+                    msg = _(
+                        u'Request successfully submitted.  It may take a moment for the monitoring status to update.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
+
+    def get_controller_options_json(self):
+        if not self.volume:
+            return ''
+        return BaseView.escape_json(json.dumps({
+            'metric_title_mapping': {},
+            'charts_list': VOLUME_MONITORING_CHARTS_LIST,
+            'granularity_choices': GRANULARITY_CHOICES,
+            'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
+        }))

@@ -34,6 +34,7 @@ import re
 import simplejson as json
 import time
 
+from itertools import chain
 from urllib import quote
 
 import boto.utils
@@ -62,6 +63,7 @@ from ..forms.elbs import (
 )
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from ..views.cloudwatchapi import CloudWatchAPIMixin
 from . import boto_error_handler
@@ -74,15 +76,17 @@ class ELBsView(LandingPageView):
         self.ec2_conn = self.get_connection(conn_type="ec2")
         self.elb_conn = self.get_connection(conn_type="elb")
         self.vpc_conn = self.get_connection(conn_type="vpc")
+        self.location = self.get_redirect_location('elbs')
         self.initial_sort_key = 'name'
         self.prefix = '/elbs'
         self.filter_keys = ['name']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('elbs_json')
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
-        self.filters_form = ELBsFiltersForm(
-            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, vpc_conn=self.vpc_conn,
-            is_vpc_supported=self.is_vpc_supported(self.request), formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.filters_form = ELBsFiltersForm(
+                self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, vpc_conn=self.vpc_conn,
+                is_vpc_supported=self.is_vpc_supported(self.request), formdata=self.request.params or None)
         self.render_dict = dict(
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(self.filters_form.facets)),
@@ -154,17 +158,27 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
     def elbs_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        # Get alarms for ELBs and build a list of resource ids to optimize alarm status fetch
+        alarms = [alarm for alarm in self.cw_conn.describe_alarms() if 'LoadBalancerName' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         with boto_error_handler(self.request):
             elbs_array = []
             for elb in self.items:
+                alarm_status = ''
+                if elb.name in alarm_resource_ids:
+                    alarm_status = Alarm.get_resource_alarm_status(elb.name, alarms)
                 name = elb.name
                 health_counts = self.get_elb_health_counts(elb)
                 elbs_array.append(dict(
                     dns_name=elb.dns_name,
                     name=name,
+                    availability_zones=', '.join(sorted(elb.availability_zones)),
                     healthy_hosts=health_counts.get('healthy'),
                     unhealthy_hosts=health_counts.get('unhealthy'),
                     latency=self.get_average_latency(elb),
+                    alarm_status=alarm_status,
                 ))
             return dict(results=elbs_array)
 
@@ -547,8 +561,8 @@ class BaseELBView(TaggedItemView):
         return availability_zones
 
     def add_elb_tags(self, elb_name):
-        tags_json = self.request.params.get('tags')
-        tags_dict = json.loads(tags_json) if tags_json else {}
+        tags_json = self.request.params.get('tags', '{}')
+        tags_dict = self._normalize_tags(json.loads(tags_json))
         add_tags_params = {'LoadBalancerNames.member.1': elb_name}
         index = 1
         for key, value in tags_dict.items():
@@ -590,6 +604,7 @@ class ELBView(BaseELBView):
                 self.elb.tags = elb_tags or self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
             else:
                 raise HTTPNotFound()
+
         self.elb_form = ELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
             elb=self.elb, elb_conn=self.elb_conn, s3_conn=self.s3_conn, securitygroups=self.get_security_groups(),
@@ -604,6 +619,7 @@ class ELBView(BaseELBView):
             self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
             formdata=self.request.params or None
         )
+
         self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         bucket_name = self.access_logs.s3_bucket_name
@@ -611,9 +627,16 @@ class ELBView(BaseELBView):
         logs_subpath = logs_prefix.split('/') if logs_prefix else []
         logs_url = None
         bucket_url = None
+
+        if self.elb is not None:
+            tags = self.serialize_tags(self.elb.tags)
+        else:
+            tags = '{}'
+
         if bucket_name:
             logs_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=logs_subpath)
             bucket_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=[])
+
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -636,6 +659,7 @@ class ELBView(BaseELBView):
             controller_options_json=self.get_controller_options_json(),
             logs_url=logs_url,
             bucket_url=bucket_url,
+            tags=tags,
         )
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
@@ -1135,11 +1159,13 @@ class CreateELBView(BaseELBView):
             formdata=self.request.params or None
         )
         filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
+
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
             iam_conn=None, vpc_conn=self.vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
+
         self.render_dict = dict(
             create_form=self.create_form,
             create_bucket_form=self.create_bucket_form,
@@ -1159,6 +1185,7 @@ class CreateELBView(BaseELBView):
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
+            tags=[]
         )
 
     @view_config(route_name='elb_new', renderer=TEMPLATE)

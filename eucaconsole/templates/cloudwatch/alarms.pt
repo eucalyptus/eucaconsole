@@ -9,78 +9,147 @@
          ng-init="initController('alarms', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">CloudWatch Alarms</a></li>
+                <li class="current"><a href="#" i18n:translate="">Alarms</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
-        <div class="large-2 columns" id="landing-page-filters">
-            <!--! Filters go here -->
-        </div>
+        <h3 id="pagetitle"><strong i18n:translate="">Alarms</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <!--! <a class="button" i18n:translate="">Create alarm</a> -->
+                <a class="button" ng-click="revealModal('create')" i18n:translate="">Create Alarm</a>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li>
+                            <a i18n:translate="" class="more-actions-view">
+                                View details
+                            </a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" class="more-actions-create-like-this">
+                                Create alarm like this one
+                            </a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" class="more-actions-delete" ng-click="revealModal('delete', (items | filter:{selected: true}))">
+                                Delete
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <!--!
                 <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
                 <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                     <li>
-                        <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                            View/edit details</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="">Create alarm like this</a>
+                    </li>
+                    <li>
+                        <a ng-click="revealModal('delete', item)" i18n:translate="">Delete</a>
                     </li>
                 </ul>
-                -->
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Trigger" i18n:translate="">TR</span>
-                    <span i18n:translate="">When the</span>
+                    <span class="label" title="Threshold" i18n:attributes="title">TH</span>
                     {{ item.statistic }}
                     {{ item.metric }}
-                    <span i18n:translate="">is</span>
                     {{ item.comparison }}
                     {{ item.threshold }}
                     {{ item.unit !== 'None' ? item.unit : '' }}
                 </div>
+                <div>
+                    <span class="label" title="Alarm Actions" i18n:attributes="title">AA</span>
+                    {{ item.alarm_actions.length }}
+                </div>
             </div>
+            <metal:block metal:fill-slot="tile_footer">
+            <div class="footer status" ng-class="{'alarm': item.state == 'ALARM', 'insufficient-data': item.state == 'INSUFFICIENT_DATA', 'ok': item.state == 'OK'}">
+                {{ item.state | titleCase }}
+            </div>
+            </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">ID</th>
-                <th i18n:translate="">Triggered</th>
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
+                <th i18n:translate="">State</th>
+                <th i18n:translate="">Alarm Name</th>
+                <th i18n:translate="">Threshold</th>
+                <th i18n:translate="" class="alarm-actions">Alarm Actions</th>
+                <th i18n:translate="" class="actions">Actions</th>
                 <!--! <th i18n:translate="" class="actions">Actions</th> -->
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id">{{ item.name || item.id }}</td>
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
+                <td alarm-state="{{ item.state }}"></td>
+                <td class="id">
+                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                        {{ item.name || item.id }}</a>
+                </td>
                 <td>
-                    <span i18n:translate="">When the</span>
                     {{ item.statistic }}
                     {{ item.metric }}
-                    <span i18n:translate="">is</span>
                     {{ item.comparison }}
                     {{ item.threshold }}
                     {{ item.unit !== 'None' ? item.unit : '' }}
                 </td>
-                <!--!
+                <td class="alarm-actions">{{ item.alarm_actions.length }}</td>
                 <td>
                    <span class="actions">
-                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
-                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
+                        <ul id="item-dropdown_{{ item.name | urlSafe }}" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                                    View/edit details</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="">Create alarm like this</a>
+                            </li>
+                            <li>
+                                <a ng-click="revealModal('delete', item)" i18n:translate="">Delete</a>
                             </li>
                         </ul>
                    </span>
                 </td>
-                -->
             </metal:block>
         </div>
         <!--! Modal dialogs -->
+        <!--! Create Alarm modal dialog -->
+
+        <!--! Create Alarm Interstitial Dialog -->
+        <div id="create-alarm-wrapper">
+            <div id="create-alarm-modal" class="reveal-modal small" data-reveal="">
+                <a class="close-reveal-modal" href="#">&#215;</a>
+                <div class="row">
+                    <p i18n:translate="">A metric must be selected before you can create an alarm.</p>
+                    <p i18n:translate="">Choose the action "Create Alarm" when viewing a metric from
+                    the monitoring tab on any resource's detail page, or from the
+                    metrics landing page.</p>
+                </div>
+                <div class="row">
+                    <a class="button expand" href="${request.route_path('cloudwatch_metrics')}" i18n:translate="">
+                        Take Me to the Metrics Landing Page
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <!--! Delete Alarm modal dialog -->
+        ${panel('delete_alarm_dialog', modal_size='small', service_path=request.route_path('cloudwatch_alarms'))}
+        <!--! /end modal dialogs -->
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/alarms.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarms_landing.js')}"></script>
 </div>
 
 </metal:block>

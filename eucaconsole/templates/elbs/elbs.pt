@@ -21,7 +21,8 @@
                    href="${request.route_path('elb_new')}">Create Load Balancer</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">View details</a></li>
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/instances">Manage instances</a></li>
@@ -32,6 +33,13 @@
                 <a ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">{{ item.name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div ng-show="item.alarm_status">
+                    <span class="label" title="CloudWatch alarm status" i18n:attributes="title" data-tooltip="">CW</span>
+                    <a class="alarm-status" ng-class="item.alarm_status | toClassName"
+                       ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                </div>
                 <div>
                     <span class="label" title="Avg Latency (ms)" i18n:attributes="title" data-tooltip="">LA</span>
                     {{ item.latency | number: 2 }}
@@ -47,6 +55,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
+                <th i18n:translate="">Alarms</th>
                 <th i18n:translate="">Avg Latency (ms)</th>
                 <th i18n:translate="">Unhealthy Hosts</th>
                 <th i18n:translate="">Healthy Hosts</th>
@@ -54,14 +63,21 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword">
-                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/monitoring">{{ item.name | ellipsis: 30 }}</a>
+                    <a ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">{{ item.name | ellipsis: 30 }}</a>
+                </td>
+                <td class="alarm-status">
+                    <a class="label radius alarm-status" ng-class="item.alarm_status | toClassName"
+                          ng-if="item.alarm_status" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
                 </td>
                 <td>{{ item.latency | number: 2 }}</td>
-                <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/instances">{{ item.unhealthy_hosts }}</a></td>
-                <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/instances">{{ item.healthy_hosts }}</a></td>
+                <td><a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">{{ item.unhealthy_hosts }}</a></td>
+                <td><a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">{{ item.healthy_hosts }}</a></td>
                 <td>
                     <span class="actions">
-                        <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                        <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">View details</a></li>
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/instances">Manage instances</a></li>
@@ -84,6 +100,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elbs.js')}"></script>
 </div>

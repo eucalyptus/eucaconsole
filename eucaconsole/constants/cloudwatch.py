@@ -32,6 +32,7 @@ from ..i18n import _
 
 
 METRIC_TYPES = [
+    # NOTE: AWS/AutoScaling metrics expect 'None' (not 'Count' or None) as the unit
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupDesiredCapacity', 'unit': 'None'},
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupInServiceInstances', 'unit': 'None'},
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupMaxSize', 'unit': 'None'},
@@ -46,6 +47,8 @@ METRIC_TYPES = [
     {'namespace': 'AWS/EBS', 'name': 'VolumeTotalReadTime', 'unit': 'Seconds'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeWriteOps', 'unit': 'Count'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeTotalWriteTime', 'unit': 'Seconds'},
+    {'namespace': 'AWS/EBS', 'name': 'VolumeThroughputPercentage', 'unit': 'Percent'},
+    {'namespace': 'AWS/EBS', 'name': 'VolumeConsumedReadWriteOps', 'unit': 'Count'},
     {'namespace': 'AWS/EC2', 'name': 'CPUUtilization', 'unit': 'Percent'},
     {'namespace': 'AWS/EC2', 'name': 'DiskReadBytes', 'unit': 'Bytes'},
     {'namespace': 'AWS/EC2', 'name': 'DiskReadOps', 'unit': 'Count'},
@@ -53,6 +56,9 @@ METRIC_TYPES = [
     {'namespace': 'AWS/EC2', 'name': 'DiskWriteOps', 'unit': 'Count'},
     {'namespace': 'AWS/EC2', 'name': 'NetworkIn', 'unit': 'Bytes'},
     {'namespace': 'AWS/EC2', 'name': 'NetworkOut', 'unit': 'Bytes'},
+    {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed', 'unit': 'Count'},
+    {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed_System', 'unit': 'Count'},
+    {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed_Instance', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_2XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_3XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_4XX', 'unit': 'Count'},
@@ -109,6 +115,17 @@ METRIC_TITLE_MAPPING = {
     'HTTPCode_Backend_3XX': _(u'Sum HTTP 3xxs'),
     'HTTPCode_Backend_4XX': _(u'Sum HTTP 4xxs'),
     'HTTPCode_Backend_5XX': _(u'Sum HTTP 5xxs'),
+    # EBS Metrics
+    'VolumeConsumedReadWriteOps': _(u'Volume consumed read/write operations'),
+    'VolumeIdleTime': _(u'Volume idle time'),
+    'VolumeQueueLength': _(u'Volume queue length'),
+    'VolumeReadBytes': _(u'Volume read bytes'),
+    'VolumeReadOps': _(u'Volume read operations'),
+    'VolumeThroughputPercentage': _(u'Volume throughput percentage'),
+    'VolumeTotalReadTime': _(u'Volume total read time'),
+    'VolumeTotalWriteTime': _(u'Volume total write time'),
+    'VolumeWriteBytes': _(u'Volume write bytes'),
+    'VolumeWriteOps': _(u'Volume write operations'),
 }
 
 # Statistic choices for CloudWatch charts

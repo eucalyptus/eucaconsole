@@ -2,7 +2,7 @@
 
 /* @fileOverview Koala application-wide Sass CSS styles */
 
-// Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+// Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 //
 // Redistribution and use of this software in source and binary forms,
 // with or without modification, are permitted provided that the following
@@ -82,18 +82,19 @@
    Fonts
 ----------------------------------------- */
 @font-face {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Lato Regular'), local('Lato-Regular'), url(../fonts/Lato/Lato-Regular.woff) format('woff');
+    font-family: 'Metric-Regular';
+    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Regular.woff) format('woff');
 }
 
 @font-face {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 700;
-    src: local('Lato Bold'), local('Lato-Bold'), url(../fonts/Lato/Lato-Bold.woff) format('woff');
+    font-family: 'Metric-Light';
+    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Light.woff) format('woff');
 }
+@font-face {
+    font-family: 'Metric-Semibold';
+    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Semibold.woff) format('woff');
+}
+
 
 
 /* -----------------------------------------
@@ -105,26 +106,51 @@ html {
 
 body {
     position: relative;
-    color: #333;
+    color: $hpe-black;
     min-height: 100%;
     font-family: $euca-text-font-family;
     overflow-y: scroll;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: $euca-header-font-family;
-    color: $hp-gray-65;
-}
-
-.panel {
-    h1, h2, h3, h4, h5, h6 {
-        color: $hp-gray-65;
+h1, h2, h3, h4, h5 {
+        font-family: $euca-header-font-family;
+        color: $hpe-black;
+    }
+    h6 {
+        font-family: $euca-text-font-family;
+        color: $hpe-gray;
+        text-transform: uppercase;
     }
 
+.panel {
+    h1, h2, h3, h4, h5 {
+        font-family: $euca-header-font-family;
+        color: $hpe-black;
+    }
+    h6 {
+        font-family: $euca-text-font-family;
+        color: $hpe-gray;
+        text-transform: uppercase;
+    }
 }
 
 a {
-    color: $hp-accessible-blue;
+    color: $hpe-green;
+}
+
+p {
+    color: $hpe-black;
+    font-family: $euca-text-font-family;
+    font-size: $euca-font-size;
+}
+label {
+    color: $hpe-gray;
+    font-family: $euca-text-font-family;
+    font-size: $euca-font-size;
+    cursor: default;
+    &.inline {
+        display: inline-block;
+    }
 }
 
 /* -----------------------------------------
@@ -133,16 +159,21 @@ a {
 
 // Logo bar (top-most bar)
 #logobar-wrapper {
-    border-bottom: 1px solid $hp-gray-20;
+    border-bottom: 1px solid $hpe-lightgray;
 }
 #logobar {
     padding: 6px 0 0 0;
     margin-top: 8px;
     background-color: #fff;
-    color: #333;
+    font-family: $euca-header-font-family;
+    color: $hpe-black;
     a {
-        font-size: 0.9rem;
-        color: #333;
+        font-family: $euca-text-font-family;
+        font-size: $euca-font-size;
+        color: $hpe-black;
+        &:hover {
+            text-decoration: none;
+        }
     }
     section {
         position: relative;
@@ -157,13 +188,12 @@ a {
     .dropdown {
         display: inline-block;
         margin-left: 1.3rem;
-        color: $hp-accessible-blue;
+        color: $hpe-green;
         .icon {
             display: inline-block;
         }
     }
     .f-dropdown {
-        box-shadow: 0 0 1px 1px $hp-gray-20;
         width: auto;
         min-width: 8rem;
         &.open {
@@ -181,7 +211,7 @@ a {
         top: -8px;
         padding-left: 0.5rem;
     }
-    #selected-region {
+    #selected-region.aws {
         position: relative;
         display: inline-block;
         padding-left: 24px;
@@ -209,8 +239,6 @@ a {
 
 
 // Breadcrumbs
-$breadcrumb-background-color: $euca-extralightgreen;
-$breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 #breadcrumbs {
     position: relative;
     overflow: hidden;
@@ -218,14 +246,15 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     padding-left: 16px;
     padding-top: 6px;
     padding-bottom: 1px;
-    color: $euca-darkgrey;
+    color: $hpe-gray;
+    font-family: $euca-header-font-family;
     letter-spacing: 1px;
     font-weight: normal;
     li {
         margin-top: 0.3rem;
-        font-size: 0.9rem;
+        font-size: $euca-l-font-size;
         &.current a {
-            color: #444;
+            font-family: $euca-text-font-family;
         }
     }
     .icon-block{
@@ -233,12 +262,12 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
         position: absolute;
         top: 0; bottom: 0; right: 0;
         vertical-align: middle;
-        padding-top: 8px;
+        padding-bottom: 2px;
     }
     .help-icon {
         position: relative;
         padding: 8px 16px;
-        border-left: 1px solid $breadcrumb-border-color;
+        border-left: 1px solid $hpe-lightgray;
         font-weight: bold;
         text-align: center;
     }
@@ -246,6 +275,10 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
         position: relative;
         top: -1px;
         font-size: 0.7rem;
+    }
+    .fi-home {
+        position: relative;
+        bottom: 1px;
     }
 }
 
@@ -260,14 +293,12 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
             font-weight: bold;
             margin-right: 0.5rem;
             &:hover {
-                color: $hp-accessible-blue;
                 text-decoration: underline;
             }
         }
         &.active a:hover {
             color: white;
             text-decoration: none;
-            background-color: $hp-accessible-blue;
         }
     }
 }
@@ -277,7 +308,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
    Main Content
 ----------------------------------------- */
 #maincontent {
-    background: $hp-gray-5;
+    background: $hpe-backgroundgray;
     position: relative;
     padding-bottom: 3rem;
 }
@@ -298,8 +329,8 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
    Misc
 ----------------------------------------- */
 #pagetitle, .pagetitle {
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-family: $euca-header-font-family;
+    font-size: $euca-xl-font-size;
     margin-left: 1rem;
     margin-bottom: 1rem;
     &.landingpage {
@@ -310,13 +341,14 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     em {
         font-style: normal;
         font-weight: 700;
-        font-family: Lato, Helvetica, Arial, sans-serif;
-        color: $euca-darkgrey;
+        font-family: Metric-Regular, Helvetica, Arial, sans-serif;
+        color: $hpe-black;
     }
 }
 
 .subsection-label {
-    color: $hp-gray-65;
+    font-size: $euca-font-size;
+    color: $hpe-gray;
     margin-bottom: 6px;
 }
 
@@ -325,7 +357,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 }
 
 hr {
-    border: 1px solid $hp-gray-20;
+    border: 1px solid $hpe-lightgray;
     border-width: 1px 0 0;
 }
 
@@ -334,10 +366,15 @@ a.has-tip {
 }
 
 .tooltip {
-    font-weight: normal;
-    font-size: 0.825rem;
-    font-family: Lato, Geneva, Helvetica, sans-serif;
+    font-family: $euca-text-font-family;
+    font-size: $euca-s-font-size;
+    border: 2px solid $hpe-lightgray;
     max-width: 260px;
+    > .nub {
+        border: 6px solid $hpe-lightgray;
+        border-color: transparent transparent $hpe-lightgray transparent;
+        top: -12px;
+    }
 }
 
 .breakword {
@@ -368,7 +405,7 @@ a.circle {
     top: -1px;
     display: inline-block;
     border-right: 6px solid transparent;
-    border-top: 6px solid $hp-accessible-blue;
+    border-top: 6px solid $hpe-green;
     border-left: 6px solid transparent;
     content: '';
 }
@@ -378,7 +415,7 @@ a.circle {
     top: -1px;
     display: inline-block;
     border-right: 6px solid transparent;
-    border-bottom: 6px solid $hp-accessible-blue;
+    border-bottom: 6px solid $hpe-green;
     border-left: 6px solid transparent;
     content: '';
 }
@@ -392,18 +429,18 @@ a.circle {
     .alert-box {
         position: fixed;
         padding: 0 0;
-        top: 0px;
+        top: 0;
         left: 50%;
         transform: translateX(-50%);
         z-index: 9999999;
         width: 100%;
-        color: black;
+        color: $hpe-black;
         background-color: white;
         box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15);
         &.success {
-            border: 2px solid $hp-green;
+            border: 2px solid $hpe-green;
             .icon {
-                background-color: $hp-green;
+                background-color: $hpe-green;
                 span:before {
                     content: "\2713"
                 }
@@ -419,13 +456,17 @@ a.circle {
             }
         }
         &.info{
-            border: 2px solid $hp-accessible-blue;
+            border: 2px solid $hpe-black;
             .icon {
-                background-color: $hp-accessible-blue;
+                background-color: $hpe-black;
                 span:before {
                     content: "\24D8"
                 }
             }
+        }
+        &.secondary{
+            border: 2px solid $hpe-gray;
+            color: $hpe-black;
         }
         &.alert {
             border: 2px solid darkred;
@@ -510,24 +551,31 @@ textarea.policy-area {
 }
 
 .helptext-icon {
-    color: $euca-grey;
+    color: $hpe-gray;
     font-size: 1.2rem;
 }
 
 .expando {
     i {
-        color: $hp-accessible-blue;
+        color: $hpe-gray;
+        &:hover {
+                color: $hpe-green;
+                text-decoration: none;
+        }
         &.helptext-icon {
-            color: $hp-gray-65;
+            color: $hpe-gray;
         }
     }
     .title {
-        font-size: 1.1rem;
+        font-family: $euca-text-font-family;
+        font-size: $euca-l-font-size;
+        text-transform: none;
         a {
-            color: $hp-gray-65;
+            color: $hpe-gray;
             &:hover {
-                color: $hp-accessible-blue;
-                border-bottom: 1px solid $hp-accessible-blue;
+                color: $hpe-green;
+                text-decoration: none;
+                border-bottom: 1px solid $hpe-green;
             }
         }
     }
@@ -537,12 +585,12 @@ textarea.policy-area {
 .action-icon {
     display: inline-block;
     font-size: 1.4rem;
-    color: $hp-gray-65;
+    color: $hpe-black;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     &:hover {
         cursor: pointer;
-        color: $hp-accessible-blue;
+        color: $hpe-green;
     }
 }
 
@@ -561,24 +609,33 @@ textarea.policy-area {
 ----------------------------------------- */
 #tag-editor {
     small {
-        font-size: 0.825rem;
+        font-size: $euca-s-font-size;
     }
     @include item-list;
     .propagates {
-        color: #777;
-        font-size: 0.7em;
+        color: $hpe-gray;
+        font-size: $euca-font-size;
     }
     .add-label {
         margin-bottom: 6px;
-        color: $hp-gray-65;
+        color: $hpe-gray;
+        font-family: $euca-text-font-family;
     }
     #add-tag-btn {
         margin-bottom: 0;
     }
-    #propagate-wrapper {
-        white-space: nowrap;
+    &.autoscale {
+        #autoscale-tag-name-input-div, #autoscale-tag-value-input-div {
+            position: relative;
+            left: 1rem;
+        }
+        #propagate-wrapper {
+            white-space: nowrap;
+            line-height: 2.2rem;
+        }
     }
 }
+
 
 /* -----------------------------------------
    Block device mapping (BDM) editor
@@ -587,9 +644,20 @@ textarea.policy-area {
 #bdmapping-editor {
     .bdmapping-table {
         width: 100%;
+        input.number {
+            padding: 0 1px 0 6px;
+        }
     }
     th {
         padding-left: 9px;
+        &.size {
+            text-align: center;
+        }
+    }
+    td {
+        &.count {
+            text-align: center;
+        }
     }
     .storage-label {
         text-align: left;
@@ -607,6 +675,9 @@ textarea.policy-area {
     }
     input.number {
         width: 2rem;
+        padding: 6px 3px 5px 8px;
+        line-height: 1.5rem;
+        border: 1px solid $hpe-lightgray;
     }
     .delete-on-terminate {
         text-align: center;
@@ -693,21 +764,17 @@ textarea.policy-area {
 
 form {
     label {
-        color: $euca-grey;
-        font-weight: bold;
+        color: $hpe-gray;
+        font-family: $euca-text-font-family;
+        font-size: $euca-font-size;
         cursor: default;
         &.inline {
             display: inline-block;
         }
     }
     input {
-        border-color: $hp-gray-20;
-        background-color: $hp-gray-5;
-        &[type=text],
-        &[type=password],
-        &[type=number] {
-            background-color: $hp-gray-5;
-        }
+        border-color: $hpe-lightgray;
+        background-color: #fff;
         &[type=file] {
             background-color: transparent;
         }
@@ -718,10 +785,10 @@ form {
         }
     }
     select, textarea {
-        background-color: $hp-gray-5;
+        background-color: #fff;
     }
     .req {
-        color: darkred;
+        color: $hpe-gray;
     }
     .row {
         .inline-label {
@@ -747,7 +814,7 @@ form {
         margin-left: 2rem;
         color: $euca-grey;
         &:hover {
-            color: $hp-hover-blue;
+            color: $hpe-green;
         }
     }
     .controls_csrf_token {
@@ -853,7 +920,6 @@ form {
 
 form .controls-wrapper > [class*='small-'] label {
     font-weight: bold;
-    padding-top: 0.3rem;
     &.right {
         position: relative;
         right: -1rem;
@@ -862,7 +928,7 @@ form .controls-wrapper > [class*='small-'] label {
 
 [data-abide] .controls-wrapper .error, [data-abide] .controls-wrapper.error {
     label {
-        color: $euca-grey;
+        color: $hpe-black;
     }
     input, select {
         border: 1px solid darkred;
@@ -894,11 +960,11 @@ textarea.hidden {
 .chosen-container {
     &.chosen-container-multi {
         background: none;
-        background-color: $hp-gray-5 !important;
+        background-color: #fff !important;
         .chosen-choices  {
             background: none;
-            background-color: $hp-gray-5 !important;
-            border: 1px solid $euca-lightgrey;
+            background-color: #fff !important;
+            border: 1px solid $hpe-lightgray;
             li {
                 &.search-field  {
                     input[type=text] {
@@ -910,12 +976,12 @@ textarea.hidden {
                     }
                 }
                 &.search-choice {
-                    background-image: none;
-                    background-color: #d1d3d4;
-                    border: none;
-                    font-size: 0.9rem;
+                    background: #fff none;
+                    border: 2px solid $hpe-lightgray;
                     padding: 4px 20px 4px 8px;
-                    color: #555;
+                    color: $hpe-gray;
+                    font-family: $euca-header-font-family;
+                    font-size: $euca-xs-font-size;
                     .search-choice-close {
                         top: 8px;
                     }
@@ -929,7 +995,7 @@ textarea.hidden {
     &.chosen-container-single {
         .chosen-single {
             background-image: none;
-            background-color: $hp-gray-5 !important;
+            background-color: #fff !important;
             border-radius: 0;
             height: 2rem;
             line-height: 2rem;
@@ -941,7 +1007,13 @@ textarea.hidden {
         }
     }
     .chosen-drop .chosen-results {
-        font-size: 0.875rem;
+        font-size: $euca-font-size;
+        .active-result {
+            &.highlighted {
+                color: $hpe-black;
+                background: $hpe-hovergray none;
+            }
+        }
     }
 }
 
@@ -951,11 +1023,13 @@ textarea.hidden {
 ----------------------------------------- */
 .panel {
     background-color: white;
-    border: 1px solid $hp-gray-20;
+    border: none;
     position: relative;
     h6 {
-        font-weight: bold;
-        color: $hp-gray-65;
+        color: $hpe-gray;
+        text-transform: uppercase;
+        font-family: $euca-text-font-family;
+        font-size: $euca-l-font-size;
     }
     .tabs-content {
         border: none;
@@ -971,9 +1045,8 @@ textarea.hidden {
             top: 0; left: 0; right: 0;
             line-height: 2rem;
             padding-left: 8px;
-            background-color: $hp-gray-65;
+            background-color: $hpe-black;
             color: white;
-            font-weight: normal;
             @include ellipsis-overflow;
         }
         .label.status {
@@ -985,11 +1058,13 @@ textarea.hidden {
             .button.dropdown {
                 padding: 12px 38px 12px 22px;
                 a {
-                    color: white;
+                    color: $hpe-black;
+                    &:hover { 
+                    text-decoration: none;
+                    }
                 }
             }
             .f-dropdown {
-                box-shadow: 0 0 1px 1px $hp-gray-20;
                 min-width: 12rem;
                 width: auto;
             }
@@ -1007,9 +1082,8 @@ textarea.hidden {
         z-index: 99999999;
     }
     h3 {
-        font-weight: bold;
         &#about-cloud:hover {
-            color: $hp-hover-blue;
+            color: $hpe-green;
         }
         &.pagetitle {
             margin-left: 0;
@@ -1035,7 +1109,8 @@ textarea.hidden {
     }
     .close-reveal-modal {
         &:hover {
-            color: $hp-accessible-blue;
+            color: $hpe-green;
+            text-decoration: none;
         }
     }
 }
@@ -1051,6 +1126,23 @@ table.table {
     td.breakall {
         word-break: break-all !important;
     }
+    &.smart-table {
+        th[st-sort] {
+            padding-right: 14px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        .st-sort-ascent, .st-sort-descent {
+            padding-right: 0 !important;
+        }
+        .st-sort-ascent:after {
+            content: '\25B2';
+        }
+        .st-sort-descent:after {
+            content: '\25BC';
+        }
+    }
 }
 
 
@@ -1058,11 +1150,20 @@ table.table {
    Footer
 ----------------------------------------- */
 footer {
-    border-top: 1px solid $hp-gray-20;
+    background-color: $hpe-black;
+    color: white;
     padding: 15px 0 3rem 1rem;
     .copyright {
-        font-size: 0.9em;
+        font-size: $euca-xs-font-size;
     }
+}
+
+#hpe-logo {
+    display: inline-block;
+    width: 95px;
+    height: 40px;
+    margin: 1rem 0;
+    background: url(../img/hpe_pri_grn_rev_rgb.png) no-repeat;
 }
 
 
@@ -1070,36 +1171,48 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
-    background-color: $hp-accessible-blue;
-    border-color: $hp-hover-blue;
-    a {
-        color: white;
+    background-color: #fff;
+    font-family: $euca-header-font-family;
+    text-transform: uppercase;
+    color: $hpe-black;
+    border: 2px solid $hpe-green;
+    &:hover {
+        background-color: #fff;
+        color: $hpe-black;
+        text-decoration: none;
+        outline: 2px solid $hpe-green;
     }
     &.secondary {
-        background-color: $white;
-        border-color: $hp-gray-65;
-            &:hover {
-                background-color: white;
-                border-color: $hp-hover-blue;
-                color: $hp-hover-blue;
-            } 
-        color: $hp-gray-65;
+        background-color: #fff;
+        border: 2px $hpe-gray;
+        &:hover {
+            background-color: #fff;
+            color: $hpe-black;
+            text-decoration: none;
+            outline: 4px solid $hpe-green;
+        }
+        font-family: $euca-header-font-family;
+        text-transform: uppercase;
+        color: $hpe-black;
+        &.disabled, &[disabled] {
+            @include disabled-button-mixin;
+        }
     }
     &.disabled, &[disabled] {
-        background-color: white;
-        border-color: $hp-gray-40;
-            &:hover {
-                background-color: $white;
-                border-color: $hp-gray-40;
-                color: $hp-gray-40;
-            }
-        color: $hp-gray-40;           
+        @include primary-disabled-button-mixin;
     }
-    &:hover {
-        background-color: $hp-hover-blue;
+    &.tiny {
+        white-space: nowrap;
     }
-    &:focus {
-        background-color: $hp-hover-blue;
+    &.round {
+        &:hover {
+            outline: none;
+        }
+    }
+    &.dropdown {
+        &:after {
+            border-color: $hpe-black transparent transparent transparent;
+        }
     }
 }
 
@@ -1154,7 +1267,6 @@ $btn-group-radius: 10px;
 }
 
 .tabs-content {
-    border: 1px solid $hp-gray-20;
     background-color: white;
     .panel {
         border: none;
@@ -1253,7 +1365,7 @@ $btn-group-radius: 10px;
             display: none;
         }
         #offcanvas-icon {
-            left: 0px;
+            left: 0;
             display: inline-block !important;
             margin-right: 12px;
             i {
@@ -1279,14 +1391,14 @@ div.left-nav {
     overflow: hidden;
     border-style: solid;
     border-width: 0 1px 0 0;
-    border-color: $hp-gray-20;
+    border-color: $hpe-lightgray;
 }
 
 // Off-canvas Nav adjustments
 div.left-off-canvas-menu {
     z-index: 999999 !important;
     background-color: white;
-    border: 0 solid $hp-gray-20;
+    border: 0 solid $hpe-lightgray;
     border-right-width: 1px;
 }
 
@@ -1317,17 +1429,6 @@ $expanded-nav-width: 225px;
     }
 }
 
-#hp-logo {
-    position: relative;
-    margin-top: 0.5rem;
-    margin-right: 0.8rem;
-    margin-left: 0.5rem;
-    display: inline-block;
-    width: 36px;
-    height: 36px;
-    background: url(../img/hp-logo-36x36.png) no-repeat;
-}
-
 ul.resources-nav {
     width: $expanded-nav-width*2;
     list-style-type: none;
@@ -1337,7 +1438,7 @@ ul.resources-nav {
     label {
         padding-left: 0.5rem;
         background-color: white;
-        color: $hp-gray-65;
+        color: $hpe-gray;
         padding-top: 0.5rem;
         border-top: 0;
     }
@@ -1348,15 +1449,15 @@ ul.resources-nav {
     li {
         a {
             background-color: transparent;
-            color: $hp-gray-65;
+            color: $hpe-gray;
             padding: 0.5rem 8rem 1.0rem 2.6rem;
             line-height: 1.5rem;
             border-bottom: 0;
             position: static;
         }
         &:hover {
-            background-color: $hp-gray-5;
-            color: $hp-hover-blue;
+            background-color: $hpe-hovergray;
+            color: $hpe-gray;
         }
         span {
             padding-left: 0.5rem;
@@ -1365,7 +1466,8 @@ ul.resources-nav {
             vertical-align: middle;
         }
         span.active {
-            color: $hp-hover-blue;
+            background-color: $hpe-green;
+            color: white;
         }
         i.icon {
             position: absolute;
@@ -1376,6 +1478,8 @@ ul.resources-nav {
         }
         i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
         i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
+        i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
+        i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
         i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
         i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
         i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
@@ -1394,6 +1498,8 @@ ul.resources-nav {
         i.icon.launchconfigs.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
         i.icon.elbs { background-image: url(../img/nav/Load-Balance.svg); }
         i.icon.elbs.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
+        i.icon.metrics { background-image: url(../img/nav/Launch-configs.svg); }
+        i.icon.metrics.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
         i.icon.roles { background-image: url(../img/nav/Roles.svg); }
         i.icon.roles.active { background-image: url(../img/nav/Roles_Active.svg); }
         i.icon.scalinggroups { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }

@@ -4,10 +4,11 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="BaseELBWizard" ng-controller="BaseELBWizardCtrl" ng-init="initController('${controller_options_json}')">
-    <div class="row" id="contentwrap" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
+<div metal:fill-slot="main_content" ng-app="ELBWizard" ng-controller="ELBWizardCtrl" ng-init="initController('${controller_options_json}')">
+    <div class="row" id="contentwrap">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
@@ -66,7 +67,11 @@
                             </div>
                             <hr />
                             <div>
-                                ${panel('tag_editor', show_name_tag=True)}
+                                <tag-editor
+                                        ng-model="tags"
+                                        template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
+                                        tal:content="tags | structure">
+                                </tag-editor>
                             </div>
                             <hr />
                             <div>
@@ -375,10 +380,10 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/base_elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance_selector.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
 </div>
 
 </metal:block>

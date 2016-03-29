@@ -1,0 +1,61 @@
+<div ng-form="tagForm" class="tag-editor row controls-wrapper" i18n:domain="eucaconsole">
+    <div class="columns"><h6>Tags</h6></div>
+    <div class="columns field">
+
+        <div class="item-list">
+            <span class="item" ng-cloak="" ng-repeat="tag in tags track by $index">
+                <span title="{{ tag | safe }}">
+                    <span>{{ tag.name | ellipsis: 20 }}</span>
+                    <span ng-if="tag.value">= {{ tag.value | ellipsis: 40 }}</span>
+                </span>
+                <span ng-show="tag.propagate_at_launch" class="propagates" i18n:translate="">(propagate)</span>
+                <a href="javascript:void(0);" class="remove" ng-click="removeTag($index)"
+                   title="Remove tag" i18n:attributes="title"><i class="fi-x"></i></a>
+            </span>
+        </div>
+
+        <div class="add-label" ng-switch="tags.length">
+            <span ng-switch-when="0" i18n:translate="">Add a tag:</span>
+            <span ng-switch-default="" i18n:translate="">Add another tag:</span>
+        </div>
+
+        <div class="row tagentry controls-wrapper" ng-show="tags.length &lt; 10">
+            <div class="tag-entry-fields">
+                <div id="propagate-wrapper" class="large-2 medium-3 small-3 columns" ng-show="autoscale">
+                    <input id="propagate-checkbox" class="tag-input propagate" type="checkbox"
+                           ng-model="newTagPropagate"/>
+                    <label for="propagate-checkbox" i18n:translate="">Propagate</label>
+                    <span class="helptext-icon" data-tooltop="" i18n:attributes="title"
+                          title="Propagate to instances launched by this scaling group"></span>
+                </div>
+                <div id="autoscale-tag-name-input-div" class="small-4 columns"
+                    ng-class="{'large-2 medium-2': autoscale, 'large-4 medium-4': !autoscale }">
+                    <input class="key" type="text" placeholder="name..."
+                           ng-model="newTagKey" name="key" tag-name="" prevent-duplicates=""/>
+                    <span class="error" ng-show="tagForm.key.$error.tagName" i18n:translate="">
+                        Tag must not begin with "aws:" and its length may not be longer than 128 chars
+                    </span>
+                    <span class="error" ng-show="tagForm.key.$error.preventDuplicates" i18n:translate="">
+                        Tag names must be unique
+                    </span>
+                </div>
+                <div id="autoscale-tag-value-input-div" class="large-8 medium-7 small-5 columns">
+                    <input class="value" type="text" placeholder="value..."
+                           name="value" ng-model="newTagValue" tag-value=""/>
+                    <span class="error" ng-show="tagForm.value.$error.tagValue" i18n:translate="">
+                        Tag may not begin with "aws:" or its length be longer than 128 chars
+                    </span>
+                </div>
+            </div>
+            <div class="tag-entry-submit">
+                <div class="columns">
+                    <a href="javascript:void(0);" ng-click="addTag()" class="button round tiny"
+                       id="add-tag-btn" title="Add tag" i18n:translate="">Add Tag</a>
+                </div>
+            </div>
+            <div class="tag-entry-result">
+                <textarea id="tags" name="tags" class="">{{ tags }}</textarea>
+            </div>
+        </div>
+    </div>
+</div>

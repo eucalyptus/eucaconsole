@@ -1,0 +1,66 @@
+.metric-chart {
+    svg {
+        border: 1px solid #CCC;
+        border-width: 0 1px 1px;
+        width: 100%;
+        height: 350px;
+        margin: 0 auto 15px;
+    }
+}
+
+form {
+    &.alarm-update {
+        .trigger-conditions {
+            margin: 1.5rem 0 0;
+
+            select {
+                margin: 0 0 0.5rem;
+            }
+        }
+    }
+}
+
+.actions {
+    .item-list {
+        margin: 0 0 15px;
+
+        .item {
+            color: #333;
+            background-color: #E6E7E8;
+            margin-right: 8px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.6875rem;
+            border-radius: 3px;
+            white-space: nowrap;
+            line-height: 1;
+            display: inline-block;
+
+            .remove {
+                margin-left: 5px;
+                color: #FFF;
+            }
+        }
+    }
+
+    select {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .cancel {
+        display: inline-block;
+        padding: 0.375rem;
+        color: #6a737b;
+        &:hover {
+            color: #007dba;
+        }
+    }
+
+    &.ng-pristine,
+    &.ng-invalid {
+        .button {
+            background-color: #FFF;
+            border-color: #B3B3B3;
+            color: #B3B3B3;
+        }
+    }
+}

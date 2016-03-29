@@ -21,10 +21,14 @@
                    class="button" i18n:translate="" id="create-scalinggroup-btn">Create New Scaling Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <span id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
+                <span id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown"
+                      data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate="">View details</a>
+                    </li>
+                    <li>
+                        <a ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring" i18n:translate="">Monitor</a>
                     </li>
                     <li>
                         <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate="">Manage instances</a>
@@ -51,9 +55,9 @@
                     <span i18n:translate="">Desired:</span> <b>{{ item.desired_capacity }}</b>,
                     <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>
                 </div>
-                <div ng-show="item.launch_config">
+                <div ng-show="item.launch_config_name">
                     <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
-                    <a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config }}</a>
+                    <a ng-href="/launchconfigs/{{ item.launch_config_name | escapeURL }}">{{ item.launch_config_name }}</a>
                 </div>
                 <div ng-show="item.availability_zones">
                     <span class="label" title="Availability zones" i18n:attributes="title" data-tooltip="">AZ</span>
@@ -67,6 +71,13 @@
                     <span class="label" title="Termination policies" i18n:attributes="title" data-tooltip="">TP</span>
                     {{ item.termination_policies }}
                 </div>
+                <div ng-show="item.alarm_status">
+                    <span class="label" title="CloudWatch alarm status" i18n:attributes="title" data-tooltip="">CW</span>
+                    <a class="alarm-status" ng-class="item.alarm_status | toClassName"
+                       ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
@@ -75,12 +86,16 @@
                 <th i18n:translate="">Avail zones</th>
                 <th i18n:translate="">Capacity</th>
                 <th i18n:translate="">Status</th>
+                <th i18n:translate="">Alarms</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
-                <td class="breakword"><a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config | ellipsis: 30 }}</a></td>
-                <td class="count">
+                <td class="breakword launchconfigs">
+                    <a ng-href="/launchconfigs/{{ item.launch_config_name | escapeURL }}"
+                       class="launch-config-link">{{ item.launch_config_name | ellipsis: 30 }}</a>
+                </td>
+                <td class="count instances">
                     <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">
                         &nbsp;{{ item.current_instances_count }}&nbsp;
                     </a>
@@ -98,21 +113,46 @@
                         {{ item.status }}
                     </span>
                 </td>
+                <td class="alarm-status">
+                    <a class="label radius alarm-status" ng-class="item.alarm_status | toClassName"
+                       ng-if="item.alarm_status" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                </td>
                 <td>
                     <span class="actions">
-                        <span id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
+                        <span id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown round"
+                              data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate="">View details</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate=""
+                                   class="action-view-details">
+                                    View details
+                                </a>
                             </li>
                             <li>
-                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate="">Manage instances</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring" i18n:translate=""
+                                   class="action-monitor">
+                                    Monitor
+                                </a>
                             </li>
                             <li>
-                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/policies" i18n:translate="">Manage policies</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate=""
+                                   class="action-manage-instances">
+                                    Manage instances
+                                </a>
                             </li>
                             <li>
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete scaling group</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/policies" i18n:translate=""
+                                   class="action-manage-policies">
+                                    Manage policies
+                                </a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)"
+                                   class="action-delete">
+                                    Delete scaling group
+                                </a>
                             </li>
                         </ul>
                     </span>
@@ -132,6 +172,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroups.js')}"></script>
 

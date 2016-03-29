@@ -45,7 +45,7 @@ from eucaconsole.forms.instances import (
 )
 from eucaconsole.i18n import _
 from eucaconsole.views import TaggedItemView
-from eucaconsole.views.instances import InstancesView, InstanceView, InstanceMonitoringView
+from eucaconsole.views.instances import InstancesView, InstancesJsonView, InstanceView, InstanceMonitoringView
 
 from tests import BaseViewTestCase, BaseFormTestCase, Mock
 
@@ -75,6 +75,20 @@ class InstancesViewTests(BaseViewTestCase):
         request.session['role_access'] = True
         view = InstancesView(request).instances_landing()
         self.assertTrue('/instances/json' in view.get('json_items_endpoint'))
+
+
+class InstancesSortableIPTestCase(BaseViewTestCase):
+    ips = [
+        '10.0.200.0',
+        '10.0.199.200',
+    ]
+
+    def test_sortable_ips(self):
+        request = testing.DummyRequest()
+        view = InstancesJsonView(request)
+        get_sortable_ip = view.get_sortable_ip
+        sorted_ips = sorted([get_sortable_ip(ip) for ip in self.ips])
+        self.assertEqual(sorted_ips[0], get_sortable_ip(self.ips[1]))
 
 
 class InstanceViewTests(BaseViewTestCase):
@@ -235,8 +249,12 @@ class InstanceLaunchFormTestCase(BaseFormTestCase):
         self.assert_required('securitygroup')
 
 
-class InstanceCreateImageFormTestCase(BaseFormTestCase):
+class InstanceCreateImageFormTestCase(BaseFormTestCase, BaseViewTestCase):
     form_class = InstanceCreateImageForm
+    request = testing.DummyRequest()
+    request.session.update({
+        'region': 'euca',
+    })
 
     def setUp(self):
         self.form = self.form_class(self.request)

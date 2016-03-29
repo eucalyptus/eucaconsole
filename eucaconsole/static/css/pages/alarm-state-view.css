@@ -1,0 +1,20 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.status.ALARM { background-color: #ff0000; }
+
+.status.INSUFFICIENT_DATA { background-color: #5a5a5a; }
+
+.status.OK { background-color: #008424; }
+
+.status { margin: 0 0.25rem 0 0.25rem; position: relative; bottom: 2px; }
+
+.top-state { position: relative; bottom: 1px; }
+
+.alarm-listing { margin-top: 0.5rem; }
+
+i.delete-icon { color: #5a5a5a !important; }
+i.delete-icon:hover { color: darkred !important; }
+
+span.capital { text-transform: capitalize; }
