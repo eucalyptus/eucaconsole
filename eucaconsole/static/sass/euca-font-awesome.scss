@@ -72,6 +72,25 @@ h3.warn-dialog:before {
     @extend .fa;
     @extend .fa-exclamation-triangle;
     @extend .fa-lg;
-    color: $euca-orange;
+    color: darkred;
     padding-right: 0.5rem;
+}
+
+// table expando icons
+.table-expando-closed {
+    @extend .fa;
+    @extend .fa-angle-right;
+    @extend .fa-lg;
+    margin-left: 5px;
+    text-align: center;
+    color: $hpe-gray;
+}
+
+.table-expando-open {
+    @extend .fa;
+    @extend .fa-angle-down;
+    @extend .fa-lg;
+    margin-left: 1px;
+    text-align: center;
+    color: $hpe-gray;
 }

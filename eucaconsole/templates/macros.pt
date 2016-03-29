@@ -19,7 +19,8 @@
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-    <div class="large-12 columns datagrid" id="landing-page-items">
+    <div class="large-12 columns datagrid ${'has-smart-table' if use_smart_table else ''}" id="landing-page-items" ng-class="landingPageView"
+         tal:define="use_smart_table getattr(view, 'enable_smart_table', False)">
         <div class="lp-header">
             <div class="lp-action-buttons" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
@@ -70,7 +71,7 @@
             </div>
             <!-- Begin grid view -->
             <div class="tile item" ng-cloak="true"
-                 ng-repeat="item in items | orderBy: sortBy:sortReverse | limitTo:displayCount">
+                 ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
                 <div class="header">
                     <strong>
                         <metal:block metal:define-slot="tile_header">
@@ -101,10 +102,36 @@
         </div>
         <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
             <!-- Begin table view -->
-            <table class="table" ng-show="!itemsLoading" ng-cloak="true">
-                <thead><tr><metal:block metal:define-slot="tableview_headers" /></tr></thead>
-                <tbody>
-                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+            <table class="table ${'smart-table' if use_smart_table else ''} ${'expando' if using_expando else ''}"
+                   ng-show="!itemsLoading" ng-cloak="true" tal:define="using_expando using_expando | nothing"
+                   st-safe-src="items" st-table="displayedCollection"
+                   tal:attributes="st-persist '{0}{1}{2}'.format(layout.username_label, '-smart-table-saved-sort-', request.path) if use_smart_table else False">
+                <thead>
+                    <tr>
+                        <th tal:condition="using_expando"></th>
+                        <metal:block metal:define-slot="tableview_headers" />
+                    </tr>
+                </thead>
+                <!-- NOTE: use_smart_table implies sortable tables are enabled -->
+                <tbody tal:condition="using_expando" expando="" ng-repeat="item in items | orderBy: sortBy:sortReverse"
+                       tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat"
+                       url="${expando_data_url}" data-item-id="{{ item.id || item.name || item.public_ip }}">
+                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                        <td>
+                            <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
+                        </td>
+                        <metal:block metal:define-slot="tableview_columns" />
+                    </tr>
+                    <tr ng-class="{'expando-tr-even': $odd}" ng-cloak="true"> 
+                        <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="10"><i class="busy"></i></td>
+                        <metal:block metal:define-slot="tableview_expando_content" />
+                    </tr>
+                </tbody>
+                <metal:block metal:define-slot="tableview_with_expando" />
+                <tbody tal:condition="not:using_expando">
+                    <tr ng-cloak="true"
+                        tal:attributes="ng-repeat layout.smart_table_repeat if use_smart_table else layout.standard_table_repeat"
+                        data-item-id="{{ item.id || item.name || item.public_ip }}">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>
@@ -142,7 +169,7 @@
             </div>
             -->
             <!-- Begin grid view -->
-            <div class="tile item" ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
+            <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                 <div class="header">
                     <strong>
                         <metal:block metal:define-slot="tile_header">
@@ -180,7 +207,7 @@
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                 <thead><tr><metal:block metal:define-slot="tableview_headers"></metal:block></tr></thead>
                 <tbody>
-                    <tr ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
+                    <tr ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                         <metal:block metal:define-slot="tableview_columns"></metal:block>
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>
@@ -197,6 +224,37 @@
         </div>
     </div>
 </metal:plaintableview_macro>
+
+<!-- "Select all" checkbox table header -->
+<metal:selectall_header_checkbox metal:define-macro="selectall_header_checkbox">
+    <th class="checkbox-header">
+        <input type="checkbox" id="select-all-items-tableview" ng-model="state.allSelected" ng-click="setAllState()" />
+    </th>
+</metal:selectall_header_checkbox>
+
+<!-- "Select all" checkbox (for tile/grid view) -->
+<metal:selectall_items_checkbox metal:define-macro="selectall_items_checkbox">
+    <span ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" class="select-all-wrapper" ng-cloak="">
+        <input type="checkbox" id="select-all-items-tileview" ng-model="state.allSelected" ng-click="setAllState()" />&nbsp;
+        <span i18n:translate="">Select all</span>
+    </span>
+</metal:selectall_items_checkbox>
+
+
+<!-- checkbox macro for a table cell in a table with multi-select rows -->
+<metal:select_item_checkbox metal:define-macro="select_item_checkbox">
+    <input type="checkbox" class="item-checkbox" ng-model="item.selected" ng-change="handleItemSelection()" />
+</metal:select_item_checkbox>
+
+<!-- "More actions" menu item for multi-select operations on landing pages -->
+<metal:moreactions_macro metal:define-macro="more_actions">
+    <a class="button secondary dropdown more-actions" id="more-actions-btn" ng-cloak=""
+       ng-disabled="(items | filter:{ selected: true}).length === 0"
+       data-dropdown="more-actions-dropdown" i18n:translate="">More Actions</a>
+    <ul id="more-actions-dropdown" class="f-dropdown" data-dropdown-content="" ng-if="(items | filter:{ selected: true}).length">
+        <metal:block metal:define-slot="menu_items" />
+    </ul>
+</metal:moreactions_macro>
 
 <!-- Breadcrumbs ===== -->
 <metal:breadcrumbs metal:define-macro="breadcrumbs">
@@ -250,7 +308,7 @@
 
 <!-- Detail page actions menu ===== -->
 <metal:actionsmenu metal:define-macro="actions_menu">
-    <div class="actions-menu">
+    <div class="actions-menu" ng-cloak="">
         <span class="button dropdown" data-dropdown="actions-dropdown">
             <a href="" i18n:translate="">Actions</a>
         </span>

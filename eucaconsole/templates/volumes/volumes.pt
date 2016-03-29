@@ -4,7 +4,11 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volumes.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage('${instances_by_zone}')">
+<div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl"
+     ng-init="initController('${controller_options_json}')"
+    tal:define="using_expando False;
+                expando_data_url request.route_path('volumes_expando_details', id='__id__');
+                expando_data_id '{{item.id}}'">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
              ng-init="initController('volumes', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -19,9 +23,59 @@
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-volume-btn"
                    href="${request.route_path('volume_view', id='new')}">Create New Volume</a>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-details"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}">
+                                View details
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'available'}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-attach"
+                               ng-click="revealModal('attach', (items | filter:{selected: true, status: 'available'})[0])">
+                                Attach to instance
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, attach_status: 'attached'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-detach"
+                               ng-click="revealMultiSelectDetachModal((items | filter:{selected: true, attach_status: 'attached'}))">
+                                Detach from instance
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-snapshots"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/snapshots">
+                                Manage snapshots
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-monitoring"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/monitoring">
+                                View monitoring
+                            </a>
+                        </li>
+                        <hr />
+                        <li ng-class="{'disabled': (items | filter: {selected: true, status: 'available'}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-delete"
+                               ng-click="revealMultiSelectModal('delete', (items | filter:{selected: true, status: 'available'}))">
+                                Delete
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
+            </div>
+            <div metal:fill-slot="tile_header">
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <a ng-href="${prefix}/{{ item.id }}" class="has-checkbox">
+                    {{ item.name }}
+                </a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="" ng-show="item.status !== 'deleting'">
                     <li ng-show="item.status !== 'deleting'">
                         <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
@@ -29,15 +83,22 @@
                     <li ng-show="item.status !== 'deleting'">
                         <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                     </li>
+                    <li ng-show="item.status === 'attached'">
+                        <a ng-href="${prefix}/{{ item.id }}/monitoring" i18n:translate="">Monitor</a>
+                    </li>
                     <li ng-show="item.status === 'available'">
-                        <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
+                        <a i18n:translate="" ng-click="revealModal('attach', item)" class="attach-volume-action">
+                            Attach to instance
+                        </a>
                     </li>
                     <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
-                        <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
-                               id="detach-volume-action" i18n:translate="">Detach from instance</a>
+                        <a ng-click="detachModal(item)"
+                           class="detach-volume-action" i18n:translate="">Detach from instance</a>
                     </li>
                     <li ng-show="item.status === 'available' || item.status === 'failed'">
-                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
+                        <a i18n:translate="" ng-click="revealModal('delete', item)" class="delete-volume-action">
+                            Delete volume
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -45,6 +106,13 @@
                 <div>
                     <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.id }}
+                </div>
+                <div ng-show="item.alarm_status">
+                    <span class="label" title="CloudWatch alarm status" i18n:attributes="title" data-tooltip="">CW</span>
+                    <a class="alarm-status" ng-class="item.alarm_status | toClassName"
+                       ng-href="${prefix}/{{ item.id | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
                 </div>
                 <div>
                     <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
@@ -79,17 +147,20 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Name (ID)</th>
-                <th i18n:translate="">Status</th>
-                <th i18n:translate="">Size</th>
-                <th i18n:translate="">Instance</th>
-                <th i18n:translate="">Snapshots</th>
-                <th i18n:translate="">Avail Zone</th>
-                <th i18n:translate="">Tags</th>
-                <th i18n:translate="">Creation Time</th>
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name">Name (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="status">Status</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="alarm_status">Alarms</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="size">Size</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="instance_name">Instance</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="snapshots">Snapshots</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="zone">Avail Zone</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="tags">Tags</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="create_time" st-sort-default="reverse">Creation Time</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td class="breakword" id="table-id-column-{{item.id}}">
                     <span ng-show="item.status === 'deleting'">{{ item.name || item.id | ellipsis: 30 }}</span>
                     <a ng-show="item.status !== 'deleting'" ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a>
@@ -100,6 +171,12 @@
                     </span>
                     <span class="busy" ng-show="item.transitional"></span>
                 </td>
+                <td class="alarm-status">
+                    <a class="label radius alarm-status" ng-class="item.alarm_status | toClassName"
+                          ng-if="item.alarm_status" ng-href="${prefix}/{{ item.id | escapeURL }}/monitoring">
+                        {{ item.alarm_status }}
+                    </a>
+                  </td>
                 <td>{{ item.size }}&nbsp;GB</td>
                 <td class="breakword">
                     <a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">
@@ -116,7 +193,8 @@
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions" ng-show="item.status !== 'deleting'">
-                        <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                        <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.status !== 'deleting'">
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
@@ -124,18 +202,98 @@
                             <li ng-show="item.status !== 'deleting'">
                                 <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                             </li>
+                            <li ng-show="item.status === 'attached'">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}/monitoring">Monitor</a>
+                            </li>
                             <li ng-show="item.status === 'available'">
-                                <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
+                                <a i18n:translate="" ng-click="revealModal('attach', item)" class="attach-volume-action">
+                                    Attach to instance
+                                </a>
                             </li>
                             <li ng-show="item.attach_status === 'attached' &amp;&amp; item.attach_status !== 'detaching'">
-                                <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
-                                   id="detach-volume-action" i18n:translate="">Detach from instance</a>
+                                <a ng-click="detachModal(item)"
+                                   class="detach-volume-action" i18n:translate="">Detach from instance</a>
                             </li>
                             <li ng-show="item.status === 'available' || item.status === 'failed'">
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)" class="delete-volume-action">
+                                    Delete volume
+                                </a>
                             </li>
                         </ul>
                     </span>
+                </td>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_expando_content">
+                <td ng-show="expando.data" colspan="10">
+                    <dl class="tabs" data-tab="">
+                        <dd class="active"><a href="#general">General</a></dd>
+                        <dd><a href="#tags">Tags</a></dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <div class="content active" id="general">
+                            <ul class="expando-tiles small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+                                <li>
+                                    <div><label class="left" i18n:translate="">VOLUME NAME</label></div>
+                                    <div>{{ item.volume_tag_name }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">VOLUME ID</label></div>
+                                    <div>{{ item.id }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">STATUS</label></div>
+                                    <div>{{ expando.data.volume_status }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">CREATION TIME</label></div>
+                                    <div>{{ item.create_time | date:'${layout.angular_date_format}' }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">ATTACHED TO INSTANCE (NAME)</label></div>
+                                    <div>{{ item.instance_tag_name }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">ATTACHED TO INSTANCE (ID)</label></div>
+                                    <div>{{ item.instance }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">SIZE (GB)</label></div>
+                                    <div>{{ item.size }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">AVAILABILITY ZONE</label></div>
+                                    <div>{{ item.zone }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">SNAPSHOT NAME</label></div>
+                                    <div>{{ item.snapshot_name }}</div>
+                                </li>
+                                <li>
+                                    <div><label class="left" i18n:translate="">SNAPSHOT ID</label></div>
+                                    <div>{{ item.snapshot_id }}</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="content" id="tags">
+                            <div class="datagrid" id="datagrid-items">
+                                <div id="tableview" class="gridwrapper">
+                                    <!-- Begin table view -->
+                                    <table class="table">
+                                        <thead><tr>
+                                            <th i18n:translate="">KEY</th>
+                                            <th i18n:translate="">VALUE</th>
+                                        </tr></thead>
+                                        <tbody>
+                                            <tr ng-repeat="(key, value) in item.real_tags">
+                                                <td>{{ key }}</td>
+                                                <td>{{ value }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </metal:block>
         </div>
@@ -152,7 +310,9 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/volumes.js')}"></script>
 </div>
 

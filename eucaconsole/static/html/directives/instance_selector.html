@@ -23,10 +23,10 @@
                 </td>
                 <td class="breakall">{{ instance.tags }}</td>
                 <td>
-                    <i ng-show="!isVPCSupported &amp;&amp; selectedZones.indexOf(instance.placement) === -1"
+                    <i ng-show="!isVPCSupported &amp;&amp; selectedZones.indexOf(instance.availability_zone) === -1"
                        class="fi-alert" data-tooltip="" i18n:attributes="title"
                        title="Instances will not receive any traffic until you enable this zone"></i>
-                    {{ instance.placement }}
+                    {{ instance.availability_zone }}
                 </td>
                 <td ng-if="isVPCSupported">
                     <i ng-show="selectedSubnets.indexOf(instance.subnet_id) === -1"

@@ -98,14 +98,6 @@ def instance_dialogs(context, request, instance=None, instance_name=None, landin
     )
 
 
-@panel_config('terminate_instances_dialog', renderer='../templates/dialogs/terminate_instances_dialog.pt')
-def terminate_instances_dialog(context, request, batch_terminate_form=None):
-    """Batch-terminate instances dialog"""
-    return dict(
-        batch_terminate_form=batch_terminate_form,
-    )
-
-
 @panel_config('volume_dialogs', renderer='../templates/dialogs/volume_dialogs.pt')
 def volume_dialogs(context, request, volume=None, volume_name=None, instance_name=None, landingpage=False,
                    attach_form=None, detach_form=None, delete_form=None):
@@ -177,6 +169,17 @@ def create_alarm_dialog(context, request, alarm_form=None, alarm_choices=None, r
         redirect_location=redirect_location,
         modal_size=modal_size,
         controller_options_json=controller_options_json,
+    )
+
+
+@panel_config('delete_alarm_dialog', renderer='../templates/dialogs/delete_alarm_dialog.pt')
+def delete_alarm_dialog(context, request, modal_size='medium', service_path=None):
+    '''
+    Delete alarm dialog page.
+    '''
+    return dict(
+        modal_size=modal_size,
+        service_path=service_path
     )
 
 
@@ -355,6 +358,14 @@ def elb_bucket_access_log_dialog(context, request):
     return dict()
 
 
+@panel_config('elb_security_group_warning_dialog', renderer='../templates/dialogs/elb_security_group_warning_dialog.pt')
+def elb_security_group_warning_dialog(context, request, create=False):
+    """ Modal confirmation when the security group rules for an ELB don't cover the listener and health check ports"""
+    return dict(
+        create=create
+    )
+
+
 @panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')
 def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_choices=None):
     """ Modal dialog for large CloudWatch chart"""
@@ -364,3 +375,9 @@ def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_c
         duration_choices=duration_choices,
         statistic_choices=statistic_choices,
     )
+
+
+@panel_config('ufshost_warn_dialog', renderer='../templates/dialogs/ufshost_warn_dialog.pt')
+def ufshost_warn_dialog(context, request):
+    """ Modal warning when trying to create a stack, but ufshost set to localhost"""
+    return dict()

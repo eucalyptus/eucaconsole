@@ -57,10 +57,12 @@ urls = [
     # Common #####
     Route(name='region_select', pattern='/region/select'),
     Route(name='file_download', pattern='/_getfile'),
+    Route(name='render_template', pattern='/_template/*subpath'),
 
     # Images #####
     Route(name='images', pattern='/images'),
     Route(name='images_json', pattern='/images/json'),
+    Route(name='images_deregister', pattern='/images/deregister'),
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
     Route(name='image_state_json', pattern='/images/{id}/state/json'),
@@ -72,18 +74,17 @@ urls = [
     # Landing page
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    Route(name='instances_roles_json', pattern='/instances/roles/json'),
     Route(name='instances_start', pattern='/instances/start'),
     Route(name='instances_stop', pattern='/instances/stop'),
     Route(name='instances_reboot', pattern='/instances/reboot'),
     Route(name='instances_terminate', pattern='/instances/terminate'),
-    Route(name='instances_batch_terminate', pattern='/instances/batch-terminate'),
     Route(name='instances_associate', pattern='/instances/associate'),
     Route(name='instances_disassociate', pattern='/instances/disassociate'),
     # Detail page
     Route(name='instance_create', pattern='/instances/new'),
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
-    Route(name='instance_json', pattern='/instances/{id}/json'),
     Route(name='instance_userdata_json', pattern='/instances/{id}/userdata'),
     Route(name='instance_more', pattern='/instances/{id}/more'),
     Route(name='instance_more_launch', pattern='/instances/{id}/more/launch'),
@@ -127,10 +128,16 @@ urls = [
     Route(name='scalinggroup_instances_json', pattern='/scalinggroups/{id}/instances/json'),
     Route(name='scalinggroup_instances_markunhealthy', pattern='/scalinggroups/{id}/instances/markunhealthy'),
     Route(name='scalinggroup_instances_terminate', pattern='/scalinggroups/{id}/instances/terminate'),
+    Route(name='scalinggroup_history', pattern='/scalinggroups/{id}/history'),
+    Route(name='scalinggroup_history_json', pattern='/scalinggroups/{id}/history/json'),
+    Route(name='scalinggroup_history_details_json', pattern='/scalinggroups/{id}/history/{activity}/json'),
     Route(name='scalinggroup_policies', pattern='/scalinggroups/{id}/policies'),
+    Route(name='scalinggroup_policies_json', pattern='/scalinggroups/{id}/policies/json'),
     Route(name='scalinggroup_policy_new', pattern='/scalinggroups/{id}/policies/new'),
     Route(name='scalinggroup_policy_create', pattern='/scalinggroups/{id}/policies/create'),
     Route(name='scalinggroup_policy_delete', pattern='/scalinggroups/{id}/policies/delete'),
+    Route(name='scalinggroup_monitoring', pattern='/scalinggroups/{id}/monitoring'),
+    Route(name='scalinggroup_monitoring_update', pattern='/scalinggroups/{id}/monitoring/update'),
 
     # Launch Configurations #####
     # Landing page
@@ -170,6 +177,7 @@ urls = [
     Route(name='volumes_delete', pattern='/volumes/delete'),
     Route(name='volumes_attach', pattern='/volumes/attach'),
     Route(name='volumes_detach', pattern='/volumes/detach'),
+    Route(name='volumes_expando_details', pattern='/volumes/{id}/expando'),
     # Detail page
     Route(name='volume_create', pattern='/volumes/create'),
     Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page
@@ -182,6 +190,8 @@ urls = [
     Route(name='volume_snapshots_json', pattern='/volumes/{id}/snapshots/json'),
     Route(name='volume_snapshot_create', pattern='/volumes/{id}/snapshots/create'),
     Route(name='volume_snapshot_delete', pattern='/volumes/{id}/snapshots/{snapshot_id}/delete'),
+    Route(name='volume_monitoring', pattern='/volumes/{id}/monitoring'),
+    Route(name='volume_monitoring_update', pattern='/volumes/{id}/monitoring/update'),
 
     # Snapshots #####
     # Landing page
@@ -265,12 +275,21 @@ urls = [
 
     # CloudWatch #####
     # Alarms Landing page
-    Route(name='cloudwatch_alarms', pattern='/cloudwatch/alarms'),
-    Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
-    Route(name='cloudwatch_alarms_create', pattern='/cloudwatch/alarms/create'),
-    Route(name='cloudwatch_alarms_delete', pattern='/cloudwatch/alarms/delete'),
-    # REST API
+    Route(name='cloudwatch_alarms', pattern='/alarms'),
+    Route(name='cloudwatch_alarms_json', pattern='/alarms/json'),
+    Route(name='cloudwatch_alarm_history', pattern='/alarms/{alarm_id}/history'),
+    Route(name='cloudwatch_alarm_history_json', pattern='/alarms/{alarm_id}/history/json'),
+    Route(name='cloudwatch_alarm_actions', pattern='/alarms/{alarm_id}/actions'),
+    Route(name='cloudwatch_alarms_create', pattern='/alarms/create'),
+    Route(name='cloudwatch_alarm_view', pattern='/alarms/{alarm_id}'),
+    Route(name='cloudwatch_alarms_for_metric_json', pattern='/alarms/json/{metric}'),
+    Route(name='cloudwatch_alarms_for_resource_json', pattern='/alarms/resource/{id}/json'),
+    # REST API - this route is hard-coded elsewhere, do not change.
     Route(name='cloudwatch_api', pattern='/cloudwatch/api'),
+    # Metrics Landing page
+    Route(name='cloudwatch_metrics', pattern='/metrics'),
+    Route(name='cloudwatch_metrics_json', pattern='/cloudwatch/metrics/json'),
+    Route(name='cloudwatch_resource_names_json', pattern='/cloudwatch/resourcenames/json'),
 
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),
@@ -362,4 +381,7 @@ urls = [
     Route(name='stack_state_json', pattern='/stacks/{name}/state/json'),
     Route(name='stack_template', pattern='/stacks/{name}/template'),
     Route(name='stack_events', pattern='/stacks/{name}/events'),
+    # Update
+    Route(name='stack_update', pattern='/stacks/{name}/update'),
+    Route(name='stack_cancel_update', pattern='/stacks/{name}/cancelupdate'),
 ]

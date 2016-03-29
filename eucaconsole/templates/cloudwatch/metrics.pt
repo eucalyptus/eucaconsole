@@ -1,0 +1,313 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${json_item_names_endpoint}')">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+             ng-init="initController('metrics', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Metrics</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="">Metrics</strong></h3>
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
+        <div class="large-12 columns datagrid" id="landing-page-items" ng-class="landingPageView">
+            <div class="lp-header">
+                <div class="lp-action-buttons" id="primary-buttons" ng-cloak="">
+                    <div class="metrics-selected">
+                        {{ (items | filter:{ _selected:true }).length }} selected
+                        <a ng-if="(items | filter:{ _selected:true }).length > 0" ng-click="metricsCtrl.clearSelections()" i18n:translate="">Clear all</a>
+                    </div>
+                </div>
+                <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
+                </div>
+                <div class="lp-view-buttons displayicons" ng-cloak="">
+                    <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
+                    <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
+                </div>
+            </div>
+            <div class="lp-header">
+                <div class="lp-search" tal:define="prompt layout.searchtext_prompt if len(search_facets) > 2 else layout.searchtext_prompt2">
+                    <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                        facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                </div>
+                <div class="lp-reload" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+                    <a id="refresh-btn" ng-show="!itemsLoading" ng-cloak="" ng-click="itemsLoading=true; getItems()">
+                        <i class="fa fa-refresh fa-lg"></i>
+                    </a>
+                    &nbsp;
+                    <span ng-show="!itemsLoading" class="items-found">
+                        <strong>{{ items.length }}</strong>
+                        <span i18n:translate="">found</span>
+                    </span>
+                </div>
+            </div>
+            <div class="split-wrapper">
+                <div class="split-top">
+                    <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
+                    <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
+                        <div ng-show="!itemsLoading">
+                            <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
+                                No items were found
+                                <a href="#" class="close">&times;</a>
+                            </div>
+                        </div>
+                        <!-- Begin grid view -->
+                        <div class="tile item" ng-cloak="true"
+                             ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+                            <div class="header">
+                                <strong>
+                                    <input type="checkbox" ng-model="item._selected"/>
+                                
+                                    <metal:block metal:define-slot="tile_header">
+                                        <strong>
+                                            <span>{{ item.metric_label }}</span>
+                                        </strong>
+                                         
+                                    </metal:block>
+                                </strong>
+                                <metal:block metal:define-slot="tile_dropdown_button">
+                                    <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
+                                    <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown">
+                                        <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
+                                        <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
+                                    </ul>
+                                </metal:block>
+                            </div>
+                            <div class="content">
+                                <div>
+                                    <span ng-repeat="res in item.resources">
+                                        <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
+                                        <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
+                                        <span ng-hide="$last">,</span> 
+                                    </span>
+                                </div>
+                                <div>
+                                    <span>{{ item.cat_label }}</span>
+                                </div>
+                            </div>
+                            <metal:block metal:define-slot="tile_footer">
+                                <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
+                                    {{ item.status.replace('-', ' ') }}
+                                </div>
+                            </metal:block>
+                        </div>
+                    </div>
+                    <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
+                        <!-- Begin table view -->
+                        <table class="table smart-table" ng-show="!itemsLoading" ng-cloak="true"
+                               st-safe-src="items" st-table="displayedCollection"
+                               tal:attributes="st-persist '{0}{1}{2}'.format(layout.username_label, '-smart-table-saved-sort-', request.path)">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="metricsCtrl.sortGetters.resources">Resources</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="metricsCtrl.sortGetters.metric_name">Metric Name</th>
+                                    <th class="actions" i18n:translate="">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-cloak="true" ng-repeat="item in displayedCollection | limitTo:displayCount"
+                                    data-item-id="{{ item.id || item.name || item.public_ip }}">
+                                    <td ng-if="item.heading == true" colspan="4">
+                                        {{ item.cat_label }} ({{ item.cat_total }})
+                                    </td>
+                                    <td ng-if="item.heading != true"><input type="checkbox" ng-model="item._selected"/></td>
+                                    <td ng-if="item.heading != true">
+                                        <div ng-repeat="res in item.resources">
+                                            {{ res.res_type_label }}:&nbsp;
+                                            <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
+                                            <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
+                                        </div>
+                                        <span ng-if="item.resources.length == 0" i18n:translate="">
+                                            All instances
+                                        </span>
+                                    </td>
+                                    <td ng-if="item.heading != true">{{ item.metric_label }}</td>
+                                    <td ng-if="item.heading != true">
+                                        <span class="actions" ng-show="item.status !== 'deleting'">
+                                            <a id="table-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
+                                            <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown" data-dropdown-content="">
+                                                <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
+                                                <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
+                                            </ul>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr ng-show="!itemsLoading"></tr>
+                            </tbody>
+                        </table>
+                        <div ng-if="!itemsLoading">
+                            <div data-alert="alert" class="alert-box secondary" ng-if="items.length == 0" ng-cloak="">
+                                <span i18n:translate="">No items were found</span>
+                                <a href="#" class="close">&times;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>&nbsp;</div>
+                    <div ng-cloak="" ng-if="items.length > displayCount" id="show-more-btn">
+                        <span i18n:translate="">Displaying</span>
+                        <strong>{{ displayCount }}</strong>
+                        <span i18n:translate="">of</span>
+                        <strong>{{ items.length }}</strong>
+                        <span i18n:translate="">items</span>
+                    </div>
+                </div>
+                <div splitbar="" class="split-bar"><hr width="99%"/></div>
+                <div class="split-bottom cloudwatch-charts" id="graph-area">
+                    <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
+                        ng-init="chartsCtrl.initController('${chart_options_json}')">
+                        <div class="toprow" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                            <div class="blurb">
+                                <div class="field-wrapper">
+                                    <div>
+                                        <label for="large-chart-statistic" class="left stack-label" i18n:translate="">Statistic</label>
+                                    </div>
+                                    <div>
+                                        <select name="large_chart_statistic" id="large-chart-statistic" class="statistic-input"
+                                                ng-model="chartsCtrl.largeChartStatistic" ng-change="chartsCtrl.refreshLargeChart()">
+                                            <option tal:repeat="option statistic_choices" value="${option[0]}">
+                                                ${option[1]}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-wrapper" id="measurement-period-controls">
+                                    <div>
+                                        <label for="large-chart-monitoring-granularity" class="left stack-label" i18n:translate="">Measurement period</label>
+                                    </div>
+                                    <div>
+                                        <select name="large_chart_monitoring_granularity" id="large-chart-monitoring-granularity" class="period-input"
+                                                ng-model="chartsCtrl.largeChartGranularity" ng-change="chartsCtrl.refreshLargeChart()"
+                                                ng-options="opt.value as opt.label for opt in chartsCtrl.granularityChoices">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-wrapper timepicker">
+                                    <div>
+                                        <label class="left stack-label" i18n:translate="">Time range</label>
+                                        <input id="metric-time-range" type="radio" name="range" value="relative"
+                                               ng-model="chartsCtrl.timeRange" /><label i18n:translate="">Relative</label>
+                                        <input id="metric-time-range" type="radio" name="range" value="absolute"
+                                               ng-model="chartsCtrl.timeRange" /><label i18n:translate="">Absolute</label>
+                                    </div>
+                                    <div ng-if="chartsCtrl.timeRange == 'relative'">
+                                        <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration"
+                                                class="duration-input"
+                                                ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.handleDurationChange()">
+                                            <option tal:repeat="option duration_choices" value="${option[0]}">
+                                                ${option[1]}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div ng-if="chartsCtrl.timeRange == 'absolute'">
+                                        <label class="left stack-label" i18n:translate="">From</label>
+                                        <input type="text" class="datefield" datepicker=""
+                                            ng-model="chartsCtrl.largeChartStartTime" ng-change="chartsCtrl.handleAbsoluteChange()"
+                                            ng-model-options="{ getterSetter: true }"/>
+                                        <label class="left stack-label" i18n:translate="">To</label>
+                                        <input type="text" class="datefield" datepicker=""
+                                            ng-model="chartsCtrl.largeChartEndTime" ng-change="chartsCtrl.handleAbsoluteChange()"
+                                            ng-model-options="{ getterSetter: true }"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <span id="refresh-charts-icon" class="action-icon"
+                                      ng-click="chartsCtrl.refreshLargeChart()"><i class="fa fa-refresh"></i></span>
+                            </div>
+                        </div>
+                        <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                            <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
+                                <i class="fa fa-arrow-circle-o-left fa-2x"></i>
+                            </a>
+                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="chartsCtrl.timeRange=='relative'">
+                                <i class="fa fa-arrow-circle-o-right fa-2x"></i>
+                            </a>
+                            <svg></svg>
+                        </div>
+                        <div class="chart-wrapper" ng-repeat="(metric, chart) in items | filter:{ _selected: true } | groupBy: 'metric_name'" ng-cloak="true">
+                            <h6>{{ chart[0].metric_label }}</h6>
+                            <a href="" id="metric-close-graph-{{ metric }}" class="graph-close" ng-click="metricsCtrl.clearThisChart(chart)" >&#215;</a>
+                            <span id="metric-chart-menu-{{ metric }}" class="metric-chart-menu" data-dropdown="chart-dropdown-{{ metric }}">
+                                <i class="fa fa-ellipsis-v"></i>
+                            </span>
+                            <ul id="chart-dropdown-{{ metric }}" class="f-dropdown" data-dropdown-content="">
+                                <li> <a ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{metric}}&resource={{ chart[0].res_ids | escapeURL }}" i18n:translate="">Create alarm</a> </li>
+                                <li> <a ng-click="metricsCtrl.copyUrl(chart)" i18n:translate="">Copy URL</a> </li>
+                            </ul>
+                            <div class="large-chart-wrapper">
+                                <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
+                                <svg cloudwatch-chart="" id="large-chart-{{ metric }}" class="cwchart"
+                                     dimensions="{{ metricsCtrl.chartDimensions(chart) }}"
+                                     namespace="{{ chart[0].namespace }}"
+                                     metric="{{ chart[0].metric_name }}"
+                                     period="{{ chartsCtrl.largeChartGranularity }}"
+                                     duration="{{ chartsCtrl.largeChartDuration }}"
+                                     start-time="{{ chartsCtrl._largeChartStartTime.toISOString() }}"
+                                     end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
+                                     unit="{{ chart[0].unit }}"
+                                     statistic="{{ chartsCtrl.largeChartStatistic }}" empty="No Data"
+                                     large="true" no-x-labels="true">
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                            <svg></svg>
+                            <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
+                                <i class="fa fa-arrow-circle-o-left fa-2x"></i>
+                            </a>
+                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="chartsCtrl.timeRange=='relative'">
+                                <i class="fa fa-arrow-circle-o-right fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="metrics-copy-url-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Copy URL</h3>
+        <p i18n:translate="">The URL below will bring you to the metric landing page with preselected metric(s) and graph.</p>
+        <div class="">
+            <input class="metrics-url-field" ng-model="metricsCtrl.graphURL"/>
+        </div>
+        <a href="#" id="metrics-copy-url-close-link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        <div id="help-html-console_metrics" ng-include="'${layout.help_path('console_volumes.html')}'"></div> 
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.stickytableheaders.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-filter.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/metrics.js')}"></script>
+</div>
+
+</metal:block>
+

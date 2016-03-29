@@ -3,10 +3,11 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="CloudWatchCharts" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
+<div metal:fill-slot="main_content" ng-app="ResourceMonitoring">
+    <div class="row" id="contentwrap" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
          ng-init="chartsCtrl.initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -27,21 +28,11 @@
                 <dd class="active"><a>${monitoring_tab_title}</a></dd>
             </dl>
             <div class="panel no-title cloudwatch-charts">
-                <div class="toprow">
-                    <div class="blurb">
-                        <div class="duration-wrapper" tal:condition="monitoring_enabled">
-                            <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
-                            <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
-                                    ng-change="chartsCtrl.refreshCharts()" class="duration-input">
-                                <option tal:repeat="duration duration_choices" value="${duration[0]}">
-                                    ${duration[1]}
-                                </option>
-                            </select>
-                        </div>
+                <div class="flex-space">
+                    <div class="flex-column-1">
+                        <button class="create-button" i18n:translate="">Create Alarm</button>
                     </div>
-                    <div class="actions">
-                        <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
-                              ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+                    <div class="flex-column-0 actions">
                         <span id="enable-monitoring-icon" class="action-icon dropdown"
                               data-dropdown="enable-monitoring-dropdown"><i class="fa fa-ellipsis-v"></i></span>
                         <ul id="enable-monitoring-dropdown" class="f-dropdown" data-dropdown-content="">
@@ -65,13 +56,36 @@
                         </ul>
                     </div>
                 </div>
+                <alarm-state-view
+                    template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
+                    resource-id="${instance.id}" resource-name="${instance_name}"
+                    resource-type="InstanceId" resource-type-name="instance" i18n:attributes="resource-type-name">
+                </alarm-state-view>
+                <hr/>
+                <h6 i18n:translate="">CloudWatch metric charts</h6>
+                <div class="toprow">
+                    <div class="blurb">
+                        <div class="duration-wrapper" tal:condition="monitoring_enabled">
+                            <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
+                            <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
+                                    ng-change="chartsCtrl.refreshCharts()" class="duration-input">
+                                <option tal:repeat="duration duration_choices" value="${duration[0]}">
+                                    ${duration[1]}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
+                              ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+                    </div>
+                </div>
                 <div tal:condition="layout.cloud_type == 'euca' and not monitoring_enabled">
                     <p i18n:translate="">Monitoring is currently turned off for this instance.</p>
                     <p>
-                        <a href="" ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">
-                            Turn on monitoring
-                        </a>
-                        <span i18n:translate="">to view metric data.</span>
+                        <button ng-click="chartsCtrl.submitMonitoringForm()" i18n:translate="">
+                            Enable Monitoring for this Instance
+                        </button>
                     </p>
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled">
@@ -90,13 +104,20 @@
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
                         </div>
                         <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
-                             cloudwatch-chart="" id="cwchart-{{ chart.metric }}" class="cwchart"
+                             cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
                              ids="${instance.id}" idtype="InstanceId" metric="{{ chart.metric }}"
-                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="AWS/EC2"
                              statistic="Average" empty="{{ chart.empty_msg }}">
                         </svg>
                     </li>
                 </ul>
+            </div>
+        </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! HELP CONTENT HERE -->
+                <div id="help-html-console_instance_detail_monitoring" ng-include="'${layout.help_path('console_instance_detail_monitoring.html')}'"></div> 
             </div>
         </div>
         <form method="post" id="monitoring-form" action="${request.route_path('instance_monitoring_update', id=instance.id)}">
@@ -110,7 +131,14 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/resource_monitoring.js')}"></script>
 </div>
 
 </metal:block>

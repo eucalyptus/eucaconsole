@@ -5,18 +5,7 @@
 @import "../includes/wizard";
 
 
-/* @section Elasitc Load Balancer Wizard styles */
-
-#wizard-tabs {
-    dd {
-        a b {
-            font-size: 0.85rem;
-        }
-        span b {
-            font-size: 0.85rem;
-        }
-    }
-}
+/* @section Elastic Load Balancer Wizard styles */
 
 #elb-form {
     input.text-input {
@@ -44,11 +33,11 @@
     .section-label {
         margin-top: 1.5rem;
         margin-bottom: 1rem;
-        color: $hp-gray-65;
+//         color: $hp-gray-65;
     }
-    .sub-section-label {
-        color: black;
-    }
+//     .sub-section-label {
+//      color: black;
+//     }
     .section-label-with-helptext-icon {
         margin-bottom: 0.5rem;
     }

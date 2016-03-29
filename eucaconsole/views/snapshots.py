@@ -49,12 +49,13 @@ class SnapshotsView(LandingPageView):
 
     def __init__(self, request):
         super(SnapshotsView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Snapshots')]
         self.conn = self.get_connection()
         self.prefix = '/snapshots'
         self.initial_sort_key = '-start_time'
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
@@ -64,7 +65,7 @@ class SnapshotsView(LandingPageView):
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
     def snapshots_landing(self):
         filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'volume_name', 'status']
-        filters_form=SnapshotsFiltersForm(self.request, formdata=self.request.params or None)
+        filters_form = SnapshotsFiltersForm(self.request, formdata=self.request.params or None)
         search_facets = filters_form.facets
 
         self.render_dict.update(dict(
@@ -79,28 +80,35 @@ class SnapshotsView(LandingPageView):
 
     @view_config(route_name='snapshots_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshots_delete(self):
-        snapshot_id = self.request.params.get('snapshot_id')
-        volume_id = self.request.params.get('volume_id')
-        snapshot = self.get_snapshot(snapshot_id)
+        snapshot_id_param = self.request.params.get('snapshot_id')
+        snapshot_ids = [snapshot_id.strip() for snapshot_id in snapshot_id_param.split(',')]
+        snapshot_names = []
         # NOTE: could optimize by requiring snapshot name as param and avoid above CLC fetch
-        snapshot_name = TaggedItemView.get_display_name(snapshot)
         location = self.get_redirect_location('snapshots')
+        # Handle delete operation on volume-snapshots page
+        volume_id = self.request.params.get('volume_id')
         if volume_id:
             location = self.request.route_path('volume_snapshots', id=volume_id)
-        if snapshot and self.delete_form.validate():
-            with boto_error_handler(self.request, location):
-                images_registered = self.get_images_registered(snapshot_id)
-                if images_registered is not None:
-                    for img in images_registered:
-                        self.log_request(_(u"Deregistering image {0}").format(img.id))
-                        img.deregister()
-                    # Clear images cache
-                    self.invalidate_images_cache()
-                self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
-                snapshot.delete()
+        if self.delete_form.validate():
+            for snapshot_id in snapshot_ids:
+                with boto_error_handler(self.request, location):
+                    snapshot = self.get_snapshot(snapshot_id)
+                    snapshot_names.append(TaggedItemView.get_display_name(snapshot))
+                    images_registered = self.get_images_registered(snapshot_id)
+                    if images_registered is not None:
+                        for img in images_registered:
+                            self.log_request(_(u"Deregistering image {0}").format(img.id))
+                            img.deregister()
+                        # Clear images cache
+                        self.invalidate_images_cache()
+                    self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
+                    snapshot.delete()
+            if len(snapshot_ids) == 1:
                 prefix = _(u'Successfully deleted snapshot')
-                msg = u'{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            else:
+                prefix = _(u'Successfully deleted snapshots ')
+            msg = u'{prefix} {name}'.format(prefix=prefix, name=', '.join(snapshot_names))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to delete snapshot')
@@ -202,6 +210,7 @@ class SnapshotsJsonView(LandingPageView):
         else:
             filtered_snapshots = self.get_items()
         volume_ids = list(set([snapshot.volume_id for snapshot in filtered_snapshots]))
+        # NOTE: Do not pass volume_ids directly to conn.get_all_volumes(), see GUI-2415
         volumes = self.conn.get_all_volumes(filters={'volume_id': volume_ids}) if self.conn else []
         for snapshot in filtered_snapshots:
             volume = [volume for volume in volumes if volume.id == snapshot.volume_id]
@@ -222,6 +231,7 @@ class SnapshotsJsonView(LandingPageView):
                 tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
                 volume_id=snapshot.volume_id,
                 volume_name=volume_name,
+                sortable_volume=volume_name or snapshot.volume_id,
                 volume_size=snapshot.volume_size,
                 exists_volume=exists_volume,
             ))
@@ -242,6 +252,10 @@ class SnapshotView(TaggedItemView):
 
     def __init__(self, request, ec2_conn=None, **kwargs):
         super(SnapshotView, self).__init__(request, **kwargs)
+        name = request.matchdict.get('id')
+        if name == 'new':
+            name = _(u'Create')
+        self.title_parts = [_(u'Snapshot'), name]
         self.request = request
         self.conn = ec2_conn or self.get_connection()
         self.location = self.request.route_path('snapshot_view', id=self.request.matchdict.get('id'))
@@ -408,7 +422,7 @@ class SnapshotView(TaggedItemView):
         volumes_list = []
         try:
             volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-        except BotoServerError as err:
+        except BotoServerError:
             return None
         return volumes_list[0] if volumes_list else None
 

@@ -5,9 +5,9 @@
 
 
 // Status colors
-$snapshot-status-color-pending: lighten($euca-darkblue, 20%);
-$snapshot-status-color-completed: $hp-green;
-$snapshot-status-color-failed: $hp-red;
+$snapshot-status-color-pending: lighten($hpe-slate, 20%);
+$snapshot-status-color-completed: $hpe-slate;
+$snapshot-status-color-failed: darkred;
 
 // Mixin for the "in-progress" busy indicator
 @mixin progress-busy {
@@ -31,10 +31,9 @@ $snapshot-status-color-failed: $hp-red;
             font-size: 0.825rem;
             margin-bottom: 0;
             .meter {
-                background-color: lighten($euca-darkblue, 20%);
+                background-color: $hpe-disabledgreen;
                 padding-left: 4px;
                 color: black;
-                font-weight: bold;
             }
             .busy {
                 @include progress-busy;
@@ -59,14 +58,13 @@ $snapshot-status-color-failed: $hp-red;
             position: relative;
             border: none;
             .meter {
-                background-color: lighten($euca-darkblue, 20%);
+                background-color: $hpe-disabledgreen;
                 color: black;
                 position: relative;
                 top: -2px; left: -2px;
                 padding: 1px 0 1px 8px;
                 display: inline-block;
                 white-space: nowrap;
-                font-weight: bold;
             }
             .busy {
                 @include progress-busy;

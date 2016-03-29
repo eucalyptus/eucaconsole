@@ -5,24 +5,22 @@
     display: inline-block;
     width: 50%;
     .meter {  // barbershop progress indicator
-        background-color: lighten($euca-darkblue, 20%);
+        background-color: $hpe-disabledgreen;
         padding-left: 6px;
         padding-top: 4px;
-        font-size: 0.825rem;
-        font-weight: bold;
     }
 }
 
 .label.status {
     text-transform: capitalize;
     &.failed {
-        background-color: $hp-red;
+        background-color: darkred;
     }
     &.completed { 
-        background-color: $hp-green;
+        background-color: $hpe-slate;
     }
     &.pending { 
-        background-color: lighten($euca-darkblue, 20%); 
+        background-color: lighten($hpe-slate, 20%); 
     }
 }
 

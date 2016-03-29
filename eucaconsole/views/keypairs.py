@@ -45,9 +45,11 @@ from . import boto_error_handler
 class KeyPairsView(LandingPageView):
     def __init__(self, request):
         super(KeyPairsView, self).__init__(request)
+        self.title_parts = [_(u'Key Pairs')]
         self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
+        self.enable_smart_table = True
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
     def keypairs_landing(self):
@@ -102,6 +104,12 @@ class KeyPairView(BaseView):
 
     def __init__(self, request):
         super(KeyPairView, self).__init__(request)
+        keyname = '/'.join(self.request.subpath)
+        if keyname == 'new':
+            keyname = _(u'Create')
+        if keyname == 'new2':
+            keyname = _(u'Import')
+        self.title_parts = [_(u'Key Pair'), keyname]
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
         self.keypair_route_id = '/'.join(self.request.subpath)
@@ -137,7 +145,7 @@ class KeyPairView(BaseView):
         if self.conn:
             try:
                 keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
-            except BotoServerError as err:
+            except BotoServerError:
                 return None
         keypair = keypairs[0] if keypairs else None
         return keypair 
@@ -162,7 +170,7 @@ class KeyPairView(BaseView):
                 self.log_request(_(u"Creating keypair ") + name)
                 new_keypair = self.conn.create_key_pair(name)
                 # Store the new keypair material information in the session
-                self._store_file_(new_keypair.name+".pem",
+                self._store_file_(new_keypair.name + ".pem",
                                   'application/x-pem-file;charset=ISO-8859-1',
                                   new_keypair.material)
                 msg_template = _(u'Successfully created key pair {keypair}')
@@ -186,7 +194,8 @@ class KeyPairView(BaseView):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
             key_material = self.request.params.get('key_material')
-            failure_location = self.request.route_path('keypair_view', subpath='new2')  # Return to import form if failure
+            # Return to import form if failure
+            failure_location = self.request.route_path('keypair_view', subpath='new2')
             success_location = self.request.route_path('keypair_view', subpath=name)
             with boto_error_handler(self.request, failure_location):
                 self.log_request(_(u"Importing keypair ") + name)
@@ -201,16 +210,20 @@ class KeyPairView(BaseView):
     @view_config(route_name='keypair_delete', request_method='POST', renderer=TEMPLATE)
     def keypair_delete(self):
         if self.delete_form.validate():
-            name = self.request.params.get('name')
+            keypair_name_param = self.request.params.get('name')
+            keypair_names = [keypair.strip() for keypair in keypair_name_param.split(',')]
             location = self.request.route_path('keypairs')
             with boto_error_handler(self.request, location):
-                self.log_request(_(u"Deleting keypair ")+name)
-                self.conn.delete_key_pair(name)
+                for keypair_name in keypair_names:
+                    self.log_request(_(u"Deleting keypair ") + keypair_name)
+                    self.conn.delete_key_pair(keypair_name)
                 prefix = _(u'Successfully deleted keypair')
-                msg = u'{0} {1}'.format(prefix, name)
+                if len(keypair_names) == 1:
+                    msg = prefix
+                else:
+                    msg = u'{0} {1}'.format(prefix, ', '.join(keypair_names))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
-
         return self.render_dict
 
 

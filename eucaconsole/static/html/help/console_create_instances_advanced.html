@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Launch a New Instance - Advanced</title>
+</head>
+<body id="launch_instances_ui_context4">
+
+
+    <h1 class="title topictitle1">Launch a New Instance - Advanced</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"/>
+</div>
+
+   
+    <div class="topic task nested1" id="create_instances_ui_advanced_steps">
+        <h2 class="title topictitle2">Specify Advanced Options</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This tab allows you to specify advanced options for your new instance. 
+            You can override the kernel and RAM disk IDs, enable monitoring, and add additional storage, 
+            if applicable.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd"> You can override the kernel ID in the selected image with the
+                        <span class="ph uicontrol">Kernel ID</span> drop-down list box. </span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> You can override the RAM disk ID in the selected image with the
+                        <span class="ph uicontrol">RAM disk ID (RAMFS)</span> drop-down list box. </span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Enable monitoring</span> check box to specify that
+                        detailed CloudWatch metric gathering should be enabled for your new
+                        instance(s).</span>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">For instances, click the <span class="ph uicontrol">Use private addressing only</span> check box to 
+                        assign only private IP addresses from the range of IP addresses in your subnet to your new instance(s).</span>
+                    <div class="itemgroup info">For more information, see <a class="xref" href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-instance-addressing.html" target="_blank"> Amazon EC2 Instance IP Addressing</a>. 
+                    <div class="note note"><span class="notetitle">Note:</span> This option is not applicable to launch configurations.</div>
+</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd"> The Storage section will only display if you have an EBS-backed image. If
+                        this is the case, you can configure additional storage for your
+                        instance:</span>
+                    <ol type="a" class="ol substeps" id="create_instances_ui_advanced_steps__d30e193">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
+                                drop-down list box. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Type the desired mapping for the storage into the
+                                <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
+                                    /dev/sdb</samp>).</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> If you want to create the storage from an existing snapshot,
+                                specify it in the <span class="ph uicontrol">Snapshot</span> drop-down list
+                                box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
+                                <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> The <span class="ph uicontrol">DELETE ON TERMINATE</span> indicator shows that the attached storage 
+                                is to be automatically deleted by default when the instance is terminated. This option 
+                            is non-editable.</span>
+                            <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> The <span class="ph uicontrol">DELETE ON TERMINATE</span> indicator is not applicable 
+                                for launch configurations. </div>
+</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">You can delete storage you've already added by clicking the minus
+                                button (⊝) on the right side of the storage list item.</span>
+                        </li>
+
+                    </ol>
+
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="last_step">
+        <h2 class="title topictitle2">Confirm Entries</h2>
+
+        
+        <div class="body taskbody">
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd">Make sure to double-check your entries.</span>
+                </li>
+<li class="li step">
+                   <span class="ph cmd">Click the <span class="ph uicontrol">Launch Instance</span> button to launch your
+                       new instance(s) or click <span class="ph uicontrol">Cancel</span> to abandon your changes.</span>
+               </li>
+</ol>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

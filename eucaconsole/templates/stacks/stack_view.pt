@@ -33,6 +33,14 @@
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="stack">
                         <metal:actions metal:fill-slot="actions">
                             <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
+                                <a id="update-stack-action" href="${request.route_path('stack_update', name=stack_name)}"
+                                   i18n:translate="">Update stack</a>
+                            </li>
+                            <li ng-show="stackStatus === 'Update-in-progress'">
+                                <a id="cancel-update-stack-action" ng-click="showCancelUpdateModal()"
+                                   i18n:translate="">Cancel update</a>
+                            </li>
+                            <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
                                 <a id="delete-stack-action" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
                             </li>
@@ -57,7 +65,7 @@
                         <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Status</label></div>
                             <div class="small-10 columns value" ng-cloak="">
-                                <span class="label radius status {{stackStatus}}">{{ stackStatus.replace('-', ' ').replace('-', ' ') }}</span>
+                                <span class="label radius status {{stackStatus}}">{{ displayStatus(stackStatus) }}</span>
                                 <span class="busy" ng-show="isTransitional()"></span>
                             </div>
                         </div>
@@ -102,7 +110,7 @@
                                         <th i18n:translate="">VALUE</th>
                                     </tr></thead>
                                     <tbody>
-                                        <tr ng-repeat="item in outputs | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                        <tr ng-repeat="item in outputs | orderBy: sortBy" ng-cloak="true">
                                             <td>{{ item.key }}</td>
                                             <td>{{ item.description }}</td>
                                             <td>{{ item.value }}</td>
@@ -129,7 +137,7 @@
                                         <th i18n:translate="">STATUS REASON</th>
                                     </tr></thead>
                                     <tbody>
-                                        <tr ng-repeat="item in resources | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                        <tr ng-repeat="item in resources | orderBy: sortBy" ng-cloak="true">
                                             <td>{{ item.type }} ({{ item.logical_id }})</td>
                                             <td ng-hide="item.url" class="breakall">
                                                 {{ item.physical_id }}
@@ -137,7 +145,7 @@
                                             <td ng-show="item.url" class="breakall">
                                                 <a ng-href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
-                                            <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
+                                            <td><span class="label radius status {{ item.status }}">{{ displayStatus(item.status) }}</span></td>
                                             <td>
                                                 {{ item.status_reason }}
                                             </td>
@@ -155,6 +163,14 @@
                             <span i18n:translate="">Actions</span>
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
+                            <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
+                                <a id="update-stack-action-2" href="${request.route_path('stack_update', name=stack_name)}"
+                                   i18n:translate="">Update stack</a>
+                            </li>
+                            <li ng-show="stackStatus === 'update-in-progress'">
+                                <a id="cancel-update-stack-action-2" ng-click="showCancelUpdateModal()"
+                                   i18n:translate="">Cancel update</a>
+                            </li>
                             <li>
                                 <a id="delete-stack-action-2" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
@@ -193,6 +209,14 @@
                             <span i18n:translate="">Actions</span>
                         </span>
                         <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
+                            <li ng-show="stackStatus !== 'delete-complete' &amp;&amp; !isTransitional()">
+                                <a id="update-stack-action-3" href="${request.route_path('stack_update', name=stack_name)}"
+                                   i18n:translate="">Update stack</a>
+                            </li>
+                            <li ng-show="stackStatus === 'update-in-progress'">
+                                <a id="cancel-update-stack-action-3" ng-click="showCancelUpdateModal()"
+                                   i18n:translate="">Cancel update</a>
+                            </li>
                             <li>
                                 <a id="delete-stack-action-3" data-reveal-id="delete-stack-modal"
                                    i18n:translate="">Delete stack</a>
@@ -220,9 +244,9 @@
                                         <th i18n:translate="">PHYSICAL ID</th>
                                     </tr></thead>
                                     <tbody>
-                                        <tr ng-repeat="item in events | orderBy: sortBy:sortReverse" ng-cloak="true">
+                                        <tr ng-repeat="item in events | orderBy: sortBy" ng-cloak="true">
                                             <td>{{ item.timestamp | date:'${layout.angular_date_format}' }}</td>
-                                            <td><span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span></td>
+                                            <td><span class="label radius status {{ item.status }}">{{ displayStatus(item.status) }}</span></td>
                                             <td>
                                                 {{ item.status_reason }}
                                             </td>
@@ -247,13 +271,21 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
-                <div id="help-html-console_edit_launch_config"
+                <div id="help-html-console_stack_detail_general" ng-show="currentTab == 'general-tab'"
                     ng-include="'${layout.help_path('console_stack_detail_general.html')}'">
+                </div> 
+                <div id="help-html-console_stack_detail_template" ng-show="currentTab == 'template-tab'"
+                    ng-include="'${layout.help_path('console_stack_detail_template.html')}'">
+                </div> 
+                <div id="help-html-console_stack_detail_events" ng-show="currentTab == 'events-tab'"
+                    ng-include="'${layout.help_path('console_stack_detail_events.html')}'">
                 </div> 
             </div>
         </div>
         <!--! Modal dialogs -->
         ${panel('stack_dialogs', stack=stack, delete_form=delete_form)}
+        <stack-cancel-update-dialog template="${request.route_path('render_template', subpath='stacks/stack_cancel_update_dialog')}" stack-name="stackName">
+        </stack-cancel-update-dialog>
     </div>
     <div id="view-template-modal" class="reveal-modal large" data-reveal="">
         <h3>${stack_name} <span i18n:translate="">template</span></h3>
@@ -268,6 +300,8 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/stack_cancel_update_dialog.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack.js')}"></script>
 </div>
 

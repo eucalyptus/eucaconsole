@@ -47,14 +47,15 @@ class IPAddressesView(LandingPageView):
 
     def __init__(self, request):
         super(IPAddressesView, self).__init__(request)
-        # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
+        self.title_parts = [_(u'IP Addresses')]
         self.prefix = '/ipaddresses'
         self.conn = self.get_connection()
-        self.allocate_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
-        self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
-        self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
-        self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location('ipaddresses')
+        self.allocate_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
+            self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
+        self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.render_dict = dict(
             prefix=self.prefix,
@@ -79,7 +80,7 @@ class IPAddressesView(LandingPageView):
                 domain = self.request.params.get('domain') or None
                 ipcount = int(self.request.params.get('ipcount', 0))
                 with boto_error_handler(self.request, self.location):
-                    self.log_request(_(u"Allocating {0} ElasticIPs").format(ipcount))
+                    self.log_request(_(u"Allocating {0} Elastic IPs").format(ipcount))
                     for i in xrange(ipcount):
                         new_ip = self.conn.allocate_address(domain=domain)
                         new_ips.append(new_ip.public_ip)
@@ -88,7 +89,7 @@ class IPAddressesView(LandingPageView):
                     msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
-        filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        filters_form = IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
         if self.cloud_type == 'euca':
             del filters_form.domain
         search_facets = filters_form.facets
@@ -108,7 +109,7 @@ class IPAddressesView(LandingPageView):
             instance_id = self.request.params.get('instance_id')
             public_ip = self.request.params.get('public_ip')
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Associating ElasticIP {0} with instance {1}").format(public_ip, instance_id))
+                self.log_request(_(u"Associating Elastic IP {0} with instance {1}").format(public_ip, instance_id))
                 elastic_ip = self.get_elastic_ip(public_ip)
                 elastic_ip.associate(instance_id)
                 template = _(u'Successfully associated IP {ip} with instance {instance}')
@@ -122,14 +123,19 @@ class IPAddressesView(LandingPageView):
     @view_config(route_name='ipaddresses_disassociate', request_method="POST")
     def ipaddresses_disassociate(self):
         if self.disassociate_form.validate():
-            public_ip = self.request.params.get('public_ip')
+            public_ip_param = self.request.params.get('public_ip')
+            public_ips = public_ip_param.split(', ')
+            instance_id_param = self.request.params.get('instance_id')
+            instance_ids = instance_id_param.split(', ')
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Disassociating ElasticIP {0}").format(public_ip))
-                elastic_ip = self.get_elastic_ip(public_ip)
-                elastic_ip.disassociate()
-                template = _(u'Successfully disassociated IP {ip} from instance')
-                msg = template.format(ip=public_ip)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                for idx, public_ip in enumerate(public_ips):
+                    self.log_request(_(u"Disassociating Elastic IP {0} from instance {1}").format(
+                        public_ip, instance_ids[idx]))
+                    elastic_ip = self.get_elastic_ip(public_ip)
+                    elastic_ip.disassociate()
+                    template = _(u'Successfully disassociated IP {ip} from instance {instance}')
+                    msg = template.format(ip=public_ip_param, instance=instance_id_param)
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to disassociate IP from instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -138,16 +144,18 @@ class IPAddressesView(LandingPageView):
     @view_config(route_name='ipaddresses_release', request_method="POST")
     def ipaddresses_release(self):
         if self.release_form.validate():
-            public_ip = self.request.params.get('public_ip')
+            public_ip_param = self.request.params.get('public_ip')
+            public_ips = public_ip_param.split(', ')
             allocation_id = self.request.params.get('allocation_id')
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Releasing ElasticIP {0}").format(public_ip))
+                self.log_request(_(u"Releasing Elastic IP(s) {0}").format(public_ip_param))
                 if allocation_id == '':
-                    self.conn.release_address(public_ip=public_ip)
+                    for public_ip in public_ips:
+                        self.conn.release_address(public_ip=public_ip.strip())
                 else:
                     self.conn.release_address(allocation_id=allocation_id)
                 template = _(u'Successfully released {ip} to the cloud')
-                msg = template.format(ip=public_ip)
+                msg = template.format(ip=public_ip_param)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to release IP address')
@@ -225,6 +233,7 @@ class IPAddressView(BaseView):
 
     def __init__(self, request):
         super(IPAddressView, self).__init__(request)
+        self.title_parts = [_(u'IP Addresses'), request.matchdict.get('public_ip')]
         self.conn = self.get_connection()
         self.elastic_ip = self.get_elastic_ip()
         self.instance = self.get_instance()
@@ -252,7 +261,7 @@ class IPAddressView(BaseView):
             instance_id = self.request.params.get('instance_id')
             location = self.request.route_path('ipaddresses')
             with boto_error_handler(self.request, location):
-                self.log_request(_(u"Associating ElasticIP {0} with instance {1}").format(self.elastic_ip, instance_id))
+                self.log_request(_(u"Associating Elastic IP {0} with instance {1}").format(self.elastic_ip, instance_id))
                 self.elastic_ip.associate(instance_id)
                 msg = _(u'Successfully associated IP {ip} with instance {instance}')
                 notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=instance_id)
@@ -265,7 +274,7 @@ class IPAddressView(BaseView):
         if self.disassociate_form.validate():
             location = self.request.route_path('ipaddresses')
             with boto_error_handler(self.request, location):
-                self.log_request(_(u"Disassociating ElasticIP {0} from instance {1}").format(
+                self.log_request(_(u"Disassociating Elastic IP {0} from instance {1}").format(
                     self.elastic_ip, getattr(self.elastic_ip, 'instance_name', '')))
                 self.elastic_ip.disassociate()
                 msg = _(u'Successfully disassociated IP {ip} from instance {instance}')
@@ -279,7 +288,7 @@ class IPAddressView(BaseView):
         if self.release_form.validate():
             location = self.request.route_path('ipaddresses')
             with boto_error_handler(self.request, location):
-                self.log_request(_(u"Releasing ElasticIP {0}").format(self.elastic_ip))
+                self.log_request(_(u"Releasing Elastic IP {0}").format(self.elastic_ip))
                 self.elastic_ip.release()
                 msg = _(u'Successfully released {ip} to the cloud')
                 notification_msg = msg.format(ip=self.elastic_ip.public_ip)

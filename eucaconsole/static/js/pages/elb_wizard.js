@@ -6,8 +6,22 @@
  *
  */
 
-angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError,
-                                                                      eucaUnescapeJson, eucaFixHiddenTooltips) {
+angular.module('ELBWizard', [
+    'EucaConsoleUtils', 'CreateBucketDialog', 'MagicSearch', 'ELBSecurityPolicyEditor',
+    'TagEditorModule', 'ELBListenerEditor', 'ELBSecurityGroupRulesWarning']
+).controller('ELBWizardCtrl', function ($scope, $http, $timeout, eucaHandleError,
+                                        eucaUnescapeJson, eucaFixHiddenTooltips,
+                                        eucaCheckELBSecurityGroupRules) {
+    $scope.thisForm = undefined;
+    $scope.urlParams = undefined;
+    $scope.resourceName  = '';
+    $scope.totalSteps = 0;
+    $scope.currentStepIndex = 0;
+    $scope.isValidationError = true;
+    $scope.tabList = [];
+    $scope.invalidSteps = [];
+    $scope.stepClasses = [];
+    $scope.summaryDisplays = [];
     $scope.elbForm = undefined;
     $scope.urlParams = undefined;
     $scope.isNotValid = true;
@@ -20,10 +34,13 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
     $scope.vpcSubnetNames = [];
     $scope.vpcSubnetChoices = {};
     $scope.vpcSubnetList = [];
-    $scope.securityGroups = [];
-    $scope.securityGroupNames = [];
-    $scope.securityGroupChoices = [];
-    $scope.securityGroupCollection = []; 
+    $scope.securityGroups = [];  // Selected security group ids (e.g. ["sg-123456", ...])
+    $scope.securityGroupNames = [];  // Selected security group names (e.g. ["sgroup-one", ...])
+    $scope.securityGroupChoices = {};  // id/name mapping of security group choices (e.g. {"sg-123": 'foo', ...})
+    $scope.securityGroupCollection = [];  // Security group object choices
+    $scope.selectedSecurityGroups = [];  // Selected security group objects
+    $scope.loadBalancerInboundPorts = [];
+    $scope.loadBalancerOutboundPorts = [];
     $scope.availabilityZones = [];
     $scope.availabilityZoneChoices = {};
     $scope.instanceList = [];
@@ -68,11 +85,38 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         var options = JSON.parse(eucaUnescapeJson(optionsJson));
         $scope.setInitialValues(options);
         $scope.setWatcher();
+        $scope.setFocus();
         // Workaround for the Bug in jQuery to prevent JS Uncaught TypeError
         // See http://stackoverflow.com/questions/27408501/ng-repeat-sorting-is-throwing-an-exception-in-jquery
         Object.getPrototypeOf(document.createComment('')).getAttribute = function() {};
     };
     $scope.setInitialValues = function (options) {
+        if (options.hasOwnProperty('resource_name')) {
+            $scope.resourceName = options.resource_name;
+        }
+        if (options.hasOwnProperty('wizard_tab_list')) {
+            $scope.tabList = options.wizard_tab_list;
+        }
+        $scope.totalSteps = $scope.tabList.length;
+        $scope.thisForm = $('#' + $scope.resourceName + '-form');
+        $scope.urlParams = $.url().param();
+        $scope.currentStepIndex = 0;
+        $scope.isValidationError = true;
+        $scope.invalidSteps = Array.apply(undefined, Array($scope.totalSteps));
+        angular.forEach($scope.invalidSteps, function(a, index){
+            $scope.invalidSteps[index] = true;
+        });
+        $scope.invalidSteps[0] = false;
+        $scope.stepClasss = Array.apply(undefined, Array($scope.totalSteps));
+        angular.forEach($scope.stepClasses, function(a, index){
+            $scope.stepClasses[index] = '';
+        });
+        $scope.stepClasses[$scope.currentStepIndex] = 'active';
+        $scope.summaryDisplays = Array.apply(undefined, Array($scope.totalSteps));
+        angular.forEach($scope.summaryDisplays, function(a, index){
+            $scope.summaryDisplays[index] = false;
+        });
+        $scope.summaryDisplays[$scope.currentStepIndex] = true;
         var certArnField = $('#certificate_arn');
         $scope.bucketNameChoices = options.bucket_choices;
         $scope.existingCertificateChoices = options.existing_certificate_choices;
@@ -98,11 +142,10 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             $scope.updateVPCSubnetChoices();
         }
         $scope.listenerArray = [];
-        $scope.instanceList = [];
         $scope.crossZoneEnabled = true;
         $scope.pingProtocol = 'HTTP';
         $scope.pingPort = 80;
-        $scope.pingPath = 'index.html';
+        $scope.pingPath = '/';
         $scope.responseTimeout = 5;
         $scope.timeBetweenPings = 30;
         $scope.failuresUntilUnhealthy = 2;
@@ -127,12 +170,42 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.canListCertificates = options.can_list_certificates;
         $scope.initChosenSelectors();
     };
-    $scope.initChosenSelectors = function () {
-        $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
-        $('#securitygroup').chosen({'width': '100%', search_contains: true});
-        $('#zone').chosen({'width': '100%', search_contains: true});
-    };
     $scope.setWatcher = function (){
+        $scope.$watch('currentStepIndex', function(newVal, oldVal){
+            if( $scope.currentStepIndex !== 0 ){
+                $scope.setWizardFocus($scope.currentStepIndex);
+            }
+            $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
+        });
+        $scope.$on('requestValidationCheck', function($event) {
+            var currentStepID = $scope.currentStepIndex + 1;
+            $scope.existInvalidFields(currentStepID);
+        });
+        $(document).on('open.fndtn.reveal', '[data-reveal]', function () {
+            // When a dialog opens, reset the progress button status
+            $(this).find('.dialog-submit-button').css('display', 'block');
+            $(this).find('.dialog-progress-display').css('display', 'none');
+            // Broadcast initModal signal to trigger the modal initialization
+            $scope.$broadcast('initModal');
+        });
+        $(document).on('submit', '[data-reveal] form', function () {
+            // When a dialog is submitted, display the progress button status
+            $(this).find('.dialog-submit-button').css('display', 'none');
+            $(this).find('.dialog-progress-display').css('display', 'block');
+        });
+        $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
+            var modal = $(this);
+            modal.find('input[type="text"]').val('');
+            modal.find('input[type="number"]').val('');
+            modal.find('input:checked').attr('checked', false);
+            modal.find('textarea').val('');
+            modal.find('div.error').removeClass('error');
+            var chosenSelect = modal.find('select');
+            if (chosenSelect.length > 0 && chosenSelect.attr('multiple') === undefined) {
+                chosenSelect.prop('selectedIndex', 0);
+                chosenSelect.trigger("chosen:updated");
+            }
+        });
         eucaFixHiddenTooltips();
         $(document).on('click', '#security-policy-dialog-submit-btn', function () {
             $scope.isNotChanged = false;
@@ -141,13 +214,13 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         // Handle the next step tab click event
         $scope.$on('eventClickVisitNextStep', function($event, thisStep, nextStep) {
             $scope.checkRequiredInput(thisStep);
-            // Signal the parent wizard controller about the completion of the next step click event
-            $scope.$emit('eventProcessVisitNextStep', nextStep);
+            $scope.processVisitNextStep(nextStep);
             $timeout(function() {
                 // Workaround for the broken placeholer message issue
                 // Wait until the rendering of the new tab page is complete
                 $('#zone').trigger("chosen:updated");
                 $('#vpc_subnet').trigger('chosen:updated');
+                $scope.isHelpExpanded = false;
             });
         });
         $scope.$on('currentStepIndexUpdate', function($event, thisStepIndex) {
@@ -181,40 +254,48 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.$on('eventUpdateVPCSubnets', function ($event, vpcSubnets) {
             $scope.vpcSubnets = vpcSubnets;
         });
-        $scope.$watch('elbName', function (){
+        $scope.$watch('elbName', function (newVal, oldVal){
             $scope.checkRequiredInput(1);
         });
-        $scope.$watch('vpcNetwork', function () {
-            $scope.availabilityZones = [];
-            $scope.vpcSubnets = [];
-            $scope.securityGroups = [];
-            $scope.updateVPCNetworkName();
-            $scope.getAllSecurityGroups($scope.vpcNetwork);
-            $scope.updateVPCSubnetChoices();
-            $scope.checkRequiredInput(2);
-            $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
-            $timeout(function(){
-                if ($('#securitygroup_chosen').length === 0) {
-                    $('#securitygroup').chosen({'width': '100%', search_contains: true});
-                }
-            });
-        }, true);
-        $scope.$watch('securityGroups', function () {
-            $scope.updateSecurityGroupNames();
-            $scope.checkRequiredInput(2);
-            // Update the VPC network on the instance selector when security group is updated
-            $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
-        }, true);
-        $scope.$watch('securityGroupCollection', function () {
-            $scope.updateSecurityGroupChoices();
-        }, true);
-        $scope.$watch('availabilityZones', function () {
-            if ($scope.vpcNetwork === 'None') { 
-                $scope.checkRequiredInput(3);
-                $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
+        $scope.$watch('vpcNetwork', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.availabilityZones = [];
+                $scope.vpcSubnets = [];
+                $scope.securityGroups = [];
+                $scope.updateVPCNetworkName();
+                $scope.getAllSecurityGroups($scope.vpcNetwork);
+                $scope.updateVPCSubnetChoices();
+                $scope.checkRequiredInput(2);
+                $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
+                $timeout(function(){
+                    if ($('#securitygroup_chosen').length === 0) {
+                        $('#securitygroup').chosen({'width': '100%', search_contains: true});
+                    }
+                });
             }
         }, true);
-        $scope.$watch('vpcSubnets', function () {
+        $scope.$watch('securityGroups', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.updateSecurityGroupNames();
+                $scope.checkRequiredInput(2);
+                // Update the VPC network on the instance selector when security group is updated
+                $scope.$broadcast('eventWizardUpdateVPCNetwork', $scope.vpcNetwork);
+            }
+        }, true);
+        $scope.$watch('securityGroupCollection', function (newVal, oldVal) {
+            $scope.updateSecurityGroupChoices();
+        }, true);
+        $scope.$watch('availabilityZones', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                if ($scope.vpcNetwork === 'None') { 
+                    if ($scope.currentStepIndex === 3) {
+                        $scope.checkRequiredInput(3);
+                    }
+                    $scope.$broadcast('eventWizardUpdateAvailabilityZones', $scope.availabilityZones);
+                }
+            }
+        }, true);
+        $scope.$watch('vpcSubnets', function (newVal, oldVal) {
             $scope.updateVPCSubnetNames();
             if ($scope.vpcNetwork !== 'None') { 
                 $scope.checkRequiredInput(3);
@@ -222,27 +303,35 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             }
         }, true);
         $scope.$watch('instanceList', function (newValue, oldValue) {
-            $scope.checkRequiredInput(3);
+            if ($scope.currentStepIndex === 3) {
+                $scope.checkRequiredInput(3);
+            }
             if ($scope.vpcNetwork !== 'None') { 
                 $scope.updateVPCSubnetChoices();
             } else {
                 $scope.updateAvailabilityZoneChoices();
             }
         }, true);
-        $scope.$watch('pingProtocol', function (){
-            $scope.updateDefaultPingProtocol();
-        });
-        $scope.$watch('pingPort', function (){
+        $scope.$watch('listenerArray', function (newVal, oldVal) {
+            if (newVal.length) {
+                $scope.pingProtocol = newVal[0].toProtocol;
+                $scope.pingPort = newVal[0].toPort;
+            } else {
+                $scope.pingProtocol = 'HTTP';
+                $scope.pingPort = 80;
+            }
+        }, true);
+        $scope.$watch('pingPort', function (newVal, oldVal){
             $scope.checkRequiredInput(4);
         });
-        $scope.$watch('responseTimeout', function (){
+        $scope.$watch('responseTimeout', function (newVal, oldVal){
             $scope.checkRequiredInput(4);
         });
-        $scope.$watch('certificateTab', function () {
+        $scope.$watch('certificateTab', function (newVal, oldVal) {
             $scope.adjustSelectCertificateModalTabDisplay();
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('certificateARN', function(){
+        $scope.$watch('certificateARN', function(newVal, oldVal){
             var certArnField = $('#certificate_arn');
             var hiddenArnInput = $('#hidden_certificate_arn_input');
             // Find the certficate name when selected on the select certificate dialog
@@ -255,37 +344,37 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             }
             $scope.$broadcast('eventUpdateCertificateARN', $scope.certificateARN, $scope.tempListenerBlock);
         });
-        $scope.$watch('certificateName', function(){
+        $scope.$watch('certificateName', function(newVal, oldVal){
             // Broadcast the certificate name change to the elb listener directive
             $scope.$broadcast('eventUpdateCertificateName', $scope.certificateName);
         });
-        $scope.$watch('certificateRadioButton', function(){
+        $scope.$watch('certificateRadioButton', function(newVal, oldVal){
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('newCertificateName', function(){
+        $scope.$watch('newCertificateName', function(newVal, oldVal){
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('privateKey', function(){
+        $scope.$watch('privateKey', function(newVal, oldVal){
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('publicKeyCertificate', function(){
+        $scope.$watch('publicKeyCertificate', function(newVal, oldVal){
             $scope.setClassUseThisCertificateButton();
         });
-        $scope.$watch('backendCertificateName', function () {
+        $scope.$watch('backendCertificateName', function (newVal, oldVal) {
             $scope.checkAddBackendCertificateButtonCondition(); 
         });
-        $scope.$watch('backendCertificateBody', function () {
+        $scope.$watch('backendCertificateBody', function (newVal, oldVal) {
             $scope.checkAddBackendCertificateButtonCondition(); 
         });
-        $scope.$watch('backendCertificateArray', function () {
+        $scope.$watch('backendCertificateArray', function (newVal, oldVal) {
             $scope.syncBackendCertificates();
             $scope.checkAddBackendCertificateButtonCondition(); 
             $scope.setClassUseThisCertificateButton();
         }, true);
-        $scope.$watch('isBackendCertificateNotComplete', function () {
+        $scope.$watch('isBackendCertificateNotComplete', function (newVal, oldVal) {
             $scope.setClassAddBackendCertificateButton();
         });
-        $scope.$watch('hasDuplicatedBackendCertificate', function () {
+        $scope.$watch('hasDuplicatedBackendCertificate', function (newVal, oldVal) {
             $scope.setClassAddBackendCertificateButton();
             $scope.classDuplicatedBackendCertificateDiv = '';
             // timeout is needed for the DOM update to complete
@@ -311,6 +400,16 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                         $scope.accessLogConfirmationDialog.foundation('reveal', 'open');
                     }
                 }
+                // TODO: ensure this doesn't clear existing validation error
+                $scope.isValidationError = newVal && !$scope.bucketName;
+            }
+        });
+        $scope.$watch('isValidationError', function (newVal, oldVal) {
+            console.log("validation error : "+newVal);
+        });
+        $scope.$watch('bucketName', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.isValidationError = $scope.loggingEnabled && !newVal;
             }
         });
         $scope.accessLogConfirmationDialog.on('opened.fndtn.reveal', function () {
@@ -324,6 +423,129 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             }
             $('#bucket_name').focus().closest('.columns').removeClass('error');
         });
+    };
+    $scope.setFocus = function () {
+        $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
+            var modal = $(this);
+            var modalID = $(this).attr('id');
+            if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                var closeMark = modal.find('.close-reveal-modal');
+                if(!!closeMark){
+                    closeMark.focus();
+                }
+            }else{
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                var modalButton = modal.find('button').get(0);
+                if (!!inputElement && inputElement.value === '') {
+                    inputElement.focus();
+                } else if (!!modalButton) {
+                    modalButton.focus();
+                }
+           }
+        });
+    };
+    $scope.setWizardFocus = function (stepIdx) {
+        var tabElement = $(document).find('#tabStep'+(stepIdx+1)).get(0);
+        if (!!tabElement) {
+            tabElement.focus();
+        }
+    };
+    // return true if exists invalid input fields on 'step' page
+    // also set the focus on the invalid field
+    $scope.existInvalidFields = function(step) {
+        if ($scope.thisForm === undefined) {
+            return true;
+        }
+        $scope.thisForm.trigger('validate');
+        var tabContent = $scope.thisForm.find('#step' + step);
+        var invalidFields = tabContent.find('[data-invalid]');
+        invalidFields.focus();
+        if (invalidFields.length > 0 || $('#step' + step).find('div.error').length > 0) {
+            $scope.isValidationError = true;
+        } else {
+            $scope.isValidationError = false;
+        }
+        return $scope.isValidationError;
+    };
+    $scope.visitStep = function($event, step) {
+        $event.preventDefault();
+        var nextStep = step;
+        // In case of non-rendered step, jump forward
+        if ($scope.tabList[step].render === false) {
+            nextStep = step + 1;
+        }
+        $scope.$broadcast('eventClickVisitNextStep', $scope.currentStepIndex+1, nextStep);
+    };
+    $scope.processVisitNextStep = function(nextStep) {
+        // Check for form validation before proceeding to next step
+        var currentStepID = $scope.currentStepIndex + 1;
+        if (nextStep < $scope.currentStepIndex) {
+            // Case of clicking the tab direct to go backward step
+            // No validation check is needed when stepping back
+            $timeout(function() {
+                $scope.updateStep(nextStep);
+                $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
+            });
+        } else if ($scope.isValidationError === true || $scope.existInvalidFields(currentStepID)) {
+            // NOT OK TO CHANGE TO NEXT STEP
+            // NOTE: Need to handle the case where the tab was clicked to visit the previous step
+            //
+            // Broadcast signal to trigger input field check on the currentStepIndex page 
+            $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
+        } else { // OK to switch
+            // Since the operations above affects DOM,
+            // need to wait after Foundation's update for Angular to process 
+            $timeout(function() {
+                // clear the invalidSteps flag
+                if ($scope.invalidSteps[nextStep]) {
+                    $scope.clearErrors(nextStep);
+                    $scope.invalidSteps[nextStep] = false;
+                }
+                $scope.updateStep(nextStep);
+                // Broadcast signal to trigger input field check on the currentStepIndex page 
+                $scope.$broadcast('currentStepIndexUpdate', $scope.currentStepIndex);
+            });
+        }
+    };
+    $scope.updateStep = function(step) {
+        // Adjust the tab classes to match Foundation's display 
+        $("#wizard-tabs").children("dd").each(function() {
+            // Clear 'active' class from all tabs
+            $(this).removeClass("active");
+            // Set 'active' class on the current tab
+            var hash = "step" + (step+1) ;
+            var link = $(this).find("a");
+            if (link.length > 0) {
+                var id = link.attr("href").substring(1);
+                if (id == hash) {
+                    $(this).addClass("active");
+                }
+            }
+        });
+        // Clear all step classes
+        angular.forEach($scope.stepClasses, function(a, index){
+            $scope.stepClasses[index] = '';
+        });
+        // Activate the target step class
+        $scope.stepClasses[step] = 'active';
+        // Display the summary section 
+        $scope.showSummarySecton(step); 
+        // Update the current step index
+        $scope.currentStepIndex = step;
+    };
+    // Display appropriate step in summary
+    $scope.showSummarySecton = function(step) {
+        $scope.summaryDisplays[step] = true;
+    };
+    $scope.clearErrors = function(step) {
+        $('#step'+step).find('div.error').each(function(idx, val) {
+            $(val).removeClass('error');
+        });
+    };
+    $scope.initChosenSelectors = function () {
+        $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
+        $('#securitygroup').chosen({'width': '100%', search_contains: true});
+        $('#zone').chosen({'width': '100%', search_contains: true});
     };
     $scope.checkRequiredInput = function (step) {
         $scope.isNotValid = false;
@@ -339,17 +561,6 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             // Handle the unsaved listener issue
             if( $('#from-port-input').val() !== '' ){
                 $('#unsaved-listener-warn-modal').foundation('reveal', 'open');
-                $scope.isNotValid = true;
-            }
-            // Handle the unsaved tag issue
-            var existsUnsavedTag = false;
-            $('input.taginput').each(function(){
-                if($(this).val() !== ''){
-                    existsUnsavedTag = true;
-                }
-            });
-            if( existsUnsavedTag ){
-                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                 $scope.isNotValid = true;
             }
         } else if (step === 2) {
@@ -373,8 +584,7 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 $scope.isNotValid = true;
             }
         }
-        // Signal the parent wizard controller about the update of the validation error status
-        $scope.$emit('updateValidationErrorStatus', $scope.isNotValid);
+        $scope.isValidationError = $scope.isNotValid;
     };
     $scope.getAllSecurityGroups = function (vpc) {
         var csrf_token = $('#csrf_token').val();
@@ -478,13 +688,6 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
                 }
             });
         });
-    };
-    $scope.updateDefaultPingProtocol = function () {
-        if ($scope.pingProtocol === 'HTTP' || $scope.pingProtocol === 'TCP') {
-           $scope.pingPort = 80;
-        } else if ($scope.pingProtocol === 'HTTPS' || $scope.pingProtocol === 'SSL' ) {
-           $scope.pingPort = 443;
-        }
     };
     $scope.getInstanceCount = function (type, group) {
         var count = 0;
@@ -689,7 +892,8 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
         $scope.accessLoggingConfirmed = true;
         $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
     };
-    $scope.createELB = function () {
+    $scope.createELB = function ($event, confirmed) {
+        confirmed = confirmed || false;
         var bucketNameField = $('#bucket_name');
         if (!$scope.isNotValid && !$scope.isValidationError) {
             // bucket name field requires special validation handling since it is conditionally required
@@ -698,7 +902,22 @@ angular.module('BaseELBWizard').controller('ELBWizardCtrl', function ($scope, $h
             } else {
                 bucketNameField.attr('required');
             }
-            $scope.thisForm.submit();
+            $scope.checkSecurityGroupRules($event, confirmed);
+        }
+    };
+    $scope.checkSecurityGroupRules = function ($event, confirmed) {
+        var modal = $('#elb-security-group-rules-warning-modal');
+        var inboundOutboundPortChecksPass;
+        if ($scope.vpcNetwork === 'None') {  // Bypass rules check on non-VPC clouds
+            $scope.elbForm.submit();
+            return;
+        }
+        inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
+        if (!confirmed && !inboundOutboundPortChecksPass) {
+            modal.foundation('reveal', 'open');
+            $event.preventDefault();
+        } else {
+            $scope.elbForm.submit();
         }
     };
 })

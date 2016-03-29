@@ -1,0 +1,240 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack_update.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="StackUpdate" ng-controller="StackUpdateCtrl"
+         ng-init="initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('stacks')}" i18n:translate="">Stacks</a></li>
+                <li><a href="${request.route_path('stack_view', name=stack_name)}">${stack_name}</a></li>
+                <li class="current"><a href="#" i18n:translate="">Update stack</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Update stack</strong>
+        </h3>
+        <div class="large-8 columns">
+            <div class="wizard no-title">
+                <form action="${request.route_path('stack_update', name=stack_name)}" id="stack-update-form"
+                      method="post" data-abide="abide" enctype="multipart/form-data" ng-submit="isCreating=true">
+                    ${structure:create_form['csrf_token']}
+                    <input id="stack-name" name="stack-name" type="hidden" value="${stack_name}"/>
+                    <input id="s3-template-key" name="s3-template-key" type="hidden" value="{{ s3TemplateKey }}"/>
+                    <dl id="update-tabs" class="tabs" data-tab="">
+                        <dd class="active">
+                            <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">
+                                <span class="cir">1</span> <b i18n:translate="">Template</b>
+                            </a>
+                        </dd>
+                        <dd ng-class="{disabled: step1Invalid}">
+                            <a id="tabStep2" ng-click="visitNextStep(2, $event)"
+                               href="#step2" ng-cloak="" ng-if="!step1Invalid">
+                                <span class="cir">2</span> <b i18n:translate="">Parameters</b>
+                            </a>
+                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span> <b ng-cloak="" ng-if="step1Invalid" i18n:translate="">Parameters</b>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <!--! Step 1: Template tab content -->
+                        <div class="content active" id="step1">
+                            <h6 i18n:translate="">Template</h6>
+                            <div class="row">
+                                <div class="small-12 columns value">
+                                    <p class="description" i18n:translate="">
+                                        Your CloudFormation template will be stored in an S3 bucket.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns value">
+                                    <input type="radio" id="inputtype-current" name="inputtype" value="current" ng-model="inputtype"/>
+                                    <label i18n:translate="">Use current template</label>
+                                    <div id="current-template-div" ng-show="inputtype=='current'">
+                                        <a class="circle remove has-tip edit-template" ng-click="editTemplate($event)"
+                                           title="View/edit template" i18n:attributes="title"><i class="fi-pencil"></i></a><span>${template_name}</span>
+                                    </div>
+                                    <br ng-hide="inputtype=='current'"/>
+                                    <div tal:omit-tag="" tal:condition="layout.file_uploads_enabled">
+                                        <input type="radio" id="inputtype-file" name="inputtype" value="file" ng-model="inputtype"/>
+                                        <label>
+                                            <span i18n:translate="">Upload template</span>
+                                            <span tal:condition="getattr(create_form.template_file, 'help_text', None)" class="helptext-icon"
+                                                data-tooltip="" title="${create_form.template_file.help_text}"></span>
+                                        </label>
+                                        <input id="template-file" type="file" data-file="template-files" ng-disabled="isNotStopped" name="template-file" ng-show="inputtype=='file'"/>
+                                        <small id="size-error" class="error" i18n:translate="">You cannot upload templates larger than 460,800 bytes.</small>
+                                        <br/>
+                                        <input type="radio" id="inputtype-url" name="inputtype" value="url" ng-model="inputtype"/>
+                                        <label i18n:translate="">Use template from URL</label>
+                                        <input type="url" id="template-url" name="template-url" ng-model="templateUrl" ng-show="inputtype=='url'"/>
+                                        <small class="error" i18n:translate="">The URL format is invalid. Valid URL formats include http://*, https://*. Please change your URL format.</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <button type="submit" class="button" id="stack-update-btn-step1" ng-disabled="isNotValid" ng-show="!isNotValid &amp;&amp; !loading &amp;&amp; parameters.length === 0">
+                                        <span i18n:translate="">Update Stack</span>
+                                    </button>
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-show="isNotValid || loading || parameters.length > 0" ng-disabled="isNotValid || !parameters">
+                                        <span i18n:translate="">Next</span>
+                                    </a>
+                                    <a class="cancel-link" href="${request.route_path('stacks')}" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 2: Parameters tab content -->
+                        <div class="content" id="step2">
+                            <h6 i18n:translate="">Parameters</h6>
+                            <div class="loading" ng-hide="parameters"><i class="busy" ></i></div>
+                            <div id="params-list" ng-if="currentStepIndex == 2">
+                                <div class="row controls-wrapper" ng-repeat="item in parameters" ng-cloak="true">
+                                    <div class="small-3 columns subheading">
+                                        <label class="right">{{ item.name }}
+                                            <!-- documenting here so it doesn't get lost -->
+                                            <!-- foundation need to be re-initilaized after params populated -->
+                                            <!-- when that happens we hit another bug with foundation tooltip where -->
+                                            <!-- all the tips get the same selector(class). Trying to use data-options -->
+                                            <!-- helps, but that's broken https://github.com/zurb/foundation/issues/6349 -->
+                                            <span data-options="selector: param-tip{{$index}};"
+                                                ng-attr-title="{{item.description}}">
+                                                <i class="helptext-icon"></i>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="small-9 columns field">
+                                        <input type="text" name="{{ item.name }}" id="{{ item.name }}"
+                                            value="{{ paramModels[item.name] }}" ng-if="!item.options"
+                                            min="{{ item.min }}" max="{{ item.max }}" pattern="{{ item.regex }}"
+                                            ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"/>
+                                        <small class="error" ng-hide="">{{ item.constraint }}</small>
+                                        <div ng-if="item.options">
+                                            <select ng-attr-name="{{ item.name }}" ng-attr-id="{{ item.name }}" 
+                                                ng-if="item.chosen"
+                                                chosen="true" search-contains="true" width="100"
+                                                data-placeholder="Select an option"
+                                                i18n:attributes="data-placeholder"
+                                                ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
+                                                ng-options="option as option.label for option in item.options track by option.id">
+                                                <option ng-if="!item.default" value=""></option>
+                                            </select>
+                                            <select ng-attr-name="{{ item.name }}" ng-attr-id="{{ item.name }}" 
+                                                ng-if="!item.chosen"
+                                                ng-model="paramModels[item.name]" ng-change="checkRequiredInput()"
+                                                ng-options="option as option.label for option in item.options track by option.id">
+                                                <option ng-if="!item.default" value="" i18n:translate="">Select an option</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <button type="submit" class="button"
+                                            id="stack-update-btn-step2"
+                                            ng-disabled="isNotValid">
+                                        <span i18n:translate="">Update Stack</span>
+                                    </button>
+                                    <a href="${request.route_path('stacks')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                            <div class="row" ng-show="isCreating">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns">
+                                    <span i18n:translate="">Updating stack</span>&nbsp;<i class="busy"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </form>
+                <div class="">
+                    <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                    <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                        <!-- HELP CONTENT -->
+                        <div id="help-html-console_create_stack_general" ng-show="currentStepIndex == 1"
+                            ng-include="'${layout.help_path('console_create_stack_general.html')}'">
+                        </div> 
+                        <div id="help-html-console_create_stack_parameters" ng-show="currentStepIndex == 2"
+                            ng-include="'${layout.help_path('console_create_stack_parameters.html')}'">
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="large-4 columns" ng-cloak="">
+            <div class="help-padding">&nbsp;</div>
+            <div class="summary" ng-cloak="">
+                <h5 i18n:translate="" class="title">Summary</h5>
+                <span ng-show="loading"><i class="busy"></i>
+                    <span i18n:translate="">Reading template</span>
+                </span>
+                <div class="section step1" ng-show="templateBucket || templateIdent">
+                    <div class="row" ng-show="templateBucket">
+                        <label i18n:translate="">Template bucket</label>
+                        <div class="columns value">{{ templateBucket }}</div>
+                    </div>
+                    <div class="row" ng-show="templateIdent">
+                        <label i18n:translate="">Template</label>
+                        <div class="columns value">{{ templateIdent }}</div>
+                    </div>
+                </div>
+                <div class="section step2 hide">
+                    <div class="row" ng-repeat="param in parameters">
+                        <label>{{ param.name }}</label>
+                        <div class='columns value'>{{ paramValue(param.name) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="edit-template-modal" class="reveal-modal large" data-reveal="">
+            <h3><span i18n:translate="">View/Edit Template</span> ${stack_name}</h3>
+            <form ng-submit="saveTemplate($event)">
+                <textarea id="template-area" class="template-area" ng-model="stackTemplate"></textarea>
+                <small id="json-error" class="error" style="display:none;"></small>
+                <div>&nbsp;</div>
+                <button ng-if="!savingTemplate" class="button save-template-btn" ng-disabled="stackTemplate==''" type="submit" i18n:translate="">
+                    Save Template
+                </button>
+                <div ng-if="savingTemplate"><i class="busy" ></i>&nbsp;<span i18n:translate="">Validating template...</span></div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <aws-template-dialogs
+            template="${request.route_path('render_template', subpath='stacks/stack_aws_dialogs')}"
+            service-list="serviceList"
+            resource-list="resourceList"
+            property-list="propertyList"
+            parameter-list="parameterList"
+            parameters="parameters"
+            param-models="paramModels"
+            loading="loading"
+            check-required-input="checkRequiredInput">
+        </aws-template-dialogs>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/stack_aws_dialogs.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/stack_update.js')}"></script>
+</div>
+
+</metal:block>
+

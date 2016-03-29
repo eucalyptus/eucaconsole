@@ -5,7 +5,7 @@
  */
 
 angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
-    .controller('ELBInstancesPageCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges) {
+    .controller('ELBInstancesPageCtrl', function ($scope, $rootScope, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges) {
         $scope.availabilityZones = [];
         $scope.selectedZoneList = [];
         $scope.unselectedZoneList = [];
@@ -297,6 +297,9 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
                     $scope.unselectedVPCSubnetList.push(subnet);
                 }
             });
+        };
+        $scope.refreshInstances = function () {
+            $rootScope.$broadcast('refreshELBInstances');
         };
     })
 ;

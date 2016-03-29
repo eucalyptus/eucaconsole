@@ -1,0 +1,38 @@
+<!--! ELB Security Group rules warning dialog -->
+<div i18n:domain="eucaconsole">
+    <div id="elb-security-group-rules-warning-modal" class="reveal-modal medium" data-reveal="">
+        <h3 i18n:translate="">WARNING: Additional security group rules needed</h3>
+        <p i18n:translate="">
+            Your load balancer will be inaccessible until you open all traffic to the ports you
+            specified in your listeners and health check.
+        </p>
+        <p i18n:translate="">
+            Please update your selected security group(s) after your load balancer is created to
+            add rules that open all traffic to the following ports.
+        </p>
+        <div class="row" ng-repeat="sgroup in selectedSecurityGroups track by $index">
+            <div class="large-4 small-4 columns">
+                <div i18n:translate="">SECURITY GROUP</div>
+                {{ sgroup.name }}
+            </div>
+            <div class="large-4 small-4 columns">
+                <div i18n:translate="">INBOUND PORTS</div>
+                <span ng-repeat="port in loadBalancerInboundPorts">{{ port }}<span ng-if="!$last">, </span></span>
+            </div>
+            <div class="large-4 small-4 columns">
+                <div i18n:translate="">OUTBOUND PORTS</div>
+                <span ng-repeat="port in loadBalancerOutboundPorts">{{ port }}<span ng-if="!$last">, </span></span>
+            </div>
+            <div class="row"><div class="columns">&nbsp;</div></div>
+        </div>
+        <div>&nbsp;</div>
+        <button class="expand" i18n:translate="" tal:condition="create" ng-click="createELB($event, true)">
+            I Understand, Create Load Balancer
+        </button>
+        <button class="expand" i18n:translate="" tal:condition="not: create" ng-click="updateELB($event, true)">
+            I Understand, Update Load Balancer
+        </button>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/elb_security_group_warning_dialog.js')}"></script>
+</div>

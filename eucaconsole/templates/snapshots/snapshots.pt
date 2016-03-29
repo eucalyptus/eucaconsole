@@ -20,6 +20,41 @@
             <div metal:fill-slot="new_button">
                 <a href="${request.route_path('snapshot_view', id='new')}" id="create-snapshot-btn"
                    class="button" i18n:translate="">Create New Snapshot</a>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-details"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}">
+                                View details
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-createvolume"
+                               ng-href="${request.route_path('volume_view', id='new')}?from_snapshot={{(items | filter: {selected: true})[0].id}}">
+                                Create volume from snapshot
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-register"
+                               ng-click="revealModal('register', (items | filter: {selected: true})[0])">
+                                Register as image
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-delete"
+                               ng-click="revealMultiSelectModal('delete', (items | filter:{selected: true}))">
+                                Delete
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
+            </div>
+            <div metal:fill-slot="tile_header">
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <a ng-href="${prefix}/{{ item.id }}" class="has-checkbox">
+                    {{ item.name }}
+                </a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
@@ -81,16 +116,18 @@
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Snapshot</th>
-                <th i18n:translate="">Status</th>
-                <th i18n:translate="">Size</th>
-                <th i18n:translate="">Volume</th>
-                <th i18n:translate="">Description</th>
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">Snapshot</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="status">Status</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="volume_size">Size</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="sortable_volume">Volume</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="description">Description</th>
                 <th i18n:translate="">Tags</th>
-                <th i18n:translate="">Time Started</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="start_time">Time Started</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td class="id breakword">
                     <a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a>
                 </td>
@@ -153,7 +190,9 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/snapshots.js')}"></script>
 </div>
 

@@ -41,10 +41,16 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm', 'EucaConsoleUtils'])
             $scope.$watch('policyName', function () {
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('adjustmentAmount', function () {
+            $scope.$watch('adjustmentAmount', function (newVal) {
+                if(newVal) {
+                    $scope.adjustmentAmount = eucaNumbersOnly(newVal);
+                    $scope.isNotValid = false;
+                } else {
+                    $scope.isNotValid = true;
+                }
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('coolDown', function (newVal, oldVal) {
+            $scope.$watch('coolDown', function (newVal) {
                 if(newVal) {
                     $scope.coolDown = eucaNumbersOnly(newVal);
                     $scope.isNotValid = false;
@@ -55,6 +61,16 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm', 'EucaConsoleUtils'])
             });
             $scope.$watch('alarm', function () {
                 $scope.checkRequiredInput();
+            });
+
+            $scope.$on('alarm_created', function ($event, promise) {
+                promise.then(function success (result) {
+                    // Add new alarm to choices and set it as selected
+                    var newAlarm = result.data && result.data.new_alarm;
+                    $rootScope.alarmChoices[newAlarm] = newAlarm;
+                    $rootScope.alarm = newAlarm;
+                    $scope.isCreatingAlarm = false;
+                });
             });
         };
         $scope.setFocus = function () {

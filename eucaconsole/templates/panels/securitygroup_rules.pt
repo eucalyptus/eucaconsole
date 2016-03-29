@@ -8,14 +8,12 @@
         <h6 i18n:translate="">Rules</h6>
     </div>
     <div class="columns">
-        <ul class="btn-group" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'" ng-cloak="">
-            <li>
-                <a id="inbound-rules-tab" ng-class="inboundButtonClass"
-                   ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a>
-                <a id="outbound-rules-tab" ng-class="outboundButtonClass"
-                   ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a>
-            </li>
-        </ul>
+        <dl class="tabs" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'" ng-cloak="">
+            <dd ng-class="inboundButtonClass"><a id="inbound-rules-tab"
+               ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a></dd>
+            <dd ng-class="outboundButtonClass"><a id="outbound-rules-tab"
+               ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a></dd>
+        </dl>
         <div class="tabs-content">
             <div class="columns field" ng-cloak="">
                 <div class="item-list">
@@ -138,7 +136,7 @@
                                 <select id="groupname-select" name="groupname" class="groupname" ng-model="groupName"
                                     ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'" data-placeholder="select...">
                                     <option ng-repeat="securityGroup in securityGroupList" 
-                                         value="{{ securityGroup.name }}">{{ securityGroup.name }} ({{ securityGroup.id }})</option>
+                                         value="{{ securityGroup.id ? '' : securityGroup.owner_id + '/' }}{{ securityGroup.name }}">{{ securityGroup.id ? '' : securityGroup.owner_id + '/' }}{{ securityGroup.name }}{{ securityGroup.id ? ' (' + securityGroup.id + ')' : '' }}</option>
                                 </select>
                                 <div><small class="error" i18n:translate="">Security group is required</small></div>
                                 <div><small class="error-msg" ng-show="hasDuplicatedRule" i18n:translate="">Rule already exists</small></div>

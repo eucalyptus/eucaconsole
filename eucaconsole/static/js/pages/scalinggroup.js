@@ -5,7 +5,44 @@
  */
 
 // Scaling Group page includes the AutoScale tag editor, so pull in that module as well.
-angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
+angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
+    .directive('chosen', function () {
+        return {
+            scope: {
+                model: '=ngModel'
+            },
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                var chosenAttrs = JSON.parse(attrs.chosen || '{}');
+                for(var key in attrs) {
+                    if(/^chosen-.*/.test(key)) {
+                        chosenAttrs[key] = attrs[key];
+                    }
+                }
+                element.chosen(chosenAttrs);
+
+                element.on('change', function () {
+                    scope.validateField(this);
+                });
+            },
+            controller: ['$scope', '$element', function ($scope, $element) {
+                $scope.validateField = function (element) {
+                    var isValid = element[0].selectedIndex > -1,
+                        form = this.form && this.form.name,
+                        field = this.name;
+
+                    if(form && field) {
+                        $scope[form][field].$setValidity('required', isValid);
+                    }
+                };
+
+                $scope.$watch('model', function () {
+                    $scope.validateField($element);
+                });
+            }]
+        };
+    })
     .controller('ScalingGroupPageCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaNumbersOnly) {
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
@@ -18,6 +55,11 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
         $scope.pendingModalID = '';
+
+        $scope.isInvalid = function () {
+            return $scope.scalingGroupDetailForm.$invalid;
+        };
+
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
             // Remove the option if it has no vpc subnet ID associated
@@ -29,8 +71,6 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
                 } 
             }
             $('#vpc_subnet').chosen({'width': '80%', search_contains: true});
-            $('#availability_zones').chosen({'width': '80%', search_contains: true});
-            $('#termination_policies').chosen({'width': '70%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.minSize = parseInt($('#min_size').val(), 10);
@@ -47,7 +87,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             // scalingGroupName, policiesCount
             $scope.scalingGroupName = options.scaling_group_name;
             $scope.policiesCount = options.policies_count;
+            $scope.terminationPoliciesUpdate = options.termination_policies;
             $scope.terminationPoliciesOrder = options.termination_policies;
+            $scope.availabilityZones = options.availability_zones;
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.setWatch();
@@ -137,9 +179,6 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor', 'EucaConsoleUtils'])
             // Stay button is clicked on the warning unsaved changes modal
             $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
                 $scope.openModalById($scope.pendingModalID);
-            });
-            $scope.$on('tagUpdate', function($event) {
-                $scope.isNotChanged = false;
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                

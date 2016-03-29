@@ -1,0 +1,122 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="ResourceMonitoring">
+    <div class="row" id="contentwrap" ng-app="CloudWatchCharts" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
+         ng-init="chartsCtrl.initController('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
+                <li class="current"><a href="#">${volume_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!--! Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for volume:</strong>
+            <em>${volume_name}</em>
+        </h3>
+        <div class="large-12 columns">
+            <dl class="tabs" id="volume-subnav">
+                <dd><a href="${request.route_path('volume_view', id=volume.id)}" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_path('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
+                <dd class="active"><a i18n:translate="">Monitoring</a></dd>
+            </dl>
+            <div class="panel no-title cloudwatch-charts">
+                <alarm-state-view
+                    template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
+                    resource-id="${volume.id}" resource-name="${volume_name}"
+                    resource-type="VolumeId" resource-type-name="volume" i18n:attributes="resource-type-name">
+                </alarm-state-view>
+                <hr/>
+                <h6 i18n:translate="">CloudWatch metric</h6>
+                <div class="toprow">
+                    <div class="blurb">
+                        <div class="duration-wrapper" tal:condition="monitoring_enabled">
+                            <label for="monitoring-duration" class="left" i18n:translate="">Show data for</label>
+                            <select name="monitoring_duration" id="monitoring-duration" ng-model="chartsCtrl.duration"
+                                    ng-change="chartsCtrl.refreshCharts()" class="duration-input">
+                                <option tal:repeat="duration duration_choices" value="${duration[0]}">
+                                    ${duration[1]}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
+                              ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
+                    </div>
+                </div>
+                <div tal:condition="not monitoring_enabled" id="monitoring-disabled-notice">
+                    <p>
+                        <span i18n:translate="">
+                            Metrics are collected only for volumes that are attached to a running instance with
+                        </span>
+                        <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">monitoring enabled.</span>
+                        <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">detailed monitoring enabled.</span>
+                    </p>
+                    <p tal:condition="not is_attached" id="volume-unattached-notice">
+                        <a href="${request.route_path('volume_view', id=volume.id)}?attachmodal=1" i18n:translate="">
+                            Attach this volume to an instance
+                        </a>
+                        <span i18n:translate="">to collect and view metrics for the volume.</span>
+                    </p>
+                    <p tal:condition="is_attached">
+                        <button ng-click="chartsCtrl.submitMonitoringForm()">
+                            <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">Enable Monitoring</span>
+                            <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">Enable Detailed Monitoring</span>
+                            <span i18n:translate="">for Instance</span> ${attached_instance_id}
+                        </button>
+                    </p>
+                </div>
+                <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled"
+                    id="charts-container">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
+                        <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
+                        <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
+                            <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
+                        </div>
+                        <svg ng-show="!chartsCtrl.emptyMessages[chart.metric]"
+                             cloudwatch-chart="" id="cwchart-{{ chart.metric }}-{{ chart.statistic }}" class="cwchart"
+                             ids="${volume.id}" idtype="VolumeId" metric="{{ chart.metric }}" title="{{ chart.title }}"
+                             duration="{{ chartsCtrl.duration }}" unit="{{ chart.unit }}" namespace="AWS/EBS"
+                             statistic="{{ chart.statistic }}" empty="{{ chart.empty_msg }}">
+                        </svg>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! HELP CONTENT HERE -->
+            </div>
+        </div>
+        <form method="post" id="monitoring-form" tal:condition="is_attached"
+              action="${request.route_path('volume_monitoring_update', id=volume.id)}">
+            ${structure:monitoring_form['csrf_token']}
+        </form>
+        <!--! Modal dialog for large chart -->
+        ${panel('cloudwatch_chart_dialog', duration_choices=duration_choices, statistic_choices=statistic_choices)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/resource_monitoring.js')}"></script>
+</div>
+
+</metal:block>

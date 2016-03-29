@@ -88,19 +88,14 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
             $scope.detachFormAction = action;
             modal.foundation('reveal', 'open');
         };
-        $scope.detachModal = function (volume, device_name, url, action) {
+        $scope.detachModal = function (volume, isRootVolume, action) {
             $scope.detachVolumeName = volume;
             $scope.detachFormAction = action;
-            $http.get(url).success(function(oData) {
-                var results = oData ? oData.results : '';
-                if (results) {
-                    if (results.root_device_name == device_name) {
-                        $('#detach-volume-warn-modal').foundation('reveal', 'open');
-                    } else {
-                        $('#detach-volume-modal').foundation('reveal', 'open');
-                    }
-                }
-            });
+            if (isRootVolume) {
+                $('#detach-volume-warn-modal').foundation('reveal', 'open');
+            } else {
+                $('#detach-volume-modal').foundation('reveal', 'open');
+            }
         };
     })
 ;

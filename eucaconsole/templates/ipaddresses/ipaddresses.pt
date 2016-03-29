@@ -17,13 +17,32 @@
         <h3 id="pagetitle"><strong i18n:translate="">Elastic IPs</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" id="allocate-ipaddresses-btn"
-                   data-reveal-id="allocate-ip-modal" i18n:translate="">
+                <a class="button" id="allocate-ipaddresses-btn" data-reveal-id="allocate-ip-modal" i18n:translate="">
                     Allocate Elastic IP Addresses
                 </a>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li>
+                            <a i18n:translate="" ng-click="revealReleaseIPsModal((items | filter:{ selected: true }))"
+                               class="more-actions-release">
+                                Release to cloud
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true} | attachedOnly).length &lt; 1}">
+                            <a i18n:translate="" ng-click="revealDisassociateIPsModal((items | filter:{ selected: true }))"
+                               class="more-actions-disassociate">
+                                Disassociate from instance
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a>
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <a ng-href="${prefix}/{{ item.public_ip }}" class="has-checkbox">
+                    {{ item.public_ip }}
+                </a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -45,7 +64,8 @@
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.public_ip |  escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                <a id="tile-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_{{ item.public_ip |  escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.instance_id">
                         <a i18n:translate=""
@@ -62,12 +82,14 @@
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
                 <th i18n:translate="">Assigned to instance</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td tal:condition="is_vpc_supported">
                     <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>
@@ -79,7 +101,8 @@
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
                 <td>
                     <span class="actions">
-                        <a id="table-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                        <a id="table-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.instance_id">
                                 <a i18n:translate=""
@@ -89,7 +112,7 @@
                                 <a i18n:translate=""
                                    ng-click="revealModal('associate', item)">Associate with instance</a>
                             </li>
-                            <li ng-show="!item.instance_id"><a i18n:translate=""
+                            <li ng-show="!item.instance_id"><a i18n:translate="" class="action-release"
                                    ng-click="revealModal('release', item)">Release to cloud</a>
                             </li>
                         </ul>
@@ -158,6 +181,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/ipaddresses.js')}"></script>
 </div>

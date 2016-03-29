@@ -90,6 +90,7 @@ class LoginView(BaseView, PermissionCheckMixin):
 
     def __init__(self, request):
         super(LoginView, self).__init__(request)
+        self.title_parts = [_(u'Login')]
         self.euca_login_form = EucaLoginForm(self.request, formdata=self.request.params or None)
         self.aws_login_form = AWSLoginForm(self.request, formdata=self.request.params or None)
         self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))
@@ -158,6 +159,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             account = self.request.params.get('account')
             username = self.request.params.get('username')
             password = self.request.params.get('password')
+            euca_region = self.request.params.get('euca-region')
             try:
                 # TODO: also return dns enablement
                 creds = auth.authenticate(
@@ -165,6 +167,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
                 logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
                     acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
+                default_region = self.request.registry.settings.get('default.region', 'euca')
                 user_account = u'{user}@{account}'.format(user=username, account=account)
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
@@ -173,7 +176,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['session_token'] = creds.session_token
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key
-                session['region'] = 'euca'
+                session['region'] = euca_region if euca_region != '' else default_region
                 session['username_label'] = user_account
                 session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
@@ -184,15 +187,17 @@ class LoginView(BaseView, PermissionCheckMixin):
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
-                logging.info("http error "+str(vars(err)))
+                logging.info("http error " + str(vars(err)))
                 if err.code == 403:  # password expired
                     changepwd_url = self.request.route_path('managecredentials')
-                    return HTTPFound(changepwd_url+("?came_from=&expired=true&account=%s&username=%s" % (account, username)))
+                    return HTTPFound(
+                        changepwd_url + ("?came_from=&expired=true&account=%s&username=%s" % (account, username))
+                    )
                 elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)
             except URLError, err:
-                logging.info("url error "+str(vars(err)))
+                logging.info("url error " + str(vars(err)))
                 # if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
                 if err.reason.find('ssl') > -1:
@@ -228,9 +233,13 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['username_label'] = u'{user}...@AWS'.format(user=creds.access_key[:8])
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
-                # Save EC2 Connection object in cache
-                ConnectionManager.aws_connection(
-                    default_region, creds.access_key, creds.secret_key, creds.session_token, 'ec2')
+                conn = ConnectionManager.aws_connection(
+                    session['region'], creds.access_key, creds.secret_key, creds.session_token, 'vpc')
+                vpcs = conn.get_all_vpcs()
+                if not vpcs or len(vpcs) == 0:
+                    # remove vpc from supported-platforms
+                    if 'VPC' in session.get('supported_platforms', []):
+                        session.get('supported_platforms').remove('VPC')
                 headers = remember(self.request, creds.access_key[:8])
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:

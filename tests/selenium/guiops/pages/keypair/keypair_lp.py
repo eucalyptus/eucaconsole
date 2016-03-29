@@ -1,18 +1,22 @@
+import time
+
 from pages.landingpage import LandingPage
+
 
 class KeypairLanding(LandingPage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_keypair_view_page_loaded()
 
     _keypair_view_page_title = "Key Pairs"
     _create_keypair_btn_id = "create-keypair-btn"
-    _split_button_css =".euca-split"
+    _split_button_css = ".euca-split"
     _import_keypair_btn_id = "import-keypair-btn"
-    _keypair_link_css = 'td>a[href="/keypairs/{0}"]'
+    _keypair_link_css = 'td > a[href="/keypairs/{0}"]'
     _keypair_actions_menu_id = "table-item-dropdown_{0}"
-    _delete_keypair_actions_menuitem_css ="#item-dropdown_{0}>li>a"
+    _delete_keypair_actions_menuitem_css = "#item-dropdown_{0} > li > a"
 
     def verify_keypair_view_page_loaded(self):
         """
@@ -26,6 +30,7 @@ class KeypairLanding(LandingPage):
         self.tester.click_element_by_id(self._create_keypair_btn_id)
 
     def click_import_keypair_button(self):
+        time.sleep(1)
         self.tester.click_element_by_css(self._split_button_css)
         self.tester.click_element_by_id(self._import_keypair_btn_id)
 

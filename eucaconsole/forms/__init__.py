@@ -70,6 +70,7 @@ class NgNonBindableOptionSelect(Select):
 class BaseSecureForm(SecureForm):
     def __init__(self, request, **kwargs):
         self.request = request
+        self.region = request.session.get('region')
         super(BaseSecureForm, self).__init__(**kwargs)
         if hasattr(request, 'session'):
             self.cloud_type = request.session.get('cloud_type', 'euca')
@@ -137,6 +138,9 @@ class ChoicesManager(object):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
+            for zone in zones:
+                del zone.connection
+                del zone.region
             return zones
         try:
             return _get_zones_cache_(self, region)
@@ -183,6 +187,9 @@ class ChoicesManager(object):
                 types = []
                 if self.conn is not None:
                     types = self.conn.get_all_instance_types()
+                for inst_type in types:
+                    del inst_type.connection
+                    del inst_type.region
                 return types
             try:
                 types.extend(_get_instance_types_cache_(self))
@@ -438,7 +445,7 @@ class ChoicesManager(object):
 
     # VPC connection type choices
 
-    def vpc_networks(self, vpc_networks=None, add_blank=True,  escapebraces=True):
+    def vpc_networks(self, vpc_networks=None, add_blank=True, escapebraces=True):
         from ..views import TaggedItemView
         choices = []
         if add_blank:
@@ -499,7 +506,7 @@ class CFSampleTemplateManager(object):
                     name = file_item[:file_item.find('.')]
                 euca_templates.append((name, file_item))
             if len(euca_templates) > 0:
-                templates.append((dir_name, dir_name[dir_name.rindex('/')+1:], euca_templates))
+                templates.append((dir_name, dir_name[dir_name.rindex('/') + 1:], euca_templates))
         if self.s3_bucket is not None:
             admin_templates = []
             bucket_items = self.s3_bucket.list()

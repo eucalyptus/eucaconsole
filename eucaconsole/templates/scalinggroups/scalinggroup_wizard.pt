@@ -73,6 +73,10 @@
                             </div>
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}
+                            <tag-editor
+                                ng-model="tags"
+                                template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}">
+                            </tag-editor>
                             <hr />
                             <div>
                                 <label>
@@ -124,7 +128,12 @@
                     <metal:block metal:use-macro="layout.global_macros['help_expando']" />
                     <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                         <!-- HELP CONTENT -->
-                        <div id="help-html-console_create_scaling_group" ng-include="'${layout.help_path('console_create_scaling_group.html')}'"></div> 
+                        <div id="help-html-console_create_scaling_group_general" ng-show="currentStepIndex == 1"
+                            ng-include="'${layout.help_path('console_create_scaling_group_general.html')}'">
+                        </div>
+                        <div id="help-html-console_create_scaling_group_membership" ng-show="currentStepIndex == 2"
+                            ng-include="'${layout.help_path('console_create_scaling_group_membership.html')}'">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,6 +205,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_wizard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
 </div>
 
 </metal:block>

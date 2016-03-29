@@ -1,0 +1,157 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupHistory" ng-controller="ScalingGroupHistoryCtrl"
+         ng-init="initPage('${request.route_path('scalinggroup_history_json', id=scaling_group.name)}',
+            '${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}', '${initial_sort_key}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
+                <li class="current"><a>${scaling_group_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for scaling group:</strong>
+            <em>${scaling_group_name}</em>
+        </h3>
+        <div class="large-12 columns">
+            <dl class="tabs" id="scalinggroup-subnav">
+                <dd><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
+                <dd class="active"><a href="#" i18n:translate="">Scaling history</a></dd>
+                <dd><a href="${request.route_path('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Scaling policies</a></dd>
+                <dd><a href="${request.route_path('scalinggroup_instances', id=scaling_group.name)}">Instances</a></dd>
+                <dd><a href="${request.route_path('scalinggroup_monitoring', id=scaling_group.name)}">Monitoring</a></dd>
+            </dl>
+            <div class="panel gridwrapper no-title">
+                <div class="content">
+                    <div class="flex-space">
+                        <div class="flex-column-1">
+                        </div>
+                        <div id="sorting-controls" class="flex-column-0">
+                            <strong i18n:translate="">Sort by</strong>
+                            <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
+                                <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
+                                <span class="down-caret"></span>
+                            </a>
+                            <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="" tal:condition="len(sort_keys) > 1">
+                                <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
+                                    <a ng-click="sortBy = '${sort.key}'">${sort.name}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="refresh-history" class="flex-column-0">
+                            <a id="refresh-btn" ng-show="!historyLoading" ng-cloak="" ng-click="historyLoading=true; getScalinggroupHistory()">
+                                <i class="fa fa-refresh fa-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                            strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                            facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
+                    </div>
+                    <div class="datagrid" id="datagrid-items">
+                        <div class="loading" ng-show="historyLoading"><span class="busy"></span></div>
+                        <div id="tableview" class="gridwrapper" ng-show="!historyLoading">
+                            <!-- Begin table view -->
+                            <table id="history-table" class="table" ng-show="!historyLoading" ng-cloak="true">
+                                <thead class="header"><tr>
+                                    <th></th>
+                                    <th i18n:translate="">STATUS</th>
+                                    <th i18n:translate="">DESCRIPTION</th>
+                                    <th i18n:translate="">START TIME</th>
+                                    <th i18n:translate="">END TIME</th>
+                                </tr></thead>
+                                <tbody expando="" ng-repeat="item in history | orderBy: sortBy:sortReverse"
+                                    url="${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}"
+                                    item_id="{{item.activity_id}}">
+                                    <tr ng-class="{'history-tr-even': $odd}" ng-cloak="true"> 
+                                        <td>
+                                            <a ng-click="toggle()"><i ng-class="{'table-expando-closed': !expando.data, 'table-expando-open': expando.data || expando.loading }"></i></a>
+                                        </td>
+                                        <td>
+                                            <span class="label radius status {{ item.status }}">
+                                                {{ item.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {{ item.description }}
+                                        </td>
+                                        <td>{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
+                                        <td>{{ item.end_time | date:'${layout.angular_date_format}' }}</td>
+                                    </tr>
+                                    <tr ng-class="{'history-tr-even': $odd}"> 
+                                        <td ng-show="!expando.data &amp;&amp; expando.loading == true" colspan="5"><i class="busy"></i></td>
+                                        <td ng-show="expando.data" colspan="5">
+                                            <div class="row inline stacked controls-wrapper">
+                                                <div class="columns">
+                                                    <label class="left" i18n:translate="">Status reason</label>
+                                                </div>
+                                                <div class="small-12 columns field">
+                                                    {{ expando.data.description?expando.data.description:item.status }}
+                                                </div>
+                                            </div>
+                                            <div class="row inline stacked controls-wrapper">
+                                                <div class="columns">
+                                                    <label class="left" i18n:translate="">Cause</label>
+                                                </div>
+                                                <div class="small-12 columns field">
+                                                    <div ng-repeat="cause in expando.data.cause">
+                                                        At {{ cause.date | date:'${layout.angular_date_format}' }} {{ cause.msg }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                 <!--! Help goes here -->
+                <div id="help-html-console_scaling_group_detail_policies"
+                    ng-include="'${layout.help_path('console_scaling_group_detail_policies.html')}'">
+                </div> 
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="delete-policy-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete scaling group policy</h3>
+            <p>
+                <span i18n:translate="">Are you sure you want to delete the policy</span>
+                <b>{{ policyName }}</b>?
+            </p>
+            <form action="${request.route_path('scalinggroup_policy_delete', id=scaling_group.name)}" method="post">
+                ${structure:delete_form['csrf_token']}
+                <input type="hidden" name="name" value="{{ policyName }}" />
+                <button type="submit" class="button expand" i18n:translate="" id="delete-policy-dialog-btn">
+                    Yes, Delete Policy
+                </button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! /end modal dialogs -->
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.stickytableheaders.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_history.js')}"></script>
+</div>
+
+</metal:block>
+

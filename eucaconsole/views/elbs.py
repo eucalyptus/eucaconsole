@@ -30,9 +30,11 @@ Pyramid views for Eucalyptus and AWS elbs
 """
 import itertools
 import logging
+import re
 import simplejson as json
 import time
 
+from itertools import chain
 from urllib import quote
 
 import boto.utils
@@ -50,7 +52,7 @@ from ..constants.cloudwatch import (
     METRIC_TITLE_MAPPING,
     STATISTIC_CHOICES)
 from ..constants.elbs import (
-    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX, ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX,
+    ELB_MONITORING_CHARTS_LIST, ELB_BACKEND_CERTIFICATE_NAME_PREFIX,
     ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,
     AWS_ELB_ACCOUNT_IDS)
 from ..forms import ChoicesManager
@@ -61,6 +63,7 @@ from ..forms.elbs import (
 )
 from ..i18n import _
 from ..models import Notification
+from ..models.alarms import Alarm
 from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from ..views.cloudwatchapi import CloudWatchAPIMixin
 from . import boto_error_handler
@@ -69,19 +72,21 @@ from . import boto_error_handler
 class ELBsView(LandingPageView):
     def __init__(self, request):
         super(ELBsView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Load Balancers')]
         self.ec2_conn = self.get_connection(conn_type="ec2")
         self.elb_conn = self.get_connection(conn_type="elb")
         self.vpc_conn = self.get_connection(conn_type="vpc")
+        self.location = self.get_redirect_location('elbs')
         self.initial_sort_key = 'name'
         self.prefix = '/elbs'
         self.filter_keys = ['name']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('elbs_json')
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
-        self.filters_form = ELBsFiltersForm(
-            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, vpc_conn=self.vpc_conn,
-            is_vpc_supported=self.is_vpc_supported(self.request), formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.filters_form = ELBsFiltersForm(
+                self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, vpc_conn=self.vpc_conn,
+                is_vpc_supported=self.is_vpc_supported(self.request), formdata=self.request.params or None)
         self.render_dict = dict(
             filter_keys=self.filter_keys,
             search_facets=BaseView.escape_json(json.dumps(self.filters_form.facets)),
@@ -153,17 +158,27 @@ class ELBsJsonView(LandingPageView, CloudWatchAPIMixin):
     def elbs_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        # Get alarms for ELBs and build a list of resource ids to optimize alarm status fetch
+        alarms = [alarm for alarm in self.cw_conn.describe_alarms() if 'LoadBalancerName' in alarm.dimensions]
+        alarm_resource_ids = set(list(
+            chain.from_iterable([chain.from_iterable(alarm.dimensions.values()) for alarm in alarms])
+        ))
         with boto_error_handler(self.request):
             elbs_array = []
             for elb in self.items:
+                alarm_status = ''
+                if elb.name in alarm_resource_ids:
+                    alarm_status = Alarm.get_resource_alarm_status(elb.name, alarms)
                 name = elb.name
                 health_counts = self.get_elb_health_counts(elb)
                 elbs_array.append(dict(
                     dns_name=elb.dns_name,
                     name=name,
+                    availability_zones=', '.join(sorted(elb.availability_zones)),
                     healthy_hosts=health_counts.get('healthy'),
                     unhealthy_hosts=health_counts.get('unhealthy'),
                     latency=self.get_average_latency(elb),
+                    alarm_status=alarm_status,
                 ))
             return dict(results=elbs_array)
 
@@ -238,7 +253,7 @@ class BaseELBView(TaggedItemView):
 
     def __init__(self, request, elb_conn=None, s3_conn=None, **kwargs):
         super(BaseELBView, self).__init__(request, **kwargs)
-        self.request = request
+        self.title_parts = [_(u'Load Balancer'), request.matchdict.get('id') or _(u'Create')]
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
         self.elb_conn = elb_conn or self.get_connection(conn_type='elb')
@@ -290,7 +305,9 @@ class BaseELBView(TaggedItemView):
         passes_until_healthy = self.request.params.get('passes_until_healthy')
         ping_target = u"{0}:{1}".format(ping_protocol, ping_port)
         if ping_protocol in ['HTTP', 'HTTPS']:
-            ping_target = u"{0}/{1}".format(ping_target, ping_path)
+            if not ping_path.startswith('/'):
+                ping_path = '/{0}'.format(ping_path)
+            ping_target = u"{0}{1}".format(ping_target, ping_path)
         health_check = HealthCheck(
             timeout=response_timeout,
             interval=time_between_pings,
@@ -304,7 +321,7 @@ class BaseELBView(TaggedItemView):
         req_params = self.request.params
         params_logging_enabled = req_params.get('logging_enabled') == 'y'
         params_bucket_name = req_params.get('bucket_name')
-        params_bucket_prefix = req_params.get('bucket_prefix')
+        params_bucket_prefix = req_params.get('bucket_prefix', '')
         params_collection_interval = int(req_params.get('collection_interval', 60))
         if elb is not None:
             existing_access_log = self.elb_conn.get_lb_attribute(elb.name, 'accessLog')
@@ -318,7 +335,7 @@ class BaseELBView(TaggedItemView):
                 return None  # Skip if nothing has changed in the ELB's access log config
         # Set Access Logs
         elb_name = elb.name if elb is not None else elb_name
-        bucket_prefix = params_bucket_prefix or self.generate_bucket_prefix_name(elb_name)
+        bucket_prefix = params_bucket_prefix
         if params_logging_enabled:
             self.configure_logging_bucket(bucket_name=params_bucket_name, bucket_prefix=bucket_prefix)
         new_access_log_config = AccessLogAttribute()
@@ -329,7 +346,7 @@ class BaseELBView(TaggedItemView):
         self.elb_conn.modify_lb_attribute(elb_name, 'accessLog', new_access_log_config)
 
     def configure_logging_bucket(self, bucket_name=None, bucket_prefix=None):
-        if bucket_name and bucket_prefix and self.s3_conn:
+        if bucket_name and bucket_prefix is not None and self.s3_conn:
             existing_bucket_names = [bucket.name for bucket in self.s3_conn.get_all_buckets()]
             if bucket_name in existing_bucket_names:
                 bucket = self.s3_conn.lookup(bucket_name, validate=False)
@@ -368,10 +385,6 @@ class BaseELBView(TaggedItemView):
         sharing_policy.acl = sharing_acl
         sharing_policy.owner = bucket.get_acl().owner
         bucket.set_acl(sharing_policy)
-
-    @staticmethod
-    def generate_bucket_prefix_name(elb_name):
-        return '{0}-{1}'.format(ELB_ACCESS_LOGS_BUCKET_PREFIX_NAME_PREFIX, elb_name)
 
     def handle_backend_certificate_create(self, elb_name):
         if self.cloud_type == 'aws':
@@ -465,6 +478,13 @@ class BaseELBView(TaggedItemView):
         return self.get_latest_predefined_policy()
 
     @staticmethod
+    def get_health_check_port(elb=None):
+        if elb and elb.health_check.target is not None:
+            match = re.search('^(\w+):(\d+)/?(.+)?', elb.health_check.target)
+            ping_port = match.group(2)
+            return ping_port
+
+    @staticmethod
     def get_instance_selector_text():
         instance_selector_text = {'name': _(u'NAME (ID)'), 'tags': _(u'TAGS'),
                                   'zone': _(u'AVAILABILITY ZONE'), 'subnet': _(u'VPC SUBNET'),
@@ -541,8 +561,8 @@ class BaseELBView(TaggedItemView):
         return availability_zones
 
     def add_elb_tags(self, elb_name):
-        tags_json = self.request.params.get('tags')
-        tags_dict = json.loads(tags_json) if tags_json else {}
+        tags_json = self.request.params.get('tags', '{}')
+        tags_dict = self._normalize_tags(json.loads(tags_json))
         add_tags_params = {'LoadBalancerNames.member.1': elb_name}
         index = 1
         for key, value in tags_dict.items():
@@ -571,6 +591,7 @@ class ELBView(BaseELBView):
 
     def __init__(self, request, elb_conn=None, elb=None, elb_tags=None, **kwargs):
         super(ELBView, self).__init__(request, elb_conn=elb_conn, **kwargs)
+        self.title_parts.append(_(u'General'))
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
             self.access_logs = self.elb_conn.get_lb_attribute(
@@ -583,6 +604,7 @@ class ELBView(BaseELBView):
                 self.elb.tags = elb_tags or self.elb_conn.get_object('DescribeTags', tags_params, LbTagSet)
             else:
                 raise HTTPNotFound()
+
         self.elb_form = ELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn,
             elb=self.elb, elb_conn=self.elb_conn, s3_conn=self.s3_conn, securitygroups=self.get_security_groups(),
@@ -597,6 +619,7 @@ class ELBView(BaseELBView):
             self.request, elb_conn=self.elb_conn, predefined_policy_choices=self.predefined_policy_choices,
             formdata=self.request.params or None
         )
+
         self.create_bucket_form = CreateBucketForm(self.request, formdata=self.request.params or None)
         self.delete_form = ELBDeleteForm(self.request, formdata=self.request.params or None)
         bucket_name = self.access_logs.s3_bucket_name
@@ -604,9 +627,16 @@ class ELBView(BaseELBView):
         logs_subpath = logs_prefix.split('/') if logs_prefix else []
         logs_url = None
         bucket_url = None
+
+        if self.elb is not None:
+            tags = self.serialize_tags(self.elb.tags)
+        else:
+            tags = '{}'
+
         if bucket_name:
             logs_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=logs_subpath)
             bucket_url = self.request.route_path('bucket_contents', name=bucket_name, subpath=[])
+
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -629,6 +659,7 @@ class ELBView(BaseELBView):
             controller_options_json=self.get_controller_options_json(),
             logs_url=logs_url,
             bucket_url=bucket_url,
+            tags=tags,
         )
 
     @view_config(route_name='elb_view', renderer=TEMPLATE)
@@ -695,6 +726,8 @@ class ELBView(BaseELBView):
             'existing_certificate_choices': self.certificate_form.certificate_arn.choices,
             'logging_enabled': self.access_logs.enabled if self.access_logs else False,
             'bucket_choices': dict(self.elb_form.bucket_name.choices),
+            'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
+            'ping_port': self.get_health_check_port(self.elb),
         }))
 
     def update_elb_idle_timeout(self, elb_name, idle_timeout):
@@ -710,7 +743,8 @@ class ELBView(BaseELBView):
                 listener_dict = {
                     'from_port': listener.load_balancer_port,
                     'to_port': listener.instance_port,
-                    'protocol': listener.protocol
+                    'from_protocol': listener.protocol,
+                    'to_protocol': listener.instance_protocol
                 }
                 if listener.ssl_certificate_id:
                     certificate_id = listener.ssl_certificate_id.split('/')[-1]
@@ -826,6 +860,7 @@ class ELBInstancesView(BaseELBView):
 
     def __init__(self, request, elb=None, elb_attrs=None, **kwargs):
         super(ELBInstancesView, self).__init__(request, **kwargs)
+        self.title_parts.append(_(u'Instances'))
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
             if not self.elb:
@@ -1029,6 +1064,7 @@ class ELBHealthChecksView(BaseELBView):
 
     def __init__(self, request, elb=None, **kwargs):
         super(ELBHealthChecksView, self).__init__(request, **kwargs)
+        self.title_parts.append(_(u'Health Checks'))
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
             if not self.elb:
@@ -1071,6 +1107,7 @@ class ELBMonitoringView(BaseELBView):
 
     def __init__(self, request, elb=None, **kwargs):
         super(ELBMonitoringView, self).__init__(request, **kwargs)
+        self.title_parts.append(_(u'Monitoring'))
         with boto_error_handler(request):
             self.elb = elb or self.get_elb()
             if not self.elb:
@@ -1105,6 +1142,7 @@ class CreateELBView(BaseELBView):
 
     def __init__(self, request):
         super(CreateELBView, self).__init__(request)
+        self.title_parts = [_(u'Load Balancer'), _(u'Create')]
         # Note: CreateELBForm contains (inherits from) ELBHealthChecksForm
         self.create_form = CreateELBForm(
             self.request, conn=self.ec2_conn, vpc_conn=self.vpc_conn, s3_conn=self.s3_conn,
@@ -1121,11 +1159,13 @@ class CreateELBView(BaseELBView):
             formdata=self.request.params or None
         )
         filter_keys = ['id', 'name', 'placement', 'state', 'security_groups', 'vpc_subnet_display', 'vpc_name']
+
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
             iam_conn=None, vpc_conn=self.vpc_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
+
         self.render_dict = dict(
             create_form=self.create_form,
             create_bucket_form=self.create_bucket_form,
@@ -1136,7 +1176,8 @@ class CreateELBView(BaseELBView):
             latest_predefined_policy=self.get_latest_predefined_policy(),
             elb_security_policy=self.get_security_policy(),
             protocol_list=self.get_protocol_list(),
-            listener_list=[{'from_port': 80, 'to_port': 80, 'protocol': 'HTTP'}],  # Set HTTP listener by default
+            # Set HTTP listener by default
+            listener_list=[{'from_port': 80, 'to_port': 80, 'from_protocol': 'HTTP', 'to_protocol': 'HTTP'}],
             security_group_placeholder_text=_(u'Select...'),
             is_vpc_supported=self.is_vpc_supported,
             avail_zones_placeholder_text=_(u'Select availability zones'),
@@ -1144,6 +1185,7 @@ class CreateELBView(BaseELBView):
             filter_keys=filter_keys,
             search_facets=BaseView.escape_json(json.dumps(search_facets)),
             controller_options_json=self.get_controller_options_json(),
+            tags=[]
         )
 
     @view_config(route_name='elb_new', renderer=TEMPLATE)
@@ -1187,10 +1229,6 @@ class CreateELBView(BaseELBView):
             vpc_network = None
         if vpc_network is None:
             del self.create_form.securitygroup
-        bucket_name = self.request.params.get('bucket_name')
-        if (bucket_name, bucket_name) not in self.create_form.bucket_name.choices:
-            # Bucket name is a chosen select widget that accepts an arbitrary value
-            self.create_form.bucket_name.choices.append((bucket_name, bucket_name))
         if self.create_form.validate():
             name = self.request.params.get('name')
             listeners_args = self.get_listeners_args()
@@ -1222,7 +1260,8 @@ class CreateELBView(BaseELBView):
                     self.handle_backend_certificate_create(name)
                 self.add_elb_tags(name)
                 self.set_security_policy(name)
-                self.configure_access_logs(elb_name=name)
+                if self.request.params.get('logging_enabled') == 'y':
+                    self.configure_access_logs(elb_name=name)
                 prefix = _(u'Successfully created elastic load balancer')
                 msg = u'{0} {1}'.format(prefix, name)
                 location = self.request.route_path('elbs')

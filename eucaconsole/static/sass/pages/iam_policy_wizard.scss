@@ -19,7 +19,7 @@
     .content {
         margin-top: 8px;
         .choice {
-            border-bottom: 1px solid $euca-lightgrey;
+            border-bottom: 1px solid $hpe-lightgray;
             margin-bottom: 1rem;
             margin-left: 1rem;
             margin-right: 1rem;
@@ -50,28 +50,22 @@
 // Policy preview
 #policy-preview {
     background-color: white;
-    border: 1px solid $hp-gray-20;
     padding: 1rem;
     margin-top: 40px;
     input[type=text], textarea {
         background-color: white;
     }
-    h6.title {
-        font-weight: bold;
-        color: $hp-gray-65;
-        margin-bottom: 1rem;
-    }
 }
 
 // Policy generator styles
 #policy-generator {
-    border-color: $euca-lightgrey;
+    border-color: $hpe-lightgray;
     border-left: none;
     border-right: none;
     width: 100%;
     tr {
         &.namespace {
-            border-top: 1px solid $euca-lightgrey;
+            border-top: 1px solid $hpe-lightgray;
             background-color: white;
             td {
                 font-size: 1rem;
@@ -81,11 +75,12 @@
     th {
         &.allow, &.deny {
             text-transform: uppercase;
+            font-size: $euca-l-font-size;
             width: 40px;
         }
     }
     td {
-        font-size: 0.9rem;
+        font-size: $euca-font-size;
         line-height: 1rem;
         &.allow, &.deny {
             text-align: center
@@ -158,10 +153,10 @@
             margin-top: 6px;
         }
         i.tick {
-            color: $euca-lightgrey;
+            color: $hpe-lightgray;
             font-size: 1.2rem;
             &.fi-check.selected {
-                color: $hp-accessible-blue;
+                color: $hpe-slate;
             }
             &.fi-x.selected {
                 color: darkred;
@@ -182,6 +177,6 @@
 
 // CodeMirror styles
 .CodeMirror {
-    border: 1px solid $euca-lightgrey;
+    border: 1px solid $hpe-lightgray;
     min-height: 24rem;
 }

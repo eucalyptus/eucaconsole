@@ -1,0 +1,13 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.tag-editor .item-list { margin-bottom: 6px; }
+.tag-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; background-color: white; border: 2px solid #cccccc; margin-right: 8px; padding: 0.25rem 0.5rem; border-radius: 3px; white-space: nowrap; line-height: 1; }
+.tag-editor .item-list .item .propagates { color: #777; }
+.tag-editor .item-list .item a.remove { color: #666666; margin-left: 5px; }
+.tag-editor .item-list .item a.remove:hover { color: #01a982; }
+.tag-editor .add-label { color: #666666; font-size: 18px; margin-bottom: 6px; }
+.tag-editor .tag-entry-result { display: none; }
+.tag-editor.ng-pristine .button, .tag-editor.ng-invalid .button { background-color: #FFF; border-color: #B3B3B3; color: #B3B3B3; }
+.tag-editor input.ng-invalid.ng-touched ~ .error { display: block; }

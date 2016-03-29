@@ -34,9 +34,9 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
      * Provide generic error handling in the browser for XHR calls. 
      */
     return function(data, status) {
-        var errorMsg = data.message || '';
+        var errorMsg = (typeof data === 'string')?data:(data.message || '');
         if (status === 403) {
-            if (errorMsg.indexOf('Not authorized') == -1) {
+            if (errorMsg.indexOf('permissions') == -1) {
                 $('#timed-out-modal').foundation('reveal', 'open');
             }
             // else, fallthrough and display message
@@ -51,7 +51,7 @@ angular.module('EucaConsoleUtils', ['CustomFilters', 'ngSanitize'])
     return function(data, status) {
         var errorMsg = data.message || '';
         if (status === 403) {
-            if (errorMsg.indexOf('Not authorized') == -1) {
+            if (errorMsg.indexOf('permissions') == -1) {
                 $('#timed-out-modal').foundation('reveal', 'open');
             }
         }

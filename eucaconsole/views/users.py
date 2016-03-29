@@ -69,6 +69,7 @@ class UsersView(LandingPageView):
 
     def __init__(self, request):
         super(UsersView, self).__init__(request)
+        self.title_parts = [_(u'Users')]
         self.initial_sort_key = 'user_name'
         self.prefix = '/users'
         self.conn = self.get_connection(conn_type="iam")
@@ -224,6 +225,7 @@ class UserView(BaseView):
 
     def __init__(self, request):
         super(UserView, self).__init__(request)
+        self.title_parts = [_(u'User'), request.matchdict.get('name') or _(u'Create')]
         self.conn = self.get_connection(conn_type="iam")
         self.user = None
         try:
@@ -421,7 +423,7 @@ class UserView(BaseView):
                 for (name, email) in users.items():
                     self.log_request(_(u"Creating user {0}").format(name))
                     params = {'UserName': name, 'Path': path}
-                    if as_account is not None:
+                    if as_account is not None and as_account != '':
                         params['DelegateAccount'] = as_account
                     self.conn.get_response('CreateUser', params=params)
                     user_data = {'account': account, 'username': name}
@@ -429,7 +431,7 @@ class UserView(BaseView):
                         self.log_request(_(u"Generating password for user {0}").format(name))
                         password = PasswordGeneration.generate_password()
                         params = {'UserName': name, 'Password': password}
-                        if as_account is not None:
+                        if as_account is not None and as_account != '':
                             params['DelegateAccount'] = as_account
                         self.conn.get_response(
                             'CreateLoginProfile',
@@ -439,7 +441,7 @@ class UserView(BaseView):
                     if access_keys == 'y':
                         self.log_request(_(u"Creating access keys for user {0}").format(name))
                         params = {'UserName': name}
-                        if as_account is not None:
+                        if as_account is not None and as_account != '':
                             params['DelegateAccount'] = as_account
                         creds = self.conn.get_response('CreateAccessKey', params=params)
                         user_data['access_id'] = creds.access_key.access_key_id

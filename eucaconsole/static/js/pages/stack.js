@@ -4,20 +4,22 @@
  *
  */
 
-angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
+angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils', 'StackCancelUpdateDialog'])
     .controller('StackPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
+        $scope.stackName = '';
         $scope.stackStatusEndpoint = '';
         $scope.stackTemplateEndpoint = '';
-        $scope.transitionalStates = ['Create-in-progress', 'Rollback-in-progress', 'Delete-in-progress', 'Create-failed'];
+        $scope.transitionalStates = ['Create-in-progress', 'Rollback-in-progress', 'Delete-in-progress', 'Create-failed', 'Update-in-progress', 'Update-complete-cleanup-in-progress', 'Update-rollback-in-progress', 'Update-rollback-failed', 'Update-rollback-completed-cleanup-in-progress', 'Update-failed'];
         $scope.stackStatus = '';
         $scope.templateLoading = true;
         $scope.eventsLoading = true;
         $scope.resources = [];
         $scope.codeEditor = null;
         $scope.stackTemplate = '';
+        $scope.currentTab = 'general-tab';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-            $scope.stack_name = optionsJson.stack_name;
+            $scope.stackName = options.stack_name;
             $scope.stackStatusEndpoint = options.stack_status_json_url;
             $scope.stackTemplateEndpoint = options.stack_template_url;
             $scope.stackEventsEndpointOrig = options.stack_events_url;
@@ -32,11 +34,6 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
             $scope.setWatch();
             $scope.setFocus();
             $scope.initCodeMirror();
-        };
-        $scope.revealModal = function (action, stack) {
-            $scope.stackName = stack.name;
-            var modal = $('#' + action + '-stack-modal');
-            modal.foundation('reveal', 'open');
         };
         $scope.isTransitional = function () {
             return $scope.transitionalStates.indexOf($scope.stackStatus) !== -1;
@@ -54,6 +51,7 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
              });
+             $scope.isHelpExpanded = false;
         };
         $scope.clickTab = function ($event, tab){
             $event.preventDefault();
@@ -74,6 +72,12 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
+        };
+        $scope.showCancelUpdateModal = function () {
+            $("#cancel-update-stack-modal").foundation('reveal', 'open');
+            $timeout(function() {
+                $('.close-reveal-modal').focus();
+            }, 500);
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
@@ -189,6 +193,9 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils'])
                     }
                 }
             });
+        };
+        $scope.displayStatus = function(stackStatus) {
+            return stackStatus.replace(/-/g, ' ');
         };
         $scope.searchEvents = function() {
             var filterText = ($scope.searchFilter || '').toLowerCase();

@@ -5,8 +5,10 @@
     "angular": "1.3.8",
     "angular-sanitize": "1.3.8",
     "angular-mocks": "1.3.8",
+    "angular-smart-table": "2.1.3",
     "components-font-awesome": "4.3.0",
     "foundation": "5.5.1",
+    "foundation-datepicker": "~1.5.0",
     "jquery": "2.1.3",
     "jasmine": "2.0.3",
     "jasmine-jquery": "2.0.5",
@@ -14,6 +16,7 @@
     "nvd3": "1.7.1",
     "angular-magic-search": "~0.2.0",
     "angular-chosen-localytics": "~1.0.7",
+    "angular-filter": "~0.5.8",
     "StickyTableHeaders": "~0.1.15"
   }
 }

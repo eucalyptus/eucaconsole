@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                 'angular.js': 'angular/angular.js',
                 'angular.min.js': 'angular/angular.min.js',
                 'angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
-                'angular-mocks.js': 'angular-mocks/angular-mocks.js'
+                'angular-mocks.js': 'angular-mocks/angular-mocks.js',
               }
           },
           jquery: {
@@ -62,11 +62,26 @@ module.exports = function(grunt) {
                   'eucaconsole/static/sass/foundation': 'foundation/scss/foundation'
               }
           },
+          foundation_datepicker: {
+              files: {
+                'eucaconsole/static/js/thirdparty/foundation-datepicker': 'foundation-datepicker/js/foundation-datepicker*.js',
+                'eucaconsole/static/sass': 'foundation-datepicker/css/foundation-datepicker.scss',
+              }
+          },
           angular_magic_search: {
               options: {
               },
               files: {
                 'eucaconsole/static/js/thirdparty/magic-search': 'angular-magic-search/magic_search.*'
+              }
+          },
+          angular_smart_table: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/angular'
+              },
+              files: {
+                'angular-smart-table.js': 'angular-smart-table/dist/smart-table.js',
+                'angular-smart-table.min.js': 'angular-smart-table/dist/smart-table.min.js'
               }
           },
           d3: {
@@ -104,6 +119,15 @@ module.exports = function(grunt) {
               files: {
                 'jquery.stickytableheaders.js': 'StickyTableHeaders/js/jquery.stickytableheaders.js',
                 'jquery.stickytableheaders.min.js': 'StickyTableHeaders/js/jquery.stickytableheaders.min.js'
+              }
+          },
+          angular_filters: {
+              options: {
+                  destPrefix: 'eucaconsole/static/js/thirdparty/angular'
+              },
+              files: {
+                'angular-filter.js': 'angular-filter/dist/angular-filter.js',
+                'angular-filter.min.js': 'angular-filter/dist/angular-filter.min.js'
               }
           }
       },

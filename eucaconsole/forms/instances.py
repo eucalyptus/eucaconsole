@@ -28,11 +28,12 @@
 Forms for Instances
 
 """
+import base64
 import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from ..views import BaseView
+from ..views import BaseView, boto_error_handler
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
@@ -170,8 +171,7 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
-        region = request.session.get('region')
-        self.zone.choices = self.get_availability_zone_choices(region)
+        self.zone.choices = self.get_availability_zone_choices()
         if self.cloud_type == 'euca' and self.is_vpc_supported:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks(add_blank=False)
         else:
@@ -204,9 +204,9 @@ class LaunchInstanceForm(BaseSecureForm):
         choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
         return choices
 
-    def get_availability_zone_choices(self, region):
+    def get_availability_zone_choices(self):
         choices = [('', _(u'No preference'))]
-        choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
+        choices.extend(self.choices_manager.availability_zones(self.region, add_blank=False))
         return choices
 
     @staticmethod
@@ -269,6 +269,10 @@ class LaunchMoreInstancesForm(BaseSecureForm):
         self.monitoring_enabled.data = self.instance.monitored
         self.private_addressing.data = self.enable_private_addressing()
         self.number.data = 1
+        with boto_error_handler(self.request):
+            userdata = self.conn.get_instance_attribute(self.instance.id, 'userData')
+            userdata = userdata['userData']
+            self.userdata.data = base64.b64decode(userdata) if userdata is not None else ''
 
     def enable_private_addressing(self):
         if self.instance.private_ip_address == self.instance.ip_address:
@@ -296,11 +300,6 @@ class TerminateInstanceForm(BaseSecureForm):
     pass
 
 
-class BatchTerminateInstancesForm(BaseSecureForm):
-    """CSRF-protected form to batch-terminate instances"""
-    pass
-
-
 class AttachVolumeForm(BaseSecureForm):
     """CSRF-protected form to attach a volume to an instance
        Note: This is for attaching a volume on the instance detail page
@@ -325,8 +324,11 @@ class AttachVolumeForm(BaseSecureForm):
         self.volume_id.error_msg = self.volume_error_msg
         self.device.error_msg = self.device_error_msg
         self.set_volume_choices()
+
         if self.instance is not None:
-            self.device.data = AttachVolumeForm.suggest_next_device_name(request, instance)
+            cloud_type = request.session.get('cloud_type')
+            mappings = instance.block_device_mapping
+            self.device.data = AttachVolumeForm.suggest_next_device_name(cloud_type, mappings)
 
     def set_volume_choices(self):
         """Populate volume field with volumes available to attach"""
@@ -341,20 +343,17 @@ class AttachVolumeForm(BaseSecureForm):
         self.volume_id.choices = choices
 
     @staticmethod
-    def suggest_next_device_name(request, instance):
-        cloud_type = request.session.get('cloud_type')
+    def suggest_next_device_name(cloud_type, mappings):
         if cloud_type == 'euca':
             dev_root = '/dev/vd'
             start_char = 99
         else:
             dev_root = '/dev/sd'
             start_char = 102
-        mappings = instance.block_device_mapping
+
         for i in range(0, 10):   # Test names with char 'f' to 'p'
-            dev_name = dev_root+str(unichr(start_char+i))
-            try:
-                mappings[dev_name]
-            except KeyError:
+            dev_name = dev_root + str(unichr(start_char + i))
+            if dev_name not in mappings:
                 return dev_name
         return 'error'
 
@@ -388,8 +387,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.iam_choices_manager = ChoicesManager(conn=iam_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
-        region = request.session.get('region')
-        self.availability_zone.choices = self.get_availability_zone_choices(region)
+        self.availability_zone.choices = self.get_availability_zone_choices()
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
@@ -407,23 +405,26 @@ class InstancesFiltersForm(BaseSecureForm):
         self.vpc_id.choices = sorted(self.vpc_id.choices)
         self.subnet_id.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
         self.facets = [
-            {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+            {'name': 'status', 'label': self.state.label.text, 'options': self.get_status_choices()},
             {'name': 'availability_zone', 'label': self.availability_zone.label.text,
-                'options': self.get_availability_zone_choices(region)},
+                'options': self.get_availability_zone_choices()},
             {'name': 'instance_type', 'label': self.instance_type.label.text,
                 'options': self.get_instance_type_choices()},
             {'name': 'root_device_type', 'label': self.root_device_type.label.text,
                 'options': self.get_root_device_type_choices()},
-            {'name': 'security_group', 'label': self.security_group.label.text,
+            {'name': 'security_groups', 'label': self.security_group.label.text,
                 'options': self.get_options_from_choices(self.ec2_choices_manager.security_groups(add_blank=False))},
             {'name': 'scaling_group', 'label': self.scaling_group.label.text,
-                'options': self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
+                'options':
+                    self.get_options_from_choices(self.autoscale_choices_manager.scaling_groups(add_blank=False))},
         ]
         if cloud_type == 'euca':
-            self.facets.append(
-                {'name': 'roles', 'label': self.roles.label.text,
-                    'options': self.get_options_from_choices(self.iam_choices_manager.roles(add_blank=False))},
-            )
+            roles = self.iam_choices_manager.roles(add_blank=False)
+            if roles:
+                self.facets.append(
+                    {'name': 'roles', 'label': self.roles.label.text,
+                        'options': self.get_options_from_choices(roles)},
+                )
         if BaseView.is_vpc_supported(request):
             self.facets.append(
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
@@ -436,8 +437,8 @@ class InstancesFiltersForm(BaseSecureForm):
                     'options': self.get_options_from_choices(vpc_choices)},
             )
 
-    def get_availability_zone_choices(self, region):
-        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(region, add_blank=False))
+    def get_availability_zone_choices(self):
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(self.region, add_blank=False))
 
     def get_instance_type_choices(self):
         return self.get_options_from_choices(self.ec2_choices_manager.instance_types(
