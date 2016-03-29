@@ -1196,12 +1196,11 @@ footer {
     }
     &.secondary {
         background-color: #fff;
-        border: 2px $hpe-gray;
         &:hover {
             background-color: #fff;
             color: $hpe-black;
             text-decoration: none;
-            outline: 4px solid $hpe-green;
+            outline: 2px solid $hpe-gray;
         }
         font-family: $euca-header-font-family;
         text-transform: uppercase;

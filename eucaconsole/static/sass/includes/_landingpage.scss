@@ -81,10 +81,6 @@ $alarm-status-color-ok: $hpe-green;
         &.more-actions {
             margin-left: 1rem;
             padding-right: 3rem;
-            border: 2px solid $hpe-gray;
-            &:hover {
-                outline: 2px solid $hpe-gray;
-            }
             &[disabled] {
                 border: 2px solid $hpe-lightgray;
                 &:hover {
