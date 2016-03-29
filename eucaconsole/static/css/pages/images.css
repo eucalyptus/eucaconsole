@@ -70,7 +70,7 @@
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: white; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #000000; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #333333; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table thead tr th.count { text-align: center; }
 .gridwrapper .table thead tr th.checkbox-header { width: 1.5rem; }
@@ -185,9 +185,9 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .table td.status { position: relative; }
 .table td.status .progress { position: relative; font-size: 0.825rem; margin-bottom: 0; }
-.table td.status .progress .meter { background-color: #CCEEE6; padding-left: 4px; color: #000000; font-weight: bold; }
+.table td.status .progress .meter { background-color: #CCEEE6; padding-left: 4px; color: #333333; font-weight: bold; }
 .table td.description { word-break: break-all; }
 
 .tile .footer .completed { padding: 0 0 0 0; }
 .tile .footer .progress { text-align: left; position: relative; border: none; }
-.tile .footer .progress .meter { background-color: #CCEEE6; color: #000000; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.tile .footer .progress .meter { background-color: #CCEEE6; color: #333333; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }
