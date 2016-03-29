@@ -1763,6 +1763,8 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 #bdmapping-editor .storage-label { text-align: left; }
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
 #bdmapping-editor #new-blockdevice-entry .chosen-single { line-height: 34px; min-height: 37px; }
+#bdmapping-editor #new-blockdevice-entry label { margin-bottom: 4px; }
+#bdmapping-editor .chosen-container .chosen-single { height: 2.3rem; }
 #bdmapping-editor input.number { width: 2rem; padding: 6px 3px 5px 8px; line-height: 1.5rem; border: 1px solid #cccccc; }
 #bdmapping-editor .delete-on-terminate { text-align: center; }
 #bdmapping-editor .delete-on-terminate span.hide-for-small { display: inline !important; }

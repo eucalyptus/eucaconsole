@@ -672,6 +672,12 @@ textarea.policy-area {
             line-height: 34px;
             min-height: 37px;
         }
+        label {
+            margin-bottom: 4px;
+        }
+    }
+    .chosen-container .chosen-single {
+        height: 2.3rem;
     }
     input.number {
         width: 2rem;
