@@ -118,9 +118,6 @@ $euca-footer-height: 80px;
 // Misc decorations
 $euca-box-shadow: 0 2px 2px 0 $hpe-hovergray;
 
-// Wizards
-$wizard-tab-padding: 8px 0;
-
 
 // ####################
 // Foundation overrides
@@ -396,7 +393,7 @@ $alarm-status-color-ok: $hp-green;
         }
         box-shadow: none;
         white-space: nowrap;
-        padding: $wizard-tab-padding;
+        padding: 8px 0 6px 0;
         .cir {
             background-color: $hpe-gray;
         }
