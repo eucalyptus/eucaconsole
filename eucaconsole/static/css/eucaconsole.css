@@ -1948,6 +1948,8 @@ footer .copyright { font-size: 12px; }
 .tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
 .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
 .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
+.tabs.switcher { display: inline-block; }
+.tabs.switcher dd:last-child { padding-right: 0; }
 
 .tabs-content { background-color: white; }
 .tabs-content .panel { border: none; }

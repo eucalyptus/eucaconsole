@@ -19,6 +19,8 @@
 #login-wrapper .tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
 #login-wrapper .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
 #login-wrapper .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
+#login-wrapper .tabs.switcher { display: inline-block; }
+#login-wrapper .tabs.switcher dd:last-child { padding-right: 0; }
 #login-wrapper .tabs-content { padding: 1rem; background-color: white; }
 #login-wrapper .tabs-content .content { width: 95%; margin: 0 auto; }
 #login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; }

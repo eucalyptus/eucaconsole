@@ -372,6 +372,12 @@ $alarm-status-color-ok: $hp-green;
             }
         }
     }
+    &.switcher {
+        display: inline-block;
+        dd:last-child {
+            padding-right: 0;
+        }
+    }
 }
 
 @mixin wizard-tabs-mixin {
