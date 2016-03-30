@@ -9,7 +9,7 @@
  *
  */
 
-angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'ChartServiceModule'])
+angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'ChartServiceModule', 'ModalModule'])
 .directive('datepicker', function () {
     return {
         require: 'ngModel',
@@ -30,7 +30,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         }
     }; 
 })
-.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
+.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray, ModalService) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
     vm.largeChartStatistic = "Sum";
@@ -117,6 +117,16 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.refreshLargeChart();
     }
 
+    vm.showLargeChart = function(title, metric, statistic, ids, idtype) {
+        vm.selectedChartTitle = title; // || parentCtrl.metricTitleMapping[attrs.metric];
+        vm.largeChartMetric = metric;
+        vm.largeChartStatistic = statistic || 'Average';
+        vm.largeChartIds = ids;
+        vm.largeChartIdType = idtype;
+        vm.largeChartDuration = vm.duration;
+        ModalService.openModal('largeChart');
+    }
+
     vm.shiftTimeLeft = function() {
         vm.timeRange = "absolute";
         var timeDiffSecs = (vm._largeChartEndTime.valueOf() - vm._largeChartStartTime.valueOf()) / 2000;
@@ -191,7 +201,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         });
     }
 })
-.directive('cloudwatchChart', function($http, $timeout, CloudwatchAPI, ChartService, eucaHandleError) {
+.directive('cloudwatchChart', function($http, $timeout, CloudwatchAPI, ChartService, ModalService, eucaHandleError) {
     return {
         restrict: 'A',  // Restrict to attribute since container element must be <svg>
         scope: {
@@ -217,6 +227,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     };
 
     function ChartController($scope, $timeout) {
+        var target = largeChart && $('#large-chart').length > 0 ? $('#large-chart').get(0) : $scope.target;
+        ChartService.resetChart(target);
         renderChart($scope);
         $scope.$on('cloudwatch:refreshCharts', function (evt, refreshOptions) {
             var doRefresh = false;
@@ -351,12 +363,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
 
         scope.target = element[0];
 
-        var chartModal = $('#large-chart-modal');
         var chartWrapper = element.closest('.chart-wrapper');
 
+/*
         if (!attrs.large) {
             // Display large chart on small chart click
-            chartWrapper.on('click', function () {
+            chartWrapper.on('no-click', function () {
                 var parentCtrl = scope.$parent.chartsCtrl;
                 // Granularity (period) defaults to 5 min, so no need to pass it here
                 var options = {
@@ -379,7 +391,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 parentCtrl.largeChartDuration = parentCtrl.duration;
                 parentCtrl.largeChartStatistic = attrs.statistic || 'Average';
 
-                chartModal.foundation('reveal', 'open');
+                ModalService.openModal('largeChart');
                 $timeout(function () {
                     options.params.duration = parentCtrl.largeChartDuration;
                     options.params.statistic = parentCtrl.largeChartStatistic;
@@ -394,6 +406,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 });
             });
         }
+        */
 
         // Handle visibility of loading indicators
         scope.$watch('chartLoading', function (newVal) {
