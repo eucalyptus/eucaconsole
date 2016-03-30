@@ -1224,6 +1224,13 @@ footer {
     &.round {
         &:hover {
             outline: none;
+            box-shadow: 0 0 0 2px $hpe-green;
+        }
+        &.disabled, &[disabled] {
+            &:hover {
+                outline: none;
+                box-shadow: none;
+            }
         }
     }
     &.dropdown {
