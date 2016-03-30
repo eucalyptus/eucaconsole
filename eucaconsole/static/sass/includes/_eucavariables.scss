@@ -237,24 +237,18 @@ $alarm-status-color-ok: $hp-green;
     &:hover {
         background-color: white;
         text-decoration: none;
-        border: 2px $hpe-disabledgray;
+        border: 2px solid $hpe-disabledgray;
         outline: none;
         color: $hpe-disabledgray;
     }
 }
 
 @mixin primary-disabled-button-mixin {
-    background-color: white;
+    @include disabled-button-mixin;
     border-color: $hpe-disabledgreen;
-    color: $hpe-disabledgray;
-        &:hover {
-            background-color: white;
-            border-color: $hpe-disabledgreen;
-            text-decoration: none;
-            border-width: 2px;
-            color: $hpe-disabledgray;
-
-        }
+    &:hover {
+        border: 2px solid $hpe-disabledgreen;
+    }
 }
 
 @mixin dropdown-shadow-mixin {
