@@ -51,6 +51,10 @@
         width: 100%;
         tr.top-header {
             border-bottom: 0;
+            th {
+                border-bottom: none;
+                padding: 0 0 0 6px;
+            }
         }
         th {
             white-space: nowrap;

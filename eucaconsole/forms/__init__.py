@@ -208,9 +208,11 @@ class ChoicesManager(object):
             else:
                 return [(name, name) for name, description in AWS_INSTANCE_TYPE_CHOICES]
 
-    def volumes(self, volumes=None, escapebraces=True):
+    def volumes(self, volumes=None, escapebraces=True, add_blank=True):
         from ..views import TaggedItemView
-        choices = [('', _(u'Select volume...'))]
+        choices = []
+        if add_blank:
+            choices.append(('', _(u'Select volume...')))
         volumes = volumes or []
         if not volumes and self.conn is not None:
             volumes = self.conn.get_all_volumes()
