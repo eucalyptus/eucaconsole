@@ -8,14 +8,14 @@
         <h6 i18n:translate="">Rules</h6>
     </div>
     <div class="columns">
-        <dl class="tabs" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'" ng-cloak="">
+        <dl class="tabs switcher" ng-show="securityGroupVPC != '' &amp;&amp; securityGroupVPC != 'None'" ng-cloak="">
             <dd ng-class="inboundButtonClass"><a id="inbound-rules-tab"
                ng-click="selectRuleType('inbound')" i18n:translate="">Inbound</a></dd>
             <dd ng-class="outboundButtonClass"><a id="outbound-rules-tab"
                ng-click="selectRuleType('outbound')" i18n:translate="">Outbound</a></dd>
         </dl>
         <div class="tabs-content">
-            <div class="columns field" ng-cloak="">
+            <div class="field" ng-cloak="">
                 <div class="item-list">
                     <span class="label radius secondary item" ng-repeat="rule in rulesArray" ng-show="ruleType=='inbound'">
                         <span ng-show="!rule.custom_protocol">
@@ -53,7 +53,7 @@
                     </span>
                 </div>
                 <div class="row rulesentry inline controls-wrapper">
-                    <div class=" columns add-label">
+                    <div class="columns add-label">
                         <div ng-show="ruleType == 'inbound'">
                             <span ng-show="!rulesArray.length"><span i18n:translate="">Add an inbound rule</span>:</span>
                             <span ng-show="rulesArray.length"><span i18n:translate="">Add another inbound rule</span>:</span>
@@ -92,8 +92,8 @@
                         </div>
                         <div class="small-9 columns">
                             <div ng-show="selectedProtocol !== 'icmp' &amp;&amp; selectedProtocol !== '-1'">
-                                <input class="port from" name="from_port" ng-model="fromPort" pattern="${layout.port_range_pattern}" />&nbsp;-
-                                <input class="port to" name="to_port" ng-model="toPort" pattern="${layout.port_range_pattern}" />
+                                <input type="text" class="port from" name="from_port" ng-model="fromPort" pattern="${layout.port_range_pattern}" />&nbsp;-
+                                <input type="text" class="port to" name="to_port" ng-model="toPort" pattern="${layout.port_range_pattern}" />
                                 <small class="error" i18n:translate="">Port range value must be whole numbers between 1-65535</small>
                             </div>
                             <div ng-show="selectedProtocol == 'icmp'">

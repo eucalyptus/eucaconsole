@@ -42,7 +42,6 @@ $hpe-backgroundgray: #F2F2F2;
 $hpe-hovergray: #F0F0F0;
 $hpe-disabledgray: #EDEDED;
 $hpe-disabledgreen: #CCEEE6;
-$hpe-black: #000000;
 $hpe-green: #01a982;
 $hpe-slate: #425563;
 $hpe-turq: #2ad2c9;
@@ -118,9 +117,6 @@ $euca-footer-height: 80px;
 
 // Misc decorations
 $euca-box-shadow: 0 2px 2px 0 $hpe-hovergray;
-
-// Wizards
-$wizard-tab-padding: 8px 1rem;
 
 
 // ####################
@@ -238,28 +234,21 @@ $alarm-status-color-ok: $hp-green;
     background-color: white;
     border-color: $hpe-disabledgray;
     color: $hpe-disabledgray;
-        &:hover {
-            background-color: white;
-            text-decoration: none;
-            border: 2px $hpe-disabledgray;
-            outline: none;
-            color: $hpe-disabledgray;
-
-        }
+    &:hover {
+        background-color: white;
+        text-decoration: none;
+        border: 2px solid $hpe-disabledgray;
+        outline: none;
+        color: $hpe-disabledgray;
+    }
 }
 
 @mixin primary-disabled-button-mixin {
-    background-color: white;
+    @include disabled-button-mixin;
     border-color: $hpe-disabledgreen;
-    color: $hpe-disabledgray;
-        &:hover {
-            background-color: white;
-            border-color: $hpe-disabledgreen;
-            text-decoration: none;
-            border-width: 2px;
-            color: $hpe-disabledgray;
-
-        }
+    &:hover {
+        border: 2px solid $hpe-disabledgreen;
+    }
 }
 
 @mixin dropdown-shadow-mixin {
@@ -356,12 +345,15 @@ $alarm-status-color-ok: $hp-green;
 // Tab mixins (wizards, etc.)
 @mixin standard-tabs-mixin {
     max-height: 2.6rem !important;
+    border-bottom: 1px solid #ccc;
     dd {
         position: relative;
         top: 1px;
         z-index: 999;
+        padding-right: 2rem;
+        padding-left: 0;
         a {
-            padding: 10px 32px 6px 24px;
+            padding: 10px 0 4px 0;
             color: $hpe-gray;
             background-color: transparent;
             font-family: $euca-header-font-family;
@@ -380,9 +372,17 @@ $alarm-status-color-ok: $hp-green;
             }
         }
     }
+    &.switcher {
+        display: inline-block;
+        dd:last-child {
+            padding-right: 0;
+        }
+    }
 }
 
 @mixin wizard-tabs-mixin {
+    padding-right: 1rem;
+    padding-left: 1rem;
     a {  // Visited tabs
         color: $hpe-gray;
         font-family: $euca-header-font-family;
@@ -393,7 +393,7 @@ $alarm-status-color-ok: $hp-green;
         }
         box-shadow: none;
         white-space: nowrap;
-        padding: $wizard-tab-padding;
+        padding: 8px 0 6px 0;
         .cir {
             background-color: $hpe-gray;
         }
@@ -412,9 +412,10 @@ $alarm-status-color-ok: $hp-green;
     &.disabled {  // Unvisited tabs
         color: $hpe-lightgray;
         font-family: $euca-header-font-family;
-        padding: $wizard-tab-padding;
+        padding: 8px 1rem;
         .cir {
             margin-right: 8px;
+            background-color: $hpe-lightgray;
         }
     }
     .cir {
