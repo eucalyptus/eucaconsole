@@ -1,129 +1,122 @@
 <!-- top nav links (reused in off-canvas menu) -->
 <ul class="resources-nav left-align ${'off-canvas-list' if off_canvas else ''}" i18n:domain="eucaconsole">
-    <li> 
-        <a id="resource-menuitem-dashboard" href="${request.route_path('dashboard')}">
+    <li class="dashboard"> 
+        <a id="resource-menuitem-dashboard" class="dashboard" href="${request.route_path('dashboard')}">
             <i class="icon dashboard"></i>
             <span i18n:translate="">DASHBOARD</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-images" href="${request.route_path('images')}">
+    <li class="images">
+        <a id="resource-menuitem-images" class="images" href="${request.route_path('images')}">
             <i class="icon images"></i>
             <span i18n:translate="">IMAGES</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-instances" href="${request.route_path('instances')}">
+    <li tal:condition="not layout.account_access" class="instances">
+        <a id="resource-menuitem-instances" class="instances" href="${request.route_path('instances')}">
             <i class="icon instances"></i>
             <span i18n:translate="">INSTANCES</span>
         </a>
     </li>
-    <li tal:condition="layout.account_access">
-        <a id="resource-menuitem-instance-types" href="${request.route_path('instance_types')}">
-            <span i18n:translate="">INSTANCE TYPES</span>
+    <div tal:condition="layout.account_access" tal:omit-tag="">
+        <i class="icon instances-cat"></i><label i18n:translate="">INSTANCES</label>
+        <li class="instances">
+            <a id="resource-menuitem-instances" class="instances" href="${request.route_path('instances')}">
+                <span i18n:translate="">Instances</span>
+            </a>
+        </li>
+        <li class="instance-types">
+            <a id="resource-menuitem-instance-types" class="instance-types" href="${request.route_path('instance_types')}">
+                <span i18n:translate="">Instance types</span>
+            </a>
+        </li>
+    </div>
+    <i class="icon cloudformation"></i><label i18n:translate="">CLOUDFORMATION</label>
+    <li class="stacks">
+        <a id="resource-menuitem-stacks" class="stacks" href="${request.route_path('stacks')}">
+            <span i18n:translate="">Stacks</span>
         </a>
     </li>
-    <label i18n:translate="">CLOUDFORMATION</label>
-    <li>
-        <a id="resource-menuitem-stacks" href="${request.route_path('stacks')}">
-            <i class="icon stacks"></i>
-            <span i18n:translate="">STACKS</span>
+    <i class="icon networksecurity"></i><label i18n:translate="">NETWORK &amp; SECURITY</label>
+    <li class="ipaddresses">
+        <a id="resource-menuitem-ipaddresses" class="ipaddresses" href="${request.route_path('ipaddresses')}">
+            <span i18n:translate="">Elastic IP addresses</span>
         </a>
     </li>
-    <label i18n:translate="">NETWORK &amp; SECURITY</label>
-    <li>
-        <a id="resource-menuitem-ipaddresses" href="${request.route_path('ipaddresses')}">
-            <i class="icon ipaddresses"></i>
-            <span i18n:translate="">ELASTIC IP ADDRESSES</span>
+    <li class="securitygroups">
+        <a id="resource-menuitem-securitygroups" class="securitygroups" href="${request.route_path('securitygroups')}">
+            <span i18n:translate="">Security groups</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-securitygroups" href="${request.route_path('securitygroups')}">
-            <i class="icon securitygroups"></i>
-            <span i18n:translate="">SECURITY GROUPS</span>
+    <li class="elbs">
+        <a id="resource-menuitem-elbs" class="elbs" href="${request.route_path('elbs')}">
+            <span i18n:translate="">Load balancers</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-elbs" href="${request.route_path('elbs')}">
-            <i class="icon elbs"></i>
-            <span i18n:translate="">LOAD BALANCERS</span>
+    <li class="keypairs">
+        <a id="resource-menuitem-keypairs" class="keypairs" href="${request.route_path('keypairs')}">
+            <span i18n:translate="">Key pairs</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-keypairs" href="${request.route_path('keypairs')}">
-            <i class="icon keypairs"></i>
-            <span i18n:translate="">KEY PAIRS</span>
+    <i class="icon storage"></i><label i18n:translate="">STORAGE</label>
+    <li class="volumes">
+        <a id="resource-menuitem-volumes" class="volumes" href="${request.route_path('volumes')}">
+            <span i18n:translate="">Volumes</span>
         </a>
     </li>
-    <label i18n:translate="">STORAGE</label>
-    <li>
-        <a id="resource-menuitem-volumes" href="${request.route_path('volumes')}">
-            <i class="icon volumes"></i>
-            <span i18n:translate="">VOLUMES</span>
+    <li class="snapshots">
+        <a id="resource-menuitem-snapshots" class="snapshots" href="${request.route_path('snapshots')}">
+            <span i18n:translate="">Snapshots</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-snapshots" href="${request.route_path('snapshots')}">
-            <i class="icon snapshots"></i>
-            <span i18n:translate="">SNAPSHOTS</span>
+    <li class="buckets">
+        <a id="resource-menuitem-buckets" class="buckets" href="${request.route_path('buckets')}">
+            <span i18n:translate="">Buckets (S3)</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-buckets" href="${request.route_path('buckets')}">
-            <i class="icon buckets"></i>
-            <span i18n:translate="">BUCKETS (S3)</span>
-        </a>
-    </li>
-    <label i18n:translate="">AUTO SCALING</label>
-    <li>
-        <a id="resource-menuitem-scalinggroups" href="${request.route_path('scalinggroups')}">
+    <i class="icon autoscaling"></i><label i18n:translate="">AUTO SCALING</label>
+    <li class="scalinggroups">
+        <a id="resource-menuitem-scalinggroups" class="scalinggroups" href="${request.route_path('scalinggroups')}">
             <i class="icon scalinggroups"></i>
-            <span i18n:translate="">AUTO SCALING GROUPS</span>
+            <span i18n:translate="">Auto scaling groups</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-launchconfigs" href="${request.route_path('launchconfigs')}">
-            <i class="icon launchconfigs"></i>
-            <span i18n:translate="">LAUNCH CONFIGURATIONS</span>
+    <li class="launchconfigs">
+        <a id="resource-menuitem-launchconfigs" class="launchconfigs" href="${request.route_path('launchconfigs')}">
+            <span i18n:translate="">Launch configurations</span>
         </a>
     </li>
-    <label i18n:translate="">CLOUDWATCH</label>
-    <li>
-        <a id="resource-menuitem-alarms" href="${request.route_path('cloudwatch_alarms')}">
-            <i class="icon alarms"></i>
-            <span i18n:translate="">ALARMS</span>
+    <span class="euca-nav-size"><i class="icon fa fa-line-chart fa-1x"></i></span><label i18n:translate="">CLOUDWATCH</label>
+    <li class="alarms">
+        <a id="resource-menuitem-alarms" class="alarms" href="${request.route_path('cloudwatch_alarms')}">
+            <span i18n:translate="">Alarms</span>
         </a>
     </li>
-    <li>
-        <a id="resource-menuitem-metrics" href="${request.route_path('cloudwatch_metrics')}">
-            <i class="icon metrics"></i>
-            <span i18n:translate="">METRICS</span>
+    <li class="metrics">
+        <a id="resource-menuitem-metrics" class="metrics" href="${request.route_path('cloudwatch_metrics')}">
+            <span i18n:translate="">Metrics</span>
         </a>
     </li>
     <div tal:condition="layout.user_access or layout.group_access or layout.role_access" tal:omit-tag="">
-        <label i18n:translate="">IDENTITY &amp; ACCESS</label>
-        <li tal:condition="layout.account_access">
-            <a id="resource-menuitem-accounts" href="${request.route_path('accounts')}">
-                <i class="icon accounts"></i>
-                <span i18n:translate="">ACCOUNTS</span>
+        <i class="icon iam"></i><label i18n:translate="">IDENTITY &amp; ACCESS</label>
+        <li tal:condition="layout.account_access" class="accounts">
+            <a id="resource-menuitem-accounts" class="accounts" href="${request.route_path('accounts')}">
+                <span i18n:translate="">Accounts</span>
             </a>
         </li>
-        <li tal:condition="layout.user_access">
-            <a id="resource-menuitem-users" href="${request.route_path('users')}">
-                <i class="icon users"></i>
-                <span i18n:translate="">USERS</span>
+        <li tal:condition="layout.user_access" class="users">
+            <a id="resource-menuitem-users" class="users" href="${request.route_path('users')}">
+                <span i18n:translate="">Users</span>
             </a>
         </li>
-        <li tal:condition="layout.group_access">
-            <a id="resource-menuitem-groups" href="${request.route_path('groups')}">
-                <i class="icon groups"></i>
-                <span i18n:translate="">GROUPS</span>
+        <li tal:condition="layout.group_access" class="groups">
+            <a id="resource-menuitem-groups" class="groups" href="${request.route_path('groups')}">
+                <span i18n:translate="">Groups</span>
             </a>
         </li>
-        <li tal:condition="layout.role_access">
-            <a id="resource-menuitem-roles" href="${request.route_path('roles')}">
-                <i class="icon roles"></i>
-                <span i18n:translate="">ROLES</span>
+        <li tal:condition="layout.role_access" class="roles">
+            <a id="resource-menuitem-roles" class="roles" href="${request.route_path('roles')}">
+                <span i18n:translate="">Roles</span>
             </a>
         </li>
     </div>

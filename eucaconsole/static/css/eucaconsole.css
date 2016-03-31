@@ -1069,7 +1069,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 
 /* Tooltips */
 .has-tip { border-bottom: dotted 1px #CCCCCC; cursor: help; font-weight: bold; color: #333333; }
-.has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #004c3b; color: #01a982; }
+.has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #004c3a; color: #01a982; }
 .has-tip.tip-left, .has-tip.tip-right { float: none !important; }
 
 .tooltip { display: none; position: absolute; z-index: 1006; font-weight: normal; font-size: 0.875rem; line-height: 1.3; padding: 0.3125rem; max-width: 300px; left: 50%; width: 100%; color: #666666; background: white; }
@@ -1078,7 +1078,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 .tooltip.radius { border-radius: 3px; }
 .tooltip.round { border-radius: 1000px; }
 .tooltip.round > .nub { left: 2rem; }
-.tooltip.opened { color: #01a982 !important; border-bottom: dotted 1px #004c3b !important; }
+.tooltip.opened { color: #01a982 !important; border-bottom: dotted 1px #004c3a !important; }
 
 .tap-to-close { display: block; font-size: 0.625rem; color: #777777; font-weight: normal; }
 
@@ -2001,54 +2001,33 @@ div.left-off-canvas-menu { z-index: 999999 !important; background-color: white; 
 .nav-collapsed.left-nav label { visibility: hidden; }
 .nav-collapsed.left-nav hr { width: 7.5%; }
 
+span.euca-nav-size { font-size: 1.65em; }
+
+ul.off-canvas-list li a:hover { background-color: #F0F0F0 !important; color: #666666 !important; }
+
 ul.resources-nav { width: 450px; list-style-type: none; line-height: 3.0rem; margin-left: 0; left: 0; }
-ul.resources-nav label { padding-left: 0.5rem; background-color: white; color: #666666; padding-top: 0.5rem; border-top: 0; }
+ul.resources-nav label { padding-left: 3.0rem; background-color: white; color: #666666; padding-top: 0.6rem; margin-bottom: 0.6rem; border-top: 0; }
 ul.resources-nav hr { margin: 0 0.5rem 0 0.5rem; width: 42.5%; }
 ul.resources-nav li a { background-color: transparent; color: #666666; padding: 0.5rem 8rem 1.0rem 2.6rem; line-height: 1.5rem; border-bottom: 0; position: static; }
+ul.resources-nav li a.active { color: white !important; }
 ul.resources-nav li:hover { background-color: #F0F0F0; color: #666666; }
 ul.resources-nav li span { padding-left: 0.5rem; white-space: nowrap; display: inline-block; vertical-align: middle; }
 ul.resources-nav li span.active { background-color: #01a982; color: white; }
 ul.resources-nav li i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; }
-ul.resources-nav li i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
-ul.resources-nav li i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
-ul.resources-nav li i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
-ul.resources-nav li i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
-ul.resources-nav li i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
-ul.resources-nav li i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
 ul.resources-nav li i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
 ul.resources-nav li i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
-ul.resources-nav li i.icon.ipaddresses { background-image: url(../img/nav/Elastic-IP.svg); }
-ul.resources-nav li i.icon.ipaddresses.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
-ul.resources-nav li i.icon.groups { background-image: url(../img/nav/Groups.svg); }
-ul.resources-nav li i.icon.groups.active { background-image: url(../img/nav/Groups_Active.svg); }
 ul.resources-nav li i.icon.images { background-image: url(../img/nav/Images.svg); }
 ul.resources-nav li i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
 ul.resources-nav li i.icon.instances { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav li i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
-ul.resources-nav li i.icon.keypairs { background-image: url(../img/nav/Key-Pairs.svg); }
-ul.resources-nav li i.icon.keypairs.active { background-image: url(../img/nav/Key-Pairs_Active.svg); }
-ul.resources-nav li i.icon.launchconfigs { background-image: url(../img/nav/Launch-configs.svg); }
-ul.resources-nav li i.icon.launchconfigs.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
-ul.resources-nav li i.icon.elbs { background-image: url(../img/nav/Load-Balance.svg); }
-ul.resources-nav li i.icon.elbs.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
-ul.resources-nav li i.icon.metrics { background-image: url(../img/nav/Launch-configs.svg); }
-ul.resources-nav li i.icon.metrics.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
-ul.resources-nav li i.icon.roles { background-image: url(../img/nav/Roles.svg); }
-ul.resources-nav li i.icon.roles.active { background-image: url(../img/nav/Roles_Active.svg); }
-ul.resources-nav li i.icon.scalinggroups { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
-ul.resources-nav li i.icon.scalinggroups.active { background-image: url(../img/nav/Auto-Scaling-Groups_Active.svg); }
-ul.resources-nav li i.icon.securitygroups { background-image: url(../img/nav/Security.svg); }
-ul.resources-nav li i.icon.securitygroups.active { background-image: url(../img/nav/Security_Active.svg); }
-ul.resources-nav li i.icon.snapshots { background-image: url(../img/nav/Snapshots.svg); }
-ul.resources-nav li i.icon.snapshots.active { background-image: url(../img/nav/Snapshots_Active.svg); }
-ul.resources-nav li i.icon.stacks { background-image: url(../img/nav/stacks.svg); }
-ul.resources-nav li i.icon.stacks.active { background-image: url(../img/nav/stacks_Active.svg); }
-ul.resources-nav li i.icon.users { background-image: url(../img/nav/Users.svg); }
-ul.resources-nav li i.icon.users.active { background-image: url(../img/nav/Users_Active.svg); }
-ul.resources-nav li i.icon.instance-types { background-image: url(../img/nav/VM-Types.svg); }
-ul.resources-nav li i.icon.instance-types.active { background-image: url(../img/nav/VM-Types_Active.svg); }
-ul.resources-nav li i.icon.volumes { background-image: url(../img/nav/Volumes.svg); }
-ul.resources-nav li i.icon.volumes.active { background-image: url(../img/nav/Volumes_Active.svg); }
+ul.resources-nav li.active { background-color: #01a982 !important; color: white !important; }
+ul.resources-nav i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; color: #939598; }
+ul.resources-nav i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
+ul.resources-nav i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
+ul.resources-nav i.icon.cloudformation { background-image: url(../img/nav/stacks.svg); }
+ul.resources-nav i.icon.iam { background-image: url(../img/nav/Groups.svg); }
+ul.resources-nav i.icon.networksecurity { background-image: url(../img/nav/Security.svg); }
+ul.resources-nav i.icon.storage { background-image: url(../img/nav/Volumes.svg); }
 
 /* IE 10+ specific adjustments */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) { ul.resources-nav hr { margin-left: -15rem; }
