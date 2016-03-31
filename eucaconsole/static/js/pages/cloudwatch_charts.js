@@ -117,14 +117,15 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.refreshLargeChart();
     }
 
-    vm.showLargeChart = function(title, metric, statistic, ids, idtype) {
+    vm.showLargeChart = function(title, metric, statistic, unit, ids, idtype) {
         vm.selectedChartTitle = title; // || parentCtrl.metricTitleMapping[attrs.metric];
         vm.largeChartMetric = metric;
         vm.largeChartStatistic = statistic || 'Average';
+        vm.largeChartUnit = unit;
         vm.largeChartIds = ids;
         vm.largeChartIdType = idtype;
         vm.largeChartDuration = vm.duration;
-        $scope.$broadcast('cloudwatch:refreshLargeChart');
+        vm.refreshLargeChart();
         ModalService.openModal('largeChart');
     }
 
@@ -228,9 +229,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     };
 
     function ChartController($scope, $timeout) {
-        var target = $('#large-chart').length > 0 ? $('#large-chart').get(0) : $scope.target;
-        ChartService.resetChart(target);
-        renderChart($scope);
         $scope.$on('cloudwatch:refreshCharts', function (evt, refreshOptions) {
             var doRefresh = false;
             // Conditionally refresh charts based on passed options
@@ -262,6 +260,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 });
             });
         }
+        else {
+            renderChart($scope);
+        }
     }
 
     function renderChart(scope, options) {
@@ -275,7 +276,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 // times to avoid multi-chart display in dialog
                 return false;
             }
-            // Granularity is user-selectable in large chart, so don't auto-adjust on the server
         }
         largeChart = options.largeChart || scope.large;
         var params = options.params || {
@@ -293,6 +293,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         };
         if (largeChart) {
             parentCtrl.largeChartLoading = true;
+            // Granularity is user-selectable in large chart, so don't auto-adjust on the server
             params.adjustGranularity = 0;
         }
 
@@ -363,51 +364,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     function linkFunc(scope, element, attrs) {
 
         scope.target = element[0];
-
-        var chartWrapper = element.closest('.chart-wrapper');
-
-/*
-        if (!attrs.large) {
-            // Display large chart on small chart click
-            chartWrapper.on('no-click', function () {
-                var parentCtrl = scope.$parent.chartsCtrl;
-                // Granularity (period) defaults to 5 min, so no need to pass it here
-                var options = {
-                    'params': {
-                        'ids': attrs.ids,
-                        'idtype': attrs.idtype,
-                        'dimensions': attrs.dimensions,
-                        'metric': attrs.metric,
-                        'namespace': attrs.namespace,
-                        'duration': attrs.duration,
-                        'startTime': scope.startTime,
-                        'endTime': scope.endTime,
-                        'unit': attrs.unit,
-                        'statistic': attrs.statistic
-                    },
-                    'largeChart': true
-                };
-                parentCtrl.largeChartMetric = attrs.metric;
-                parentCtrl.selectedChartTitle = scope.title || parentCtrl.metricTitleMapping[attrs.metric];
-                parentCtrl.largeChartDuration = parentCtrl.duration;
-                parentCtrl.largeChartStatistic = attrs.statistic || 'Average';
-
-                ModalService.openModal('largeChart');
-                $timeout(function () {
-                    options.params.duration = parentCtrl.largeChartDuration;
-                    options.params.statistic = parentCtrl.largeChartStatistic;
-                    options.params.period = parentCtrl.largeChartGranularity;
-                    renderChart(scope, options);
-                });
-
-                scope.$on('cloudwatch:refreshLargeChart', function () {
-                    $timeout(function () {
-                        renderChart(scope, options);
-                    });
-                });
-            });
-        }
-        */
 
         // Handle visibility of loading indicators
         scope.$watch('chartLoading', function (newVal) {

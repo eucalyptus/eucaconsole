@@ -76,7 +76,7 @@
         <svg id="large-chart" no-x-labels="true" large="true"
              cloudwatch-chart="" class="cwchart"
              ids="{{ chartsCtrl.largeChartIds }}" idtype="{{ chartsCtrl.largeChartIdType }}" metric="{{ chartsCtrl.largeChartMetric }}" title="{{ chartsCtrl.selectedChartTitle }}"
-             duration="{{ chartsCtrl.largeChartDuration }}" unit="{{ chartsCtrl.unit }}" namespace="AWS/EBS"
+             duration="{{ chartsCtrl.largeChartDuration }}" unit="{{ chartsCtrl.largeChartUnit }}" namespace="AWS/EBS"
              statistic="{{ chartsCtrl.largeChartStatistic }}" empty="{{ chart.empty_msg }}">
         </svg>
     </div>
