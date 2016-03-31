@@ -117,11 +117,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.refreshLargeChart();
     }
 
-    vm.showLargeChart = function(title, metric, statistic, unit, ids, idtype) {
+    vm.showLargeChart = function(title, metric, statistic, unit, namespace, ids, idtype) {
         vm.selectedChartTitle = title; // || parentCtrl.metricTitleMapping[attrs.metric];
         vm.largeChartMetric = metric;
         vm.largeChartStatistic = statistic || 'Average';
         vm.largeChartUnit = unit;
+        vm.largeChartNamespace = namespace;
         vm.largeChartIds = ids;
         vm.largeChartIdType = idtype;
         vm.largeChartDuration = vm.duration;

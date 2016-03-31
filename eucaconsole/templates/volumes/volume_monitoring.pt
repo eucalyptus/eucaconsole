@@ -78,7 +78,7 @@
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled"
                     id="charts-container">
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="" ng-click="chartsCtrl.showLargeChart(chart.title, chart.metric, chart.statistic, chart.unit, '${volume.id}', 'VolumeId')">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="" ng-click="chartsCtrl.showLargeChart(chart.title, chart.metric, chart.statistic, chart.unit, 'AWS/EBS', '${volume.id}', 'VolumeId')">
                         <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
