@@ -5,7 +5,7 @@ angular.module('CreateAlarmModal', [
     'ScalingGroupsServiceModule',
     'AlarmActionsModule'
 ])
-.directive('createAlarm', ['MetricService', function (MetricService) {
+.directive('createAlarm', ['MetricService', 'AlarmService', function (MetricService, AlarmService) {
     var defaults = {};
 
     return {
@@ -49,6 +49,7 @@ angular.module('CreateAlarmModal', [
                     defaults.metric = scope.alarm.metric;
                 });
 
+            scope.checkNameCollision();
         },
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
             $scope.alarm = {};
@@ -64,16 +65,28 @@ angular.module('CreateAlarmModal', [
                 }
             });
 
-            $scope.alarmName = function () {
+            $scope.alarmName = function (count) {
                 // Name field updates when metric selection changes,
                 // unless the user has changed the value themselves.
+                count = count || 0;
                 
                 var alarm = $scope.alarm;
-                var metricName = [alarm.metric.name, alarm.comparison, (alarm.threshold || '?')].join(' ');
                 var name = [
                     alarm.metric.namespace,
                     $scope.resourceName || $scope.resourceId,
-                    metricName].join(' - ');
+                    alarm.metric.name].join(' - ');
+
+                if(count > 0) {
+                    name = name + [' (', ')'].join(count);
+                }
+
+                var collision = $scope.existingAlarms.some(function (alarm) {
+                    return alarm.name == name;
+                });
+
+                if(collision) {
+                    name = $scope.alarmName(count + 1);
+                }
 
                 return name;
             };
@@ -130,7 +143,17 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm = angular.copy(defaults);
                 $scope.createAlarmForm.$setPristine();
                 $scope.createAlarmForm.$setUntouched();
+                $scope.checkNameCollision();
             };
+
+            $scope.checkNameCollision = function () {
+                $scope.existingAlarms = [];
+                AlarmService.getAlarmsForResource($scope.resourceId, $scope.resourceType)
+                    .then(function (alarms) {
+                        $scope.existingAlarms = alarms;
+                        $scope.alarm.name = $scope.alarmName();
+                    });
+                };
         }]
     };
 }]);
