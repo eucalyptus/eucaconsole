@@ -127,7 +127,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.largeChartDuration = vm.duration;
         vm.refreshLargeChart();
         ModalService.openModal('largeChart');
-    }
+    };
 
     vm.shiftTimeLeft = function() {
         vm.timeRange = "absolute";
