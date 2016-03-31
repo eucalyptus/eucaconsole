@@ -81,8 +81,14 @@ $alarm-status-color-ok: $hpe-green;
         &.more-actions {
             margin-left: 1rem;
             padding-right: 3rem;
-            &[disabled]:after {
-                border-color: $hpe-lightgray transparent transparent transparent;
+            &[disabled] {
+                border: 2px solid $hpe-lightgray;
+                &:hover {
+                    outline: none;
+                }
+                &:after {
+                    border-color: $hpe-lightgray transparent transparent transparent;
+                }
             }
         }
     }
@@ -214,6 +220,7 @@ $alarm-status-color-ok: $hpe-green;
         }
         .f-dropdown a {
             color: $hpe-gray;
+            font-family: $euca-text-font-family;
             text-decoration: none;
             font-weight: normal;
             overflow: visible;
@@ -574,6 +581,11 @@ $alarm-status-color-ok: $hpe-green;
 
 .split.button {
     padding-right: 3.0rem !important;
+    .euca-split {
+        &:after {
+            border-color: $hpe-black transparent transparent transparent;
+        }
+    }
 }
 
 /* -----------------------------------------

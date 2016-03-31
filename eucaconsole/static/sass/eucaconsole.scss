@@ -672,6 +672,12 @@ textarea.policy-area {
             line-height: 34px;
             min-height: 37px;
         }
+        label {
+            margin-bottom: 4px;
+        }
+    }
+    .chosen-container .chosen-single {
+        height: 2.3rem;
     }
     input.number {
         width: 2rem;
@@ -1190,14 +1196,17 @@ footer {
         text-decoration: none;
         outline: 2px solid $hpe-green;
     }
+    &:focus {
+        color: $hpe-black;
+        background-color: #fff;
+    }
     &.secondary {
         background-color: #fff;
-        border: 2px $hpe-gray;
         &:hover {
             background-color: #fff;
             color: $hpe-black;
             text-decoration: none;
-            outline: 4px solid $hpe-green;
+            outline: 2px solid $hpe-gray;
         }
         font-family: $euca-header-font-family;
         text-transform: uppercase;
@@ -1215,6 +1224,13 @@ footer {
     &.round {
         &:hover {
             outline: none;
+            box-shadow: 0 0 0 2px $hpe-green;
+        }
+        &.disabled, &[disabled] {
+            &:hover {
+                outline: none;
+                box-shadow: none;
+            }
         }
     }
     &.dropdown {

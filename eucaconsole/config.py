@@ -129,9 +129,9 @@ def get_configurator(settings, enable_auth=True):
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
 
-    route_dir = os.path.join(os.getcwd(), 'run')
-    if not os.path.exists(route_dir) and os.path.exists('/var/run/eucaconsole'):
-        route_dir = '/var/run/eucaconsole'
+    route_dir = '/var/run/eucaconsole'
+    if not os.path.exists(route_dir):
+        route_dir = os.path.join(os.getcwd(), 'run')
     write_routes_json(route_dir)
     config.add_static_view(name='static/json', path=route_dir, cache_max_age=cache_duration)
 

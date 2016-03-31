@@ -2,17 +2,27 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.search-bar { position: relative; border: 1px solid #cccccc; background-color: white; margin-bottom: 0.5rem; padding: 4px; height: auto; }
-.search-bar i.fi-filter { color: #666666; position: absolute; top: 0.5rem; left: 0.65rem; }
-.search-bar #search-main-area { position: relative; margin-left: 1.65rem; margin-right: 1.65rem; cursor: text; }
-.search-bar .item-list { margin-bottom: 6px; }
-.search-bar .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
-.search-bar .item-list .item a { color: #666666; }
-.search-bar .item-list .item a:hover { color: #01a982; text-decoration: none; }
-.search-bar .item-list { margin-bottom: 2px; }
-.search-bar #search-selected { background-color: white; color: #666666; }
-.search-bar #search-entry { display: inline-block; height: 1.5rem; }
-.search-bar #search-input { width: 220px; border: 0; box-shadow: none; height: 1.5rem; padding: 3px; background-color: white; }
+/* Copyright 2014-2015 Eucalyptus Systems, Inc. */
+/*----------------------------------------- Colors ----------------------------------------- */
+/*----------------------------------------- Item list ----------------------------------------- */
+@-moz-document url-prefix() { .item-list .item { top: -0.40rem; }
+  .search-selected { top: -0.40rem; } }
+/*----------------------------------------- Magic Search bar ----------------------------------------- */
+.search-bar { position: relative; border: 1px solid #ccc; background-color: white; margin-bottom: 0.5rem; padding: 0.25rem; height: auto; }
+.search-bar i.fi-filter { color: #6a737b; position: absolute; top: 0.35rem; left: 0.65rem; }
+.search-bar .search-main-area { position: relative; margin-left: 1.65rem; margin-right: 1.65rem; cursor: text; }
+.search-bar .item-list { position: relative; }
+.search-bar .item-list .item { color: #333; background-color: #e6e7e8; height: 1.3rem; margin-right: 0.5rem; }
+.search-bar .item-list .item a { color: white; }
+.search-bar .search-selected { position: relative; padding-left: 0; padding-right: 0; background-color: white; color: #444; }
+.search-bar .search-entry { position: relative; display: inline-block; height: 1.5rem; height: 1.5rem; }
+.search-bar .search-input { width: 17.5rem; border: 0; box-shadow: none; height: 1.5rem; padding: 0.25rem; margin-bottom: 0; background-color: white; }
+.search-bar .search-input:focus { box-shadow: none; background-color: white; }
 .search-bar .match { font-weight: bold; }
-.search-bar i.cancel { color: #666666; position: absolute; top: 0.5rem; right: 0.65rem; }
+.search-bar i.cancel { color: #6a737b; position: absolute; top: 0.35rem; right: 0.65rem; }
 .search-bar i.cancel:hover { color: darkred; }
+.search-bar .f-dropdown.open { left: 0 !important; }
+
+.search-bar .item-list .item { background-color: white; border: 2px solid #cccccc; height: 1.5rem; }
+.search-bar .item-list .item a { color: #666666; }
+.search-bar .item-list .item i.fi-x { padding-left: 4px; }

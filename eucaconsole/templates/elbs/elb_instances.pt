@@ -2,7 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
 </head>
 

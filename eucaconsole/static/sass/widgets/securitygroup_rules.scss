@@ -45,6 +45,12 @@ form {
     .tabs-content {
         margin-top: 0.75rem;
     }
+    .ipaddress {
+        a:hover {
+            color: $hpe-green;
+            border-bottom: 1px solid $hpe-green;
+        }
+    }
 }
 
 .duplicated-rule-error{

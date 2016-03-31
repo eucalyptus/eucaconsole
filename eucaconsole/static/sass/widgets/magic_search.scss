@@ -1,61 +1,21 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
+// Pull in third-party Magic Search Bar styles
+@import "../../js/thirdparty/magic-search/magic_search";
+
 .search-bar {
-    position: relative;
-    border: 1px solid $hpe-lightgray;
-    background-color: white;
-    margin-bottom: 0.5rem;
-    padding: 4px;
-    height: auto;
-    i.fi-filter {
-        color: $hpe-gray;
-        position: absolute;
-        top: 0.5rem;
-        left: 0.65rem;
-        //&.has-items {
-        //    margin-top: 6px;
-        //}
-    }
-    #search-main-area {
-        position: relative;
-        margin-left: 1.65rem;
-        margin-right: 1.65rem;
-        cursor: text;
-    }
-    @include item-list;
     .item-list {
-        margin-bottom: 2px;
-    }
-    #search-selected {
-        background-color: white;
-        color: $hpe-gray;
-    }
-    #search-entry {
-        display: inline-block;
-        height: 1.5rem;
-    }
-    #search-input {
-        width: 220px;
-        border: 0;
-        box-shadow: none;
-        height: 1.5rem;
-        padding: 3px;
-        background-color: white;
-        //&.has-items {
-        //    margin-top: 6px;
-        //}
-    }
-    .match {
-        font-weight: bold;
-    }
-    i.cancel {
-        color: $hpe-gray;
-        &:hover {
-            color: darkred;
+        .item {
+            background-color: white;
+            border: 2px solid $hpe-lightgray;
+            height: 1.5rem;
+            a {
+                color: $hpe-gray;
+            }
+            i.fi-x {
+                padding-left: 4px;
+            }
         }
-        position: absolute;
-        top: 0.5rem;
-        right: 0.65rem;
     }
 }
