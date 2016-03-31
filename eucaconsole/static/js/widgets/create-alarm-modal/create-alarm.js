@@ -67,11 +67,6 @@ angular.module('CreateAlarmModal', [
             $scope.alarmName = function () {
                 // Name field updates when metric selection changes,
                 // unless the user has changed the value themselves.
-                /*
-                if($scope.createAlarm.name.$touched) {
-                    return $scope.alarm.name;
-                }
-                */
                 
                 var alarm = $scope.alarm;
                 var metricName = [alarm.metric.name, alarm.comparison, (alarm.threshold || '?')].join(' ');
@@ -102,7 +97,9 @@ angular.module('CreateAlarmModal', [
                     unit: alarm.unit,
                     description: alarm.description,
                     dimensions: alarm.metric.dimensions,
-                    alarm_actions: alarm.alarm_actions
+                    alarm_actions: alarm.alarm_actions,
+                    insufficient_data_actions: alarm.insufficient_data_actions,
+                    ok_actions: alarm.ok_actions
                 }, csrf_token).then(function success (response) {
                     ModalService.closeModal('createAlarm');
                     Notify.success(response.data.message);
@@ -114,8 +111,18 @@ angular.module('CreateAlarmModal', [
             };
 
             $scope.$on('actionsUpdated', function (event, actions) {
-                $scope.alarm.alarm_actions = actions.map(function (action) {
-                    return action.arn;
+                var targets = {
+                    ALARM: 'alarm_actions',
+                    INSUFFICIENT_DATA: 'insufficient_data_actions',
+                    OK: 'ok_actions'
+                };
+                $scope.alarm.insufficient_data_actions = [];
+                $scope.alarm.alarm_actions = [];
+                $scope.alarm.ok_actions = [];
+
+                actions.forEach(function (action) {
+                    var target = targets[action.alarm_state];
+                    $scope.alarm[target].push(action.arn);
                 });
             });
 

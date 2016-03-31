@@ -23,13 +23,14 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 
                 //  Do not add action if duplicate
                 var duplicate = $scope.alarmActions.some(function (current) {
-                    return current.arn == policy.arn;
+                    return current.arn == policy.arn && current.alarm_state == $scope.action.alarm_state;
                 });
                 if(duplicate) {
                     return;
                 }
 
                 var action = {
+                    alarm_state: $scope.action.alarm_state,
                     autoscaling_group_name: $scope.action.scalingGroup,
                     policy_name: policyName,
                     arn: policy.arn,
@@ -52,7 +53,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 
             $scope.resetForm = function () {
                 $scope.action = {
-                    alarmState: 'ALARM'
+                    alarm_state: 'ALARM'
                 };
                 $scope.defaultOptionValue = 'Select policy...';
                 $scope.scalingGroupPolicies = [];
@@ -78,7 +79,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 
                         var availableKeys = Object.keys(policies).filter(function (key) {
                             return !$scope.alarmActions.some(function (action) {
-                                return action.policy_name == key;
+                                return action.policy_name == key && action.alarm_state == $scope.action.alarm_state;
                             });
                         });
 

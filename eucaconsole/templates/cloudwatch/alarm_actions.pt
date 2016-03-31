@@ -4,7 +4,9 @@
     <h6>Actions</h6>
     <div class="item-list">
         <span class="item" ng-repeat="action in alarmActions" data-item-value="{{ action.arn }}">
-            <span i18n:translate="">For group</span>
+            <span i18n:translate="">When</span>
+            <strong>{{ action.alarm_state }}</strong>
+            <span i18n:translate="">for group</span>
             <strong>{{ action.autoscaling_group_name }}</strong>
             <span i18n:translate="">execute policy</span>
             <strong>{{ action.policy_name }}</strong>
@@ -30,7 +32,11 @@
                 <label class="right" i18n:translate="">When alarm state is</label>
             </div>
             <div class="columns large-10 small-10">
-                <span class="label status radius alert" i18n:translate="">ALARM</span>
+                <select name="alarmState" ng-model="action.alarm_state"
+                                          ng-init="action.alarm_state = 'ALARM'"
+                                          ng-change="updatePolicies()"
+                                          ng-options="state as state for state in ['ALARM', 'INSUFFICIENT_DATA', 'OK']">
+                </select>
             </div>
         </div>
         <div class="row controls-wrapper">
