@@ -143,8 +143,6 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             else {
                 graphParams += "&startTime="+startTime.toUTCString()+"&endTime="+endTime.toUTCString();
             }
-            //$(".nv-x g.nvd3.nv-wrap.nv-axis .tick text").detach()
-            //$(".nv-x g.nvd3.nv-wrap.nv-axis .nv-axisMaxMin text").detach()
         });
         vm.clearSelections = function() {
             vm.items.forEach(function(metric) {
