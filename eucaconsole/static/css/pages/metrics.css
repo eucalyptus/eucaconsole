@@ -193,7 +193,4 @@ magic-search .f-dropdown { min-width: 15rem; }
 .chart-wrapper .metric-chart-menu { position: relative; bottom: 1.3rem; padding-left: 0.5rem; padding-right: 0.5rem; left: 58rem; color: #5a5a5a; cursor: pointer; }
 .chart-wrapper svg { height: 300px !important; }
 
-.time-shift .graph-shift-left { position: relative; left: 0.25rem; color: #5a5a5a; cursor: pointer; }
-.time-shift .graph-shift-right { position: relative; left: 59rem; color: #5a5a5a; cursor: pointer; }
-
 .metrics-url-field { width: 100%; }

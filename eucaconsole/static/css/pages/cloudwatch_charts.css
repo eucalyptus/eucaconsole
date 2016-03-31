@@ -30,3 +30,7 @@ svg g.euca-alarmLines line.alarm { stroke: red; stroke-width: 1px; stroke-dashar
 .large-chart-wrapper .busy.loading { position: absolute; top: 12rem; left: 48%; width: 3rem; height: 3rem; font-size: 3rem; color: #6a737b; }
 
 .time-shift svg { width: 100%; height: 18px; }
+.time-shift .graph-shift-left { float: left; color: #5a5a5a; }
+.time-shift .graph-shift-left:hover { cursor: pointer; color: #01a982; }
+.time-shift .graph-shift-right { float: right; color: #5a5a5a; }
+.time-shift .graph-shift-right:hover { cursor: pointer; color: #01a982; }

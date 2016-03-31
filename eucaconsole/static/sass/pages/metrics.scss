@@ -119,20 +119,6 @@ div.absolute-grouping {
         height: 300px !important;
     }
 }
-.time-shift {
-    .graph-shift-left {
-        position: relative;
-        left: 0.25rem;
-        color: $hp-gray-65;
-        cursor: pointer;
-    }
-    .graph-shift-right {
-        position: relative;
-        left: 59rem;
-        color: $hp-gray-65;
-        cursor: pointer;
-    }
-}
 
 .metrics-url-field {
     width: 100%;

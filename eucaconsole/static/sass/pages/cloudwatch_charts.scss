@@ -121,9 +121,27 @@ svg {
     }
 }
 
-.time-shift{
+.time-shift {
     svg {
         width: 100%;
         height: 18px;
+    }
+    .graph-shift-left {
+        float: left;
+        //left: 0.25rem;
+        color: $hp-gray-65;
+        &:hover {
+            cursor: pointer;
+            color: $hpe-green;
+        }
+    }
+    .graph-shift-right {
+        float: right;
+        //right: 0.25rem;
+        color: $hp-gray-65;
+        &:hover {
+            cursor: pointer;
+            color: $hpe-green;
+        }
     }
 }

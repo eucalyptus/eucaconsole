@@ -124,6 +124,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.largeChartIds = ids;
         vm.largeChartIdType = idtype;
         vm.largeChartDuration = vm.duration;
+        $scope.$broadcast('cloudwatch:refreshLargeChart');
         ModalService.openModal('largeChart');
     }
 
@@ -227,7 +228,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     };
 
     function ChartController($scope, $timeout) {
-        var target = largeChart && $('#large-chart').length > 0 ? $('#large-chart').get(0) : $scope.target;
+        var target = $('#large-chart').length > 0 ? $('#large-chart').get(0) : $scope.target;
         ChartService.resetChart(target);
         renderChart($scope);
         $scope.$on('cloudwatch:refreshCharts', function (evt, refreshOptions) {
