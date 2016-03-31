@@ -16,6 +16,7 @@
 #elb-listener-editor .label.radius.bcert { background-color: #b3b3b3; margin-right: 6px; }
 #elb-listener-editor table.table { width: 100%; }
 #elb-listener-editor table.table tr.top-header { border-bottom: 0; }
+#elb-listener-editor table.table tr.top-header th { border-bottom: none; padding: 0 0 0 6px; }
 #elb-listener-editor table.table th { white-space: nowrap; }
 #elb-listener-editor table.table th.vertical-border-header { border-collapse: collapse; border-right: 1px solid #ddd; }
 

@@ -672,6 +672,12 @@ textarea.policy-area {
             line-height: 34px;
             min-height: 37px;
         }
+        label {
+            margin-bottom: 4px;
+        }
+    }
+    .chosen-container .chosen-single {
+        height: 2.3rem;
     }
     input.number {
         width: 2rem;
@@ -997,21 +1003,29 @@ textarea.hidden {
             background-image: none;
             background-color: #fff !important;
             border-radius: 0;
-            height: 2rem;
-            line-height: 2rem;
+            height: 2.5rem;
+            line-height: 2.5rem;
             font-size: 0.875rem;
             b {
                 position: relative;
-                top: 4px;
+                top: 10px;
             }
         }
     }
-    .chosen-drop .chosen-results {
-        font-size: $euca-font-size;
-        .active-result {
-            &.highlighted {
-                color: $hpe-black;
-                background: $hpe-hovergray none;
+    .chosen-drop {
+        .chosen-search {
+            input {
+                height: 2rem;
+                line-height: 2rem;
+            }
+        }
+        .chosen-results {
+            font-size: $euca-font-size;
+            .active-result {
+                &.highlighted {
+                    color: $hpe-black;
+                    background: $hpe-hovergray none;
+                }
             }
         }
     }
@@ -1182,14 +1196,17 @@ footer {
         text-decoration: none;
         outline: 2px solid $hpe-green;
     }
+    &:focus {
+        color: $hpe-black;
+        background-color: #fff;
+    }
     &.secondary {
         background-color: #fff;
-        border: 2px $hpe-gray;
         &:hover {
             background-color: #fff;
             color: $hpe-black;
             text-decoration: none;
-            outline: 4px solid $hpe-green;
+            outline: 2px solid $hpe-gray;
         }
         font-family: $euca-header-font-family;
         text-transform: uppercase;
@@ -1207,6 +1224,13 @@ footer {
     &.round {
         &:hover {
             outline: none;
+            box-shadow: 0 0 0 2px $hpe-green;
+        }
+        &.disabled, &[disabled] {
+            &:hover {
+                outline: none;
+                box-shadow: none;
+            }
         }
     }
     &.dropdown {

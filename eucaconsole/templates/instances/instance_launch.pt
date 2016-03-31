@@ -194,9 +194,11 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="large-9 small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
-                                ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
-                                ${launch_form['private_addressing'].label}
+                            <div class="row inline controls-wrapper" id="controls_private_addressing">
+                                <div class="large-9 small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
+                                    ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
+                                    ${launch_form['private_addressing'].label}
+                                </div>
                             </div>
                             <hr/>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices, add_hr=True)}
