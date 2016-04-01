@@ -1,2 +1,2 @@
-angular.module('ResourceMonitoring', ['CloudWatchCharts', 'AlarmStateView']);
+angular.module('ResourceMonitoring', ['CloudWatchCharts', 'AlarmStateView', 'CreateAlarmModal']);
 
