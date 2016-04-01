@@ -1453,6 +1453,16 @@ $expanded-nav-width: 225px;
     }
 }
 
+// replace fa-4x or fa-5x
+span.euca-nav-size {
+    font-size: 1.65em;
+}
+ul.off-canvas-list li{
+    a:hover {
+        background-color: $hpe-hovergray !important;
+        color: $hpe-gray !important;
+    }
+}
 ul.resources-nav {
     width: $expanded-nav-width*2;
     list-style-type: none;
@@ -1460,10 +1470,11 @@ ul.resources-nav {
     margin-left: 0;
     left: 0;
     label {
-        padding-left: 0.5rem;
+        padding-left: 3.0rem;
         background-color: white;
         color: $hpe-gray;
-        padding-top: 0.5rem;
+        padding-top: 0.6rem;
+        margin-bottom: 0.6rem;
         border-top: 0;
     }
     hr {
@@ -1478,6 +1489,9 @@ ul.resources-nav {
             line-height: 1.5rem;
             border-bottom: 0;
             position: static;
+        }
+        a.active {
+            color: white !important;
         }
         &:hover {
             background-color: $hpe-hovergray;
@@ -1500,47 +1514,31 @@ ul.resources-nav {
             height: 2rem;
             width: 2rem;
         }
-        i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
-        i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
-        i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
-        i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
-        i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
-        i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
         i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
         i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
-        i.icon.ipaddresses { background-image: url(../img/nav/Elastic-IP.svg); }
-        i.icon.ipaddresses.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
-        i.icon.groups { background-image: url(../img/nav/Groups.svg); }
-        i.icon.groups.active { background-image: url(../img/nav/Groups_Active.svg); }
         i.icon.images { background-image: url(../img/nav/Images.svg); }
         i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
         i.icon.instances { background-image: url(../img/nav/Instances.svg); }
         i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
-        i.icon.keypairs { background-image: url(../img/nav/Key-Pairs.svg); }
-        i.icon.keypairs.active { background-image: url(../img/nav/Key-Pairs_Active.svg); }
-        i.icon.launchconfigs { background-image: url(../img/nav/Launch-configs.svg); }
-        i.icon.launchconfigs.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
-        i.icon.elbs { background-image: url(../img/nav/Load-Balance.svg); }
-        i.icon.elbs.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
-        i.icon.metrics { background-image: url(../img/nav/Launch-configs.svg); }
-        i.icon.metrics.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
-        i.icon.roles { background-image: url(../img/nav/Roles.svg); }
-        i.icon.roles.active { background-image: url(../img/nav/Roles_Active.svg); }
-        i.icon.scalinggroups { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
-        i.icon.scalinggroups.active { background-image: url(../img/nav/Auto-Scaling-Groups_Active.svg); }
-        i.icon.securitygroups { background-image: url(../img/nav/Security.svg); }
-        i.icon.securitygroups.active { background-image: url(../img/nav/Security_Active.svg); }
-        i.icon.snapshots { background-image: url(../img/nav/Snapshots.svg); }
-        i.icon.snapshots.active { background-image: url(../img/nav/Snapshots_Active.svg); }
-        i.icon.stacks { background-image: url(../img/nav/stacks.svg); }
-        i.icon.stacks.active { background-image: url(../img/nav/stacks_Active.svg); }
-        i.icon.users { background-image: url(../img/nav/Users.svg); }
-        i.icon.users.active { background-image: url(../img/nav/Users_Active.svg); }
-        i.icon.instance-types { background-image: url(../img/nav/VM-Types.svg); }
-        i.icon.instance-types.active { background-image: url(../img/nav/VM-Types_Active.svg); }
-        i.icon.volumes { background-image: url(../img/nav/Volumes.svg); }
-        i.icon.volumes.active { background-image: url(../img/nav/Volumes_Active.svg); }
     }
+    li.active {
+        background-color: $hpe-green !important;
+        color: white !important;
+    }
+    i.icon {
+        position: absolute;
+        left: 0.5rem;
+        margin-top: 0.5rem;
+        height: 2rem;
+        width: 2rem;
+        color: #939598;
+    }
+    i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
+    i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
+    i.icon.cloudformation { background-image: url(../img/nav/stacks.svg); }
+    i.icon.iam { background-image: url(../img/nav/Groups.svg); }
+    i.icon.networksecurity { background-image: url(../img/nav/Security.svg); }
+    i.icon.storage { background-image: url(../img/nav/Volumes.svg); }
 }
 
 /* IE 10+ specific adjustments */
