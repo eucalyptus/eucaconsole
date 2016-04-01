@@ -77,6 +77,8 @@
              cloudwatch-chart="" class="cwchart"
              ids="{{ chartsCtrl.largeChartIds }}" idtype="{{ chartsCtrl.largeChartIdType }}" metric="{{ chartsCtrl.largeChartMetric }}" title="{{ chartsCtrl.selectedChartTitle }}"
              duration="{{ chartsCtrl.largeChartDuration }}" unit="{{ chartsCtrl.largeChartUnit }}"
+             start-time="{{ chartsCtrl._largeChartStartTime.toISOString() }}"
+             end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
              namespace="{{ chartsCtrl.largeChartNamespace }}"
              statistic="{{ chartsCtrl.largeChartStatistic }}" empty="{{ chart.empty_msg }}">
         </svg>
