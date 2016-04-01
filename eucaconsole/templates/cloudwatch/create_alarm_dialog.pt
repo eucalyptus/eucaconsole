@@ -8,15 +8,15 @@
                     default-statistic="${default_statistic}"
                     ng-submit="createAlarm()"
                     novalidate="">
-    <h3>Create Alarm</h3>
-    <h6>Alarm</h6>
+    <h3 i18n:translate="">Create Alarm</h3>
+    <h6 i18n:translate="">Alarm</h6>
     <div class="row inline controls-wrapper">
         <div class="large-3 small-3 columns">
             <label class="right" i18n:translate="">Name</label>
         </div>
         <div class="large-9 small-9 columns field">
             <input name="name" ng-model="alarm.name" required="required" type="text" ng-change="onNameChange()">
-            <small class="error unique-name">Alarm name must be unique.</small>
+            <small class="error unique-name" i18n:translate="">Alarm name must be unique.</small>
         </div>
     </div>
     <div class="row inline controls-wrapper">
@@ -97,7 +97,7 @@
     ${panel('alarm_actions_panel')}
     <hr/>
     <div class="controls">
-        <button type="submit" class="button expand">
+        <button type="submit" class="button expand" i18n:translate="">
             Create Alarm
         </button>
     </div>
