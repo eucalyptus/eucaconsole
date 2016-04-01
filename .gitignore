@@ -16,7 +16,6 @@ dist/
 bin/
 lib/
 include/
-run/
 .idea/
 distribute-*.tar.gz
 bookenv/
@@ -34,3 +33,4 @@ node_modules/
 eucaconsole.backup/
 eucaconsole/static/js/minified/
 Gemfile.lock
+eucaconsole/static/css/font-awesome/font-awesome.css
