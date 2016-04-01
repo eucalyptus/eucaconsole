@@ -259,7 +259,7 @@
                                      end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
                                      unit="{{ chart[0].unit }}"
                                      statistic="{{ chartsCtrl.largeChartStatistic }}" empty="No Data"
-                                     large="true" no-x-labels="true">
+                                     large="true" no-x-labels="true" auto-load="true">
                                 </svg>
                             </div>
                         </div>

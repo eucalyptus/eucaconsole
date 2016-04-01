@@ -223,7 +223,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
             'title': '@title',
             'empty': '@empty',
             'large': '@large',
-            'noXLabels': '@noXLabels'
+            'noXLabels': '@noXLabels',
+            'autoLoad': '@'
         },
         link: linkFunc,
         controller: ChartController
@@ -260,6 +261,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                     renderChart($scope);
                 });
             });
+            if ($scope.autoLoad) {
+                renderChart($scope);
+            }
         }
         else {
             renderChart($scope);
