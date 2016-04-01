@@ -96,7 +96,7 @@ class MasterLayout(object):
                     self.has_regions = False
                 except socket.error:
                     self.has_regions = False
-        if self.has_regions:
+        if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
             if self.selected_region == '' or self.selected_region == 'undefined':
                 self.selected_region = self.default_region
