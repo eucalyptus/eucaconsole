@@ -8,7 +8,7 @@ class CreateSnapshotPage(BasePage):
 
     _page_title = "Create new snapshot"
     _name_input_field_id = "name"
-    _volume_selector_css = '[class="chosen-single"]>span'
+    _volume_selector_css = 'css=#volume_id_chosen>a'
     _volume_selector_search_window_css = '.chosen-search>input'
     _highlighted_search_result_css = '.active-result'
     _description_field_id = 'description'
