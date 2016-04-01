@@ -1,1 +1,3 @@
 .create-alarm-modal .dimensions ul { list-style: none; margin: 0; padding: 0; }
+.create-alarm-modal .error { display: none; }
+.create-alarm-modal.ng-invalid-unique-name .error.unique-name { display: block; }

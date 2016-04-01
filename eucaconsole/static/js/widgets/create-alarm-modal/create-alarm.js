@@ -69,6 +69,10 @@ angular.module('CreateAlarmModal', [
                 // Name field updates when metric selection changes,
                 // unless the user has changed the value themselves.
                 count = count || 0;
+                if(count > 20) {
+                    $scope.createAlarmForm.name.$setValidity('uniqueName', false);
+                    return $scope.alarm.name;
+                }
                 
                 var alarm = $scope.alarm;
                 var name = [

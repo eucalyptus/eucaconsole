@@ -6,4 +6,16 @@
             padding: 0;
         }
     }
+
+    .error {
+        display: none;
+    }
+
+    &.ng-invalid-unique-name {
+       .error {
+           &.unique-name {
+               display: block;
+           }
+       }
+    }
 }
