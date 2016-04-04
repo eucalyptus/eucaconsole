@@ -244,7 +244,7 @@
                                 <i class="fa fa-ellipsis-v"></i>
                             </span>
                             <ul id="chart-dropdown-{{ metric }}" class="f-dropdown" data-dropdown-content="">
-                                <li> <a ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{metric}}&resource={{ chart[0].res_ids | escapeURL }}" i18n:translate="">Create alarm</a> </li>
+                                <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(chart[0])">Create alarm</a></li>
                                 <li> <a ng-click="metricsCtrl.copyUrl(chart)" i18n:translate="">Copy URL</a> </li>
                             </ul>
                             <div class="large-chart-wrapper">
