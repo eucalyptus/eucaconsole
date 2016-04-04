@@ -3,14 +3,18 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
+            scope.alarmId = attrs.alarmId;
             scope.alarmActions = JSON.parse(attrs.alarmActions);
-            scope.servicePath = attrs.servicePath;
             scope.defaultOptionValue = 'Select policy...';
         },
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
+            ScalingGroupsService.getScalingGroups().then(function (result) {
+                $scope.scalingGroups = result;
+            });
+
             $scope.addAction = function () {
                 //  Do not add action if form is invalid
-                if($scope.alarmActionsForm.$invalid) {
+                if($scope.alarmActionsForm.$invalid || $scope.alarmActionsForm.$pristine) {
                     return;
                 }
 
@@ -19,13 +23,14 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 
                 //  Do not add action if duplicate
                 var duplicate = $scope.alarmActions.some(function (current) {
-                    return current.arn == policy.arn;
+                    return current.arn == policy.arn && current.alarm_state == $scope.action.alarm_state;
                 });
                 if(duplicate) {
                     return;
                 }
 
                 var action = {
+                    alarm_state: $scope.action.alarm_state,
                     autoscaling_group_name: $scope.action.scalingGroup,
                     policy_name: policyName,
                     arn: policy.arn,
@@ -42,16 +47,13 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             };
 
             $scope.updateActions = function () {
-                AlarmService.updateActions($scope.alarmActions, $scope.servicePath).then(function success () {
-                    $scope.resetForm();
-                }, function error (response) {
-                    console.log(response);
-                });
+                $scope.$emit('actionsUpdated', $scope.alarmActions);
+                $scope.resetForm();
             };
 
             $scope.resetForm = function () {
                 $scope.action = {
-                    alarmState: 'ALARM'
+                    alarm_state: 'ALARM'
                 };
                 $scope.defaultOptionValue = 'Select policy...';
                 $scope.scalingGroupPolicies = [];
@@ -77,7 +79,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 
                         var availableKeys = Object.keys(policies).filter(function (key) {
                             return !$scope.alarmActions.some(function (action) {
-                                return action.policy_name == key;
+                                return action.policy_name == key && action.alarm_state == $scope.action.alarm_state;
                             });
                         });
 
@@ -96,6 +98,20 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                     });
             };
         }]
+    };
+})
+.directive('requiredIfChanged', function () {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, element, attrs, ctrl) {
+            ctrl.$validators.requiredIfChanged = function (modelValue, viewValue) {
+                if(ctrl.$touched && ctrl.$isEmpty(modelValue)) {
+                    return false;
+                }
+                return true;
+            };
+        }
     };
 })
 .filter('signed', function () {

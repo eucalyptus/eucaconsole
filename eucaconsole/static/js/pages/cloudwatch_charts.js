@@ -9,8 +9,8 @@
  *
  */
 
-angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'ChartServiceModule'])
-.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
+angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'ChartServiceModule', 'CreateAlarmModal'])
+.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray, ModalService) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
     vm.largeChartStatistic = "Sum";
@@ -34,6 +34,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
     vm.emptyChartCount = 0;
+
+    vm.revealCreateModal = revealCreateModal;
+
     vm.displayZeroChartMetrics = [  // Display a zero chart rather than an empty message for the following metrics
         'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
         'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
@@ -169,6 +172,10 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         chartModal.on('open.fndtn.reveal', function () {
             chartModal.find('#large-chart').empty();
         });
+    }
+
+    function revealCreateModal () {
+        ModalService.openModal('createAlarm');
     }
 })
 .directive('cloudwatchChart', function($http, $timeout, CloudwatchAPI, ChartService, eucaHandleError) {

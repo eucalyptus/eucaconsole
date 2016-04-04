@@ -29,7 +29,6 @@ Pyramid views for Eucalyptus and AWS CloudWatch metrics
 
 """
 import copy
-import datetime
 import simplejson as json
 
 from pyramid.view import view_config
@@ -351,6 +350,27 @@ class CloudWatchMetricsJsonView(BaseView):
                 names[volume.id] = TaggedItemView.get_display_name(volume)
         return dict(results=names)
 
+    @view_config(route_name='metrics_available_for_resource', renderer='json', request_method='GET')
+    def metrics_available_for_resource(self):
+        resourcetype = self.request.matchdict.get('type')
+        resourceid = self.request.matchdict.get('value')
+
+        conn = self.get_connection(conn_type='cloudwatch')
+
+        metrics = []
+        dimensions = {resourcetype: resourceid}
+        with boto_error_handler(self.request):
+            metrics = conn.list_metrics(dimensions=dimensions)
+
+        result = [{
+            'statistics': m.Statistics,
+            'unit': next(metric['unit'] for metric in METRIC_TYPES if metric['name'] == m.name),
+            'dimensions': m.dimensions,
+            'name': m.name,
+            'namespace': m.namespace} for m in metrics]
+
+        return dict(metrics=result)
+
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')
         return conn.list_metrics() if conn else []
@@ -369,4 +389,3 @@ class CloudWatchMetricsJsonView(BaseView):
         elif "ImageId" == resource_type:
             url = request.route_path('image_view', id=resource_id)
         return url
-

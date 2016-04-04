@@ -24,26 +24,40 @@ angular.module('AlarmDetailPage', [
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
-                var servicePath = event.target.dataset.servicePath;
+                var redirectPath = event.target.dataset.redirectPath;
 
-                AlarmService.updateAlarm($scope.alarm, servicePath, csrf_token, true)
+                var dimensions = $scope.alarm.dimensions || [],
+                    newDimensions = {};
+
+                dimensions.forEach(function (dimension) {
+                    var d = JSON.parse(dimension);
+                    Object.keys(d).forEach(function (key) {
+                        if(!(key in newDimensions)) {
+                            newDimensions[key] = [];
+                        }
+                        newDimensions[key] = newDimensions[key].concat(d[key]);
+                    });
+                });
+
+                $scope.alarm.dimensions = newDimensions;
+
+                AlarmService.updateAlarm($scope.alarm, csrf_token, true)
                     .then(function success (response) {
-                        $window.location.href = servicePath;
+                        $window.location.href = redirectPath;
                     }, function error (response) {
-                        $window.location.href = servicePath;
+                        $window.location.href = redirectPath;
                     });
             };
 
             $scope.delete = function (event) {
                 event.preventDefault();
                 var redirectPath = event.target.dataset.redirectPath;
-                var servicePath = event.target.dataset.servicePath;
 
                 var alarms = [{
                     name: $scope.alarm.name
                 }];
 
-                AlarmService.deleteAlarms(alarms, servicePath, csrf_token, true)
+                AlarmService.deleteAlarms(alarms, csrf_token, true)
                     .then(function success (response) {
                         $window.location.href = redirectPath;
                     }, function error (response) {

@@ -15,7 +15,7 @@ angular.module('ModalModule', [])
         }]
     };
 }])
-.factory('ModalService', function () {
+.factory('ModalService', ['$rootScope', function ($rootScope) {
     var _modals = {};
 
     function registerModal (name, element) {
@@ -42,6 +42,7 @@ angular.module('ModalModule', [])
         }
 
         modal.removeClass('open');
+        $rootScope.$broadcast('modal:close', name);
     }
 
     return {
@@ -49,4 +50,4 @@ angular.module('ModalModule', [])
         closeModal: closeModal,
         registerModal: registerModal
     };
-});
+}]);
