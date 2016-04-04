@@ -130,20 +130,40 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         ModalService.openModal('largeChart');
     };
 
+    function getTimeShift() {
+        return (vm._largeChartEndTime.valueOf() - vm._largeChartStartTime.valueOf()) / 2000;
+    }
+
+    vm.shiftTimeLeftAllowed = function() {
+        var startDate = new Date();
+        startDate.setHours(-(14 * 24));  // move back 2 weeks
+        var timeDiffSecs = getTimeShift();
+        return new Date(vm._largeChartStartTime).setSeconds(-timeDiffSecs) > startDate;
+    };
+
+    vm.shiftTimeRightAllowed = function() {
+        var timeDiffSecs = getTimeShift();
+        return new Date(vm._largeChartEndTime).setSeconds(timeDiffSecs) < (new Date());
+    };
+
     vm.shiftTimeLeft = function() {
-        vm.timeRange = "absolute";
-        var timeDiffSecs = (vm._largeChartEndTime.valueOf() - vm._largeChartStartTime.valueOf()) / 2000;
-        vm._largeChartStartTime.setSeconds(-timeDiffSecs);
-        vm._largeChartEndTime.setSeconds(-timeDiffSecs);
-        vm.refreshLargeChart();
+        if (vm.shiftTimeLeftAllowed()) {
+            vm.timeRange = "absolute";
+            var timeDiffSecs = getTimeShift();
+            vm._largeChartStartTime.setSeconds(-timeDiffSecs);
+            vm._largeChartEndTime.setSeconds(-timeDiffSecs);
+            vm.refreshLargeChart();
+        }
     };
 
     vm.shiftTimeRight = function() {
-        vm.timeRange = "absolute";
-        var timeDiffSecs = (vm._largeChartEndTime.valueOf() - vm._largeChartStartTime.valueOf()) / 2000;
-        vm._largeChartStartTime.setSeconds(timeDiffSecs);
-        vm._largeChartEndTime.setSeconds(timeDiffSecs);
-        vm.refreshLargeChart();
+        if (vm.shiftTimeRightAllowed()) {
+            vm.timeRange = "absolute";
+            var timeDiffSecs = getTimeShift();
+            vm._largeChartStartTime.setSeconds(timeDiffSecs);
+            vm._largeChartEndTime.setSeconds(timeDiffSecs);
+            vm.refreshLargeChart();
+        }
     };
 
     vm.handleAbsoluteChange = function() {

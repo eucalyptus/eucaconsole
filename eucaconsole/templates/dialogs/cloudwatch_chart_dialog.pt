@@ -63,10 +63,10 @@
         </div>
     </div>
     <div class="time-shift">
-        <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
+        <a ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left" ng-disabled="!chartsCtrl.shiftTimeLeftAllowed()">
             <i class="fa fa-arrow-circle-o-left fa-2x"></i>
         </a>
-        <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="chartsCtrl.timeRange=='relative'">
+        <a ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="!chartsCtrl.shiftTimeRightAllowed()">
             <i class="fa fa-arrow-circle-o-right fa-2x"></i>
         </a>
         <svg></svg>
