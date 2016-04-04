@@ -980,6 +980,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
             scaling_group=self.scaling_group,
             scaling_group_name=self.scaling_group.name,
             launch_config_name=self.launch_configuration.name,
+            has_elb=bool(self.scaling_group.load_balancers),
             monitoring_form=self.monitoring_form,
             metrics_collection_enabled=metrics_collection_enabled,
             launchconfig_monitoring_enabled=launchconfig_monitoring_enabled,
