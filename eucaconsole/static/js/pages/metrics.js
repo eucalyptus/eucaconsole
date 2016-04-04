@@ -272,7 +272,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }, 500);
         };
         vm.showCreateAlarm = function(metric) {
-            vm.metricForAlarm = metric;
+            $scope.metricForAlarm = metric;
             ModalService.openModal('createAlarm');
         };
     })
