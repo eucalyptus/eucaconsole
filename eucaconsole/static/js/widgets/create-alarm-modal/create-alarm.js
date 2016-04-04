@@ -10,7 +10,10 @@ angular.module('CreateAlarmModal', [
 
     return {
         restrict: 'A',
-        require: 'modal',
+        require: '^modal',
+        templateUrl: function (element, attributes) {
+            return attributes.template;
+        },
         link: function (scope, element, attrs) {
             defaults = {
                 statistic: attrs.defaultStatistic,

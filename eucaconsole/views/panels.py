@@ -450,7 +450,8 @@ def elb_listener_editor(context, request, listener_list=None, protocol_list=None
 
 @panel_config('create_alarm_dialog_new', renderer='../templates/cloudwatch/create_alarm_dialog.pt')
 def create_alarm_dialog_new(context, request, resource_type=None, resource_type_value=None,
-                            resource_name=None, default_metric=None, default_statistic=None):
+                            resource_name=None, default_metric=None, default_statistic=None,
+                            template=None):
     return dict(
         resource_type=resource_type,
         resource_type_value=resource_type_value,
