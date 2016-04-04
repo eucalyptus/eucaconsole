@@ -278,7 +278,7 @@
         </div>
     </div>
     <div class="modal medium create-alarm-modal" modal="createAlarm">
-        <div create-alarm="" ng-if="metricForAlaram"
+        <div create-alarm="" ng-if="metricForAlarm"
             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
             resource-type="{{ metricForAlarm.resource[0].res_type }}"
             resource-id="{{ metricForAlarm.resource[0].res_id }}"
