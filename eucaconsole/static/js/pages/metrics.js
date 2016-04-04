@@ -68,6 +68,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         }
         $scope.$on('itemsLoaded', function($event, items) {
             vm.items = items;
+            var resource_list, option_list, instances, images, volumes, params;
             // clear previous filters
             resource_list = [];
             items.forEach(function(metric, idx) {
