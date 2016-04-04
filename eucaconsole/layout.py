@@ -87,7 +87,7 @@ class MasterLayout(object):
                     self.regions = RegionCache(conn).regions()
                     if len(self.regions) == 1:
                         self.has_regions = False
-                    self.default_region = request.registry.settings.get('default.region', 'euca')
+                    self.default_region = request.registry.settings.get('default.region', None)
                     if self.default_region is None:
                         for region in self.regions:
                             if region['endpoints']['ec2'].find(host) > -1:
@@ -98,7 +98,7 @@ class MasterLayout(object):
                     self.has_regions = False
         if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
-            if self.selected_region == '':
+            if self.selected_region == '' or self.selected_region == 'undefined':
                 self.selected_region = self.default_region
             self.selected_region_label = self.get_selected_region_label(self.selected_region, self.regions)
         self.username_label = self.request.session.get('username_label')

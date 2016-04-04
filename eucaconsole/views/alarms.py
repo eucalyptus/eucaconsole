@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS CloudWatch alarms
 
 """
 import re
+import base64
 import simplejson as json
 
 from boto.ec2.cloudwatch import MetricAlarm
@@ -97,6 +98,10 @@ class CloudWatchAlarmsView(LandingPageView):
 
     @view_config(route_name='cloudwatch_alarms_create', renderer=TEMPLATE, request_method='POST')
     def cloudwatch_alarms_create(self):
+        """ Cloudwatch Alarm Create
+        Only used by the create alarm dialog on scaling group policy page.
+        Newer alarm dialogs use cloudwatch_alarms PUT method below.
+        """
         location = self.request.route_path('cloudwatch_alarms')
         redirect_location = self.request.params.get('redirect_location')
         if redirect_location:
@@ -163,20 +168,16 @@ class CloudWatchAlarmsView(LandingPageView):
         description = alarm.get('description')
         dimensions = alarm.get('dimensions')
 
-        metric_dimensions = {}
-        for selected in dimensions:
-            decoded = json.loads(selected)
-            for key, value in decoded.iteritems():
-                if key in metric_dimensions:
-                    metric_dimensions[key] += value
-                else:
-                    metric_dimensions[key] = value
+        insufficient_data_actions = alarm.get('insufficient_data_actions')
+        alarm_actions = alarm.get('alarm_actions')
+        ok_actions = alarm.get('ok_actions')
 
         updated = MetricAlarm(
             name=name, metric=metric, namespace=namespace, statistic=statistic,
             comparison=comparison, threshold=threshold, period=period,
             evaluation_periods=evaluation_periods, unit=unit, description=description,
-            dimensions=metric_dimensions)
+            dimensions=dimensions, alarm_actions=alarm_actions, ok_actions=ok_actions,
+            insufficient_data_actions=insufficient_data_actions)
 
         with boto_error_handler(self.request):
             self.log_request(_(u'Updating alarm {0}').format(alarm.get('name')))
@@ -329,6 +330,8 @@ class CloudWatchAlarmDetailView(BaseView):
         super(CloudWatchAlarmDetailView, self).__init__(request, **kwargs)
 
         alarm_id = self.request.matchdict.get('alarm_id')
+        alarm_id = base64.decodestring(alarm_id)
+
         self.alarm = self.get_alarm(alarm_id)
         self.alarm_form = CloudWatchAlarmUpdateForm(
             request)
@@ -374,30 +377,25 @@ class CloudWatchAlarmDetailView(BaseView):
 
         alarm_actions = []
         for action in self.alarm.alarm_actions:
-            arn = AmazonResourceName.factory(action)
-            policy_details = self.get_policies_for_scaling_group(arn.autoscaling_group_name, [arn.policy_name])
-            policy_details.reverse()
-            policy = policy_details.pop()
-
-            detail = {
-                'arn': arn.arn,
-                'autoscaling_group_name': arn.autoscaling_group_name,
-                'policy_name': arn.policy_name
-            }
-
-            if policy:
-                detail['scaling_adjustment'] = policy.scaling_adjustment
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'ALARM'
             alarm_actions.append(detail)
 
-        scaling_groups = self.get_scaling_groups()
+        for action in self.alarm.insufficient_data_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'INSUFFICIENT_DATA'
+            alarm_actions.append(detail)
+
+        for action in self.alarm.ok_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'OK'
+            alarm_actions.append(detail)
 
         self.render_dict.update(
             alarm_json=alarm_json,
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
             dimensions=dimensions,
-            alarm_actions=alarm_actions,
             alarm_actions_json=json.dumps(alarm_actions),
-            scaling_groups=scaling_groups,
             options=options
         )
         return self.render_dict
@@ -432,6 +430,23 @@ class CloudWatchAlarmDetailView(BaseView):
         with boto_error_handler(self.request):
             policies = conn.get_all_policies(as_group=scaling_group, policy_names=policy_names)
             return policies
+
+    def get_alarm_action_detail(self, action):
+        arn = AmazonResourceName.factory(action)
+        policy_details = self.get_policies_for_scaling_group(arn.autoscaling_group_name, [arn.policy_name])
+        policy_details.reverse()
+        policy = policy_details.pop()
+
+        detail = {
+            'arn': arn.arn,
+            'autoscaling_group_name': arn.autoscaling_group_name,
+            'policy_name': arn.policy_name
+        }
+
+        if policy:
+            detail['scaling_adjustment'] = policy.scaling_adjustment
+
+        return detail
 
 
 class CloudWatchAlarmHistoryView(BaseView):

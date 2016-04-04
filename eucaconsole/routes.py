@@ -131,6 +131,7 @@ urls = [
     Route(name='scalinggroup_history', pattern='/scalinggroups/{id}/history'),
     Route(name='scalinggroup_history_json', pattern='/scalinggroups/{id}/history/json'),
     Route(name='scalinggroup_history_details_json', pattern='/scalinggroups/{id}/history/{activity}/json'),
+    Route(name='scalinggroup_names_json', pattern='/scalinggroup/names/json'),
     Route(name='scalinggroup_policies', pattern='/scalinggroups/{id}/policies'),
     Route(name='scalinggroup_policies_json', pattern='/scalinggroups/{id}/policies/json'),
     Route(name='scalinggroup_policy_new', pattern='/scalinggroups/{id}/policies/new'),
@@ -290,6 +291,8 @@ urls = [
     Route(name='cloudwatch_metrics', pattern='/metrics'),
     Route(name='cloudwatch_metrics_json', pattern='/cloudwatch/metrics/json'),
     Route(name='cloudwatch_resource_names_json', pattern='/cloudwatch/resourcenames/json'),
+
+    Route(name='metrics_available_for_resource', pattern='/metrics/available/{type}/{value}'),
 
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),

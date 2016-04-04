@@ -42,8 +42,7 @@
         </div>
 
         <div class="row buttons">
-            <button id="delete-alarm-btn" class="button expand" data-service-path="${service_path}"
-                ng-click="deleteAlarm($event)" i18n:translate="">
+            <button id="delete-alarm-btn" class="button expand" ng-click="deleteAlarm($event)" i18n:translate="">
                 <span ng-if="alarms.length == 1" i18n:translate="">Yes, Delete Alarm</span>
                 <span ng-if="alarms.length > 1" i18n:translate="">Yes, Delete {{ alarms.length }} Alarms</span>
             </button>

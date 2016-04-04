@@ -85,7 +85,7 @@
                 <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td alarm-state="{{ item.state }}"></td>
                 <td class="id">
-                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                    <a ng-href="${prefix}/{{ item.id || item.name | b64encode }}">
                         {{ item.name || item.id }}</a>
                 </td>
                 <td>
@@ -138,7 +138,7 @@
 
 
         <!--! Delete Alarm modal dialog -->
-        ${panel('delete_alarm_dialog', modal_size='small', service_path=request.route_path('cloudwatch_alarms'))}
+        ${panel('delete_alarm_dialog', modal_size='small')}
         <!--! /end modal dialogs -->
     </div>
 </div>
@@ -146,6 +146,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>

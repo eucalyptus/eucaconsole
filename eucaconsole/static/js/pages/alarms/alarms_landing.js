@@ -22,10 +22,9 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
         };
 
         $scope.deleteAlarm = function (event) {
-            var servicePath = event.target.dataset.servicePath;
             $('#delete-alarm-modal').foundation('reveal', 'close');
 
-            AlarmService.deleteAlarms($scope.alarms, servicePath, csrf_token)
+            AlarmService.deleteAlarms($scope.alarms, csrf_token)
                 .then(function success (response) {
                     Notify.success(response.data.message);
                     $scope.refreshList();
