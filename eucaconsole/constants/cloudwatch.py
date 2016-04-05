@@ -134,7 +134,7 @@ STATISTIC_CHOICES = [
     ('Minimum', _(u'Minimum')),
     ('Maximum', _(u'Maximum')),
     ('Sum', _(u'Sum')),
-    ('SampleCount', _(u'Sample Count')),
+    ('SampleCount', _(u'Data samples')),
 ]
 
 # Durations for CloudWatch charts (e.g. on Instance monitoring page)
