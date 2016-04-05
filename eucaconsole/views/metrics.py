@@ -366,6 +366,7 @@ class CloudWatchMetricsJsonView(BaseView):
             'unit': next(metric['unit'] for metric in METRIC_TYPES if metric['name'] == m.name),
             'dimensions': m.dimensions,
             'name': m.name,
+            'label': _(METRIC_LABEL.get(m.name, m.name)),
             'namespace': m.namespace} for m in metrics]
 
         if len(result) == 0:
