@@ -1,16 +1,19 @@
 angular.module('ModalModule', [])
 .directive('modal', ['ModalService', function (ModalService) {
+    var template = '<div class="modal-bg"></div><div class="modal-content"><a class="close-modal">×</a><ng-transclude></ng-transclude></div>';
     return {
         restrict: 'A',
-        template: '<div class="modal-bg"></div><div class="modal-content"><a ng-click="closeModal()" class="close-modal">×</a><ng-transclude></ng-transclude></div>',
         transclude: true,
-        link: function (scope, element, attrs) {
-            scope.modalName = attrs.modal;
-            ModalService.registerModal(scope.modalName, element);
+        compile: function(tElem, tAttrs) {
+            tElem.append(template);
+            return function (scope, element, attrs) {
+                element.find('.close-modal').attr('ng-click', 'closeModal(\''+attrs.modal+'\')')
+                ModalService.registerModal(attrs.modal, element);
+            };
         },
         controller: ['$scope', function ($scope) {
-            $scope.closeModal = function () {
-                ModalService.closeModal($scope.modalName);
+            $scope.closeModal = function (name) {
+                ModalService.closeModal(name);
             };
         }]
     };
