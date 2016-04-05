@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
@@ -229,10 +230,10 @@
                             </div>
                         </div>
                         <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
-                            <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
+                            <a ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left" ng-disabled="!chartsCtrl.shiftTimeLeftAllowed()">
                                 <i class="fa fa-arrow-circle-o-left fa-2x"></i>
                             </a>
-                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="chartsCtrl.timeRange=='relative'">
+                            <a ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="!chartsCtrl.shiftTimeRightAllowed()">
                                 <i class="fa fa-arrow-circle-o-right fa-2x"></i>
                             </a>
                             <svg></svg>
@@ -259,16 +260,16 @@
                                      end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
                                      unit="{{ chart[0].unit }}"
                                      statistic="{{ chartsCtrl.largeChartStatistic }}" empty="No Data"
-                                     large="true" no-x-labels="true">
+                                     large="true" no-x-labels="true" auto-load="true">
                                 </svg>
                             </div>
                         </div>
                         <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
                             <svg></svg>
-                            <a href="" ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left">
+                            <a ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left" ng-disabled="!chartsCtrl.shiftTimeLeftAllowed()">
                                 <i class="fa fa-arrow-circle-o-left fa-2x"></i>
                             </a>
-                            <a href="" ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="chartsCtrl.timeRange=='relative'">
+                            <a ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="!chartsCtrl.shiftTimeRightAllowed()">
                                 <i class="fa fa-arrow-circle-o-right fa-2x"></i>
                             </a>
                         </div>
@@ -325,6 +326,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-filter.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/metrics.js')}"></script>
 </div>
 
