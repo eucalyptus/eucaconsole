@@ -1,4 +1,5 @@
-<!--! Create alarm dialog -->
+<!--! Create alarm dialog
+      NOTE: This has been replaced by templates/cloudwatch/create_alarm_dialog.pt and create_alarm_modal_template.pt -->
 <div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl" i18n:domain="eucaconsole"
      ng-init="initController('${controller_options_json}')">
     <style type="text/css">
