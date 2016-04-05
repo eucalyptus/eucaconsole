@@ -190,19 +190,10 @@ th.metric-action { text-align: right !important; }
 
 magic-search .f-dropdown { min-width: 15rem; }
 
-#metric-time-range { margin: 0; display: inline; }
-
-input.datefield { width: 9rem; float: left; margin-bottom: 0; margin-right: 1rem; }
-
 .toprow select { margin-bottom: 1px; }
 
 .chart-wrapper .graph-close { position: relative; bottom: 1rem; left: 61rem; color: #5a5a5a; font-size: 2.1875rem; line-height: 0.5rem; font-weight: bold; cursor: pointer; }
 .chart-wrapper .metric-chart-menu { position: relative; bottom: 1.3rem; padding-left: 0.5rem; padding-right: 0.5rem; left: 58rem; color: #5a5a5a; cursor: pointer; }
 .chart-wrapper svg { height: 300px !important; }
 
-.time-shift .graph-shift-left { position: relative; left: 0.25rem; color: #5a5a5a; cursor: pointer; }
-.time-shift .graph-shift-right { position: relative; left: 59rem; color: #5a5a5a; cursor: pointer; }
-
 .metrics-url-field { width: 100%; }
-
-.field-wrapper.timepicker { position: absolute; }

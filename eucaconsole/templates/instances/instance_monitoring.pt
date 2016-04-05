@@ -2,6 +2,8 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_monitoring.css')}" />
@@ -100,7 +102,7 @@
                         </span>
                         <a href="#" class="close">&times;</a>
                     </div>
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="" ng-click="chartsCtrl.showLargeChart(chartsCtrl.metricTitleMapping[chart.metric], chart.metric, chart.statistic, chart.unit, 'AWS/EC2', '${instance.id}', 'InstanceId')">
                         <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
@@ -145,6 +147,9 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/resource_monitoring.js')}"></script>
 </div>
 
