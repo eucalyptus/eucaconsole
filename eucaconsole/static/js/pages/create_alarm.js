@@ -2,6 +2,8 @@
  * @fileOverview Create Alarm JS
  * @requires AngularJS and jQuery
  *
+ * NOTE: This has been replaced by js/widgets/create-alarm-modal/create-alarm.js
+ *
  */
 angular.module('CreateAlarm', ['EucaConsoleUtils'])
     .controller('CreateAlarmCtrl', function ($rootScope, $scope, $http, $timeout, eucaUnescapeJson) {
