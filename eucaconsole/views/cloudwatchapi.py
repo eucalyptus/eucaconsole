@@ -42,10 +42,14 @@ from ..views import BaseView, boto_error_handler
 
 
 CHART_COLORS = {
-    0: '#1f77b4',
-    1: '#822980',
-    2: '#e6a818',
-    3: '#8cc63e',
+    1: '#2ad2c9',
+    2: '#614767',
+    3: '#FF8D6D',
+    4: '#80746E',
+    5: '#000000',
+    6: '#425563',
+    7: '#5F7A76',
+    8: '#666666',
 }
 
 ISO8601 = '%Y-%m-%dT%H:%M:%S.%fZ'
@@ -243,6 +247,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             else:
                 line = lines[0]
                 unit, stats_series, max_value = self.get_stats_series(line['dimensions'], line['label'])
+                stats_series['color'] = CHART_COLORS.get(1)
                 stats_list.append(stats_series)
         else:
             if self.zones and len(self.zones.split(',')) > 1:
@@ -256,6 +261,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                         stats_list.append(stats_series)
             else:
                 unit, stats_series, max_value = self.get_stats_series()
+                stats_series['color'] = CHART_COLORS.get(1)
                 stats_list.append(stats_series)
 
         return dict(

@@ -1,9 +1,19 @@
+
+@mixin modal-width($width:60%) {
+    .modal-content {
+        width: $width;
+    }
+}
+
 .modal {
     display: none;
     z-index: 10000;
     
-    &.medium {
-    }
+    &.tiny  { @include modal-width(30%); }
+    &.small { @include modal-width(40%); }
+    &.medium  { @include modal-width(60%); }
+    &.large { @include modal-width(70%); }
+    &.xlarge { @include modal-width(95%); }
 
     &.open {
         display: block;
