@@ -3,7 +3,7 @@ angular.module('MetricServiceModule', ['EucaRoutes'])
     var _metrics = {};
 
     return {
-        getMetrics: function (type, value) {
+        getMetrics: function (namespace, type, value) {
             if(value in _metrics) {
                 return _metrics[value];
             }
@@ -13,8 +13,13 @@ angular.module('MetricServiceModule', ['EucaRoutes'])
                         method: 'GET',
                         url: path
                     }).then(function (result) {
+                        var metrics;
                         if(result && result.data) {
-                            _metrics[value] = result.data.metrics;
+                            metrics = result.data.metrics || [];
+                            metrics = metrics.filter(function (current ) {
+                                return current.namespace == namespace;
+                            });
+                            _metrics[value] = metrics;
                         }
                         return _metrics[value];
                     });

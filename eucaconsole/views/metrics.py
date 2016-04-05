@@ -363,11 +363,13 @@ class CloudWatchMetricsJsonView(BaseView):
             metrics = conn.list_metrics(dimensions=dimensions)
 
         result = [{
-            'statistics': m.Statistics,
             'unit': next(metric['unit'] for metric in METRIC_TYPES if metric['name'] == m.name),
             'dimensions': m.dimensions,
             'name': m.name,
             'namespace': m.namespace} for m in metrics]
+
+        if len(result) == 0:
+            result = METRIC_TYPES
 
         return dict(metrics=result)
 

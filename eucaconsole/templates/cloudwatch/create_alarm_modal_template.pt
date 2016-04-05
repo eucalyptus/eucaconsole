@@ -34,8 +34,12 @@
             <label class="right" i18n:translate="">Trigger alarm when the</label>
         </div>
         <div class="small-3 columns">
-            <select name="statistic" ng-model="alarm.statistic"
-                                     ng-options="statistic for statistic in alarm.metric.statistics track by statistic">
+            <select name="statistic" ng-model="alarm.statistic">
+                <option>Minimum</option>
+                <option>Maximum</option>
+                <option>Sum</option>
+                <option>Average</option>
+                <option>SampleCount</option>
             </select>
         </div>
         <div class="small-6 columns">
