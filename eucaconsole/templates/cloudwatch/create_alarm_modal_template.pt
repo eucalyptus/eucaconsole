@@ -35,11 +35,11 @@
         </div>
         <div class="small-3 columns">
             <select name="statistic" ng-model="alarm.statistic">
+                <option value="Average" i18n:translate="">Average</option>
                 <option value="Minimum" i18n:translate="">Minimum</option>
                 <option value="Maximum" i18n:translate="">Maximum</option>
                 <option value="Sum" i18n:translate="">Sum</option>
-                <option value="Average" i18n:translate="">Average</option>
-                <option value="SampleCount" i18n:translate="">Sample Count</option>
+                <option value="SampleCount" i18n:translate="">Data samples</option>
             </select>
         </div>
         <div class="small-6 columns">
