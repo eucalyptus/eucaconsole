@@ -53,58 +53,65 @@
                     </span>
                 </div>
             </div>
-            <div class="split-wrapper">
-                <div class="split-top">
-                    <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
-                    <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
-                        <div ng-show="!itemsLoading">
-                            <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
-                                No items were found
-                                <a href="#" class="close">&times;</a>
-                            </div>
-                        </div>
-                        <!-- Begin grid view -->
-                        <div class="tile item" ng-cloak="true"
-                             ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
-                            <div class="header">
-                                <strong>
-                                    <input type="checkbox" ng-model="item._selected"/>
-                                
-                                    <metal:block metal:define-slot="tile_header">
-                                        <strong>
-                                            <span>{{ item.metric_label }}</span>
-                                        </strong>
-                                         
-                                    </metal:block>
-                                </strong>
-                                <metal:block metal:define-slot="tile_dropdown_button">
-                                    <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
-                                    <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown">
-                                        <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
-                                        <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
-                                    </ul>
-                                </metal:block>
-                            </div>
-                            <div class="content">
-                                <div>
+            <div class="loading" ng-show="itemsLoading" ng-if="landingPageView == 'gridview'"><i class="busy"></i></div>
+            <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
+                <div ng-show="!itemsLoading">
+                    <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
+                        No items were found
+                        <a href="#" class="close">&times;</a>
+                    </div>
+                </div>
+                <span ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
+                    <div ng-if="item.heading == true" colspan="4">
+                        {{ item.cat_label }} ({{ item.cat_total }})
+                    </div>
+                    <!-- Begin grid view -->
+                    <div ng-if="item.heading != true" class="tile item" ng-cloak="true" ng-click="metricsCtrl.showGraphForItem(item)">
+                        <div class="header">
+                            <strong>
+                                <metal:block metal:define-slot="tile_header">
                                     <span ng-repeat="res in item.resources">
-                                        <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
-                                        <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
-                                        <span ng-hide="$last">,</span> 
+                                        <strong>
+                                            <span>{{ res.res_name }}</span>
+                                        </strong>
                                     </span>
-                                </div>
-                                <div>
-                                    <span>{{ item.cat_label }}</span>
-                                </div>
-                            </div>
-                            <metal:block metal:define-slot="tile_footer">
-                                <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
-                                    {{ item.status.replace('-', ' ') }}
-                                </div>
+                                     
+                                </metal:block>
+                            </strong>
+                            <metal:block metal:define-slot="tile_dropdown_button">
+                                <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
+                                <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown">
+                                    <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
+                                    <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
+                                </ul>
                             </metal:block>
                         </div>
+                        <div class="content">
+                            <div>
+                                <span class="label" title="Metric" i18n:attributes="title" data-tooltip="">ID</span>
+                                <span ng-repeat="res in item.resources">
+                                    <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
+                                    <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
+                                    <span ng-hide="$last">,</span> 
+                                </span>
+                            </div>
+                            <div>
+                                <span class="label" title="Metric" i18n:attributes="title" data-tooltip="">MN</span>
+                                    {{ item.metric_label }}
+                            </div>
+                        </div>
+                        <metal:block metal:define-slot="tile_footer">
+                            <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
+                                {{ item.status.replace('-', ' ') }}
+                            </div>
+                        </metal:block>
                     </div>
-                    <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
+                </span>
+            </div>
+            <div class="split-wrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
+                <div class="split-top">
+                    <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
+                    <div id="tableview" class="gridwrapper">
                         <!-- Begin table view -->
                         <table class="table smart-table" ng-show="!itemsLoading" ng-cloak="true"
                                st-safe-src="items" st-table="displayedCollection"

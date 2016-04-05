@@ -250,6 +250,9 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 $(".metrics-url-field").select();
             }, 500);
         };
+        vm.showGraphForItem = function(item) {
+            console.log('show graph');
+        }
     })
 ;
 
