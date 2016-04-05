@@ -19,6 +19,10 @@
 
 .alarm-listing {
     margin-top: 0.5rem;
+    a[href]:hover {
+        color: $hpe-green;
+        border-bottom: 1px solid $hpe-green;
+    }
 }
 
 i.delete-icon {
