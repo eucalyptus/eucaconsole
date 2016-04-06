@@ -251,16 +251,16 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }, 500);
         };
         vm.showCreateAlarm = function(metric) {
-            if (Array.isArray(chart)) {
+            if (Array.isArray(metric)) {
                 var dims = [];
-                chart.forEach(function(val) {
+                metric.forEach(function(val) {
                     var tmp = {};
                     val.resources.forEach(function(res) {
                         tmp[res.res_type] = res.res_id;
                     });
                     dims.push(tmp);
                 });
-                var met = Object.copy(metric);
+                var met = Object.assign(metric[0]);
                 met.dimensions = dims;
                 $scope.metricForAlarm = met;
             }
