@@ -1,4 +1,9 @@
 .modal { display: none; z-index: 10000; }
+.modal.tiny .modal-content { width: 30%; }
+.modal.small .modal-content { width: 40%; }
+.modal.medium .modal-content { width: 60%; }
+.modal.large .modal-content { width: 70%; }
+.modal.xlarge .modal-content { width: 95%; }
 .modal.open { display: block; }
 .modal.open .modal-content { top: 0px; }
 .modal .modal-content { top: -1000px; transition: all 2.0s ease-in-out; opacity: 1; background-color: #FFF; z-index: 100000; position: absolute; width: 60%; max-width: 65rem; margin: 0 auto; left: 0; right: 0; border-radius: 3px; padding: 1.875rem; border: solid 1px #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
