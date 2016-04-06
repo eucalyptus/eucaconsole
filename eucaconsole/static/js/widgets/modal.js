@@ -34,8 +34,10 @@ angular.module('ModalModule', [])
         if(!modal) {
             return;
         }
-
         modal.addClass('open');
+        modal.find('.modal-bg').on('click', function() {
+            closeModal(name);
+        });
     }
 
     function closeModal (name) {
