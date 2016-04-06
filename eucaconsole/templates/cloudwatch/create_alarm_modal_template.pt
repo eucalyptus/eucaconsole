@@ -44,7 +44,7 @@
         </div>
         <div class="small-6 columns">
             <select name="metric" ng-model="alarm.metric"
-                                  ng-options="metric.name as metric.label for metric in metrics track by metric.name"></select>
+                    ng-options="metric.label for metric in metrics track by metric.name"></select>
         </div>
     </div>
     <div class="row controls-wrapper">
