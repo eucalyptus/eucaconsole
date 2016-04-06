@@ -70,10 +70,10 @@
         <div class="small-2 columns">
             <input name="evaluation_periods" ng-model="alarm.evaluation_periods" type="number" required="required"/>
         </div>
-        <div class="small-4 columns">
+        <div class="small-3 columns">
             <label i18n:translate="">consecutive periods of</label>
         </div>
-        <div class="small-3 columns">
+        <div class="small-4 columns">
             <select name="period" ng-model="alarm.period" required="required">
                 <option value="60" i18n:translate="">1 minute</option>
                 <option value="300" i18n:translate="">5 minutes</option>
