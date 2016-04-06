@@ -39,6 +39,7 @@
                             resource-type="VolumeId"
                             resource-id="${volume.id}"
                             resource-name="${volume_name}"
+                            namespace="AWS/EBS"
                             default-metric="VolumeWriteOps"
                             default-statistic="Sum"></div>
                     </div>
