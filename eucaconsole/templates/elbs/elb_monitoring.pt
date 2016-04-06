@@ -42,6 +42,7 @@
                                 resource-type="LoadBalancerName"
                                 resource-id="${elb.name}"
                                 resource-name="${elb.name}"
+                                namespace="AWS/ELB"
                                 default-metric="RequestCount"
                                 default-statistic="Sum"></div>
                         </div>
