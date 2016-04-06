@@ -9,7 +9,7 @@ angular.module('ModalModule', [])
             tElem.append(tmp);
             return function (scope, element, attrs) {
                 ModalService.registerModal(attrs.modal, element);
-            }
+            };
         },
         controller: ['$scope', function ($scope) {
             $scope.closeModal = function (name) {
