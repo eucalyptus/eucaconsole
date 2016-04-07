@@ -322,11 +322,9 @@ class CloudWatchMetricsJsonView(BaseView):
     def metrics_available_for_resource(self):
         resourcetype = self.request.matchdict.get('type')
         resourceid = self.request.matchdict.get('value')
-
         conn = self.get_connection(conn_type='cloudwatch')
-
-        metrics = []
         dimensions = {resourcetype: resourceid}
+
         with boto_error_handler(self.request):
             metrics = conn.list_metrics(dimensions=dimensions)
 
@@ -343,7 +341,7 @@ class CloudWatchMetricsJsonView(BaseView):
             result = [{
                 'unit': m['unit'],
                 'name': m['name'],
-                'label': METRIC_TITLE_MAPPING.get(m.name, m.name),
+                'label': METRIC_TITLE_MAPPING.get(m['name'], m['name']),
                 'namespace': m['namespace']} for m in METRIC_TYPES]
 
         return dict(metrics=result)
