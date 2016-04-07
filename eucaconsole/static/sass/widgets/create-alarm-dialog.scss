@@ -1,3 +1,5 @@
+@import "includes/eucavariables";
+
 .create-alarm-modal {
     .dimensions {
         ul {
@@ -11,11 +13,19 @@
         display: none;
     }
 
-    &.ng-invalid-unique-name {
-       .error {
-           &.unique-name {
-               display: block;
-           }
-       }
+    .ng-invalid {
+        .button {
+            &.submit {
+                @include disabled-button-mixin;
+            }
+        }
+    }
+
+    .ng-invalid {
+        &.ng-submitted {
+            .error {
+                display: block;
+            }
+        }
     }
 }

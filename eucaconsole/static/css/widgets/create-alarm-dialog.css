@@ -1,3 +1,9 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 .create-alarm-modal .dimensions ul { list-style: none; margin: 0; padding: 0; }
 .create-alarm-modal .error { display: none; }
-.create-alarm-modal.ng-invalid-unique-name .error.unique-name { display: block; }
+.create-alarm-modal .ng-invalid .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; }
+.create-alarm-modal .ng-invalid .button.submit:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
+.create-alarm-modal .ng-invalid.ng-submitted .error { display: block; }

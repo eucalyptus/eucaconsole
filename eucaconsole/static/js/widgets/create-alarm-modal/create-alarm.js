@@ -18,7 +18,7 @@ angular.module('CreateAlarmModal', [
             defaults = {
                 statistic: attrs.defaultStatistic,
                 metric: attrs.defaultMetric,
-                comparison: '>=',
+                comparison: '>='
             };
 
             scope.resourceType = attrs.resourceType;
@@ -148,9 +148,9 @@ angular.module('CreateAlarmModal', [
 
             $scope.resetForm = function () {
                 $scope.alarm = angular.copy(defaults);
+                $scope.checkNameCollision();
                 $scope.createAlarmForm.$setPristine();
                 $scope.createAlarmForm.$setUntouched();
-                $scope.checkNameCollision();
             };
 
             $scope.checkNameCollision = function () {
@@ -160,7 +160,24 @@ angular.module('CreateAlarmModal', [
                         $scope.existingAlarms = alarms;
                         $scope.alarm.name = $scope.alarmName();
                     });
-                };
+            };
         }]
     };
-}]);
+}])
+.directive('uniqueName', function () {
+    return {
+        restrict: 'A',
+        require: ['ngModel', '^createAlarm'],
+        link: function (scope, element, attrs, ctrls) {
+            var modelCtrl = ctrls[0],
+                formCtrl = ctrls[1];
+
+            modelCtrl.$validators.uniqueName = function (modelValue, viewValue) {
+                return !scope.existingAlarms.some(function (alarm) {
+                    return alarm.name == viewValue;
+                });
+            };
+
+        }
+    };
+});
