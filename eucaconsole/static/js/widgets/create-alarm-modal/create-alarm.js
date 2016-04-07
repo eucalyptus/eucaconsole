@@ -18,7 +18,9 @@ angular.module('CreateAlarmModal', [
             defaults = {
                 statistic: attrs.defaultStatistic,
                 metric: attrs.defaultMetric,
-                comparison: '>='
+                comparison: '>=',
+                evaluation_periods: 1,
+                period: 300
             };
 
             scope.resourceType = attrs.resourceType;
@@ -48,6 +50,8 @@ angular.module('CreateAlarmModal', [
 
                     scope.alarm.statistic = attrs.defaultStatistic;
                     scope.alarm.comparison = '>=';
+                    scope.alarm.evaluation_periods = defaults.evaluation_periods;
+                    scope.alarm.period = defaults.period;
 
                     defaults.metric = scope.alarm.metric;
                 });
