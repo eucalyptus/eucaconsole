@@ -10,22 +10,10 @@
         }
     }
 
-    .error {
-        display: none;
-    }
-
     .ng-invalid {
         .button {
             &.submit {
                 @include disabled-button-mixin;
-            }
-        }
-    }
-
-    .ng-invalid {
-        &.ng-submitted {
-            .error {
-                display: block;
             }
         }
     }
