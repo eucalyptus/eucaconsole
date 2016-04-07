@@ -2,6 +2,8 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_monitoring.css')}" />
@@ -32,7 +34,16 @@
                 <div class="flex-space">
                     <div class="flex-column-1">
                         <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
-                        ${panel('create_alarm_dialog_new', resource_type='InstanceId', resource_type_value=instance.id, resource_name=instance_name, default_metric='CPUUtilization', default_statistic='Average')}
+                        <div class="modal create-alarm-modal" modal="createAlarm">
+                            <div create-alarm=""
+                                template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                                namespace="AWS/EC2"
+                                resource-type="InstanceId"
+                                resource-id="${instance.id}"
+                                resource-name="${instance_name}"
+                                default-metric="CPUUtilization"
+                                default-statistic="Average"></div>
+                        </div>
                     </div>
                     <div class="flex-column-0 actions">
                         <span id="enable-monitoring-icon" class="action-icon dropdown"
@@ -100,7 +111,7 @@
                         </span>
                         <a href="#" class="close">&times;</a>
                     </div>
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="" ng-click="chartsCtrl.showLargeChart(chartsCtrl.metricTitleMapping[chart.metric], chart.metric, chart.statistic, chart.unit, 'AWS/EC2', '${instance.id}', 'InstanceId')">
                         <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
@@ -145,6 +156,9 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/resource_monitoring.js')}"></script>
 </div>
 
