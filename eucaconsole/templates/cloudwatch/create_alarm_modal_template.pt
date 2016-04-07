@@ -34,13 +34,17 @@
             <label class="right" i18n:translate="">Trigger alarm when the</label>
         </div>
         <div class="small-3 columns">
-            <select name="statistic" ng-model="alarm.statistic"
-                                     ng-options="statistic for statistic in alarm.metric.statistics track by statistic">
+            <select name="statistic" ng-model="alarm.statistic">
+                <option value="Average" i18n:translate="">Average</option>
+                <option value="Minimum" i18n:translate="">Minimum</option>
+                <option value="Maximum" i18n:translate="">Maximum</option>
+                <option value="Sum" i18n:translate="">Sum</option>
+                <option value="SampleCount" i18n:translate="">Data samples</option>
             </select>
         </div>
         <div class="small-6 columns">
             <select name="metric" ng-model="alarm.metric"
-                                  ng-options="metric.name for metric in metrics track by metric.name"></select>
+                    ng-options="metric.label for metric in metrics track by metric.name"></select>
         </div>
     </div>
     <div class="row controls-wrapper">
