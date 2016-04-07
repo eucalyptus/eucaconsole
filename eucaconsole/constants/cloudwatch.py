@@ -60,16 +60,16 @@ METRIC_TYPES = [
     {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed', 'unit': 'Count'},
     {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed_Instance', 'unit': 'Count'},
     {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed_System', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'RequestCount', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'Latency', 'unit': 'Seconds'},
+    {'namespace': 'AWS/ELB', 'name': 'UnHealthyHostCount', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'HealthyHostCount', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'HTTPCode_ELB_4XX', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'HTTPCode_ELB_5XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_2XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_3XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_4XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_5XX', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'HTTPCode_ELB_4XX', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'HTTPCode_ELB_5XX', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'Latency', 'unit': 'Seconds'},
-    {'namespace': 'AWS/ELB', 'name': 'RequestCount', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'HealthyHostCount', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'UnHealthyHostCount', 'unit': 'Count'},
 ]
 
 
