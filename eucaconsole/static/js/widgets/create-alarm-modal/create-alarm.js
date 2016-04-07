@@ -104,6 +104,12 @@ angular.module('CreateAlarmModal', [
 
             $scope.createAlarm = function () {
                 if($scope.createAlarmForm.$invalid) {
+                    var $error = $scope.createAlarmForm.$error;
+                    Object.keys($error).forEach(function (error) {
+                        $error[error].forEach(function (current) {
+                            current.$setTouched();
+                        });
+                    });
                     return;
                 }
 
