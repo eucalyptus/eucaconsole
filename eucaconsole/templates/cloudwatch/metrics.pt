@@ -283,9 +283,6 @@
             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
             dimensions="{{ metricForAlarm.dimensions }}"
             namespace="{{ metricForAlarm.namespace }}"
-            resource-type="{{ metricForAlarm.resources[0].res_type }}"
-            resource-id="{{ metricForAlarm.resources[0].res_id }}"
-            resouce-name="{{ metricForAlarm.resources[0].res_name }}"
             default-metric="{{ metricForAlarm.metric_name }}"
             default-statistic="Sum" loadMetricChoices="false">
         </div>
