@@ -48,8 +48,6 @@ METRIC_TYPES = [
     {'namespace': 'AWS/EBS', 'name': 'VolumeReadBytes', 'unit': 'Bytes'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeTotalWriteTime', 'unit': 'Seconds'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeTotalReadTime', 'unit': 'Seconds'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeThroughputPercentage', 'unit': 'Percent'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeConsumedReadWriteOps', 'unit': 'Count'},
     {'namespace': 'AWS/EC2', 'name': 'CPUUtilization', 'unit': 'Percent'},
     {'namespace': 'AWS/EC2', 'name': 'DiskReadBytes', 'unit': 'Bytes'},
     {'namespace': 'AWS/EC2', 'name': 'DiskReadOps', 'unit': 'Count'},
