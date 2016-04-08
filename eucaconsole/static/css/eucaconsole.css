@@ -1812,7 +1812,7 @@ form .controls_csrf_token { display: none; }
 form .server-validation span.error { display: block !important; background-color: white; color: darkred; padding-left: 0; }
 form[data-abide].error small.error, form .error small.error { background-color: white; font-style: normal; color: darkred; }
 form[data-abide].error small.error.inline, form .error small.error.inline { display: inline-block !important; }
-form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
+form .error .chosen-container .chosen-single, form .ng-invalid { border-color: darkred; background: #ffe9ec; }
 
 .row.controls-wrapper { margin-bottom: 0.5rem; }
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }

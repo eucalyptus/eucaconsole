@@ -841,7 +841,8 @@ form {
             display: inline-block !important;
         }
     }
-    .error .chosen-container .chosen-single {
+    .error .chosen-container .chosen-single,
+    .ng-invalid {
         border-color: darkred;
         background: $euca-validation-input-bgcolor;
     }
