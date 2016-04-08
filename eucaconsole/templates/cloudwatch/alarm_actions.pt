@@ -34,8 +34,10 @@
             <div class="columns large-9 small-9">
                 <select name="alarmState" ng-model="action.alarm_state"
                                           ng-init="action.alarm_state = 'ALARM'"
-                                          ng-change="updatePolicies()"
-                                          ng-options="state as state for state in ['ALARM', 'INSUFFICIENT_DATA', 'OK']">
+                                          ng-change="updatePolicies()">
+                    <option value="ALARM">ALARM</option>
+                    <option value="INSUFFICIENT_DATA">INSUFFICIENT DATA</option>
+                    <option value="OK">OK</option>
                 </select>
             </div>
         </div>
