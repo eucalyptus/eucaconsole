@@ -39,7 +39,8 @@
             </select>
         </div>
         <div class="small-6 columns">
-            <select name="metric" ng-model="alarm.metric"
+            <span ng-if="!metrics">{{ alarm.metric.name }}</span>
+            <select ng-if="metrics" name="metric" ng-model="alarm.metric"
                                   ng-options="metric.name for metric in metrics track by metric.name"></select>
         </div>
     </div>
