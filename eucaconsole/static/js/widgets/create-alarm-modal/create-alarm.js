@@ -24,7 +24,7 @@ angular.module('CreateAlarmModal', [
             scope.namespace = attrs.namespace;
             scope.resourceType = attrs.resourceType;
             scope.resourceId = attrs.resourceId;
-            scope.dimensions = attrs.dimension?JSON.parse(attrs.dimensions):undefined;
+            scope.dimensions = attrs.dimensions?JSON.parse(attrs.dimensions):undefined;
             scope.resourceName = attrs.resourceName;
 
             scope.$on('modal:close', function (event, name) {
