@@ -1,4 +1,4 @@
-@import "includes/eucavariables";
+@import "../includes/eucavariables";
 @import "../widgets/modal";
 
 .create-alarm-modal {
@@ -16,5 +16,10 @@
                 @include disabled-button-mixin;
             }
         }
+    }
+
+    .unit-label {
+        font-weight: bold;
+        color: $hpe-gray;
     }
 }
