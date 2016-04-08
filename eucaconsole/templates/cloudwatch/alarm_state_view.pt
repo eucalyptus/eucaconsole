@@ -24,7 +24,7 @@
                     <i class="delete-icon fa fa-minus-circle fa-lg"></i>
                 </a>
                 <td alarm-state="{{ item.state }}"></td>
-                <span alarm-state="{{ alarm.state }}"></span>&nbsp;{{ alarm.name }},&nbsp;
+                <span alarm-state="{{ alarm.state }}"></span>&nbsp;<a ng-href="{{ alarmDetailPath(alarm.name) }}">{{ alarm.name }}</a>,&nbsp;
                     {{ alarm.metric }}
                     {{ alarm.comparison }}
                     {{ alarm.threshold }}
