@@ -21,11 +21,11 @@ angular.module('CreateAlarmModal', [
                 comparison: '>=',
             };
 
+            scope.namespace = attrs.namespace;
             scope.resourceType = attrs.resourceType;
             scope.resourceId = attrs.resourceId;
             scope.dimensions = attrs.dimension?JSON.parse(attrs.dimensions):undefined;
             scope.resourceName = attrs.resourceName;
-            scope.namespace = attrs.namespace;
 
             scope.$on('modal:close', function (event, name) {
                 if(name == 'createAlarm') {
@@ -34,9 +34,9 @@ angular.module('CreateAlarmModal', [
             });
 
             if (attrs.loadmetricchoices !== 'false') {
-                MetricService.getMetrics(scope.resourceType, scope.resourceId)
+                MetricService.getMetrics(scope.namespace, scope.resourceType, scope.resourceId)
                     .then(function (metrics) {
-                        scope.metrics = metrics || [];
+                        scope.metrics = metrics;
 
                         scope.alarm.metric = metrics.find(function(metric) {
                             return metric.name == defaults.metric;
@@ -58,7 +58,6 @@ angular.module('CreateAlarmModal', [
                 scope.alarm.statistic = attrs.defaultStatistic;
                 scope.alarm.comparison = '>=';
             }
-
 
             scope.checkNameCollision();
         },
