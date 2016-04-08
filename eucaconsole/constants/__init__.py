@@ -86,5 +86,6 @@ AWS_REGIONS = (
 LANDINGPAGE_ROUTE_NAMES = [
     'buckets', 'groups', 'images', 'instances', 'ipaddresses', 'keypairs', 'launchconfigs',
     'scalinggroups', 'securitygroups', 'snapshots', 'users', 'volumes', 'elbs', 'stacks',
+    'alarms', 'metrics'
 ]
 
