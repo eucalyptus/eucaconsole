@@ -5,11 +5,10 @@
         <div class="large-3 small-3 columns">
             <label class="right" i18n:translate="">Name</label>
         </div>
-        <div class="large-9 small-9 columns field">
-            <input name="name" ng-model="alarm.name"
-                               unique-name="" required="required" 
-                               type="text" ng-change="onNameChange()"
-                               ng-model-options="{ updateOn: 'blur' }">
+        <div class="large-9 small-9 columns field"
+             ng-class="{'error': createAlarmForm.name.$error.uniqueName || createAlarmForm.name.$error.required}">
+            <input name="name" ng-model="alarm.name" unique-name="" required="required"
+                   type="text" ng-change="onNameChange()" ng-model-options="{ updateOn: 'blur' }" />
             <small class="error" ng-show="createAlarmForm.name.$error.uniqueName" i18n:translate="">Alarm name must be unique.</small>
             <small class="error" ng-show="createAlarmForm.name.$error.required" i18n:translate="">Alarm name is required.</small>
         </div>
@@ -63,12 +62,16 @@
                 <option value="<">&lt;</option>
             </select>
         </div>
-        <div class="small-3 columns">
-            <input ng-model="alarm.threshold" name="threshold"
+        <div class="small-3 columns"
+             ng-class="{'error': createAlarmForm.threshold.$error.required || createAlarmForm.threshold.$error.number || createAlarmForm.threshold.$error.min}">
+            <input ng-model="alarm.threshold" name="threshold" autofocus=""
                    placeholder="amount..." required="required" type="number" min="1"/>
-            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.required" i18n:translate="">Threshold value is required.</small>
-            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.number" i18n:translate="">Threshold value must be a number.</small>
-            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.min" i18n:translate="">Threshold value must be a positive number.</small>
+            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.required"
+                   i18n:translate="">Threshold value is required.</small>
+            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.number"
+                   i18n:translate="">Threshold value must be a number.</small>
+            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.min"
+                   i18n:translate="">Threshold value must be a positive number.</small>
         </div>
         <div class="small-4 columns">
             <div class="unit-label" ng-show="alarm.metric.unit != 'None'">{{ alarm.metric.unit }}</div>
@@ -78,11 +81,15 @@
         <div class="small-3 columns">
             <label class="right" i18n:translate="">for at least</label>
         </div>
-        <div class="small-2 columns">
+        <div class="small-2 columns"
+             ng-class="{'error': createAlarmForm.evaluation_periods.$error.required || createAlarmForm.evaluation_periods.$error.number || createAlarmForm.evaluation_periods.$error.min}">
             <input name="evaluation_periods" ng-model="alarm.evaluation_periods" type="number" min="1" required="required"/>
-            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.required" i18n:translate="">Period value is required.</small>
-            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.number" i18n:translate="">Period value must be a number.</small>
-            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.min" i18n:translate="">Period value must be a positive number.</small>
+            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.required"
+                   i18n:translate="">Period value is required.</small>
+            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.number"
+                   i18n:translate="">Period value must be a number.</small>
+            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.min"
+                   i18n:translate="">Period value must be a positive number.</small>
         </div>
         <div class="small-4 columns">
             <label i18n:translate="">consecutive periods of</label>
