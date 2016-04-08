@@ -164,38 +164,6 @@ METRICS_FOR_VOLUME = [
     'VolumeWriteOps'
 ]
 
-METRIC_LABEL = {
-    'GroupDesiredCapacity': 'Group desired capacity',
-    'GroupInServiceInstances': 'Group in service instances',
-    'GroupMaxSize': 'Group max size',
-    'GroupMinSize': 'Group min size',
-    'GroupPendingInstances': 'Group pending instances',
-    'GroupTerminatingInstances': 'Group terminating instances',
-    'GroupTotalInstances': 'Group total instances',
-    'CPUUtilization': 'CPU utilization',
-    'DiskReadBytes': 'Disk read bytes',
-    'DiskReadOps': 'Disk read ops',
-    'DiskWriteBytes': 'Disk write bytes',
-    'DiskWriteOps': 'Disk write ops',
-    'NetworkIn': 'Network in',
-    'NetworkOut': 'Network out',
-    'StatusCheckFailed': 'Status check failed',
-    'StatusCheckFailed_Instance': 'Status check failed instance',
-    'StatusCheckFailed_System': 'Status check failed system',
-    'HealthyHostCount': 'Healthy host count',
-    'UnHealthyHostCount': 'UnHealthy host count',
-    'VolumeConsumedReadWriteOps': 'Volume consumed read write ops',
-    'VolumeIdleTime': 'Volume idle time',
-    'VolumeQueueLength': 'Volume queue length',
-    'VolumeReadBytes': 'Volume read bytes',
-    'VolumeReadOps': 'Volume read ops',
-    'VolumeThroughputPercentage': 'Volume throughput percentage',
-    'VolumeTotalReadTime': 'Volume total read time',
-    'VolumeTotalWriteTime': 'Volume total write time',
-    'VolumeWriteBytes': 'Volume write bytes',
-    'VolumeWriteOps': 'Volume write ops'
-}
-
 
 class CloudWatchMetricsView(LandingPageView):
     """CloudWatch Metrics landing page view"""
@@ -217,16 +185,16 @@ class CloudWatchMetricsView(LandingPageView):
                 {'key': cat['name'], 'label': cat['label']} for cat in METRIC_CATEGORIES
             ]},
             {'name': 'metric_name', 'label': _(u'Scaling group metric'), 'options': [
-                {'key': metric, 'label': METRIC_LABEL[metric]} for metric in METRICS_FOR_ASG
+                {'key': metric, 'label': METRIC_TITLE_MAPPING[metric]} for metric in METRICS_FOR_ASG
             ]},
             {'name': 'metric_name', 'label': _(u'Instance metric'), 'options': [
-                {'key': metric, 'label': METRIC_LABEL[metric]} for metric in METRICS_FOR_INSTANCE
+                {'key': metric, 'label': METRIC_TITLE_MAPPING[metric]} for metric in METRICS_FOR_INSTANCE
             ]},
             {'name': 'metric_name', 'label': _(u'Load balancer metric'), 'options': [
-                {'key': metric, 'label': METRIC_LABEL[metric]} for metric in METRICS_FOR_ELB
+                {'key': metric, 'label': METRIC_TITLE_MAPPING[metric]} for metric in METRICS_FOR_ELB
             ]},
             {'name': 'metric_name', 'label': _(u'Volume metric'), 'options': [
-                {'key': metric, 'label': METRIC_LABEL[metric]} for metric in METRICS_FOR_VOLUME
+                {'key': metric, 'label': METRIC_TITLE_MAPPING[metric]} for metric in METRICS_FOR_VOLUME
             ]}
         ]
         self.render_dict = dict(
@@ -318,7 +286,7 @@ class CloudWatchMetricsJsonView(BaseView):
                         res_types=res_types,
                         unit=unit[0] if unit else '',
                         metric_name=metric_name,
-                        metric_label=METRIC_LABEL.get(metric_name) or metric_name
+                        metric_label=METRIC_TITLE_MAPPING.get(metric_name) or metric_name
                     ))
                 metrics.append(dict(
                     heading=True,
@@ -354,20 +322,27 @@ class CloudWatchMetricsJsonView(BaseView):
     def metrics_available_for_resource(self):
         resourcetype = self.request.matchdict.get('type')
         resourceid = self.request.matchdict.get('value')
-
         conn = self.get_connection(conn_type='cloudwatch')
-
-        metrics = []
         dimensions = {resourcetype: resourceid}
+
         with boto_error_handler(self.request):
             metrics = conn.list_metrics(dimensions=dimensions)
 
         result = [{
-            'statistics': m.Statistics,
+            'index': [metric['name'] for metric in METRIC_TYPES].index(m.name),
             'unit': next(metric['unit'] for metric in METRIC_TYPES if metric['name'] == m.name),
             'dimensions': m.dimensions,
             'name': m.name,
+            'label': METRIC_TITLE_MAPPING.get(m.name, m.name),
             'namespace': m.namespace} for m in metrics]
+        result.sort(lambda a, b: cmp(a.get('index', 0), b.get('index', 0)))
+
+        if len(result) == 0:
+            result = [{
+                'unit': m['unit'],
+                'name': m['name'],
+                'label': METRIC_TITLE_MAPPING.get(m['name'], m['name']),
+                'namespace': m['namespace']} for m in METRIC_TYPES]
 
         return dict(metrics=result)
 

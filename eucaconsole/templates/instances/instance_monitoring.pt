@@ -33,7 +33,16 @@
                 <div class="flex-space">
                     <div class="flex-column-1">
                         <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
-                        ${panel('create_alarm_dialog_new', resource_type='InstanceId', resource_type_value=instance.id, resource_name=instance_name, default_metric='CPUUtilization', default_statistic='Average')}
+                        <div class="modal create-alarm-modal" modal="createAlarm">
+                            <div create-alarm=""
+                                template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                                namespace="AWS/EC2"
+                                resource-type="InstanceId"
+                                resource-id="${instance.id}"
+                                resource-name="${instance_name}"
+                                default-metric="CPUUtilization"
+                                default-statistic="Average"></div>
+                        </div>
                     </div>
                     <div class="flex-column-0 actions">
                         <span id="enable-monitoring-icon" class="action-icon dropdown"

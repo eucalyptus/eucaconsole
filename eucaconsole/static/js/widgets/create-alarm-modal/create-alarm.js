@@ -23,6 +23,7 @@ angular.module('CreateAlarmModal', [
                 period: 300
             };
 
+            scope.namespace = attrs.namespace;
             scope.resourceType = attrs.resourceType;
             scope.resourceId = attrs.resourceId;
             scope.resourceName = attrs.resourceName;
@@ -33,9 +34,9 @@ angular.module('CreateAlarmModal', [
                 }
             });
 
-            MetricService.getMetrics(scope.resourceType, scope.resourceId)
+            MetricService.getMetrics(scope.namespace, scope.resourceType, scope.resourceId)
                 .then(function (metrics) {
-                    scope.metrics = metrics || [];
+                    scope.metrics = metrics;
 
                     scope.alarm.metric = (function (metrics, defaultMetric) {
                         var metric;
