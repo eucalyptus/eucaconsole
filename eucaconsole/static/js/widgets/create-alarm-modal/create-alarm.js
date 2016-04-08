@@ -19,6 +19,8 @@ angular.module('CreateAlarmModal', [
                 statistic: attrs.defaultStatistic,
                 metric: attrs.defaultMetric,
                 comparison: '>=',
+                evaluation_periods: 1,
+                period: 300
             };
 
             scope.namespace = attrs.namespace;
@@ -49,6 +51,8 @@ angular.module('CreateAlarmModal', [
 
                     scope.alarm.statistic = attrs.defaultStatistic;
                     scope.alarm.comparison = '>=';
+                    scope.alarm.evaluation_periods = defaults.evaluation_periods;
+                    scope.alarm.period = defaults.period;
 
                     defaults.metric = scope.alarm.metric;
                 });
@@ -101,6 +105,12 @@ angular.module('CreateAlarmModal', [
 
             $scope.createAlarm = function () {
                 if($scope.createAlarmForm.$invalid) {
+                    var $error = $scope.createAlarmForm.$error;
+                    Object.keys($error).forEach(function (error) {
+                        $error[error].forEach(function (current) {
+                            current.$setTouched();
+                        });
+                    });
                     return;
                 }
 
@@ -149,9 +159,9 @@ angular.module('CreateAlarmModal', [
 
             $scope.resetForm = function () {
                 $scope.alarm = angular.copy(defaults);
+                $scope.checkNameCollision();
                 $scope.createAlarmForm.$setPristine();
                 $scope.createAlarmForm.$setUntouched();
-                $scope.checkNameCollision();
             };
 
             $scope.checkNameCollision = function () {
@@ -161,7 +171,24 @@ angular.module('CreateAlarmModal', [
                         $scope.existingAlarms = alarms;
                         $scope.alarm.name = $scope.alarmName();
                     });
-                };
+            };
         }]
     };
-}]);
+}])
+.directive('uniqueName', function () {
+    return {
+        restrict: 'A',
+        require: ['ngModel', '^createAlarm'],
+        link: function (scope, element, attrs, ctrls) {
+            var modelCtrl = ctrls[0],
+                formCtrl = ctrls[1];
+
+            modelCtrl.$validators.uniqueName = function (modelValue, viewValue) {
+                return !scope.existingAlarms.some(function (alarm) {
+                    return alarm.name == viewValue;
+                });
+            };
+
+        }
+    };
+});
