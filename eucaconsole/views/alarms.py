@@ -354,8 +354,8 @@ class CloudWatchAlarmDetailView(BaseView):
             for res in res_ids:
                 option = {
                     'label': '{0} = {1}'.format(res_type, res),
-                    'value': re.sub(r'\s+', '', json.dumps(res)),
-                    'selected': res == self.alarm.dimensions.get(res_type)
+                    'value': re.sub(r'\s+', '', json.dumps({res_type:[res]})),
+                    'selected': [res] == self.alarm.dimensions.get(res_type)
                 }
                 options.append(option)
 
