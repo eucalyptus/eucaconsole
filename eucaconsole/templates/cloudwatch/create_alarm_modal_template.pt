@@ -64,9 +64,10 @@
                    placeholder="amount..." required="required" type="number" min="1"/>
             <small class="error" ng-show="createAlarmForm.threshold.$touched && createAlarmForm.threshold.$error.required" i18n:translate="">Threshold value is required.</small>
             <small class="error" ng-show="createAlarmForm.threshold.$touched && createAlarmForm.threshold.$error.number" i18n:translate="">Threshold value must be a number.</small>
+            <small class="error" ng-show="createAlarmForm.threshold.$touched && createAlarmForm.threshold.$error.min" i18n:translate="">Threshold value must be a positive number.</small>
         </div>
         <div class="small-4 columns">
-            <div class="unit-label">{{ alarm.metric.unit }}</div>
+            <div class="unit-label" ng-show="alarm.metric.unit != 'None'">{{ alarm.metric.unit }}</div>
         </div>
     </div>
     <div class="row controls-wrapper">
@@ -77,6 +78,7 @@
             <input name="evaluation_periods" ng-model="alarm.evaluation_periods" type="number" min="1" required="required"/>
             <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched && createAlarmForm.evaluation_periods.$error.required" i18n:translate="">Period value is required.</small>
             <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched && createAlarmForm.evaluation_periods.$error.number" i18n:translate="">Period value must be a number.</small>
+            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched && createAlarmForm.evaluation_periods.$error.min" i18n:translate="">Period value must be a positive number.</small>
         </div>
         <div class="small-4 columns">
             <label i18n:translate="">consecutive periods of</label>
