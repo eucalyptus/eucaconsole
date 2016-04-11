@@ -291,6 +291,7 @@ urls = [
     Route(name='cloudwatch_metrics', pattern='/metrics'),
     Route(name='cloudwatch_metrics_json', pattern='/cloudwatch/metrics/json'),
     Route(name='cloudwatch_resource_names_json', pattern='/cloudwatch/resourcenames/json'),
+    Route(name='cloudwatch_graph', pattern='/metrics/graph'),
 
     Route(name='metrics_available_for_resource', pattern='/metrics/available/{type}/{value}'),
 

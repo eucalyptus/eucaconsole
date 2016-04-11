@@ -223,6 +223,14 @@ class CloudWatchMetricsView(LandingPageView):
         }))
 
 
+class CloudWatchGraphView(LandingPageView):
+    """CloudWatch Metrics mobile graph-only view"""
+    TEMPLATE = '../templates/cloudwatch/metricgraph.pt'
+
+    def __init__(self, request):
+        super(CloudWatchGraphView, self).__init__(request)
+        self.title_parts = [_(u'Graph')]
+
 class CloudWatchMetricsJsonView(BaseView):
     """JSON response for CloudWatch Metrics landing page et. al."""
     @view_config(route_name='cloudwatch_metrics_json', renderer='json', request_method='POST')
