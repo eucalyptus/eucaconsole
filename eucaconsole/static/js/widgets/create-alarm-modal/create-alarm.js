@@ -23,10 +23,13 @@ angular.module('CreateAlarmModal', [
                 period: 300
             };
 
+            var resourceDimensions = {};
+            resourceDimensions[attrs.resourceType] = attrs.resourceId;
+
             scope.namespace = attrs.namespace;
             scope.resourceType = attrs.resourceType;
             scope.resourceId = attrs.resourceId;
-            scope.dimensions = attrs.dimensions?JSON.parse(attrs.dimensions):undefined;
+            scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : resourceDimensions;
             scope.resourceName = attrs.resourceName;
             scope.existingAlarms = [];
 
@@ -70,6 +73,7 @@ angular.module('CreateAlarmModal', [
         },
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
             $scope.alarm = {};
+            $scope.alarm.metric = {};
             var csrf_token = $('#csrf_token').val();
 
             $scope.onNameChange = function () {
