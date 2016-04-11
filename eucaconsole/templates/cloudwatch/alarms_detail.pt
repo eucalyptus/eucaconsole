@@ -32,7 +32,7 @@
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                         <metal:actions metal:fill-slot="actions">
                             <li>
-                                <a href="#" i18n:translate="">Create alarm like this one</a>
+                                <a href="#" ng-click="copyAlarm()" i18n:translate="">Create alarm like this one</a>
                             </li>
                             <li>
                                 <a href="#" ng-click="delete($event)"
@@ -41,6 +41,15 @@
                             </li>
                         </metal:actions>
                     </metal:block>
+                    <div class="modal create-alarm-modal" modal="copyAlarm">
+                        <div create-alarm=""
+                            title="Create alarm like ${alarm_id}"
+                            template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                            namespace="AWS/EC2"
+                            resource-type="InstanceId"
+                            default-metric="CPUUtilization"
+                            default-statistic="Average"></div>
+                    </div>
                     <form name="alarmUpdateForm" class="alarm-update" novalidate="">
                         ${structure:alarm_form['csrf_token']}
                         <h6 i18n:translate="">State</h6>
@@ -174,6 +183,12 @@
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_detail.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/chosen.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/metric-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>

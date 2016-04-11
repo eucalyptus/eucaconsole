@@ -1,5 +1,5 @@
 <form name="createAlarmForm" ng-submit="createAlarm()" novalidate="">
-    <h3 i18n:translate="">Create Alarm</h3>
+    <h3 i18n:translate="">{{ title }}</h3>
     <h6 i18n:translate="">Alarm</h6>
     <div class="row inline controls-wrapper">
         <div class="large-3 small-3 columns">

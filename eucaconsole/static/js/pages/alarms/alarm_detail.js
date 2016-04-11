@@ -1,6 +1,6 @@
 angular.module('AlarmDetailPage', [
     'AlarmsComponents', 'EucaChosenModule', 'ChartAPIModule', 'ChartServiceModule',
-    'AlarmServiceModule', 'AlarmActionsModule'
+    'AlarmServiceModule', 'AlarmActionsModule', 'ModalModule', 'CreateAlarmModal'
 ])
 .directive('alarmDetail', function () {
     return {
@@ -20,7 +20,8 @@ angular.module('AlarmDetailPage', [
             });
             scope.alarm.dimensions = dimensions;
         },
-        controller: ['$scope', '$window', 'AlarmService', function ($scope, $window, AlarmService) {
+        controller: ['$scope', '$window', 'AlarmService', 'ModalService',
+        function ($scope, $window, AlarmService, ModalService) {
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
@@ -65,6 +66,9 @@ angular.module('AlarmDetailPage', [
                     }); 
             };
 
+            $scope.copyAlarm = function () {
+                ModalService.openModal('copyAlarm');
+            };
         }]
     };
 })

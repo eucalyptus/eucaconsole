@@ -3,6 +3,9 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
     return {
+        getAlarm: function (alarm, csrf_token) {
+        },
+
         createAlarm: function (alarm, csrf_token) {
             return eucaRoutes.getRouteDeferred('cloudwatch_alarms')
                 .then(function (path) {

@@ -21,6 +21,8 @@ angular.module('CreateAlarmModal', [
                 comparison: '>=',
             };
 
+            scope.title = attrs.title || 'Create Alarm';
+
             scope.namespace = attrs.namespace;
             scope.resourceType = attrs.resourceType;
             scope.resourceId = attrs.resourceId;
