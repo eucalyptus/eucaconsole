@@ -24,7 +24,7 @@ angular.module('CreateAlarmModal', [
             };
 
             var resourceDimensions = {};
-            resourceDimensions[attrs.resourceType] = attrs.resourceId;
+            resourceDimensions[attrs.resourceType] = [attrs.resourceId];
 
             scope.namespace = attrs.namespace;
             scope.resourceType = attrs.resourceType;

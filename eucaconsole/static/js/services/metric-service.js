@@ -11,7 +11,8 @@ angular.module('MetricServiceModule', ['EucaRoutes'])
                 .then(function (path) {
                     return $http({
                         method: 'GET',
-                        url: path + '?namespace=' + namespace
+                        url: path,
+                        params: {namespace: namespace}
                     }).then(function (result) {
                         var metrics;
                         if(result && result.data) {
