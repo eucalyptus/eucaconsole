@@ -148,7 +148,7 @@
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 /* expando stuff */
-.expando-tr-even { background: #white !important; }
+.expando-tr-even { background: white !important; }
 
 table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) { background: white; }
 
