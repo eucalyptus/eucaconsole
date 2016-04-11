@@ -1,6 +1,7 @@
 angular.module('ModalModule', [])
 .directive('modal', ['ModalService', '$interpolate', function (ModalService, $interpolate) {
-    var template = '<div class="modal-bg"></div><div class="modal-content"><a ng-click="closeModal(\'{{modalName}}\')" class="close-modal">×</a><ng-transclude></ng-transclude></div>';
+    var template = '<div class="modal-bg" ng-click="closeModal(\'{{modalName}}\')"></div><div class="modal-content">' +
+        '<a ng-click="closeModal(\'{{modalName}}\')" class="close-modal">×</a><ng-transclude></ng-transclude></div>';
     return {
         restrict: 'A',
         transclude: true,
@@ -35,9 +36,6 @@ angular.module('ModalModule', [])
             return;
         }
         modal.addClass('open');
-        modal.find('.modal-bg').on('click', function() {
-            closeModal(name);
-        });
     }
 
     function closeModal (name) {
