@@ -350,12 +350,12 @@ class CloudWatchAlarmDetailView(BaseView):
 
         dimensions = self.get_available_dimensions(self.alarm.metric)
         options = []
-        for d in dimensions:
-            for name, value in d.items():
+        for res_type, res_ids in dimensions.iteritems():
+            for res in res_ids:
                 option = {
-                    'label': '{0} = {1}'.format(name, ', '.join(value)),
-                    'value': re.sub(r'\s+', '', json.dumps(d)),
-                    'selected': value == self.alarm.dimensions.get(name)
+                    'label': '{0} = {1}'.format(res_type, res),
+                    'value': re.sub(r'\s+', '', json.dumps({res_type:[res]})),
+                    'selected': [res] == self.alarm.dimensions.get(res_type)
                 }
                 options.append(option)
 
@@ -410,12 +410,18 @@ class CloudWatchAlarmDetailView(BaseView):
         return alarm
 
     def get_available_dimensions(self, metric):
-        dimensions = []
+        dimensions = {}
         conn = self.get_connection(conn_type='cloudwatch')
         with boto_error_handler(self.request):
             metrics = conn.list_metrics(metric_name=metric)
             for m in metrics:
-                dimensions.append(m.dimensions)
+                for res_type, res_ids in m.dimensions.iteritems():
+                    if res_type in dimensions.keys():
+                        for res in res_ids:
+                            if res not in dimensions[res_type]:
+                                dimensions[res_type].append(res);
+                    else:
+                        dimensions[res_type] = res_ids
 
         return dimensions
 

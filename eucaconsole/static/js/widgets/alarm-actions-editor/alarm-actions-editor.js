@@ -2,6 +2,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 .directive('alarmActions', function () {
     return {
         restrict: 'A',
+        scope: true,
         link: function (scope, element, attrs) {
             scope.alarmId = attrs.alarmId;
             scope.alarmActions = JSON.parse(attrs.alarmActions);

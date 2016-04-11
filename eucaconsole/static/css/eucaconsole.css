@@ -1069,7 +1069,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 
 /* Tooltips */
 .has-tip { border-bottom: dotted 1px #CCCCCC; cursor: help; font-weight: bold; color: #333333; }
-.has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #004c3a; color: #01a982; }
+.has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #004c3b; color: #01a982; }
 .has-tip.tip-left, .has-tip.tip-right { float: none !important; }
 
 .tooltip { display: none; position: absolute; z-index: 1006; font-weight: normal; font-size: 0.875rem; line-height: 1.3; padding: 0.3125rem; max-width: 300px; left: 50%; width: 100%; color: #666666; background: white; }
@@ -1078,7 +1078,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 .tooltip.radius { border-radius: 3px; }
 .tooltip.round { border-radius: 1000px; }
 .tooltip.round > .nub { left: 2rem; }
-.tooltip.opened { color: #01a982 !important; border-bottom: dotted 1px #004c3a !important; }
+.tooltip.opened { color: #01a982 !important; border-bottom: dotted 1px #004c3b !important; }
 
 .tap-to-close { display: block; font-size: 0.625rem; color: #777777; font-weight: normal; }
 
@@ -1810,9 +1810,9 @@ form .cancel-link { margin-left: 2rem; color: #6a737b; }
 form .cancel-link:hover { color: #01a982; }
 form .controls_csrf_token { display: none; }
 form .server-validation span.error { display: block !important; background-color: white; color: darkred; padding-left: 0; }
-form[data-abide] .error small.error { background-color: white; font-style: normal; color: darkred; }
-form[data-abide] .error small.error.inline { display: inline-block !important; }
-form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
+form[data-abide].error small.error, form .error small.error { background-color: white; font-style: normal; color: darkred; }
+form[data-abide].error small.error.inline, form .error small.error.inline { display: inline-block !important; }
+form .error .chosen-container .chosen-single, form .ng-invalid { border-color: darkred; background: #ffe9ec; }
 
 .row.controls-wrapper { margin-bottom: 0.5rem; }
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
@@ -1836,12 +1836,12 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 form .controls-wrapper > [class*='small-'] label { font-weight: bold; }
 form .controls-wrapper > [class*='small-'] label.right { position: relative; right: -1rem; }
 
-[data-abide] .controls-wrapper .error label, [data-abide] .controls-wrapper.error label { color: #333333; }
-[data-abide] .controls-wrapper .error input, [data-abide] .controls-wrapper .error select, [data-abide] .controls-wrapper.error input, [data-abide] .controls-wrapper.error select { border: 1px solid darkred; background-color: #ffe9ec; }
-[data-abide] .controls-wrapper .error small.error, [data-abide] .controls-wrapper.error small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
-[data-abide] .controls-wrapper .error small.error.inline, [data-abide] .controls-wrapper.error small.error.inline { display: inline-block; margin-left: 1rem; }
+[data-abide] .controls-wrapper .error label, [data-abide] .controls-wrapper.error label, .controls-wrapper .error label { color: #333333; }
+[data-abide] .controls-wrapper .error input, [data-abide] .controls-wrapper .error select, [data-abide] .controls-wrapper.error input, [data-abide] .controls-wrapper.error select, .controls-wrapper .error input, .controls-wrapper .error select { border: 1px solid darkred; background-color: #ffe9ec; }
+[data-abide] .controls-wrapper .error small.error, [data-abide] .controls-wrapper.error small.error, .controls-wrapper .error small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
+[data-abide] .controls-wrapper .error small.error.inline, [data-abide] .controls-wrapper.error small.error.inline, .controls-wrapper .error small.error.inline { display: inline-block; margin-left: 1rem; }
 
-[data-abide] small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
+[data-abide] small.error, small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
 
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }

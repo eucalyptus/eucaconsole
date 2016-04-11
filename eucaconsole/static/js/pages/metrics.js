@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter'])
+angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter', 'CreateAlarmModal', 'ModalModule'])
     .directive('splitbar', function () {
         var pageElement = angular.element(document.body.parentElement);
         return {
@@ -24,7 +24,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }
         };
     })
-    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
+    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError, ModalService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         var vm = this;
         var categoryIndex = {};
@@ -250,9 +250,28 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 $(".metrics-url-field").select();
             }, 500);
         };
-        vm.showGraphForItem = function(item) {
-            console.log('show graph');
+        vm.showGraphForItem = function(url, item) {
+            window.location = url;
         }
+        vm.showCreateAlarm = function(metric) {
+            var dims = {}; 
+            if (!Array.isArray(metric)) {
+                metric = [metric];
+            }
+            metric.forEach(function(row) {
+                row.resources.forEach(function(res) {
+                    if (dims[res.res_type] === undefined) {
+                        dims[res.res_type] = [res.res_id];
+                    }
+                    else {
+                        dims[res.res_type].push(res.res_id);
+                    }
+                });
+            });
+            $scope.metricForAlarm = Object.assign(metric[0]);
+            $scope.metricForAlarm.dimensions = dims;
+            ModalService.openModal('createAlarm');
+        };
     })
 ;
 

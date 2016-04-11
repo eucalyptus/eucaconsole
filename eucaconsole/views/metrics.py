@@ -214,7 +214,8 @@ class CloudWatchMetricsView(LandingPageView):
     def metrics_landing(self):
         return self.render_dict
 
-    def get_chart_options_json(self):
+    @staticmethod
+    def get_chart_options_json():
         return BaseView.escape_json(json.dumps({
             'metric_title_mapping': METRIC_TITLE_MAPPING,
             'granularity_choices': GRANULARITY_CHOICES,
@@ -230,6 +231,16 @@ class CloudWatchGraphView(LandingPageView):
     def __init__(self, request):
         super(CloudWatchGraphView, self).__init__(request)
         self.title_parts = [_(u'Graph')]
+        self.render_dict = dict(
+            statistic_choices=STATISTIC_CHOICES,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            chart_options_json=CloudWatchMetricsView.get_chart_options_json()
+        )
+
+    @view_config(route_name='cloudwatch_graph', renderer=TEMPLATE, request_method='GET')
+    def metrics_landing(self):
+        return self.render_dict
+
 
 class CloudWatchMetricsJsonView(BaseView):
     """JSON response for CloudWatch Metrics landing page et. al."""
@@ -321,7 +332,7 @@ class CloudWatchMetricsJsonView(BaseView):
             for image in images:
                 names[image.id] = image.name
         elif res_type == 'volume':
-            volumes = self.get_connection().get_all_volumes(ids)
+            volumes = self.get_connection().get_all_volumes(filters={'volume_id': ids})
             for volume in volumes:
                 names[volume.id] = TaggedItemView.get_display_name(volume)
         return dict(results=names)
