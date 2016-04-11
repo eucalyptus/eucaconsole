@@ -15,7 +15,7 @@
 .modal .modal-content .close-modal:hover { color: #007DBA; }
 .modal .modal-content button { margin: 0; }
 .modal .modal-content input[type="number"] { width: 100%; }
-.modal .modal-bg { position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
+.modal .modal-bg { z-index: 99999; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
 
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
@@ -46,7 +46,7 @@
 .modal .modal-content .close-modal:hover { color: #007DBA; }
 .modal .modal-content button { margin: 0; }
 .modal .modal-content input[type="number"] { width: 100%; }
-.modal .modal-bg { position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
+.modal .modal-bg { z-index: 99999; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
 
 .create-alarm-modal .dimensions ul { list-style: none; margin: 0; padding: 0; }
 .create-alarm-modal .ng-invalid .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; }
