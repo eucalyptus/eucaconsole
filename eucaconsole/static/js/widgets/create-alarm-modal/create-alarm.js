@@ -48,6 +48,7 @@ angular.module('CreateAlarmModal', [
                             return metric.name === defaults.metric;
                         });
                         scope.alarm.metric.namespace = scope.namespace;
+                        scope.alarm.metric.dimensions = scope.dimensions;
                         scope.alarm.statistic = attrs.defaultStatistic;
                         scope.alarm.comparison = '>=';
                         scope.alarm.evaluation_periods = defaults.evaluation_periods;

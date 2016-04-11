@@ -27,7 +27,7 @@
         </div>
         <div class="large-9 small-9 columns">
             <ul>
-                <li ng-repeat="(key, val) in alarm.metric.dimensions">{{ key }} = {{ val.join(', ') }}</li>
+                <li ng-repeat="(key, val) in alarm.metric.dimensions">{{ key }} = {{ val.join(', ') || val }}</li>
             </ul>
         </div>
     </div>
