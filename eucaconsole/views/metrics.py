@@ -313,7 +313,7 @@ class CloudWatchMetricsJsonView(BaseView):
             for image in images:
                 names[image.id] = image.name
         elif res_type == 'volume':
-            volumes = self.get_connection().get_all_volumes(ids)
+            volumes = self.get_connection().get_all_volumes(filters={'volume_id': ids})
             for volume in volumes:
                 names[volume.id] = TaggedItemView.get_display_name(volume)
         return dict(results=names)

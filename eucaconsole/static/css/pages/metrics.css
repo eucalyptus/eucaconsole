@@ -177,8 +177,6 @@ table td input[type="checkbox"] { margin: 0 0 0; }
 
 .split-bottom { position: relative; padding-top: 1.0rem; }
 
-select { width: 20rem; }
-
 .tile input[type="checkbox"] { position: relative; float: left; top: 9px; left: 5px; }
 .tile .dropdown.button.tiny { top: 5px !important; right: 2px !important; }
 
