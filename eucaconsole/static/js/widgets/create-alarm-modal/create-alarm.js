@@ -31,7 +31,7 @@ angular.module('CreateAlarmModal', [
             scope.existingAlarms = [];
 
             scope.$on('modal:close', function (event, name) {
-                if(name == 'createAlarm') {
+                if(name === 'createAlarm') {
                     scope.resetForm();
                 }
             });
@@ -42,7 +42,7 @@ angular.module('CreateAlarmModal', [
                         scope.metrics = metrics;
 
                         scope.alarm.metric = metrics.find(function(metric) {
-                            return metric.name == defaults.metric;
+                            return metric.name === defaults.metric;
                         });
                         scope.alarm.metric.namespace = scope.namespace;
                         scope.alarm.statistic = attrs.defaultStatistic;
@@ -102,7 +102,7 @@ angular.module('CreateAlarmModal', [
                 }
 
                 var collision = $scope.existingAlarms.some(function (alarm) {
-                    return alarm.name == name;
+                    return alarm.name === name;
                 });
 
                 if(collision) {
@@ -194,7 +194,7 @@ angular.module('CreateAlarmModal', [
 
             modelCtrl.$validators.uniqueName = function (modelValue, viewValue) {
                 return !scope.existingAlarms.some(function (alarm) {
-                    return alarm.name == viewValue;
+                    return alarm.name === viewValue;
                 });
             };
 

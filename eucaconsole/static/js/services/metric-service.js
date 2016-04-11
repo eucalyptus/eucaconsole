@@ -7,7 +7,12 @@ angular.module('MetricServiceModule', ['EucaRoutes'])
             if(value in _metrics) {
                 return _metrics[value];
             }
-            return eucaRoutes.getRouteDeferred('metrics_available_for_resource', {type: type, value: value})
+            var urlParams = {
+                type: type,
+                value: value,
+                namespace: namespace  // Pass multiple namespaces as comma-separated list
+            };
+            return eucaRoutes.getRouteDeferred('metrics_available_for_resource', urlParams)
                 .then(function (path) {
                     return $http({
                         method: 'GET',
@@ -16,9 +21,6 @@ angular.module('MetricServiceModule', ['EucaRoutes'])
                         var metrics;
                         if(result && result.data) {
                             metrics = result.data.metrics || [];
-                            metrics = metrics.filter(function (current ) {
-                                return current.namespace == namespace;
-                            });
                             _metrics[value] = metrics;
                         }
                         return _metrics[value];
