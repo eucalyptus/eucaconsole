@@ -22,4 +22,8 @@
         font-weight: bold;
         color: $hpe-gray;
     }
+
+    input[name=threshold] {
+        margin-bottom: 0;
+    }
 }
