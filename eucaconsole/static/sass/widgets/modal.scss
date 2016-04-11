@@ -70,6 +70,7 @@ $modal-open-top-position: -40px;
     }
 
     .modal-bg {
+        z-index: 99999;
         position: fixed;
         top: 0;
         bottom: 0;

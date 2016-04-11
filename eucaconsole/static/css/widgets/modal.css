@@ -13,4 +13,4 @@
 .modal .modal-content .close-modal:hover { color: #007DBA; }
 .modal .modal-content button { margin: 0; }
 .modal .modal-content input[type="number"] { width: 100%; }
-.modal .modal-bg { position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
+.modal .modal-bg { z-index: 99999; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
