@@ -52,13 +52,14 @@ angular.module('CreateAlarmModal', [
                 var alarm = $scope.alarm;
                 var resName = $scope.resourceName || $scope.resourceId;
                 if (resName === undefined) {
-                    resName = "";
+                    resName = []
                     Object.keys($scope.dimensions).forEach(function(key) {
                         if (resName.length > 0) {
-                            resName += ' - ';
+                            resName.push(' - ');
                         }
-                        resName += $scope.dimensions[key].join(' - ');
+                        resName.push($scope.dimensions[key].join(' - '));
                     });
+                    resName = resName.join('');
                 }
                 var name = [
                     alarm.metric.namespace,
