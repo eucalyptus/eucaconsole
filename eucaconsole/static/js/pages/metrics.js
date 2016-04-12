@@ -255,7 +255,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             if (!Array.isArray(metric)) {
                 metric = [metric];
             }
-            names = []
+            names = [];
             metric.forEach(function(row) {
                 row.resources.forEach(function(res) {
                     if (names.length > 0) {
