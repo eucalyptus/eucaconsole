@@ -51,7 +51,14 @@ class GuiTester(SeleniumApi):
                 print "Using local webdriver"
 
             else:
-                self.driver = webdriver.Remote(webdriver_url, desired_capabilities=desired_capabilities, browser_profile=ffprofile)
+                ffprofile = webdriver.FirefoxProfile()
+                desired_capabilities = webdriver.DesiredCapabilities.FIREFOX
+                desired_capabilities['version'] = "42"
+                desired_capabilities['platform'] = "linux"
+                desired_capabilities['name'] = "firefox"
+                ffprofile.update_preferences()
+                self.driver = webdriver.Remote(webdriver_url, desired_capabilities=desired_capabilities)
+                #self.driver = webdriver.Remote(webdriver_url, desired_capabilities=desired_capabilities, browser_profile=ffprofile)
                 print "Using remote webdriver " + webdriver_url
             print "Setting webdriver profile"
         self.driver.implicitly_wait(60)
