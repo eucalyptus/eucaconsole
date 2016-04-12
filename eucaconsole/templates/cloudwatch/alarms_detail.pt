@@ -45,10 +45,11 @@
                         <div create-alarm=""
                             title="Create alarm like ${alarm_id}"
                             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
-                            namespace="AWS/EC2"
-                            resource-type="InstanceId"
-                            default-metric="CPUUtilization"
-                            default-statistic="Average"></div>
+                            namespace="${alarm.namespace}"
+                            dimensions="{{ alarm.dimensions }}"
+                            loadmetricchoices="false"
+                            default-metric="${alarm.metric}"
+                            default-statistic="${alarm.statistic}"></div>
                     </div>
                     <form name="alarmUpdateForm" class="alarm-update" novalidate="">
                         ${structure:alarm_form['csrf_token']}

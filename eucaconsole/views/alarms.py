@@ -333,8 +333,7 @@ class CloudWatchAlarmDetailView(BaseView):
         alarm_id = base64.decodestring(alarm_id)
 
         self.alarm = self.get_alarm(alarm_id)
-        self.alarm_form = CloudWatchAlarmUpdateForm(
-            request)
+        self.alarm_form = CloudWatchAlarmUpdateForm(request)
 
         self.render_dict = dict(
             alarm=self.alarm,
@@ -354,7 +353,7 @@ class CloudWatchAlarmDetailView(BaseView):
             for res in res_ids:
                 option = {
                     'label': '{0} = {1}'.format(res_type, res),
-                    'value': re.sub(r'\s+', '', json.dumps({res_type:[res]})),
+                    'value': re.sub(r'\s+', '', json.dumps({res_type: [res]})),
                     'selected': [res] == self.alarm.dimensions.get(res_type)
                 }
                 options.append(option)
@@ -419,7 +418,7 @@ class CloudWatchAlarmDetailView(BaseView):
                     if res_type in dimensions.keys():
                         for res in res_ids:
                             if res not in dimensions[res_type]:
-                                dimensions[res_type].append(res);
+                                dimensions[res_type].append(res)
                     else:
                         dimensions[res_type] = res_ids
 
