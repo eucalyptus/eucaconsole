@@ -279,10 +279,11 @@
             <div create-alarm="" ng-if="metricForAlarm"
                 template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
                 dimensions="{{ metricForAlarm.dimensions }}"
+                resource-name="{{metricForAlarm.names }}"
                 namespace="{{ metricForAlarm.namespace }}"
                 unit="{{ metricForAlarm.unit }}"
                 default-metric="{{ metricForAlarm.metric_name }}"
-                default-statistic="Sum" loadMetricChoices="false">
+                default-statistic="Sum" load-metric-choices="false">
             </div>
         </div>
     </div>

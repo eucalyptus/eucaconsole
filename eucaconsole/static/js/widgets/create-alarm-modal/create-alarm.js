@@ -100,7 +100,7 @@ angular.module('CreateAlarmModal', [
                 $scope.resourceName = attrs.resourceName;
                 $scope.existingAlarms = [];
 
-                if (attrs.loadmetricchoices !== 'false') {
+                if (attrs.loadMetricChoices !== 'false') {
                     MetricService.getMetrics($scope.namespace, $scope.resourceType, $scope.resourceId)
                         .then(function (metrics) {
                             $scope.metrics = metrics;

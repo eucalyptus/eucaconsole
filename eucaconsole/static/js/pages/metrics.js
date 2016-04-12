@@ -255,8 +255,13 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             if (!Array.isArray(metric)) {
                 metric = [metric];
             }
+            names = "";
             metric.forEach(function(row) {
                 row.resources.forEach(function(res) {
+                    if (names.length > 0) {
+                        names += ' - ';
+                    }
+                    names += res.res_name;
                     if (dims[res.res_type] === undefined) {
                         dims[res.res_type] = [res.res_id];
                     }
@@ -267,6 +272,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
             $scope.metricForAlarm = Object.assign(metric[0]);
             $scope.metricForAlarm.dimensions = dims;
+            $scope.metricForAlarm.names = names;
             $timeout(function() {
                 ModalService.openModal('createAlarm');
             });
