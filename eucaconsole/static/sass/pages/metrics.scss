@@ -1,7 +1,7 @@
 /* @fileOverview CloudWatch Metrics landing page CSS */
 @import "../includes/eucavariables";
-
 @import "../includes/landingpage";
+@import "../widgets/create-alarm-dialog";
 
 
 table.expando td:nth-of-type(1) {
@@ -20,14 +20,11 @@ table td input[type="checkbox"] {
     background: #ffffff;
     border: 1px solid $hp-gray-40;
     h6 {
-        border: 0px none;
+        border: 0 none;
     }
     svg {
-        border: 0px none;
+        border: 0 none;
     }
-}
-
-.split-container {
 }
 
 .split-top {
