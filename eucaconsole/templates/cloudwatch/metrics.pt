@@ -275,7 +275,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal large create-alarm-modal" modal="createAlarm">
+        <div class="modal xlarge create-alarm-modal" modal="createAlarm">
             <div create-alarm="" ng-if="metricForAlarm"
                 template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
                 dimensions="{{ metricForAlarm.dimensions }}"
