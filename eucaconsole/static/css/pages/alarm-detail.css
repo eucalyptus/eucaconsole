@@ -2,6 +2,10 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 .actions .item-list { margin: 0 0 15px; }
 .actions .item-list .item { color: #333333; background-color: #e6e7e8; margin-right: 8px; padding: 0.25rem 0.5rem; font-size: 0.6875rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; }
 .actions .item-list .item .remove { margin-left: 5px; color: #FFF; }
@@ -14,3 +18,5 @@
 
 form.alarm-update .trigger-conditions { margin: 1.5rem 0 0; }
 form.alarm-update .trigger-conditions select { margin: 0 0 0.5rem; }
+form.ng-invalid .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; }
+form.ng-invalid .button.submit:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }

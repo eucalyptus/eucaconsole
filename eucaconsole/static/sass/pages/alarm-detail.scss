@@ -1,3 +1,4 @@
+@import "../includes/eucavariables";
 @import "../widgets/alarm-actions";
 
 .metric-chart {
@@ -17,6 +18,14 @@ form {
 
             select {
                 margin: 0 0 0.5rem;
+            }
+        }
+    }
+
+    &.ng-invalid {
+        .button {
+            &.submit {
+                @include disabled-button-mixin;
             }
         }
     }
