@@ -125,6 +125,7 @@ angular.module('CreateAlarmModal', [
                         dimensions: $scope.dimensions,
                     };
                     $scope.alarm.metric.namespace = $scope.namespace;
+                    $scope.alarm.metric.unit = attrs.unit;
                     $scope.alarm.statistic = attrs.defaultStatistic;
                     $scope.alarm.comparison = '>=';
                     $scope.alarm.evaluation_periods = defaults.evaluation_periods;
@@ -197,8 +198,8 @@ angular.module('CreateAlarmModal', [
 
             $scope.checkNameCollision = function () {
                 $scope.existingAlarms = [];
-                AlarmService.getAlarmsForResource($scope.resourceId, $scope.resourceType)
-                    .then(function (alarms) {
+                AlarmService.getAlarmsForDimensions($scope.dimensions)
+                    .then(function success(alarms) {
                         $scope.existingAlarms = alarms;
                         $scope.alarm.name = $scope.alarmName();
                     });
