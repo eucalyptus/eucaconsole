@@ -90,7 +90,7 @@
                    i18n:translate="">Period value must be a positive number.</small>
         </div>
         <div class="small-3 columns">
-            <label i18n:translate="">consecutive periods of</label>
+            <label i18n:translate="">consecutive period(s) of</label>
         </div>
         <div class="small-4 columns">
             <select name="period" ng-model="alarm.period" required="required">
