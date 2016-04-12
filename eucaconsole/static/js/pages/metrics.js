@@ -267,7 +267,9 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
             $scope.metricForAlarm = Object.assign(metric[0]);
             $scope.metricForAlarm.dimensions = dims;
-            ModalService.openModal('createAlarm');
+            $timeout(function() {
+                ModalService.openModal('createAlarm');
+            });
         };
     })
 ;

@@ -50,9 +50,19 @@ angular.module('CreateAlarmModal', [
                 }
                 
                 var alarm = $scope.alarm;
+                var resName = $scope.resourceName || $scope.resourceId;
+                if (resName === undefined) {
+                    resName = "";
+                    Object.keys($scope.dimensions).forEach(function(key) {
+                        if (resName.length > 0) {
+                            resName += ' - ';
+                        }
+                        resName += $scope.dimensions[key].join(' - ');
+                    });
+                }
                 var name = [
                     alarm.metric.namespace,
-                    $scope.resourceName || $scope.resourceId,
+                    resName,
                     alarm.metric.name].join(' - ');
 
                 if(count > 0) {
@@ -83,6 +93,10 @@ angular.module('CreateAlarmModal', [
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
                 $scope.dimensions = attrs.dimensions?JSON.parse(attrs.dimensions):undefined;
+                if ($scope.dimensions === undefined) {
+                    $scope.dimensions = {};
+                    $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
+                }
                 $scope.resourceName = attrs.resourceName;
                 $scope.existingAlarms = [];
 
@@ -95,6 +109,7 @@ angular.module('CreateAlarmModal', [
                                 return metric.name == defaults.metric;
                             });
                             $scope.alarm.metric.namespace = $scope.namespace;
+                            $scope.alarm.metric.dimensions = $scope.dimensions;
                             $scope.alarm.statistic = attrs.defaultStatistic;
                             $scope.alarm.comparison = '>=';
                             $scope.alarm.evaluation_periods = defaults.evaluation_periods;
