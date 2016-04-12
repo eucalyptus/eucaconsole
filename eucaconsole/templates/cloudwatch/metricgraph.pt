@@ -8,6 +8,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
+<div metal:fill-slot="main_content" ng-app="MetricGraphPage" ng-controller="MetricsCtrl">
     <div class="row" id="contentwrap">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -19,7 +20,7 @@
         <h3 id="pagetitle"><strong i18n:translate="">Metrics</strong></h3>
         <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-        <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
+        <div class="cloudwatch-charts" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
             ng-init="chartsCtrl.initController('${chart_options_json}')">
             <div class="toprow" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
                 <div class="blurb">

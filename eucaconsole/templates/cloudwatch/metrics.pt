@@ -67,15 +67,13 @@
                         {{ item.cat_label }} ({{ item.cat_total }})
                     </div>
                     <!-- Begin grid view -->
-                    <div ng-if="item.heading != true" class="tile item" ng-cloak="true" ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">
+                    <div ng-if="item.heading != true" class="tile item" ng-cloak="true">
                         <div class="header">
                             <strong>
                                 <metal:block metal:define-slot="tile_header">
-                                    <span ng-repeat="res in item.resources">
-                                        <strong>
-                                            <span>{{ res.res_name }}</span>
-                                        </strong>
-                                    </span>
+                                    <strong>
+                                        <span>{{ item.metric_name }}</span>
+                                    </strong>
                                 </metal:block>
                             </strong>
                             <metal:block metal:define-slot="tile_dropdown_button">
@@ -86,7 +84,7 @@
                                 </ul>
                             </metal:block>
                         </div>
-                        <div class="content">
+                        <div class="content" ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">
                             <div>
                                 <span class="label" title="Metric" i18n:attributes="title" data-tooltip="">ID</span>
                                 <span ng-repeat="res in item.resources">
