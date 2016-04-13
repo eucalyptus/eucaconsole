@@ -325,7 +325,7 @@ class CloudWatchMetricsJsonView(BaseView):
         namespace_param = self.request.params.get('namespace', 'AWS/EC2')
         namespaces = namespace_param.split(',')  # Pass multiple namespaces as comma-separated list
         conn = self.get_connection(conn_type='cloudwatch')
-        dimensions = {resourcetype: resourceid}
+        dimensions = {resourcetype: [resourceid]}
         metrics = []
 
         # Fetch standard metrics by namespace(s)
@@ -345,7 +345,7 @@ class CloudWatchMetricsJsonView(BaseView):
                 if not metric.namespace.startswith('AWS/'):
                     metrics.append(dict(
                         name=metric.name,
-                        unit=metric.unit,
+                        unit='None',  # Metric objects don't have a unit attr
                         label=metric.name,
                         namespace=metric.namespace,
                     ))
