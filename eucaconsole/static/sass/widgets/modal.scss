@@ -1,3 +1,5 @@
+$modal-open-top-position: -40px;
+
 
 @mixin modal-width($width:60%) {
     .modal-content {
@@ -5,34 +7,37 @@
     }
 }
 
+@keyframes slidedown {
+  from {
+      opacity: 0;
+      top: -1000px;
+  }
+  to {
+      opacity: 1;
+      top: $modal-open-top-position;
+  }
+}
+
 .modal {
     display: none;
     z-index: 10000;
-    
     &.tiny  { @include modal-width(30%); }
     &.small { @include modal-width(40%); }
     &.medium  { @include modal-width(60%); }
     &.large { @include modal-width(70%); }
     &.xlarge { @include modal-width(95%); }
-
     &.open {
         display: block;
-
         .modal-content {
-            top: 0px;
+            animation-name: slidedown;
+            animation-duration: 0.3s;
         }
     }
-
     .modal-content {
-        top: -1000px;
-        //-moz-transition-property: all;
-        //transition-duration: 2s;
-        transition: all 2.0s ease-in-out;
-
+        top: $modal-open-top-position;
         opacity: 1;
         background-color: #FFF;
         z-index: 100000;
-
         position: absolute;
         width: 60%;
         max-width: 65rem;
@@ -43,7 +48,6 @@
         padding: 1.875rem;
         border: solid 1px #666;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-
         .close-modal {
             font-size: 2.5rem;
             line-height: 1;
@@ -53,22 +57,20 @@
             color: #AAA;
             font-weight: bold;
             cursor: pointer;
-
             &:hover {
                 color: #007DBA;
             }
         }
-
         button {
             margin: 0;
         }
-
         input[type="number"] {
             width: 100%;
         }
     }
 
     .modal-bg {
+        z-index: 99999;
         position: fixed;
         top: 0;
         bottom: 0;

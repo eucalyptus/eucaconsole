@@ -63,7 +63,7 @@
             </select>
         </div>
         <div class="small-3 columns">
-            <input ng-model="alarm.threshold" name="threshold" autofocus=""
+            <input ng-model="alarm.threshold" name="threshold" autofocus="" i18n:attributes="placeholder"
                    placeholder="amount..." required="required" type="number" min="1"/>
             <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.required"
                    i18n:translate="">Threshold value is required.</small>
@@ -89,10 +89,10 @@
             <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.min"
                    i18n:translate="">Period value must be a positive number.</small>
         </div>
-        <div class="small-4 columns">
-            <label i18n:translate="">consecutive periods of</label>
-        </div>
         <div class="small-3 columns">
+            <label i18n:translate="">consecutive period(s) of</label>
+        </div>
+        <div class="small-4 columns">
             <select name="period" ng-model="alarm.period" required="required">
                 <option value="60" i18n:translate="">1 minute</option>
                 <option value="300" i18n:translate="">5 minutes</option>

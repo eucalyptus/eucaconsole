@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_monitoring.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ResourceMonitoring">
@@ -33,6 +34,19 @@
             </dl>
             <div class="panel">
                 <div class="cloudwatch-charts">
+                    <div>
+                        <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
+                        <div class="modal xlarge create-alarm-modal" modal="createAlarm">
+                            <div create-alarm=""
+                                template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                                resource-type="LoadBalancerName"
+                                resource-id="${elb.name}"
+                                resource-name="${elb.name}"
+                                namespace="AWS/ELB"
+                                default-metric="RequestCount"
+                                default-statistic="Sum"></div>
+                        </div>
+                    </div>
                     <alarm-state-view
                         template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
                         resource-id="${elb.name}" resource-name="${elb.name}"

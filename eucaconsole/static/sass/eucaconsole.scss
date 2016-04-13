@@ -842,7 +842,7 @@ form {
         }
     }
     .error .chosen-container .chosen-single,
-    .ng-invalid {
+    .ng-invalid.ng-touched {
         border-color: darkred;
         background: $euca-validation-input-bgcolor;
     }

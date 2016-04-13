@@ -91,8 +91,22 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
                     }).then(function success (response) {
                         var data = response.data.results || [];
                         return data;
-                    }, function error (response) {
-                        return response;
+                    });
+                });
+        },
+
+        getAlarmsForDimensions: function (dims) {
+            return eucaRoutes.getRouteDeferred('cloudwatch_alarms_for_dimensions_json')
+                .then(function (path) {
+                    return $http({
+                        method: 'GET',
+                        url: path,
+                        params: {
+                            'dimensions': JSON.stringify(dims)
+                        }
+                    }).then(function success (response) {
+                        var data = response.data.results || [];
+                        return data;
                     });
                 });
         }

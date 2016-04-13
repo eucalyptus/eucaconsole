@@ -30,7 +30,7 @@
         padding: 0.375rem;
         color: #6a737b;
         &:hover {
-            color: #007dba;
+            color: $hpe-green;
         }
     }
 
@@ -38,8 +38,11 @@
     &.ng-invalid {
         .button {
             background-color: #FFF;
-            border-color: #B3B3B3;
-            color: #B3B3B3;
+            border-color: $hpe-disabledgray;
+            color: $hpe-disabledgray;
+            &:hover {
+                box-shadow: none;
+            }
         }
     }
 }
