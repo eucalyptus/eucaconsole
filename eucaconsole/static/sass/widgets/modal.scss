@@ -1,3 +1,5 @@
+@import '../includes/eucavariables';
+
 $modal-open-top-position: -40px;
 
 
@@ -58,7 +60,7 @@ $modal-open-top-position: -40px;
             font-weight: bold;
             cursor: pointer;
             &:hover {
-                color: #007DBA;
+                color: $hpe-green;
             }
         }
         button {

@@ -322,29 +322,35 @@ class CloudWatchMetricsJsonView(BaseView):
     def metrics_available_for_resource(self):
         resourcetype = self.request.matchdict.get('type')
         resourceid = self.request.matchdict.get('value')
+        namespace_param = self.request.params.get('namespace', 'AWS/EC2')
+        namespaces = namespace_param.split(',')  # Pass multiple namespaces as comma-separated list
         conn = self.get_connection(conn_type='cloudwatch')
-        dimensions = {resourcetype: resourceid}
+        dimensions = {resourcetype: [resourceid]}
+        metrics = []
 
+        # Fetch standard metrics by namespace(s)
+        for metric in METRIC_TYPES:
+            if metric['namespace'] in namespaces:
+                metrics.append(dict(
+                    name=metric['name'],
+                    unit=metric['unit'],
+                    label=METRIC_TITLE_MAPPING.get(metric['name'], metric['name']),
+                    namespace=metric['namespace'],
+                ))
+
+        # Fetch custom metrics via list_metrics API call
         with boto_error_handler(self.request):
-            metrics = conn.list_metrics(dimensions=dimensions)
+            list_metrics_result = conn.list_metrics(dimensions=dimensions)
+            for metric in list_metrics_result:
+                if not metric.namespace.startswith('AWS/'):
+                    metrics.append(dict(
+                        name=metric.name,
+                        unit='None',  # Metric objects don't have a unit attr
+                        label=metric.name,
+                        namespace=metric.namespace,
+                    ))
 
-        result = [{
-            'index': [metric['name'] for metric in METRIC_TYPES].index(m.name),
-            'unit': next(metric['unit'] for metric in METRIC_TYPES if metric['name'] == m.name),
-            'dimensions': m.dimensions,
-            'name': m.name,
-            'label': METRIC_TITLE_MAPPING.get(m.name, m.name),
-            'namespace': m.namespace} for m in metrics]
-        result.sort(lambda a, b: cmp(a.get('index', 0), b.get('index', 0)))
-
-        if len(result) == 0:
-            result = [{
-                'unit': m['unit'],
-                'name': m['name'],
-                'label': METRIC_TITLE_MAPPING.get(m['name'], m['name']),
-                'namespace': m['namespace']} for m in METRIC_TYPES]
-
-        return dict(metrics=result)
+        return dict(metrics=metrics)
 
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')
