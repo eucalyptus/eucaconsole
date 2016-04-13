@@ -10,14 +10,16 @@
 .actions .item-list .item { color: #333333; background-color: #e6e7e8; margin-right: 8px; padding: 0.25rem 0.5rem; font-size: 0.6875rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; }
 .actions .item-list .item .remove { margin-left: 5px; color: #FFF; }
 .actions select { margin: 0 0 0.5rem 0; }
-.actions .cancel { display: inline-block; padding: 0.375rem; color: #6a737b; }
-.actions .cancel:hover { color: #007dba; }
-.actions.ng-pristine .button, .actions.ng-invalid .button { background-color: #FFF; border-color: #B3B3B3; color: #B3B3B3; }
+.actions .cancel { display: inline-block; padding: 0.375rem; }
+.actions.ng-pristine .button, .actions.ng-invalid .button { background-color: white; border-color: #EDEDED; color: #EDEDED; }
+.actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
 
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
+@keyframes slidedown { from { opacity: 0; top: -1000px; }
+  to { opacity: 1; top: -40px; } }
 .modal { display: none; z-index: 10000; }
 .modal.tiny .modal-content { width: 30%; }
 .modal.small .modal-content { width: 40%; }
@@ -25,8 +27,8 @@
 .modal.large .modal-content { width: 70%; }
 .modal.xlarge .modal-content { width: 95%; }
 .modal.open { display: block; }
-.modal.open .modal-content { top: 0px; }
-.modal .modal-content { top: -1000px; transition: all 2.0s ease-in-out; opacity: 1; background-color: #FFF; z-index: 100000; position: absolute; width: 60%; max-width: 65rem; margin: 0 auto; left: 0; right: 0; border-radius: 3px; padding: 1.875rem; border: solid 1px #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
+.modal.open .modal-content { animation-name: slidedown; animation-duration: 0.3s; }
+.modal .modal-content { top: -40px; opacity: 1; background-color: #FFF; z-index: 100000; position: absolute; width: 60%; max-width: 65rem; margin: 0 auto; left: 0; right: 0; border-radius: 3px; padding: 1.875rem; border: solid 1px #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
 .modal .modal-content .close-modal { font-size: 2.5rem; line-height: 1; position: absolute; top: 0.635rem; right: 1.375rem; color: #AAA; font-weight: bold; cursor: pointer; }
 .modal .modal-content .close-modal:hover { color: #007DBA; }
 .modal .modal-content button { margin: 0; }
@@ -37,3 +39,4 @@
 .create-alarm-modal .ng-invalid .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; }
 .create-alarm-modal .ng-invalid .button.submit:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
 .create-alarm-modal .unit-label { font-weight: bold; color: #666666; }
+.create-alarm-modal input[name=threshold] { margin-bottom: 0; }

@@ -69,7 +69,7 @@
                                 <label class="right" i18n:translate="">Dimensions</label>
                             </div>
                             <div class="large-9 small-9 columns value">
-                                <select multiple="true" ng-model="alarm.dimensions" chosen="">
+                                <select multiple="true" class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">
                                     <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected; value dims.value"></option>
                                 </select>
                             </div>

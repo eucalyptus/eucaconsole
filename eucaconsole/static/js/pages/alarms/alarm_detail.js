@@ -28,7 +28,7 @@ angular.module('AlarmDetailPage', [
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
-                if($scope.alarmUpdateForm.$invalid) {
+                if($scope.alarmUpdateForm.$invalid || $scope.alarmUpdateForm.$pristine) {
                     var $error = $scope.alarmUpdateForm.$error;
                     Object.keys($error).forEach(function (error) {
                         $error[error].forEach(function (current) {

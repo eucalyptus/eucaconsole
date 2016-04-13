@@ -11,7 +11,11 @@
     }
 }
 
-form {
+form.alarm-update {
+    input[type="number"] {
+        width: 100%;
+    }
+
     &.alarm-update {
         .trigger-conditions {
             margin: 1.5rem 0 0;
@@ -22,7 +26,15 @@ form {
         }
     }
 
-    &.ng-invalid {
+    select.dimensions-select {
+        &.ng-invalid + div.chosen-container {
+            border: 1px solid darkred;
+            background-color: $euca-validation-input-bgcolor;
+        }
+    }
+
+    &.ng-invalid,
+    &.ng-pristine {
         .button {
             &.submit {
                 @include disabled-button-mixin;
