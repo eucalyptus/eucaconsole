@@ -72,6 +72,8 @@
                                 <select multiple="true" class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">
                                     <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected; value dims.value"></option>
                                 </select>
+                                <small class="error" ng-show="alarmUpdateForm.dimensions.$error.required"
+                                       i18n:translate="">Dimensions is a required value.</small>
                             </div>
                         </div>
                         <div class="trigger-conditions">
