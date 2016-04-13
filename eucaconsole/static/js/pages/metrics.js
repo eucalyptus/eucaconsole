@@ -257,7 +257,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             var chartString = "metric="+item.metric_name+"&dimensions="+JSON.stringify(vm.chartDimensions([item]))+graphParams;
             chartString = chartString+"&namespace="+item.namespace+"&unit="+item.unit;
             window.location = url+"?graph="+$.base64.encode(chartString);
-        }
+        };
         vm.showCreateAlarm = function(metric) {
             var dims = {}; 
             if (!Array.isArray(metric)) {
