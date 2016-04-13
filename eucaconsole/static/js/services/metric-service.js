@@ -9,11 +9,13 @@ angular.module('MetricServiceModule', ['EucaRoutes'])
                         url: path,
                         params: {namespace: namespace}
                     }).then(function (result) {
-                        var metrics = [];
+                        var metrics = [],
+                            namespaces = [];
                         if(result && result.data) {
                             metrics = result.data.metrics || [];
+                            namespaces = result.data.namespaces || [];
                         }
-                        return metrics;
+                        return {metrics: metrics, namespaces: namespaces};
                     });
                 });
         }

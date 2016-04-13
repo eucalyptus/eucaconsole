@@ -351,8 +351,10 @@ class CloudWatchMetricsJsonView(BaseView):
                         namespace=metric.namespace,
                         nslabel='{0} {1}'.format(metric.namespace, _('metrics')),  # Namespace label
                     ))
+                    if metric.namespace not in namespaces:
+                        namespaces.append(metric.namespace)
 
-        return dict(metrics=metrics)
+        return dict(metrics=metrics, namespaces=namespaces)
 
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')

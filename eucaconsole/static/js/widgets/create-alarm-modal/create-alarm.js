@@ -28,6 +28,7 @@ angular.module('CreateAlarmModal', [
         },
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
             $scope.alarm = {};
+            $scope.namespaces = [];
             var csrf_token = $('#csrf_token').val();
 
             $scope.onNameChange = function () {
@@ -52,7 +53,7 @@ angular.module('CreateAlarmModal', [
                 var alarm = $scope.alarm;
                 var resName = $scope.resourceName || $scope.resourceId;
                 if (resName === undefined) {
-                    resName = []
+                    resName = [];
                     Object.keys($scope.dimensions).forEach(function(key) {
                         if (resName.length > 0) {
                             resName.push(' - ');
@@ -103,10 +104,11 @@ angular.module('CreateAlarmModal', [
 
                 if (attrs.loadMetricChoices !== 'false') {
                     MetricService.getMetrics($scope.namespace, $scope.resourceType, $scope.resourceId)
-                        .then(function (metrics) {
-                            $scope.metrics = metrics;
+                        .then(function (results) {
+                            $scope.metrics = results.metrics;
+                            $scope.namespaces = results.namespaces;
 
-                            $scope.alarm.metric = metrics.find(function(metric) {
+                            $scope.alarm.metric = results.metrics.find(function(metric) {
                                 return metric.name == defaults.metric;
                             });
                             $scope.alarm.metric.namespace = $scope.namespace;
