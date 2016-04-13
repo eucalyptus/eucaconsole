@@ -12,7 +12,7 @@
     <div class="row" id="contentwrap">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="#" i18n:translate="">Metrics</a></li>
+                <li><a href="../" i18n:translate="">Metrics</a></li>
                 <li ng-cloak="">{{ graph.metric }}</li>
                 <li class="current">Graph</li>
             </metal:crumbs>
