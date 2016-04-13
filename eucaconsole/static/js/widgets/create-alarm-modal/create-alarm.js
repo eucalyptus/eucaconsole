@@ -81,6 +81,18 @@ angular.module('CreateAlarmModal', [
                 return name;
             };
 
+            function composeAlarmMetric (attrs) {
+                $scope.alarm.metric.namespace = $scope.namespace;
+                $scope.alarm.metric.dimensions = $scope.dimensions;
+                $scope.alarm.statistic = attrs.defaultStatistic;
+                $scope.alarm.comparison = '>=';
+                $scope.alarm.evaluation_periods = defaults.evaluation_periods;
+                $scope.alarm.period = defaults.period;
+
+                defaults.metric = $scope.alarm.metric;
+                $scope.checkNameCollision();
+            }
+
             $scope.initializeModal = function(attrs) {
                 defaults = {
                     statistic: attrs.defaultStatistic,
@@ -90,7 +102,7 @@ angular.module('CreateAlarmModal', [
                     period: 300
                 };
 
-                scope.title = attrs.title || 'Create Alarm';
+                $scope.title = attrs.title || 'Create Alarm';
 
                 $scope.namespace = attrs.namespace;
                 $scope.resourceType = attrs.resourceType;
@@ -111,31 +123,19 @@ angular.module('CreateAlarmModal', [
                             $scope.alarm.metric = metrics.find(function(metric) {
                                 return metric.name == defaults.metric;
                             });
-                            $scope.alarm.metric.namespace = $scope.namespace;
-                            $scope.alarm.metric.dimensions = $scope.dimensions;
-                            $scope.alarm.statistic = attrs.defaultStatistic;
-                            $scope.alarm.comparison = '>=';
-                            $scope.alarm.evaluation_periods = defaults.evaluation_periods;
-                            $scope.alarm.period = defaults.period;
 
-                            defaults.metric = $scope.alarm.metric;
+                            composeAlarmMetric(attrs);
                         });
                 }
                 else {
                     // let's construct the metric object from data passed
                     $scope.alarm.metric = {
                         name: defaults.metric,
-                        dimensions: $scope.dimensions,
+                        unit: attrs.unit
                     };
-                    $scope.alarm.metric.namespace = $scope.namespace;
-                    $scope.alarm.metric.unit = attrs.unit;
-                    $scope.alarm.statistic = attrs.defaultStatistic;
-                    $scope.alarm.comparison = '>=';
-                    $scope.alarm.evaluation_periods = defaults.evaluation_periods;
-                    $scope.alarm.period = defaults.period;
-                }
 
-                $scope.checkNameCollision();
+                    composeAlarmMetric(attrs);
+                }
             };
 
             $scope.createAlarm = function () {
