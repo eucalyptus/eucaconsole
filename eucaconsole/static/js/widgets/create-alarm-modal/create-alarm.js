@@ -15,60 +15,16 @@ angular.module('CreateAlarmModal', [
             return attributes.template;
         },
         link: function (scope, element, attrs) {
-            defaults = {
-                statistic: attrs.defaultStatistic,
-                metric: attrs.defaultMetric,
-                comparison: '>=',
-                evaluation_periods: 1,
-                period: 300
-            };
+            scope.initializeModal(attrs);
 
-            scope.title = attrs.title || 'Create Alarm';
-
-            scope.namespace = attrs.namespace;
-            scope.resourceType = attrs.resourceType;
-            scope.resourceId = attrs.resourceId;
-            scope.dimensions = attrs.dimensions?JSON.parse(attrs.dimensions):undefined;
-            scope.resourceName = attrs.resourceName;
-            scope.existingAlarms = [];
-
+            scope.$on('modal:open', function (event, name) {
+                scope.initializeModal(attrs);
+            });
             scope.$on('modal:close', function (event, name) {
                 if(name == 'createAlarm') {
                     scope.resetForm();
                 }
             });
-
-            if (attrs.loadmetricchoices !== 'false') {
-                MetricService.getMetrics(scope.namespace, scope.resourceType, scope.resourceId)
-                    .then(function (metrics) {
-                        scope.metrics = metrics;
-
-                        scope.alarm.metric = metrics.find(function(metric) {
-                            return metric.name == defaults.metric;
-                        });
-                        scope.alarm.metric.namespace = scope.namespace;
-                        scope.alarm.statistic = attrs.defaultStatistic;
-                        scope.alarm.comparison = '>=';
-                        scope.alarm.evaluation_periods = defaults.evaluation_periods;
-                        scope.alarm.period = defaults.period;
-
-                        defaults.metric = scope.alarm.metric;
-                    });
-            }
-            else {
-                // let's construct the metric object from data passed
-                scope.alarm.metric = {
-                    name: defaults.metric,
-                    dimensions: scope.dimensions,
-                };
-                scope.alarm.metric.namespace = scope.namespace;
-                scope.alarm.statistic = attrs.defaultStatistic;
-                scope.alarm.comparison = '>=';
-                scope.alarm.evaluation_periods = defaults.evaluation_periods;
-                scope.alarm.period = defaults.period;
-            }
-
-            scope.checkNameCollision();
         },
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
             $scope.alarm = {};
@@ -94,9 +50,20 @@ angular.module('CreateAlarmModal', [
                 }
                 
                 var alarm = $scope.alarm;
+                var resName = $scope.resourceName || $scope.resourceId;
+                if (resName === undefined) {
+                    resName = [];
+                    Object.keys($scope.dimensions).forEach(function(key) {
+                        if (resName.length > 0) {
+                            resName.push(' - ');
+                        }
+                        resName.push($scope.dimensions[key].join(' - '));
+                    });
+                    resName = resName.join('');
+                }
                 var name = [
                     alarm.metric.namespace,
-                    $scope.resourceName || $scope.resourceId,
+                    resName,
                     alarm.metric.name].join(' - ');
 
                 if(count > 0) {
@@ -112,6 +79,63 @@ angular.module('CreateAlarmModal', [
                 }
 
                 return name;
+            };
+
+            $scope.initializeModal = function(attrs) {
+                defaults = {
+                    statistic: attrs.defaultStatistic,
+                    metric: attrs.defaultMetric,
+                    comparison: '>=',
+                    evaluation_periods: 1,
+                    period: 300
+                };
+
+                scope.title = attrs.title || 'Create Alarm';
+
+                $scope.namespace = attrs.namespace;
+                $scope.resourceType = attrs.resourceType;
+                $scope.resourceId = attrs.resourceId;
+                $scope.dimensions = attrs.dimensions?JSON.parse(attrs.dimensions):undefined;
+                if ($scope.dimensions === undefined) {
+                    $scope.dimensions = {};
+                    $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
+                }
+                $scope.resourceName = attrs.resourceName;
+                $scope.existingAlarms = [];
+
+                if (attrs.loadMetricChoices !== 'false') {
+                    MetricService.getMetrics($scope.namespace, $scope.resourceType, $scope.resourceId)
+                        .then(function (metrics) {
+                            $scope.metrics = metrics;
+
+                            $scope.alarm.metric = metrics.find(function(metric) {
+                                return metric.name == defaults.metric;
+                            });
+                            $scope.alarm.metric.namespace = $scope.namespace;
+                            $scope.alarm.metric.dimensions = $scope.dimensions;
+                            $scope.alarm.statistic = attrs.defaultStatistic;
+                            $scope.alarm.comparison = '>=';
+                            $scope.alarm.evaluation_periods = defaults.evaluation_periods;
+                            $scope.alarm.period = defaults.period;
+
+                            defaults.metric = $scope.alarm.metric;
+                        });
+                }
+                else {
+                    // let's construct the metric object from data passed
+                    $scope.alarm.metric = {
+                        name: defaults.metric,
+                        dimensions: $scope.dimensions,
+                    };
+                    $scope.alarm.metric.namespace = $scope.namespace;
+                    $scope.alarm.metric.unit = attrs.unit;
+                    $scope.alarm.statistic = attrs.defaultStatistic;
+                    $scope.alarm.comparison = '>=';
+                    $scope.alarm.evaluation_periods = defaults.evaluation_periods;
+                    $scope.alarm.period = defaults.period;
+                }
+
+                $scope.checkNameCollision();
             };
 
             $scope.createAlarm = function () {
@@ -177,8 +201,8 @@ angular.module('CreateAlarmModal', [
 
             $scope.checkNameCollision = function () {
                 $scope.existingAlarms = [];
-                AlarmService.getAlarmsForResource($scope.resourceId, $scope.resourceType)
-                    .then(function (alarms) {
+                AlarmService.getAlarmsForDimensions($scope.dimensions)
+                    .then(function success(alarms) {
                         $scope.existingAlarms = alarms;
                         $scope.alarm.name = $scope.alarmName();
                     });
