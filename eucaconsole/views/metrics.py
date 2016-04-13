@@ -336,6 +336,7 @@ class CloudWatchMetricsJsonView(BaseView):
                     unit=metric['unit'],
                     label=METRIC_TITLE_MAPPING.get(metric['name'], metric['name']),
                     namespace=metric['namespace'],
+                    nslabel='{0} {1}'.format(metric['namespace'].split('/')[1], _('metrics')),  # Namespace label
                 ))
 
         # Fetch custom metrics via list_metrics API call
@@ -348,6 +349,7 @@ class CloudWatchMetricsJsonView(BaseView):
                         unit='None',  # Metric objects don't have a unit attr
                         label=metric.name,
                         namespace=metric.namespace,
+                        nslabel='{0} {1}'.format(metric.namespace, _('metrics')),  # Namespace label
                     ))
 
         return dict(metrics=metrics)

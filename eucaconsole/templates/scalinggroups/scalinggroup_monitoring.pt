@@ -35,12 +35,13 @@
             <div class="panel no-title cloudwatch-charts">
                 <div>
                     <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
-                    <div class="modal create-alarm-modal" modal="createAlarm">
+                    <div class="modal xlarge create-alarm-modal" modal="createAlarm">
                         <div create-alarm=""
                             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
                             resource-type="AutoScalingGroupName"
                             resource-id="${scaling_group.name}"
                             resource-name="${scaling_group.name}"
+                            namespace="${'AWS/EC2,AWS/ELB' if has_elb else 'AWS/EC2'}"
                             default-metric="${'RequestCount' if has_elb else 'CPUUtilization'}"
                             default-statistic="${'Sum' if has_elb else 'Average'}"></div>
                     </div>
