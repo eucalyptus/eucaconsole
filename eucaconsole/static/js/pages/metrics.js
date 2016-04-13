@@ -215,7 +215,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
             return ret;
         };
-        vm.copyUrl = function(chart) {
+        function getChartEncoding(chart) {
             var metric = '';
             var dims = [];
             if (Array.isArray(chart)) {
@@ -236,7 +236,10 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 dims.push(tmp);
                 metric = chart.metric_name;
             }
-            var chartString = "metric="+metric+"&dimensions="+JSON.stringify(dims)+graphParams;
+            return "metric="+metric+"&dimensions="+JSON.stringify(dims)+graphParams;
+        }
+        vm.copyUrl = function(chart) {
+            var chartString = getChartEncoding(chart);
             var url = window.location.href;
             if (url.indexOf("?") > -1) {
                 url = url.split("?")[0];
@@ -251,7 +254,9 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }, 500);
         };
         vm.showGraphForItem = function(url, item) {
-            window.location = url;
+            var chartString = "metric="+item.metric_name+"&dimensions="+JSON.stringify(vm.chartDimensions([item]))+graphParams;
+            chartString = chartString+"&namespace="+item.namespace+"&unit="+item.unit;
+            window.location = url+"?graph="+$.base64.encode(chartString);
         }
         vm.showCreateAlarm = function(metric) {
             var dims = {}; 

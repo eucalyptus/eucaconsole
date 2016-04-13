@@ -22,7 +22,7 @@
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
         <div class="cloudwatch-charts" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
             ng-init="chartsCtrl.initController('${chart_options_json}')">
-            <div class="toprow" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+            <div class="toprow" ng-cloak="">
                 <div class="blurb">
                     <div class="field-wrapper">
                         <div>
@@ -82,7 +82,7 @@
                           ng-click="chartsCtrl.refreshLargeChart()"><i class="fa fa-refresh"></i></span>
                 </div>
             </div>
-            <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+            <div class="time-shift">
                 <a ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left" ng-disabled="!chartsCtrl.shiftTimeLeftAllowed()">
                     <i class="fa fa-arrow-circle-o-left fa-2x"></i>
                 </a>
@@ -91,27 +91,26 @@
                 </a>
                 <svg></svg>
             </div>
-            <div class="chart-wrapper" ng-repeat="(metric, chart) in items | filter:{ _selected: true } | groupBy: 'metric_name'" ng-cloak="true">
-                <h6>{{ chart[0].metric_label }}</h6>
-                <a href="" id="metric-close-graph-{{ metric }}" class="graph-close" ng-click="metricsCtrl.clearThisChart(chart)" >&#215;</a>
-                <span id="metric-chart-menu-{{ metric }}" class="metric-chart-menu" data-dropdown="chart-dropdown-{{ metric }}">
+            <div class="chart-wrapper" ng-cloak="true">
+                <h6>{{ graph.metric }}</h6>
+                <span id="metric-chart-menu-{{ graph.metric }}" class="metric-chart-menu" data-dropdown="chart-dropdown-{{ graph.metric }}">
                     <i class="fa fa-ellipsis-v"></i>
                 </span>
-                <ul id="chart-dropdown-{{ metric }}" class="f-dropdown" data-dropdown-content="">
-                    <li> <a ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{metric}}&resource={{ chart[0].res_ids | escapeURL }}" i18n:translate="">Create alarm</a> </li>
-                    <li> <a ng-click="metricsCtrl.copyUrl(chart)" i18n:translate="">Copy URL</a> </li>
+                <ul id="chart-dropdown-{{ graph.metric }}" class="f-dropdown" data-dropdown-content="">
+                    <li> <a ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{graph.metric}}&resource={{ chart[0].res_ids | escapeURL }}" i18n:translate="">Create alarm</a> </li>
+                    <li> <a ng-click="metricsCtrl.copyUrl(graph)" i18n:translate="">Copy URL</a> </li>
                 </ul>
                 <div class="large-chart-wrapper">
                     <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
-                    <svg cloudwatch-chart="" id="large-chart-{{ metric }}" class="cwchart"
-                         dimensions="{{ metricsCtrl.chartDimensions(chart) }}"
-                         namespace="{{ chart[0].namespace }}"
-                         metric="{{ chart[0].metric_name }}"
+                    <svg cloudwatch-chart="" id="large-chart-{{ graph.metric }}" class="cwchart"
+                         dimensions="{{ graph.dimensions }}"
+                         namespace="{{ graph.namespace }}"
+                         metric="{{ graph.metric }}"
                          period="{{ chartsCtrl.largeChartGranularity }}"
                          duration="{{ chartsCtrl.largeChartDuration }}"
                          start-time="{{ chartsCtrl._largeChartStartTime.toISOString() }}"
                          end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
-                         unit="{{ chart[0].unit }}"
+                         unit="{{ graph.unit }}"
                          statistic="{{ chartsCtrl.largeChartStatistic }}" empty="No Data"
                          large="true" no-x-labels="true" auto-load="true">
                     </svg>
