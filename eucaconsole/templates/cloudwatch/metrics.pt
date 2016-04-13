@@ -4,7 +4,6 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
@@ -80,7 +79,7 @@
                                 <metal:block metal:define-slot="tile_dropdown_button">
                                     <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
                                     <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown">
-                                        <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
+                                        <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(item)">Create alarm</a></li>
                                         <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
                                     </ul>
                                 </metal:block>
@@ -139,7 +138,7 @@
                                         <span class="actions" ng-show="item.status !== 'deleting'">
                                             <a id="table-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
                                             <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown" data-dropdown-content="">
-                                                <li><a i18n:translate="" ng-href="${request.route_path('cloudwatch_alarms_create')}?metric={{item.metric_name}}&resource={{ item.res_ids | escapeURL }}">Create alarm</a></li>
+                                                <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(item)">Create alarm</a></li>
                                                 <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
                                             </ul>
                                         </span>
@@ -244,7 +243,7 @@
                                 <i class="fa fa-ellipsis-v"></i>
                             </span>
                             <ul id="chart-dropdown-{{ metric }}" class="f-dropdown" data-dropdown-content="">
-                                <li> <a ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{metric}}&resource={{ chart[0].res_ids | escapeURL }}" i18n:translate="">Create alarm</a> </li>
+                                <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(chart)">Create alarm</a></li>
                                 <li> <a ng-click="metricsCtrl.copyUrl(chart)" i18n:translate="">Copy URL</a> </li>
                             </ul>
                             <div class="large-chart-wrapper">
@@ -274,6 +273,17 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="modal xlarge create-alarm-modal" modal="createAlarm">
+            <div create-alarm="" ng-if="metricForAlarm"
+                template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                dimensions="{{ metricForAlarm.dimensions }}"
+                resource-name="{{metricForAlarm.names }}"
+                namespace="{{ metricForAlarm.namespace }}"
+                unit="{{ metricForAlarm.unit }}"
+                default-metric="{{ metricForAlarm.metric_name }}"
+                default-statistic="Sum" load-metric-choices="false">
             </div>
         </div>
     </div>
@@ -307,6 +317,7 @@
     <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/metric-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>

@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter'])
+angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter', 'CreateAlarmModal', 'ModalModule'])
     .directive('splitbar', function () {
         var pageElement = angular.element(document.body.parentElement);
         return {
@@ -24,7 +24,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }
         };
     })
-    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
+    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError, ModalService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         var vm = this;
         var categoryIndex = {};
@@ -249,6 +249,34 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             $timeout(function() {
                 $(".metrics-url-field").select();
             }, 500);
+        };
+        vm.showCreateAlarm = function(metric) {
+            var dims = {}; 
+            if (!Array.isArray(metric)) {
+                metric = [metric];
+            }
+            names = [];
+            metric.forEach(function(row) {
+                row.resources.forEach(function(res) {
+                    if (names.length > 0) {
+                        names.push(' - ');
+                    }
+                    names.push(res.res_name);
+                    if (dims[res.res_type] === undefined) {
+                        dims[res.res_type] = [res.res_id];
+                    }
+                    else {
+                        dims[res.res_type].push(res.res_id);
+                    }
+                });
+            });
+            names = names.join('');
+            $scope.metricForAlarm = Object.assign(metric[0]);
+            $scope.metricForAlarm.dimensions = dims;
+            $scope.metricForAlarm.names = names;
+            $timeout(function() {
+                ModalService.openModal('createAlarm');
+            });
         };
     })
 ;

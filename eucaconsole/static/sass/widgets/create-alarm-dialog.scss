@@ -1,3 +1,6 @@
+@import "../includes/eucavariables";
+@import "../widgets/modal";
+
 .create-alarm-modal {
     .dimensions {
         ul {
@@ -7,15 +10,20 @@
         }
     }
 
-    .error {
-        display: none;
+    .ng-invalid {
+        .button {
+            &.submit {
+                @include disabled-button-mixin;
+            }
+        }
     }
 
-    &.ng-invalid-unique-name {
-       .error {
-           &.unique-name {
-               display: block;
-           }
-       }
+    .unit-label {
+        font-weight: bold;
+        color: $hpe-gray;
+    }
+
+    input[name=threshold] {
+        margin-bottom: 0;
     }
 }

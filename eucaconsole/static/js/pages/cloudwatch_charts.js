@@ -367,7 +367,8 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 // Pad chart with zero data where appropriate
                 results = [{
                     key: scope.metric,
-                    values: [{x: new Date().getTime(), y: 0}]
+                    values: [{x: new Date().getTime(), y: 0}],
+                    color: '#2ad2c9'
                 }];
             }
 

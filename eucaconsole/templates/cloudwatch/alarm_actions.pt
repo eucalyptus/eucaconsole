@@ -20,47 +20,46 @@
     <span ng-show="alarmActions.length > 0" i18n:translate="">Add another action:</span>
     <div>
         <div class="row controls-wrapper">
-            <div class="columns large-2 small-2">
+            <div class="columns large-3 small-3">
                 <label class="right" i18n:translate="">Action type</label>
             </div>
-            <div class="columns large-10 small-10">
+            <div class="columns large-9 small-9">
                 Autoscaling
             </div>
         </div>
         <div class="row controls-wrapper">
-            <div class="columns large-2 small-2">
+            <div class="columns large-3 small-3">
                 <label class="right" i18n:translate="">When alarm state is</label>
             </div>
-            <div class="columns large-10 small-10">
+            <div class="columns large-9 small-9">
                 <select name="alarmState" ng-model="action.alarm_state"
                                           ng-init="action.alarm_state = 'ALARM'"
-                                          ng-change="updatePolicies()"
-                                          ng-options="state as state for state in ['ALARM', 'INSUFFICIENT_DATA', 'OK']">
+                                          ng-change="updatePolicies()">
+                    <option value="ALARM">ALARM</option>
+                    <option value="INSUFFICIENT_DATA">INSUFFICIENT DATA</option>
+                    <option value="OK">OK</option>
                 </select>
             </div>
         </div>
         <div class="row controls-wrapper">
-            <div class="columns large-2 small-2">
+            <div class="columns large-3 small-3">
                 <label class="right" i18n:translate="">For scaling group</label>
             </div>
-            <div class="columns large-10 small-10">
+            <div class="columns large-9 small-9">
                 <select ng-model="action.scalingGroup" ng-init="action.scalingGroup = ''" ng-change="updatePolicies()"
                         name="groups" ng-options="group as group for group in scalingGroups" required-if-changed="">
-
                     <option value="" i18n:translate="">Select scaling group...</option>
                 </select>
             </div>
         </div>
         <div class="row controls-wrapper">
-            <div class="columns large-2 small-2">
+            <div class="columns large-3 small-3">
                 <label class="right" i18n:translate="">Execute scaling policy</label>
             </div>
-            <div class="columns large-10 small-10">
-
+            <div class="columns large-9 small-9">
                 <select name="policies" ng-model="action.scalingGroupPolicy"
                                         ng-init="action.scalingGroupPolicy = ''"
                                         ng-disabled="policiesAvailable()" required-if-changed="">
-
                     <option value="" i18n:translate="">{{ defaultOptionValue }}</option>
                     <option ng-repeat="(name, details) in scalingGroupPolicies"
                             ng-bind="name" 

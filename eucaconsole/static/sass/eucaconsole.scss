@@ -832,7 +832,8 @@ form {
         color: darkred;
         padding-left: 0;
     }
-    &[data-abide] .error small.error {
+    &[data-abide].error small.error,
+    .error small.error {
         background-color: white;
         font-style: normal;
         color: darkred;
@@ -840,7 +841,8 @@ form {
             display: inline-block !important;
         }
     }
-    .error .chosen-container .chosen-single {
+    .error .chosen-container .chosen-single,
+    .ng-invalid.ng-touched {
         border-color: darkred;
         background: $euca-validation-input-bgcolor;
     }
@@ -932,7 +934,9 @@ form .controls-wrapper > [class*='small-'] label {
     }
 }
 
-[data-abide] .controls-wrapper .error, [data-abide] .controls-wrapper.error {
+[data-abide] .controls-wrapper .error,
+[data-abide] .controls-wrapper.error,
+.controls-wrapper .error {
     label {
         color: $hpe-black;
     }
@@ -949,7 +953,8 @@ form .controls-wrapper > [class*='small-'] label {
     }
 }
 
-[data-abide] small.error {
+[data-abide] small.error,
+small.error {
         @include validation-error-mixin;
 }
 
