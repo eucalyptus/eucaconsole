@@ -38,8 +38,8 @@
     &.ng-invalid {
         .button {
             background-color: #FFF;
-            border-color: #B3B3B3;
-            color: #B3B3B3;
+            border-color: $hpe-disabledgray;
+            color: $hpe-disabledgray;
             &:hover {
                 box-shadow: none;
             }
