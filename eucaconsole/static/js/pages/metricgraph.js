@@ -52,9 +52,9 @@ angular.module('MetricGraphPage', ['CloudWatchCharts'])
                 if (names.length > 0) {
                     names.push(' - ');
                 }
-                names.push(val['label']);
-                Object.keys(val['dimensions']).forEach(function(res_type) {
-                    var res_id = val['dimensions'][res_type];
+                names.push(val.label);
+                Object.keys(val.dimensions).forEach(function(res_type) {
+                    var res_id = val.dimensions[res_type];
                     if (dims[res_type] === undefined) {
                         dims[res_type] = [res_id];
                     }
