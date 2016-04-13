@@ -310,6 +310,30 @@ class CloudWatchAlarmsJsonView(BaseView):
 
             return dict(results=alarms)
 
+    @view_config(route_name="cloudwatch_alarms_for_dimensions_json", renderer='json', request_method='GET')
+    def cloudwatch_alarms_for_dimensions_json(self):
+        with boto_error_handler(self.request):
+            dimensions = self.request.params.get('dimensions')
+            dimensions = json.loads(dimensions)
+
+            items = Alarm.get_alarms_for_dimensions(
+                dimensions,
+                cw_conn=self.get_connection(conn_type="cloudwatch")
+            )
+            alarms = []
+            if items:
+                for alarm in items:
+                    alarms.append(dict(
+                        name=alarm.name,
+                        metric=alarm.metric,
+                        comparison=alarm.comparison,
+                        threshold=alarm.threshold,
+                        unit=alarm.unit,
+                        state=alarm.state_value
+                    ))
+
+            return dict(results=alarms)
+
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')
         return conn.describe_alarms() if conn else []
@@ -354,7 +378,7 @@ class CloudWatchAlarmDetailView(BaseView):
             for res in res_ids:
                 option = {
                     'label': '{0} = {1}'.format(res_type, res),
-                    'value': re.sub(r'\s+', '', json.dumps({res_type:[res]})),
+                    'value': re.sub(r'\s+', '', json.dumps({res_type: [res]})),
                     'selected': [res] == self.alarm.dimensions.get(res_type)
                 }
                 options.append(option)
@@ -419,7 +443,7 @@ class CloudWatchAlarmDetailView(BaseView):
                     if res_type in dimensions.keys():
                         for res in res_ids:
                             if res not in dimensions[res_type]:
-                                dimensions[res_type].append(res);
+                                dimensions[res_type].append(res)
                     else:
                         dimensions[res_type] = res_ids
 

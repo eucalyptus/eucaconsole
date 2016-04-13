@@ -33,7 +33,7 @@
                 <div class="flex-space">
                     <div class="flex-column-1">
                         <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
-                        <div class="modal create-alarm-modal" modal="createAlarm">
+                        <div class="modal xlarge create-alarm-modal" modal="createAlarm">
                             <div create-alarm=""
                                 template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
                                 namespace="AWS/EC2"

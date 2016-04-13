@@ -2,10 +2,8 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
@@ -277,14 +275,16 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal medium create-alarm-modal" modal="createAlarm">
-        <div create-alarm="" ng-if="metricForAlarm"
-            template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
-            dimensions="{{ metricForAlarm.dimensions }}"
-            namespace="{{ metricForAlarm.namespace }}"
-            default-metric="{{ metricForAlarm.metric_name }}"
-            default-statistic="Sum" loadMetricChoices="false">
+        <div class="modal xlarge create-alarm-modal" modal="createAlarm">
+            <div create-alarm="" ng-if="metricForAlarm"
+                template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                dimensions="{{ metricForAlarm.dimensions }}"
+                resource-name="{{metricForAlarm.names }}"
+                namespace="{{ metricForAlarm.namespace }}"
+                unit="{{ metricForAlarm.unit }}"
+                default-metric="{{ metricForAlarm.metric_name }}"
+                default-statistic="Sum" load-metric-choices="false">
+            </div>
         </div>
     </div>
     <div id="metrics-copy-url-modal" class="reveal-modal small" data-reveal="">
