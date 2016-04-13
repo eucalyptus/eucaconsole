@@ -240,9 +240,9 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                 for idx, line in enumerate(lines):
                     unit, stats_series, max_value = self.get_stats_series(line['dimensions'], line['label'])
                     if stats_series.get('values'):
-                        if CHART_COLORS.get(idx):
+                        if CHART_COLORS.get(idx + 1):
                             # Use custom line colors
-                            stats_series['color'] = CHART_COLORS.get(idx)
+                            stats_series['color'] = CHART_COLORS.get(idx + 1)
                         stats_list.append(stats_series)
             else:
                 line = lines[0]
@@ -255,9 +255,9 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                     dimensions = {'AvailabilityZone': zone}
                     unit, stats_series, max_value = self.get_stats_series(dimensions)
                     if stats_series.get('values'):
-                        if CHART_COLORS.get(idx):
+                        if CHART_COLORS.get(idx + 1):
                             # Use custom line colors
-                            stats_series['color'] = CHART_COLORS.get(idx)
+                            stats_series['color'] = CHART_COLORS.get(idx + 1)
                         stats_list.append(stats_series)
             else:
                 unit, stats_series, max_value = self.get_stats_series()
