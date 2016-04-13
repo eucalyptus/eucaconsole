@@ -9,3 +9,4 @@
 .actions .cancel { display: inline-block; padding: 0.375rem; }
 .actions.ng-pristine .button, .actions.ng-invalid .button { background-color: white; border-color: #EDEDED; color: #EDEDED; }
 .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
+.actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { box-shadow: none; }

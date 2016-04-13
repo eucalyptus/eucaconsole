@@ -36,6 +36,7 @@ angular.module('ModalModule', [])
             return;
         }
         modal.addClass('open');
+        $rootScope.$broadcast('modal:open', name);
     }
 
     function closeModal (name) {
