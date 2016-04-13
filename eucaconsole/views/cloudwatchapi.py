@@ -42,14 +42,14 @@ from ..views import BaseView, boto_error_handler
 
 
 CHART_COLORS = {
-    1: '#2ad2c9',
-    2: '#614767',
-    3: '#FF8D6D',
-    4: '#80746E',
-    5: '#000000',
-    6: '#425563',
-    7: '#5F7A76',
-    8: '#666666',
+    0: '#2ad2c9',
+    1: '#614767',
+    2: '#FF8D6D',
+    3: '#80746E',
+    4: '#000000',
+    5: '#425563',
+    6: '#5F7A76',
+    7: '#666666',
 }
 
 ISO8601 = '%Y-%m-%dT%H:%M:%S.%fZ'
@@ -240,14 +240,14 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                 for idx, line in enumerate(lines):
                     unit, stats_series, max_value = self.get_stats_series(line['dimensions'], line['label'])
                     if stats_series.get('values'):
-                        if CHART_COLORS.get(idx + 1):
+                        if CHART_COLORS.get(idx):
                             # Use custom line colors
-                            stats_series['color'] = CHART_COLORS.get(idx + 1)
+                            stats_series['color'] = CHART_COLORS.get(idx)
                         stats_list.append(stats_series)
             else:
                 line = lines[0]
                 unit, stats_series, max_value = self.get_stats_series(line['dimensions'], line['label'])
-                stats_series['color'] = CHART_COLORS.get(1)
+                stats_series['color'] = CHART_COLORS.get(0)
                 stats_list.append(stats_series)
         else:
             if self.zones and len(self.zones.split(',')) > 1:
@@ -255,13 +255,13 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                     dimensions = {'AvailabilityZone': zone}
                     unit, stats_series, max_value = self.get_stats_series(dimensions)
                     if stats_series.get('values'):
-                        if CHART_COLORS.get(idx + 1):
+                        if CHART_COLORS.get(idx):
                             # Use custom line colors
-                            stats_series['color'] = CHART_COLORS.get(idx + 1)
+                            stats_series['color'] = CHART_COLORS.get(idx)
                         stats_list.append(stats_series)
             else:
                 unit, stats_series, max_value = self.get_stats_series()
-                stats_series['color'] = CHART_COLORS.get(1)
+                stats_series['color'] = CHART_COLORS.get(0)
                 stats_list.append(stats_series)
 
         return dict(
