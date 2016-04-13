@@ -19,7 +19,6 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle"><strong i18n:translate="">Graph</strong></h3>
         <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
         <div class="cloudwatch-charts" ng-controller="CloudWatchChartsCtrl as chartsCtrl"
@@ -94,13 +93,12 @@
                 <svg></svg>
             </div>
             <div class="chart-wrapper" ng-cloak="true">
-                <h6>{{ graph.metric }}</h6>
                 <span id="metric-chart-menu-{{ graph.metric }}" class="metric-chart-menu" data-dropdown="chart-dropdown-{{ graph.metric }}">
                     <i class="fa fa-ellipsis-v"></i>
                 </span>
                 <ul id="chart-dropdown-{{ graph.metric }}" class="f-dropdown" data-dropdown-content="">
-                    <li> <a ng-href="${request.route_path('cloudwatch_alarms_create')}?item={{graph.metric}}&resource={{ chart[0].res_ids | escapeURL }}" i18n:translate="">Create alarm</a> </li>
-                    <li> <a ng-click="metricsCtrl.copyUrl(graph)" i18n:translate="">Copy URL</a> </li>
+                    <li><a i18n:translate="" ng-click="showCreateAlarm(graph)">Create alarm</a></li>
+                    <li><a ng-click="copyUrl(graph)" i18n:translate="">Copy URL</a></li>
                 </ul>
                 <div class="large-chart-wrapper">
                     <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
@@ -119,12 +117,23 @@
                 </div>
             </div>
         </div>
+        <div class="modal xlarge create-alarm-modal" modal="createAlarm">
+            <div create-alarm="" ng-if="metricForAlarm"
+                template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                dimensions="{{ metricForAlarm.dimensions }}"
+                resource-name="{{metricForAlarm.names }}"
+                namespace="{{ metricForAlarm.namespace }}"
+                unit="{{ metricForAlarm.unit }}"
+                default-metric="{{ metricForAlarm.metric }}"
+                default-statistic="Sum" load-metric-choices="false">
+            </div>
+        </div>
     </div>
     <div id="metrics-copy-url-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Copy URL</h3>
         <p i18n:translate="">The URL below will bring you to the metric landing page with preselected metric(s) and graph.</p>
         <div class="">
-            <input class="metrics-url-field" ng-model="metricsCtrl.graphURL"/>
+            <input class="metrics-url-field" ng-model="graphURL"/>
         </div>
         <a href="#" id="metrics-copy-url-close-link" class="close-reveal-modal">&#215;</a>
     </div>
