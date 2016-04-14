@@ -20,11 +20,11 @@ angular.module('CreateAlarmModal', [
 
             var modalName;
 
-            scope.initializeModal(attrs);
+            createAlarmCtrl.initializeModal(attrs);
 
             scope.$on('modal:open', function (event, name) {
                 modalName = name;
-                scope.initializeModal(attrs);
+                createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
                 if(name == modalName) {
@@ -33,6 +33,8 @@ angular.module('CreateAlarmModal', [
             });
         },
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
+            var vm = this;
+
             $scope.alarm = {};
             var csrf_token = $('#csrf_token').val();
 
@@ -87,7 +89,7 @@ angular.module('CreateAlarmModal', [
                 return name;
             };
 
-            function composeAlarmMetric (attrs) {
+            vm.composeAlarmMetric = function (attrs) {
                 $scope.alarm.metric.namespace = $scope.namespace;
                 $scope.alarm.metric.dimensions = $scope.dimensions;
                 $scope.alarm.statistic = attrs.defaultStatistic;
@@ -96,9 +98,9 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm.period = defaults.period;
 
                 $scope.checkNameCollision();
-            }
+            };
 
-            $scope.initializeModal = function(attrs) {
+            vm.initializeModal = function(attrs) {
                 defaults = {
                     statistic: attrs.defaultStatistic,
                     metric: attrs.defaultMetric,
@@ -112,7 +114,7 @@ angular.module('CreateAlarmModal', [
                 $scope.namespace = attrs.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
-                $scope.dimensions = attrs.dimensions?JSON.parse(attrs.dimensions):undefined;
+                $scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : undefined;
                 if ($scope.dimensions === undefined) {
                     $scope.dimensions = {};
                     $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
@@ -130,7 +132,7 @@ angular.module('CreateAlarmModal', [
                             });
 
                             defaults.metric = $scope.alarm.metric;
-                            composeAlarmMetric(attrs);
+                            vm.composeAlarmMetric(attrs);
                         });
                 }
                 else {
@@ -140,7 +142,7 @@ angular.module('CreateAlarmModal', [
                         unit: attrs.unit
                     };
 
-                    composeAlarmMetric(attrs);
+                    vm.composeAlarmMetric(attrs);
                 }
             };
 

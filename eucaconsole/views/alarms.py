@@ -353,8 +353,8 @@ class CloudWatchAlarmDetailView(BaseView):
     def __init__(self, request, **kwargs):
         super(CloudWatchAlarmDetailView, self).__init__(request, **kwargs)
 
-        alarm_id = self.request.matchdict.get('alarm_id')
-        alarm_id = base64.decodestring(alarm_id)
+        encoded_id = self.request.matchdict.get('alarm_id')
+        alarm_id = base64.decodestring(encoded_id)
 
         self.alarm = self.get_alarm(alarm_id)
         self.alarm_form = CloudWatchAlarmUpdateForm(request)
@@ -362,6 +362,7 @@ class CloudWatchAlarmDetailView(BaseView):
         self.render_dict = dict(
             alarm=self.alarm,
             alarm_id=alarm_id,
+            encoded_id=encoded_id,
             alarm_form=self.alarm_form,
             search_facets=[]
         )
@@ -486,7 +487,9 @@ class CloudWatchAlarmHistoryView(BaseView):
     def __init__(self, request, **kwargs):
         super(CloudWatchAlarmHistoryView, self).__init__(request, **kwargs)
 
-        self.alarm_id = self.request.matchdict.get('alarm_id')
+        self.encoded_id = self.request.matchdict.get('alarm_id')
+        self.alarm_id = base64.decodestring(self.encoded_id)
+
         history = self.get_alarm_history(self.alarm_id)
         self.history = [{
             'timestamp': item.timestamp.isoformat(),
@@ -506,6 +509,7 @@ class CloudWatchAlarmHistoryView(BaseView):
 
         return dict(
             alarm_id=self.alarm_id,
+            encoded_id=self.encoded_id,
             history_json=json.dumps(self.history),
             filter_keys=[],
             search_facets=BaseView.escape_json(json.dumps(search_facets))
