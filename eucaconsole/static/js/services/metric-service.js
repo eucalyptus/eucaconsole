@@ -6,14 +6,12 @@ angular.module('MetricServiceModule', ['EucaRoutes'])
                 .then(function (path) {
                     return $http({
                         method: 'GET',
-                        url: path
+                        url: path,
+                        params: {namespace: namespace}
                     }).then(function (result) {
                         var metrics = [];
                         if(result && result.data) {
                             metrics = result.data.metrics || [];
-                            metrics = metrics.filter(function (current ) {
-                                return current.namespace == namespace;
-                            });
                         }
                         return metrics;
                     });
