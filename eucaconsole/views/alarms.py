@@ -359,10 +359,27 @@ class CloudWatchAlarmDetailView(BaseView):
         self.alarm = self.get_alarm(alarm_id)
         self.alarm_form = CloudWatchAlarmUpdateForm(request)
 
+        self.alarm_json = json.dumps({
+            'name': self.alarm.name,
+            'state': self.alarm.state_value,
+            'stateReason': self.alarm.state_reason,
+            'metric': self.alarm.metric,
+            'namespace': self.alarm.namespace,
+            'statistic': self.alarm.statistic,
+            'unit': self.alarm.unit,
+            'dimensions': self.alarm.dimensions,
+            'period': self.alarm.period,
+            'evaluation_periods': self.alarm.evaluation_periods,
+            'comparison': self.alarm.comparison,
+            'threshold': self.alarm.threshold,
+            'description': self.alarm.description
+        })
+
         self.render_dict = dict(
             alarm=self.alarm,
             alarm_id=alarm_id,
             encoded_id=encoded_id,
+            alarm_json=self.alarm_json,
             alarm_form=self.alarm_form,
             search_facets=[]
         )
@@ -383,22 +400,6 @@ class CloudWatchAlarmDetailView(BaseView):
                 }
                 options.append(option)
 
-        alarm_json = json.dumps({
-            'name': self.alarm.name,
-            'state': self.alarm.state_value,
-            'stateReason': self.alarm.state_reason,
-            'metric': self.alarm.metric,
-            'namespace': self.alarm.namespace,
-            'statistic': self.alarm.statistic,
-            'unit': self.alarm.unit,
-            'dimensions': self.alarm.dimensions,
-            'period': self.alarm.period,
-            'evaluation_periods': self.alarm.evaluation_periods,
-            'comparison': self.alarm.comparison,
-            'threshold': self.alarm.threshold,
-            'description': self.alarm.description
-        })
-
         alarm_actions = []
         for action in self.alarm.alarm_actions:
             detail = self.get_alarm_action_detail(action)
@@ -416,13 +417,17 @@ class CloudWatchAlarmDetailView(BaseView):
             alarm_actions.append(detail)
 
         self.render_dict.update(
-            alarm_json=alarm_json,
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
             dimensions=dimensions,
             alarm_actions_json=json.dumps(alarm_actions),
             options=options
         )
         return self.render_dict
+
+    @view_config(route_name='cloudwatch_alarm_json', renderer='json', request_method='GET')
+    def cloudwatch_alarm_json(self):
+        return dict(
+            alarm=json.loads(self.alarm_json))
 
     def get_alarm(self, alarm_id):
         alarm = None

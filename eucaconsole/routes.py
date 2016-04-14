@@ -283,6 +283,7 @@ urls = [
     Route(name='cloudwatch_alarm_actions', pattern='/alarms/{alarm_id}/actions'),
     Route(name='cloudwatch_alarms_create', pattern='/alarms/create'),
     Route(name='cloudwatch_alarm_view', pattern='/alarms/{alarm_id}'),
+    Route(name='cloudwatch_alarm_json', pattern='/alarms/{alarm_id}/json'),
     Route(name='cloudwatch_alarms_for_metric_json', pattern='/alarms/json/{metric}'),
     Route(name='cloudwatch_alarms_for_resource_json', pattern='/alarms/resource/{id}/json'),
     Route(name='cloudwatch_alarms_for_dimensions_json', pattern='/alarms/dimensions/json'),

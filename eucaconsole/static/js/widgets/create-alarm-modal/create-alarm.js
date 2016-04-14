@@ -34,7 +34,6 @@ angular.module('CreateAlarmModal', [
         },
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
             var vm = this;
-
             $scope.alarm = {};
             var csrf_token = $('#csrf_token').val();
 
@@ -89,7 +88,7 @@ angular.module('CreateAlarmModal', [
                 return name;
             };
 
-            vm.composeAlarmMetric = function (attrs) {
+            this.composeAlarmMetric = function (attrs) {
                 $scope.alarm.metric.namespace = $scope.namespace;
                 $scope.alarm.metric.dimensions = $scope.dimensions;
                 $scope.alarm.statistic = attrs.defaultStatistic;
@@ -100,7 +99,7 @@ angular.module('CreateAlarmModal', [
                 $scope.checkNameCollision();
             };
 
-            vm.initializeModal = function(attrs) {
+            this.initializeModal = function(attrs) {
                 defaults = {
                     statistic: attrs.defaultStatistic,
                     metric: attrs.defaultMetric,
@@ -111,16 +110,15 @@ angular.module('CreateAlarmModal', [
 
                 $scope.title = attrs.title || 'Create Alarm';
 
-                $scope.namespace = attrs.namespace;
-                $scope.resourceType = attrs.resourceType;
-                $scope.resourceId = attrs.resourceId;
-                $scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : undefined;
-                if ($scope.dimensions === undefined) {
-                    $scope.dimensions = {};
-                    $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
+                if(attrs.alarmName) {
+                    AlarmService.getAlarm(attrs.alarmName)
+                        .then(function (res) {
+                            var alarm = res.alarm;
+                            vm.initializeForCopy(alarm);
+                        });
+                } else {
+                    this.initializeForCreate();
                 }
-                $scope.resourceName = attrs.resourceName;
-                $scope.existingAlarms = [];
 
                 if (attrs.loadMetricChoices !== 'false') {
                     MetricService.getMetrics($scope.namespace, $scope.resourceType, $scope.resourceId)
@@ -132,7 +130,7 @@ angular.module('CreateAlarmModal', [
                             });
 
                             defaults.metric = $scope.alarm.metric;
-                            vm.composeAlarmMetric(attrs);
+                            this.composeAlarmMetric(attrs);
                         });
                 }
                 else {
@@ -142,8 +140,28 @@ angular.module('CreateAlarmModal', [
                         unit: attrs.unit
                     };
 
-                    vm.composeAlarmMetric(attrs);
+                    this.composeAlarmMetric(attrs);
                 }
+            };
+
+            this.initializeForCopy = function (alarm) {
+                $scope.alarm = alarm;
+                $scope.alarm.name = 'Copy of ' + alarm.name;
+                $scope.alarm.metric.dimensions = alarm.dimensions;
+                $scope.dimensions = alarm.dimensions;
+            };
+
+            this.initializeForCreate = function () {
+                $scope.namespace = attrs.namespace;
+                $scope.resourceType = attrs.resourceType;
+                $scope.resourceId = attrs.resourceId;
+                $scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : undefined;
+                if ($scope.dimensions === undefined) {
+                    $scope.dimensions = {};
+                    $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
+                }
+                $scope.resourceName = attrs.resourceName;
+                $scope.existingAlarms = [];
             };
 
             $scope.createAlarm = function () {

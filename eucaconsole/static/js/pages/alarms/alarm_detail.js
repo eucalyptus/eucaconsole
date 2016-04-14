@@ -7,7 +7,6 @@ angular.module('AlarmDetailPage', [
         restrict: 'A',
         link: function (scope, element, attrs) {
             scope.alarm = JSON.parse(attrs.alarmDetail);
-            console.log(scope.alarm);
 
             var dimensions = [];
             Object.keys(scope.alarm.dimensions).forEach(function (key) {
