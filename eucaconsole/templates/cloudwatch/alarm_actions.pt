@@ -1,6 +1,5 @@
-<div class="actions" ng-form="alarmActionsForm"
-                     alarm-id="${alarm_id}"
-                     alarm-actions="${alarm_actions_json}">
+<div class="actions" ng-form="alarmActionsForm" i18n:domain="eucaconsole"
+                     alarm-id="${alarm_id}" alarm-actions="${alarm_actions_json}">
     <h6>Actions</h6>
     <div class="item-list">
         <span class="item" ng-repeat="action in alarmActions" data-item-value="{{ action.arn }}">

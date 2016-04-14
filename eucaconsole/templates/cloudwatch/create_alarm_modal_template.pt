@@ -1,4 +1,4 @@
-<form name="createAlarmForm" ng-submit="createAlarm()" novalidate="">
+<form name="createAlarmForm" ng-submit="createAlarm()" novalidate="" i18n:domain="eucaconsole">
     <h3 i18n:translate="">Create Alarm</h3>
     <h6 i18n:translate="">Alarm</h6>
     <div class="row inline controls-wrapper">

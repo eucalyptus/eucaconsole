@@ -11,7 +11,6 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
             ScalingGroupsService.getScalingGroups().then(function (result) {
                 $scope.scalingGroups = result;
-                $scope.resetForm();
                 if ($scope.scalingGroupName) {
                     $scope.resetForm();
                     $scope.updatePolicies();
