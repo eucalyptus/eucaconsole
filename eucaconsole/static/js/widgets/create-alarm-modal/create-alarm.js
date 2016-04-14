@@ -90,7 +90,7 @@ angular.module('CreateAlarmModal', [
                     evaluation_periods: 1,
                     period: 300
                 };
-
+                $scope.scalingGroupName = attrs.scalingGroupName || '';
                 $scope.namespace = attrs.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
