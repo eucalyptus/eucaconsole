@@ -7,7 +7,6 @@
 // Add Scaling Group Policy page includes the Create Alarm dialog, so pull in that module
 angular.module('ScalingGroupPolicy', ['EucaConsoleUtils', 'CloudWatchCharts', 'CreateAlarmModal', 'ModalModule'])
     .controller('ScalingGroupPolicyCtrl', function ($rootScope, $scope, eucaNumbersOnly) {
-        $scope.alarmModal = $('#create-alarm-modal');
         $scope.policyForm = $('#add-policy-form');
         $rootScope.alarmChoices = {};
         $rootScope.alarm = '';
@@ -18,7 +17,6 @@ angular.module('ScalingGroupPolicy', ['EucaConsoleUtils', 'CloudWatchCharts', 'C
         $scope.initController = function (alarmChoices) {
             $rootScope.alarmChoices = alarmChoices;
             $scope.setWatch();
-            $scope.setFocus();
         };
         $scope.checkRequiredInput = function () {
             $scope.isNotValid = false;
@@ -65,25 +63,6 @@ angular.module('ScalingGroupPolicy', ['EucaConsoleUtils', 'CloudWatchCharts', 'C
                 $rootScope.alarmChoices[newAlarm] = newAlarm;
                 $rootScope.alarm = newAlarm;
                 $scope.isCreatingAlarm = false;
-            });
-        };
-        $scope.setFocus = function () {
-            $scope.policyForm.find('input#name').focus();
-            $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
-                var modal = $(this);
-                var inputElement = modal.find('input[type!=hidden]').get(0);
-                var modalButton = modal.find('button').get(0);
-                if (!!inputElement) {
-                    inputElement.focus();
-                } else if (!!modalButton) {
-                    modalButton.focus();
-                }
-            });
-            $(document).on('close.fndtn.reveal', '[data-reveal]', function () {
-                document.getElementById('create-alarm-form').reset();
-            });
-            $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
-                $('input#name').focus();
             });
         };
     })
