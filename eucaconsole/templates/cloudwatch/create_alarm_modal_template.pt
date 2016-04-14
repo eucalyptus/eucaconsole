@@ -27,8 +27,10 @@
         </div>
         <div class="large-9 small-9 columns">
             <ul>
-                <li ng-repeat="(key, val) in alarm.metric.dimensions">{{ key }} = {{ val.join(', ') }}</li>
+                <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
+            <select multiple="true" ng-model="alarm.dimensions" chosen="">
+            </select>
         </div>
     </div>
     <div class="row controls-wrapper">
