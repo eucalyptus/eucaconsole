@@ -41,13 +41,12 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <div class="modal create-alarm-modal" modal="copyAlarm">
+                    <div class="modal xlarge create-alarm-modal" modal="copyAlarm">
                         <div create-alarm=""
                             title="Create alarm like ${alarm_id}"
                             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
-                            namespace="${alarm.namespace}"
+                            namespace="{{ alarm.namespace }}"
                             dimensions="{{ alarm.dimensions }}"
-                            loadmetricchoices="false"
                             default-metric="${alarm.metric}"
                             default-statistic="${alarm.statistic}"></div>
                     </div>

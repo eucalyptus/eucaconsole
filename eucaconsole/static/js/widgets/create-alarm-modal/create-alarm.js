@@ -10,18 +10,24 @@ angular.module('CreateAlarmModal', [
 
     return {
         restrict: 'A',
-        require: '^modal',
+        require: ['^modal', 'createAlarm'],
         templateUrl: function (element, attributes) {
             return attributes.template;
         },
-        link: function (scope, element, attrs) {
+        link: function (scope, element, attrs, ctrls) {
+            var modalCtrl = ctrls[0],
+                createAlarmCtrl = ctrls[1];
+
+            var modalName;
+
             scope.initializeModal(attrs);
 
             scope.$on('modal:open', function (event, name) {
+                modalName = name;
                 scope.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
-                if(name == 'createAlarm') {
+                if(name == modalName) {
                     scope.resetForm();
                 }
             });
@@ -89,7 +95,6 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
                 $scope.alarm.period = defaults.period;
 
-                defaults.metric = $scope.alarm.metric;
                 $scope.checkNameCollision();
             }
 
@@ -124,6 +129,7 @@ angular.module('CreateAlarmModal', [
                                 return metric.name == defaults.metric;
                             });
 
+                            defaults.metric = $scope.alarm.metric;
                             composeAlarmMetric(attrs);
                         });
                 }
