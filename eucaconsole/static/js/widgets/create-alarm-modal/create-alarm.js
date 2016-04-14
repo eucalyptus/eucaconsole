@@ -169,7 +169,7 @@ angular.module('CreateAlarmModal', [
                 }, csrf_token).then(function success (response) {
                     ModalService.closeModal('createAlarm');
                     Notify.success(response.data.message);
-                    $rootScope.$broadcast('alarmStateView:refreshList');
+                    $rootScope.$broadcast('alarmStateView:refreshList', {name: alarm.name});
                 }, function error (response) {
                     ModalService.closeModal('createAlarm');
                     Notify.failure(response.data.message);

@@ -762,6 +762,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             scaling_group_name=self.escape_braces(self.scaling_group.name),
             alarm_choices=json.dumps(dict(self.policy_form.alarm.choices)),
             policy_form=self.policy_form,
+            has_elb=bool(self.scaling_group.load_balancers),
             alarm_form=self.alarm_form,
             create_alarm_redirect=self.request.route_path('scalinggroup_policy_new', id=self.scaling_group.name),
             metric_unit_mapping=self.get_metric_unit_mapping(),

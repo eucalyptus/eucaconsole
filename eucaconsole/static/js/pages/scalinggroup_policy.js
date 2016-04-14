@@ -5,7 +5,7 @@
  */
 
 // Add Scaling Group Policy page includes the Create Alarm dialog, so pull in that module
-angular.module('ScalingGroupPolicy', ['CreateAlarm', 'EucaConsoleUtils'])
+angular.module('ScalingGroupPolicy', ['EucaConsoleUtils', 'CloudWatchCharts', 'CreateAlarmModal', 'ModalModule'])
     .controller('ScalingGroupPolicyCtrl', function ($rootScope, $scope, eucaNumbersOnly) {
         $scope.alarmModal = $('#create-alarm-modal');
         $scope.policyForm = $('#add-policy-form');
@@ -20,11 +20,7 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm', 'EucaConsoleUtils'])
             $scope.setWatch();
             $scope.setFocus();
         };
-        $scope.revealAlarmModal = function () {
-            var modal = $scope.alarmModal;
-            modal.foundation('reveal', 'open');
-        };
-        $scope.checkRequiredInput = function () { 
+        $scope.checkRequiredInput = function () {
             $scope.isNotValid = false;
             if( $scope.policyName === '' || $scope.policyName === undefined ){
                 $scope.isNotValid = true;
@@ -63,14 +59,12 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm', 'EucaConsoleUtils'])
                 $scope.checkRequiredInput();
             });
 
-            $scope.$on('alarm_created', function ($event, promise) {
-                promise.then(function success (result) {
-                    // Add new alarm to choices and set it as selected
-                    var newAlarm = result.data && result.data.new_alarm;
-                    $rootScope.alarmChoices[newAlarm] = newAlarm;
-                    $rootScope.alarm = newAlarm;
-                    $scope.isCreatingAlarm = false;
-                });
+            $scope.$on('alarmStateView:refreshList', function ($event, args) {
+                // Add new alarm to choices and set it as selected
+                var newAlarm = args.name;
+                $rootScope.alarmChoices[newAlarm] = newAlarm;
+                $rootScope.alarm = newAlarm;
+                $scope.isCreatingAlarm = false;
             });
         };
         $scope.setFocus = function () {
