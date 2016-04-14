@@ -232,6 +232,7 @@ $alarm-status-color-ok: $hpe-green;
         padding: 8px;
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
+        line-height: 1.1rem;
         a { color: $hpe-green; }
         a:hover { text-decoration: underline; }
         div {
