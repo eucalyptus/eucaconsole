@@ -19,12 +19,15 @@ angular.module('CreateAlarmModal', [
                 createAlarmCtrl = ctrls[1];
 
             var modalName;
+            scope.editDimensions = true;
 
             createAlarmCtrl.initializeModal(attrs);
 
             scope.$on('modal:open', function (event, name) {
                 modalName = name;
-                scope.modalName = name;
+                if (modalName === 'copyAlarm') {
+                    scope.editDimensions = false;
+                }
                 createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
