@@ -3,6 +3,13 @@
 @import "../widgets/create-alarm-dialog";
 
 
-#adjustment_amount {
+#adjustment_amount, #cooldown {
     width: 4rem;
+}
+
+.ng-pristine,
+.ng-invalid {
+    .button {
+        @include disabled-button-mixin;
+    }
 }
