@@ -167,7 +167,7 @@ angular.module('CreateAlarmModal', [
                         unit: attrs.unit
                     };
 
-                    this.composeAlarmMetric(attrs);
+                    vm.composeAlarmMetric(attrs);
                 }
             }
 
