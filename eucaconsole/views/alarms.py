@@ -391,7 +391,7 @@ class CloudWatchAlarmDetailView(BaseView):
             raise HTTPNotFound()
 
         dimensions = self.get_available_dimensions(self.alarm.metric)
-        options = []
+        dimension_options = []
         for res_type, res_ids in dimensions.iteritems():
             for res in res_ids:
                 option = {
@@ -399,7 +399,7 @@ class CloudWatchAlarmDetailView(BaseView):
                     'value': re.sub(r'\s+', '', json.dumps({res_type: [res]})),
                     'selected': [res] == self.alarm.dimensions.get(res_type)
                 }
-                options.append(option)
+                dimension_options.append(option)
 
         alarm_actions = []
         for action in self.alarm.alarm_actions:
@@ -421,7 +421,7 @@ class CloudWatchAlarmDetailView(BaseView):
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
             dimensions=dimensions,
             alarm_actions_json=json.dumps(alarm_actions),
-            options=options
+            dimension_options=dimension_options
         )
         return self.render_dict
 
