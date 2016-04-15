@@ -325,16 +325,16 @@ class CloudWatchMetricsJsonView(BaseView):
         if res_type == 'instance':
             instances = self.get_connection().get_only_instances(filters={'instance_id': ids})
             for instance in instances:
-                names[instance.id] = TaggedItemView.get_display_name(instance)
+                names[instance.id] = (TaggedItemView.get_display_name(instance), instance.tags.get('Name', instance.id))
         elif res_type == 'image':
             region = self.request.session.get('region')
             images = self.get_images(self.get_connection(), [], [], region)
             for image in images:
-                names[image.id] = image.name
+                names[image.id] = (image.name, image.name)
         elif res_type == 'volume':
             volumes = self.get_connection().get_all_volumes(filters={'volume_id': ids})
             for volume in volumes:
-                names[volume.id] = TaggedItemView.get_display_name(volume)
+                names[volume.id] = (TaggedItemView.get_display_name(volume), volume.tags.get('Name', volume.id))
         return dict(results=names)
 
     @view_config(route_name='metrics_available_for_resource', renderer='json', request_method='GET')

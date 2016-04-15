@@ -71,7 +71,7 @@
                                 <metal:block metal:define-slot="tile_header">
                                     <strong>
                                         <a ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">
-                                            <span ng-repeat="res in item.resources">{{ res.res_name | ellipsis: 50 }}</span>
+                                            <span ng-repeat="res in item.resources">{{ (res.res_short_name || res.res_name) | ellipsis: 50 }}</span>
                                         </a>
                                     </strong>
                                 </metal:block>

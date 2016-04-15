@@ -10,6 +10,7 @@
 .cloudwatch-charts .toprow .duration-input { width: 200px; }
 .cloudwatch-charts .toprow .field-wrapper { display: inline-block; margin-right: 2rem; }
 .cloudwatch-charts .toprow .field-wrapper select { width: 150px; margin-left: 0; }
+.cloudwatch-charts .toprow .field-wrapper.timepicker { position: absolute; }
 .cloudwatch-charts .alert-box { margin-left: 0.7rem; margin-right: 0.7rem; }
 
 #metric-time-range { margin: 0; display: inline; }

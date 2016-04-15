@@ -57,7 +57,8 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     if (item.resources !== undefined) {
                         item.resources.forEach(function(res) {
                             if (results[res.res_id] !== undefined) {
-                                res.res_name = results[res.res_id];
+                                res.res_name = results[res.res_id][0];
+                                res.res_short_name = results[res.res_id][1];
                             }
                         });
                     }
