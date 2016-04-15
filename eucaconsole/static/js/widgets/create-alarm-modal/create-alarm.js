@@ -90,7 +90,7 @@ angular.module('CreateAlarmModal', [
 
             this.composeAlarmMetric = function (attrs) {
                 $scope.alarm.metric.namespace = $scope.namespace;
-                $scope.alarm.metric.dimensions = $scope.dimensions;
+                $scope.alarm.dimensions = $scope.dimensions;
                 $scope.alarm.statistic = attrs.defaultStatistic;
                 $scope.alarm.comparison = '>=';
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
@@ -147,7 +147,7 @@ angular.module('CreateAlarmModal', [
             this.initializeForCopy = function (alarm) {
                 $scope.alarm = alarm;
                 $scope.alarm.name = 'Copy of ' + alarm.name;
-                $scope.alarm.metric.dimensions = alarm.dimensions;
+                $scope.alarm.dimensions = alarm.dimensions;
                 $scope.dimensions = alarm.dimensions;
             };
 
@@ -188,7 +188,7 @@ angular.module('CreateAlarmModal', [
                     evaluation_periods: alarm.evaluation_periods,
                     unit: alarm.unit,
                     description: alarm.description,
-                    dimensions: alarm.metric.dimensions,
+                    dimensions: alarm.dimensions,
                     alarm_actions: alarm.alarm_actions,
                     insufficient_data_actions: alarm.insufficient_data_actions,
                     ok_actions: alarm.ok_actions
