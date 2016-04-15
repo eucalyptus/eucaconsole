@@ -18,7 +18,7 @@
                         <span ng-if="!$first">&nbsp;-&nbsp;</span>
                         <span>{{ dim.label }}</span>
                     </span>
-                    &nbsp;<span i18n:translate="">Graph</span>
+                    &nbsp;<span i18n:translate="">graph</span>
                 </li>
             </metal:crumbs>
         </metal:breadcrumbs>
