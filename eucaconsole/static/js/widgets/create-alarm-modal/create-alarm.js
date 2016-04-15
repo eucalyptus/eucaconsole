@@ -19,15 +19,11 @@ angular.module('CreateAlarmModal', [
                 createAlarmCtrl = ctrls[1];
 
             var modalName;
-            scope.editDimensions = false;
 
             createAlarmCtrl.initializeModal(attrs);
 
             scope.$on('modal:open', function (event, name) {
                 modalName = name;
-                if (modalName === 'copyAlarm') {
-                    scope.editDimensions = true;
-                }
                 createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
@@ -60,7 +56,7 @@ angular.module('CreateAlarmModal', [
                     $scope.createAlarmForm.name.$setValidity('uniqueName', false);
                     return $scope.alarm.name;
                 }
-                
+
                 var alarm = $scope.alarm;
                 var resName = $scope.resourceName || $scope.resourceId;
                 if (resName === undefined) {
@@ -114,7 +110,8 @@ angular.module('CreateAlarmModal', [
                 };
 
                 $scope.title = attrs.title || 'Create Alarm';
-
+                $scope.hideAlarmActions = attrs.hideAlarmActions || false;
+                $scope.editDimensions = attrs.editDimensions || false;
                 $scope.existingAlarms = [];
                 if(attrs.alarmName) {
                     AlarmService.getAlarm(attrs.alarmName)

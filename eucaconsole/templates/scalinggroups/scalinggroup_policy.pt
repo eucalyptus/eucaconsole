@@ -113,7 +113,7 @@
                     resource-type="AutoScalingGroupName"
                     resource-id="${scaling_group.name}"
                     resource-name="${scaling_group.name}"
-                    scaling-group-name="${scaling_group.name}"
+                    hide-alarm-actions="true"
                     namespace="${'AWS/EC2,AWS/ELB' if has_elb else 'AWS/EC2'}"
                     default-metric="${'RequestCount' if has_elb else 'CPUUtilization'}"
                     default-statistic="${'Sum' if has_elb else 'Average'}">

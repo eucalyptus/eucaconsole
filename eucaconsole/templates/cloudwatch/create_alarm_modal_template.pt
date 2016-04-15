@@ -108,9 +108,11 @@
             </select>
         </div>
     </div>
-    <hr/>
-    ${panel('alarm_actions_panel')}
-    <hr/>
+    <div ng-if="!hideAlarmActions">
+        <hr/>
+        ${panel('alarm_actions_panel')}
+        <hr/>
+    </div>
     <div class="controls">
         <button type="submit" class="button submit expand" i18n:translate="">
             Create Alarm
