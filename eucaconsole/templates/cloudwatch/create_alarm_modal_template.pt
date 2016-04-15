@@ -31,7 +31,6 @@
             <ul>
                 <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
-            <select multiple="true" ng-model="alarm.dimensions" chosen="" ng-if="editDimensions"></select>
         </div>
     </div>
     <div class="row controls-wrapper">
