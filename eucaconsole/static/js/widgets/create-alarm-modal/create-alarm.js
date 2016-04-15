@@ -39,6 +39,7 @@ angular.module('CreateAlarmModal', [
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
             var vm = this;
             $scope.alarm = {};
+            $scope.namespaces = [];
             var csrf_token = $('#csrf_token').val();
 
             $scope.onNameChange = function () {
@@ -134,10 +135,11 @@ angular.module('CreateAlarmModal', [
                 $scope.namespace = alarm.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
-                finishInit(attrs)
+                finishInit(attrs);
             };
 
             this.initializeForCreate = function (attrs) {
+                $scope.scalingGroupName = attrs.scalingGroupName || '';
                 $scope.namespace = attrs.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
@@ -147,16 +149,17 @@ angular.module('CreateAlarmModal', [
                     $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
                 }
                 $scope.resourceName = attrs.resourceName;
-                finishInit(attrs)
+                finishInit(attrs);
             };
 
             var finishInit = function(attrs) {
                 if (attrs.loadMetricChoices !== 'false') {
                     MetricService.getMetrics($scope.namespace, $scope.dimensions)
-                        .then(function (metrics) {
-                            $scope.metrics = metrics;
+                        .then(function (results) {
+                            $scope.metrics = results.metrics;
+                            $scope.namespaces = results.namespaces;
 
-                            $scope.alarm.metric = metrics.find(function(metric) {
+                            $scope.alarm.metric = results.metrics.find(function(metric) {
                                 return metric.name === defaults.metric;
                             });
 
@@ -173,7 +176,7 @@ angular.module('CreateAlarmModal', [
 
                     vm.composeAlarmMetric(attrs);
                 }
-            }
+            };
 
             $scope.createAlarm = function () {
                 if($scope.createAlarmForm.$invalid) {
@@ -206,7 +209,7 @@ angular.module('CreateAlarmModal', [
                 }, csrf_token).then(function success (response) {
                     ModalService.closeModal('createAlarm');
                     Notify.success(response.data.message);
-                    $rootScope.$broadcast('alarmStateView:refreshList');
+                    $rootScope.$broadcast('alarmStateView:refreshList', {name: alarm.name});
                 }, function error (response) {
                     ModalService.closeModal('createAlarm');
                     Notify.failure(response.data.message);

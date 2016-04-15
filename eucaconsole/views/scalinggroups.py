@@ -754,16 +754,12 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             self.alarms = self.get_alarms()
         self.policy_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
-        self.alarm_form = CloudWatchAlarmCreateForm(
-            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn, elb_conn=self.elb_conn,
-            scaling_group=self.scaling_group, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.escape_braces(self.scaling_group.name),
             alarm_choices=json.dumps(dict(self.policy_form.alarm.choices)),
             policy_form=self.policy_form,
-            alarm_form=self.alarm_form,
-            create_alarm_redirect=self.request.route_path('scalinggroup_policy_new', id=self.scaling_group.name),
+            has_elb=bool(self.scaling_group.load_balancers),
             metric_unit_mapping=self.get_metric_unit_mapping(),
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
@@ -980,6 +976,7 @@ class ScalingGroupMonitoringView(BaseScalingGroupView):
             scaling_group=self.scaling_group,
             scaling_group_name=self.scaling_group.name,
             launch_config_name=self.launch_configuration.name,
+            has_elb=bool(self.scaling_group.load_balancers),
             monitoring_form=self.monitoring_form,
             metrics_collection_enabled=metrics_collection_enabled,
             launchconfig_monitoring_enabled=launchconfig_monitoring_enabled,

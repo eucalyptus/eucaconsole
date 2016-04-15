@@ -16,7 +16,7 @@ input[type="number"] {
     width: 3rem;
 }
 
-#health_check_period, #default_cooldown, #cooldown {
+#health_check_period, #default_cooldown {
     width: 4rem;
 }
 
@@ -75,7 +75,6 @@ input[type="number"] {
 }
 
 
-
 // Scaling group instances page
 .tile {
     .footer {
@@ -86,10 +85,6 @@ input[type="number"] {
     }
 }
 
-// Scaling group policy page
-#adjustment_amount {
-    width: 4rem;
-}
 
 // Scaling group alarms page
 #evaluation_periods, #period {

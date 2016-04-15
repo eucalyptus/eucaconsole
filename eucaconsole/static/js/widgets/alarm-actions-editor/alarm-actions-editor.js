@@ -11,6 +11,10 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
             ScalingGroupsService.getScalingGroups().then(function (result) {
                 $scope.scalingGroups = result;
+                if ($scope.scalingGroupName) {
+                    $scope.resetForm();
+                    $scope.updatePolicies();
+                }
             });
 
             $scope.addAction = function () {
@@ -54,7 +58,8 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 
             $scope.resetForm = function () {
                 $scope.action = {
-                    alarm_state: 'ALARM'
+                    alarm_state: 'ALARM',
+                    scalingGroup: $scope.scalingGroupName || ''
                 };
                 $scope.defaultOptionValue = 'Select policy...';
                 $scope.scalingGroupPolicies = [];

@@ -53,7 +53,7 @@
 .tile .header strong { font-weight: normal; }
 .tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
 .tile .header .f-dropdown a { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
-.tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
+.tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.1rem; }
 .tile .content a { color: #01a982; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
@@ -166,7 +166,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 input[type="number"] { width: 3rem; }
 
-#health_check_period, #default_cooldown, #cooldown { width: 4rem; }
+#health_check_period, #default_cooldown { width: 4rem; }
 
 #launch_config, #health_check_type { max-width: 10rem; }
 
@@ -189,8 +189,6 @@ input[type="number"] { width: 3rem; }
 
 .tile .footer.healthy { background-color: #425563; }
 .tile .footer.healthy.pending { background-color: #6d899e; }
-
-#adjustment_amount { width: 4rem; }
 
 #evaluation_periods, #period { display: inline-block; width: 4rem; }
 

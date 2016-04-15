@@ -25,6 +25,6 @@
 
 .create-alarm-modal .dimensions ul { list-style: none; margin: 0; padding: 0; }
 .create-alarm-modal .ng-invalid .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; }
-.create-alarm-modal .ng-invalid .button.submit:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
+.create-alarm-modal .ng-invalid .button.submit:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
 .create-alarm-modal .unit-label { font-weight: bold; color: #666666; }
 .create-alarm-modal input[name=threshold] { margin-bottom: 0; }
