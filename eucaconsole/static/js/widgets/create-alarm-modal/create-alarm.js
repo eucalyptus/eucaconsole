@@ -24,10 +24,11 @@ angular.module('CreateAlarmModal', [
 
             scope.$on('modal:open', function (event, name) {
                 modalName = name;
+                scope.modalName = name;
                 createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
-                if(name == modalName) {
+                if(name === modalName) {
                     scope.resetForm();
                 }
             });
@@ -78,7 +79,7 @@ angular.module('CreateAlarmModal', [
                 }
 
                 var collision = $scope.existingAlarms.some(function (alarm) {
-                    return alarm.name == name;
+                    return alarm.name === name;
                 });
 
                 if(collision) {
@@ -126,11 +127,11 @@ angular.module('CreateAlarmModal', [
                             $scope.metrics = metrics;
 
                             $scope.alarm.metric = metrics.find(function(metric) {
-                                return metric.name == defaults.metric;
+                                return metric.name === defaults.metric;
                             });
 
                             defaults.metric = $scope.alarm.metric;
-                            this.composeAlarmMetric(attrs);
+                            vm.composeAlarmMetric(attrs);
                         });
                 }
                 else {
@@ -246,7 +247,7 @@ angular.module('CreateAlarmModal', [
 
             modelCtrl.$validators.uniqueName = function (modelValue, viewValue) {
                 return !scope.existingAlarms.some(function (alarm) {
-                    return alarm.name == viewValue;
+                    return alarm.name === viewValue;
                 });
             };
 

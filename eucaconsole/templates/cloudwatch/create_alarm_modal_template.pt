@@ -8,8 +8,10 @@
         <div class="large-9 small-9 columns field">
             <input name="name" ng-model="alarm.name" unique-name="" required="required"
                    type="text" ng-change="onNameChange()" ng-model-options="{ updateOn: 'blur' }" />
-            <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.uniqueName" i18n:translate="">Alarm name must be unique.</small>
-            <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.required" i18n:translate="">Alarm name is required.</small>
+            <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.uniqueName"
+                    i18n:translate="">Alarm name must be unique.</small>
+            <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.required"
+                    i18n:translate="">Alarm name is required.</small>
         </div>
     </div>
     <div class="row inline controls-wrapper">
@@ -29,8 +31,7 @@
             <ul>
                 <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
-            <select multiple="true" ng-model="alarm.dimensions" chosen="">
-            </select>
+            <select multiple="true" ng-model="alarm.dimensions" chosen="" ng-if="modalName !== 'copyAlarm'"></select>
         </div>
     </div>
     <div class="row controls-wrapper">
