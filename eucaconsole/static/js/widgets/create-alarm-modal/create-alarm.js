@@ -110,18 +110,45 @@ angular.module('CreateAlarmModal', [
 
                 $scope.title = attrs.title || 'Create Alarm';
 
+                $scope.existingAlarms = [];
                 if(attrs.alarmName) {
                     AlarmService.getAlarm(attrs.alarmName)
                         .then(function (res) {
                             var alarm = res.alarm;
-                            vm.initializeForCopy(alarm);
+                            vm.initializeForCopy(alarm, attrs);
                         });
                 } else {
                     this.initializeForCreate(attrs);
                 }
+            };
 
+            this.initializeForCopy = function (alarm, attrs) {
+                $scope.alarm = alarm;
+                $scope.alarm.name = 'Copy of ' + alarm.name;
+                $scope.alarm.dimensions = alarm.dimensions;
+                $scope.dimensions = alarm.dimensions;
+                $scope.namespace = alarm.namespace;
+                $scope.resourceType = attrs.resourceType;
+                $scope.resourceId = attrs.resourceId;
+                finishInit(attrs)
+            };
+
+            this.initializeForCreate = function (attrs) {
+                $scope.namespace = attrs.namespace;
+                $scope.resourceType = attrs.resourceType;
+                $scope.resourceId = attrs.resourceId;
+                $scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : undefined;
+                if ($scope.dimensions === undefined) {
+                    $scope.dimensions = {};
+                    $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
+                }
+                $scope.resourceName = attrs.resourceName;
+                finishInit(attrs)
+            };
+
+            var finishInit = function(attrs) {
                 if (attrs.loadMetricChoices !== 'false') {
-                    MetricService.getMetrics($scope.namespace, $scope.resourceType, $scope.resourceId)
+                    MetricService.getMetrics($scope.namespace, $scope.dimensions)
                         .then(function (metrics) {
                             $scope.metrics = metrics;
 
@@ -142,27 +169,7 @@ angular.module('CreateAlarmModal', [
 
                     this.composeAlarmMetric(attrs);
                 }
-            };
-
-            this.initializeForCopy = function (alarm) {
-                $scope.alarm = alarm;
-                $scope.alarm.name = 'Copy of ' + alarm.name;
-                $scope.alarm.dimensions = alarm.dimensions;
-                $scope.dimensions = alarm.dimensions;
-            };
-
-            this.initializeForCreate = function (attrs) {
-                $scope.namespace = attrs.namespace;
-                $scope.resourceType = attrs.resourceType;
-                $scope.resourceId = attrs.resourceId;
-                $scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : undefined;
-                if ($scope.dimensions === undefined) {
-                    $scope.dimensions = {};
-                    $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
-                }
-                $scope.resourceName = attrs.resourceName;
-                $scope.existingAlarms = [];
-            };
+            }
 
             $scope.createAlarm = function () {
                 if($scope.createAlarmForm.$invalid) {

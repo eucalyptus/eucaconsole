@@ -355,6 +355,7 @@ class CloudWatchAlarmDetailView(BaseView):
 
         encoded_id = self.request.matchdict.get('alarm_id')
         alarm_id = base64.decodestring(encoded_id)
+        self.title_parts = [_(u'Alarms'), alarm_id]
 
         self.alarm = self.get_alarm(alarm_id)
         self.alarm_form = CloudWatchAlarmUpdateForm(request)
