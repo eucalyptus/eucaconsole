@@ -118,7 +118,7 @@ angular.module('CreateAlarmModal', [
                             vm.initializeForCopy(alarm);
                         });
                 } else {
-                    this.initializeForCreate();
+                    this.initializeForCreate(attrs);
                 }
 
                 if (attrs.loadMetricChoices !== 'false') {
@@ -152,7 +152,7 @@ angular.module('CreateAlarmModal', [
                 $scope.dimensions = alarm.dimensions;
             };
 
-            this.initializeForCreate = function () {
+            this.initializeForCreate = function (attrs) {
                 $scope.namespace = attrs.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
