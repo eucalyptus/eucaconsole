@@ -13,8 +13,13 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="../" i18n:translate="">Metrics</a></li>
-                <li ng-cloak="">{{ graph.metric }}</li>
-                <li class="current">Graph</li>
+                <li ng-cloak="">{{ graph.metric }}&nbsp;-&nbsp;
+                    <span ng-repeat="dim in graph.dimensions">
+                        <span ng-if="!$first">&nbsp;-&nbsp;</span>
+                        <span>{{ dim.label }}</span>
+                    </span>
+                    &nbsp;<span i18n:translate="">Graph</span>
+                </li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -67,12 +72,12 @@
                             </select>
                         </div>
                         <div ng-if="chartsCtrl.timeRange == 'absolute'">
-                            <label class="left stack-label" i18n:translate="">From</label>
-                            <input type="text" class="datefield" datepicker=""
+                            <label class="left stack-label" label-for="absolute-start-time" i18n:translate="">From</label>
+                            <input id="absolute-start-time" type="text" class="datefield" datepicker=""
                                 ng-model="chartsCtrl.largeChartStartTime" ng-change="chartsCtrl.handleAbsoluteChange()"
                                 ng-model-options="{ getterSetter: true }"/>
-                            <label class="left stack-label" i18n:translate="">To</label>
-                            <input type="text" class="datefield" datepicker=""
+                            <label class="left stack-label" label-for="absolute-end-time" i18n:translate="">To</label>
+                            <input id="absolute-end-time" type="text" class="datefield" datepicker=""
                                 ng-model="chartsCtrl.largeChartEndTime" ng-change="chartsCtrl.handleAbsoluteChange()"
                                 ng-model-options="{ getterSetter: true }"/>
                         </div>

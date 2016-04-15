@@ -70,19 +70,22 @@
                             <strong>
                                 <metal:block metal:define-slot="tile_header">
                                     <strong>
-                                        <span>{{ item.metric_name }}</span>
+                                        <a ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">
+                                            <span ng-repeat="res in item.resources">{{ res.res_name | ellipsis: 50 }}</span>
+                                        </a>
                                     </strong>
                                 </metal:block>
                             </strong>
                             <metal:block metal:define-slot="tile_dropdown_button">
                                 <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
-                                <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown">
+                                <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown" data-dropdown-content="">
+                                    <li><a i18n:translate="" ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">Show graph</a></li>
                                     <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(item)">Create alarm</a></li>
                                     <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
                                 </ul>
                             </metal:block>
                         </div>
-                        <div class="content" ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">
+                        <div class="content">
                             <div>
                                 <span class="label" title="Metric" i18n:attributes="title" data-tooltip="">ID</span>
                                 <span ng-repeat="res in item.resources">
