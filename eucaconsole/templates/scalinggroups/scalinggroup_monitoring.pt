@@ -3,9 +3,9 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/modal.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup_monitoring.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ResourceMonitoring">
@@ -32,14 +32,27 @@
                 <dd class="active"><a href="#">Monitoring</a></dd>
             </dl>
             <div class="panel no-title cloudwatch-charts">
-                <h6 i18n:translate="" tal:condition="launchconfig_monitoring_enabled">CloudWatch instance metrics</h6>
+                <div>
+                    <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
+                    <div class="modal xlarge create-alarm-modal" modal="createAlarm">
+                        <div create-alarm=""
+                            template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                            resource-type="AutoScalingGroupName"
+                            resource-id="${scaling_group.name}"
+                            resource-name="${scaling_group.name}"
+                            scaling-group-name="${scaling_group.name}"
+                            namespace="${'AWS/EC2,AWS/ELB' if has_elb else 'AWS/EC2'}"
+                            default-metric="${'RequestCount' if has_elb else 'CPUUtilization'}"
+                            default-statistic="${'Sum' if has_elb else 'Average'}"></div>
+                    </div>
+                </div>
                 <alarm-state-view
                     template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
                     resource-id="${scaling_group.name}" resource-name="${scaling_group.name}"
                     resource-type="AutoScalingGroupName" resource-type-name="scaling group" i18n:attributes="resource-type-name">
                 </alarm-state-view>
                 <hr/>
-                <h4 i18n:translate="" tal:condition="launchconfig_monitoring_enabled">CloudWatch instance metrics</h4>
+                <h6 i18n:translate="" tal:condition="launchconfig_monitoring_enabled">CloudWatch instance metrics</h6>
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="launchconfig_monitoring_enabled">
