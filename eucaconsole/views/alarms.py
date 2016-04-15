@@ -470,7 +470,7 @@ class CloudWatchAlarmDetailView(BaseView):
         arn = AmazonResourceName.factory(action)
         policy_details = self.get_policies_for_scaling_group(arn.autoscaling_group_name, [arn.policy_name])
         policy_details.reverse()
-        policy = policy_details.pop()
+        policy = policy_details.pop() if policy_details else None
 
         detail = {
             'arn': arn.arn,
