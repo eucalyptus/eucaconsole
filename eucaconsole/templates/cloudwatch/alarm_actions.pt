@@ -71,7 +71,7 @@
         <div class="row controls-wrapper">
             <div class="columns">
                 <button class="button round tiny" ng-click="addAction()" i18n:translate="">Add Action</button>
-                <a class="cancel" ng-click="resetForm()" i18n:translate="">Cancel</a>
+                <a class="cancel-link" ng-click="resetForm()" i18n:translate="">Cancel</a>
             </div>
         </div>
     </div>
