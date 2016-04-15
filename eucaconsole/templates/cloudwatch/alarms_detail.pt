@@ -35,13 +35,11 @@
                                 <a href="#" i18n:translate="">Create alarm like this one</a>
                             </li>
                             <li>
-                                <a href="#" ng-click="delete($event)"
-                                    data-redirect-path="${request.route_path('cloudwatch_alarms')}"
-                                    i18n:translate="">Delete</a>
+                                <a href="#" ng-click="delete($event)" i18n:translate="">Delete</a>
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <form name="alarmUpdateForm" class="alarm-update" novalidate="">
+                    <form name="alarmUpdateForm" class="alarm-update" novalidate="" ng-submit="saveChanges($event)">
                         ${structure:alarm_form['csrf_token']}
                         <h6 i18n:translate="">State</h6>
                         <div class="row controls-wrapper">
@@ -71,9 +69,11 @@
                                 <label class="right" i18n:translate="">Dimensions</label>
                             </div>
                             <div class="large-9 small-9 columns value">
-                                <select multiple="true" ng-model="alarm.dimensions" chosen="">
+                                <select multiple="true" class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">
                                     <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected; value dims.value"></option>
                                 </select>
+                                <small class="error" ng-show="alarmUpdateForm.dimensions.$error.required"
+                                       i18n:translate="">Dimensions is a required value.</small>
                             </div>
                         </div>
                         <div class="trigger-conditions">
@@ -107,10 +107,16 @@
                                     </select>
                                 </div>
                                 <div class="large-3 small-3 columns value">
-                                    <input type="text" value="${alarm.threshold}" ng-model="alarm.threshold"/>
+                                    <input value="${alarm.threshold}" ng-model="alarm.threshold" name="threshold" required="" type="number" min="1"/>
+                                    <small class="error" ng-show="alarmUpdateForm.threshold.$touched &amp;&amp; alarmUpdateForm.threshold.$error.required"
+                                           i18n:translate="">Threshold value is required.</small>
+                                    <small class="error" ng-show="alarmUpdateForm.threshold.$touched &amp;&amp; alarmUpdateForm.threshold.$error.number"
+                                           i18n:translate="">Threshold value must be a number.</small>
+                                    <small class="error" ng-show="alarmUpdateForm.threshold.$touched &amp;&amp; alarmUpdateForm.threshold.$error.min"
+                                           i18n:translate="">Threshold value must be a positive number.</small>
                                 </div>
                                 <div class="large-3 small-3 columns value">
-                                    ${alarm.unit}
+                                    <span ng-show="alarm.unit !== 'None'">${alarm.unit}</span>
                                 </div>
                             </div>
                             <div class="row controls-wrapper">
@@ -118,7 +124,13 @@
                                     <label class="right" i18n:translate="">for at least</label>
                                 </div>
                                 <div class="large-3 small-3 columns">
-                                    <input type="text" value="${alarm.evaluation_periods}" ng-model="alarm.evaluation_periods"/>
+                                    <input type="number" min="1" required="" name="evaluation_periods" ng-model="alarm.evaluation_periods"/>
+                                    <small class="error" ng-show="alarmUpdateForm.evaluation_periods.$touched &amp;&amp; alarmUpdateForm.evaluation_periods.$error.required"
+                                           i18n:translate="">Period value is required.</small>
+                                    <small class="error" ng-show="alarmUpdateForm.evaluation_periods.$touched &amp;&amp; alarmUpdateForm.evaluation_periods.$error.number"
+                                           i18n:translate="">Period value must be a number.</small>
+                                    <small class="error" ng-show="alarmUpdateForm.evaluation_periods.$touched &amp;&amp; alarmUpdateForm.evaluation_periods.$error.min"
+                                           i18n:translate="">Period value must be a positive number.</small>
                                 </div>
                                 <div class="large-3 small-3 columns" i18n:translate="">
                                     <label i18n:translate="">consecutive periods of</label>
@@ -150,13 +162,7 @@
                         ${panel('alarm_actions_panel', alarm_actions_json=alarm_actions_json, alarm_id=alarm_id)}
                         <hr/>
                         <div class="controls">
-                            <button type="submit" class="button"
-                                id="save-changes-btn"
-                                ng-click="saveChanges($event)"
-                                ng-disabled="isNotChanged"
-                                data-redirect-path="${request.route_path('cloudwatch_alarms')}">
-                                <span i18n:translate="">Save Changes</span>
-                            </button>
+                            <button type="submit" class="button submit" i18n:translate="">Save Changes</button>
                             <a href="${request.route_path('cloudwatch_alarms')}" id="cancel-update-link"
                                class="cancel-link"
                                i18n:translate="">Cancel</a>

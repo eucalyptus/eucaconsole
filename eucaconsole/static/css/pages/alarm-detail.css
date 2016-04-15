@@ -2,16 +2,24 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
 .actions .item-list { margin: 0 0 15px; }
 .actions .item-list .item { color: #333333; background-color: #e6e7e8; margin-right: 8px; padding: 0.25rem 0.5rem; font-size: 0.6875rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; }
 .actions .item-list .item .remove { margin-left: 5px; color: #FFF; }
 .actions select { margin: 0 0 0.5rem 0; }
-.actions .cancel { display: inline-block; padding: 0.375rem; color: #6a737b; }
-.actions .cancel:hover { color: #01a982; }
-.actions.ng-pristine .button, .actions.ng-invalid .button { background-color: #FFF; border-color: #EDEDED; color: #EDEDED; }
+.actions .cancel { display: inline-block; padding: 0.375rem; }
+.actions.ng-pristine .button, .actions.ng-invalid .button { background-color: white; border-color: #EDEDED; color: #EDEDED; }
+.actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
 .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { box-shadow: none; }
 
 .metric-chart svg { border: 1px solid #CCC; border-width: 0 1px 1px; width: 100%; height: 350px; margin: 0 auto 15px; }
 
-form.alarm-update .trigger-conditions { margin: 1.5rem 0 0; }
-form.alarm-update .trigger-conditions select { margin: 0 0 0.5rem; }
+form.alarm-update input[type="number"] { width: 100%; }
+form.alarm-update.alarm-update .trigger-conditions { margin: 1.5rem 0 0; }
+form.alarm-update.alarm-update .trigger-conditions select { margin: 0 0 0.5rem; }
+form.alarm-update select.dimensions-select.ng-invalid + div.chosen-container { border: 1px solid darkred; background-color: #ffe9ec; }
+form.alarm-update.ng-invalid .button.submit, form.alarm-update.ng-pristine .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; }
+form.alarm-update.ng-invalid .button.submit:hover, form.alarm-update.ng-pristine .button.submit:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
