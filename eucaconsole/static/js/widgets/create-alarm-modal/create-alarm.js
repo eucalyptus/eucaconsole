@@ -37,6 +37,7 @@ angular.module('CreateAlarmModal', [
             $scope.alarm = {};
             $scope.namespaces = [];
             var csrf_token = $('#csrf_token').val();
+            var loadBalancers = [];
 
             $scope.onNameChange = function () {
                 $scope.createAlarmForm.name.$setTouched();
@@ -156,6 +157,11 @@ angular.module('CreateAlarmModal', [
                             $scope.metrics = results.metrics;
                             $scope.namespaces = results.namespaces;
 
+                            // Used for updating scaling group dimensions when ASG has one or more ELBs
+                            if (results.namespaces.indexOf('AWS/ELB') !== -1) {
+                                loadBalancers = JSON.parse(attrs.loadBalancers);
+                            }
+
                             $scope.alarm.metric = results.metrics.find(function(metric) {
                                 return metric.name === defaults.metric;
                             });
@@ -244,6 +250,26 @@ angular.module('CreateAlarmModal', [
                         $scope.alarm.name = $scope.alarmName();
                     });
             };
+
+            $scope.updateStaticDimensions = function (alarm) {
+                var metricNS = alarm.metric.namespace;
+                var dimensionKeys = Object.keys(alarm.dimensions);
+                if (metricNS.match(/^AWS\//)) {  // Skip custom metrics
+                    // Adjust dimensions where necessary on Scaling group monitoring and policy pages
+                    if ($scope.resourceType === 'AutoScalingGroupName') {
+                        if (metricNS === 'AWS/ELB' && dimensionKeys.indexOf('AutoScalingGroupName') !== -1 && loadBalancers.length) {
+                            $scope.alarm.dimensions = {
+                                'LoadBalancerName': loadBalancers
+                            };
+                        } else if (metricNS === 'AWS/EC2' && $scope.resourceId) {
+                            $scope.alarm.dimensions = {
+                                'AutoScalingGroupName': [$scope.resourceId]
+                            };
+                        }
+                    }
+                }
+            };
+
         }]
     };
 }])
