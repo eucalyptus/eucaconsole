@@ -91,7 +91,9 @@ angular.module('CreateAlarmModal', [
             };
 
             this.composeAlarmMetric = function (attrs) {
-                $scope.alarm.metric.namespace = $scope.namespace;
+                if (!$scope.namespace.match(',')) {  // Avoid breaking namespace when multiple NS are passed to directive
+                    $scope.alarm.metric.namespace = $scope.namespace;
+                }
                 $scope.alarm.dimensions = $scope.dimensions;
                 $scope.alarm.statistic = attrs.defaultStatistic;
                 $scope.alarm.comparison = '>=';
