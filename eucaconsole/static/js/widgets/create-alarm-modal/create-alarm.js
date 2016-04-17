@@ -95,7 +95,7 @@ angular.module('CreateAlarmModal', [
                     $scope.alarm.metric.namespace = $scope.namespace;
                 }
                 $scope.alarm.dimensions = $scope.dimensions;
-                $scope.alarm.statistic = attrs.defaultStatistic;
+                $scope.alarm.statistic = $scope.alarm.statistic ? $scope.alarm.statistic : attrs.defaultStatistic;
                 $scope.alarm.comparison = '>=';
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
                 $scope.alarm.period = defaults.period;
