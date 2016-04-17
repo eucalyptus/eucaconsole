@@ -101,6 +101,7 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm.period = defaults.period;
 
                 $scope.checkNameCollision();
+                $scope.updateStaticDimensions($scope.alarm);
             };
 
             this.initializeModal = function(attrs) {

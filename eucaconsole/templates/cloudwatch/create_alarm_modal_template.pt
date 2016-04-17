@@ -52,7 +52,7 @@
             <select ng-if="metrics &amp;&amp; namespaces.length === 1" name="metric" ng-model="alarm.metric"
                     ng-options="metric.label for metric in metrics track by metric.name"></select>
             <select ng-if="metrics &amp;&amp; namespaces.length &gt; 1" name="metric" ng-model="alarm.metric"
-                    ng-init="updateStaticDimensions(alarm)" ng-change="updateStaticDimensions(alarm)"
+                    ng-change="updateStaticDimensions(alarm)"
                     ng-options="metric.label group by metric.nslabel for metric in metrics track by metric.name"></select>
         </div>
     </div>
