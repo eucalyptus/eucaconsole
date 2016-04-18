@@ -5,11 +5,11 @@
  */
 
 
-angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando'])
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando', 'lpModel'])
     .config(function($locationProvider) {
         $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
     })
-    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, $location) {
+    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, $location, lpModelService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -56,8 +56,13 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             // Table view sorting is persisted via angular-smart-table stPersist directive where configured
             var storedSort = Modernizr.sessionstorage && sessionStorage.getItem($scope.sortByKey),
                 storedLandingPageView = Modernizr.localstorage && localStorage.getItem($scope.landingPageViewKey) || "tableview";
-            $scope.sortBy = storedSort || sortKey;
+            lpModelService.setSortBy(storedSort || sortKey);
+            $scope.sortBy = lpModelService.getSortBy(); // preserving on scope for watch function below
             $scope.landingPageView = storedLandingPageView;
+        };
+        $scope.setSortBy = function(val) {
+            $scope.sortBy = val;
+            lpModelService.setSortBy(val);
         };
         $scope.setWatch = function () {
             // Dismiss sorting dropdown on sort selection

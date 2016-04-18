@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter', 'CreateAlarmModal', 'ModalModule'])
+angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter', 'CreateAlarmModal', 'ModalModule', 'lpModel'])
     .directive('splitbar', function () {
         var pageElement = angular.element(document.body.parentElement);
         return {
@@ -24,7 +24,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }
         };
     })
-    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError, ModalService) {
+    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError, ModalService, lpModelService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         var vm = this;
         var categoryIndex = {};
@@ -161,8 +161,8 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 if (headResources === undefined) {
                     headResources = $("tr>th:nth-of-type(2)");
                 }
-                var decending = headResources.hasClass("st-sort-ascent");
-                var idx = ""+categoryIndex[value.cat_name];
+                var decending = $scope.decending || headResources.hasClass("st-sort-ascent");
+                var idx = ""+(categoryIndex[value.cat_name] || 0);
                 if (decending) {
                     idx = Object.keys(categoryIndex).length - idx;
                 }
@@ -183,8 +183,8 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 if (headMetricName === undefined) {
                     headMetricName = $("tr>th:nth-of-type(3)");
                 }
-                var decending = headMetricName.hasClass("st-sort-ascent");
-                var idx = ""+categoryIndex[value.cat_name];
+                var decending = $scope.decending || headMetricName.hasClass("st-sort-ascent");
+                var idx = ""+(categoryIndex[value.cat_name] || 0);
                 if (decending) {
                     idx = Object.keys(categoryIndex).length - idx;
                 }
@@ -201,6 +201,22 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     return idx + value.metric_name + " ".repeat(30 - value.metric_name.length);
                 }
                 return value;
+            }
+        };
+        vm.gridSorter = function(metric) {
+            var sortBy = lpModelService.getSortBy();
+            if (sortBy[0] == '-') {
+                $scope.decending = true;
+                sortBy = sortBy.substring(1);
+            }
+            else {
+                $scope.decending = undefined;
+            }
+            if (sortBy == "metric_name") {
+                return vm.sortGetters.metric_name(metric);
+            }
+            if (sortBy == "res_name") {
+                return vm.sortGetters.resources(metric);
             }
         };
         vm.chartDimensions = function(chart) {

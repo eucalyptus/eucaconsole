@@ -172,13 +172,16 @@ class CloudWatchMetricsView(LandingPageView):
     def __init__(self, request):
         super(CloudWatchMetricsView, self).__init__(request)
         self.title_parts = [_(u'Metrics')]
-        self.initial_sort_key = 'name'
+        self.initial_sort_key = 'metric_name'
         self.prefix = '/cloudwatch/metrics'
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
         self.filter_keys = ['name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Name')),
+            dict(key='res_name', name=_(u'Resource name: A to Z')),
+            dict(key='-res_name', name=_(u'Resource name: Z to A')),
+            dict(key='metric_name', name=_(u'Metric name: A to Z')),
+            dict(key='-metric_name', name=_(u'Metric name: Z to A')),
         ]
         search_facets = [
             {'name': 'cat_name', 'label': _(u'Resource type'), 'options': [
