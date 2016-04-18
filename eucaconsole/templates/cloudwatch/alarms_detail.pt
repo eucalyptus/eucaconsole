@@ -67,19 +67,19 @@
                         <hr/>
                         <h6 i18n:translate="">Alarm</h6>
                         <div class="row inline  controls-wrapper" id="controls_description">
-                                <div class="large-3 small-3 columns">
-                                    <label class="right" i18n:translate="">Description</label>
-                                </div>
-                                <div class="large-9 small-9 columns field">
-                                    <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
-                                </div>
+                            <div class="large-3 small-3 columns">
+                                <label class="right" i18n:translate="">Description</label>
+                            </div>
+                            <div class="large-9 small-9 columns field">
+                                <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
+                            </div>
                         </div>    
                         <div class="row controls-wrapper">
                             <div class="large-3 small-3 columns">
                                 <label class="right" i18n:translate="">Dimensions</label>
                             </div>
                             <div class="large-9 small-9 columns value" ng-cloak="">
-                                <select multiple="true" class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">
+                                <select class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">
                                     <option tal:repeat="dims dimension_options" tal:content="dims.label"
                                             tal:attributes="selected dims.selected; value dims.value"></option>
                                 </select>
