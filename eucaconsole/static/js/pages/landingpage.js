@@ -5,9 +5,20 @@
  */
 
 
-angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando', 'lpModel'])
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando'])
     .config(function($locationProvider) {
         $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
+    })
+    .service('lpModelService', function() {
+        var sortBy;
+        return {
+            setSortBy: function(val) {
+                sortBy = val;
+            },
+            getSortBy: function() {
+                return sortBy;
+            }
+        };
     })
     .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, $location, lpModelService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

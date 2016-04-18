@@ -28,19 +28,17 @@
                         <a ng-if="(items | filter:{ _selected:true }).length > 0" ng-click="metricsCtrl.clearSelections()" i18n:translate="">Clear all</a>
                     </div>
                 </div>
-                <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading && landingePageView == 'gridview'">
-                    <metal:block metal:define-slot="sorting_controls">
-                        <strong>Sort by</strong>
-                        <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
-                            <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
-                            <span class="down-caret"></span>
-                        </a>
-                        <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="" tal:condition="len(sort_keys) > 1">
-                            <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
-                                <a ng-click="setSortBy('${sort.key}')">${sort.name}</a>
-                            </li>
-                        </ul>
-                    </metal:block>
+                <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading && landingPageView == 'gridview'">
+                    <strong>Sort by</strong>
+                    <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
+                        <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
+                        <span class="down-caret"></span>
+                    </a>
+                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="" tal:condition="len(sort_keys) > 1">
+                        <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
+                            <a ng-click="setSortBy('${sort.key}')">${sort.name}</a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="lp-view-buttons displayicons" ng-cloak="">
                     <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
@@ -342,7 +340,6 @@
     <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/services/landingpage-model-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>

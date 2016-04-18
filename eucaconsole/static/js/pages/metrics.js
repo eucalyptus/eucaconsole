@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter', 'CreateAlarmModal', 'ModalModule', 'lpModel'])
+angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUtils', 'smart-table', 'angular.filter', 'CreateAlarmModal', 'ModalModule'])
     .directive('splitbar', function () {
         var pageElement = angular.element(document.body.parentElement);
         return {
