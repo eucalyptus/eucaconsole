@@ -45,6 +45,7 @@
                             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
                             alarm="{{ alarm }}"
                             alarm-name="${alarm_id}"
+                            load-metric-choices="false"
                             default-metric="${alarm.metric}">
                         </div>
                     </div>
