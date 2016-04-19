@@ -1,8 +1,15 @@
 @import "../includes/eucavariables";
 @import "../includes/landingpage";
+@import "../widgets/modal";
 
 table {
     &.table {
         width: 100%;
+    }
+}
+
+.alarm-history-details-modal {
+    .button {
+        margin-top: 2rem;
     }
 }
