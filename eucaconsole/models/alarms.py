@@ -113,16 +113,20 @@ class Dimension(BaseView):
     def choices_by_namespace(self, namespace='AWS/EC2'):
         choices = []
         if namespace == 'AWS/EC2':
-            choices += self._add_instance_choices()
-            choices += self._add_image_choices()
-            choices += self._add_scaling_group_choices()
+            choices = [
+                self._get_scaling_group_choices(),
+                self._get_image_choices(),
+                self._get_instance_choices(),
+                self._get_instance_type_choices(),
+            ]
+            return list(chain.from_iterable(choices))
         elif namespace == 'AWS/ELB':
-            choices += self._add_load_balancer_choices()
+            return self._get_load_balancer_choices()
         elif namespace == 'AWS/EBS':
-            choices += self._add_volume_choices()
+            return self._get_volume_choices()
         return choices
 
-    def _add_instance_choices(self):
+    def _get_instance_choices(self):
         choices = []
         with boto_error_handler(self.request):
             reservations_list = self.ec2_conn.get_all_reservations()
@@ -135,7 +139,27 @@ class Dimension(BaseView):
                     choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
-    def _add_image_choices(self):
+    def _get_instance_type_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            instance_types = self.ec2_conn.get_all_instance_types()
+            for instance_type in instance_types:
+                resource_type = 'InstanceType'
+                label_template = '{name}: {cores} {clabel}, {mem} {mlabel}, {disk} {dlabel}'
+                resource_label = label_template.format(
+                    name=instance_type.name,
+                    cores=instance_type.cores,
+                    clabel=_('CPUs'),
+                    mem=instance_type.memory,
+                    mlabel=_('memory (MB)'),
+                    disk=instance_type.disk,
+                    dlabel=_('disk (GB, root device)')
+                )
+                option = self._build_option(resource_type, instance_type.name, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_image_choices(self):
         choices = []
         region = self.request.session.get('region')
         owners = ['self'] if self.cloud_type == 'aws' else []
@@ -148,7 +172,7 @@ class Dimension(BaseView):
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
-    def _add_scaling_group_choices(self):
+    def _get_scaling_group_choices(self):
         choices = []
         with boto_error_handler(self.request):
             scaling_groups = self.autoscale_conn.get_all_groups()
@@ -159,7 +183,7 @@ class Dimension(BaseView):
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
-    def _add_load_balancer_choices(self):
+    def _get_load_balancer_choices(self):
         choices = []
         with boto_error_handler(self.request):
             load_balancers = self.elb_conn.get_all_load_balancers()
@@ -170,7 +194,7 @@ class Dimension(BaseView):
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
-    def _add_volume_choices(self):
+    def _get_volume_choices(self):
         choices = []
         with boto_error_handler(self.request):
             volumes = self.ec2_conn.get_all_volumes()
