@@ -121,7 +121,11 @@ class Dimension(BaseView):
             ]
             return list(chain.from_iterable(choices))
         elif namespace == 'AWS/ELB':
-            return self._get_load_balancer_choices()
+            choices = [
+                self._get_load_balancer_choices(),
+                self._get_availability_zone_choices(),
+            ]
+            return list(chain.from_iterable(choices))
         elif namespace == 'AWS/EBS':
             return self._get_volume_choices()
         return choices
@@ -206,6 +210,17 @@ class Dimension(BaseView):
                 resource_type = 'VolumeId'
                 resource_label = TaggedItemView.get_display_name(volume, id_first=True)
                 option = self._build_option(resource_type, volume.id, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_availability_zone_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            zones = self.ec2_conn.get_all_zones()
+            for zone in zones:
+                resource_type = 'AvailabilityZone'
+                resource_label = zone.name
+                option = self._build_option(resource_type, zone.name, resource_label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
