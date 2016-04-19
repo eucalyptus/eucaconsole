@@ -150,6 +150,7 @@ class CloudWatchAlarmsView(LandingPageView):
     def cloudwatch_alarms_update(self):
         message = json.loads(self.request.body)
         alarm = message.get('alarm', {})
+        update = alarm.get('update', False)
         token = message.get('csrf_token')
         flash = message.get('flash')
 
@@ -167,14 +168,14 @@ class CloudWatchAlarmsView(LandingPageView):
         unit = alarm.get('unit')
         description = alarm.get('description')
         dimensions = alarm.get('dimensions')
-        if isinstance(dimensions, str):
+        if isinstance(dimensions, str):  # Copy Alarm dialog sends dimensions as a JSON string
             dimensions = json.loads(dimensions)
 
         insufficient_data_actions = alarm.get('insufficient_data_actions')
         alarm_actions = alarm.get('alarm_actions')
         ok_actions = alarm.get('ok_actions')
 
-        updated = MetricAlarm(
+        metric_alarm = MetricAlarm(
             name=name, metric=metric, namespace=namespace, statistic=statistic,
             comparison=comparison, threshold=threshold, period=period,
             evaluation_periods=evaluation_periods, unit=unit, description=description,
@@ -183,12 +184,18 @@ class CloudWatchAlarmsView(LandingPageView):
 
         with boto_error_handler(self.request):
             self.log_request(_(u'Updating alarm {0}').format(alarm.get('name')))
-            action = self.cloudwatch_conn.put_metric_alarm(updated)
+            action = self.cloudwatch_conn.put_metric_alarm(metric_alarm)
 
             if action:
-                prefix = _(u'Successfully updated alarm')
+                if update:
+                    prefix = _(u'Successfully updated alarm')
+                else:
+                    prefix = _(u'Successfully created alarm')
             else:
-                prefix = _(u'There was a problem deleting alarm')
+                if update:
+                    prefix = _(u'There was a problem updating alarm')
+                else:
+                    prefix = _(u'There was a problem creating alarm')
 
             msg = u'{0} {1}'.format(prefix, alarm.get('name'))
 

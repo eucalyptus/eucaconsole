@@ -19,6 +19,7 @@ angular.module('AlarmDetailPage', [
 
             $scope.saveChanges = function (event) {
                 $scope.alarm.dimensions = JSON.parse($scope.alarm.dimensions);
+                $scope.alarm.update = true;
                 if($scope.alarmUpdateForm.$invalid || $scope.alarmUpdateForm.$pristine) {
                     var $error = $scope.alarmUpdateForm.$error;
                     Object.keys($error).forEach(function (error) {
