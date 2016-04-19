@@ -31,7 +31,7 @@
             <ul ng-if="!editDimensions">
                 <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
-            <select ng-model="alarm.dimensions" ng-if="editDimensions">
+            <select ng-model="alarm.dimensions" ng-if="editDimensions" id="dimensions-select">
                 <option ng-repeat="dimension in dimensionChoices" ng-selected="dimension.selected"
                         ng-value="dimension.value">{{ dimension.label }}</option>
             </select>

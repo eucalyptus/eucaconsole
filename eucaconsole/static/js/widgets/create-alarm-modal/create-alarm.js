@@ -105,7 +105,11 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm.period = defaults.period;
 
                 $scope.checkNameCollision();
-                $scope.updateStaticDimensions($scope.alarm);
+                if (attrs.alarmName) {
+                    $('#dimensions-select').chosen({'width': '100%', search_contains: true});
+                } else {
+                    $scope.updateStaticDimensions($scope.alarm);
+                }
             };
 
             this.initializeModal = function(attrs) {
