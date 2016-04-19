@@ -166,7 +166,7 @@ class CloudWatchAlarmsView(LandingPageView):
         evaluation_periods = alarm.get('evaluation_periods')
         unit = alarm.get('unit')
         description = alarm.get('description')
-        dimensions = json.loads(alarm.get('dimensions'), '{}')
+        dimensions = alarm.get('dimensions')
 
         insufficient_data_actions = alarm.get('insufficient_data_actions')
         alarm_actions = alarm.get('alarm_actions')
