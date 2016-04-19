@@ -127,7 +127,11 @@ class Dimension(BaseView):
         return choices
 
     def _get_instance_choices(self):
-        choices = []
+        choices = [{
+            'label': _('All instances'),
+            'value': '{}',
+            'selected': True if self.existing_dimensions == {} else False
+        }]
         with boto_error_handler(self.request):
             reservations_list = self.ec2_conn.get_all_reservations()
             reservation = reservations_list[0] if reservations_list else None
