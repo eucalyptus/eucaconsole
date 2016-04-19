@@ -8,18 +8,6 @@ angular.module('AlarmDetailPage', [
         link: function (scope, element, attrs) {
             scope.alarm = JSON.parse(attrs.alarmDetail);
 
-            var dimensions = [];
-            Object.keys(scope.alarm.dimensions).forEach(function (key) {
-                var val = scope.alarm.dimensions[key],
-                    result;
-                val.forEach(function (current) {
-                    result = {};
-                    result[key] = [current];
-                    dimensions.push(JSON.stringify(result));
-                });
-            });
-            scope.alarm.dimensions = dimensions;
-
             eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
                 scope.redirectPath = path;
             });
@@ -38,21 +26,6 @@ angular.module('AlarmDetailPage', [
                     });
                     return;
                 }
-
-                var dimensions = $scope.alarm.dimensions || [],
-                    newDimensions = {};
-
-                dimensions.forEach(function (dimension) {
-                    var d = JSON.parse(dimension);
-                    Object.keys(d).forEach(function (key) {
-                        if(!(key in newDimensions)) {
-                            newDimensions[key] = [];
-                        }
-                        newDimensions[key] = newDimensions[key].concat(d[key]);
-                    });
-                });
-
-                $scope.alarm.dimensions = newDimensions;
 
                 AlarmService.updateAlarm($scope.alarm, csrf_token, true)
                     .then(function success (response) {

@@ -26,6 +26,7 @@
 
 import re
 from itertools import chain
+from operator import itemgetter
 
 import simplejson as json
 
@@ -126,7 +127,7 @@ class Dimension(BaseView):
                     resource_label = TaggedItemView.get_display_name(instance)
                     option = self._build_option(resource_type, instance.id, resource_label)
                     choices.append(option)
-        return choices
+        return sorted(choices, key=itemgetter('label'))
 
     def _build_option(self, resource_type, resource_id, resource_label):
         return {
