@@ -115,6 +115,9 @@ class Dimension(BaseView):
         if namespace == 'AWS/EC2':
             choices += self._add_instance_choices()
             choices += self._add_image_choices()
+            choices += self._add_scaling_group_choices()
+        elif namespace == 'AWS/ELB':
+            choices += self._add_load_balancer_choices()
         return choices
 
     def _add_instance_choices(self):
@@ -140,6 +143,28 @@ class Dimension(BaseView):
                 resource_type = 'ImageId'
                 resource_label = '{0} ({1})'.format(image.id, image.name)
                 option = self._build_option(resource_type, image.id, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _add_scaling_group_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            scaling_groups = self.autoscale_conn.get_all_groups()
+            for group in scaling_groups:
+                resource_type = 'AutoScalingGroupName'
+                resource_label = group.name
+                option = self._build_option(resource_type, group.name, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _add_load_balancer_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            load_balancers = self.elb_conn.get_all_load_balancers()
+            for elb in load_balancers:
+                resource_type = 'LoadBalancerName'
+                resource_label = elb.name
+                option = self._build_option(resource_type, elb.name, resource_label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
