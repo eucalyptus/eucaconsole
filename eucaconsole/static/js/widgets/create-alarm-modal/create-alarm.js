@@ -97,7 +97,7 @@ angular.module('CreateAlarmModal', [
                 if (!$scope.namespace.match(',')) {  // Avoid breaking namespace when multiple NS are passed to directive
                     $scope.alarm.metric.namespace = $scope.namespace;
                 }
-                $scope.alarm.dimensions = $scope.dimensions;
+                $scope.alarm.dimensions = attrs.alarmName ? JSON.stringify($scope.dimensions) : $scope.dimensions;
                 $scope.alarm.statistic = $scope.alarm.statistic ? $scope.alarm.statistic : attrs.defaultStatistic;
                 $scope.alarm.comparison = '>=';
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
