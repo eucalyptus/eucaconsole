@@ -532,14 +532,20 @@ class TaggedItemView(BaseView):
         return BaseView.escape_json(json.dumps(serialized_tags))
 
     @staticmethod
-    def get_display_name(resource, escapebraces=True):
+    def get_display_name(resource, escapebraces=True, id_first=False):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
-            name = u"{0}{1}".format(
-                name_tag if name_tag else resource.id,
-                u" ({0})".format(resource.id) if name_tag else ''
-            )
+            if id_first:
+                name = u"{0}{1}".format(
+                    resource.id,
+                    u" ({0})".format(name_tag if name_tag else ''),
+                )
+            else:
+                name = u"{0}{1}".format(
+                    name_tag if name_tag else resource.id,
+                    u" ({0})".format(resource.id) if name_tag else '',
+                )
         if escapebraces:
             name = BaseView.escape_braces(name)
         return name

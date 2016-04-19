@@ -113,10 +113,11 @@ class Dimension(BaseView):
     def choices_by_namespace(self, namespace='AWS/EC2'):
         choices = []
         if namespace == 'AWS/EC2':
-            choices += self._get_ec2_resources()
+            choices += self._add_instance_choices()
+            choices += self._add_image_choices()
         return choices
 
-    def _get_ec2_resources(self):
+    def _add_instance_choices(self):
         choices = []
         with boto_error_handler(self.request):
             reservations_list = self.ec2_conn.get_all_reservations()
@@ -124,9 +125,22 @@ class Dimension(BaseView):
             if reservation:
                 for instance in reservation.instances:
                     resource_type = 'InstanceId'
-                    resource_label = TaggedItemView.get_display_name(instance)
+                    resource_label = TaggedItemView.get_display_name(instance, id_first=True)
                     option = self._build_option(resource_type, instance.id, resource_label)
                     choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _add_image_choices(self):
+        choices = []
+        region = self.request.session.get('region')
+        owners = ['self'] if self.cloud_type == 'aws' else []
+        with boto_error_handler(self.request):
+            images = self.get_images(self.ec2_conn, owners, [], region)
+            for image in images:
+                resource_type = 'ImageId'
+                resource_label = '{0} ({1})'.format(image.id, image.name)
+                option = self._build_option(resource_type, image.id, resource_label)
+                choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
     def _build_option(self, resource_type, resource_id, resource_label):
