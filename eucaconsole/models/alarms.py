@@ -121,9 +121,12 @@ class Dimension(BaseView):
             ]
             return list(chain.from_iterable(choices))
         elif namespace == 'AWS/ELB':
+            elb_choices = self._get_load_balancer_choices()
+            zone_choices = self._get_availability_zone_choices()
             choices = [
-                self._get_load_balancer_choices(),
-                self._get_availability_zone_choices(),
+                elb_choices,
+                zone_choices,
+                self._get_elb_zone_choices(elb_choices, zone_choices),
             ]
             return list(chain.from_iterable(choices))
         elif namespace == 'AWS/EBS':
@@ -223,6 +226,20 @@ class Dimension(BaseView):
                 option = self._build_option(resource_type, zone.name, resource_label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
+
+    def _get_elb_zone_choices(self, elb_choices, zone_choices):
+        choices = []
+        for zone in zone_choices:
+            zone_name = ','.join(json.loads(zone.get('value'))['AvailabilityZone'])
+            for elb in elb_choices:
+                elb_name = ','.join(json.loads(elb.get('value'))['LoadBalancerName'])
+                dimensions = {'AvailabilityZone': [zone_name], 'LoadBalancerName': [elb_name]}
+                choices.append({
+                    'label': 'AvailabilityZone = {0}, LoadBalancerName = {1}'.format(zone_name, elb_name),
+                    'value': re.sub(r'\s+', '', json.dumps(dimensions)),
+                    'selected': self.existing_dimensions == dimensions
+                })
+        return choices
 
     def _build_option(self, resource_type, resource_id, resource_label):
         return {
