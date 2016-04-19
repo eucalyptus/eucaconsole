@@ -66,7 +66,10 @@ angular.module('CreateAlarmModal', [
                         if (resName.length > 0) {
                             resName.push(' - ');
                         }
-                        resName.push($scope.dimensions[key].join(' - '));
+                        if (angular.isArray($scope.dimensions[key])) {
+                            // Skip Angular $$hashkey in $scope.dimensions
+                            resName.push($scope.dimensions[key].join(' - '));
+                        }
                     });
                     resName = resName.join('');
                 }
