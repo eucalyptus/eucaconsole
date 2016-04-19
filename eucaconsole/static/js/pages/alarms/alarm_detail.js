@@ -7,6 +7,7 @@ angular.module('AlarmDetailPage', [
         restrict: 'A',
         link: function (scope, element, attrs) {
             scope.alarm = JSON.parse(attrs.alarmDetail);
+            scope.alarm.dimensions = JSON.stringify(scope.alarm.dimensions);
 
             eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
                 scope.redirectPath = path;
@@ -17,6 +18,7 @@ angular.module('AlarmDetailPage', [
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
+                $scope.alarm.dimensions = JSON.parse($scope.alarm.dimensions);
                 if($scope.alarmUpdateForm.$invalid || $scope.alarmUpdateForm.$pristine) {
                     var $error = $scope.alarmUpdateForm.$error;
                     Object.keys($error).forEach(function (error) {
