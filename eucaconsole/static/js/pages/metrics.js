@@ -36,7 +36,6 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             categories.forEach(function(val, idx) {
                 categoryIndex[val] = idx;
             });
-            enableInfiniteScroll();
         };
         function enableInfiniteScroll() {
             var splitTop = $(".split-top");
@@ -136,6 +135,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     }
                 }
             }
+            enableInfiniteScroll();
         });
         $scope.$on('cloudwatch:refreshLargeChart', function ($event, stat, period, timeRange, duration, startTime, endTime) {
             graphParams = "&stat="+stat+"&period="+period;
@@ -189,15 +189,17 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     idx = Object.keys(categoryIndex).length - idx;
                 }
                 idx = " ".repeat(3-(""+idx).length) + idx;
-                if (value.heading === true && value.res_ids === undefined || value.res_ids.length === 0) {
+                if (value.heading === true) {
                     if (decending) {
                         return idx + "z".repeat(200);
                     }
                     else {
+                        if (idx == '  3') console.log(idx + " ".repeat(200)+value.cat_name);
                         return idx + " ".repeat(200);
                     }
                 }
                 else {
+                    if (idx == '  3') console.log(idx + value.metric_name + " ".repeat(30 - value.metric_name.length));
                     return idx + value.metric_name + " ".repeat(30 - value.metric_name.length);
                 }
                 return value;

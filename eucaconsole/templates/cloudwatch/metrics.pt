@@ -99,7 +99,7 @@
                             </metal:block>
                         </div>
                         <div class="content">
-                            <div ng-if="['ec2allinstances', 'scalinggroupinstancemetrics', 'ec2instancetype', 'elb', 'elbzone', 'elbandzone', 'custom'].indexOf(item.cat_name) == -1">
+                            <div ng-if="['ec2allinstances', 'scalinggroupinstancemetrics', 'ec2instancetype', 'elb', 'elbzone', 'elbandzone', 'elball', 'custom'].indexOf(item.cat_name) == -1">
                                 <span class="label" title="Metric" i18n:attributes="title" data-tooltip="">ID</span>
                                 <span ng-repeat="res in item.resources">
                                     <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id | ellipsis: 50 }}</a>
@@ -149,8 +149,11 @@
                                             <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
                                             <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
                                         </div>
-                                        <span ng-if="item.resources.length == 0" i18n:translate="">
+                                        <span ng-if="item.cat_name == 'ec2allinstances'" i18n:translate="">
                                             All instances
+                                        </span>
+                                        <span ng-if="item.cat_name == 'elball'" i18n:translate="">
+                                            All load balancers
                                         </span>
                                     </td>
                                     <td ng-if="item.heading != true">{{ item.metric_label }}</td>

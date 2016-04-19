@@ -116,6 +116,12 @@ METRIC_CATEGORIES = [
         resource=['AvailabilityZone', 'LoadBalancerName'],
     ),
     dict(
+        name='elball',
+        label=_(u'ELB - Across all load balancers'),
+        resource=['LoadBalancerName'],
+        namespace='AWS/ELB',
+    ),
+    dict(
         name='custom',
         label=_(u'Custom metrics'),
         namespace=None,
@@ -270,13 +276,13 @@ class CloudWatchMetricsJsonView(BaseView):
                         'namespace': item.namespace,
                         'dimensions': item.dimensions
                     } for item in items if item.namespace not in STD_NAMESPACES and item.dimensions]
-                if cat['name'] == 'ec2allinstances':
+                if cat['name'] in ['ec2allinstances', 'elball']:
                     tmp = set([met['name'] for met in tmp])
                 else:
                     tmp = [(met['dimensions'].items(), met['name'], met['namespace']) for met in tmp]
                 cat_metrics = []
                 for metric in tmp:
-                    if cat['name'] == 'ec2allinstances':
+                    if cat['name'] in ['ec2allinstances', 'elball']:
                         metric_name = metric
                         metric_dims = []
                         res_ids = []
