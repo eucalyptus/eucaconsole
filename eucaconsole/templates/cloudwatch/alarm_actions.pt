@@ -62,14 +62,14 @@
                     <option value="" i18n:translate="">{{ defaultOptionValue }}</option>
                     <option ng-repeat="(name, details) in scalingGroupPolicies"
                             ng-bind="name" 
-                            ng-value="{{ name }}" 
+                            ng-value="name"
                             data-arn="{{ details.arn }}"></option>
                 </select>
             </div>
         </div>
         <div class="row controls-wrapper">
             <div class="columns">
-                <button class="button round tiny" ng-click="addAction()" i18n:translate="">Add Action</button>
+                <button class="button round tiny" ng-click="addAction($event)" i18n:translate="">Add Action</button>
                 <a class="cancel-link" ng-click="resetForm()" i18n:translate="">Cancel</a>
             </div>
         </div>

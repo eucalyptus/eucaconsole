@@ -24,7 +24,7 @@
                 <dl class="tabs" id="alarm-subnav">
                     <dd class="active"><a href="#" i18n:translate="">General</a><dd>
                     <dd>
-                        <a href="${request.route_path('cloudwatch_alarm_history', alarm_id=alarm_id)}">
+                        <a href="${request.route_path('cloudwatch_alarm_history', alarm_id=encoded_id)}">
                             History</a>
                     </dd>
                 </dl>
@@ -32,13 +32,23 @@
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                         <metal:actions metal:fill-slot="actions">
                             <li>
-                                <a href="#" i18n:translate="">Create alarm like this one</a>
+                                <a href="#" ng-click="copyAlarm()" i18n:translate="">Create alarm like this one</a>
                             </li>
                             <li>
                                 <a href="#" ng-click="delete($event)" i18n:translate="">Delete</a>
                             </li>
                         </metal:actions>
                     </metal:block>
+                    <div class="modal xlarge create-alarm-modal" modal="copyAlarm">
+                        <div create-alarm=""
+                            title="Create alarm like ${alarm_id}"
+                            template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                            alarm="{{ alarm }}"
+                            alarm-name="${alarm_id}"
+                            load-metric-choices="false"
+                            default-metric="${alarm.metric}">
+                        </div>
+                    </div>
                     <form name="alarmUpdateForm" class="alarm-update" novalidate="" ng-submit="saveChanges($event)">
                         ${structure:alarm_form['csrf_token']}
                         <h6 i18n:translate="">State</h6>
@@ -57,20 +67,21 @@
                         <hr/>
                         <h6 i18n:translate="">Alarm</h6>
                         <div class="row inline  controls-wrapper" id="controls_description">
-                                <div class="large-3 small-3 columns">
-                                    <label class="right" i18n:translate="">Description</label>
-                                </div>
-                                <div class="large-9 small-9 columns field">
-                                    <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
-                                </div>
+                            <div class="large-3 small-3 columns">
+                                <label class="right" i18n:translate="">Description</label>
+                            </div>
+                            <div class="large-9 small-9 columns field">
+                                <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
+                            </div>
                         </div>    
                         <div class="row controls-wrapper">
                             <div class="large-3 small-3 columns">
                                 <label class="right" i18n:translate="">Dimensions</label>
                             </div>
-                            <div class="large-9 small-9 columns value">
-                                <select multiple="true" class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">
-                                    <option tal:repeat="dims options" tal:content="dims.label" tal:attributes="selected dims.selected; value dims.value"></option>
+                            <div class="large-9 small-9 columns value" ng-cloak="">
+                                <select class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">
+                                    <option tal:repeat="dims dimension_options" tal:content="dims.label"
+                                            tal:attributes="selected dims.selected; value dims.value"></option>
                                 </select>
                                 <small class="error" ng-show="alarmUpdateForm.dimensions.$error.required"
                                        i18n:translate="">Dimensions is a required value.</small>
@@ -174,12 +185,19 @@
     </div>
     <div metal:fill-slot="tail_js">
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.min.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_detail.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/chosen.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/metric-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>

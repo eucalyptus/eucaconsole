@@ -1,13 +1,13 @@
 angular.module('MetricServiceModule', ['EucaRoutes'])
 .factory('MetricService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
     return {
-        getMetrics: function (namespace, type, value) {
-            return eucaRoutes.getRouteDeferred('metrics_available_for_resource', {type: type, value: value})
+        getMetrics: function (namespace, dimensions) {
+            return eucaRoutes.getRouteDeferred('metrics_available_for_dimensions')
                 .then(function (path) {
                     return $http({
                         method: 'GET',
                         url: path,
-                        params: {namespace: namespace}
+                        params: {namespace: namespace, dimensions: JSON.stringify(dimensions)}
                     }).then(function (result) {
                         var metrics = [],
                             namespaces = [];

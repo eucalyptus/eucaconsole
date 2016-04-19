@@ -1,5 +1,5 @@
 <form name="createAlarmForm" ng-submit="createAlarm()" novalidate="" i18n:domain="eucaconsole">
-    <h3 i18n:translate="">Create Alarm</h3>
+    <h3>{{ title }}</h3>
     <h6 i18n:translate="">Alarm</h6>
     <div class="row inline controls-wrapper">
         <div class="large-3 small-3 columns">
@@ -8,8 +8,10 @@
         <div class="large-9 small-9 columns field">
             <input name="name" ng-model="alarm.name" unique-name="" required="required"
                    type="text" ng-change="onNameChange()" ng-model-options="{ updateOn: 'blur' }" />
-            <small class="error" ng-show="createAlarmForm.name.$error.uniqueName" i18n:translate="">Alarm name must be unique.</small>
-            <small class="error" ng-show="createAlarmForm.name.$error.required" i18n:translate="">Alarm name is required.</small>
+            <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.uniqueName"
+                    i18n:translate="">Alarm name must be unique.</small>
+            <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.required"
+                    i18n:translate="">Alarm name is required.</small>
         </div>
     </div>
     <div class="row inline controls-wrapper">
@@ -26,9 +28,10 @@
             <label class="right" i18n:translate="">Dimensions</label>
         </div>
         <div class="large-9 small-9 columns">
-            <ul>
-                <li ng-repeat="(key, val) in alarm.metric.dimensions">{{ key }} = {{ val.join(', ') }}</li>
+            <ul ng-if="!editDimensions">
+                <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
+            <select multiple="true" ng-model="alarm.dimensions" chosen="" ng-if="editDimensions"></select>
         </div>
     </div>
     <div class="row controls-wrapper">
@@ -48,7 +51,8 @@
             <span ng-if="!metrics">{{ alarm.metric.name }}</span>
             <select ng-if="metrics &amp;&amp; namespaces.length === 1" name="metric" ng-model="alarm.metric"
                     ng-options="metric.label for metric in metrics track by metric.name"></select>
-            <select ng-if="metrics &amp;&amp; namespaces.length !== 1" name="metric" ng-model="alarm.metric"
+            <select ng-if="metrics &amp;&amp; namespaces.length &gt; 1" name="metric" ng-model="alarm.metric"
+                    ng-change="updateStaticDimensions(alarm)"
                     ng-options="metric.label group by metric.nslabel for metric in metrics track by metric.name"></select>
         </div>
     </div>
@@ -105,9 +109,11 @@
             </select>
         </div>
     </div>
-    <hr/>
-    ${panel('alarm_actions_panel')}
-    <hr/>
+    <div ng-if="!hideAlarmActions">
+        <hr/>
+        ${panel('alarm_actions_panel')}
+        <hr/>
+    </div>
     <div class="controls">
         <button type="submit" class="button submit expand" i18n:translate="">
             Create Alarm

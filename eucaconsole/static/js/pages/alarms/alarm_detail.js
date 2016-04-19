@@ -1,6 +1,6 @@
 angular.module('AlarmDetailPage', [
     'AlarmsComponents', 'EucaChosenModule', 'ChartAPIModule', 'ChartServiceModule',
-    'AlarmServiceModule', 'AlarmActionsModule', 'EucaRoutes'
+    'AlarmServiceModule', 'AlarmActionsModule', 'ModalModule', 'CreateAlarmModal', 'EucaRoutes'
 ])
 .directive('alarmDetail', ['eucaRoutes', function (eucaRoutes) {
     return {
@@ -24,7 +24,8 @@ angular.module('AlarmDetailPage', [
                 scope.redirectPath = path;
             });
         },
-        controller: ['$scope', '$window', 'AlarmService', function ($scope, $window, AlarmService) {
+        controller: ['$scope', '$window', 'AlarmService', 'ModalService',
+        function ($scope, $window, AlarmService, ModalService) {
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
@@ -76,6 +77,9 @@ angular.module('AlarmDetailPage', [
                     }); 
             };
 
+            $scope.copyAlarm = function () {
+                ModalService.openModal('copyAlarm');
+            };
         }]
     };
 }])

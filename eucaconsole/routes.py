@@ -282,10 +282,11 @@ urls = [
     Route(name='cloudwatch_alarm_history_json', pattern='/alarms/{alarm_id}/history/json'),
     Route(name='cloudwatch_alarm_actions', pattern='/alarms/{alarm_id}/actions'),
     Route(name='cloudwatch_alarms_create', pattern='/alarms/create'),
+    Route(name='cloudwatch_alarms_for_dimensions_json', pattern='/alarms/dimensions/json'),
     Route(name='cloudwatch_alarm_view', pattern='/alarms/{alarm_id}'),
+    Route(name='cloudwatch_alarm_json', pattern='/alarms/{alarm_id}/json'),
     Route(name='cloudwatch_alarms_for_metric_json', pattern='/alarms/json/{metric}'),
     Route(name='cloudwatch_alarms_for_resource_json', pattern='/alarms/resource/{id}/json'),
-    Route(name='cloudwatch_alarms_for_dimensions_json', pattern='/alarms/dimensions/json'),
     # REST API - this route is hard-coded elsewhere, do not change.
     Route(name='cloudwatch_api', pattern='/cloudwatch/api'),
     # Metrics Landing page
@@ -293,7 +294,7 @@ urls = [
     Route(name='cloudwatch_metrics_json', pattern='/cloudwatch/metrics/json'),
     Route(name='cloudwatch_resource_names_json', pattern='/cloudwatch/resourcenames/json'),
 
-    Route(name='metrics_available_for_resource', pattern='/metrics/available/{type}/{value}'),
+    Route(name='metrics_available_for_dimensions', pattern='/metrics/available/json'),
 
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),

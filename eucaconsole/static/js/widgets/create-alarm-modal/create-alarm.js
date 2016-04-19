@@ -10,26 +10,34 @@ angular.module('CreateAlarmModal', [
 
     return {
         restrict: 'A',
-        require: '^modal',
+        require: ['^modal', 'createAlarm'],
         templateUrl: function (element, attributes) {
             return attributes.template;
         },
-        link: function (scope, element, attrs) {
-            scope.initializeModal(attrs);
+        link: function (scope, element, attrs, ctrls) {
+            var modalCtrl = ctrls[0],
+                createAlarmCtrl = ctrls[1];
+
+            var modalName;
+
+            createAlarmCtrl.initializeModal(attrs);
 
             scope.$on('modal:open', function (event, name) {
-                scope.initializeModal(attrs);
+                modalName = name;
+                createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
-                if(name == 'createAlarm') {
+                if(name === modalName) {
                     scope.resetForm();
                 }
             });
         },
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
+            var vm = this;
             $scope.alarm = {};
             $scope.namespaces = [];
             var csrf_token = $('#csrf_token').val();
+            var loadBalancers = [];
 
             $scope.onNameChange = function () {
                 $scope.createAlarmForm.name.$setTouched();
@@ -49,7 +57,7 @@ angular.module('CreateAlarmModal', [
                     $scope.createAlarmForm.name.$setValidity('uniqueName', false);
                     return $scope.alarm.name;
                 }
-                
+
                 var alarm = $scope.alarm;
                 var resName = $scope.resourceName || $scope.resourceId;
                 if (resName === undefined) {
@@ -72,7 +80,7 @@ angular.module('CreateAlarmModal', [
                 }
 
                 var collision = $scope.existingAlarms.some(function (alarm) {
-                    return alarm.name == name;
+                    return alarm.name === name;
                 });
 
                 if(collision) {
@@ -82,7 +90,21 @@ angular.module('CreateAlarmModal', [
                 return name;
             };
 
-            $scope.initializeModal = function(attrs) {
+            this.composeAlarmMetric = function (attrs) {
+                if (!$scope.namespace.match(',')) {  // Avoid breaking namespace when multiple NS are passed to directive
+                    $scope.alarm.metric.namespace = $scope.namespace;
+                }
+                $scope.alarm.dimensions = $scope.dimensions;
+                $scope.alarm.statistic = $scope.alarm.statistic ? $scope.alarm.statistic : attrs.defaultStatistic;
+                $scope.alarm.comparison = '>=';
+                $scope.alarm.evaluation_periods = defaults.evaluation_periods;
+                $scope.alarm.period = defaults.period;
+
+                $scope.checkNameCollision();
+                $scope.updateStaticDimensions($scope.alarm);
+            };
+
+            this.initializeModal = function(attrs) {
                 defaults = {
                     statistic: attrs.defaultStatistic,
                     metric: attrs.defaultMetric,
@@ -90,52 +112,76 @@ angular.module('CreateAlarmModal', [
                     evaluation_periods: 1,
                     period: 300
                 };
+
+                $scope.title = attrs.title || 'Create Alarm';
+                $scope.hideAlarmActions = attrs.hideAlarmActions || false;
+                $scope.editDimensions = attrs.editDimensions || false;
+                $scope.existingAlarms = [];
+                if(attrs.alarmName) {
+                    AlarmService.getAlarm(attrs.alarmName)
+                        .then(function (res) {
+                            var alarm = res.alarm;
+                            vm.initializeForCopy(alarm, attrs);
+                        });
+                } else {
+                    this.initializeForCreate(attrs);
+                }
+            };
+
+            this.initializeForCopy = function (alarm, attrs) {
+                $scope.alarm = alarm;
+                $scope.alarm.name = 'Copy of ' + alarm.name;
+                $scope.alarm.dimensions = alarm.dimensions;
+                $scope.dimensions = alarm.dimensions;
+                $scope.namespace = alarm.namespace;
+                $scope.resourceType = attrs.resourceType;
+                $scope.resourceId = attrs.resourceId;
+                finishInit(attrs);
+            };
+
+            this.initializeForCreate = function (attrs) {
                 $scope.scalingGroupName = attrs.scalingGroupName || '';
                 $scope.namespace = attrs.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
-                $scope.dimensions = attrs.dimensions?JSON.parse(attrs.dimensions):undefined;
+                $scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : undefined;
                 if ($scope.dimensions === undefined) {
                     $scope.dimensions = {};
                     $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
                 }
                 $scope.resourceName = attrs.resourceName;
-                $scope.existingAlarms = [];
+                finishInit(attrs);
+            };
 
+            var finishInit = function(attrs) {
                 if (attrs.loadMetricChoices !== 'false') {
-                    MetricService.getMetrics($scope.namespace, $scope.resourceType, $scope.resourceId)
+                    MetricService.getMetrics($scope.namespace, $scope.dimensions)
                         .then(function (results) {
                             $scope.metrics = results.metrics;
                             $scope.namespaces = results.namespaces;
 
+                            // Used for updating scaling group dimensions when ASG has one or more ELBs
+                            if (results.namespaces.indexOf('AWS/ELB') !== -1) {
+                                loadBalancers = JSON.parse(attrs.loadBalancers);
+                            }
+
                             $scope.alarm.metric = results.metrics.find(function(metric) {
-                                return metric.name == defaults.metric;
+                                return metric.name === defaults.metric;
                             });
-                            $scope.alarm.metric.namespace = $scope.namespace;
-                            $scope.alarm.metric.dimensions = $scope.dimensions;
-                            $scope.alarm.statistic = attrs.defaultStatistic;
-                            $scope.alarm.comparison = '>=';
-                            $scope.alarm.evaluation_periods = defaults.evaluation_periods;
-                            $scope.alarm.period = defaults.period;
 
                             defaults.metric = $scope.alarm.metric;
+                            vm.composeAlarmMetric(attrs);
                         });
                 }
                 else {
                     // let's construct the metric object from data passed
                     $scope.alarm.metric = {
                         name: defaults.metric,
-                        dimensions: $scope.dimensions,
+                        unit: attrs.unit
                     };
-                    $scope.alarm.metric.namespace = $scope.namespace;
-                    $scope.alarm.metric.unit = attrs.unit;
-                    $scope.alarm.statistic = attrs.defaultStatistic;
-                    $scope.alarm.comparison = '>=';
-                    $scope.alarm.evaluation_periods = defaults.evaluation_periods;
-                    $scope.alarm.period = defaults.period;
-                }
 
-                $scope.checkNameCollision();
+                    vm.composeAlarmMetric(attrs);
+                }
             };
 
             $scope.createAlarm = function () {
@@ -162,7 +208,7 @@ angular.module('CreateAlarmModal', [
                     evaluation_periods: alarm.evaluation_periods,
                     unit: alarm.unit,
                     description: alarm.description,
-                    dimensions: alarm.metric.dimensions,
+                    dimensions: alarm.dimensions,
                     alarm_actions: alarm.alarm_actions,
                     insufficient_data_actions: alarm.insufficient_data_actions,
                     ok_actions: alarm.ok_actions
@@ -207,6 +253,26 @@ angular.module('CreateAlarmModal', [
                         $scope.alarm.name = $scope.alarmName();
                     });
             };
+
+            $scope.updateStaticDimensions = function (alarm) {
+                var metricNS = alarm.metric.namespace;
+                var dimensionKeys = Object.keys(alarm.dimensions);
+                if (metricNS.match(/^AWS\//)) {  // Skip custom metrics
+                    // Adjust dimensions where necessary on Scaling group monitoring and policy pages
+                    if ($scope.resourceType === 'AutoScalingGroupName') {
+                        if (metricNS === 'AWS/ELB' && dimensionKeys.indexOf('AutoScalingGroupName') !== -1 && loadBalancers.length) {
+                            $scope.alarm.dimensions = {
+                                'LoadBalancerName': loadBalancers
+                            };
+                        } else if (metricNS === 'AWS/EC2' && $scope.resourceId) {
+                            $scope.alarm.dimensions = {
+                                'AutoScalingGroupName': [$scope.resourceId]
+                            };
+                        }
+                    }
+                }
+            };
+
         }]
     };
 }])
@@ -220,7 +286,7 @@ angular.module('CreateAlarmModal', [
 
             modelCtrl.$validators.uniqueName = function (modelValue, viewValue) {
                 return !scope.existingAlarms.some(function (alarm) {
-                    return alarm.name == viewValue;
+                    return alarm.name === viewValue;
                 });
             };
 

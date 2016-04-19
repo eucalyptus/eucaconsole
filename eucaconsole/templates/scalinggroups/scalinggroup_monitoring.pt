@@ -43,7 +43,9 @@
                             scaling-group-name="${scaling_group.name}"
                             namespace="${'AWS/EC2,AWS/ELB' if has_elb else 'AWS/EC2'}"
                             default-metric="${'RequestCount' if has_elb else 'CPUUtilization'}"
-                            default-statistic="${'Sum' if has_elb else 'Average'}"></div>
+                            default-statistic="${'Sum' if has_elb else 'Average'}"
+                            tal:attributes="load-balancers load_balancers_json if has_elb else False"
+                        ></div>
                     </div>
                 </div>
                 <alarm-state-view
