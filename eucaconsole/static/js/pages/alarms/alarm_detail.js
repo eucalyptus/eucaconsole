@@ -84,27 +84,30 @@ angular.module('AlarmDetailPage', [
                 if(!x) {
                     return;
                 }
+                var parsedDims = JSON.parse($scope.dimensions);
+                var resourceLabels = [];
+                angular.forEach(parsedDims, function (val, key) {
+                    resourceLabels.push(key + ' = ' + val);
+                });
+                var dimensions = [{
+                    'dimensions': parsedDims,
+                    'label': resourceLabels.join(', ')
+                }];
 
-                Object.keys($scope.dimensions).forEach(function (dimension) {
-                    var ids = $scope.dimensions[dimension];
-
-                    CloudwatchAPI.getChartData({
-                        ids: ids,
-                        idtype: dimension,
-                        metric: $scope.metric,
-                        namespace: $scope.namespace,
-                        duration: $scope.duration,
-                        statistic: $scope.statistic,
-                        unit: $scope.unit
-                    }).then(function(oData) {
-                        var results = oData ? oData.results : '';
-                        var chart = ChartService.renderChart($scope.target, results, {
-                            unit: oData.unit || scope.unit
-                        });
+                CloudwatchAPI.getChartData({
+                    metric: $scope.metric,
+                    dimensions: JSON.stringify(dimensions),
+                    namespace: $scope.namespace,
+                    duration: $scope.duration,
+                    statistic: $scope.statistic,
+                    unit: $scope.unit
+                }).then(function(oData) {
+                    var results = oData ? oData.results : '';
+                    var chart = ChartService.renderChart($scope.target, results, {
+                        unit: oData.unit || scope.unit
                     });
                 });
             });
-
         }]
     };
 });
