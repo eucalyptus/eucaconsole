@@ -118,6 +118,8 @@ class Dimension(BaseView):
             choices += self._add_scaling_group_choices()
         elif namespace == 'AWS/ELB':
             choices += self._add_load_balancer_choices()
+        elif namespace == 'AWS/EBS':
+            choices += self._add_volume_choices()
         return choices
 
     def _add_instance_choices(self):
@@ -165,6 +167,17 @@ class Dimension(BaseView):
                 resource_type = 'LoadBalancerName'
                 resource_label = elb.name
                 option = self._build_option(resource_type, elb.name, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _add_volume_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            volumes = self.ec2_conn.get_all_volumes()
+            for volume in volumes:
+                resource_type = 'VolumeId'
+                resource_label = TaggedItemView.get_display_name(volume, id_first=True)
+                option = self._build_option(resource_type, volume.id, resource_label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
