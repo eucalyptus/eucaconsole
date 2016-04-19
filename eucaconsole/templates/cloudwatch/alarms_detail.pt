@@ -46,6 +46,8 @@
                             alarm="{{ alarm }}"
                             alarm-name="${alarm_id}"
                             load-metric-choices="false"
+                            edit-dimensions="true"
+                            dimension-choices="${dimension_options_json}"
                             default-metric="${alarm.metric}">
                         </div>
                     </div>

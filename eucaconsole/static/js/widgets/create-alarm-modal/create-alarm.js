@@ -116,6 +116,7 @@ angular.module('CreateAlarmModal', [
                 $scope.title = attrs.title || 'Create Alarm';
                 $scope.hideAlarmActions = attrs.hideAlarmActions || false;
                 $scope.editDimensions = attrs.editDimensions || false;
+                $scope.dimensionChoices = $scope.editDimensions ? JSON.parse(attrs.dimensionChoices) : [];
                 $scope.existingAlarms = [];
                 if(attrs.alarmName) {
                     AlarmService.getAlarm(attrs.alarmName)

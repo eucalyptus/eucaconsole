@@ -390,7 +390,6 @@ class CloudWatchAlarmDetailView(BaseView):
         if not self.alarm:
             raise HTTPNotFound()
 
-        dimensions = self.get_available_dimensions(self.alarm.metric)
         existing_dimensions = self.alarm.dimensions
         dimension_options = Dimension(self.request, existing_dimensions).choices_by_namespace(self.alarm.namespace)
 
@@ -412,9 +411,9 @@ class CloudWatchAlarmDetailView(BaseView):
 
         self.render_dict.update(
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
-            dimensions=dimensions,
             alarm_actions_json=json.dumps(alarm_actions),
-            dimension_options=dimension_options
+            dimension_options=dimension_options,
+            dimension_options_json=json.dumps(dimension_options),
         )
         return self.render_dict
 
