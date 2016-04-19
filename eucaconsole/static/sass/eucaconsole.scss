@@ -970,11 +970,9 @@ textarea.hidden {
 ----------------------------------------- */
 .chosen-container {
     &.chosen-container-multi {
-        background: none;
-        background-color: #fff !important;
+        background: #fff none;
         .chosen-choices  {
             background: none;
-            background-color: #fff !important;
             border: 1px solid $hpe-lightgray;
             li {
                 &.search-field  {

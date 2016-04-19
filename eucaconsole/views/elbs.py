@@ -894,24 +894,22 @@ class ELBInstancesView(BaseELBView):
     @view_config(route_name='elb_instances_update', request_method='POST', renderer=TEMPLATE)
     def elb_instances_update(self):
         if self.elb_form.validate():
-            vpc_subnet = self.request.params.getall('vpc_subnet') or None
-            if vpc_subnet == 'None':
-                vpc_subnet = None
-            zone = self.request.params.getall('zone') or None
+            vpc_subnets = self.request.params.getall('vpc_subnet') or []
+            zones = self.request.params.getall('zone') or []
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') == 'y'
             instances = self.request.params.getall('instances') or None
             location = self.request.route_path('elb_instances', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
-                if vpc_subnet is None:
-                    self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
+                if self.is_vpc_supported:
+                    self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnets)
+                else:
+                    self.update_elb_zones(self.elb.name, self.elb.availability_zones, zones)
                     if cross_zone_enabled:
                         self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', True)
                     else:
                         self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', False)
-                else:
-                    self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
                 self.update_elb_instances(self.elb.name, self.elb.instances, instances)
                 prefix = _(u'Successfully updated load balancer')
                 msg = u'{0} {1}'.format(prefix, self.elb.name)
@@ -980,50 +978,32 @@ class ELBInstancesView(BaseELBView):
         return instances
 
     def update_elb_zones(self, elb_name, prev_zones, new_zones):
-        if prev_zones and new_zones:
-            add_zones = []
-            remove_zones = []
-            for prev_zone in prev_zones:
-                exists_zone = False
-                for new_zone in new_zones:
-                    if prev_zone == new_zone:
-                        exists_zone = True
-                if exists_zone is False:
-                    remove_zones.append(prev_zone)
-            for new_zone in new_zones:
-                exists_zone = False
-                for prev_zone in prev_zones:
-                    if prev_zone == new_zone:
-                        exists_zone = True
-                if exists_zone is False:
-                    add_zones.append(new_zone)
-            if remove_zones:
-                self.elb_conn.disable_availability_zones(elb_name, remove_zones)
-            if add_zones:
-                self.elb_conn.enable_availability_zones(elb_name, add_zones)
+        to_add = []
+        to_remove = []
+        for zone in new_zones:
+            if zone not in prev_zones:
+                to_add.append(zone)
+        for zone in prev_zones:
+            if zone not in new_zones:
+                to_remove.append(zone)
+        if to_remove:
+            self.elb_conn.disable_availability_zones(elb_name, to_remove)
+        if to_add:
+            self.elb_conn.enable_availability_zones(elb_name, to_add)
 
     def update_elb_subnets(self, elb_name, prev_subnets, new_subnets):
-        if prev_subnets and new_subnets:
-            add_subnets = []
-            remove_subnets = []
-            for prev_subnet in prev_subnets:
-                exists_subnet = False
-                for new_subnet in new_subnets:
-                    if prev_subnet == new_subnet:
-                        exists_subnet = True
-                if exists_subnet is False:
-                    remove_subnets.append(prev_subnet)
-            for new_subnet in new_subnets:
-                exists_subnet = False
-                for prev_subnet in prev_subnets:
-                    if prev_subnet == new_subnet:
-                        exists_subnet = True
-                if exists_subnet is False:
-                    add_subnets.append(new_subnet)
-            if remove_subnets:
-                self.elb_conn.detach_lb_from_subnets(elb_name, remove_subnets)
-            if add_subnets:
-                self.elb_conn.attach_lb_to_subnets(elb_name, add_subnets)
+        to_add = []
+        to_remove = []
+        for subnet in new_subnets:
+            if subnet not in prev_subnets:
+                to_add.append(subnet)
+        for subnet in prev_subnets:
+            if subnet not in new_subnets:
+                to_remove.append(subnet)
+        if to_remove:
+            self.elb_conn.detach_lb_from_subnets(elb_name, to_remove)
+        if to_add:
+            self.elb_conn.attach_lb_to_subnets(elb_name, to_add)
 
     def update_elb_instances(self, elb_name, prev_instances, new_instances):
         add_instances = []

@@ -1848,8 +1848,8 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Chosen widget
 ----------------------------------------- */
-.chosen-container.chosen-container-multi { background: none; background-color: #fff !important; }
-.chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #fff !important; border: 1px solid #cccccc; }
+.chosen-container.chosen-container-multi { background: #fff none; }
+.chosen-container.chosen-container-multi .chosen-choices { background: none; border: 1px solid #cccccc; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: 34px; padding-left: 10px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field .default { color: #999; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice { background: #fff none; border: 2px solid #cccccc; padding: 4px 20px 4px 8px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; }
@@ -1923,9 +1923,9 @@ footer .copyright { font-size: 12px; }
 .button.secondary { background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #333333; }
 .button.secondary:hover { background-color: #fff; color: #333333; text-decoration: none; outline: 2px solid #666666; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; }
-.button.secondary.disabled:hover, .button.secondary[disabled]:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
+.button.secondary.disabled:hover, .button.secondary[disabled]:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
 .button.disabled, .button[disabled] { background-color: white; border-color: #EDEDED; color: #EDEDED; border-color: #CCEEE6; }
-.button.disabled:hover, .button[disabled]:hover { background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; color: #EDEDED; }
+.button.disabled:hover, .button[disabled]:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
 .button.disabled:hover, .button[disabled]:hover { border: 2px solid #CCEEE6; }
 .button.tiny { white-space: nowrap; }
 .button.round:hover { outline: none; box-shadow: 0 0 0 2px #01a982; }

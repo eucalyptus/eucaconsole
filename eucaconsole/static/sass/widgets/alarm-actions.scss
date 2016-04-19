@@ -28,18 +28,12 @@
     .cancel {
         display: inline-block;
         padding: 0.375rem;
-        color: #6a737b;
-        &:hover {
-            color: $hpe-green;
-        }
     }
 
     &.ng-pristine,
     &.ng-invalid {
         .button {
-            background-color: #FFF;
-            border-color: $hpe-disabledgray;
-            color: $hpe-disabledgray;
+            @include disabled-button-mixin;
             &:hover {
                 box-shadow: none;
             }

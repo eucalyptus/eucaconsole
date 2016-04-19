@@ -1,27 +1,21 @@
 angular.module('MetricServiceModule', ['EucaRoutes'])
 .factory('MetricService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
-    var _metrics = {};
-
     return {
-        getMetrics: function (namespace, type, value) {
-            if(value in _metrics) {
-                return _metrics[value];
-            }
-            return eucaRoutes.getRouteDeferred('metrics_available_for_resource', {type: type, value: value})
+        getMetrics: function (namespace, dimensions) {
+            return eucaRoutes.getRouteDeferred('metrics_available_for_dimensions')
                 .then(function (path) {
                     return $http({
                         method: 'GET',
-                        url: path
+                        url: path,
+                        params: {namespace: namespace, dimensions: JSON.stringify(dimensions)}
                     }).then(function (result) {
-                        var metrics;
+                        var metrics = [],
+                            namespaces = [];
                         if(result && result.data) {
                             metrics = result.data.metrics || [];
-                            metrics = metrics.filter(function (current ) {
-                                return current.namespace == namespace;
-                            });
-                            _metrics[value] = metrics;
+                            namespaces = result.data.namespaces || [];
                         }
-                        return _metrics[value];
+                        return {metrics: metrics, namespaces: namespaces};
                     });
                 });
         }

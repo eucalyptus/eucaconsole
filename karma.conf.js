@@ -176,7 +176,6 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_scalinggroups.js',
       'static/js/jasmine-spec/spec_scalinggroup_instances.js',
       'static/js/jasmine-spec/spec_scalinggroup_policies.js',
-      'static/js/jasmine-spec/spec_scalinggroup_policy.js',
       'static/js/jasmine-spec/spec_scalinggroup_wizard.js',
       'static/js/jasmine-spec/spec_securitygroup.js',
       'static/js/jasmine-spec/spec_securitygroups.js',

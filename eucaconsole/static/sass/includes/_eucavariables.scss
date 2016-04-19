@@ -235,13 +235,17 @@ $alarm-status-color-ok: $hp-green;
     border-color: $hpe-disabledgray;
     color: $hpe-disabledgray;
     &:hover {
+        cursor: default;
+        pointer-events: none;
         background-color: white;
         text-decoration: none;
         border: 2px solid $hpe-disabledgray;
         outline: none;
+        box-shadow: none;
         color: $hpe-disabledgray;
     }
 }
+
 
 @mixin primary-disabled-button-mixin {
     @include disabled-button-mixin;

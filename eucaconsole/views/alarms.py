@@ -353,37 +353,14 @@ class CloudWatchAlarmDetailView(BaseView):
     def __init__(self, request, **kwargs):
         super(CloudWatchAlarmDetailView, self).__init__(request, **kwargs)
 
-        alarm_id = self.request.matchdict.get('alarm_id')
-        alarm_id = base64.decodestring(alarm_id)
+        encoded_id = self.request.matchdict.get('alarm_id')
+        alarm_id = base64.decodestring(encoded_id)
+        self.title_parts = [_(u'Alarms'), alarm_id]
 
         self.alarm = self.get_alarm(alarm_id)
-        self.alarm_form = CloudWatchAlarmUpdateForm(
-            request)
+        self.alarm_form = CloudWatchAlarmUpdateForm(request)
 
-        self.render_dict = dict(
-            alarm=self.alarm,
-            alarm_id=alarm_id,
-            alarm_form=self.alarm_form,
-            search_facets=[]
-        )
-
-    @view_config(route_name='cloudwatch_alarm_view', renderer=TEMPLATE, request_method='GET')
-    def cloudwatch_alarm_view(self):
-        if not self.alarm:
-            raise HTTPNotFound()
-
-        dimensions = self.get_available_dimensions(self.alarm.metric)
-        options = []
-        for res_type, res_ids in dimensions.iteritems():
-            for res in res_ids:
-                option = {
-                    'label': '{0} = {1}'.format(res_type, res),
-                    'value': re.sub(r'\s+', '', json.dumps({res_type: [res]})),
-                    'selected': [res] == self.alarm.dimensions.get(res_type)
-                }
-                options.append(option)
-
-        alarm_json = json.dumps({
+        self.alarm_json = json.dumps({
             'name': self.alarm.name,
             'state': self.alarm.state_value,
             'stateReason': self.alarm.state_reason,
@@ -398,6 +375,31 @@ class CloudWatchAlarmDetailView(BaseView):
             'threshold': self.alarm.threshold,
             'description': self.alarm.description
         })
+
+        self.render_dict = dict(
+            alarm=self.alarm,
+            alarm_id=alarm_id,
+            encoded_id=encoded_id,
+            alarm_json=self.alarm_json,
+            alarm_form=self.alarm_form,
+            search_facets=[]
+        )
+
+    @view_config(route_name='cloudwatch_alarm_view', renderer=TEMPLATE, request_method='GET')
+    def cloudwatch_alarm_view(self):
+        if not self.alarm:
+            raise HTTPNotFound()
+
+        dimensions = self.get_available_dimensions(self.alarm.metric)
+        dimension_options = []
+        for res_type, res_ids in dimensions.iteritems():
+            for res in res_ids:
+                option = {
+                    'label': '{0} = {1}'.format(res_type, res),
+                    'value': re.sub(r'\s+', '', json.dumps({res_type: [res]})),
+                    'selected': [res] == self.alarm.dimensions.get(res_type)
+                }
+                dimension_options.append(option)
 
         alarm_actions = []
         for action in self.alarm.alarm_actions:
@@ -416,13 +418,17 @@ class CloudWatchAlarmDetailView(BaseView):
             alarm_actions.append(detail)
 
         self.render_dict.update(
-            alarm_json=alarm_json,
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
             dimensions=dimensions,
             alarm_actions_json=json.dumps(alarm_actions),
-            options=options
+            dimension_options=dimension_options
         )
         return self.render_dict
+
+    @view_config(route_name='cloudwatch_alarm_json', renderer='json', request_method='GET')
+    def cloudwatch_alarm_json(self):
+        return dict(
+            alarm=json.loads(self.alarm_json))
 
     def get_alarm(self, alarm_id):
         alarm = None
@@ -465,7 +471,7 @@ class CloudWatchAlarmDetailView(BaseView):
         arn = AmazonResourceName.factory(action)
         policy_details = self.get_policies_for_scaling_group(arn.autoscaling_group_name, [arn.policy_name])
         policy_details.reverse()
-        policy = policy_details.pop()
+        policy = policy_details.pop() if policy_details else None
 
         detail = {
             'arn': arn.arn,
@@ -487,7 +493,9 @@ class CloudWatchAlarmHistoryView(BaseView):
     def __init__(self, request, **kwargs):
         super(CloudWatchAlarmHistoryView, self).__init__(request, **kwargs)
 
-        self.alarm_id = self.request.matchdict.get('alarm_id')
+        self.encoded_id = self.request.matchdict.get('alarm_id')
+        self.alarm_id = base64.decodestring(self.encoded_id)
+
         history = self.get_alarm_history(self.alarm_id)
         self.history = [{
             'timestamp': item.timestamp.isoformat(),
@@ -507,6 +515,7 @@ class CloudWatchAlarmHistoryView(BaseView):
 
         return dict(
             alarm_id=self.alarm_id,
+            encoded_id=self.encoded_id,
             history_json=json.dumps(self.history),
             filter_keys=[],
             search_facets=BaseView.escape_json(json.dumps(search_facets))

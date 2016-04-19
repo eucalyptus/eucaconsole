@@ -11,7 +11,7 @@
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
                             CloudWatchAlarms</a></li>
-                    <li><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}">${alarm_id}</a></li>
+                    <li><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=encoded_id)}">${alarm_id}</a></li>
                     <li class="current"><a href="#">History</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
@@ -22,7 +22,7 @@
             </h3>
             <div class="large-12 columns">
                 <dl class="tabs" id="alarm-subnav">
-                    <dd><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}" i18n:translate="">General</a><dd>
+                    <dd><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=encoded_id)}" i18n:translate="">General</a><dd>
                     <dd class="active">
                         <a href="" i18n:translate="">History</a>
                     </dd>

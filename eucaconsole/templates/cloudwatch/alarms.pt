@@ -20,12 +20,12 @@
                 <a class="button" ng-click="revealModal('create')" i18n:translate="">Create Alarm</a>
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
-                        <li>
-                            <a i18n:translate="" class="more-actions-view">
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-view" ng-href="${prefix}/{{ (items | filter: {selected: true})[0].name | b64encode }}">
                                 View details
                             </a>
                         </li>
-                        <li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
                             <a i18n:translate="" class="more-actions-create-like-this">
                                 Create alarm like this one
                             </a>
@@ -39,10 +39,10 @@
                 </metal:block>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="grid-action"></i></span>
-                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
+                <ul id="item-dropdown_{{ item.name | urlSafe }}" class="f-dropdown" data-dropdown-content="">
                     <li>
-                        <a i18n:translate="" ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.name | b64encode }}">
                             View/edit details</a>
                     </li>
                     <li>
@@ -85,8 +85,8 @@
                 <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td alarm-state="{{ item.state }}"></td>
                 <td class="id">
-                    <a ng-href="${prefix}/{{ item.id || item.name | b64encode }}">
-                        {{ item.name || item.id }}</a>
+                    <a ng-href="${prefix}/{{ item.name | b64encode }}">
+                        {{ item.name }}</a>
                 </td>
                 <td>
                     {{ item.statistic }}
@@ -101,7 +101,7 @@
                         <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
                         <ul id="item-dropdown_{{ item.name | urlSafe }}" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a i18n:translate="" ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.name | b64encode }}">
                                     View/edit details</a>
                             </li>
                             <li>

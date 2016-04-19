@@ -1,8 +1,8 @@
 angular.module('AlarmDetailPage', [
     'AlarmsComponents', 'EucaChosenModule', 'ChartAPIModule', 'ChartServiceModule',
-    'AlarmServiceModule', 'AlarmActionsModule'
+    'AlarmServiceModule', 'AlarmActionsModule', 'ModalModule', 'CreateAlarmModal', 'EucaRoutes'
 ])
-.directive('alarmDetail', function () {
+.directive('alarmDetail', ['eucaRoutes', function (eucaRoutes) {
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -19,12 +19,25 @@ angular.module('AlarmDetailPage', [
                 });
             });
             scope.alarm.dimensions = dimensions;
+
+            eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
+                scope.redirectPath = path;
+            });
         },
-        controller: ['$scope', '$window', 'AlarmService', function ($scope, $window, AlarmService) {
+        controller: ['$scope', '$window', 'AlarmService', 'ModalService',
+        function ($scope, $window, AlarmService, ModalService) {
             var csrf_token = $('#csrf_token').val();
 
             $scope.saveChanges = function (event) {
-                var redirectPath = event.target.dataset.redirectPath;
+                if($scope.alarmUpdateForm.$invalid || $scope.alarmUpdateForm.$pristine) {
+                    var $error = $scope.alarmUpdateForm.$error;
+                    Object.keys($error).forEach(function (error) {
+                        $error[error].forEach(function (current) {
+                            current.$setTouched();
+                        });
+                    });
+                    return;
+                }
 
                 var dimensions = $scope.alarm.dimensions || [],
                     newDimensions = {};
@@ -43,15 +56,14 @@ angular.module('AlarmDetailPage', [
 
                 AlarmService.updateAlarm($scope.alarm, csrf_token, true)
                     .then(function success (response) {
-                        $window.location.href = redirectPath;
+                        $window.location.href = $scope.redirectPath;
                     }, function error (response) {
-                        $window.location.href = redirectPath;
+                        $window.location.href = $scope.redirectPath;
                     });
             };
 
             $scope.delete = function (event) {
                 event.preventDefault();
-                var redirectPath = event.target.dataset.redirectPath;
 
                 var alarms = [{
                     name: $scope.alarm.name
@@ -59,15 +71,18 @@ angular.module('AlarmDetailPage', [
 
                 AlarmService.deleteAlarms(alarms, csrf_token, true)
                     .then(function success (response) {
-                        $window.location.href = redirectPath;
+                        $window.location.href = $scope.redirectPath;
                     }, function error (response) {
                         Notify.failure(response.data.message);
                     }); 
             };
 
+            $scope.copyAlarm = function () {
+                ModalService.openModal('copyAlarm');
+            };
         }]
     };
-})
+}])
 .directive('metricChart', function () {
     return {
         restrict: 'A',
