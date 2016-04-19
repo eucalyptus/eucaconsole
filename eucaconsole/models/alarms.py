@@ -111,27 +111,38 @@ class Dimension(BaseView):
         self.existing_dimensions = existing_dimensions
 
     def choices_by_namespace(self, namespace='AWS/EC2'):
+        custom_ns = not namespace.startswith('AWS/')
         choices = []
-        if namespace == 'AWS/EC2':
-            choices = [
+
+        if namespace == 'AWS/EC2' or custom_ns:
+            ec2_choices = [
                 self._get_scaling_group_choices(),
                 self._get_image_choices(),
                 self._get_instance_choices(),
                 self._get_instance_type_choices(),
             ]
-            return list(chain.from_iterable(choices))
-        elif namespace == 'AWS/ELB':
+            choices += ec2_choices
+        if namespace == 'AWS/ELB' or custom_ns:
             elb_choices = self._get_load_balancer_choices()
             zone_choices = self._get_availability_zone_choices()
-            choices = [
+            elb_choices = [
                 elb_choices,
                 zone_choices,
                 self._get_elb_zone_choices(elb_choices, zone_choices),
             ]
-            return list(chain.from_iterable(choices))
-        elif namespace == 'AWS/EBS':
-            return self._get_volume_choices()
-        return choices
+            choices += elb_choices
+        if namespace == 'AWS/EBS' or custom_ns:
+            ebs_choices = [
+                self._get_volume_choices()
+            ]
+            choices += ebs_choices
+
+        dimension_choices = list(chain.from_iterable(choices))
+
+        if custom_ns and self._none_selected(dimension_choices):
+            dimension_choices.append({'label': _('Select dimension...'), 'value': '', 'selected': True})
+
+        return dimension_choices
 
     def _get_instance_choices(self):
         choices = [{
@@ -239,7 +250,14 @@ class Dimension(BaseView):
                     'value': re.sub(r'\s+', '', json.dumps(dimensions)),
                     'selected': self.existing_dimensions == dimensions
                 })
-        return choices
+        return sorted(choices, key=itemgetter('label'))
+
+    @staticmethod
+    def _none_selected(choices):
+        for choice in choices:
+            if choice.get('selected'):
+                return False
+        return True
 
     def _build_option(self, resource_type, resource_id, resource_label):
         return {
