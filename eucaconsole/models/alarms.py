@@ -24,9 +24,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import re
 from itertools import chain
 
+import simplejson as json
+
 from ..i18n import _
+from ..views import BaseView, TaggedItemView, boto_error_handler
 
 
 class Alarm(object):
@@ -94,3 +98,39 @@ class Alarm(object):
                 return _(u'OK')
         return ''  # Default to when resource has no alarms set
 
+
+class Dimension(BaseView):
+
+    def __init__(self, request, existing_dimensions=None, **kwargs):
+        super(Dimension, self).__init__(request, **kwargs)
+        self.request = request
+        self.ec2_conn = self.get_connection()
+        self.elb_conn = self.get_connection(conn_type='elb')
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.existing_dimensions = existing_dimensions
+
+    def choices_by_namespace(self, namespace='AWS/EC2'):
+        choices = []
+        if namespace == 'AWS/EC2':
+            choices += self._get_ec2_resources()
+        return choices
+
+    def _get_ec2_resources(self):
+        choices = []
+        with boto_error_handler(self.request):
+            reservations_list = self.ec2_conn.get_all_reservations()
+            reservation = reservations_list[0] if reservations_list else None
+            if reservation:
+                for instance in reservation.instances:
+                    resource_type = 'InstanceId'
+                    resource_label = TaggedItemView.get_display_name(instance)
+                    option = self._build_option(resource_type, instance.id, resource_label)
+                    choices.append(option)
+        return choices
+
+    def _build_option(self, resource_type, resource_id, resource_label):
+        return {
+            'label': '{0} = {1}'.format(resource_type, resource_label),
+            'value': re.sub(r'\s+', '', json.dumps({resource_type: [resource_id]})),
+            'selected': [resource_id] == self.existing_dimensions.get(resource_type)
+        }

@@ -43,7 +43,7 @@ from ..constants.cloudwatch import (
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
-from ..models.alarms import Alarm
+from ..models.alarms import Alarm, Dimension
 from ..models.arn import AmazonResourceName
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
@@ -166,7 +166,7 @@ class CloudWatchAlarmsView(LandingPageView):
         evaluation_periods = alarm.get('evaluation_periods')
         unit = alarm.get('unit')
         description = alarm.get('description')
-        dimensions = alarm.get('dimensions')
+        dimensions = json.loads(alarm.get('dimensions'), '{}')
 
         insufficient_data_actions = alarm.get('insufficient_data_actions')
         alarm_actions = alarm.get('alarm_actions')
@@ -391,15 +391,8 @@ class CloudWatchAlarmDetailView(BaseView):
             raise HTTPNotFound()
 
         dimensions = self.get_available_dimensions(self.alarm.metric)
-        dimension_options = []
-        for res_type, res_ids in dimensions.iteritems():
-            for res in res_ids:
-                option = {
-                    'label': '{0} = {1}'.format(res_type, res),
-                    'value': re.sub(r'\s+', '', json.dumps({res_type: [res]})),
-                    'selected': [res] == self.alarm.dimensions.get(res_type)
-                }
-                dimension_options.append(option)
+        existing_dimensions = self.alarm.dimensions
+        dimension_options = Dimension(self.request, existing_dimensions).choices_by_namespace(self.alarm.namespace)
 
         alarm_actions = []
         for action in self.alarm.alarm_actions:
