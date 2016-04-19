@@ -27,7 +27,7 @@ angular.module('CreateAlarmModal', [
                 createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
-                if(name === modalName) {
+                if(name === modalName && modalName !== 'copyAlarm') {
                     scope.resetForm();
                 }
             });
