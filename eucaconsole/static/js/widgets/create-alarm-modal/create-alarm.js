@@ -24,6 +24,7 @@ angular.module('CreateAlarmModal', [
 
             scope.$on('modal:open', function (event, name) {
                 modalName = name;
+                scope.modalName = name;
                 createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
@@ -217,11 +218,11 @@ angular.module('CreateAlarmModal', [
                     insufficient_data_actions: alarm.insufficient_data_actions,
                     ok_actions: alarm.ok_actions
                 }, csrf_token).then(function success (response) {
-                    ModalService.closeModal('createAlarm');
+                    ModalService.closeModal($scope.modalName || 'createAlarm');
                     Notify.success(response.data.message);
                     $rootScope.$broadcast('alarmStateView:refreshList', {name: alarm.name});
                 }, function error (response) {
-                    ModalService.closeModal('createAlarm');
+                    ModalService.closeModal($scope.modalName || 'createAlarm');
                     Notify.failure(response.data.message);
                 });
             };

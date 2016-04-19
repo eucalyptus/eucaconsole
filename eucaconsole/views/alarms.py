@@ -167,6 +167,8 @@ class CloudWatchAlarmsView(LandingPageView):
         unit = alarm.get('unit')
         description = alarm.get('description')
         dimensions = alarm.get('dimensions')
+        if isinstance(dimensions, str):
+            dimensions = json.loads(dimensions)
 
         insufficient_data_actions = alarm.get('insufficient_data_actions')
         alarm_actions = alarm.get('alarm_actions')
