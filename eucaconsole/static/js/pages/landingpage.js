@@ -17,6 +17,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             },
             getSortBy: function() {
                 return sortBy;
+            },
+            isDecending: function() {
+                return (sortBy[0] == '-');
             }
         };
     })

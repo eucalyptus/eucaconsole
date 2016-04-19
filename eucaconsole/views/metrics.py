@@ -208,6 +208,7 @@ class CloudWatchMetricsView(LandingPageView):
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_metrics_json'),
             json_item_names_endpoint=self.request.route_path('cloudwatch_resource_names_json'),
+            categories_json=json.dumps([cat['name'] for cat in METRIC_CATEGORIES]),
             statistic_choices=STATISTIC_CHOICES,
             duration_choices=MONITORING_DURATION_CHOICES,
             chart_options_json=self.get_chart_options_json()

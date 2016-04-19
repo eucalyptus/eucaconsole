@@ -28,12 +28,14 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         var vm = this;
         var categoryIndex = {};
-        var headResources;
-        var headMetricName;
         var itemNamesUrl;
         var graphParams = "";
-        vm.initPage = function(itemNamesEndpoint) {
+        vm.initPage = function(itemNamesEndpoint, categoriesJson) {
             itemNamesUrl = itemNamesEndpoint;
+            var categories = JSON.parse(categoriesJson);
+            categories.forEach(function(val, idx) {
+                categoryIndex[val] = idx;
+            });
             enableInfiniteScroll();
         };
         function enableInfiniteScroll() {
@@ -74,8 +76,6 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             resource_list = [];
             items.forEach(function(metric, idx) {
                 if (metric.heading === true) {
-                    // record category indexes to help with sort
-                    categoryIndex[metric.cat_name] = Object.keys(categoryIndex).length;
                     option_list = [];
                     return;
                 }
@@ -157,12 +157,12 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
         };
         vm.sortGetters = {
-            resources: function(value) {
-                if (headResources === undefined) {
-                    headResources = $("tr>th:nth-of-type(2)");
+            resources: function(value, decending) {
+                if (decending === undefined) {
+                    var headResources = $("tr>th:nth-of-type(2)");
+                    decending = headResources.hasClass("st-sort-ascent");
                 }
-                var decending = $scope.decending || headResources.hasClass("st-sort-ascent");
-                var idx = ""+(categoryIndex[value.cat_name] || 0);
+                var idx = ""+categoryIndex[value.cat_name];
                 if (decending) {
                     idx = Object.keys(categoryIndex).length - idx;
                 }
@@ -179,12 +179,12 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     return idx + value.res_ids[0] + " ".repeat(200 - value.res_ids[0].length);
                 }
             },
-            metric_name: function(value) {
-                if (headMetricName === undefined) {
-                    headMetricName = $("tr>th:nth-of-type(3)");
+            metric_name: function(value, decending) {
+                if (decending === undefined) {
+                    var headMetricName = $("tr>th:nth-of-type(3)");
+                    decending = headMetricName.hasClass("st-sort-ascent");
                 }
-                var decending = $scope.decending || headMetricName.hasClass("st-sort-ascent");
-                var idx = ""+(categoryIndex[value.cat_name] || 0);
+                var idx = ""+categoryIndex[value.cat_name];
                 if (decending) {
                     idx = Object.keys(categoryIndex).length - idx;
                 }
@@ -205,19 +205,20 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         };
         vm.gridSorter = function(metric) {
             var sortBy = lpModelService.getSortBy();
+            var decending = false;
             if (sortBy[0] == '-') {
-                $scope.decending = true;
+                decending = true;
                 sortBy = sortBy.substring(1);
             }
-            else {
-                $scope.decending = undefined;
-            }
             if (sortBy == "metric_name") {
-                return vm.sortGetters.metric_name(metric);
+                return vm.sortGetters.metric_name(metric, decending);
             }
             if (sortBy == "res_name") {
-                return vm.sortGetters.resources(metric);
+                return vm.sortGetters.resources(metric, decending);
             }
+        };
+        vm.isDecending = function() {
+            return lpModelService.isDecending();
         };
         vm.chartDimensions = function(chart) {
             var ret = [];
