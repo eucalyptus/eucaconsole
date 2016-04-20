@@ -539,7 +539,7 @@ class TaggedItemView(BaseView):
             if id_first:
                 name = u"{0}{1}".format(
                     resource.id,
-                    u" ({0})".format(name_tag if name_tag else ''),
+                    u" ({0})".format(name_tag) if name_tag else '',
                 )
             else:
                 name = u"{0}{1}".format(

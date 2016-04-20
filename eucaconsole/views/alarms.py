@@ -44,6 +44,7 @@ from ..constants.cloudwatch import (
     METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES, METRIC_TITLE_MAPPING)
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 
+from ..forms import ChoicesManager
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
@@ -53,12 +54,13 @@ from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 
-class Dimension(BaseView):
+class DimensionChoicesManager(BaseView):
 
     def __init__(self, request, existing_dimensions=None, **kwargs):
-        super(Dimension, self).__init__(request, **kwargs)
+        super(DimensionChoicesManager, self).__init__(request, **kwargs)
         self.request = request
         self.ec2_conn = self.get_connection()
+        self.ec2_choices_manager = ChoicesManager(conn=self.ec2_conn)
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.existing_dimensions = existing_dimensions
@@ -104,14 +106,11 @@ class Dimension(BaseView):
             'selected': True if self.existing_dimensions == {} else False
         }]
         with boto_error_handler(self.request):
-            reservations_list = self.ec2_conn.get_all_reservations()
-            reservation = reservations_list[0] if reservations_list else None
-            if reservation:
-                for instance in reservation.instances:
-                    resource_type = 'InstanceId'
-                    resource_label = TaggedItemView.get_display_name(instance, id_first=True)
-                    option = self._build_option(resource_type, instance.id, resource_label)
-                    choices.append(option)
+            instances = self.ec2_choices_manager.instances(add_blank=False, id_first=True)
+            for value, label in instances:
+                resource_type = 'InstanceId'
+                option = self._build_option(resource_type, value, label)
+                choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
     def _get_instance_type_choices(self):
@@ -585,7 +584,8 @@ class CloudWatchAlarmDetailView(BaseView):
             raise HTTPNotFound()
 
         existing_dimensions = self.alarm.dimensions
-        dimension_options = Dimension(self.request, existing_dimensions).choices_by_namespace(self.alarm.namespace)
+        dimension_options = DimensionChoicesManager(
+            self.request, existing_dimensions).choices_by_namespace(self.alarm.namespace)
 
         alarm_actions = []
         for action in self.alarm.alarm_actions:
