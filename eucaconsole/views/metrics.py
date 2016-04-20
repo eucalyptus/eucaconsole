@@ -268,9 +268,7 @@ class CloudWatchMetricsJsonView(BaseView):
                             continue
                         unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric[1]]
                         if cat['name'] == 'custom':
-                            unit = ['Count']
-                    if metric_name == 'UserCount':
-                        print "Hello"
+                            unit = ['None']
                     cat_metrics.append(dict(
                         cat_name=cat['name'],
                         namespace=metric[2],
