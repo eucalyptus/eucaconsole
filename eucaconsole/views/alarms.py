@@ -121,20 +121,10 @@ class DimensionChoicesManager(BaseView):
     def _get_instance_type_choices_euca(self):
         choices = []
         with boto_error_handler(self.request):
-            instance_types = self.ec2_conn.get_all_instance_types()
-            for instance_type in instance_types:
+            instance_types = self.ec2_choices_manager.instance_types(self.cloud_type, add_blank=False)
+            for value, label in instance_types:
                 resource_type = 'InstanceType'
-                label_template = '{name}: {cores} {clabel}, {mem} {mlabel}, {disk} {dlabel}'
-                resource_label = label_template.format(
-                    name=instance_type.name,
-                    cores=instance_type.cores,
-                    clabel=_('CPUs'),
-                    mem=instance_type.memory,
-                    mlabel=_('memory (MB)'),
-                    disk=instance_type.disk,
-                    dlabel=_('disk (GB, root device)')
-                )
-                option = self._build_option(resource_type, instance_type.name, resource_label)
+                option = self._build_option(resource_type, value, label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
