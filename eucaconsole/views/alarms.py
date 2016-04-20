@@ -114,11 +114,6 @@ class DimensionChoicesManager(BaseView):
         return sorted(choices, key=itemgetter('label'))
 
     def _get_instance_type_choices(self):
-        if self.cloud_type == 'euca':
-            return self._get_instance_type_choices_euca()
-        return self._get_instance_type_choices_aws()
-
-    def _get_instance_type_choices_euca(self):
         choices = []
         with boto_error_handler(self.request):
             instance_types = self.ec2_choices_manager.instance_types(self.cloud_type, add_blank=False)
@@ -126,15 +121,6 @@ class DimensionChoicesManager(BaseView):
                 resource_type = 'InstanceType'
                 option = self._build_option(resource_type, value, label)
                 choices.append(option)
-        return sorted(choices, key=itemgetter('label'))
-
-    def _get_instance_type_choices_aws(self):
-        choices = []
-        instance_types = AWS_INSTANCE_TYPE_CHOICES
-        for name, label in instance_types:
-            resource_type = 'InstanceType'
-            option = self._build_option(resource_type, name, label)
-            choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
     def _get_image_choices(self):
