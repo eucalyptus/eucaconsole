@@ -208,7 +208,7 @@ class ChoicesManager(object):
             else:
                 return [(name, name) for name, description in AWS_INSTANCE_TYPE_CHOICES]
 
-    def volumes(self, volumes=None, escapebraces=True, add_blank=True):
+    def volumes(self, volumes=None, escapebraces=True, add_blank=True, id_first=False):
         from ..views import TaggedItemView
         choices = []
         if add_blank:
@@ -219,7 +219,7 @@ class ChoicesManager(object):
             if self.conn:
                 for volume in volumes:
                     value = volume.id
-                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces)
+                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces, id_first=id_first)
                     choices.append((value, label))
         return choices
 

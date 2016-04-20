@@ -185,11 +185,10 @@ class DimensionChoicesManager(BaseView):
     def _get_volume_choices(self):
         choices = []
         with boto_error_handler(self.request):
-            volumes = self.ec2_conn.get_all_volumes()
-            for volume in volumes:
+            volumes = self.ec2_choices_manager.volumes(add_blank=False, id_first=True)
+            for value, label in volumes:
                 resource_type = 'VolumeId'
-                resource_label = TaggedItemView.get_display_name(volume, id_first=True)
-                option = self._build_option(resource_type, volume.id, resource_label)
+                option = self._build_option(resource_type, value, label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
