@@ -63,6 +63,7 @@ class DimensionChoicesManager(BaseView):
         self.ec2_choices_manager = ChoicesManager(conn=self.ec2_conn)
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.autoscale_choices_manager = ChoicesManager(conn=self.autoscale_conn)
         self.existing_dimensions = existing_dimensions
 
     def choices_by_namespace(self, namespace='AWS/EC2'):
@@ -139,11 +140,10 @@ class DimensionChoicesManager(BaseView):
     def _get_scaling_group_choices(self):
         choices = []
         with boto_error_handler(self.request):
-            scaling_groups = self.autoscale_conn.get_all_groups()
-            for group in scaling_groups:
+            scaling_groups = self.autoscale_choices_manager.scaling_groups(add_blank=False)
+            for value, label in scaling_groups:
                 resource_type = 'AutoScalingGroupName'
-                resource_label = group.name
-                option = self._build_option(resource_type, group.name, resource_label)
+                option = self._build_option(resource_type, value, label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
