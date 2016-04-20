@@ -32,6 +32,9 @@ import re
 import base64
 import simplejson as json
 
+from itertools import chain
+from operator import itemgetter
+
 from boto.ec2.cloudwatch import MetricAlarm
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -39,14 +42,196 @@ from pyramid.view import view_config
 
 from ..constants.cloudwatch import (
     METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES, METRIC_TITLE_MAPPING)
+from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
-from ..models.alarms import Alarm, Dimension
+from ..models.alarms import Alarm
 from ..models.arn import AmazonResourceName
-from ..views import LandingPageView, BaseView, JSONResponse
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+
+
+class Dimension(BaseView):
+
+    def __init__(self, request, existing_dimensions=None, **kwargs):
+        super(Dimension, self).__init__(request, **kwargs)
+        self.request = request
+        self.ec2_conn = self.get_connection()
+        self.elb_conn = self.get_connection(conn_type='elb')
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.existing_dimensions = existing_dimensions
+
+    def choices_by_namespace(self, namespace='AWS/EC2'):
+        custom_ns = not namespace.startswith('AWS/')
+        choices = []
+
+        if namespace == 'AWS/EC2' or custom_ns:
+            ec2_choices = [
+                self._get_scaling_group_choices(),
+                self._get_image_choices(),
+                self._get_instance_choices(),
+                self._get_instance_type_choices(),
+            ]
+            choices += ec2_choices
+        if namespace == 'AWS/ELB' or custom_ns:
+            elb_choices = self._get_load_balancer_choices()
+            zone_choices = self._get_availability_zone_choices()
+            elb_choices = [
+                elb_choices,
+                zone_choices,
+                self._get_elb_zone_choices(elb_choices, zone_choices),
+            ]
+            choices += elb_choices
+        if namespace == 'AWS/EBS' or custom_ns:
+            ebs_choices = [
+                self._get_volume_choices()
+            ]
+            choices += ebs_choices
+
+        dimension_choices = list(chain.from_iterable(choices))
+
+        if custom_ns and self._none_selected(dimension_choices):
+            dimension_choices.append({'label': _('Select dimension...'), 'value': '', 'selected': True})
+
+        return dimension_choices
+
+    def _get_instance_choices(self):
+        choices = [{
+            'label': _('All instances'),
+            'value': '{}',
+            'selected': True if self.existing_dimensions == {} else False
+        }]
+        with boto_error_handler(self.request):
+            reservations_list = self.ec2_conn.get_all_reservations()
+            reservation = reservations_list[0] if reservations_list else None
+            if reservation:
+                for instance in reservation.instances:
+                    resource_type = 'InstanceId'
+                    resource_label = TaggedItemView.get_display_name(instance, id_first=True)
+                    option = self._build_option(resource_type, instance.id, resource_label)
+                    choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_instance_type_choices(self):
+        if self.cloud_type == 'euca':
+            return self._get_instance_type_choices_euca()
+        return self._get_instance_type_choices_aws()
+
+    def _get_instance_type_choices_euca(self):
+        choices = []
+        with boto_error_handler(self.request):
+            instance_types = self.ec2_conn.get_all_instance_types()
+            for instance_type in instance_types:
+                resource_type = 'InstanceType'
+                label_template = '{name}: {cores} {clabel}, {mem} {mlabel}, {disk} {dlabel}'
+                resource_label = label_template.format(
+                    name=instance_type.name,
+                    cores=instance_type.cores,
+                    clabel=_('CPUs'),
+                    mem=instance_type.memory,
+                    mlabel=_('memory (MB)'),
+                    disk=instance_type.disk,
+                    dlabel=_('disk (GB, root device)')
+                )
+                option = self._build_option(resource_type, instance_type.name, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_instance_type_choices_aws(self):
+        choices = []
+        instance_types = AWS_INSTANCE_TYPE_CHOICES
+        for name, label in instance_types:
+            resource_type = 'InstanceType'
+            option = self._build_option(resource_type, name, label)
+            choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_image_choices(self):
+        choices = []
+        region = self.request.session.get('region')
+        owners = ['self'] if self.cloud_type == 'aws' else []
+        with boto_error_handler(self.request):
+            images = self.get_images(self.ec2_conn, owners, [], region)
+            for image in images:
+                resource_type = 'ImageId'
+                resource_label = '{0} ({1})'.format(image.id, image.name)
+                option = self._build_option(resource_type, image.id, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_scaling_group_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            scaling_groups = self.autoscale_conn.get_all_groups()
+            for group in scaling_groups:
+                resource_type = 'AutoScalingGroupName'
+                resource_label = group.name
+                option = self._build_option(resource_type, group.name, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_load_balancer_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            load_balancers = self.elb_conn.get_all_load_balancers()
+            for elb in load_balancers:
+                resource_type = 'LoadBalancerName'
+                resource_label = elb.name
+                option = self._build_option(resource_type, elb.name, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_volume_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            volumes = self.ec2_conn.get_all_volumes()
+            for volume in volumes:
+                resource_type = 'VolumeId'
+                resource_label = TaggedItemView.get_display_name(volume, id_first=True)
+                option = self._build_option(resource_type, volume.id, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_availability_zone_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            zones = self.ec2_conn.get_all_zones()
+            for zone in zones:
+                resource_type = 'AvailabilityZone'
+                resource_label = zone.name
+                option = self._build_option(resource_type, zone.name, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_elb_zone_choices(self, elb_choices, zone_choices):
+        choices = []
+        for zone in zone_choices:
+            zone_name = ','.join(json.loads(zone.get('value'))['AvailabilityZone'])
+            for elb in elb_choices:
+                elb_name = ','.join(json.loads(elb.get('value'))['LoadBalancerName'])
+                dimensions = {'AvailabilityZone': [zone_name], 'LoadBalancerName': [elb_name]}
+                choices.append({
+                    'label': 'AvailabilityZone = {0}, LoadBalancerName = {1}'.format(zone_name, elb_name),
+                    'value': re.sub(r'\s+', '', json.dumps(dimensions)),
+                    'selected': self.existing_dimensions == dimensions
+                })
+        return sorted(choices, key=itemgetter('label'))
+
+    @staticmethod
+    def _none_selected(choices):
+        for choice in choices:
+            if choice.get('selected'):
+                return False
+        return True
+
+    def _build_option(self, resource_type, resource_id, resource_label):
+        return {
+            'label': '{0} = {1}'.format(resource_type, resource_label),
+            'value': re.sub(r'\s+', '', json.dumps({resource_type: [resource_id]})),
+            'selected': [resource_id] == self.existing_dimensions.get(resource_type)
+        }
 
 
 class CloudWatchAlarmsView(LandingPageView):
