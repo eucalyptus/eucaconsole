@@ -53,6 +53,9 @@
                     </li>
                 </ul>
             </div>
+            <div metal:fill-slot="tile_header" tal:omit-tag="">
+                <a ng-href="${prefix}/{{ item.name | b64encode }}">{{ item.name || item.id }}</a>
+            </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Threshold" i18n:attributes="title">TH</span>
