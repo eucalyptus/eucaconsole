@@ -128,7 +128,6 @@ svg {
     }
     .graph-shift-left {
         float: left;
-        //left: 0.25rem;
         color: $hp-gray-65;
         &:hover {
             cursor: pointer;
@@ -140,7 +139,6 @@ svg {
     }
     .graph-shift-right {
         float: right;
-        //right: 0.25rem;
         color: $hp-gray-65;
         &:hover {
             cursor: pointer;

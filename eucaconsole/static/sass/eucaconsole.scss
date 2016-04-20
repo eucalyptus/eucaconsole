@@ -1337,6 +1337,16 @@ $btn-group-radius: 10px;
 }
 
 /* -----------------------------------------
+   links
+----------------------------------------- */
+a {
+    &[disabled] {
+        // important here to override f-dropdown style in disabled case (using ng-disabled)
+        color: $hpe-lightgray !important;
+    }
+}
+
+/* -----------------------------------------
    Foundation fixes
 ----------------------------------------- */
 // Prevent dropdown menus from displaying when viewport height approaches 10k px.
