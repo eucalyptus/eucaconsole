@@ -48,10 +48,9 @@
                     <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
                     <div class="modal large alarm-history-details-modal" modal="historyItemDetails">
                         <div alarm-history-details="">
-                            <pre>{{ detailDisplayJson }}</pre>
-                            <a class="button expand" ng-click="copyToClipboard()" i18n:translate="">
-                                Copy to Clipboard
-                            </a>
+                            <pre contentEditable="true" spellcheck="false">{{ detailDisplayJson }}</pre>
+                            <a class="button expand" ng-href="data:application/octet-stream;base64,{{ downloadableContent }}"
+                                download="download.json" i18n:translate="">Download</a>
                         </div>
                     </div>
                     <div ng-show="!itemsLoading">

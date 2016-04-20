@@ -1,4 +1,8 @@
 angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalModule'])
+.config(['$compileProvider', function ($compileProvider) {
+    var whitelist = /^\s*(https?|ftp|mailto|tel|file|data):/;
+    $compileProvider.aHrefSanitizationWhitelist(whitelist);
+}])
 .directive('alarmHistory', function () {
     return {
         link: function (scope, element, attrs) {
@@ -71,16 +75,25 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
             scope.$on('modal:open', function (event, name) {
                 scope.detailDisplayJson = JSON.stringify(
                     scope.currentHistoryItem, null, 2);
+                scope.downloadableContent = btoa(scope.detailDisplayJson);
+
+                var target = element.find('pre');
+                scope.highlightContents(target[0]);
             });
 
             scope.$on('modal:close', function () {
                 delete scope.currentHistoryItem;
+                delete scope.downloadableContent;
             });
         },
         controller: ['$scope', function ($scope) {
-            $scope.copyToClipboard = function () {
-                var clipboardEvent = new ClipboardEvent('copy', {
-                    type: 'text/plain', data: $scope.currentHistoryItem });
+            $scope.highlightContents = function (element) {
+                var range = document.createRange();
+                range.selectNodeContents(element);
+
+                var selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
             };
         }]
     };
