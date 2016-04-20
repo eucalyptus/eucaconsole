@@ -194,12 +194,10 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                         return idx + "z".repeat(200);
                     }
                     else {
-                        if (idx == '  3') console.log(idx + " ".repeat(200)+value.cat_name);
                         return idx + " ".repeat(200);
                     }
                 }
                 else {
-                    if (idx == '  3') console.log(idx + value.metric_name + " ".repeat(30 - value.metric_name.length));
                     return idx + value.metric_name + " ".repeat(30 - value.metric_name.length);
                 }
                 return value;
