@@ -62,6 +62,7 @@ class DimensionChoicesManager(BaseView):
         self.ec2_conn = self.get_connection()
         self.ec2_choices_manager = ChoicesManager(conn=self.ec2_conn)
         self.elb_conn = self.get_connection(conn_type='elb')
+        self.elb_choices_manager = ChoicesManager(conn=self.elb_conn)
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.autoscale_choices_manager = ChoicesManager(conn=self.autoscale_conn)
         self.existing_dimensions = existing_dimensions
@@ -150,33 +151,20 @@ class DimensionChoicesManager(BaseView):
     def _get_load_balancer_choices(self):
         choices = []
         with boto_error_handler(self.request):
-            load_balancers = self.elb_conn.get_all_load_balancers()
-            for elb in load_balancers:
+            load_balancers = self.elb_choices_manager.load_balancers(add_blank=False)
+            for value, label in load_balancers:
                 resource_type = 'LoadBalancerName'
-                resource_label = elb.name
-                option = self._build_option(resource_type, elb.name, resource_label)
-                choices.append(option)
-        return sorted(choices, key=itemgetter('label'))
-
-    def _get_volume_choices(self):
-        choices = []
-        with boto_error_handler(self.request):
-            volumes = self.ec2_conn.get_all_volumes()
-            for volume in volumes:
-                resource_type = 'VolumeId'
-                resource_label = TaggedItemView.get_display_name(volume, id_first=True)
-                option = self._build_option(resource_type, volume.id, resource_label)
+                option = self._build_option(resource_type, value, label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
     def _get_availability_zone_choices(self):
         choices = []
         with boto_error_handler(self.request):
-            zones = self.ec2_conn.get_all_zones()
-            for zone in zones:
+            zones = self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
+            for value, label in zones:
                 resource_type = 'AvailabilityZone'
-                resource_label = zone.name
-                option = self._build_option(resource_type, zone.name, resource_label)
+                option = self._build_option(resource_type, value, label)
                 choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
@@ -192,6 +180,17 @@ class DimensionChoicesManager(BaseView):
                     'value': re.sub(r'\s+', '', json.dumps(dimensions)),
                     'selected': self.existing_dimensions == dimensions
                 })
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_volume_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            volumes = self.ec2_conn.get_all_volumes()
+            for volume in volumes:
+                resource_type = 'VolumeId'
+                resource_label = TaggedItemView.get_display_name(volume, id_first=True)
+                option = self._build_option(resource_type, volume.id, resource_label)
+                choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
     @staticmethod
