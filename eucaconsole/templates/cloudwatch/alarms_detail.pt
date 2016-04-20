@@ -75,10 +75,10 @@
                             <div class="large-9 small-9 columns field">
                                 <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
                             </div>
-                        </div>    
+                        </div>
                         <div class="row controls-wrapper">
                             <div class="large-3 small-3 columns">
-                                <label class="right" i18n:translate="">Dimensions</label>
+                                <label class="right" i18n:translate="">Dimension</label>
                             </div>
                             <div class="large-9 small-9 columns value" ng-cloak="">
                                 <select class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">

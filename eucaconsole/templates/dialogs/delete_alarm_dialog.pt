@@ -23,7 +23,7 @@
                         Alarm Name
                     </div>
                     <div class="large-8 columns" i18n:translate="">
-                        Dimensions
+                        Dimension
                     </div>
                 </div>
                 <div class="row alarm-dimensions" ng-repeat="alarm in alarms">

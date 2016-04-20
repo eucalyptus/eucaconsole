@@ -25,7 +25,7 @@
     </div>
     <div class="row controls-wrapper dimensions">
         <div class="large-3 small-3 columns">
-            <label class="right" i18n:translate="">Dimensions</label>
+            <label class="right" i18n:translate="">Dimension</label>
         </div>
         <div class="large-9 small-9 columns">
             <ul ng-if="!editDimensions">
