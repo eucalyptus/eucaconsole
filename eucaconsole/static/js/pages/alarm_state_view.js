@@ -44,13 +44,13 @@ angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServic
 
                 $scope.showDeleteModal = function(alarm) {
                     $scope.alarmToDelete = alarm;
-                    $('#remove-alarm-modal').foundation('reveal', 'open');
+                    $('#delete-alarm-modal').foundation('reveal', 'open');
                     $timeout(function() {
                         $('.close-reveal-modal').focus();
                     }, 500);
                 };
                 $scope.removeAlarm = function(event) {
-                    $('#remove-alarm-modal').foundation('reveal', 'close');
+                    $('#delete-alarm-modal').foundation('reveal', 'close');
                     $scope.toggleContent();
                     $scope.loading = true;
                     AlarmService.deleteAlarms([$scope.alarmToDelete], $('#csrf_token').val())
