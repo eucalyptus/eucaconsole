@@ -13,6 +13,7 @@ angular.module('EucaChosenModule', [])
                     chosenAttrs[key] = attrs[key];
                 }
             }
+            chosenAttrs['search_contains'] = true;
             element.chosen(chosenAttrs);
 
             element.on('change', function () {
