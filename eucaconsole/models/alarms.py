@@ -30,6 +30,7 @@ from operator import itemgetter
 
 import simplejson as json
 
+from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 from ..views import BaseView, TaggedItemView, boto_error_handler
 
@@ -162,6 +163,11 @@ class Dimension(BaseView):
         return sorted(choices, key=itemgetter('label'))
 
     def _get_instance_type_choices(self):
+        if self.cloud_type == 'euca':
+            return self._get_instance_type_choices_euca()
+        return self._get_instance_type_choices_aws()
+
+    def _get_instance_type_choices_euca(self):
         choices = []
         with boto_error_handler(self.request):
             instance_types = self.ec2_conn.get_all_instance_types()
@@ -179,6 +185,15 @@ class Dimension(BaseView):
                 )
                 option = self._build_option(resource_type, instance_type.name, resource_label)
                 choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_instance_type_choices_aws(self):
+        choices = []
+        instance_types = AWS_INSTANCE_TYPE_CHOICES
+        for name, label in instance_types:
+            resource_type = 'InstanceType'
+            option = self._build_option(resource_type, name, label)
+            choices.append(option)
         return sorted(choices, key=itemgetter('label'))
 
     def _get_image_choices(self):
