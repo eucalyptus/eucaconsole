@@ -49,7 +49,7 @@
                     resource-type="VolumeId" resource-type-name="volume" i18n:attributes="resource-type-name">
                 </alarm-state-view>
                 <hr/>
-                <h6 i18n:translate="">CloudWatch metric</h6>
+                <h6 i18n:translate="">CloudWatch metrics</h6>
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">
