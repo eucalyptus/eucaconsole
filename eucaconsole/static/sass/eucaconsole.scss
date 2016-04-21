@@ -1337,17 +1337,14 @@ $btn-group-radius: 10px;
 }
 
 /* -----------------------------------------
-   links
+   Disabled drop-down items
 ----------------------------------------- */
-a {
-    &[disabled] {
-        // important here to override f-dropdown style in disabled case (using ng-disabled)
-        color: $hpe-lightgray !important;
-        pointer-events: none;
-        cursor: default !important;
-        background-color: white;
+.f-dropdown {
+    li.disabled {
+        @include disabled-list-item-mixin;
     }
 }
+
 
 /* -----------------------------------------
    Foundation fixes

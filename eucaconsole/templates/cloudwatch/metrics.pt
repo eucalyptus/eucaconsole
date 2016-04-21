@@ -243,7 +243,9 @@
                                 <i class="fa fa-ellipsis-v"></i>
                             </span>
                             <ul id="chart-dropdown-{{ metric }}" class="f-dropdown" data-dropdown-content="">
-                                <li><a i18n:translate="" ng-disabled="chart.length > 1" ng-click="metricsCtrl.showCreateAlarm(chart)">Create alarm</a></li>
+                                <li ng-class="{'disabled': chart.length > 1}">
+                                    <a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(chart)">Create alarm</a>
+                                </li>
                                 <li> <a ng-click="metricsCtrl.copyUrl(chart)" i18n:translate="">Copy URL</a> </li>
                             </ul>
                             <div class="large-chart-wrapper">
