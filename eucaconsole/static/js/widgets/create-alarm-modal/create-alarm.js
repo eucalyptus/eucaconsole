@@ -215,7 +215,7 @@ angular.module('CreateAlarmModal', [
                     threshold: alarm.threshold,
                     period: alarm.period,
                     evaluation_periods: alarm.evaluation_periods,
-                    unit: alarm.unit,
+                    unit: alarm.metric.unit,
                     description: alarm.description,
                     dimensions: alarm.dimensions,
                     alarm_actions: alarm.alarm_actions,
