@@ -164,11 +164,11 @@
                             <h6>${metric_display_name}</h6>
                             <svg class="cwchart"
                                 metric-chart=""
-                                metric="{{ alarm.metric }}"
-                                namespace="{{ alarm.namespace }}"
-                                duration="alarm.duration"
-                                statistic="alarm.statistic"
-                                unit="{{ alarm.unit }}"
+                                metric="${alarm.metric}"
+                                namespace="${alarm.namespace}"
+                                duration="3600"
+                                statistic="${alarm.statistic}"
+                                unit="${alarm.unit}"
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
