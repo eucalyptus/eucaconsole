@@ -308,11 +308,10 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         json_stats = self.get_json_stats(self.statistic, stats, divider, multiplier)
         max_value = max(val.get('y') for val in json_stats) if json_stats else 0
         key = self.metric
+        if label:
+            key = label
         if dimensions and dimensions.values():
-            if label:
-                key = label
-            else:
-                key = dimensions.values()[0]
+            key = dimensions.values()[0]
         series = dict(key=key, values=json_stats)
         return unit, series, max_value
 
