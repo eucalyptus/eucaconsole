@@ -50,7 +50,7 @@
                         <div alarm-history-details="">
                             <pre contentEditable="true" spellcheck="false">{{ detailDisplayJson }}</pre>
                             <a class="button expand" ng-href="data:application/octet-stream;base64,{{ downloadableContent }}"
-                                download="download.json" i18n:translate="">Download</a>
+                                                     download="{{ currentHistoryItem.AlarmName }}.json" i18n:translate="">Download</a>
                         </div>
                     </div>
                     <div ng-show="!itemsLoading">
