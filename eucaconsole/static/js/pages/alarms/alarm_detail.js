@@ -85,13 +85,19 @@ angular.module('AlarmDetailPage', [
                     return;
                 }
                 var parsedDims = JSON.parse($scope.dimensions);
+                var resourceLabel = '';
+                var selectedDimField = angular.element('form[name="alarmUpdateForm"]').find('[name="dimensions"]').find('[selected]');
+                if (selectedDimField.length && selectedDimField.val() === $scope.dimensions) {
+                    resourceLabel = selectedDimField.text();
+                }
                 var resourceLabels = [];
                 angular.forEach(parsedDims, function (val, key) {
                     resourceLabels.push(key + ' = ' + val);
                 });
+                resourceLabel = resourceLabel || resourceLabels.join(', ');
                 var dimensions = [{
                     'dimensions': parsedDims,
-                    'label': resourceLabels.join(', ')
+                    'label': resourceLabel
                 }];
 
                 CloudwatchAPI.getChartData({
