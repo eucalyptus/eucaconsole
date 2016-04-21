@@ -170,7 +170,7 @@ angular.module('CreateAlarmModal', [
                             $scope.namespaces = results.namespaces;
 
                             // Used for updating scaling group dimensions when ASG has one or more ELBs
-                            if (results.namespaces.indexOf('AWS/ELB') !== -1) {
+                            if (results.namespaces.indexOf('AWS/ELB') !== -1 && attrs.loadBalancers) {
                                 loadBalancers = JSON.parse(attrs.loadBalancers);
                             }
 

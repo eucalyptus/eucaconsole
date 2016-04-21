@@ -148,7 +148,11 @@ class DimensionChoicesManager(BaseView):
         return sorted(choices, key=itemgetter('label'))
 
     def _get_load_balancer_choices(self):
-        choices = []
+        choices = [{
+            'label': _('All load balancers'),
+            'value': '{}',
+            'selected': True if self.existing_dimensions == {} else False
+        }]
         with boto_error_handler(self.request):
             load_balancers = self.elb_choices_manager.load_balancers(add_blank=False)
             for value, label in load_balancers:
@@ -172,13 +176,14 @@ class DimensionChoicesManager(BaseView):
         for zone in zone_choices:
             zone_name = ','.join(json.loads(zone.get('value'))['AvailabilityZone'])
             for elb in elb_choices:
-                elb_name = ','.join(json.loads(elb.get('value'))['LoadBalancerName'])
-                dimensions = {'AvailabilityZone': [zone_name], 'LoadBalancerName': [elb_name]}
-                choices.append({
-                    'label': 'AvailabilityZone = {0}, LoadBalancerName = {1}'.format(zone_name, elb_name),
-                    'value': re.sub(r'\s+', '', json.dumps(dimensions)),
-                    'selected': self.existing_dimensions == dimensions
-                })
+                if elb.get('value') != '{}':  # Skip 'All load balancers' item
+                    elb_name = ','.join(json.loads(elb.get('value'))['LoadBalancerName'])
+                    dimensions = {'AvailabilityZone': [zone_name], 'LoadBalancerName': [elb_name]}
+                    choices.append({
+                        'label': 'AvailabilityZone = {0}, LoadBalancerName = {1}'.format(zone_name, elb_name),
+                        'value': re.sub(r'\s+', '', json.dumps(dimensions)),
+                        'selected': self.existing_dimensions == dimensions
+                    })
         return sorted(choices, key=itemgetter('label'))
 
     def _get_volume_choices(self):

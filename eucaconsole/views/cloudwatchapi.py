@@ -313,8 +313,8 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                 key = label
             else:
                 key = dimensions.values()[0]
-        if self.namespace == 'AWS/EC2' and dimensions == {} and label:
-            # Handle 'All instances' label for EC2 metrics
+        if self.namespace in ['AWS/EC2', 'AWS/ELB'] and dimensions == {} and label:
+            # Handle 'All ______' label for EC2 and ELB metrics
             key = label
         series = dict(key=key, values=json_stats)
         return unit, series, max_value
