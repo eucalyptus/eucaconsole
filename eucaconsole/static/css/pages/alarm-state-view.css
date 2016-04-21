@@ -15,6 +15,9 @@
 .alarm-listing { margin-top: 0.5rem; }
 .alarm-listing a[href]:hover { color: #01a982; border-bottom: 1px solid #01a982; }
 
+#delete-alarm-modal .content { margin-bottom: 2rem; }
+#delete-alarm-modal .header { color: #444; text-transform: uppercase; font-size: 16px; font-weight: bold; }
+
 i.delete-icon { color: #5a5a5a !important; }
 i.delete-icon:hover { color: darkred !important; }
 

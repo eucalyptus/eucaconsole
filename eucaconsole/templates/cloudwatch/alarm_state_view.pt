@@ -35,10 +35,29 @@
     <div id="delete-alarm-modal" class="reveal-modal small" data-reveal="">
         <a class="close-reveal-modal" href="#">&#215;</a>
 
-        <h3 i18n:translate="">Delete alarm from {{ resourceTypeName }}</h3>
+        <h3 i18n:translate="">Delete alarm</h3>
 
         <p i18n:translate="">Are you sure you want to delete the following alarm?</p>
-        <p>{{ alarmToDelete.name }}</p>
+        <div class="content">
+            <div class="row header">
+                <div class="large-4 columns" i18n:translate="">
+                    Alarm Name
+                </div>
+                <div class="large-8 columns" i18n:translate="">
+                    Dimensions
+                </div>
+            </div>
+            <div class="row alarm-dimensions">
+                <div class="large-4 columns">
+                    {{ alarmToDelete.name }}
+                </div>
+                <div class="large-8 columns">
+                    <div>
+                        {{ resourceType }} = {{ resourceId }}
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row buttons">
             <button id="delete-alarm-btn" class="button expand" ng-click="removeAlarm($event)" i18n:translate="">
                 <span i18n:translate="">Yes, Delete Alarm</span>
