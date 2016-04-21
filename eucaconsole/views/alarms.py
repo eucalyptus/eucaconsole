@@ -42,7 +42,6 @@ from pyramid.view import view_config
 
 from ..constants.cloudwatch import (
     METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES, METRIC_TITLE_MAPPING)
-from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 
 from ..forms import ChoicesManager
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
@@ -50,7 +49,7 @@ from ..i18n import _
 from ..models import Notification
 from ..models.alarms import Alarm
 from ..models.arn import AmazonResourceName
-from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
 
 
