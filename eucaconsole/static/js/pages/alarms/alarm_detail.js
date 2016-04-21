@@ -103,8 +103,11 @@ angular.module('AlarmDetailPage', [
                     unit: $scope.unit
                 }).then(function(oData) {
                     var results = oData ? oData.results : '';
-                    var chart = ChartService.renderChart($scope.target, results, {
-                        unit: oData.unit || scope.unit
+                    var maxValue = oData.max_value || 100;
+                    ChartService.renderChart($scope.target, results, {
+                        unit: oData.unit || $scope.unit,
+                        metric: $scope.metric,
+                        maxValue: maxValue
                     });
                 });
             });
