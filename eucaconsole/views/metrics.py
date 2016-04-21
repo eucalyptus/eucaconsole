@@ -178,7 +178,7 @@ class CloudWatchMetricsView(LandingPageView):
     def __init__(self, request):
         super(CloudWatchMetricsView, self).__init__(request)
         self.title_parts = [_(u'Metrics')]
-        self.initial_sort_key = 'metric_name'
+        self.initial_sort_key = 'res_name'
         self.prefix = '/cloudwatch/metrics'
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
         self.filter_keys = ['name']
