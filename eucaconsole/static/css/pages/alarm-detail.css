@@ -89,4 +89,9 @@ form.alarm-update select.dimensions-select.ng-invalid + div.chosen-container { b
 form.alarm-update.ng-invalid .button.submit, form.alarm-update.ng-pristine .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; }
 form.alarm-update.ng-invalid .button.submit:hover, form.alarm-update.ng-pristine .button.submit:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
 
-#delete-alarm-btn { margin-top: 1rem; }
+#delete-alarm-modal p { margin: 0 0 7px; }
+#delete-alarm-modal .header { color: #444; text-transform: uppercase; font-size: 16px; font-weight: bold; }
+#delete-alarm-modal .header .columns { padding: 0; }
+#delete-alarm-modal .alarm-dimensions { margin: 0 0 20px; }
+#delete-alarm-modal .alarm-dimensions .columns { padding: 0; }
+#delete-alarm-modal .row.control { margin: 0 0 15px; }
