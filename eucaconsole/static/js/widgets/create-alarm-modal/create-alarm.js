@@ -98,7 +98,10 @@ angular.module('CreateAlarmModal', [
             };
 
             this.resetAlarmName = function () {
+                var nameField = angular.element('[name="createAlarmForm"]').find('[name="name"]');
                 $scope.createAlarmForm.name.$setTouched();
+                nameField.focus();
+                $scope.createAlarmForm.name.$touched = false;
             };
 
             this.composeAlarmMetric = function (attrs) {
@@ -146,7 +149,7 @@ angular.module('CreateAlarmModal', [
 
             this.initializeForCopy = function (alarm, attrs) {
                 $scope.alarm = alarm;
-                $scope.alarm.name = 'Copy of ' + alarm.name;
+                $scope.alarm.name = '';
                 $scope.alarm.dimensions = alarm.dimensions;
                 $scope.dimensions = alarm.dimensions;
                 $scope.namespace = alarm.namespace;
