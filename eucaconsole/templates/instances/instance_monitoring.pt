@@ -74,7 +74,7 @@
                     resource-type="InstanceId" resource-type-name="instance" i18n:attributes="resource-type-name">
                 </alarm-state-view>
                 <hr/>
-                <h6 i18n:translate="">CloudWatch metric charts</h6>
+                <h6 i18n:translate="">CloudWatch metrics</h6>
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">

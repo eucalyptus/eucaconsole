@@ -25,6 +25,18 @@
     }
 }
 
+#delete-alarm-modal {
+    .content {
+        margin-bottom: 2rem;
+    }
+    .header {
+        color: #444;
+        text-transform: uppercase;
+        font-size: $euca-font-size;
+        font-weight: bold;
+    }
+}
+
 i.delete-icon {
     color: $hp-gray-65 !important;
     &:hover {
