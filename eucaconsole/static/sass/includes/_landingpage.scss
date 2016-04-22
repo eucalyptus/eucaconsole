@@ -98,14 +98,7 @@ $alarm-status-color-ok: $hpe-green;
     &.f-dropdown {
         @include dropdown-shadow-mixin;
         li.disabled {
-            cursor: default;
-            a {
-                color: $hpe-lightgray;
-                pointer-events: none;
-            }
-            &:hover {
-                background-color: #fff;
-            }
+            @include disabled-list-item-mixin;
         }
     }
     hr {

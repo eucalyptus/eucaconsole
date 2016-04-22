@@ -1965,6 +1965,12 @@ footer .copyright { font-size: 12px; }
   100% { background-position: 50px 50px; } }
 .progress > .meter:after { content: ""; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent); z-index: 1; background-size: 50px 50px; -webkit-animation: move 2s linear infinite; animation: move 2s linear infinite; overflow: hidden; }
 
+/* ----------------------------------------- Disabled drop-down items
+----------------------------------------- */
+.f-dropdown li.disabled { cursor: default; }
+.f-dropdown li.disabled a { color: #cccccc; pointer-events: none; }
+.f-dropdown li.disabled:hover { background-color: #fff; }
+
 /* ----------------------------------------- Foundation fixes
 ----------------------------------------- */
 .f-dropdown { left: -99999px; z-index: 9999997; }

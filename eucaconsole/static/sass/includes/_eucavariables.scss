@@ -255,6 +255,17 @@ $alarm-status-color-ok: $hp-green;
     }
 }
 
+@mixin disabled-list-item-mixin {
+    cursor: default;
+    a {
+        color: $hpe-lightgray;
+        pointer-events: none;
+    }
+    &:hover {
+        background-color: #fff;
+    }
+}
+
 @mixin dropdown-shadow-mixin {
     border-color: $hpe-lightgray;
     box-shadow: 2px 2px 5px $hpe-hovergray;

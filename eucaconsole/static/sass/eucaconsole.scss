@@ -1337,6 +1337,16 @@ $btn-group-radius: 10px;
 }
 
 /* -----------------------------------------
+   Disabled drop-down items
+----------------------------------------- */
+.f-dropdown {
+    li.disabled {
+        @include disabled-list-item-mixin;
+    }
+}
+
+
+/* -----------------------------------------
    Foundation fixes
 ----------------------------------------- */
 // Prevent dropdown menus from displaying when viewport height approaches 10k px.
