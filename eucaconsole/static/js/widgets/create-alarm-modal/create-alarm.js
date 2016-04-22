@@ -26,9 +26,6 @@ angular.module('CreateAlarmModal', [
                 modalName = name;
                 scope.modalName = name;
                 createAlarmCtrl.initializeModal(attrs);
-                if (modalName === 'copyAlarm') {
-                    createAlarmCtrl.resetAlarmName();
-                }
             });
             scope.$on('modal:close', function (event, name) {
                 if(name === modalName && modalName !== 'copyAlarm') {
@@ -49,11 +46,15 @@ angular.module('CreateAlarmModal', [
 
             $scope.$watchCollection('alarm', function (newVal) {
                 if(newVal.metric && $scope.createAlarmForm.name.$untouched) {
-                    $scope.alarm.name = $scope.alarmName();
+                    $scope.alarm.name = $scope.setAlarmName();
                 }
             });
 
-            $scope.alarmName = function (count) {
+            $scope.setAlarmName = function (count) {
+                // Set alarm name to blank on Copy Alarm dialog
+                if ($scope.alarm.name === '') {
+                    return $scope.alarm.name;
+                }
                 // Name field updates when metric selection changes,
                 // unless the user has changed the value themselves.
                 count = count || 0;
@@ -91,17 +92,10 @@ angular.module('CreateAlarmModal', [
                 });
 
                 if(collision) {
-                    name = $scope.alarmName(count + 1);
+                    name = $scope.setAlarmName(count + 1);
                 }
 
                 return name;
-            };
-
-            this.resetAlarmName = function () {
-                var nameField = angular.element('[name="createAlarmForm"]').find('[name="name"]');
-                $scope.createAlarmForm.name.$setTouched();
-                nameField.focus();
-                $scope.createAlarmForm.name.$touched = false;
             };
 
             this.composeAlarmMetric = function (attrs) {
@@ -140,7 +134,11 @@ angular.module('CreateAlarmModal', [
                     AlarmService.getAlarm(attrs.alarmName)
                         .then(function (res) {
                             var alarm = res.alarm;
+                            alarm.name = '';
                             vm.initializeForCopy(alarm, attrs);
+                            var nameField = angular.element('[name="createAlarmForm"]').find('[name="name"]');
+                            nameField.focus();
+                            $scope.createAlarmForm.name.$touched = false;
                         });
                 } else {
                     this.initializeForCreate(attrs);
@@ -269,7 +267,7 @@ angular.module('CreateAlarmModal', [
                 AlarmService.getAlarmsForDimensions($scope.dimensions)
                     .then(function success(alarms) {
                         $scope.existingAlarms = alarms;
-                        $scope.alarm.name = $scope.alarmName();
+                        $scope.alarm.name = $scope.setAlarmName();
                     });
             };
 
