@@ -26,6 +26,9 @@ angular.module('CreateAlarmModal', [
                 modalName = name;
                 scope.modalName = name;
                 createAlarmCtrl.initializeModal(attrs);
+                if (modalName === 'copyAlarm') {
+                    createAlarmCtrl.resetAlarmName();
+                }
             });
             scope.$on('modal:close', function (event, name) {
                 if(name === modalName && modalName !== 'copyAlarm') {
@@ -94,6 +97,10 @@ angular.module('CreateAlarmModal', [
                 return name;
             };
 
+            this.resetAlarmName = function () {
+                $scope.createAlarmForm.name.$setTouched();
+            };
+
             this.composeAlarmMetric = function (attrs) {
                 if (!$scope.namespace.match(',')) {  // Avoid breaking namespace when multiple NS are passed to directive
                     $scope.alarm.metric.namespace = $scope.namespace;
@@ -104,11 +111,11 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
                 $scope.alarm.period = defaults.period;
 
-                $scope.checkNameCollision();
                 if (attrs.alarmName) {
                     $('#dimensions-select').chosen({'width': '100%', search_contains: true});
                 } else {
                     $scope.updateStaticDimensions($scope.alarm);
+                    $scope.checkNameCollision();
                 }
             };
 
