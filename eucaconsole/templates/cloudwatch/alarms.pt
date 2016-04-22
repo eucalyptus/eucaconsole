@@ -139,7 +139,6 @@
             </div>
         </div>
 
-
         <!--! Delete Alarm modal dialog -->
         ${panel('delete_alarm_dialog', modal_size='small')}
         <!--! /end modal dialogs -->

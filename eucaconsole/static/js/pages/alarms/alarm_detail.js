@@ -38,7 +38,7 @@ angular.module('AlarmDetailPage', [
                     });
             };
 
-            $scope.delete = function (event) {
+            $scope.deleteAlarm = function (event) {
                 event.preventDefault();
 
                 var alarms = [{

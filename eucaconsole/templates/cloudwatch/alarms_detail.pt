@@ -35,7 +35,7 @@
                                 <a href="#" ng-click="copyAlarm()" i18n:translate="">Create alarm like this one</a>
                             </li>
                             <li>
-                                <a href="#" ng-click="delete($event)" i18n:translate="">Delete</a>
+                                <a data-reveal-id="delete-alarm-modal" i18n:translate="">Delete</a>
                             </li>
                         </metal:actions>
                     </metal:block>
@@ -183,6 +183,21 @@
                     </form>
                 </div>
             </div>
+            <!--! Delete Alarm modal dialog -->
+            <div id="delete-alarm-modal" class="reveal-modal small" data-reveal="">
+                <a class="close-reveal-modal" href="#">&#215;</a>
+                <h3 i18n:translate="">Delete alarm</h3>
+                <p>
+                    <span>Are you sure you want to delete alarm</span>
+                    <strong>{{ alarm.name }}</strong><span i18n:translate="">?</span>
+                </p>
+                <div class="row buttons">
+                    <button id="delete-alarm-btn" class="button expand" ng-click="deleteAlarm($event)" i18n:translate="">
+                        <span i18n:translate="">Yes, Delete Alarm</span>
+                    </button>
+                </div>
+            </div>
+            <!--! /end modal dialogs -->
         </div>
     </div>
     <div metal:fill-slot="tail_js">
