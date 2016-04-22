@@ -44,6 +44,7 @@
                             title="Create alarm like ${alarm_id}"
                             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
                             alarm="{{ alarm }}"
+                            unit="${alarm.unit}"
                             alarm-name="${alarm_id}"
                             load-metric-choices="false"
                             edit-dimensions="true"
