@@ -498,15 +498,17 @@ class CloudWatchAlarmHistoryView(BaseView):
 
         history = self.get_alarm_history(self.alarm_id)
         self.history = [{
-            'timestamp': item.timestamp.isoformat(),
-            'history_item_type': item.tem_type,
-            'summary': item.summary} for item in history]
+            'Timestamp': item.timestamp.isoformat(),
+            'HistoryItemType': item.tem_type,
+            'AlarmName': item.name,
+            'HistoryData': item.data,
+            'HistorySummary': item.summary} for item in history]
 
     @view_config(route_name='cloudwatch_alarm_history', renderer=TEMPLATE, request_method='GET')
     def cloudwatch_alarm_history_view(self):
 
         search_facets = [
-            {'name': 'history_item_type', 'label': _(u"Type"), 'options': [
+            {'name': 'HistoryItemType', 'label': _(u"Type"), 'options': [
                 {'key': 'ConfigurationUpdate', 'label': _("ConfigurationUpdate")},
                 {'key': 'StateUpdate', 'label': _("StateUpdate")},
                 {'key': 'Action', 'label': _("Action")}

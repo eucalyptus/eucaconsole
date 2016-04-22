@@ -46,6 +46,13 @@
                         </div>
                     </div>
                     <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
+                    <div class="modal large alarm-history-details-modal" modal="historyItemDetails">
+                        <div alarm-history-details="">
+                            <pre contentEditable="true" spellcheck="false">{{ detailDisplayJson }}</pre>
+                            <a class="button expand" ng-href="data:application/octet-stream;base64,{{ downloadableContent }}"
+                                                     download="{{ currentHistoryItem.AlarmName }}.json" i18n:translate="">Download</a>
+                        </div>
+                    </div>
                     <div ng-show="!itemsLoading">
                         <p ng-show="!historicEvents.length" i18n:translate="">
                         No recent alarm activity.
@@ -60,9 +67,9 @@
                             </thead>
                             <tbody id="historyBody">
                                 <tr ng-repeat="item in historicEvents track by $index">
-                                    <td ng-cloak="">{{ item.timestamp | date: '${layout.angular_date_format}' }}</td>
-                                    <td>{{ item.history_item_type }}</td>
-                                    <td>{{ item.summary }}</td>
+                                    <td ng-cloak="">{{ item.Timestamp | date: '${layout.angular_date_format}' }}</td>
+                                    <td>{{ item.HistoryItemType }}</td>
+                                    <td>{{ item.HistorySummary }} <a ng-click="showDetails(item)">show details</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -75,6 +82,7 @@
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_history.js')}"></script>
     </div>
 </metal:block>
