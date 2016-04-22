@@ -82,8 +82,11 @@
                                     <strong>
                                         <a ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">
                                             <span ng-repeat="res in item.resources">{{ (res.res_short_name || res.res_name) | ellipsis: 50 }}</span>
-                                            <span ng-if="item.resources.length == 0" i18n:translate="">
+                                            <span ng-if="item.cat_name == 'ec2allinstances'" i18n:translate="">
                                                 All instances
+                                            </span>
+                                            <span ng-if="item.cat_name == 'elball'" i18n:translate="">
+                                                All load balancers
                                             </span>
                                         </a>
                                     </strong>
