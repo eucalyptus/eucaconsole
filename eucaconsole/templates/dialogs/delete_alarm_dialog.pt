@@ -24,14 +24,14 @@
                 </div>
                 <div class="row alarm-dimensions" ng-repeat="alarm in alarms">
                     <div class="large-6 columns">
-                        <strong>{{ alarm.name }}</strong>
+                        {{ alarm.name }}
                     </div>
                     <div class="large-6 columns">
                         <div ng-repeat="(key, vals) in alarm.dimensions" tal:condition="not: detail_page">
-                            <strong ng-repeat="val in vals">{{ key }} = {{ val }}</strong>
+                            <div ng-repeat="val in vals">{{ key }} = {{ val }}</div>
                         </div>
                         <div ng-repeat="(key, vals) in alarmDimensions" tal:condition="detail_page">
-                            <strong ng-repeat="val in vals">{{ key }} = {{ val }}</strong>
+                            <div ng-repeat="val in vals">{{ key }} = {{ val }}</div>
                         </div>
                     </div>
                 </div>

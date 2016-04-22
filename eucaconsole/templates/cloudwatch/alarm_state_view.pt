@@ -45,10 +45,10 @@
             </div>
             <div class="row alarm-dimensions">
                 <div class="large-6 columns">
-                    <strong>{{ alarmToDelete.name }}</strong>
+                    {{ alarmToDelete.name }}
                 </div>
                 <div class="large-6 columns">
-                    <strong>{{ resourceType }} = {{ resourceId }}</strong>
+                    {{ resourceType }} = {{ resourceId }}
                 </div>
             </div>
         </div>
