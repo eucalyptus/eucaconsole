@@ -323,6 +323,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
             'unit': scope.unit,
             'statistic': scope.statistic
         };
+        // look for minimum set of required params
+        if ((scope.ids === undefined || scope.ids === '') &&
+            (scope.idtype === undefined || scope.idtype === '') &&
+            (scope.dimensions === undefined || scope.dimensions === '')) {
+            return;
+        }
         if (largeChart) {
             parentCtrl.largeChartLoading = true;
             // Granularity is user-selectable in large chart, so don't auto-adjust on the server
