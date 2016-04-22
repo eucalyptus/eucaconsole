@@ -3,6 +3,7 @@
 @import "../widgets/modal";
 @import "../widgets/alarm-actions";
 @import "../widgets/create-alarm-dialog";
+@import "../widgets/delete_alarm_dialog";
 
 .metric-chart {
     svg {
@@ -43,29 +44,5 @@ form.alarm-update {
                 @include disabled-button-mixin;
             }
         }
-    }
-}
-
-#delete-alarm-modal {
-    p {
-        margin: 0 0 7px;
-    }
-    .header {
-        color: #444;
-        text-transform: uppercase;
-        font-size: $euca-font-size;
-        font-weight: bold;
-        .columns {
-            padding: 0;
-        }
-    }
-    .alarm-dimensions {
-        margin: 0 0 20px;
-        .columns {
-            padding: 0;
-        }
-    }
-    .row.control {
-        margin: 0 0 15px;
     }
 }

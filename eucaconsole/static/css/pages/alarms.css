@@ -160,6 +160,17 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+#delete-alarm-modal p { margin: 0 0 7px; }
+#delete-alarm-modal .header { color: #444; text-transform: uppercase; font-size: 16px; font-weight: bold; }
+#delete-alarm-modal .header .columns { padding: 0; }
+#delete-alarm-modal .alarm-dimensions { margin: 0 0 20px; }
+#delete-alarm-modal .alarm-dimensions .columns { padding: 0; }
+#delete-alarm-modal .row.control { margin: 0 0 15px; }
+
 #threshold { width: 100%; }
 
 #period, #evaluation_periods { display: inline-block; width: 4rem; }
@@ -178,10 +189,3 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .tile .footer.ok, .tile .footer.alarm, .tile .footer.insufficient-data { text-transform: none; background-color: #666666; }
 .tile .footer.ok { background-color: #01a982; text-transform: uppercase; }
 .tile .footer.alarm { background-color: darkred; }
-
-#delete-alarm-modal p { margin: 0 0 7px; }
-#delete-alarm-modal .header { color: #444; text-transform: uppercase; font-size: 16px; font-weight: bold; }
-#delete-alarm-modal .header .columns { padding: 0; }
-#delete-alarm-modal .alarm-dimensions { margin: 0 0 20px; }
-#delete-alarm-modal .alarm-dimensions .columns { padding: 0; }
-#delete-alarm-modal .row.control { margin: 0 0 15px; }
