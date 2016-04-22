@@ -25,13 +25,16 @@
     </div>
     <div class="row controls-wrapper dimensions">
         <div class="large-3 small-3 columns">
-            <label class="right" i18n:translate="">Dimensions</label>
+            <label class="right" i18n:translate="">Dimension</label>
         </div>
         <div class="large-9 small-9 columns">
             <ul ng-if="!editDimensions">
                 <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
-            <select multiple="true" ng-model="alarm.dimensions" chosen="" ng-if="editDimensions"></select>
+            <select ng-model="alarm.dimensions" ng-if="editDimensions" id="dimensions-select">
+                <option ng-repeat="dimension in dimensionChoices" ng-selected="dimension.selected"
+                        ng-value="dimension.value">{{ dimension.label }}</option>
+            </select>
         </div>
     </div>
     <div class="row controls-wrapper">

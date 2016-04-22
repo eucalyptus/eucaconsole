@@ -32,6 +32,9 @@ import re
 import base64
 import simplejson as json
 
+from itertools import chain
+from operator import itemgetter
+
 from boto.ec2.cloudwatch import MetricAlarm
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -40,6 +43,7 @@ from pyramid.view import view_config
 from ..constants.cloudwatch import (
     METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS, METRIC_TYPES, METRIC_TITLE_MAPPING)
 
+from ..forms import ChoicesManager
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmUpdateForm
 from ..i18n import _
 from ..models import Notification
@@ -47,6 +51,164 @@ from ..models.alarms import Alarm
 from ..models.arn import AmazonResourceName
 from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
+
+
+class DimensionChoicesManager(BaseView):
+
+    def __init__(self, request, existing_dimensions=None, **kwargs):
+        super(DimensionChoicesManager, self).__init__(request, **kwargs)
+        self.request = request
+        self.ec2_conn = self.get_connection()
+        self.ec2_choices_manager = ChoicesManager(conn=self.ec2_conn)
+        self.elb_conn = self.get_connection(conn_type='elb')
+        self.elb_choices_manager = ChoicesManager(conn=self.elb_conn)
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.autoscale_choices_manager = ChoicesManager(conn=self.autoscale_conn)
+        self.existing_dimensions = existing_dimensions
+
+    def choices_by_namespace(self, namespace='AWS/EC2'):
+        custom_ns = not namespace.startswith('AWS/')
+        choices = []
+
+        if namespace == 'AWS/EC2' or custom_ns:
+            ec2_choices = [
+                self._get_scaling_group_choices(),
+                self._get_image_choices(),
+                self._get_instance_choices(),
+                self._get_instance_type_choices(),
+            ]
+            choices += ec2_choices
+        if namespace == 'AWS/ELB' or custom_ns:
+            elb_choices = self._get_load_balancer_choices()
+            zone_choices = self._get_availability_zone_choices()
+            elb_choices = [
+                elb_choices,
+                zone_choices,
+                self._get_elb_zone_choices(elb_choices, zone_choices),
+            ]
+            choices += elb_choices
+        if namespace == 'AWS/EBS' or custom_ns:
+            ebs_choices = [
+                self._get_volume_choices()
+            ]
+            choices += ebs_choices
+
+        dimension_choices = list(chain.from_iterable(choices))
+
+        if custom_ns and self._none_selected(dimension_choices):
+            dimension_choices.append({'label': _('Select dimension...'), 'value': '', 'selected': True})
+
+        return dimension_choices
+
+    def _get_instance_choices(self):
+        choices = [{
+            'label': _('All instances'),
+            'value': '{}',
+            'selected': True if self.existing_dimensions == {} else False
+        }]
+        with boto_error_handler(self.request):
+            instances = self.ec2_choices_manager.instances(add_blank=False, id_first=True)
+            for value, label in instances:
+                resource_type = 'InstanceId'
+                option = self._build_option(resource_type, value, label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_instance_type_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            instance_types = self.ec2_choices_manager.instance_types(self.cloud_type, add_blank=False)
+            for value, label in instance_types:
+                resource_type = 'InstanceType'
+                option = self._build_option(resource_type, value, label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_image_choices(self):
+        choices = []
+        region = self.request.session.get('region')
+        owners = ['self'] if self.cloud_type == 'aws' else []
+        with boto_error_handler(self.request):
+            images = self.get_images(self.ec2_conn, owners, [], region)
+            for image in images:
+                resource_type = 'ImageId'
+                resource_label = '{0} ({1})'.format(image.id, image.name)
+                option = self._build_option(resource_type, image.id, resource_label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_scaling_group_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            scaling_groups = self.autoscale_choices_manager.scaling_groups(add_blank=False)
+            for value, label in scaling_groups:
+                resource_type = 'AutoScalingGroupName'
+                option = self._build_option(resource_type, value, label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_load_balancer_choices(self):
+        choices = [{
+            'label': _('All load balancers'),
+            'value': '{}',
+            'selected': True if self.existing_dimensions == {} else False
+        }]
+        with boto_error_handler(self.request):
+            load_balancers = self.elb_choices_manager.load_balancers(add_blank=False)
+            for value, label in load_balancers:
+                resource_type = 'LoadBalancerName'
+                option = self._build_option(resource_type, value, label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_availability_zone_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            zones = self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
+            for value, label in zones:
+                resource_type = 'AvailabilityZone'
+                option = self._build_option(resource_type, value, label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_elb_zone_choices(self, elb_choices, zone_choices):
+        choices = []
+        for zone in zone_choices:
+            zone_name = ','.join(json.loads(zone.get('value'))['AvailabilityZone'])
+            for elb in elb_choices:
+                if elb.get('value') != '{}':  # Skip 'All load balancers' item
+                    elb_name = ','.join(json.loads(elb.get('value'))['LoadBalancerName'])
+                    dimensions = {'AvailabilityZone': [zone_name], 'LoadBalancerName': [elb_name]}
+                    choices.append({
+                        'label': 'AvailabilityZone = {0}, LoadBalancerName = {1}'.format(zone_name, elb_name),
+                        'value': re.sub(r'\s+', '', json.dumps(dimensions)),
+                        'selected': self.existing_dimensions == dimensions
+                    })
+        return sorted(choices, key=itemgetter('label'))
+
+    def _get_volume_choices(self):
+        choices = []
+        with boto_error_handler(self.request):
+            volumes = self.ec2_choices_manager.volumes(add_blank=False, id_first=True)
+            for value, label in volumes:
+                resource_type = 'VolumeId'
+                option = self._build_option(resource_type, value, label)
+                choices.append(option)
+        return sorted(choices, key=itemgetter('label'))
+
+    @staticmethod
+    def _none_selected(choices):
+        for choice in choices:
+            if choice.get('selected'):
+                return False
+        return True
+
+    def _build_option(self, resource_type, resource_id, resource_label):
+        return {
+            'label': '{0} = {1}'.format(resource_type, resource_label),
+            'value': re.sub(r'\s+', '', json.dumps({resource_type: [resource_id]})),
+            'selected': [resource_id] == self.existing_dimensions.get(resource_type)
+        }
 
 
 class CloudWatchAlarmsView(LandingPageView):
@@ -150,6 +312,7 @@ class CloudWatchAlarmsView(LandingPageView):
     def cloudwatch_alarms_update(self):
         message = json.loads(self.request.body)
         alarm = message.get('alarm', {})
+        update = alarm.get('update', False)
         token = message.get('csrf_token')
         flash = message.get('flash')
 
@@ -167,12 +330,14 @@ class CloudWatchAlarmsView(LandingPageView):
         unit = alarm.get('unit')
         description = alarm.get('description')
         dimensions = alarm.get('dimensions')
+        if isinstance(dimensions, str):  # Copy Alarm dialog sends dimensions as a JSON string
+            dimensions = json.loads(dimensions)
 
         insufficient_data_actions = alarm.get('insufficient_data_actions')
         alarm_actions = alarm.get('alarm_actions')
         ok_actions = alarm.get('ok_actions')
 
-        updated = MetricAlarm(
+        metric_alarm = MetricAlarm(
             name=name, metric=metric, namespace=namespace, statistic=statistic,
             comparison=comparison, threshold=threshold, period=period,
             evaluation_periods=evaluation_periods, unit=unit, description=description,
@@ -181,12 +346,18 @@ class CloudWatchAlarmsView(LandingPageView):
 
         with boto_error_handler(self.request):
             self.log_request(_(u'Updating alarm {0}').format(alarm.get('name')))
-            action = self.cloudwatch_conn.put_metric_alarm(updated)
+            action = self.cloudwatch_conn.put_metric_alarm(metric_alarm)
 
             if action:
-                prefix = _(u'Successfully updated alarm')
+                if update:
+                    prefix = _(u'Successfully updated alarm')
+                else:
+                    prefix = _(u'Successfully created alarm')
             else:
-                prefix = _(u'There was a problem deleting alarm')
+                if update:
+                    prefix = _(u'There was a problem updating alarm')
+                else:
+                    prefix = _(u'There was a problem creating alarm')
 
             msg = u'{0} {1}'.format(prefix, alarm.get('name'))
 
@@ -390,16 +561,9 @@ class CloudWatchAlarmDetailView(BaseView):
         if not self.alarm:
             raise HTTPNotFound()
 
-        dimensions = self.get_available_dimensions(self.alarm.metric)
-        dimension_options = []
-        for res_type, res_ids in dimensions.iteritems():
-            for res in res_ids:
-                option = {
-                    'label': '{0} = {1}'.format(res_type, res),
-                    'value': re.sub(r'\s+', '', json.dumps({res_type: [res]})),
-                    'selected': [res] == self.alarm.dimensions.get(res_type)
-                }
-                dimension_options.append(option)
+        existing_dimensions = self.alarm.dimensions
+        dimension_options = DimensionChoicesManager(
+            self.request, existing_dimensions).choices_by_namespace(self.alarm.namespace)
 
         alarm_actions = []
         for action in self.alarm.alarm_actions:
@@ -419,9 +583,9 @@ class CloudWatchAlarmDetailView(BaseView):
 
         self.render_dict.update(
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
-            dimensions=dimensions,
             alarm_actions_json=json.dumps(alarm_actions),
-            dimension_options=dimension_options
+            dimension_options=dimension_options,
+            dimension_options_json=json.dumps(dimension_options),
         )
         return self.render_dict
 
@@ -469,6 +633,8 @@ class CloudWatchAlarmDetailView(BaseView):
 
     def get_alarm_action_detail(self, action):
         arn = AmazonResourceName.factory(action)
+        if arn is None:
+            return {}
         policy_details = self.get_policies_for_scaling_group(arn.autoscaling_group_name, [arn.policy_name])
         policy_details.reverse()
         policy = policy_details.pop() if policy_details else None
