@@ -8,6 +8,7 @@ angular.module('AlarmDetailPage', [
         link: function (scope, element, attrs) {
             scope.alarm = JSON.parse(attrs.alarmDetail);
             scope.alarms = [scope.alarm];  // Delete alarm confirmation dialog expects a list of alarms
+            scope.alarmActions = JSON.parse(attrs.alarmActions);
             scope.expanded = true;
             scope.alarmDimensions = scope.alarm.dimensions;  // Leveraged in delete alarm confirmation dialog
             // Need stringified form on details page (and Copy Alarm dialog) to set current dimension choice
@@ -41,6 +42,24 @@ angular.module('AlarmDetailPage', [
                         $window.location.href = $scope.redirectPath;
                     });
             };
+
+            $scope.$on('actionsUpdated', function (event, actions) {
+                $scope.alarmUpdateForm.$setDirty();
+                var targets = {
+                    ALARM: 'alarm_actions',
+                    INSUFFICIENT_DATA: 'insufficient_data_actions',
+                    OK: 'ok_actions'
+                };
+                $scope.alarm.insufficient_data_actions = [];
+                $scope.alarm.alarm_actions = [];
+                $scope.alarm.ok_actions = [];
+
+                actions.forEach(function (action) {
+                    var target = targets[action.alarm_state];
+                    $scope.alarm[target].push(action.arn);
+                });
+            });
+
 
             $scope.deleteAlarm = function (event) {
                 event.preventDefault();
@@ -88,7 +107,7 @@ angular.module('AlarmDetailPage', [
                 if(!newVal) {
                     return;
                 }
-                var parsedDims = JSON.parse($scope.dimensions);
+                var parsedDims = angular.isObject(newVal) ? newVal : JSON.parse(newVal);
                 var resourceLabel = '';
                 var resourceLabels = [];
                 var dimensionField = angular.element('form[name="alarmUpdateForm"]').find('[name="dimensions"]');
@@ -101,7 +120,9 @@ angular.module('AlarmDetailPage', [
                 }
                 if (!resourceLabel) {
                     angular.forEach(parsedDims, function (val, key) {
-                        resourceLabels.push(key + ' = ' + val);
+                        if (key !== '$$hashkey') {
+                            resourceLabels.push(key + ' = ' + val);
+                        }
                     });
                     resourceLabel = resourceLabels.join(', ');
                 }
