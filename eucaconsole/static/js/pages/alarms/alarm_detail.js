@@ -12,6 +12,9 @@ angular.module('AlarmDetailPage', [
             scope.alarmDimensions = scope.alarm.dimensions;  // Leveraged in delete alarm confirmation dialog
             // Need stringified form on details page (and Copy Alarm dialog) to set current dimension choice
             scope.alarm.dimensions = JSON.stringify(scope.alarm.dimensions);
+            if (attrs.invalidDimensions) {  // Handle when resource in dimensions is no longer available
+                scope.alarm.dimensions = '';
+            }
 
             eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
                 scope.redirectPath = path;
