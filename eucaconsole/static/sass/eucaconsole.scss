@@ -153,6 +153,11 @@ label {
     }
 }
 
+b, strong {
+    font-family: $euca-bold-font-family;
+    font-weight: bold;
+}
+
 /* -----------------------------------------
    Header
 ----------------------------------------- */

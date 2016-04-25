@@ -7,6 +7,10 @@ angular.module('AlarmDetailPage', [
         restrict: 'A',
         link: function (scope, element, attrs) {
             scope.alarm = JSON.parse(attrs.alarmDetail);
+            scope.alarms = [scope.alarm];  // Delete alarm confirmation dialog expects a list of alarms
+            scope.expanded = true;
+            scope.alarmDimensions = scope.alarm.dimensions;  // Leveraged in delete alarm confirmation dialog
+            // Need stringified form on details page (and Copy Alarm dialog) to set current dimension choice
             scope.alarm.dimensions = JSON.stringify(scope.alarm.dimensions);
 
             eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
