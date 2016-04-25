@@ -70,7 +70,7 @@
                         <a href="#" class="close">&times;</a>
                     </div>
                 </div>
-                <span ng-repeat="item in items | orderBy: metricsCtrl.gridSorter :metricsCtrl.isDecending() | limitTo:displayCount">
+                <span ng-repeat="item in items | orderBy: metricsCtrl.gridSorter :metricsCtrl.isDescending() | limitTo:displayCount">
                     <div ng-if="item.heading == true" colspan="4">
                         {{ item.cat_label }} ({{ item.cat_total }})
                     </div>

@@ -157,18 +157,18 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
         };
         vm.sortGetters = {
-            resources: function(value, decending) {
-                if (decending === undefined) {
+            resources: function(value, descending) {
+                if (descending === undefined) {
                     var headResources = $("tr>th:nth-of-type(2)");
-                    decending = headResources.hasClass("st-sort-ascent");
+                    descending = headResources.hasClass("st-sort-ascent");
                 }
                 var idx = ""+categoryIndex[value.cat_name];
-                if (decending) {
+                if (descending) {
                     idx = Object.keys(categoryIndex).length - idx;
                 }
                 idx = " ".repeat(3-(""+idx).length) + idx;
                 if (value.heading === true && value.res_ids === undefined || value.res_ids.length === 0) {
-                    if (decending) {
+                    if (descending) {
                         return idx + "z".repeat(200);
                     }
                     else {
@@ -179,18 +179,18 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     return idx + value.res_ids[0] + " ".repeat(200 - value.res_ids[0].length);
                 }
             },
-            metric_name: function(value, decending) {
-                if (decending === undefined) {
+            metric_name: function(value, descending) {
+                if (descending === undefined) {
                     var headMetricName = $("tr>th:nth-of-type(3)");
-                    decending = headMetricName.hasClass("st-sort-ascent");
+                    descending = headMetricName.hasClass("st-sort-ascent");
                 }
                 var idx = ""+categoryIndex[value.cat_name];
-                if (decending) {
+                if (descending) {
                     idx = Object.keys(categoryIndex).length - idx;
                 }
                 idx = " ".repeat(3-(""+idx).length) + idx;
                 if (value.heading === true) {
-                    if (decending) {
+                    if (descending) {
                         return idx + "z".repeat(200);
                     }
                     else {
@@ -205,20 +205,20 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         };
         vm.gridSorter = function(metric) {
             var sortBy = lpModelService.getSortBy();
-            var decending = false;
+            var descending = false;
             if (sortBy[0] == '-') {
-                decending = true;
+                descending = true;
                 sortBy = sortBy.substring(1);
             }
             if (sortBy == "metric_name") {
-                return vm.sortGetters.metric_name(metric, decending);
+                return vm.sortGetters.metric_name(metric, descending);
             }
             if (sortBy == "res_name") {
-                return vm.sortGetters.resources(metric, decending);
+                return vm.sortGetters.resources(metric, descending);
             }
         };
-        vm.isDecending = function() {
-            return lpModelService.isDecending();
+        vm.isDescending = function() {
+            return lpModelService.isDescending();
         };
         vm.chartDimensions = function(chart) {
             var ret = [];
