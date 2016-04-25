@@ -40,21 +40,15 @@
         <p i18n:translate="">Are you sure you want to delete the following alarm?</p>
         <div class="content">
             <div class="row header">
-                <div class="large-6 columns" i18n:translate="">
-                    Alarm Name
-                </div>
-                <div class="large-6 columns" i18n:translate="">
-                    Dimension
-                </div>
+                <div class="large-6 columns" i18n:translate="">Alarm Name</div>
+                <div class="large-6 columns" i18n:translate="">Dimension</div>
             </div>
             <div class="row alarm-dimensions">
                 <div class="large-6 columns">
                     {{ alarmToDelete.name }}
                 </div>
                 <div class="large-6 columns">
-                    <div>
-                        {{ resourceType }} = {{ resourceId }}
-                    </div>
+                    {{ resourceType }} = {{ resourceId }}
                 </div>
             </div>
         </div>

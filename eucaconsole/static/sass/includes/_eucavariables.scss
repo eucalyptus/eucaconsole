@@ -100,7 +100,8 @@ $euca-input-field-height: 2rem;
 
 // Text
 $euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;
-$euca-header-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;
+$euca-bold-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;
+$euca-header-font-family: $euca-bold-font-family;
 $euca-xs-font-size: 12px;
 $euca-s-font-size: 14px;
 $euca-font-size: 16px;

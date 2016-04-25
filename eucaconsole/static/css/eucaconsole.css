@@ -1620,6 +1620,8 @@ p { color: #333333; font-family: Metric-Regular, Helvetica, Arial, sans-serif; f
 label { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
 label.inline { display: inline-block; }
 
+b, strong { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-weight: bold; }
+
 /* ----------------------------------------- Header
 ----------------------------------------- */
 #logobar-wrapper { border-bottom: 1px solid #cccccc; }
