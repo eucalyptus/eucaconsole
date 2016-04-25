@@ -221,7 +221,6 @@ table td input[type="checkbox"] { margin: 0 0 0; }
 
 .split-bottom { position: relative; padding-top: 1.0rem; }
 
-.tile input[type="checkbox"] { position: relative; float: left; top: 9px; left: 5px; }
 .tile .dropdown.button.tiny { top: 5px !important; right: 2px !important; }
 
 #primary-buttons .button.more-actions { margin-left: 0 !important; }
@@ -234,8 +233,8 @@ magic-search .f-dropdown { min-width: 15rem; }
 
 .toprow select { margin-bottom: 1px; }
 
-.chart-wrapper .graph-close { position: relative; bottom: 1rem; left: 61rem; color: #5a5a5a; font-size: 2.1875rem; line-height: 0.5rem; font-weight: bold; cursor: pointer; }
-.chart-wrapper .metric-chart-menu { position: relative; bottom: 1.3rem; padding-left: 0.5rem; padding-right: 0.5rem; left: 58rem; color: #5a5a5a; cursor: pointer; }
+.chart-wrapper .graph-close { float: right; padding: 0.35rem 0.5rem 0 0.5rem; color: #5a5a5a; font-size: 2.1875rem; line-height: 0.5rem; font-weight: bold; cursor: pointer; }
+.chart-wrapper .metric-chart-menu { float: right; padding: 0 0.5rem 0 0.5rem; color: #5a5a5a; cursor: pointer; }
 .chart-wrapper svg { height: 300px !important; }
 
 .metrics-url-field { width: 100%; }
