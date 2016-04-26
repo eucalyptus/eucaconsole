@@ -182,6 +182,8 @@ input[type="number"] { width: 3rem; }
 
 #availability_zones, #termination_policies { visibility: hidden; }
 
+table.table.scaling-policies hr { margin-top: 4px; margin-bottom: 4px; }
+
 .tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
 .tile.policy .header .title { cursor: default; color: #666666; }

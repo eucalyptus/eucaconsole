@@ -61,7 +61,15 @@ input[type="number"] {
 }
 
 
-// Scaling group policies page and instances page
+// Scaling group policies page
+table.table.scaling-policies {
+    hr {
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+}
+
+// Scaling group instances page
 .tile {
     @include panel-tile-mixin;
     &.policy .header .title {
