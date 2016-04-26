@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('ScalingGroupPolicies', [])
+angular.module('ScalingGroupPolicies', ['CustomFilters'])
     .controller('ScalingGroupPoliciesCtrl', function ($scope) {
         $scope.policyName = '';
         $scope.deleteModal = $('#delete-policy-modal');
