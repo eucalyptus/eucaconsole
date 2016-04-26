@@ -281,7 +281,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         if (selectedInstance.id === instance.id) {
                             var includesZone = false;
                             angular.forEach($scope.availabilityZones, function(zone) {
-                                if (zone === instance.placement) {
+                                if (zone === instance.availability_zone) {
                                     includesZone = true;
                                 }
                             });
@@ -318,12 +318,12 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         if (selectedInstance.id === instance.id) {
                             var existsZone = false;
                             angular.forEach($scope.availabilityZones, function (zone) {
-                                if (zone === instance.placement) {
+                                if (zone === instance.availability_zone) {
                                     existsZone = true;
                                 }
                             });
                             if (existsZone === false) {
-                                $scope.availabilityZones.push(instance.placement);
+                                $scope.availabilityZones.push(instance.availability_zone);
                             }
                         } 
                     });
@@ -344,7 +344,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     angular.forEach($scope.allAvailabilityZones, function (zone) {
                         $scope.$parent.instanceCounts[zone.name] = 0;
                         angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
-                            if (zone.name === selectedInstance.placement) {
+                            if (zone.name === selectedInstance.availability_zone) {
                                 $scope.$parent.instanceCounts[zone.name] += 1;
                             }
                         });
