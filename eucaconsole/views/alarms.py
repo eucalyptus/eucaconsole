@@ -256,6 +256,13 @@ class CloudWatchAlarmsView(LandingPageView):
 
     @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
     def alarms_landing(self):
+        # TODO: build dimension options by namespace
+        dimension_options = DimensionChoicesManager(
+            self.request, {'bogus': 'dimensions'}).choices_by_namespace('custom')
+
+        self.render_dict.update(
+            dimension_options_json=json.dumps(dimension_options)
+        )
         return self.render_dict
 
     @view_config(route_name='cloudwatch_alarms_create', renderer=TEMPLATE, request_method='POST')

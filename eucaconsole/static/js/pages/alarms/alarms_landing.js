@@ -4,12 +4,13 @@
  *
  */
 
-angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceModule', 'CustomFilters'])
-    .controller('AlarmsCtrl', ['$scope', '$timeout', 'AlarmService', function ($scope, $timeout, AlarmService) {
+angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceModule', 'CustomFilters', 'CreateAlarmModal', 'ModalModule'])
+    .controller('AlarmsCtrl', ['$scope', '$timeout', 'AlarmService', 'ModalService', function ($scope, $timeout, AlarmService, ModalService) {
         $scope.alarms = [];
+        $scope.selectedAlarm = null;
         var csrf_token = $('#csrf_token').val();
 
-        $scope.revealModal = function (action, item) {
+        this.revealModal = function (action, item) {
             $scope.alarms = [].concat(item);
 
             $scope.expanded = false;
@@ -21,7 +22,7 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
             modal.foundation('reveal', 'open');
         };
 
-        $scope.deleteAlarm = function (event) {
+        this.deleteAlarm = function (event) {
             $('#delete-alarm-modal').foundation('reveal', 'close');
 
             AlarmService.deleteAlarms($scope.alarms, csrf_token)
@@ -33,7 +34,7 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
                 }); 
         };
 
-        $scope.refreshList = function () {
+        this.refreshList = function () {
             //
             //  NEVER DO THIS!!  THIS IS TERRIBLE!!!
             //  The proper solution, which will be implemented soon,
@@ -48,13 +49,18 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
             });
         };
 
-        $scope.toggleContent = function () {
-            $scope.expanded = !$scope.expanded;
-        };
-
         $scope.$on('alarm_created', function ($event, promise) {
             promise.then(function success (result) {
                 $scope.refreshList();
             });
         });
+
+        this.showCopyAlarm = function(alarm) {
+            $scope.selectedAlarm = alarm;
+            $timeout(function() {
+                ModalService.openModal('copyAlarm');
+            });
+        };
+
+
     }]);
