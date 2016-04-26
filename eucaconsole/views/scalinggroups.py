@@ -28,16 +28,14 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
-from dateutil import parser
-from operator import itemgetter
-
 import simplejson as json
 import time
 
+from dateutil import parser
 from hashlib import md5
 from itertools import chain
 from markupsafe import escape
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 
 from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
@@ -50,7 +48,6 @@ from ..constants.cloudwatch import (
     DURATION_GRANULARITY_CHOICES_MAPPING)
 from ..constants.scalinggroups import (
     SCALING_GROUP_MONITORING_CHARTS_LIST, SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST)
-from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupMonitoringForm,
     ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
