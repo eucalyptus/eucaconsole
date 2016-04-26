@@ -60,7 +60,8 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             $scope.resetForm = function () {
                 $scope.action = {
                     alarm_state: 'ALARM',
-                    scalingGroup: $scope.scalingGroupName || ''
+                    scalingGroup: '',
+                    scalingGroupPolicy: ''
                 };
                 $scope.defaultOptionValue = 'Select policy...';
                 $scope.scalingGroupPolicies = {};
@@ -74,7 +75,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             };
 
             $scope.updatePolicies = function () {
-                if($scope.action.scalingGroup === '') {
+                if($scope.action.scalingGroup === '' || $scope.action.scalingGroup === undefined) {
                     $scope.resetForm();
                     return;
                 }
@@ -101,22 +102,33 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                             $scope.defaultOptionValue = 'Select policy...';
                         }
                     }, function error (response) {
-                        console.log(response);
+                        $scope.scalingGroupPolicies = {};
+                        $scope.defaultOptionValue = 'No policies available';
                     });
             };
         }]
     };
 })
-.directive('requiredIfChanged', function () {
+.factory('alarmStateService', function () {
+})
+.directive('requiredIf', function () {
     return {
         restrict: 'A',
         require: 'ngModel',
         link: function (scope, element, attrs, ctrl) {
-            ctrl.$validators.requiredIfChanged = function (modelValue, viewValue) {
-                if(ctrl.$touched && ctrl.$isEmpty(modelValue)) {
-                    return false;
+            var form = scope.alarmActionsForm;
+            var field = attrs.requiredIf;
+
+            ctrl.$validators.requiredIf = function (modelValue) {
+                var target = form[field].$modelValue;
+
+                if(target === '' && modelValue !== '') {
+                    return true;
                 }
-                return true;
+                if(target !== '' && modelValue !== '') {
+                    return true;
+                }
+                return false;
             };
         }
     };

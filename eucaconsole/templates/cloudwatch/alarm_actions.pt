@@ -46,7 +46,7 @@
             </div>
             <div class="columns large-9 small-9">
                 <select ng-model="action.scalingGroup" ng-init="action.scalingGroup = ''" ng-change="updatePolicies()"
-                        name="groups" ng-options="group as group for group in scalingGroups" required-if-changed="">
+                        name="groups" ng-options="group as group for group in scalingGroups track by group">
                     <option value="" i18n:translate="">Select scaling group...</option>
                 </select>
             </div>
@@ -58,7 +58,7 @@
             <div class="columns large-9 small-9">
                 <select name="policies" ng-model="action.scalingGroupPolicy"
                                         ng-init="action.scalingGroupPolicy = ''"
-                                        ng-disabled="policiesAvailable()" required-if-changed="">
+                                        ng-disabled="policiesAvailable()" required-if="groups">
                     <option value="" i18n:translate="">{{ defaultOptionValue }}</option>
                     <option ng-repeat="(name, details) in scalingGroupPolicies"
                             ng-bind="name" 
