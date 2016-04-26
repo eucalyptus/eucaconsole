@@ -46,11 +46,11 @@ angular.module('CreateAlarmModal', [
 
             $scope.$watchCollection('alarm', function (newVal) {
                 if(newVal.metric && $scope.createAlarmForm.name.$untouched) {
-                    $scope.alarm.name = $scope.setAlarmName();
+                    $scope.alarm.name = $scope.alarmName();
                 }
             });
 
-            $scope.setAlarmName = function (count) {
+            $scope.alarmName = function (count) {
                 // Set alarm name to blank on Copy Alarm dialog
                 if ($scope.alarm.name === '') {
                     return $scope.alarm.name;
@@ -92,7 +92,7 @@ angular.module('CreateAlarmModal', [
                 });
 
                 if(collision) {
-                    name = $scope.setAlarmName(count + 1);
+                    name = $scope.alarmName(count + 1);
                 }
 
                 return name;
@@ -267,7 +267,7 @@ angular.module('CreateAlarmModal', [
                 AlarmService.getAlarmsForDimensions($scope.dimensions)
                     .then(function success(alarms) {
                         $scope.existingAlarms = alarms;
-                        $scope.alarm.name = $scope.setAlarmName();
+                        $scope.alarm.name = $scope.alarmName();
                     });
             };
 
