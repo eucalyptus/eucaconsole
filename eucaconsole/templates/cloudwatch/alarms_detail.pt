@@ -7,7 +7,8 @@
     </head>
 
     <div metal:fill-slot="main_content">
-        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}">
+        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}"
+             invalid-dimensions="${invalid_dimensions}">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">

@@ -95,7 +95,7 @@ class DimensionChoicesManager(BaseView):
 
         dimension_choices = list(chain.from_iterable(choices))
 
-        if custom_ns and self._none_selected(dimension_choices):
+        if self._none_selected(dimension_choices):
             dimension_choices.append({'label': _('Select dimension...'), 'value': '', 'selected': True})
 
         return dimension_choices
@@ -565,6 +565,9 @@ class CloudWatchAlarmDetailView(BaseView):
         dimension_options = DimensionChoicesManager(
             self.request, existing_dimensions).choices_by_namespace(self.alarm.namespace)
 
+        # Handle when resource in dimensions is no longer available (e.g. instance was terminated)
+        invalid_dimensions = len([option for option in dimension_options if option.get('value') == ''])
+
         alarm_actions = []
         for action in self.alarm.alarm_actions:
             detail = self.get_alarm_action_detail(action)
@@ -586,6 +589,7 @@ class CloudWatchAlarmDetailView(BaseView):
             alarm_actions_json=json.dumps(alarm_actions),
             dimension_options=dimension_options,
             dimension_options_json=json.dumps(dimension_options),
+            invalid_dimensions=invalid_dimensions,
         )
         return self.render_dict
 
