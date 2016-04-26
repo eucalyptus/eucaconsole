@@ -116,6 +116,12 @@ METRIC_CATEGORIES = [
         resource=['AvailabilityZone', 'LoadBalancerName'],
     ),
     dict(
+        name='elball',
+        label=_(u'ELB - Across all load balancers'),
+        resource=['LoadBalancerName'],
+        namespace='AWS/ELB',
+    ),
+    dict(
         name='custom',
         label=_(u'Custom metrics'),
         namespace=None,
@@ -172,13 +178,16 @@ class CloudWatchMetricsView(LandingPageView):
     def __init__(self, request):
         super(CloudWatchMetricsView, self).__init__(request)
         self.title_parts = [_(u'Metrics')]
-        self.initial_sort_key = 'name'
+        self.initial_sort_key = 'res_name'
         self.prefix = '/cloudwatch/metrics'
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
         self.filter_keys = ['name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Name')),
+            dict(key='res_name', name=_(u'Resource name: A to Z')),
+            dict(key='-res_name', name=_(u'Resource name: Z to A')),
+            dict(key='metric_name', name=_(u'Metric name: A to Z')),
+            dict(key='-metric_name', name=_(u'Metric name: Z to A')),
         ]
         search_facets = [
             {'name': 'cat_name', 'label': _(u'Resource type'), 'options': [
@@ -205,6 +214,7 @@ class CloudWatchMetricsView(LandingPageView):
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_metrics_json'),
             json_item_names_endpoint=self.request.route_path('cloudwatch_resource_names_json'),
+            categories_json=json.dumps([cat['name'] for cat in METRIC_CATEGORIES]),
             statistic_choices=STATISTIC_CHOICES,
             duration_choices=MONITORING_DURATION_CHOICES,
             chart_options_json=self.get_chart_options_json()
@@ -214,13 +224,32 @@ class CloudWatchMetricsView(LandingPageView):
     def metrics_landing(self):
         return self.render_dict
 
-    def get_chart_options_json(self):
+    @staticmethod
+    def get_chart_options_json():
         return BaseView.escape_json(json.dumps({
             'metric_title_mapping': METRIC_TITLE_MAPPING,
             'granularity_choices': GRANULARITY_CHOICES,
             'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
             'largeChart': True
         }))
+
+
+class CloudWatchGraphView(LandingPageView):
+    """CloudWatch Metrics mobile graph-only view"""
+    TEMPLATE = '../templates/cloudwatch/metricgraph.pt'
+
+    def __init__(self, request):
+        super(CloudWatchGraphView, self).__init__(request)
+        self.title_parts = [_(u'Graph')]
+        self.render_dict = dict(
+            statistic_choices=STATISTIC_CHOICES,
+            duration_choices=MONITORING_DURATION_CHOICES,
+            chart_options_json=CloudWatchMetricsView.get_chart_options_json()
+        )
+
+    @view_config(route_name='cloudwatch_graph', renderer=TEMPLATE, request_method='GET')
+    def metrics_landing(self):
+        return self.render_dict
 
 
 class CloudWatchMetricsJsonView(BaseView):
@@ -247,13 +276,13 @@ class CloudWatchMetricsJsonView(BaseView):
                         'namespace': item.namespace,
                         'dimensions': item.dimensions
                     } for item in items if item.namespace not in STD_NAMESPACES and item.dimensions]
-                if cat['name'] == 'ec2allinstances':
+                if cat['name'] in ['ec2allinstances', 'elball']:
                     tmp = set([met['name'] for met in tmp])
                 else:
                     tmp = [(met['dimensions'].items(), met['name'], met['namespace']) for met in tmp]
                 cat_metrics = []
                 for metric in tmp:
-                    if cat['name'] == 'ec2allinstances':
+                    if cat['name'] in ['ec2allinstances', 'elball']:
                         metric_name = metric
                         metric_dims = []
                         res_ids = []
@@ -304,16 +333,16 @@ class CloudWatchMetricsJsonView(BaseView):
         if res_type == 'instance':
             instances = self.get_connection().get_only_instances(filters={'instance_id': ids})
             for instance in instances:
-                names[instance.id] = TaggedItemView.get_display_name(instance)
+                names[instance.id] = (TaggedItemView.get_display_name(instance), instance.tags.get('Name', instance.id))
         elif res_type == 'image':
             region = self.request.session.get('region')
             images = self.get_images(self.get_connection(), [], [], region)
             for image in images:
-                names[image.id] = image.name
+                names[image.id] = (image.name, image.name)
         elif res_type == 'volume':
             volumes = self.get_connection().get_all_volumes(filters={'volume_id': ids})
             for volume in volumes:
-                names[volume.id] = TaggedItemView.get_display_name(volume)
+                names[volume.id] = (TaggedItemView.get_display_name(volume), volume.tags.get('Name', volume.id))
         return dict(results=names)
 
     @view_config(route_name='metrics_available_for_dimensions', renderer='json', request_method='GET')

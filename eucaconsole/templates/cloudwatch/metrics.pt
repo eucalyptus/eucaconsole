@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${json_item_names_endpoint}')">
+<div metal:fill-slot="main_content" ng-app="MetricsPage" ng-controller="MetricsCtrl as metricsCtrl" ng-init="metricsCtrl.initPage('${json_item_names_endpoint}', '${categories_json}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
              ng-init="initController('metrics', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -23,12 +23,22 @@
         <div class="large-12 columns datagrid" id="landing-page-items" ng-class="landingPageView">
             <div class="lp-header">
                 <div class="lp-action-buttons" id="primary-buttons" ng-cloak="">
-                    <div class="metrics-selected">
+                    <div class="metrics-selected" ng-if="landingPageView == 'tableview'">
                         {{ (items | filter:{ _selected:true }).length }} selected
                         <a ng-if="(items | filter:{ _selected:true }).length > 0" ng-click="metricsCtrl.clearSelections()" i18n:translate="">Clear all</a>
                     </div>
                 </div>
-                <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading">
+                <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading && landingPageView == 'gridview'">
+                    <strong>Sort by</strong>
+                    <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
+                        <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
+                        <span class="down-caret"></span>
+                    </a>
+                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="" tal:condition="len(sort_keys) > 1">
+                        <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
+                            <a ng-click="setSortBy('${sort.key}')">${sort.name}</a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="lp-view-buttons displayicons" ng-cloak="">
                     <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
@@ -52,58 +62,71 @@
                     </span>
                 </div>
             </div>
-            <div class="split-wrapper">
-                <div class="split-top">
-                    <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
-                    <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
-                        <div ng-show="!itemsLoading">
-                            <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
-                                No items were found
-                                <a href="#" class="close">&times;</a>
-                            </div>
-                        </div>
-                        <!-- Begin grid view -->
-                        <div class="tile item" ng-cloak="true"
-                             ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
-                            <div class="header">
-                                <strong>
-                                    <input type="checkbox" ng-model="item._selected"/>
-                                
-                                    <metal:block metal:define-slot="tile_header">
-                                        <strong>
-                                            <span>{{ item.metric_label }}</span>
-                                        </strong>
-                                         
-                                    </metal:block>
-                                </strong>
-                                <metal:block metal:define-slot="tile_dropdown_button">
-                                    <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
-                                    <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown">
-                                        <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(item)">Create alarm</a></li>
-                                        <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
-                                    </ul>
+            <div class="loading" ng-show="itemsLoading" ng-if="landingPageView == 'gridview'"><i class="busy"></i></div>
+            <div id="gridview" class="gridwrapper" ng-if="landingPageView == 'gridview' &amp;&amp; !itemsLoading" ng-cloak="">
+                <div ng-show="!itemsLoading">
+                    <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1" i18n:translate="">
+                        No items were found
+                        <a href="#" class="close">&times;</a>
+                    </div>
+                </div>
+                <span ng-repeat="item in items | orderBy: metricsCtrl.gridSorter :metricsCtrl.isDescending() | limitTo:displayCount">
+                    <div ng-if="item.heading == true" colspan="4">
+                        {{ item.cat_label }} ({{ item.cat_total }})
+                    </div>
+                    <!-- Begin grid view -->
+                    <div ng-if="item.heading != true" class="tile item" ng-cloak="true">
+                        <div class="header">
+                            <strong>
+                                <metal:block metal:define-slot="tile_header">
+                                    <strong>
+                                        <a ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">
+                                            <span ng-repeat="res in item.resources">{{ (res.res_short_name || res.res_name) | ellipsis: 50 }}</span>
+                                            <span ng-if="item.cat_name == 'ec2allinstances'" i18n:translate="">
+                                                All instances
+                                            </span>
+                                            <span ng-if="item.cat_name == 'elball'" i18n:translate="">
+                                                All load balancers
+                                            </span>
+                                        </a>
+                                    </strong>
                                 </metal:block>
-                            </div>
-                            <div class="content">
-                                <div>
-                                    <span ng-repeat="res in item.resources">
-                                        <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
-                                        <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
-                                        <span ng-hide="$last">,</span> 
-                                    </span>
-                                </div>
-                                <div>
-                                    <span>{{ item.cat_label }}</span>
-                                </div>
-                            </div>
-                            <metal:block metal:define-slot="tile_footer">
-                                <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
-                                    {{ item.status.replace('-', ' ') }}
-                                </div>
+                            </strong>
+                            <metal:block metal:define-slot="tile_dropdown_button">
+                                <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
+                                <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown" data-dropdown-content="">
+                                    <li><a i18n:translate="" ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">Show graph</a></li>
+                                    <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(item)">Create alarm</a></li>
+                                    <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
+                                </ul>
                             </metal:block>
                         </div>
+                        <div class="content">
+                            <div ng-if="['ec2allinstances', 'scalinggroupinstancemetrics', 'ec2instancetype', 'elb', 'elbzone', 'elbandzone', 'elball', 'custom'].indexOf(item.cat_name) == -1">
+                                <span class="label" title="Metric" i18n:attributes="title" data-tooltip="">ID</span>
+                                <span ng-repeat="res in item.resources">
+                                    <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_id | ellipsis: 50 }}</a>
+                                    <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
+                                    <span ng-hide="$last">,</span> 
+                                </span>
+                            </div>
+                            <div>
+                                <span class="label" title="Metric" i18n:attributes="title" data-tooltip="">MN</span>
+                                    {{ item.metric_label }}
+                            </div>
+                        </div>
+                        <metal:block metal:define-slot="tile_footer">
+                            <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
+                                {{ item.status.replace('-', ' ') }}
+                            </div>
+                        </metal:block>
                     </div>
-                    <div id="tableview" class="gridwrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
+                </span>
+            </div>
+            <div class="split-wrapper" ng-if="landingPageView == 'tableview'" ng-cloak="">
+                <div class="split-top">
+                    <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
+                    <div id="tableview" class="gridwrapper">
                         <!-- Begin table view -->
                         <table class="table smart-table" ng-show="!itemsLoading" ng-cloak="true"
                                st-safe-src="items" st-table="displayedCollection"
@@ -129,8 +152,11 @@
                                             <a ng-if="res.res_url" ng-href="{{ res.res_url }}">{{ res.res_name | ellipsis: 50 }}</a>
                                             <span ng-if="res.res_url==null">{{ res.res_name | ellipsis: 50 }}</span>
                                         </div>
-                                        <span ng-if="item.resources.length == 0" i18n:translate="">
+                                        <span ng-if="item.cat_name == 'ec2allinstances'" i18n:translate="">
                                             All instances
+                                        </span>
+                                        <span ng-if="item.cat_name == 'elball'" i18n:translate="">
+                                            All load balancers
                                         </span>
                                     </td>
                                     <td ng-if="item.heading != true">{{ item.metric_label }}</td>

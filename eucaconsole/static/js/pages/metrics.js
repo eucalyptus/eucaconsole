@@ -24,17 +24,18 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             }
         };
     })
-    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError, ModalService) {
+    .controller('MetricsCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError, ModalService, lpModelService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         var vm = this;
         var categoryIndex = {};
-        var headResources;
-        var headMetricName;
         var itemNamesUrl;
         var graphParams = "";
-        vm.initPage = function(itemNamesEndpoint) {
+        vm.initPage = function(itemNamesEndpoint, categoriesJson) {
             itemNamesUrl = itemNamesEndpoint;
-            enableInfiniteScroll();
+            var categories = JSON.parse(categoriesJson);
+            categories.forEach(function(val, idx) {
+                categoryIndex[val] = idx;
+            });
         };
         function enableInfiniteScroll() {
             var splitTop = $(".split-top");
@@ -57,7 +58,8 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     if (item.resources !== undefined) {
                         item.resources.forEach(function(res) {
                             if (results[res.res_id] !== undefined) {
-                                res.res_name = results[res.res_id];
+                                res.res_name = results[res.res_id][0];
+                                res.res_short_name = results[res.res_id][1];
                             }
                         });
                     }
@@ -73,8 +75,6 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             resource_list = [];
             items.forEach(function(metric, idx) {
                 if (metric.heading === true) {
-                    // record category indexes to help with sort
-                    categoryIndex[metric.cat_name] = Object.keys(categoryIndex).length;
                     option_list = [];
                     return;
                 }
@@ -135,6 +135,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     }
                 }
             }
+            enableInfiniteScroll();
         });
         $scope.$on('cloudwatch:refreshLargeChart', function ($event, stat, period, timeRange, duration, startTime, endTime) {
             graphParams = "&stat="+stat+"&period="+period;
@@ -156,18 +157,18 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
         };
         vm.sortGetters = {
-            resources: function(value) {
-                if (headResources === undefined) {
-                    headResources = $("tr>th:nth-of-type(2)");
+            resources: function(value, descending) {
+                if (descending === undefined) {
+                    var headResources = $("tr>th:nth-of-type(2)");
+                    descending = headResources.hasClass("st-sort-ascent");
                 }
-                var decending = headResources.hasClass("st-sort-ascent");
                 var idx = ""+categoryIndex[value.cat_name];
-                if (decending) {
+                if (descending) {
                     idx = Object.keys(categoryIndex).length - idx;
                 }
                 idx = " ".repeat(3-(""+idx).length) + idx;
                 if (value.heading === true && value.res_ids === undefined || value.res_ids.length === 0) {
-                    if (decending) {
+                    if (descending) {
                         return idx + "z".repeat(200);
                     }
                     else {
@@ -178,18 +179,18 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     return idx + value.res_ids[0] + " ".repeat(200 - value.res_ids[0].length);
                 }
             },
-            metric_name: function(value) {
-                if (headMetricName === undefined) {
-                    headMetricName = $("tr>th:nth-of-type(3)");
+            metric_name: function(value, descending) {
+                if (descending === undefined) {
+                    var headMetricName = $("tr>th:nth-of-type(3)");
+                    descending = headMetricName.hasClass("st-sort-ascent");
                 }
-                var decending = headMetricName.hasClass("st-sort-ascent");
                 var idx = ""+categoryIndex[value.cat_name];
-                if (decending) {
+                if (descending) {
                     idx = Object.keys(categoryIndex).length - idx;
                 }
                 idx = " ".repeat(3-(""+idx).length) + idx;
-                if (value.heading === true && value.res_ids === undefined || value.res_ids.length === 0) {
-                    if (decending) {
+                if (value.heading === true) {
+                    if (descending) {
                         return idx + "z".repeat(200);
                     }
                     else {
@@ -201,6 +202,23 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 }
                 return value;
             }
+        };
+        vm.gridSorter = function(metric) {
+            var sortBy = lpModelService.getSortBy();
+            var descending = false;
+            if (sortBy[0] == '-') {
+                descending = true;
+                sortBy = sortBy.substring(1);
+            }
+            if (sortBy == "metric_name") {
+                return vm.sortGetters.metric_name(metric, descending);
+            }
+            if (sortBy == "res_name") {
+                return vm.sortGetters.resources(metric, descending);
+            }
+        };
+        vm.isDescending = function() {
+            return lpModelService.isDescending();
         };
         vm.chartDimensions = function(chart) {
             var ret = [];
@@ -215,7 +233,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             });
             return ret;
         };
-        vm.copyUrl = function(chart) {
+        function getChartEncoding(chart) {
             var metric = '';
             var dims = [];
             if (Array.isArray(chart)) {
@@ -236,7 +254,10 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 dims.push(tmp);
                 metric = chart.metric_name;
             }
-            var chartString = "metric="+metric+"&dimensions="+JSON.stringify(dims)+graphParams;
+            return "metric="+metric+"&dimensions="+JSON.stringify(dims)+graphParams;
+        }
+        vm.copyUrl = function(chart) {
+            var chartString = getChartEncoding(chart);
             var url = window.location.href;
             if (url.indexOf("?") > -1) {
                 url = url.split("?")[0];
@@ -271,12 +292,17 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 });
             });
             names = names.join('');
-            $scope.metricForAlarm = Object.assign(metric[0]);
+            $scope.metricForAlarm = Object.assign({}, metric[0]);
             $scope.metricForAlarm.dimensions = dims;
             $scope.metricForAlarm.names = names;
             $timeout(function() {
                 ModalService.openModal('createAlarm');
             });
+        };
+        vm.showGraphForItem = function(url, item) {
+            var chartString = "metric="+item.metric_name+"&dimensions="+JSON.stringify(vm.chartDimensions([item]))+graphParams;
+            chartString = chartString+"&namespace="+item.namespace+"&unit="+item.unit;
+            window.location = url+"?graph="+$.base64.encode(chartString);
         };
     })
 ;
