@@ -95,7 +95,7 @@ class DimensionChoicesManager(BaseView):
 
         dimension_choices = list(chain.from_iterable(choices))
 
-        if custom_ns and self._none_selected(dimension_choices):
+        if self._none_selected(dimension_choices):
             dimension_choices.append({'label': _('Select dimension...'), 'value': '', 'selected': True})
 
         return dimension_choices
@@ -565,6 +565,9 @@ class CloudWatchAlarmDetailView(BaseView):
         dimension_options = DimensionChoicesManager(
             self.request, existing_dimensions).choices_by_namespace(self.alarm.namespace)
 
+        # Handle when resource in dimensions is no longer available (e.g. instance was terminated)
+        invalid_dimensions = len([option for option in dimension_options if option.get('value') == ''])
+
         alarm_actions = []
         for action in self.alarm.alarm_actions:
             detail = self.get_alarm_action_detail(action)
@@ -586,6 +589,7 @@ class CloudWatchAlarmDetailView(BaseView):
             alarm_actions_json=json.dumps(alarm_actions),
             dimension_options=dimension_options,
             dimension_options_json=json.dumps(dimension_options),
+            invalid_dimensions=invalid_dimensions,
         )
         return self.render_dict
 
@@ -702,40 +706,3 @@ class CloudWatchAlarmHistoryView(BaseView):
             history = conn.describe_alarm_history(alarm_name=alarm_id)
         return history
 
-
-class CloudWatchAlarmActionsView(BaseView):
-    """CloudWatch Alarm Actions view."""
-
-    def __init__(self, request, **kwargs):
-        super(CloudWatchAlarmActionsView, self).__init__(request, **kwargs)
-
-        self.alarm_id = self.request.matchdict.get('alarm_id')
-        self.alarm = self.get_alarm(self.alarm_id)
-
-    @view_config(route_name='cloudwatch_alarm_actions', renderer='json', request_method='PUT')
-    def update_actions(self):
-        if not self.alarm:
-            raise HTTPNotFound()
-
-        request = json.loads(self.request.body)
-        request_actions = request.get('actions')
-        actions = [action.get('arn') for action in request_actions]
-
-        with boto_error_handler(self.request):
-            # See https://github.com/boto/boto/issues/1311
-            self.alarm.comparison = self.alarm._cmp_map.get(self.alarm.comparison)
-            self.alarm.alarm_actions = actions
-            self.alarm.update()
-
-        return dict(
-            success='success'
-        )
-
-    def get_alarm(self, alarm_id):
-        alarm = None
-        conn = self.get_connection(conn_type='cloudwatch')
-        with boto_error_handler(self.request):
-            alarms = conn.describe_alarms(alarm_names=[alarm_id])
-            if len(alarms) > 0:
-                alarm = alarms[0]
-        return alarm

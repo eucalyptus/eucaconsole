@@ -65,19 +65,6 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
                 });
         },
 
-        updateActions: function (id, actions) {
-            return eucaRoutes.getRouteDeferred('cloudwatch_alarm_actions', { alarm_id: id })
-                .then(function (path) {
-                    return $http({
-                        method: 'PUT',
-                        url: path,
-                        data: {
-                            actions: actions
-                        }
-                    });
-                });
-        },
-
         getHistory: function (id) {
             return eucaRoutes.getRouteDeferred('cloudwatch_alarm_history_json', { alarm_id: id })
                 .then(function (path) {
