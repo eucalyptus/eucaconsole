@@ -26,9 +26,6 @@ angular.module('CreateAlarmModal', [
                 modalName = name;
                 scope.modalName = name;
                 createAlarmCtrl.initializeModal(attrs);
-                if (modalName === 'copyAlarm') {
-                    createAlarmCtrl.resetAlarmName();
-                }
             });
             scope.$on('modal:close', function (event, name) {
                 if(name === modalName && modalName !== 'copyAlarm') {
@@ -54,6 +51,10 @@ angular.module('CreateAlarmModal', [
             });
 
             $scope.alarmName = function (count) {
+                // Set alarm name to blank on Copy Alarm dialog
+                if ($scope.alarm.name === '') {
+                    return $scope.alarm.name;
+                }
                 // Name field updates when metric selection changes,
                 // unless the user has changed the value themselves.
                 count = count || 0;
@@ -97,10 +98,6 @@ angular.module('CreateAlarmModal', [
                 return name;
             };
 
-            this.resetAlarmName = function () {
-                $scope.createAlarmForm.name.$setTouched();
-            };
-
             this.composeAlarmMetric = function (attrs) {
                 if (!$scope.namespace.match(',')) {  // Avoid breaking namespace when multiple NS are passed to directive
                     $scope.alarm.metric.namespace = $scope.namespace;
@@ -137,7 +134,11 @@ angular.module('CreateAlarmModal', [
                     AlarmService.getAlarm(attrs.alarmName)
                         .then(function (res) {
                             var alarm = res.alarm;
+                            alarm.name = '';
                             vm.initializeForCopy(alarm, attrs);
+                            var nameField = angular.element('[name="createAlarmForm"]').find('[name="name"]');
+                            nameField.focus();
+                            $scope.createAlarmForm.name.$touched = false;
                         });
                 } else {
                     this.initializeForCreate(attrs);
@@ -146,7 +147,7 @@ angular.module('CreateAlarmModal', [
 
             this.initializeForCopy = function (alarm, attrs) {
                 $scope.alarm = alarm;
-                $scope.alarm.name = 'Copy of ' + alarm.name;
+                $scope.alarm.name = '';
                 $scope.alarm.dimensions = alarm.dimensions;
                 $scope.dimensions = alarm.dimensions;
                 $scope.namespace = alarm.namespace;
