@@ -150,6 +150,7 @@
                 default-statistic="{{ selectedAlarm.statistic }}"
                 alarm-name="{{ selectedAlarm.name }}"
                 edit-dimensions="true"
+                alarms-landing="true"
                 dimension-choices="${dimension_options_json}"
                 load-metric-choices="false">
             </div>

@@ -128,7 +128,6 @@ angular.module('CreateAlarmModal', [
                 $scope.title = attrs.title || 'Create Alarm';
                 $scope.hideAlarmActions = attrs.hideAlarmActions || false;
                 $scope.editDimensions = attrs.editDimensions || false;
-                $scope.dimensionChoices = $scope.editDimensions ? JSON.parse(attrs.dimensionChoices) : [];
                 $scope.existingAlarms = [];
                 if(attrs.alarmName) {
                     AlarmService.getAlarm(attrs.alarmName)
@@ -153,6 +152,13 @@ angular.module('CreateAlarmModal', [
                 $scope.namespace = alarm.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
+                $scope.dimensionChoices = [];
+                if (attrs.editDimensions) {
+                    $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices);
+                    if (attrs.alarmsLanding) {
+                        $scope.dimensionChoices = $scope.dimensionChoices[alarm.namespace];
+                    }
+                }
                 finishInit(attrs);
             };
 
