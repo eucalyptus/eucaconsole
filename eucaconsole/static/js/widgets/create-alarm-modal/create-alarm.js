@@ -150,6 +150,9 @@ angular.module('CreateAlarmModal', [
             };
 
             this.initializeForCopy = function (alarm, attrs) {
+                var parsedDimensionChoices = null;
+                var allDimensionChoices = [];
+                var stdDimensionNamespaces = ['AWS/EC2', 'AWS/ELB', 'AWS/EBS'];
                 $scope.alarm = alarm;
                 $scope.alarm.name = '';
                 $scope.alarm.dimensions = alarm.dimensions;
@@ -158,8 +161,19 @@ angular.module('CreateAlarmModal', [
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
                 if (attrs.editDimensions && attrs.alarmsLanding) {
-                    // Build dimension choices by alarm namespace on alarms landing page
-                    $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices)[alarm.namespace];
+                    // Handle dimension choices on alarms landing page
+                    parsedDimensionChoices = JSON.parse(attrs.dimensionChoices);
+                    if (stdDimensionNamespaces.indexOf(alarm.namespace) === -1) {
+                        // Alarms with custom metric/namespace
+                        parsedDimensionChoices = JSON.parse(attrs.dimensionChoices);
+                        stdDimensionNamespaces.forEach(function (namespace) {
+                            Array.prototype.push.apply(allDimensionChoices, parsedDimensionChoices[namespace]);
+                        });
+                        $scope.dimensionChoices = allDimensionChoices;
+                    } else {
+                        // Alarms with standard namespace
+                        $scope.dimensionChoices = parsedDimensionChoices[alarm.namespace];
+                    }
                 }
                 finishInit(attrs);
             };
