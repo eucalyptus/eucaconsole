@@ -108,7 +108,7 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
                 $scope.alarm.period = defaults.period;
 
-                if (attrs.alarmName) {
+                if (attrs.alarmName && !attrs.alarmsLanding) {
                     $('#dimensions-select').chosen({'width': '100%', search_contains: true});
                 } else {
                     $scope.updateStaticDimensions($scope.alarm);
@@ -128,6 +128,11 @@ angular.module('CreateAlarmModal', [
                 $scope.title = attrs.title || 'Create Alarm';
                 $scope.hideAlarmActions = attrs.hideAlarmActions || false;
                 $scope.editDimensions = attrs.editDimensions || false;
+                $scope.dimensionChoices = [];
+                if (attrs.editDimensions && !attrs.alarmsLanding) {
+                    // Build dimension choices for Copy Alarm on alarm details page
+                    $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices);
+                }
                 $scope.existingAlarms = [];
                 if(attrs.alarmName) {
                     AlarmService.getAlarm(attrs.alarmName)
@@ -152,12 +157,9 @@ angular.module('CreateAlarmModal', [
                 $scope.namespace = alarm.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
-                $scope.dimensionChoices = [];
-                if (attrs.editDimensions) {
-                    $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices);
-                    if (attrs.alarmsLanding) {
-                        $scope.dimensionChoices = $scope.dimensionChoices[alarm.namespace];
-                    }
+                if (attrs.editDimensions && attrs.alarmsLanding) {
+                    // Build dimension choices by alarm namespace on alarms landing page
+                    $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices)[alarm.namespace];
                 }
                 finishInit(attrs);
             };
