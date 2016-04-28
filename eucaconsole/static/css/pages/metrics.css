@@ -216,8 +216,9 @@ table td input[type="checkbox"] { margin: 0 0 0; }
 
 .split-top { height: 250px; overflow: auto; }
 
-.split-bar { height: 0.6rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; overflow-y: hidden; }
-.split-bar hr { margin: 4px 4px 4px 4px; }
+.split-bar { height: 0.9rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; overflow-y: hidden; }
+.split-bar hr { margin: 7px 4px 0px 4px; }
+.split-bar .split-grab { position: relative; top: -12px; margin-left: 49%; color: grey; }
 
 .split-bottom { position: relative; padding-top: 1.0rem; }
 

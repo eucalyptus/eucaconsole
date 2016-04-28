@@ -34,14 +34,20 @@ table td input[type="checkbox"] {
 }
 
 .split-bar {
-    height: 0.6rem;
+    height: 0.9rem;
     width: 100%;
     color: grey;
     background: #ffffff;
     cursor: row-resize;
     overflow-y: hidden;
     hr {
-        margin: 4px 4px 4px 4px;
+        margin: 7px 4px 0px 4px;
+    }
+    .split-grab {
+        position: relative;
+        top: -12px;
+        margin-left: 49%;
+        color: grey;
     }
 }
 

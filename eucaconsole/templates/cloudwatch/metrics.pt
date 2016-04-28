@@ -189,7 +189,7 @@
                         <span i18n:translate="">items</span>
                     </div>
                 </div>
-                <div splitbar="" class="split-bar"><hr width="99%"/></div>
+                <div splitbar="" class="split-bar"><hr width="99%"/><i class="split-grab fa fa-square-o"></i></div>
                 <div class="split-bottom cloudwatch-charts" id="graph-area">
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
