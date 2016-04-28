@@ -27,7 +27,8 @@
                             </a>
                         </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
-                            <a i18n:translate="" class="more-actions-create-like-this">
+                            <a i18n:translate="" class="more-actions-create-like-this"
+                               ng-click="alarmsCtrl.showCopyAlarm((items | filter: {selected: true})[0])">
                                 Create alarm like this one
                             </a>
                         </li>
@@ -38,6 +39,7 @@
                         </li>
                     </div>
                 </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
@@ -55,7 +57,8 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_header" tal:omit-tag="">
-                <a ng-href="${prefix}/{{ item.name | b64encode }}">{{ item.name || item.id }}</a>
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <a ng-href="${prefix}/{{ item.name | b64encode }}" class="has-checkbox">{{ item.name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
