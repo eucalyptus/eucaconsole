@@ -52,8 +52,8 @@
                                 </div>
                             </td>
                             <td>
-                                <div tal:repeat="alarm policy.alarms">
-                                    ${alarm.metric} ${alarm.comparison} ${int(alarm.threshold)}${'%' if alarm.unit == 'Percent' else ''}
+                                <div tal:repeat="alarm policy.alarms" class="threshold">
+                                    ${alarm.metric} ${alarm.comparison} ${int(alarm.threshold)}
                                     <span i18n:translate="">for</span>
                                     ${alarm.evaluation_periods * int(alarm.period / 60.0)} <span i18n:translate="">minutes</span>
                                     <hr tal:condition="not: repeat.alarm.end" />
