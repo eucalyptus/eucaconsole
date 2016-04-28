@@ -30,13 +30,13 @@
             <div class="panel gridwrapper no-title">
                 <div>&nbsp;</div>
                 <a href="${request.route_path('scalinggroup_policy_new', id=scaling_group.name)}" id="create-policy-btn"
-                   class="button" i18n:translate="">Add a scaling policy</a>
-                <table class="table scaling-policies">
+                   class="button" i18n:translate="">Add scaling policy</a>
+                <table class="table scaling-policies" tal:condition="policies">
                     <thead>
                         <th i18n:translate="">Policy Name</th>
                         <th i18n:translate="">Action</th>
-                        <th i18n:translate="">Alarm Threshold</th>
                         <th i18n:translate="">Alarm Name</th>
+                        <th i18n:translate="">Alarm Threshold</th>
                         <th i18n:translate="">Alarm Dimension</th>
                         <th i18n:translate="" class="count">Cooldown (Secs)</th>
                         <th class="actions" i18n:translate="">Actions</th>
@@ -47,22 +47,21 @@
                             <td>${policy.scale_text}</td>
                             <td>
                                 <div tal:repeat="alarm policy.alarms">
-                                    ${alarm.statistic} ${alarm.metric} ${alarm.comparison} ${alarm.threshold}
-                                    <span i18n:translate="">for</span>
-                                    ${alarm.evaluation_periods} <span i18n:translate="">consecutive periods of</span>
-                                    ${int(alarm.period / 60.0)} <span i18n:translate="">minutes</span>
-                                    <hr tal:condition="not: repeat.alarm.end" />
-                                </div>
-                            </td>
-                            <td>
-                                <div tal:repeat="alarm policy.alarms">
                                     <a ng-href="/alarms/{{ '${alarm.name}' | b64encode }}">${alarm.name}</a>
                                     <hr tal:condition="not: repeat.alarm.end" />
                                 </div>
                             </td>
                             <td>
+                                <div tal:repeat="alarm policy.alarms">
+                                    ${alarm.metric} ${alarm.comparison} ${int(alarm.threshold)}${'%' if alarm.unit == 'Percent' else ''}
+                                    <span i18n:translate="">for</span>
+                                    ${alarm.evaluation_periods * int(alarm.period / 60.0)} <span i18n:translate="">minutes</span>
+                                    <hr tal:condition="not: repeat.alarm.end" />
+                                </div>
+                            </td>
+                            <td>
                                 <div tal:repeat="alarm policy.alarms" tal:omit-tag="">
-                                    <div tal:repeat="(key, val) alarm.dimensions.items()">
+                                    <div tal:repeat="(key, val) alarm.dimensions.items()" class="dimension-item">
                                         ${key} = ${', '.join(val)}
                                     </div>
                                     <hr tal:condition="not: repeat.alarm.end" />
