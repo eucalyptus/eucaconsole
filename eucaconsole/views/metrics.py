@@ -278,19 +278,18 @@ class CloudWatchMetricsJsonView(BaseView):
                     } for item in items if item.namespace not in STD_NAMESPACES and item.dimensions]
                 if cat['name'] in ['ec2allinstances', 'elball']:
                     tmp = set([met['name'] for met in tmp])
+                    tmp = [([], met, item.namespace) for met in tmp]
                 else:
                     tmp = [(met['dimensions'].items(), met['name'], met['namespace']) for met in tmp]
                 cat_metrics = []
                 for metric in tmp:
+                    metric_name = metric[1]
+                    metric_dims = metric[0]
                     if cat['name'] in ['ec2allinstances', 'elball']:
-                        metric_name = metric
-                        metric_dims = []
                         res_ids = []
                         res_types = []
                         unit = [mt['unit'] for mt in METRIC_TYPES if mt['name'] == metric]
                     else:
-                        metric_name = metric[1]
-                        metric_dims = metric[0]
                         res_ids = [dim[1][0] for dim in metric_dims]
                         res_types = [dim[0] for dim in metric_dims]
                         if cat['resource'] and cat['resource'] != res_types:
@@ -301,7 +300,7 @@ class CloudWatchMetricsJsonView(BaseView):
                     cat_metrics.append(dict(
                         cat_name=cat['name'],
                         namespace=metric[2],
-                        unique_id=metric[1] + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
+                        unique_id=metric_name + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
                         resources=[dict(
                             res_id=dim[1][0],
                             res_name=dim[1][0],
