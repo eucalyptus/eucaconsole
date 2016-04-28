@@ -2,13 +2,32 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 .directive('alarmActions', function () {
     return {
         restrict: 'A',
-        scope: true,
-        link: function (scope, element, attrs) {
-            scope.alarmId = attrs.alarmId;
-            scope.alarmActions = JSON.parse(attrs.alarmActions);
+        replace: true,
+        require: ['^ngModel', 'alarmActions'],
+        scope: {
+            alarmActions: '=ngModel',
+            alarmId: '@'
+        },
+        templateUrl: function (element, attributes) {
+            return attributes.template;
+        },
+        link: function (scope, element, attrs, ctrls) {
+            var modelCtrl = ctrls[0],       // Controller for ngModel
+                actionsCtrl = ctrls[1];     // Controller for this directive
+
             scope.defaultOptionValue = 'Select policy...';
+
+            scope.$watchCollection('action', function (newVal) {
+                actionsCtrl.validate(newVal, function (validity) {
+                    Object.keys(validity).forEach(function (key) {
+                        modelCtrl.$setValidity(key, validity[key]);
+                    });
+                });
+            });
         },
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
+            var vm = this;
+
             ScalingGroupsService.getScalingGroups().then(function (result) {
                 $scope.scalingGroups = result;
                 if ($scope.scalingGroupName) {
@@ -17,12 +36,29 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                 }
             });
 
+            this.validate = function (action, callback) {
+                var validity = {};
+
+                if(action.scalingGroup === '' && action.scalingGroupPolicy === '') {
+                    // Valid because empty: form valid, add action button disabled
+                    $scope.state = 'empty';
+                    validity.actionEditor = true;
+                } else if(action.scalingGroup !== '' && action.scalingGroupPolicy !== '') {
+                    // Valid because complete: form valid, add action button enabled
+                    $scope.state = 'complete';
+                    validity.actionEditor = true;
+                } else {
+                    // Invalid because incomplete: form invalid, add action button disabled
+                    $scope.state = 'incomplete';
+                    validity.actionEditor = false;
+                }
+
+                callback(validity);
+            };
+
             $scope.addAction = function (evt) {
                 evt.preventDefault();
                 //  Do not add action if form is invalid
-                if($scope.alarmActionsForm.$invalid || $scope.alarmActionsForm.$pristine) {
-                    return;
-                }
 
                 var policyName = $scope.action.scalingGroupPolicy,
                     policy = $scope.scalingGroupPolicies[policyName];
@@ -65,8 +101,6 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                 };
                 $scope.defaultOptionValue = 'Select policy...';
                 $scope.scalingGroupPolicies = {};
-                $scope.alarmActionsForm.$setPristine();
-                $scope.alarmActionsForm.$setUntouched();
             };
 
             $scope.policiesAvailable = function () {
@@ -109,7 +143,24 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
         }]
     };
 })
-.factory('alarmStateService', function () {
+.directive('doNotValidate', function () {
+    return {
+        require: ['^form', 'ngModel'],
+        restrict: 'A',
+        link: function (scope, element, attrs, ctrls) {
+            var formCtrl = ctrls[0],
+                modelCtrl = ctrls[1];
+
+            //console.log('form', formCtrl);
+            //console.log('model', modelCtrl);
+
+            formCtrl.$removeControl(modelCtrl);
+            scope.$watch(attrs.ngModel, function () {
+                modelCtrl.$setUntouched();
+                modelCtrl.$setPristine();
+            });
+        }
+    };
 })
 .directive('requiredIf', function () {
     return {

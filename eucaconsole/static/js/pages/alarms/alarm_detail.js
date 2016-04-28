@@ -19,6 +19,7 @@ angular.module('AlarmDetailPage', [
                 });
             });
             scope.alarm.dimensions = dimensions;
+            scope.alarm.actions = scope.alarm.actions || [];
 
             eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
                 scope.redirectPath = path;

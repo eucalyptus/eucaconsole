@@ -30,9 +30,20 @@
         padding: 0.375rem;
     }
 
+    &.ng-valid-action-editor-empty,
     &.ng-pristine,
     &.ng-invalid {
         .button {
+            @include disabled-button-mixin;
+            &:hover {
+                box-shadow: none;
+            }
+        }
+    }
+
+    .button {
+        &.incomplete,
+        &.empty {
             @include disabled-button-mixin;
             &:hover {
                 box-shadow: none;

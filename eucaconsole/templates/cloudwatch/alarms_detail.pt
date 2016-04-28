@@ -170,7 +170,9 @@
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
-                        ${panel('alarm_actions_panel', alarm_actions_json=alarm_actions_json, alarm_id=alarm_id)}
+                        <div alarm-actions="" ng-model="alarm.actions" alarm-id="{{ alarm.name }}"
+                            template="${request.route_path('render_template', subpath='cloudwatch/alarm_actions')}">
+                        </div>
                         <hr/>
                         <div class="controls">
                             <button type="submit" class="button submit" i18n:translate="">Save Changes</button>
