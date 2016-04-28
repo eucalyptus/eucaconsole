@@ -300,7 +300,7 @@ class CloudWatchMetricsJsonView(BaseView):
                     cat_metrics.append(dict(
                         cat_name=cat['name'],
                         namespace=metric[2],
-                        unique_id=metric_name + '-' + '-'.join([dim[1][0] for dim in metric_dims]),
+                        unique_id=metric_name + '-' + '-'.join([dim[1][0] for dim in metric_dims]).replace('.', '-'),
                         resources=[dict(
                             res_id=dim[1][0],
                             res_name=dim[1][0],
