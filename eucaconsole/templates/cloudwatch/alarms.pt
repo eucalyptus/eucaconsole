@@ -49,7 +49,7 @@
                             View/edit details</a>
                     </li>
                     <li>
-                        <a i18n:translate="" ng-click="alarmsCtrl.showCopyAlarm(item)">Create alarm like this</a>
+                        <a i18n:translate="" ng-click="alarmsCtrl.showCopyAlarm(item)">Create alarm like this one</a>
                     </li>
                     <li>
                         <a ng-click="alarmsCtrl.revealModal('delete', item)" i18n:translate="">Delete</a>
@@ -112,7 +112,7 @@
                                     View/edit details</a>
                             </li>
                             <li>
-                                <a i18n:translate="" ng-click="alarmsCtrl.showCopyAlarm(item)">Create alarm like this</a>
+                                <a i18n:translate="" ng-click="alarmsCtrl.showCopyAlarm(item)">Create alarm like this one</a>
                             </li>
                             <li>
                                 <a ng-click="alarmsCtrl.revealModal('delete', item)" i18n:translate="">Delete</a>

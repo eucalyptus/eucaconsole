@@ -28,8 +28,8 @@ angular.module('CreateAlarmModal', [
                 createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
-                if(name === modalName && modalName !== 'copyAlarm') {
-                    scope.resetForm();
+                if(name === modalName) {
+                    scope.resetForm(name);
                 }
             });
         },
@@ -153,6 +153,9 @@ angular.module('CreateAlarmModal', [
                 var parsedDimensionChoices = null;
                 var allDimensionChoices = [];
                 var stdDimensionNamespaces = ['AWS/EC2', 'AWS/ELB', 'AWS/EBS'];
+                if (attrs.alarmName) {
+                    $scope.title = 'Create alarm like ' + attrs.alarmName;
+                }
                 $scope.alarm = alarm;
                 $scope.alarm.name = '';
                 $scope.alarm.dimensions = alarm.dimensions;
@@ -277,9 +280,11 @@ angular.module('CreateAlarmModal', [
                 });
             });
 
-            $scope.resetForm = function () {
-                $scope.alarm = angular.copy(defaults);
-                $scope.checkNameCollision();
+            $scope.resetForm = function (modalName) {
+                if (modalName !== 'copyAlarm') {
+                    $scope.alarm = angular.copy(defaults);
+                    $scope.checkNameCollision();
+                }
                 $scope.createAlarmForm.$setPristine();
                 $scope.createAlarmForm.$setUntouched();
             };
