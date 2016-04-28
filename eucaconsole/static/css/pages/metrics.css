@@ -214,6 +214,9 @@ table td input[type="checkbox"] { margin: 0 0 0; }
 .chart-wrapper h6 { border: 0 none; }
 .chart-wrapper svg { border: 0 none; }
 
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) { .actions .f-dropdown { margin-left: -120px; }
+  .actions .f-dropdown:before { margin-left: 120px; }
+  .actions .f-dropdown:after { margin-left: 120px; } }
 .split-top { height: 250px; overflow: auto; }
 
 .split-bar { height: 0.9rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; overflow-y: hidden; }

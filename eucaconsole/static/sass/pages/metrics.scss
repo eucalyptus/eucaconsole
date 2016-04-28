@@ -28,6 +28,20 @@ table td input[type="checkbox"] {
     }
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .actions {
+        .f-dropdown {
+            margin-left: -120px;
+            &:before {
+                margin-left: 120px;
+            }
+            &:after {
+                margin-left: 120px;
+            }
+        }
+    }
+}
+
 .split-top {
     height: 250px;
     overflow: auto;
