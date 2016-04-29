@@ -95,12 +95,11 @@
                     <a ng-href="${prefix}/{{ item.name | b64encode }}">
                         {{ item.name }}</a>
                 </td>
-                <td>
-                    {{ item.statistic }}
+                <td ng-attr-data-unit="{{ item.unit }}">
                     {{ item.metric }}
                     {{ item.comparison }}
                     {{ item.threshold }}
-                    {{ item.unit !== 'None' ? item.unit : '' }}
+                    {{ item.duration_label }}
                 </td>
                 <td class="alarm-actions">{{ item.alarm_actions.length }}</td>
                 <td>

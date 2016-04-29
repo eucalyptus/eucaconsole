@@ -427,6 +427,8 @@ class CloudWatchAlarmsJsonView(BaseView):
             items = self.get_items()
             alarms = []
             for alarm in items:
+                duration_label = '{0} {1} {2}'.format(
+                    _('for'), alarm.evaluation_periods * int(alarm.period / 60.0), _('minutes'))
                 alarms.append(dict(
                     name=alarm.name,
                     description=alarm.description,
@@ -441,6 +443,7 @@ class CloudWatchAlarmsJsonView(BaseView):
                     threshold=alarm.threshold,
                     unit=alarm.unit,
                     state=alarm.state_value,
+                    duration_label=duration_label,
                 ))
             return dict(results=alarms)
 
