@@ -277,8 +277,8 @@ class CloudWatchMetricsJsonView(BaseView):
                         'dimensions': item.dimensions
                     } for item in items if item.namespace not in STD_NAMESPACES and item.dimensions]
                 if cat['name'] in ['ec2allinstances', 'elball']:
-                    tmp = set([met['name'] for met in tmp])
-                    tmp = [([], met, item.namespace) for met in tmp]
+                    tmp = set([(met['name'], met['namespace']) for met in tmp])
+                    tmp = [([], met[0], met[1]) for met in tmp]
                 else:
                     tmp = [(met['dimensions'].items(), met['name'], met['namespace']) for met in tmp]
                 cat_metrics = []
