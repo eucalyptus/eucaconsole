@@ -1,7 +1,7 @@
 angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServiceModule'])
 .directive('alarmActions', function () {
     return {
-        restrict: 'A',
+        restrict: 'E',
         replace: true,
         require: ['^ngModel', 'alarmActions'],
         scope: {
@@ -59,6 +59,9 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             $scope.addAction = function (evt) {
                 evt.preventDefault();
                 //  Do not add action if form is invalid
+                if($scope.state != 'complete') {
+                    return;
+                }
 
                 var policyName = $scope.action.scalingGroupPolicy,
                     policy = $scope.scalingGroupPolicies[policyName];
@@ -151,36 +154,11 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             var formCtrl = ctrls[0],
                 modelCtrl = ctrls[1];
 
-            //console.log('form', formCtrl);
-            //console.log('model', modelCtrl);
-
             formCtrl.$removeControl(modelCtrl);
             scope.$watch(attrs.ngModel, function () {
                 modelCtrl.$setUntouched();
                 modelCtrl.$setPristine();
             });
-        }
-    };
-})
-.directive('requiredIf', function () {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function (scope, element, attrs, ctrl) {
-            var form = scope.alarmActionsForm;
-            var field = attrs.requiredIf;
-
-            ctrl.$validators.requiredIf = function (modelValue) {
-                var target = form[field].$modelValue;
-
-                if(target === '' && modelValue !== '') {
-                    return true;
-                }
-                if(target !== '' && modelValue !== '') {
-                    return true;
-                }
-                return false;
-            };
         }
     };
 })

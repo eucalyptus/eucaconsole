@@ -373,7 +373,10 @@ class CloudWatchAlarmDetailView(BaseView):
             'evaluation_periods': self.alarm.evaluation_periods,
             'comparison': self.alarm.comparison,
             'threshold': self.alarm.threshold,
-            'description': self.alarm.description
+            'description': self.alarm.description,
+            'alarm_actions': self.alarm.alarm_actions,
+            'insufficient_data_actions': self.alarm.insufficient_data_actions,
+            'ok_actions': self.alarm.ok_actions
         })
 
         self.render_dict = dict(

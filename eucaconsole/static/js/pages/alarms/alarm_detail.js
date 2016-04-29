@@ -24,6 +24,11 @@ angular.module('AlarmDetailPage', [
             eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
                 scope.redirectPath = path;
             });
+
+            scope.$watchCollection('alarm.actions', function () {
+                scope.collateActions();
+                console.log(scope.alarm);
+            });
         },
         controller: ['$scope', '$window', 'AlarmService', 'ModalService',
         function ($scope, $window, AlarmService, ModalService) {
@@ -80,6 +85,19 @@ angular.module('AlarmDetailPage', [
 
             $scope.copyAlarm = function () {
                 ModalService.openModal('copyAlarm');
+            };
+
+            $scope.collateActions = function () {
+                var targets = {
+                    ALARM: 'alarm_actions',
+                    INSUFFICIENT_DATA: 'insufficient_data_actions',
+                    OK: 'ok_actions'
+                };
+
+                $scope.alarm.actions.forEach(function (action) {
+                    var target = targets[action.alarm_state];
+                    $scope.alarm[target].push(action.arn);
+                });
             };
         }]
     };
