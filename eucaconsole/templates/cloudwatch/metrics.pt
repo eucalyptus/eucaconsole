@@ -345,7 +345,6 @@
     <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/metric-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
@@ -353,7 +352,6 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-filter.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/metrics.js')}"></script>
 </div>
 
