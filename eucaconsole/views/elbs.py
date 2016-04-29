@@ -552,6 +552,7 @@ class BaseELBView(TaggedItemView):
         return subnets
 
     def get_availability_zones(self):
+        # TODO: switch this over to choice manager in next release to leverage caching
         availability_zones = []
         if self.ec2_conn:
             with boto_error_handler(self.request):
