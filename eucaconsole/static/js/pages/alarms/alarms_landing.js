@@ -34,16 +34,12 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
                 }); 
         };
 
+        $scope.$on('alarmStateView:refreshList', function () {
+            $scope.refreshList();
+        });
+
         $scope.refreshList = function () {
-            //
-            //  NEVER DO THIS!!  THIS IS TERRIBLE!!!
-            //  The proper solution, which will be implemented soon,
-            //  is to have this and the parent controllers attached
-            //  to directives, thus enabling cross-controller communication
-            //  via ng-require.
-            //
-            //  But, this will do for now.
-            //
+            // TODO: Better refresh event handling
             $timeout(function () {
                 $('#refresh-btn').click();
             });
