@@ -22,7 +22,7 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
             modal.foundation('reveal', 'open');
         };
 
-        this.deleteAlarm = function (event) {
+        $scope.deleteAlarm = function (event) {
             $('#delete-alarm-modal').foundation('reveal', 'close');
 
             AlarmService.deleteAlarms($scope.alarms, csrf_token)
@@ -34,7 +34,7 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
                 }); 
         };
 
-        this.refreshList = function () {
+        $scope.refreshList = function () {
             //
             //  NEVER DO THIS!!  THIS IS TERRIBLE!!!
             //  The proper solution, which will be implemented soon,
