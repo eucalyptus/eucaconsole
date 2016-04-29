@@ -42,8 +42,8 @@
                 <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
-                <ul id="item-dropdown_{{ item.name | urlSafe }}" class="f-dropdown" data-dropdown-content="">
+                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
+                <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a i18n:translate="" ng-href="${prefix}/{{ item.name | b64encode }}">
                             View/edit details</a>
@@ -104,8 +104,8 @@
                 <td class="alarm-actions">{{ item.alarm_actions.length }}</td>
                 <td>
                    <span class="actions">
-                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
-                        <ul id="item-dropdown_{{ item.name | urlSafe }}" class="f-dropdown" data-dropdown-content="">
+                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
+                        <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.name | b64encode }}">
                                     View/edit details</a>
