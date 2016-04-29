@@ -5,8 +5,10 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
         replace: true,
         require: ['^ngModel', 'alarmActions'],
         scope: {
-            alarmActions: '=ngModel',
-            alarmId: '@'
+            allActions: '=ngModel',
+            okActions: '=',
+            alarmActions: '=',
+            insufficientDataActions: '='
         },
         templateUrl: function (element, attributes) {
             return attributes.template;
@@ -18,11 +20,15 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             scope.defaultOptionValue = 'Select policy...';
 
             scope.$watchCollection('action', function (newVal) {
-                actionsCtrl.validate(newVal, function (validity) {
-                    Object.keys(validity).forEach(function (key) {
-                        modelCtrl.$setValidity(key, validity[key]);
-                    });
-                });
+                var validity = actionsCtrl.validate(newVal);
+                modelCtrl.$setValidity('actionEditor', validity);
+            });
+
+            scope.$watchCollection('allActions', function (newVal, oldVal) {
+                if(newVal != oldVal) {
+                    modelCtrl.$setDirty();
+                    modelCtrl.$setTouched();
+                }
             });
         },
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
@@ -37,23 +43,23 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             });
 
             this.validate = function (action, callback) {
-                var validity = {};
+                var validity = false;
 
                 if(action.scalingGroup === '' && action.scalingGroupPolicy === '') {
                     // Valid because empty: form valid, add action button disabled
                     $scope.state = 'empty';
-                    validity.actionEditor = true;
+                    validity = true;
                 } else if(action.scalingGroup !== '' && action.scalingGroupPolicy !== '') {
                     // Valid because complete: form valid, add action button enabled
                     $scope.state = 'complete';
-                    validity.actionEditor = true;
+                    validity = true;
                 } else {
                     // Invalid because incomplete: form invalid, add action button disabled
                     $scope.state = 'incomplete';
-                    validity.actionEditor = false;
+                    validity = false;
                 }
 
-                callback(validity);
+                return validity;
             };
 
             $scope.addAction = function (evt) {
@@ -67,7 +73,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                     policy = $scope.scalingGroupPolicies[policyName];
 
                 //  Do not add action if duplicate
-                var duplicate = $scope.alarmActions.some(function (current) {
+                var duplicate = $scope.allActions.some(function (current) {
                     return current.arn === policy.arn && current.alarm_state === $scope.action.alarm_state;
                 });
                 if(duplicate) {
@@ -81,18 +87,18 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                     arn: policy.arn,
                     scaling_adjustment: policy.scaling_adjustment
                 };
-                $scope.alarmActions.push(action);
+                $scope.allActions.push(action);
 
                 $scope.updateActions();
             };
 
             $scope.removeAction = function ($index) {
-                $scope.alarmActions.splice($index, 1);
+                $scope.allActions.splice($index, 1);
                 $scope.updateActions();
             };
 
             $scope.updateActions = function () {
-                $scope.$emit('actionsUpdated', $scope.alarmActions);
+                $scope.$emit('actionsUpdated', $scope.allActions);
                 $scope.resetForm();
             };
 
@@ -123,7 +129,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                             filtered = {};
 
                         var availableKeys = Object.keys(policies).filter(function (key) {
-                            return !$scope.alarmActions.some(function (action) {
+                            return !$scope.allActions.some(function (action) {
                                 return action.policy_name === key && action.alarm_state === $scope.action.alarm_state;
                             });
                         });

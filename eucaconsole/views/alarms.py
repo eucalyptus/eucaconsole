@@ -360,6 +360,22 @@ class CloudWatchAlarmDetailView(BaseView):
         self.alarm = self.get_alarm(alarm_id)
         self.alarm_form = CloudWatchAlarmUpdateForm(request)
 
+        alarm_actions = []
+        for action in self.alarm.alarm_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'ALARM'
+            alarm_actions.append(detail)
+
+        for action in self.alarm.insufficient_data_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'INSUFFICIENT_DATA'
+            alarm_actions.append(detail)
+
+        for action in self.alarm.ok_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'OK'
+            alarm_actions.append(detail)
+
         self.alarm_json = json.dumps({
             'name': self.alarm.name,
             'state': self.alarm.state_value,
@@ -374,6 +390,7 @@ class CloudWatchAlarmDetailView(BaseView):
             'comparison': self.alarm.comparison,
             'threshold': self.alarm.threshold,
             'description': self.alarm.description,
+            'actions': alarm_actions,
             'alarm_actions': self.alarm.alarm_actions,
             'insufficient_data_actions': self.alarm.insufficient_data_actions,
             'ok_actions': self.alarm.ok_actions
@@ -404,26 +421,9 @@ class CloudWatchAlarmDetailView(BaseView):
                 }
                 dimension_options.append(option)
 
-        alarm_actions = []
-        for action in self.alarm.alarm_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'ALARM'
-            alarm_actions.append(detail)
-
-        for action in self.alarm.insufficient_data_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'INSUFFICIENT_DATA'
-            alarm_actions.append(detail)
-
-        for action in self.alarm.ok_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'OK'
-            alarm_actions.append(detail)
-
         self.render_dict.update(
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
             dimensions=dimensions,
-            alarm_actions_json=json.dumps(alarm_actions),
             dimension_options=dimension_options
         )
         return self.render_dict

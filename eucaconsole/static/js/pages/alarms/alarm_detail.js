@@ -27,7 +27,6 @@ angular.module('AlarmDetailPage', [
 
             scope.$watchCollection('alarm.actions', function () {
                 scope.collateActions();
-                console.log(scope.alarm);
             });
         },
         controller: ['$scope', '$window', 'AlarmService', 'ModalService',
@@ -93,6 +92,9 @@ angular.module('AlarmDetailPage', [
                     INSUFFICIENT_DATA: 'insufficient_data_actions',
                     OK: 'ok_actions'
                 };
+                $scope.alarm.insufficient_data_actions = [];
+                $scope.alarm.alarm_actions = [];
+                $scope.alarm.ok_actions = [];
 
                 $scope.alarm.actions.forEach(function (action) {
                     var target = targets[action.alarm_state];

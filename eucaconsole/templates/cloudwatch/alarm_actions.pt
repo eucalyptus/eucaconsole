@@ -1,7 +1,7 @@
 <div class="actions" i18n:domain="eucaconsole">
     <h6>Actions</h6>
     <div class="item-list">
-        <span class="item" ng-repeat="action in alarmActions" data-item-value="{{ action.arn }}">
+        <span class="item" ng-repeat="action in allActions" data-item-value="{{ action.arn }}">
             <span i18n:translate="">When</span>
             <strong>{{ action.alarm_state }}</strong>
             <span i18n:translate="">for group</span>
@@ -32,6 +32,7 @@
             <div class="columns large-9 small-9">
                 <select ng-model="action.alarm_state"
                         ng-init="action.alarm_state = 'ALARM'"
+                        ng-change="updatePolicies()"
                         do-not-validate="">
                     <option value="ALARM">ALARM</option>
                     <option value="INSUFFICIENT_DATA">INSUFFICIENT DATA</option>
