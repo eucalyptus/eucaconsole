@@ -22,6 +22,10 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
             modal.foundation('reveal', 'open');
         };
 
+        $scope.toggleContent = function() {
+            $scope.expanded = !$scope.expanded;
+        };
+
         $scope.deleteAlarm = function (event) {
             $('#delete-alarm-modal').foundation('reveal', 'close');
 
@@ -57,6 +61,5 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
                 ModalService.openModal('copyAlarm');
             });
         };
-
 
     }]);
