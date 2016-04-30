@@ -117,7 +117,7 @@ class RegionCache(object):
 
     def get_regions(self, host):
         @default_term.cache_on_arguments(namespace='regions')
-        def _get_regions_cache_(self, host):
+        def _get_regions_cache_(self):  #, host):
             return _get_regions_(self)
 
         def _get_regions_(self):
@@ -128,7 +128,8 @@ class RegionCache(object):
                 del region.connection
             return regions
         try:
-            return _get_regions_cache_(self, host)
+            regions = _get_regions_cache_(self)  #, host)
+            return regions
         except pylibmc.Error:
             return _get_regions_(self)
 
@@ -240,7 +241,7 @@ class ConnectionManager(object):
                 ufshost, port, 'euca', access_id, secret_key, token, 'ec2', dns_enabled
             )
             regions = RegionCache(conn).get_regions(ufshost)
-            region = [region.endpoint for region in regions if region.name == region]
+            region = [reg.endpoint for reg in regions if reg.name == region['label']]
             if region:
                 endpoint = region[0]
                 parsed = urlparse(endpoint)
