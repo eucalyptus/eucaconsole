@@ -30,6 +30,12 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                     modelCtrl.$setTouched();
                 }
             });
+
+            window.onbeforeunload = function () {
+                if(scope.state === 'incomplete') {
+                    return $('#warning-message-unsaved-changes').text();
+                }
+            };
         },
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
             var vm = this;
@@ -119,7 +125,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
 
             $scope.updatePolicies = function () {
                 if($scope.action.scalingGroup === '' || $scope.action.scalingGroup === undefined) {
-                    $scope.resetForm();
+                    $scope.action.scalingGroupPolicy = '';
                     return;
                 }
 
