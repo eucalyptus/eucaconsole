@@ -103,6 +103,9 @@ angular.module('CreateAlarmModal', [
                     $scope.alarm.metric.namespace = $scope.namespace;
                 }
                 $scope.alarm.dimensions = attrs.alarmName ? JSON.stringify($scope.dimensions) : $scope.dimensions;
+                if ($scope.invalidDimensions) {
+                    $scope.alarm.dimensions = '';
+                }
                 $scope.alarm.statistic = $scope.alarm.statistic ? $scope.alarm.statistic : attrs.defaultStatistic;
                 $scope.alarm.comparison = '>=';
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
@@ -129,6 +132,7 @@ angular.module('CreateAlarmModal', [
                 $scope.hideAlarmActions = attrs.hideAlarmActions || false;
                 $scope.editDimensions = attrs.editDimensions || false;
                 $scope.dimensionChoices = [];
+                $scope.alarmsLanding = attrs.alarmsLanding || false;
                 if (attrs.editDimensions && !attrs.alarmsLanding) {
                     // Build dimension choices for Copy Alarm on alarm details page
                     $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices);
@@ -151,6 +155,7 @@ angular.module('CreateAlarmModal', [
 
             this.initializeForCopy = function (alarm, attrs) {
                 var parsedDimensionChoices = null;
+                var selectedChoices = [];
                 var allDimensionChoices = [];
                 var stdDimensionNamespaces = ['AWS/EC2', 'AWS/ELB', 'AWS/EBS'];
                 if (attrs.alarmName) {
@@ -160,6 +165,7 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm.name = '';
                 $scope.alarm.dimensions = alarm.dimensions;
                 $scope.dimensions = alarm.dimensions;
+                $scope.invalidDimensions = false;
                 $scope.namespace = alarm.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
@@ -176,6 +182,13 @@ angular.module('CreateAlarmModal', [
                     } else {
                         // Alarms with standard namespace
                         $scope.dimensionChoices = parsedDimensionChoices[alarm.namespace];
+                    }
+                    selectedChoices = $scope.dimensionChoices.filter(function (item) {
+                        return !!item.selected;
+                    });
+                    if (selectedChoices.length === 0) {
+                        // Handle when resource in dimensions is no longer available (e.g. instance was terminated)
+                        $scope.invalidDimensions = true;
                     }
                 }
                 finishInit(attrs);
