@@ -132,8 +132,9 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.securitygroup.choices = self.choices_manager.security_groups(
             securitygroups=self.securitygroups, use_id=True, add_blank=False)
         self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
-        self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
-        self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
+        if self.image is not None:
+            self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
+            self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
         self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
 
         # Set init data for security group
