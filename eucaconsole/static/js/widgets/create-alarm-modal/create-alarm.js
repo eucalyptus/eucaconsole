@@ -184,7 +184,7 @@ angular.module('CreateAlarmModal', [
                         $scope.dimensionChoices = parsedDimensionChoices[alarm.namespace];
                     }
                     selectedChoices = $scope.dimensionChoices.filter(function (item) {
-                        return !!item.selected;
+                        return !!item.selected || item.value === JSON.stringify($scope.alarm.dimensions);
                     });
                     if (selectedChoices.length === 0) {
                         // Handle when resource in dimensions is no longer available (e.g. instance was terminated)
