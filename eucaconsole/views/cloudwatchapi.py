@@ -273,7 +273,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                 for value in stats_list[0].get('values'):
                     threshold_values.append(dict(x=value.get('x'), y=threshold))
             stats_list.append(dict(
-                color='#ff0000',
+                color='#ff0000',  # NOTE: Update cloudwatch_charts.scss dashed selector when changing color here
                 key=_('Alarm threshold'),
                 values=threshold_values,
             ))
