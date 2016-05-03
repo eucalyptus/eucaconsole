@@ -95,7 +95,8 @@ angular.module('AlarmDetailPage', [
             duration: '=',
             statistic: '=',
             unit: '@',
-            dimensions: '='
+            dimensions: '=',
+            threshold: '@'
         },
         link: function (scope, element) {
             scope.target = element[0];
@@ -141,7 +142,8 @@ angular.module('AlarmDetailPage', [
                     namespace: $scope.namespace,
                     duration: $scope.duration,
                     statistic: $scope.statistic,
-                    unit: $scope.unit
+                    unit: $scope.unit,
+                    threshold: $scope.threshold
                 }).then(function(oData) {
                     var results = oData ? oData.results : '';
                     var maxValue = oData.max_value || 100;

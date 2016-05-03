@@ -171,6 +171,7 @@
                                 duration="3600"
                                 statistic="${alarm.statistic}"
                                 unit="${alarm.unit}"
+                                threshold="${alarm.threshold}"
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
