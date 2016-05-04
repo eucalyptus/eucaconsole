@@ -153,7 +153,8 @@ angular.module('AlarmDetailPage', [
                     ChartService.renderChart($scope.target, results, {
                         unit: oData.unit || $scope.unit,
                         metric: $scope.metric,
-                        maxValue: maxValue
+                        maxValue: maxValue,
+                        threshold: $scope.threshold
                     });
                 });
             });

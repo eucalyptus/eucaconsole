@@ -11,6 +11,7 @@ angular.module('ChartServiceModule', [])
     var svc = {
         renderChart: function (target, results, params) {
             var yFormat = '.0f';
+            var thresholdValue;
             params = params || {};
 
             var chart = nv.models.lineChart()
@@ -56,6 +57,14 @@ angular.module('ChartServiceModule', [])
                 yFormat = '.1f';
                 if (params.maxValue && params.maxValue < 5) {
                     yFormat = '.3f';
+                }
+            }
+
+            if (params.threshold) {
+                // Ensure alarm threshold isn't at the top of the chart when threshold hasn't been exceeded
+                thresholdValue = parseInt(params.threshold, 10);
+                if (thresholdValue > params.maxValue) {
+                    chart.forceY([0, Math.round(thresholdValue + (thresholdValue * 0.25))]);
                 }
             }
 
