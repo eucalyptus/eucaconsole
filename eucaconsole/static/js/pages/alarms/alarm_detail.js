@@ -147,7 +147,7 @@ angular.module('AlarmDetailPage', [
                 }).then(function(oData) {
                     var results = oData ? oData.results : '';
                     var maxValue = oData.max_value || 100;
-                    if (!results.values.length) {
+                    if (results && !results.length) {
                         ChartService.resetChart('.metric-chart');
                     }
                     ChartService.renderChart($scope.target, results, {
