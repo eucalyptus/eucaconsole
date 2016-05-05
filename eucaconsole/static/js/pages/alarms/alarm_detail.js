@@ -117,7 +117,8 @@ angular.module('AlarmDetailPage', [
             statistic: '=',
             unit: '@',
             dimensions: '=',
-            threshold: '@'
+            threshold: '@',
+            formname: '@'
         },
         link: function (scope, element) {
             scope.target = element[0];
@@ -136,7 +137,7 @@ angular.module('AlarmDetailPage', [
                 var parsedDims = angular.isObject(newVal) ? newVal : JSON.parse(newVal);
                 var resourceLabel = '';
                 var resourceLabels = [];
-                var dimensionField = angular.element('form[name="alarmUpdateForm"]').find('[name="dimensions"]');
+                var dimensionField = angular.element('form[name="' + $scope.formname + '"]').find('[name="dimensions"]');
                 var selectedDimField = dimensionField.find('[selected]');
                 if (selectedDimField.length && newVal === $scope.dimensions) {
                     resourceLabel = selectedDimField.text();

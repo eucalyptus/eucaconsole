@@ -171,6 +171,7 @@
                                 statistic="alarm.statistic"
                                 unit="${alarm.unit}"
                                 threshold="${alarm.threshold}"
+                                formname="alarmUpdateForm"
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
