@@ -95,7 +95,7 @@ class DimensionChoicesManager(BaseView):
 
         dimension_choices = list(chain.from_iterable(choices))
 
-        if self._none_selected(dimension_choices):
+        if self._none_selected(dimension_choices) and self.existing_dimensions is not None:
             dimension_choices.append({'label': _('Select dimension...'), 'value': '', 'selected': True})
 
         return dimension_choices
@@ -204,10 +204,13 @@ class DimensionChoicesManager(BaseView):
         return True
 
     def _build_option(self, resource_type, resource_id, resource_label):
+        selected = False
+        if self.existing_dimensions is not None:
+            selected = [resource_id] == self.existing_dimensions.get(resource_type)
         return {
             'label': '{0} = {1}'.format(resource_type, resource_label),
             'value': re.sub(r'\s+', '', json.dumps({resource_type: [resource_id]})),
-            'selected': [resource_id] == self.existing_dimensions.get(resource_type)
+            'selected': selected
         }
 
 
@@ -256,6 +259,13 @@ class CloudWatchAlarmsView(LandingPageView):
 
     @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
     def alarms_landing(self):
+        dimension_options = {}
+        for namespace in ['AWS/EC2', 'AWS/ELB', 'AWS/EBS']:
+            dimension_options[namespace] = DimensionChoicesManager(self.request).choices_by_namespace(namespace)
+
+        self.render_dict.update(
+            dimension_options_json=json.dumps(dimension_options)
+        )
         return self.render_dict
 
     @view_config(route_name='cloudwatch_alarms_create', renderer=TEMPLATE, request_method='POST')
@@ -417,6 +427,8 @@ class CloudWatchAlarmsJsonView(BaseView):
             items = self.get_items()
             alarms = []
             for alarm in items:
+                duration_label = '{0} {1} {2}'.format(
+                    _('for'), alarm.evaluation_periods * int(alarm.period / 60.0), _('minutes'))
                 alarms.append(dict(
                     name=alarm.name,
                     description=alarm.description,
@@ -431,6 +443,7 @@ class CloudWatchAlarmsJsonView(BaseView):
                     threshold=alarm.threshold,
                     unit=alarm.unit,
                     state=alarm.state_value,
+                    duration_label=duration_label,
                 ))
             return dict(results=alarms)
 

@@ -31,10 +31,18 @@
             <ul ng-if="!editDimensions">
                 <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
-            <select ng-model="alarm.dimensions" ng-if="editDimensions" id="dimensions-select">
-                <option ng-repeat="dimension in dimensionChoices" ng-selected="dimension.selected"
+            <select name="dimensions" ng-model="alarm.dimensions" ng-if="editDimensions"
+                    id="dimensions-select" required="required">
+                <option ng-if="alarmsLanding &amp;&amp; invalidDimensions" i18n:translate="" value="">
+                    Select dimension...
+                </option>
+                <option ng-repeat="dimension in dimensionChoices"
+                        ng-selected="dimension.selected || dimension.value === alarm.dimensions"
                         ng-value="dimension.value">{{ dimension.label }}</option>
             </select>
+            <small class="error"
+                   ng-show="createAlarmForm.dimensions.$touched &amp;&amp; createAlarmForm.dimensions.$error.required"
+                   i18n:translate="">Dimension is required.</small>
         </div>
     </div>
     <div class="row controls-wrapper">

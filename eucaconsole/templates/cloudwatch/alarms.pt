@@ -1,10 +1,11 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarms.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="AlarmsPage" ng-controller="AlarmsCtrl">
+<div metal:fill-slot="main_content" ng-app="AlarmsPage" ng-controller="AlarmsCtrl as alarmsCtrl">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('alarms', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -17,7 +18,7 @@
         <h3 id="pagetitle"><strong i18n:translate="">Alarms</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" ng-click="revealModal('create')" i18n:translate="">Create Alarm</a>
+                <a class="button" ng-click="alarmsCtrl.revealModal('create')" i18n:translate="">Create Alarm</a>
                 <metal:block metal:use-macro="layout.global_macros['more_actions']">
                     <div metal:fill-slot="menu_items" tal:omit-tag="">
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
@@ -26,35 +27,38 @@
                             </a>
                         </li>
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
-                            <a i18n:translate="" class="more-actions-create-like-this">
+                            <a i18n:translate="" class="more-actions-create-like-this"
+                               ng-click="alarmsCtrl.showCopyAlarm((items | filter: {selected: true})[0])">
                                 Create alarm like this one
                             </a>
                         </li>
                         <li>
-                            <a i18n:translate="" class="more-actions-delete" ng-click="revealModal('delete', (items | filter:{selected: true}))">
+                            <a i18n:translate="" class="more-actions-delete" ng-click="alarmsCtrl.revealModal('delete', (items | filter:{selected: true}))">
                                 Delete
                             </a>
                         </li>
                     </div>
                 </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
-                <ul id="item-dropdown_{{ item.name | urlSafe }}" class="f-dropdown" data-dropdown-content="">
+                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
+                <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a i18n:translate="" ng-href="${prefix}/{{ item.name | b64encode }}">
                             View/edit details</a>
                     </li>
                     <li>
-                        <a i18n:translate="">Create alarm like this</a>
+                        <a i18n:translate="" ng-click="alarmsCtrl.showCopyAlarm(item)">Create alarm like this one</a>
                     </li>
                     <li>
-                        <a ng-click="revealModal('delete', item)" i18n:translate="">Delete</a>
+                        <a ng-click="alarmsCtrl.revealModal('delete', item)" i18n:translate="">Delete</a>
                     </li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_header" tal:omit-tag="">
-                <a ng-href="${prefix}/{{ item.name | b64encode }}">{{ item.name || item.id }}</a>
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <a ng-href="${prefix}/{{ item.name | b64encode }}" class="has-checkbox">{{ item.name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -91,27 +95,26 @@
                     <a ng-href="${prefix}/{{ item.name | b64encode }}">
                         {{ item.name }}</a>
                 </td>
-                <td>
-                    {{ item.statistic }}
+                <td ng-attr-data-unit="{{ item.unit }}">
                     {{ item.metric }}
                     {{ item.comparison }}
                     {{ item.threshold }}
-                    {{ item.unit !== 'None' ? item.unit : '' }}
+                    {{ item.duration_label }}
                 </td>
                 <td class="alarm-actions">{{ item.alarm_actions.length }}</td>
                 <td>
                    <span class="actions">
-                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | urlSafe }}"><i class="grid-action"></i></span>
-                        <ul id="item-dropdown_{{ item.name | urlSafe }}" class="f-dropdown" data-dropdown-content="">
+                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></span>
+                        <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.name | b64encode }}">
                                     View/edit details</a>
                             </li>
                             <li>
-                                <a i18n:translate="">Create alarm like this</a>
+                                <a i18n:translate="" ng-click="alarmsCtrl.showCopyAlarm(item)">Create alarm like this one</a>
                             </li>
                             <li>
-                                <a ng-click="revealModal('delete', item)" i18n:translate="">Delete</a>
+                                <a ng-click="alarmsCtrl.revealModal('delete', item)" i18n:translate="">Delete</a>
                             </li>
                         </ul>
                    </span>
@@ -138,7 +141,22 @@
                 </div>
             </div>
         </div>
-
+        <!-- Create Alarm modal dialog -->
+        <div class="modal xlarge create-alarm-modal" modal="copyAlarm" ng-if="selectedAlarm">
+            <div create-alarm=""
+                template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                dimensions="{{ selectedAlarm.dimensions }}"
+                namespace="{{ selectedAlarm.namespace }}"
+                unit="{{ selectedAlarm.unit }}"
+                default-metric="{{ selectedAlarm.metric }}"
+                default-statistic="{{ selectedAlarm.statistic }}"
+                alarm-name="{{ selectedAlarm.name }}"
+                edit-dimensions="true"
+                alarms-landing="true"
+                dimension-choices="${dimension_options_json}"
+                load-metric-choices="false">
+            </div>
+        </div>
         <!--! Delete Alarm modal dialog -->
         ${panel('delete_alarm_dialog', modal_size='small')}
         <!--! /end modal dialogs -->
@@ -152,6 +170,12 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/metric-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarms_landing.js')}"></script>
 </div>
 

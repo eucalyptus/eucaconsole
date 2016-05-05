@@ -28,8 +28,8 @@ angular.module('CreateAlarmModal', [
                 createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
-                if(name === modalName && modalName !== 'copyAlarm') {
-                    scope.resetForm();
+                if(name === modalName) {
+                    scope.resetForm(name);
                 }
             });
         },
@@ -103,12 +103,15 @@ angular.module('CreateAlarmModal', [
                     $scope.alarm.metric.namespace = $scope.namespace;
                 }
                 $scope.alarm.dimensions = attrs.alarmName ? JSON.stringify($scope.dimensions) : $scope.dimensions;
+                if ($scope.invalidDimensions) {
+                    $scope.alarm.dimensions = '';
+                }
                 $scope.alarm.statistic = $scope.alarm.statistic ? $scope.alarm.statistic : attrs.defaultStatistic;
                 $scope.alarm.comparison = '>=';
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
                 $scope.alarm.period = defaults.period;
 
-                if (attrs.alarmName) {
+                if (attrs.alarmName && !attrs.alarmsLanding) {
                     $('#dimensions-select').chosen({'width': '100%', search_contains: true});
                 } else {
                     $scope.updateStaticDimensions($scope.alarm);
@@ -128,7 +131,12 @@ angular.module('CreateAlarmModal', [
                 $scope.title = attrs.title || 'Create Alarm';
                 $scope.hideAlarmActions = attrs.hideAlarmActions || false;
                 $scope.editDimensions = attrs.editDimensions || false;
-                $scope.dimensionChoices = $scope.editDimensions ? JSON.parse(attrs.dimensionChoices) : [];
+                $scope.dimensionChoices = [];
+                $scope.alarmsLanding = attrs.alarmsLanding || false;
+                if (attrs.editDimensions && !attrs.alarmsLanding) {
+                    // Build dimension choices for Copy Alarm on alarm details page
+                    $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices);
+                }
                 $scope.existingAlarms = [];
                 if(attrs.alarmName) {
                     AlarmService.getAlarm(attrs.alarmName)
@@ -146,13 +154,43 @@ angular.module('CreateAlarmModal', [
             };
 
             this.initializeForCopy = function (alarm, attrs) {
+                var parsedDimensionChoices = null;
+                var selectedChoices = [];
+                var allDimensionChoices = [];
+                var stdDimensionNamespaces = ['AWS/EC2', 'AWS/ELB', 'AWS/EBS'];
+                if (attrs.alarmName) {
+                    $scope.title = 'Create alarm like ' + attrs.alarmName;
+                }
                 $scope.alarm = alarm;
                 $scope.alarm.name = '';
                 $scope.alarm.dimensions = alarm.dimensions;
                 $scope.dimensions = alarm.dimensions;
+                $scope.invalidDimensions = false;
                 $scope.namespace = alarm.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
+                if (attrs.editDimensions && attrs.alarmsLanding) {
+                    // Handle dimension choices on alarms landing page
+                    parsedDimensionChoices = JSON.parse(attrs.dimensionChoices);
+                    if (stdDimensionNamespaces.indexOf(alarm.namespace) === -1) {
+                        // Alarms with custom metric/namespace
+                        parsedDimensionChoices = JSON.parse(attrs.dimensionChoices);
+                        stdDimensionNamespaces.forEach(function (namespace) {
+                            Array.prototype.push.apply(allDimensionChoices, parsedDimensionChoices[namespace]);
+                        });
+                        $scope.dimensionChoices = allDimensionChoices;
+                    } else {
+                        // Alarms with standard namespace
+                        $scope.dimensionChoices = parsedDimensionChoices[alarm.namespace];
+                    }
+                    selectedChoices = $scope.dimensionChoices.filter(function (item) {
+                        return !!item.selected || item.value === JSON.stringify($scope.alarm.dimensions);
+                    });
+                    if (selectedChoices.length === 0) {
+                        // Handle when resource in dimensions is no longer available (e.g. instance was terminated)
+                        $scope.invalidDimensions = true;
+                    }
+                }
                 finishInit(attrs);
             };
 
@@ -255,9 +293,11 @@ angular.module('CreateAlarmModal', [
                 });
             });
 
-            $scope.resetForm = function () {
-                $scope.alarm = angular.copy(defaults);
-                $scope.checkNameCollision();
+            $scope.resetForm = function (modalName) {
+                if (modalName !== 'copyAlarm') {
+                    $scope.alarm = angular.copy(defaults);
+                    $scope.checkNameCollision();
+                }
                 $scope.createAlarmForm.$setPristine();
                 $scope.createAlarmForm.$setUntouched();
             };

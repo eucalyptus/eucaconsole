@@ -26,4 +26,13 @@
     input[name=threshold] {
         margin-bottom: 0;
     }
+
+    .controls-wrapper {
+        &.dimensions {
+            small.error {
+                position: relative;
+                top: -8px;
+            }
+        }
+    }
 }
