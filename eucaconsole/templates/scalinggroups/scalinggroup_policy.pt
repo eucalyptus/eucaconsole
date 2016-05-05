@@ -93,7 +93,7 @@
                                 Create Scaling Policy
                             </button>
                             <a class="cancel-link" i18n:translate=""
-                               href="${request.route_path('scalinggroup_view', id=scaling_group.name)}">Cancel</a>
+                               href="${request.route_path('scalinggroup_policies', id=scaling_group.name)}">Cancel</a>
                         </div>
                     </form>
                 </div>

@@ -7,7 +7,7 @@
     </head>
 
     <div metal:fill-slot="main_content">
-        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}">
+        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}" invalid-dimensions="${invalid_dimensions}">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
@@ -35,7 +35,7 @@
                                 <a href="#" ng-click="copyAlarm()" i18n:translate="">Create alarm like this one</a>
                             </li>
                             <li>
-                                <a href="#" ng-click="delete($event)" i18n:translate="">Delete</a>
+                                <a data-reveal-id="delete-alarm-modal" i18n:translate="">Delete</a>
                             </li>
                         </metal:actions>
                     </metal:block>
@@ -44,8 +44,11 @@
                             title="Create alarm like ${alarm_id}"
                             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
                             alarm="{{ alarm }}"
+                            unit="${alarm.unit}"
                             alarm-name="${alarm_id}"
                             load-metric-choices="false"
+                            edit-dimensions="true"
+                            dimension-choices="${dimension_options_json}"
                             default-metric="${alarm.metric}">
                         </div>
                     </div>
@@ -73,10 +76,10 @@
                             <div class="large-9 small-9 columns field">
                                 <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
                             </div>
-                        </div>    
+                        </div>
                         <div class="row controls-wrapper">
                             <div class="large-3 small-3 columns">
-                                <label class="right" i18n:translate="">Dimensions</label>
+                                <label class="right" i18n:translate="">Dimension</label>
                             </div>
                             <div class="large-9 small-9 columns value" ng-cloak="">
                                 <select class="dimensions-select" ng-model="alarm.dimensions" chosen="" required="" name="dimensions">
@@ -94,11 +97,11 @@
                                 </div>
                                 <div class="large-3 small-4 columns value">
                                     <select ng-model="alarm.statistic">
-                                        <option i18n:translate="">Average</option>
-                                        <option i18n:translate="">Minimum</option>
-                                        <option i18n:translate="">Maximum</option>
-                                        <option i18n:translate="">Sum</option>
-                                        <option i18n:translate="">Sample Count</option>
+                                        <option value="Average" i18n:translate="">Average</option>
+                                        <option value="Minimum" i18n:translate="">Minimum</option>
+                                        <option value="Maximum" i18n:translate="">Maximum</option>
+                                        <option value="Sum" i18n:translate="">Sum</option>
+                                        <option value="SampleCount" i18n:translate="">Data samples</option>
                                     </select>
                                 </div>
                                 <div class="large-6 small-4 columns">
@@ -162,11 +165,11 @@
                             <h6>${metric_display_name}</h6>
                             <svg class="cwchart"
                                 metric-chart=""
-                                metric="{{ alarm.metric }}"
-                                namespace="{{ alarm.namespace }}"
-                                duration="alarm.duration"
-                                statistic="alarm.statistic"
-                                unit="{{ alarm.unit }}"
+                                metric="${alarm.metric}"
+                                namespace="${alarm.namespace}"
+                                duration="3600"
+                                statistic="${alarm.statistic}"
+                                unit="${alarm.unit}"
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
@@ -187,6 +190,9 @@
                     </form>
                 </div>
             </div>
+            <!--! Delete Alarm modal dialog -->
+            ${panel('delete_alarm_dialog', modal_size='small', detail_page=True)}
+            <!--! /end modal dialogs -->
         </div>
     </div>
     <div metal:fill-slot="tail_js">

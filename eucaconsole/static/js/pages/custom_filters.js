@@ -45,7 +45,7 @@ angular.module('CustomFilters', [])
 .filter('urlSafe', function () {
     return function (input) {
         var gen_delims = /[:\/\?#\[\]@\s]+/g;
-        var sub_delims = /[!\$&\'\(\)\*\+,;=]+/g;
+        var sub_delims = /[!\$&'\(\)\*\+,;=]+/g;
         input = input.replace(gen_delims, '-');
         input = input.replace(sub_delims, '');
         return input.toLowerCase();

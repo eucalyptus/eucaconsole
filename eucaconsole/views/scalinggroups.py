@@ -28,14 +28,14 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
-from dateutil import parser
 import simplejson as json
 import time
 
+from dateutil import parser
 from hashlib import md5
 from itertools import chain
 from markupsafe import escape
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 
 from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
@@ -48,7 +48,6 @@ from ..constants.cloudwatch import (
     DURATION_GRANULARITY_CHOICES_MAPPING)
 from ..constants.scalinggroups import (
     SCALING_GROUP_MONITORING_CHARTS_LIST, SCALING_GROUP_INSTANCE_MONITORING_CHARTS_LIST)
-from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupMonitoringForm,
     ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
@@ -700,13 +699,34 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         super(ScalingGroupPoliciesView, self).__init__(request)
         self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'Policies')]
         policy_ids = {}
+        scaling_policies = []
         with boto_error_handler(request):
-            self.scaling_group = self.get_scaling_group()
-            self.policies = self.get_policies(self.scaling_group)
-            for policy in self.policies:
-                policy_name = policy.name.encode('UTF-8')
-                policy_ids[policy_name] = md5(policy_name).hexdigest()[:8]
             self.alarms = self.get_alarms()
+            self.scaling_group = self.get_scaling_group()
+            policies = self.get_policies(self.scaling_group)
+
+        for policy in policies:
+            policy_alarms = []
+            if hasattr(policy, 'alarms'):
+                for alarm in self.alarms:
+                    for policy_alarm in policy.alarms:
+                        if alarm.name == policy_alarm.name and alarm not in policy_alarms:
+                            policy_alarms.append(alarm)
+            encoded_policy_name = policy.name.encode('UTF-8')
+            policy_ids[encoded_policy_name] = md5(encoded_policy_name).hexdigest()[:8]
+            scale_text_prefix = _('Remove') if policy.scaling_adjustment < 0 else _('Add')
+            scale_type = _('instances') if policy.adjustment_type == 'ChangeInCapacity' else '%'
+            if policy.adjustment_type == 'ChangeInCapacity' and abs(policy.scaling_adjustment) == 1:
+                scale_type = _('instance')
+            scale_text = '{0} {1} {2}'.format(scale_text_prefix, abs(policy.scaling_adjustment), scale_type)
+            scaling_policies.append(dict(
+                name=policy.name,
+                encoded_name=encoded_policy_name,
+                alarms=policy_alarms,
+                cooldown=policy.cooldown,
+                scale_text=scale_text,
+            ))
+
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
@@ -715,7 +735,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             scaling_group_name=self.escape_braces(self.scaling_group.name),
             create_form=self.create_form,
             delete_form=self.delete_form,
-            policies=self.policies,
+            policies=sorted(scaling_policies, key=itemgetter('name')),
             policy_ids=policy_ids,
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
@@ -796,8 +816,6 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 # Attach policy to alarm
                 alarm_name = self.request.params.get('alarm')
                 alarm = self.cloudwatch_conn.describe_alarms(alarm_names=[alarm_name])[0]
-                if 'EC2' in alarm.namespace:
-                    alarm.dimensions.update({"AutoScalingGroupName": self.scaling_group.name})
                 alarm.comparison = alarm._cmp_map.get(alarm.comparison)  # See https://github.com/boto/boto/issues/1311
                 # TODO: Detect if an alarm has 5 scaling policies attached to it and abort accordingly
                 if created_scaling_policy.policy_arn not in alarm.alarm_actions:

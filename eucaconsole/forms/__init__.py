@@ -147,16 +147,16 @@ class ChoicesManager(object):
         except pylibmc.Error:
             return _get_zones_(self, region)
 
-    def instances(self, instances=None, states=None, escapebraces=True):
+    def instances(self, instances=None, states=None, escapebraces=True, add_blank=True, id_first=False):
         from ..views import TaggedItemView
-        choices = [('', _(u'Select instance...'))]
+        choices = [('', _(u'Select instance...'))] if add_blank else []
         instances = instances or []
         if not instances and self.conn is not None:
             instances = self.conn.get_only_instances()
             if self.conn:
                 for instance in instances:
                     value = instance.id
-                    label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces)
+                    label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces, id_first=id_first)
                     if states is None:
                         choices.append((value, label))
                     else:
@@ -208,7 +208,7 @@ class ChoicesManager(object):
             else:
                 return [(name, name) for name, description in AWS_INSTANCE_TYPE_CHOICES]
 
-    def volumes(self, volumes=None, escapebraces=True, add_blank=True):
+    def volumes(self, volumes=None, escapebraces=True, add_blank=True, id_first=False):
         from ..views import TaggedItemView
         choices = []
         if add_blank:
@@ -219,7 +219,7 @@ class ChoicesManager(object):
             if self.conn:
                 for volume in volumes:
                     value = volume.id
-                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces)
+                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces, id_first=id_first)
                     choices.append((value, label))
         return choices
 

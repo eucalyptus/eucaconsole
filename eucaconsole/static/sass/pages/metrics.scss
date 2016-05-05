@@ -28,20 +28,42 @@ table td input[type="checkbox"] {
     }
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .actions {
+        .f-dropdown {
+            margin-left: -120px;
+            &:before {
+                margin-left: 120px;
+            }
+            &:after {
+                margin-left: 120px;
+            }
+        }
+    }
+}
+
 .split-top {
     height: 250px;
     overflow: auto;
 }
 
 .split-bar {
-    height: 0.6rem;
+    height: 0.9rem;
     width: 100%;
     color: grey;
     background: #ffffff;
     cursor: row-resize;
     overflow-y: hidden;
     hr {
-        margin: 4px 4px 4px 4px;
+        margin: 7px 4px 0px 4px;
+    }
+    .split-grab {
+        position: relative;
+        top: -12px;
+        margin-left: 49%;
+        color: $hpe-lightgray;
+        background: #ffffff;
+        transform: scale(2, 1);
     }
 }
 
@@ -51,12 +73,6 @@ table td input[type="checkbox"] {
 }
 
 .tile {
-    input[type="checkbox"] {
-        position: relative;
-        float: left;
-        top: 9px;
-        left: 5px;
-    }
     .dropdown.button.tiny {
         top: 5px !important;
         right: 2px !important;
@@ -91,9 +107,8 @@ div.absolute-grouping {
 
 .chart-wrapper {
     .graph-close {
-        position: relative;
-        bottom: 1rem;
-        left: 61rem;
+        float: right;
+        padding: 0.35rem 0.5rem 0 0.5rem;
         color: $hp-gray-65;
         font-size: rem-calc(35);
         line-height: 0.5rem;
@@ -101,11 +116,8 @@ div.absolute-grouping {
         cursor: pointer;
     }
     .metric-chart-menu {
-        position: relative;
-        bottom: 1.3rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        left: 58rem;
+        float: right;
+        padding: 0 0.5rem 0 0.5rem;
         color: $hp-gray-65;
         cursor: pointer;
     }

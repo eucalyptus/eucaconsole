@@ -455,7 +455,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 data: formData
             }).success(function (oData) {
                 $scope.isLoadingKeyPair = false;
-                var keypairMaterial = oData.payload;
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
@@ -463,8 +462,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // Download key pair file
                 $.generateFile({
                     csrf_token: form.find('input[name="csrf_token"]').val(),
-                    filename: $scope.newKeyPairName + '.pem',
-                    content: keypairMaterial,
+                    filename: 'not-used',  // server sets this
+                    content: 'none',
                     script: downloadUrl
                 });
                 // Close create key pair modal

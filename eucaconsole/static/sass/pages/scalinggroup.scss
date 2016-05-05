@@ -1,7 +1,7 @@
 /* @fileOverview Scaling Group detail page CSS */
 @import "../includes/eucavariables";
 
-// Import landing page styles for tile view display on Scaling group policies page
+// Import landing page styles for table view display on Scaling group policies page
 @import "../includes/landingpage";
 
 
@@ -61,7 +61,21 @@ input[type="number"] {
 }
 
 
-// Scaling group policies page and instances page
+// Scaling group policies page
+table.table.scaling-policies {
+    hr {
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    .dimension-item {
+        white-space: nowrap;
+    }
+    .threshold {
+        white-space: nowrap;
+    }
+}
+
+// Scaling group instances page
 .tile {
     @include panel-tile-mixin;
     &.policy .header .title {

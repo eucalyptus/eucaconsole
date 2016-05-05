@@ -176,8 +176,7 @@ class KeyPairView(BaseView):
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
             if self.request.is_xhr:
-                keypair_material = new_keypair.material if new_keypair else None
-                resp_body = json.dumps(dict(message=msg, payload=keypair_material))
+                resp_body = json.dumps(dict(message=msg))
                 return Response(status=200, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
                 location = self.request.route_path('keypair_view', subpath=name)

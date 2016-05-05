@@ -4,12 +4,13 @@
  *
  */
 
-angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceModule', 'CustomFilters'])
-    .controller('AlarmsCtrl', ['$scope', '$timeout', 'AlarmService', function ($scope, $timeout, AlarmService) {
+angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceModule', 'CustomFilters', 'CreateAlarmModal', 'ModalModule'])
+    .controller('AlarmsCtrl', ['$scope', '$timeout', 'AlarmService', 'ModalService', function ($scope, $timeout, AlarmService, ModalService) {
         $scope.alarms = [];
+        $scope.selectedAlarm = null;
         var csrf_token = $('#csrf_token').val();
 
-        $scope.revealModal = function (action, item) {
+        this.revealModal = function (action, item) {
             $scope.alarms = [].concat(item);
 
             $scope.expanded = false;
@@ -19,6 +20,10 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
 
             var modal = $('#' + action + '-alarm-modal');
             modal.foundation('reveal', 'open');
+        };
+
+        $scope.toggleContent = function() {
+            $scope.expanded = !$scope.expanded;
         };
 
         $scope.deleteAlarm = function (event) {
@@ -33,23 +38,15 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
                 }); 
         };
 
+        $scope.$on('alarmStateView:refreshList', function () {
+            $scope.refreshList();
+        });
+
         $scope.refreshList = function () {
-            //
-            //  NEVER DO THIS!!  THIS IS TERRIBLE!!!
-            //  The proper solution, which will be implemented soon,
-            //  is to have this and the parent controllers attached
-            //  to directives, thus enabling cross-controller communication
-            //  via ng-require.
-            //
-            //  But, this will do for now.
-            //
+            // TODO: Better refresh event handling
             $timeout(function () {
                 $('#refresh-btn').click();
             });
-        };
-
-        $scope.toggleContent = function () {
-            $scope.expanded = !$scope.expanded;
         };
 
         $scope.$on('alarm_created', function ($event, promise) {
@@ -57,4 +54,12 @@ angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceMo
                 $scope.refreshList();
             });
         });
+
+        this.showCopyAlarm = function(alarm) {
+            $scope.selectedAlarm = alarm;
+            $timeout(function() {
+                ModalService.openModal('copyAlarm');
+            });
+        };
+
     }]);

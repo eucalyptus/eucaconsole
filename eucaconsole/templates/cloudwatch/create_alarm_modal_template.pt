@@ -7,7 +7,7 @@
         </div>
         <div class="large-9 small-9 columns field">
             <input name="name" ng-model="alarm.name" unique-name="" required="required"
-                   type="text" ng-change="onNameChange()" ng-model-options="{ updateOn: 'blur' }" />
+                   type="text" ng-change="onNameChange()" ng-model-options="{ updateOn: 'keyup' }" />
             <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.uniqueName"
                     i18n:translate="">Alarm name must be unique.</small>
             <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.required"
@@ -25,13 +25,24 @@
     </div>
     <div class="row controls-wrapper dimensions">
         <div class="large-3 small-3 columns">
-            <label class="right" i18n:translate="">Dimensions</label>
+            <label class="right" i18n:translate="">Dimension</label>
         </div>
         <div class="large-9 small-9 columns">
             <ul ng-if="!editDimensions">
                 <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
-            <select multiple="true" ng-model="alarm.dimensions" chosen="" ng-if="editDimensions"></select>
+            <select name="dimensions" ng-model="alarm.dimensions" ng-if="editDimensions"
+                    id="dimensions-select" required="required">
+                <option ng-if="alarmsLanding &amp;&amp; invalidDimensions" i18n:translate="" value="">
+                    Select dimension...
+                </option>
+                <option ng-repeat="dimension in dimensionChoices"
+                        ng-selected="dimension.selected || dimension.value === alarm.dimensions"
+                        ng-value="dimension.value">{{ dimension.label }}</option>
+            </select>
+            <small class="error"
+                   ng-show="createAlarmForm.dimensions.$touched &amp;&amp; createAlarmForm.dimensions.$error.required"
+                   i18n:translate="">Dimension is required.</small>
         </div>
     </div>
     <div class="row controls-wrapper">

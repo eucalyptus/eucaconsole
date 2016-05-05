@@ -41,7 +41,7 @@ $gridwrapper-table-width: 100%;
 
 $dropdown-border-color: $hpe-lightgray;
 
-$alarm-status-color-alarm: darkred;
+$alarm-status-color-alarm: $hp-red;
 $alarm-status-color-insufficient: $hpe-gray;
 $alarm-status-color-ok: $hpe-green;
 
@@ -98,14 +98,7 @@ $alarm-status-color-ok: $hpe-green;
     &.f-dropdown {
         @include dropdown-shadow-mixin;
         li.disabled {
-            cursor: default;
-            a {
-                color: $hpe-lightgray;
-                pointer-events: none;
-            }
-            &:hover {
-                background-color: #fff;
-            }
+            @include disabled-list-item-mixin;
         }
     }
     hr {

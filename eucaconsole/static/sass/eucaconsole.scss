@@ -153,6 +153,11 @@ label {
     }
 }
 
+b, strong {
+    font-family: $euca-bold-font-family;
+    font-weight: bold;
+}
+
 /* -----------------------------------------
    Header
 ----------------------------------------- */
@@ -1335,6 +1340,16 @@ $btn-group-radius: 10px;
     animation: move 2s linear infinite;
     overflow: hidden;
 }
+
+/* -----------------------------------------
+   Disabled drop-down items
+----------------------------------------- */
+.f-dropdown {
+    li.disabled {
+        @include disabled-list-item-mixin;
+    }
+}
+
 
 /* -----------------------------------------
    Foundation fixes

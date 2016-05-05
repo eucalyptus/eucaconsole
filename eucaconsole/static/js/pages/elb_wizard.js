@@ -622,7 +622,7 @@ angular.module('ELBWizard', [
         angular.forEach($scope.availabilityZoneList, function(zone){
             var instanceCount = 0;
             angular.forEach($scope.instanceList, function(instance) {
-                if (instance.placement === zone.name) {
+                if (instance.availability_zone === zone.name) {
                     instanceCount += 1;
                 } 
             });
@@ -692,7 +692,7 @@ angular.module('ELBWizard', [
     $scope.getInstanceCount = function (type, group) {
         var count = 0;
         angular.forEach($scope.instanceList, function (instance) {
-            if (type === 'ZONE' && instance.placement === group) {
+            if (type === 'ZONE' && instance.availability_zone === group) {
                 count += 1;
             } else if (type === 'SUBNET' && instance.subnet_id === group) {
                 count += 1;

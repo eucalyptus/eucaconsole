@@ -94,3 +94,4 @@ class Alarm(object):
                 return _(u'OK')
         return ''  # Default to when resource has no alarms set
 
+
