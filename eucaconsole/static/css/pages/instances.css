@@ -172,7 +172,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status.shutting-down { background-color: #cccccc; }
 
-.alarm-status.alarm { background-color: darkred; }
+.alarm-status.alarm { background-color: #ff0000; }
 
 .alarm-status.insufficient_data { background-color: #5a5a5a; }
 
