@@ -164,6 +164,7 @@ angular.module('CreateAlarmModal', [
                 $scope.alarm = alarm;
                 $scope.alarm.name = '';
                 $scope.alarm.dimensions = alarm.dimensions;
+                $scope.alarm.actions = alarm.actions || [];
                 $scope.dimensions = alarm.dimensions;
                 $scope.invalidDimensions = false;
                 $scope.namespace = alarm.namespace;
@@ -200,6 +201,7 @@ angular.module('CreateAlarmModal', [
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
                 $scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : undefined;
+                $scope.alarm.actions = [];
                 if ($scope.dimensions === undefined) {
                     $scope.dimensions = {};
                     $scope.dimensions[$scope.resourceType] = [$scope.resourceId];

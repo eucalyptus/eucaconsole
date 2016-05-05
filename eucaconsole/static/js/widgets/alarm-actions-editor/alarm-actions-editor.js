@@ -1,14 +1,45 @@
 angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServiceModule'])
 .directive('alarmActions', function () {
     return {
-        restrict: 'A',
-        scope: true,
-        link: function (scope, element, attrs) {
-            scope.alarmId = attrs.alarmId;
-            scope.alarmActions = JSON.parse(attrs.alarmActions);
+        restrict: 'E',
+        replace: true,
+        require: ['^ngModel', 'alarmActions'],
+        scope: {
+            allActions: '=ngModel',
+            okActions: '=',
+            alarmActions: '=',
+            insufficientDataActions: '='
+        },
+        templateUrl: function (element, attributes) {
+            return attributes.template;
+        },
+        link: function (scope, element, attrs, ctrls) {
+            var modelCtrl = ctrls[0],       // Controller for ngModel
+                actionsCtrl = ctrls[1];     // Controller for this directive
+
             scope.defaultOptionValue = 'Select policy...';
+
+            scope.$watchCollection('action', function (newVal) {
+                var validity = actionsCtrl.validate(newVal);
+                modelCtrl.$setValidity('actionEditor', validity);
+            });
+
+            scope.$watchCollection('allActions', function (newVal, oldVal) {
+                if(newVal != oldVal) {
+                    modelCtrl.$setDirty();
+                    modelCtrl.$setTouched();
+                }
+            });
+
+            window.onbeforeunload = function () {
+                if(scope.state === 'incomplete') {
+                    return $('#warning-message-unsaved-changes').text();
+                }
+            };
         },
         controller: ['$scope', 'AlarmService', 'ScalingGroupsService', function ($scope, AlarmService, ScalingGroupsService) {
+            var vm = this;
+
             ScalingGroupsService.getScalingGroups().then(function (result) {
                 $scope.scalingGroups = result;
                 if ($scope.scalingGroupName) {
@@ -17,10 +48,30 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                 }
             });
 
+            this.validate = function (action, callback) {
+                var validity = false;
+
+                if(action.scalingGroup === '' && action.scalingGroupPolicy === '') {
+                    // Valid because empty: form valid, add action button disabled
+                    $scope.state = 'empty';
+                    validity = true;
+                } else if(action.scalingGroup !== '' && action.scalingGroupPolicy !== '') {
+                    // Valid because complete: form valid, add action button enabled
+                    $scope.state = 'complete';
+                    validity = true;
+                } else {
+                    // Invalid because incomplete: form invalid, add action button disabled
+                    $scope.state = 'incomplete';
+                    validity = false;
+                }
+
+                return validity;
+            };
+
             $scope.addAction = function (evt) {
                 evt.preventDefault();
                 //  Do not add action if form is invalid
-                if($scope.alarmActionsForm.$invalid || $scope.alarmActionsForm.$pristine) {
+                if($scope.state != 'complete') {
                     return;
                 }
 
@@ -28,7 +79,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                     policy = $scope.scalingGroupPolicies[policyName];
 
                 //  Do not add action if duplicate
-                var duplicate = $scope.alarmActions.some(function (current) {
+                var duplicate = $scope.allActions.some(function (current) {
                     return current.arn === policy.arn && current.alarm_state === $scope.action.alarm_state;
                 });
                 if(duplicate) {
@@ -42,30 +93,29 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                     arn: policy.arn,
                     scaling_adjustment: policy.scaling_adjustment
                 };
-                $scope.alarmActions.push(action);
+                $scope.allActions.push(action);
 
                 $scope.updateActions();
             };
 
             $scope.removeAction = function ($index) {
-                $scope.alarmActions.splice($index, 1);
+                $scope.allActions.splice($index, 1);
                 $scope.updateActions();
             };
 
             $scope.updateActions = function () {
-                $scope.$emit('actionsUpdated', $scope.alarmActions);
+                $scope.$emit('actionsUpdated', $scope.allActions);
                 $scope.resetForm();
             };
 
             $scope.resetForm = function () {
                 $scope.action = {
                     alarm_state: 'ALARM',
-                    scalingGroup: $scope.scalingGroupName || ''
+                    scalingGroup: '',
+                    scalingGroupPolicy: ''
                 };
                 $scope.defaultOptionValue = 'Select policy...';
                 $scope.scalingGroupPolicies = {};
-                $scope.alarmActionsForm.$setPristine();
-                $scope.alarmActionsForm.$setUntouched();
             };
 
             $scope.policiesAvailable = function () {
@@ -74,8 +124,8 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             };
 
             $scope.updatePolicies = function () {
-                if($scope.action.scalingGroup === '') {
-                    $scope.resetForm();
+                if($scope.action.scalingGroup === '' || $scope.action.scalingGroup === undefined) {
+                    $scope.action.scalingGroupPolicy = '';
                     return;
                 }
 
@@ -85,7 +135,7 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                             filtered = {};
 
                         var availableKeys = Object.keys(policies).filter(function (key) {
-                            return !$scope.alarmActions.some(function (action) {
+                            return !$scope.allActions.some(function (action) {
                                 return action.policy_name === key && action.alarm_state === $scope.action.alarm_state;
                             });
                         });
@@ -101,23 +151,26 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
                             $scope.defaultOptionValue = 'Select policy...';
                         }
                     }, function error (response) {
-                        console.log(response);
+                        $scope.scalingGroupPolicies = {};
+                        $scope.defaultOptionValue = 'No policies available';
                     });
             };
         }]
     };
 })
-.directive('requiredIfChanged', function () {
+.directive('doNotValidate', function () {
     return {
+        require: ['^form', 'ngModel'],
         restrict: 'A',
-        require: 'ngModel',
-        link: function (scope, element, attrs, ctrl) {
-            ctrl.$validators.requiredIfChanged = function (modelValue, viewValue) {
-                if(ctrl.$touched && ctrl.$isEmpty(modelValue)) {
-                    return false;
-                }
-                return true;
-            };
+        link: function (scope, element, attrs, ctrls) {
+            var formCtrl = ctrls[0],
+                modelCtrl = ctrls[1];
+
+            formCtrl.$removeControl(modelCtrl);
+            scope.$watch(attrs.ngModel, function () {
+                modelCtrl.$setUntouched();
+                modelCtrl.$setPristine();
+            });
         }
     };
 })

@@ -544,6 +544,22 @@ class CloudWatchAlarmDetailView(BaseView):
         self.alarm = self.get_alarm(alarm_id)
         self.alarm_form = CloudWatchAlarmUpdateForm(request)
 
+        alarm_actions = []
+        for action in self.alarm.alarm_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'ALARM'
+            alarm_actions.append(detail)
+
+        for action in self.alarm.insufficient_data_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'INSUFFICIENT_DATA'
+            alarm_actions.append(detail)
+
+        for action in self.alarm.ok_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'OK'
+            alarm_actions.append(detail)
+
         self.alarm_json = json.dumps({
             'name': self.alarm.name,
             'state': self.alarm.state_value,
@@ -557,7 +573,11 @@ class CloudWatchAlarmDetailView(BaseView):
             'evaluation_periods': self.alarm.evaluation_periods,
             'comparison': self.alarm.comparison,
             'threshold': self.alarm.threshold,
-            'description': self.alarm.description
+            'description': self.alarm.description,
+            'actions': alarm_actions,
+            'alarm_actions': self.alarm.alarm_actions,
+            'insufficient_data_actions': self.alarm.insufficient_data_actions,
+            'ok_actions': self.alarm.ok_actions
         })
 
         self.render_dict = dict(
@@ -581,25 +601,8 @@ class CloudWatchAlarmDetailView(BaseView):
         # Handle when resource in dimensions is no longer available (e.g. instance was terminated)
         invalid_dimensions = len([option for option in dimension_options if option.get('value') == ''])
 
-        alarm_actions = []
-        for action in self.alarm.alarm_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'ALARM'
-            alarm_actions.append(detail)
-
-        for action in self.alarm.insufficient_data_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'INSUFFICIENT_DATA'
-            alarm_actions.append(detail)
-
-        for action in self.alarm.ok_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'OK'
-            alarm_actions.append(detail)
-
         self.render_dict.update(
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
-            alarm_actions_json=json.dumps(alarm_actions),
             dimension_options=dimension_options,
             dimension_options_json=json.dumps(dimension_options),
             invalid_dimensions=invalid_dimensions,
@@ -718,4 +721,3 @@ class CloudWatchAlarmHistoryView(BaseView):
         with boto_error_handler(self.request):
             history = conn.describe_alarm_history(alarm_name=alarm_id)
         return history
-
