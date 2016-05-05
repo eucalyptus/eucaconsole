@@ -1,8 +1,7 @@
-<div class="actions" ng-form="alarmActionsForm" i18n:domain="eucaconsole"
-                     alarm-id="${alarm_id}" alarm-actions="${alarm_actions_json}">
+<div class="actions" i18n:domain="eucaconsole">
     <h6>Actions</h6>
     <div class="item-list">
-        <span class="item" ng-repeat="action in alarmActions" data-item-value="{{ action.arn }}">
+        <span class="item" ng-repeat="action in allActions" data-item-value="{{ action.arn }}">
             <span i18n:translate="">When</span>
             <strong>{{ action.alarm_state }}</strong>
             <span i18n:translate="">for group</span>
@@ -31,9 +30,10 @@
                 <label class="right" i18n:translate="">When alarm state is</label>
             </div>
             <div class="columns large-9 small-9">
-                <select name="alarmState" ng-model="action.alarm_state"
-                                          ng-init="action.alarm_state = 'ALARM'"
-                                          ng-change="updatePolicies()">
+                <select ng-model="action.alarm_state"
+                        ng-init="action.alarm_state = 'ALARM'"
+                        ng-change="updatePolicies()"
+                        do-not-validate="">
                     <option value="ALARM">ALARM</option>
                     <option value="INSUFFICIENT_DATA">INSUFFICIENT DATA</option>
                     <option value="OK">OK</option>
@@ -46,7 +46,7 @@
             </div>
             <div class="columns large-9 small-9">
                 <select ng-model="action.scalingGroup" ng-init="action.scalingGroup = ''" ng-change="updatePolicies()"
-                        name="groups" ng-options="group as group for group in scalingGroups" required-if-changed="">
+                        ng-options="group as group for group in scalingGroups track by group" do-not-validate="">
                     <option value="" i18n:translate="">Select scaling group...</option>
                 </select>
             </div>
@@ -56,9 +56,10 @@
                 <label class="right" i18n:translate="">Execute scaling policy</label>
             </div>
             <div class="columns large-9 small-9">
-                <select name="policies" ng-model="action.scalingGroupPolicy"
-                                        ng-init="action.scalingGroupPolicy = ''"
-                                        ng-disabled="policiesAvailable()" required-if-changed="">
+                <select ng-model="action.scalingGroupPolicy"
+                        ng-init="action.scalingGroupPolicy = ''"
+                        ng-disabled="policiesAvailable()"
+                        do-not-validate="">
                     <option value="" i18n:translate="">{{ defaultOptionValue }}</option>
                     <option ng-repeat="(name, details) in scalingGroupPolicies"
                             ng-bind="name" 
@@ -69,7 +70,7 @@
         </div>
         <div class="row controls-wrapper">
             <div class="columns">
-                <button class="button round tiny" ng-click="addAction($event)" i18n:translate="">Add Action</button>
+                <button class="button round tiny" ng-class="state" ng-click="addAction($event)" i18n:translate="">Add Action</button>
                 <a class="cancel-link" ng-click="resetForm()" i18n:translate="">Cancel</a>
             </div>
         </div>

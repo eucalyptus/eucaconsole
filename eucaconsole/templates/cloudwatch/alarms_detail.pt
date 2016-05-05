@@ -7,8 +7,7 @@
     </head>
 
     <div metal:fill-slot="main_content">
-        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}"
-             alarm-actions="${alarm_actions_json}" invalid-dimensions="${invalid_dimensions}">
+        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}" invalid-dimensions="${invalid_dimensions}">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
@@ -174,7 +173,13 @@
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
-                        ${panel('alarm_actions_panel', alarm_actions_json=alarm_actions_json, alarm_id=alarm_id)}
+                        <alarm-actions
+                            ng-model="alarm.actions"
+                            ok-actions="alarm.ok_actions"
+                            alarm-actions="alarm.alarm_actions"
+                            insufficient-data-actions="alarm.insufficient_data_actions"
+                            template="${request.route_path('render_template', subpath='cloudwatch/alarm_actions')}">
+                        </alarm-actions>
                         <hr/>
                         <div class="controls">
                             <button type="submit" class="button submit" i18n:translate="">Save Changes</button>

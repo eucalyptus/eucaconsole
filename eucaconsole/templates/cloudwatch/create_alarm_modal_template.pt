@@ -122,7 +122,13 @@
     </div>
     <div ng-if="!hideAlarmActions">
         <hr/>
-        ${panel('alarm_actions_panel')}
+        <alarm-actions
+            ng-model="alarm.actions"
+            ok-actions="alarm.ok_actions"
+            alarm-actions="alarm.alarm_actions"
+            insufficient-data-actions="alarm.insufficient_data_actions"
+            template="${request.route_path('render_template', subpath='cloudwatch/alarm_actions')}">
+        </alarm-actions>
         <hr/>
     </div>
     <div class="controls">

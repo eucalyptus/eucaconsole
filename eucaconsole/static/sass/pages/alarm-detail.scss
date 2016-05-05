@@ -41,7 +41,7 @@ form.alarm-update {
     &.ng-pristine {
         .button {
             &.submit {
-                @include disabled-button-mixin;
+                @include primary-disabled-button-mixin;
             }
         }
     }
