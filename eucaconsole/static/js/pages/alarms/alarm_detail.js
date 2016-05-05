@@ -7,25 +7,13 @@ angular.module('AlarmDetailPage', [
         restrict: 'A',
         link: function (scope, element, attrs) {
             scope.alarm = JSON.parse(attrs.alarmDetail);
-
-            var dimensions = [];
-            Object.keys(scope.alarm.dimensions).forEach(function (key) {
-                var val = scope.alarm.dimensions[key],
-                    result;
-                val.forEach(function (current) {
-                    result = {};
-                    result[key] = [current];
-                    dimensions.push(JSON.stringify(result));
-                });
-            });
-            scope.alarm.dimensions = dimensions;
             scope.alarm.actions = scope.alarm.actions || [];
-
             scope.alarms = [scope.alarm];  // Delete alarm confirmation dialog expects a list of alarms
             scope.expanded = true;
             scope.alarmDimensions = scope.alarm.dimensions;  // Leveraged in delete alarm confirmation dialog
             // Need stringified form on details page (and Copy Alarm dialog) to set current dimension choice
             scope.alarm.dimensions = JSON.stringify(scope.alarm.dimensions);
+
             if (parseInt(attrs.invalidDimensions, 10) || 0) {
                 // Handle when resource in dimensions is no longer available
                 scope.alarm.dimensions = '';
