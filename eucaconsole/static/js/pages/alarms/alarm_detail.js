@@ -69,6 +69,11 @@ angular.module('AlarmDetailPage', [
                 });
             });
 
+            $scope.$watch('alarm.threshold', function (newVal, oldVal) {
+                if (newVal && newVal !== oldVal && !!oldVal) {
+                    $scope.$broadcast('alarmThresholdChanged', {threshold: newVal, dimensions: $scope.alarm.dimensions});
+                }
+            });
 
             $scope.deleteAlarm = function (event) {
                 event.preventDefault();
