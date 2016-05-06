@@ -376,7 +376,7 @@ angular.module('CreateAlarmModal', [
         controller: ['$scope', 'CloudwatchAPI', 'ChartService',
         function ($scope, CloudwatchAPI, ChartService) {
 
-            $scope.modalOpened = false;
+            $scope.alarModalOpened = false;
 
             function drawChart (dimensions) {
                 CloudwatchAPI.getChartData({
@@ -437,7 +437,7 @@ angular.module('CreateAlarmModal', [
                     drawChart(dimensions);
                 }
 
-                if ($scope.formName === 'createAlarmForm' && $scope.modalOpened) {
+                if ($scope.formName === 'createAlarmForm' && $scope.alarmModalOpened) {
                     drawChart(dimensions);
                 }
             }
@@ -446,10 +446,12 @@ angular.module('CreateAlarmModal', [
                 drawChartForDimensions(newVal, oldVal);
             });
 
-            $scope.$on('modalOpened', function () {
-                $scope.modalOpened = true;
-                var dims = $scope.dimensions;
-                drawChartForDimensions(dims, dims);
+            $scope.$on('modalOpened', function (event, params) {
+                if (params.modalName === 'createAlarm' || params.modalName === 'copyAlarm') {
+                    $scope.alarmModalOpened = true;
+                    var dims = $scope.dimensions;
+                    drawChartForDimensions(dims, dims);
+                }
             });
         }]
     };
