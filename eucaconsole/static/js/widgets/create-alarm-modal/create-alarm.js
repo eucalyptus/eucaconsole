@@ -175,7 +175,6 @@ angular.module('CreateAlarmModal', [
                     parsedDimensionChoices = JSON.parse(attrs.dimensionChoices);
                     if (stdDimensionNamespaces.indexOf(alarm.namespace) === -1) {
                         // Alarms with custom metric/namespace
-                        parsedDimensionChoices = JSON.parse(attrs.dimensionChoices);
                         stdDimensionNamespaces.forEach(function (namespace) {
                             Array.prototype.push.apply(allDimensionChoices, parsedDimensionChoices[namespace]);
                         });
