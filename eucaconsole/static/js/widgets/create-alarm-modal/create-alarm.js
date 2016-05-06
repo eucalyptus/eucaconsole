@@ -368,7 +368,7 @@ angular.module('CreateAlarmModal', [
             unit: '@',
             dimensions: '=',
             threshold: '@',
-            formname: '@'
+            formName: '@formname'
         },
         link: function (scope, element) {
             scope.target = element[0];
@@ -390,7 +390,10 @@ angular.module('CreateAlarmModal', [
                 }).then(function (oData) {
                     var results = oData ? oData.results : '';
                     var maxValue = oData.max_value || 100;
-                    if (results && !results.length) {
+                    var resultsWithValues = results.filter(function(item) {
+                        return item.values.length;
+                    });
+                    if (resultsWithValues.length === 0) {
                         ChartService.resetChart('.metric-chart');
                     }
                     ChartService.renderChart($scope.target, results, {
@@ -409,7 +412,7 @@ angular.module('CreateAlarmModal', [
                 var parsedDims = angular.isObject(newVal) ? newVal : JSON.parse(newVal);
                 var resourceLabel = '';
                 var resourceLabels = [];
-                var dimensionField = angular.element('form[name="' + $scope.formname + '"]').find('[name="dimensions"]');
+                var dimensionField = angular.element('form[name="' + $scope.formName + '"]').find('[name="dimensions"]');
                 var selectedDimField = dimensionField.find('[selected]');
                 if (selectedDimField.length && newVal === $scope.dimensions) {
                     resourceLabel = selectedDimField.text();
@@ -430,11 +433,11 @@ angular.module('CreateAlarmModal', [
                     'label': resourceLabel
                 }];
 
-                if ($scope.formname === 'alarmUpdateForm') {
+                if ($scope.formName === 'alarmUpdateForm') {
                     drawChart(dimensions);
                 }
 
-                if ($scope.formname === 'createAlarmForm' && $scope.modalOpened) {
+                if ($scope.formName === 'createAlarmForm' && $scope.modalOpened) {
                     drawChart(dimensions);
                 }
             }
