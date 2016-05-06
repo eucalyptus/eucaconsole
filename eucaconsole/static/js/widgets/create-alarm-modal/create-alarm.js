@@ -26,7 +26,6 @@ angular.module('CreateAlarmModal', [
                 modalName = name;
                 scope.modalName = name;
                 createAlarmCtrl.initializeModal(attrs);
-                createAlarmCtrl.broadcastModalOpened(name);
             });
             scope.$on('modal:close', function (event, name) {
                 if(name === modalName) {
@@ -97,10 +96,6 @@ angular.module('CreateAlarmModal', [
                 }
 
                 return name;
-            };
-
-            this.broadcastModalOpened = function (modalName) {
-                $rootScope.$broadcast('modalOpened', {modalName: modalName});
             };
 
             this.composeAlarmMetric = function (attrs) {
@@ -446,13 +441,14 @@ angular.module('CreateAlarmModal', [
                 drawChartForDimensions(newVal, oldVal);
             });
 
-            $scope.$on('modalOpened', function (event, params) {
-                if (params.modalName === 'createAlarm' || params.modalName === 'copyAlarm') {
+            $scope.$on('modal:open', function (event, modalName) {
+                if (modalName === 'createAlarm' || modalName === 'copyAlarm') {
                     $scope.alarmModalOpened = true;
                     var dims = $scope.dimensions;
                     drawChartForDimensions(dims, dims);
                 }
             });
+
         }]
     };
 })
