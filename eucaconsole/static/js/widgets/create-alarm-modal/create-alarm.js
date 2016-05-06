@@ -26,6 +26,7 @@ angular.module('CreateAlarmModal', [
                 modalName = name;
                 scope.modalName = name;
                 createAlarmCtrl.initializeModal(attrs);
+                createAlarmCtrl.broadcastModalOpened(name);
             });
             scope.$on('modal:close', function (event, name) {
                 if(name === modalName) {
@@ -96,6 +97,10 @@ angular.module('CreateAlarmModal', [
                 }
 
                 return name;
+            };
+
+            this.broadcastModalOpened = function (modalName) {
+                $rootScope.$broadcast('modalOpened', {modalName: modalName});
             };
 
             this.composeAlarmMetric = function (attrs) {
@@ -363,20 +368,41 @@ angular.module('CreateAlarmModal', [
             unit: '@',
             dimensions: '=',
             threshold: '@',
-            formname: '@',
+            formname: '@'
         },
-        link: function (scope, element, attrs) {
+        link: function (scope, element) {
             scope.target = element[0];
-            scope.dialog = attrs.dialog ? true : false;
         },
         controller: ['$scope', 'CloudwatchAPI', 'ChartService',
         function ($scope, CloudwatchAPI, ChartService) {
 
-            // ids and idtype comes from passed in dimensions
-            // iterate over dimensions, will need a separate
-            // chart line for each dimension
-            //
-            $scope.$watch('dimensions', function (newVal, oldVal) {
+            $scope.modalOpened = false;
+
+            function drawChart (dimensions) {
+                CloudwatchAPI.getChartData({
+                    metric: $scope.metric,
+                    dimensions: JSON.stringify(dimensions),
+                    namespace: $scope.namespace,
+                    duration: $scope.duration,
+                    statistic: $scope.statistic,
+                    unit: $scope.unit,
+                    threshold: $scope.threshold
+                }).then(function (oData) {
+                    var results = oData ? oData.results : '';
+                    var maxValue = oData.max_value || 100;
+                    if (results && !results.length) {
+                        ChartService.resetChart('.metric-chart');
+                    }
+                    ChartService.renderChart($scope.target, results, {
+                        unit: oData.unit || $scope.unit,
+                        metric: $scope.metric,
+                        maxValue: maxValue,
+                        threshold: $scope.threshold
+                    });
+                });
+            }
+
+            function drawChartForDimensions (newVal, oldVal) {
                 if(!newVal) {
                     return;
                 }
@@ -404,27 +430,23 @@ angular.module('CreateAlarmModal', [
                     'label': resourceLabel
                 }];
 
-                CloudwatchAPI.getChartData({
-                    metric: $scope.metric,
-                    dimensions: JSON.stringify(dimensions),
-                    namespace: $scope.namespace,
-                    duration: $scope.duration,
-                    statistic: $scope.statistic,
-                    unit: $scope.unit,
-                    threshold: $scope.threshold
-                }).then(function(oData) {
-                    var results = oData ? oData.results : '';
-                    var maxValue = oData.max_value || 100;
-                    if (results && !results.length) {
-                        ChartService.resetChart('.metric-chart');
-                    }
-                    ChartService.renderChart($scope.target, results, {
-                        unit: oData.unit || $scope.unit,
-                        metric: $scope.metric,
-                        maxValue: maxValue,
-                        threshold: $scope.threshold
-                    });
-                });
+                if ($scope.formname === 'alarmUpdateForm') {
+                    drawChart(dimensions);
+                }
+
+                if ($scope.formname === 'createAlarmForm' && $scope.modalOpened) {
+                    drawChart(dimensions);
+                }
+            }
+
+            $scope.$watch('dimensions', function (newVal, oldVal) {
+                drawChartForDimensions(newVal, oldVal);
+            });
+
+            $scope.$on('modalOpened', function () {
+                $scope.modalOpened = true;
+                var dims = $scope.dimensions;
+                drawChartForDimensions(dims, dims);
             });
         }]
     };
