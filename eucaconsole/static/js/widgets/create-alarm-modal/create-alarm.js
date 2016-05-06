@@ -295,6 +295,12 @@ angular.module('CreateAlarmModal', [
                 });
             });
 
+            $scope.$watch('alarm.threshold', function (newVal, oldVal) {
+                if (newVal && newVal !== oldVal && !!oldVal) {
+                    $scope.$broadcast('alarmThresholdChanged', {threshold: newVal, dimensions: $scope.dimensions});
+                }
+            });
+
             $scope.resetForm = function (modalName) {
                 if (modalName !== 'copyAlarm') {
                     $scope.alarm = angular.copy(defaults);
@@ -440,6 +446,11 @@ angular.module('CreateAlarmModal', [
 
             $scope.$watch('dimensions', function (newVal, oldVal) {
                 vm.drawChartForDimensions(newVal, oldVal);
+            });
+
+            $scope.$on('alarmThresholdChanged', function (event, params) {
+                $scope.threshold = params.threshold;
+                vm.drawChartForDimensions(params.dimensions, params.dimensions);
             });
 
             $scope.$on('modal:open', function (event, modalName) {
