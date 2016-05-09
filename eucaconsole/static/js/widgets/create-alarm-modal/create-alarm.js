@@ -380,6 +380,12 @@ angular.module('CreateAlarmModal', [
             $scope.alarModalOpened = false;
 
             this.drawChart = function (dimensions) {
+                if ($scope.threshold) {
+                    vm._drawChart(dimensions);
+                }
+            };
+
+            this._drawChart = function (dimensions) {
                 CloudwatchAPI.getChartData({
                     metric: $scope.metric,
                     dimensions: JSON.stringify(dimensions),

@@ -125,10 +125,10 @@
         <svg class="cwchart"
             metric-chart=""
             metric="{{alarm.metric.name}}"
-            namespace="{{alarm.namespace}}"
+            namespace="{{ alarm.namespace || alarm.metric.namespace }}"
             duration="3600"
             statistic="alarm.statistic"
-            unit="{{alarm.unit}}"
+            unit="{{ alarm.unit || alarm.metric.unit }}"
             threshold="{{alarm.threshold}}"
             formname="createAlarmForm"
             dimensions="alarm.dimensions"></svg>
