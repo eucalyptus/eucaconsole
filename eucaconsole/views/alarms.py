@@ -447,6 +447,13 @@ class CloudWatchAlarmsJsonView(BaseView):
                 ))
             return dict(results=alarms)
 
+    @view_config(route_name='cloudwatch_alarm_names_json', renderer='json', request_method='GET')
+    def cloudwatch_alarm_names_json(self):
+        with boto_error_handler(self.request):
+            alarms = self.get_items()
+            alarm_names = [alarm.name for alarm in alarms]
+            return dict(results=alarm_names)
+
     @view_config(route_name="cloudwatch_alarms_for_resource_json", renderer='json', request_method='GET')
     def cloudwatch_alarms_for_resource_json(self):
         with boto_error_handler(self.request):
@@ -457,30 +464,6 @@ class CloudWatchAlarmsJsonView(BaseView):
                 res_id,
                 cw_conn=self.get_connection(conn_type="cloudwatch"),
                 dimension_key=res_type)
-            alarms = []
-            if items:
-                for alarm in items:
-                    alarms.append(dict(
-                        name=alarm.name,
-                        metric=alarm.metric,
-                        comparison=alarm.comparison,
-                        threshold=alarm.threshold,
-                        unit=alarm.unit,
-                        state=alarm.state_value
-                    ))
-
-            return dict(results=alarms)
-
-    @view_config(route_name="cloudwatch_alarms_for_dimensions_json", renderer='json', request_method='GET')
-    def cloudwatch_alarms_for_dimensions_json(self):
-        with boto_error_handler(self.request):
-            dimensions = self.request.params.get('dimensions')
-            dimensions = json.loads(dimensions)
-
-            items = Alarm.get_alarms_for_dimensions(
-                dimensions,
-                cw_conn=self.get_connection(conn_type="cloudwatch")
-            )
             alarms = []
             if items:
                 for alarm in items:
