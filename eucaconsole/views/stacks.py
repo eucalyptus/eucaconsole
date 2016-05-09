@@ -358,7 +358,7 @@ class StackStateView(BaseView):
             stack_events = self.cloudformation_conn.describe_stack_events(self.stack_name)
             events = []
             for event in stack_events:
-                stack_status = event.resource_status.lower().replace('_', '-')
+                stack_status = event.resource_status.lower().capitalize().replace('_', '-')
 
                 if len(status) == 0 or stack_status in status:
                     events.append({

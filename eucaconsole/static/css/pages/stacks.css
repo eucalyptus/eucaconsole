@@ -156,34 +156,34 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-.status.Create-in-progress { background-color: #6d899e; }
+.status.create-in-progress { background-color: #6d899e; }
 
-.status.Create-complete { background-color: #425563; }
+.status.create-complete { background-color: #425563; }
 
-.status.Create-failed { background-color: darkred; }
+.status.create-failed { background-color: darkred; }
 
-.status.Rollback-in-progress { background-color: #cccccc; }
+.status.rollback-in-progress { background-color: #cccccc; }
 
-.status.Rollback-complete { background-color: #666666; }
+.status.rollback-complete { background-color: #666666; }
 
-.status.Rollback-failed { background-color: darkred; }
+.status.rollback-failed { background-color: darkred; }
 
-.status.Delete-in-progress { background-color: #cccccc; }
+.status.delete-in-progress { background-color: #cccccc; }
 
-.status.Delete-complete { background-color: #666666; }
+.status.delete-complete { background-color: #666666; }
 
-.status.Delete-failed { background-color: darkred; }
+.status.delete-failed { background-color: darkred; }
 
-.status.Update-in-progress { background-color: #6d899e; }
+.status.update-in-progress { background-color: #6d899e; }
 
-.status.Update-complete-cleanup-in-progress { background-color: #6d899e; }
+.status.update-complete-cleanup-in-progress { background-color: #6d899e; }
 
-.status.Update-complete { background-color: #425563; }
+.status.update-complete { background-color: #425563; }
 
-.status.Update-rollback-in-progress { background-color: #cccccc; }
+.status.update-rollback-in-progress { background-color: #cccccc; }
 
-.status.Update-rollback-failed { background-color: darkred; }
+.status.update-rollback-failed { background-color: darkred; }
 
-.status.Update-rollback-complete-cleanup-in-progress { background-color: #cccccc; }
+.status.update-rollback-complete-cleanup-in-progress { background-color: #cccccc; }
 
-.status.Update-rollback-complete { background-color: #666666; }
+.status.update-rollback-complete { background-color: #666666; }
