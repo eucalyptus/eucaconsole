@@ -389,7 +389,7 @@ angular.module('CreateAlarmModal', [
                     unit: $scope.unit,
                     threshold: $scope.threshold
                 }).then(function (oData) {
-                    var results = oData ? oData.results : '';
+                    var results = oData ? oData.results : [];
                     var maxValue = oData.max_value || 100;
                     var resultsWithValues = results.filter(function(item) {
                         return item.values.length;
