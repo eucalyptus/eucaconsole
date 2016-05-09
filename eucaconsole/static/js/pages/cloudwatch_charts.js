@@ -30,6 +30,32 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         }
     }; 
 })
+.directive('chartOverlay', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs, ctrl) {
+            var interactionLayer = document.createElement('div');   // Being the div that shields the underlying content and handles all mouse events.
+            interactionLayer.setAttribute('class', 'interactionLayer');
+
+            var indexLine = document.createElement('div');          // Being the line that hovers over the charts and marks user interaction.
+            indexLine.setAttribute('class', 'indexLine');
+            ctrl.indexLine = indexLine;
+
+            angular.element(interactionLayer).append(indexLine);
+            element.append(interactionLayer);
+
+            angular.element(interactionLayer).on('mousemove', function (event) {
+                ctrl.moveIndexLine(event.offsetX);
+            });
+        },
+        controller: function () {
+            var vm = this;
+            this.moveIndexLine = function (x) {
+                angular.element(vm.indexLine).css('left', x + 'px');
+            };
+        }
+    };
+})
 .controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray, ModalService) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour

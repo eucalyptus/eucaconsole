@@ -12,6 +12,9 @@
 .cloudwatch-charts .toprow .field-wrapper select { width: 150px; margin-left: 0; }
 .cloudwatch-charts .toprow .field-wrapper.timepicker { position: absolute; }
 .cloudwatch-charts .alert-box { margin-left: 0.7rem; margin-right: 0.7rem; }
+.cloudwatch-charts div[chart-overlay] { position: relative; }
+.cloudwatch-charts div[chart-overlay] .interactionLayer { background: transparent; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+.cloudwatch-charts div[chart-overlay] .indexLine { border-right: 1px solid black; width: 1px; position: absolute; top: 0px; bottom: 0px; left: 5px; }
 
 #metric-time-range { margin: 0; display: inline; }
 
