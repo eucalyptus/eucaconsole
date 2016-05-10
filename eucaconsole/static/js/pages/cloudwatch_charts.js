@@ -34,6 +34,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     return {
         restrict: 'A',
         link: function (scope, element, attrs, ctrl) {
+            scope.graphs = nv.graphs;
             var interactionLayer = document.createElement('div');   // Being the div that shields the underlying content and handles all mouse events.
             interactionLayer.setAttribute('class', 'interactionLayer');
 
@@ -48,12 +49,13 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 ctrl.moveIndexLine(event.offsetX);
             });
         },
-        controller: function () {
+        controller: ['$scope', function ($scope) {
             var vm = this;
             this.moveIndexLine = function (x) {
+                $scope.$broadcast('elementMouseover.tooltip');
                 angular.element(vm.indexLine).css('left', x + 'px');
             };
-        }
+        }]
     };
 })
 .controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray, ModalService) {

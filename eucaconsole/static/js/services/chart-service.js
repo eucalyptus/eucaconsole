@@ -18,6 +18,9 @@ angular.module('ChartServiceModule', [])
                 .useInteractiveGuideline(true)
                 .showYAxis(true)
                 .showXAxis(true);
+            nv.addGraph(function () {
+                return chart;
+            });
 
             chart.xScale(d3.time.scale());
             chart.xAxis.tickFormat(function (d) {
