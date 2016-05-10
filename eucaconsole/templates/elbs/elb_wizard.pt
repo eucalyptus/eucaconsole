@@ -111,7 +111,8 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-next-step-from-step2" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
+                                    <a id="visit-next-step-from-step2" class="button small round" ng-click="visitStep($event, currentStepIndex+1)"
+                                       ng-disabled="!vpcNetwork || !securityGroups.length">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"
@@ -166,7 +167,6 @@
                                 </div>
                                 <div>
                                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-
                                         strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}'}" facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                                 </div>
                                 <div>
@@ -187,7 +187,7 @@
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
                                     <a id="visit-next-step-from-step4" class="button small round" ng-click="visitStep($event, currentStepIndex+1)"
-                                       ng-disabled="!availabilityZones.length">
+                                       tal:attributes="ng-disabled '!vpcSubnets.length' if is_vpc_supported else '!availabilityZones.length'">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"
