@@ -98,8 +98,8 @@
                                 ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, rightcol_width=12, stack_label=True)}
                             </div>
                             <div>&nbsp;</div>
-                            <div ng-cloak="true" ng-if="vpcNetwork !== 'None'">
-                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': '$parent.securityGroups', 'options': 'k as v for (k, v) in $parent.securityGroupChoices'}, **security_group_attrs)}
+                            <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
+                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             </div>
                             <hr />
                             <div>
