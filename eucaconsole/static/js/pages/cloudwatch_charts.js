@@ -42,19 +42,41 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
             indexLine.setAttribute('class', 'indexLine');
             ctrl.indexLine = indexLine;
 
-            angular.element(interactionLayer).append(indexLine);
+            var $layer = angular.element(interactionLayer);
+            $layer.append(indexLine);
             element.append(interactionLayer);
 
-            angular.element(interactionLayer).on('mousemove', function (event) {
-                ctrl.moveIndexLine(event.offsetX);
+            $layer.on('mousemove', function (event) {
+                ctrl.moveIndexLine(event.offsetX, event.offsetY);
             });
         },
         controller: ['$scope', function ($scope) {
             var vm = this;
-            this.moveIndexLine = function (x) {
-                $scope.$broadcast('elementMouseover.tooltip');
-                angular.element(vm.indexLine).css('left', x + 'px');
+            this.moveIndexLine = function (x, y) {
+                //angular.element(vm.indexLine).css('left', x + 'px');
+
+                $scope.graphs.forEach(function (graph) {
+                    dispatchEvents(graph, x, y);
+                });
             };
+
+            function dispatchEvents (graph, x, y) {
+                if(x < 0 || y < 0) {
+                    dispatch.elementMouseout({
+                        mouseX: x,
+                        mouseY: y
+                    });
+                    graph.interactiveLayer.renderGuideLine(null);
+                    return;
+                }
+
+                var pointXValue = graph.interactiveLayer.xScale().invert(x);
+                graph.interactiveLayer.dispatch.elementMousemove({
+                    mouseX: x,
+                    mouseY: y % 300,
+                    pointXValue: pointXValue
+                });
+            }
         }]
     };
 })
