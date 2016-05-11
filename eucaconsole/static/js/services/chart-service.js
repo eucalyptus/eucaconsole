@@ -11,6 +11,7 @@ angular.module('ChartServiceModule', [])
     var svc = {
         renderChart: function (target, results, params) {
             var yFormat = '.0f';
+            var thresholdValue;
             params = params || {};
 
             var chart = nv.models.lineChart()
@@ -59,15 +60,19 @@ angular.module('ChartServiceModule', [])
                 }
             }
 
+            if (params.threshold) {
+                // Ensure alarm threshold isn't at the top of the chart when threshold hasn't been exceeded
+                thresholdValue = parseInt(params.threshold, 10);
+                if (thresholdValue > params.maxValue) {
+                    chart.forceY([0, Math.round(thresholdValue + (thresholdValue * 0.25))]);
+                }
+            }
+
             chart.yAxis.axisLabel(params.unit).tickFormat(d3.format(yFormat));
 
             var s = d3.select(target)
                 .datum(results)
                 .call(chart);
-
-            if(params.alarms) {
-                svc.renderAlarms(s, params);
-            }
 
             if (params.noXLabels) {
                 svc.moveXAxisLabels(target);
@@ -94,36 +99,6 @@ angular.module('ChartServiceModule', [])
             context = $(context);
             context.append(labels);
             svg.append(context);
-        },
-
-        renderAlarms: function (selection, params) {
-            var alarmLines = selection.select('.nv-lineChart > g')
-                .append('g').attr('class', 'euca-alarmLines')
-                .datum(function () {
-                    return params.alarms.map(function (current) {
-                        return current.threshold;
-                    });
-                })
-                .call(function (selection) {
-                    this.datum().forEach(function (threshold) {
-                        if(params.unit === 'Percent') {
-                            threshold = threshold * 100;
-                        }
-                        var y = chart.yScale()(threshold),
-                            xDomain = chart.xScale().domain(),
-                            xEnd = chart.xScale()(xDomain[1]);
-
-                        selection.append('line')
-                            .attr('class', 'alarm')
-                            .attr('threshold', threshold)
-                            .attr('x1', 0)
-                            .attr('y1', y)
-                            .attr('x2', xEnd)
-                            .attr('y2', y);
-                    });
-                });
-
-            return alarmLines;
         },
 
         resetChart: function (target) {

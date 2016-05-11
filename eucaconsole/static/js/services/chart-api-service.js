@@ -17,19 +17,5 @@ angular.module('ChartAPIModule', ['EucaConsoleUtils'])
                     errorResponse.status);
             });
         },
-
-        getAlarmsForMetric: function (metricName, params) {
-            return $http({
-                url: '/alarms/json/' + metricName,
-                method: 'GET',
-                params: params
-            }).then(function success (oData) {
-                return oData.data.results;
-            }, function error (errorResponse) {
-                eucaHandleError(
-                    errorResponse.statusText,
-                    errorResponse.status);
-            });
-        }
     };
 }]);

@@ -38,6 +38,7 @@ import time
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
+from ..i18n import _
 from ..views import BaseView, boto_error_handler
 
 
@@ -215,6 +216,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.start_time = self.request.params.get('startTime', None)
         self.end_time = self.request.params.get('endTime', None)
         self.tz_offset = int(self.request.params.get('tzoffset', 0))
+        self.threshold = self.request.params.get('threshold')
         self.collapse_to_kb_mb_gb = [
             'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes', 'VolumeReadBytes', 'VolumeWriteBytes'
         ]
@@ -263,6 +265,18 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                 unit, stats_series, max_value = self.get_stats_series()
                 stats_series['color'] = CHART_COLORS.get(0)
                 stats_list.append(stats_series)
+
+        if self.threshold:
+            threshold = float(self.threshold)
+            threshold_values = []
+            if stats_list:
+                for value in stats_list[0].get('values'):
+                    threshold_values.append(dict(x=value.get('x'), y=threshold))
+            stats_list.append(dict(
+                color='#ff0000',  # NOTE: Update cloudwatch_charts.scss dashed selector when changing color here
+                key=_('Alarm threshold'),
+                values=threshold_values,
+            ))
 
         return dict(
             unit=unit,

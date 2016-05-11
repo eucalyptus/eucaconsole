@@ -378,22 +378,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 }];
             }
 
-            CloudwatchAPI.getAlarmsForMetric(scope.metric, {
-                metric_name: scope.metric,
-                namespace: scope.namespace,
-                period: scope.duration,
-                statistic: scope.statistic,
-            }).then(function (alarms) {
-                ChartService.resetChart(target);
-                var chart = ChartService.renderChart(target, results, {
-                    unit: oData.unit || scope.unit,
-                    preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,
-                    maxValue: maxValue,
-                    alarms: alarms,
-                    noXLabels: scope.noXLabels
-                });
-                nv.utils.windowResize(chart.update);
+            ChartService.resetChart(target);
+            var chart = ChartService.renderChart(target, results, {
+                unit: oData.unit || scope.unit,
+                preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,
+                maxValue: maxValue,
+                noXLabels: scope.noXLabels
             });
+            nv.utils.windowResize(chart.update);
             parentCtrl.largeChartLoading = false;
         }, function (oData, status) {
             eucaHandleError(oData, status);
