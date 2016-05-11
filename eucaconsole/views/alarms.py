@@ -93,6 +93,12 @@ class DimensionChoicesManager(BaseView):
             ]
             choices += ebs_choices
 
+        if namespace == 'AWS/AutoScaling':  # No need for custom_ns check here as ASGs are part of AWS/EC2 condition
+            scaling_group_choices = [
+                self._get_scaling_group_choices()
+            ]
+            choices += scaling_group_choices
+
         dimension_choices = list(chain.from_iterable(choices))
 
         if self._none_selected(dimension_choices) and self.existing_dimensions is not None:
@@ -260,7 +266,7 @@ class CloudWatchAlarmsView(LandingPageView):
     @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
     def alarms_landing(self):
         dimension_options = {}
-        for namespace in ['AWS/EC2', 'AWS/ELB', 'AWS/EBS']:
+        for namespace in ['AWS/EC2', 'AWS/ELB', 'AWS/EBS', 'AWS/AutoScaling']:
             dimension_options[namespace] = DimensionChoicesManager(self.request).choices_by_namespace(namespace)
 
         self.render_dict.update(
