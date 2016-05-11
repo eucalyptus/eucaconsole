@@ -130,7 +130,7 @@
             statistic="alarm.statistic"
             unit="{{ alarm.unit || alarm.metric.unit }}"
             threshold="{{alarm.threshold}}"
-            formname="createAlarmForm"
+            form-name="createAlarmForm"
             dimensions="alarm.dimensions"></svg>
     </div>
     <div ng-if="!hideAlarmActions">

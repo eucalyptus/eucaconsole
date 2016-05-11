@@ -720,7 +720,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_stop(self):
         if self.instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
-            if self.image.root_device_type == 'ebs':
+            if self.instance.root_device_type == 'ebs':
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Stopping instance {0}").format(self.instance.id))
                     self.instance.stop()

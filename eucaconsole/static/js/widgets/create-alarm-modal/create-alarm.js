@@ -368,7 +368,7 @@ angular.module('CreateAlarmModal', [
             unit: '@',
             dimensions: '=',
             threshold: '@',
-            formName: '@formname'
+            formName: '@'
         },
         link: function (scope, element) {
             scope.target = element[0];
