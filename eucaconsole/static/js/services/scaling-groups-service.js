@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview factory method for scaling group XHR calls
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('ScalingGroupsServiceModule', ['EucaRoutes'])
 .factory('ScalingGroupsService', ['$http', '$q', 'eucaRoutes', function ($http, $q, eucaRoutes) {
     return {

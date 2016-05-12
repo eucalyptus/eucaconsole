@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Bucket item (folder/object) detail page JS
  * @requires AngularJS, jQuery
  *

@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for S3 Sharing Panel JS 
  * @requires Jasmine, AngularJS mock
  *

@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview factory method for chart rendering
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('ChartServiceModule', [])
 .factory('ChartService', function () {
     var margin = {

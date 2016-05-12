@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview factory methods for alarm XHR calls
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('AlarmServiceModule', ['EucaRoutes'])
 .factory('AlarmService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
