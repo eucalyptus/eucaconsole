@@ -638,8 +638,11 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
 
     @view_config(route_name='scalinggroup_history_json', renderer='json', request_method='GET')
     def scalinggroup_history_json(self):
+        RECORD_LIMIT = 1000
         with boto_error_handler(self.request):
             items = self.autoscale_conn.get_all_activities(self.scaling_group.name)
+            if len(items) > RECORD_LIMIT:
+                items = items[:RECORD_LIMIT]
         activities = []
         for activity in items:
             activities.append(dict(
@@ -647,7 +650,7 @@ class ScalingGroupHistoryView(BaseScalingGroupView):
                 status=activity.status_code,
                 description=activity.description,
                 start_time=activity.start_time.isoformat(),
-                end_time=activity.end_time.isoformat(),
+                end_time=activity.end_time.isoformat() if activity.end_time else '',
             ))
         return dict(results=activities)
 
