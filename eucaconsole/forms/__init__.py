@@ -130,8 +130,6 @@ class ChoicesManager(object):
         return sorted(choices)
 
     def get_availability_zones(self, ufshost):
-        if ufshost is None:
-            import pdb; pdb.set_trace()
         @extra_long_term.cache_on_arguments(namespace='availability_zones')
         def _get_zones_cache_(self, ufshost):
             return _get_zones_(self, ufshost)
