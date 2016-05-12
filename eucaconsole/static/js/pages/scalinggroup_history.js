@@ -9,6 +9,8 @@ angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils', 'Expan
         $scope.historyLoading = true;
         $scope.facetHistory = [];
         $scope.unfilteredHistory = [];
+        $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
+        $scope.displayCount = $scope.limitCount;
         $scope.initPage = function (historyUrl, historyActivityUrl, sortKey) {
             $scope.scalinggroupHistoryUrl = historyUrl;
             $scope.scalinggroupHistoryActivityUrl = historyActivityUrl;
@@ -23,10 +25,23 @@ angular.module('ScalingGroupHistory', ['MagicSearch', 'EucaConsoleUtils', 'Expan
                     sessionStorage.setItem($scope.sortByKey, $scope.sortBy);
                 }
             });
+            $scope.enableInfiniteScroll();
         };
         $scope.setInitialSort = function (sortKey) {
             var storedSort = Modernizr.sessionstorage && sessionStorage.getItem($scope.sortByKey);
             $scope.sortBy = storedSort || sortKey;
+        };
+        $scope.showMore = function () {
+            if ($scope.displayCount < $scope.history.length) {
+                $scope.displayCount += $scope.limitCount;
+            }
+        };
+        $scope.enableInfiniteScroll = function () {
+            $(window).scroll(function() {
+                if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                    $timeout(function () { $scope.showMore(); }, 50);
+                }
+            });
         };
         $scope.toggleTab = function (tab) {
             $(".tabs").children("dd").each(function() {
