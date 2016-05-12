@@ -35,15 +35,18 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         restrict: 'A',
         link: function (scope, element, attrs, ctrl) {
             scope.graphs = nv.graphs;
-            var interactionLayer = document.createElement('div');   // Being the div that shields the underlying content and handles all mouse events.
+
+            // Being the div that shields the underlying content and handles all mouse events.
+            var interactionLayer = document.createElement('div');
             interactionLayer.setAttribute('class', 'interactionLayer');
 
-            var indexLine = document.createElement('div');          // Being the line that hovers over the charts and marks user interaction.
-            indexLine.setAttribute('class', 'indexLine');
-            ctrl.indexLine = indexLine;
+            // Being the line that hovers over the charts and marks user interaction.
+            //var indexLine = document.createElement('div');
+            //indexLine.setAttribute('class', 'indexLine');
+            //ctrl.indexLine = indexLine;
 
             var $layer = angular.element(interactionLayer);
-            $layer.append(indexLine);
+            //$layer.append(indexLine);
             element.append(interactionLayer);
 
             $layer.on('mousemove', function (event) {
@@ -61,8 +64,17 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
             };
 
             function dispatchEvents (graph, x, y) {
-                if(x < 0 || y < 0) {
-                    dispatch.elementMouseout({
+                var margin = graph.margin();
+                x -= margin.left;
+                y -= margin.top;
+
+                var width = graph.interactiveLayer.width(),
+                    height = graph.interactiveLayer.height();
+
+                if(     (x < 0 || y < 0) ||
+                        (x > width || (y % height) > height)
+                ) {
+                    graph.interactiveLayer.dispatch.elementMouseout({
                         mouseX: x,
                         mouseY: y
                     });
@@ -73,7 +85,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 var pointXValue = graph.interactiveLayer.xScale().invert(x);
                 graph.interactiveLayer.dispatch.elementMousemove({
                     mouseX: x,
-                    mouseY: y % 300,
+                    mouseY: (y % 362) - (margin.bottom + margin.top),
                     pointXValue: pointXValue
                 });
             }
