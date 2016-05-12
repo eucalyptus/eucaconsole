@@ -281,10 +281,9 @@ urls = [
     Route(name='cloudwatch_alarm_history', pattern='/alarms/{alarm_id}/history'),
     Route(name='cloudwatch_alarm_history_json', pattern='/alarms/{alarm_id}/history/json'),
     Route(name='cloudwatch_alarms_create', pattern='/alarms/create'),
-    Route(name='cloudwatch_alarms_for_dimensions_json', pattern='/alarms/dimensions/json'),
+    Route(name='cloudwatch_alarm_names_json', pattern='/alarms/names/json'),
     Route(name='cloudwatch_alarm_view', pattern='/alarms/{alarm_id}'),
     Route(name='cloudwatch_alarm_json', pattern='/alarms/{alarm_id}/json'),
-    Route(name='cloudwatch_alarms_for_metric_json', pattern='/alarms/json/{metric}'),
     Route(name='cloudwatch_alarms_for_resource_json', pattern='/alarms/resource/{id}/json'),
     # REST API - this route is hard-coded elsewhere, do not change.
     Route(name='cloudwatch_api', pattern='/cloudwatch/api'),

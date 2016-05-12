@@ -120,6 +120,19 @@
             </select>
         </div>
     </div>
+    <div class="metric-chart chart-wrapper">
+        <h6>{{ alarm.metric.name }}</h6>
+        <svg class="cwchart"
+            metric-chart=""
+            metric="{{alarm.metric.name}}"
+            namespace="{{ alarm.namespace || alarm.metric.namespace }}"
+            duration="3600"
+            statistic="alarm.statistic"
+            unit="{{ alarm.unit || alarm.metric.unit }}"
+            threshold="{{alarm.threshold}}"
+            form-name="createAlarmForm"
+            dimensions="alarm.dimensions"></svg>
+    </div>
     <div ng-if="!hideAlarmActions">
         <hr/>
         <alarm-actions

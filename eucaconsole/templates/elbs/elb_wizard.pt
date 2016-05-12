@@ -98,8 +98,8 @@
                                 ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, rightcol_width=12, stack_label=True)}
                             </div>
                             <div>&nbsp;</div>
-                            <div ng-cloak="true" ng-if="vpcNetwork !== 'None'">
-                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': '$parent.securityGroups', 'options': 'k as v for (k, v) in $parent.securityGroupChoices'}, **security_group_attrs)}
+                            <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
+                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             </div>
                             <hr />
                             <div>
@@ -111,7 +111,8 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-next-step-from-step2" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
+                                    <a id="visit-next-step-from-step2" class="button small round" ng-click="visitStep($event, currentStepIndex+1)"
+                                       ng-disabled="!vpcNetwork || !securityGroups.length">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"
@@ -166,7 +167,6 @@
                                 </div>
                                 <div>
                                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-
                                         strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}'}" facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                                 </div>
                                 <div>
@@ -187,7 +187,7 @@
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
                                     <a id="visit-next-step-from-step4" class="button small round" ng-click="visitStep($event, currentStepIndex+1)"
-                                       ng-disabled="!availabilityZones.length">
+                                       tal:attributes="ng-disabled '!vpcSubnets.length' if is_vpc_supported else '!availabilityZones.length'">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"

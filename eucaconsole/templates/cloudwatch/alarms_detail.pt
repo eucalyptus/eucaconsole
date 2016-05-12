@@ -69,7 +69,7 @@
                         </div>
                         <hr/>
                         <h6 i18n:translate="">Alarm</h6>
-                        <div class="row inline  controls-wrapper" id="controls_description">
+                        <div class="row inline controls-wrapper" id="controls_description">
                             <div class="large-3 small-3 columns">
                                 <label class="right" i18n:translate="">Description</label>
                             </div>
@@ -168,8 +168,10 @@
                                 metric="${alarm.metric}"
                                 namespace="${alarm.namespace}"
                                 duration="3600"
-                                statistic="${alarm.statistic}"
+                                statistic="alarm.statistic"
                                 unit="${alarm.unit}"
+                                threshold="${alarm.threshold}"
+                                form-name="alarmUpdateForm"
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>

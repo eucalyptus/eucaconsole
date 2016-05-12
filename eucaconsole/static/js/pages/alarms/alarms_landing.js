@@ -4,7 +4,10 @@
  *
  */
 
-angular.module('AlarmsPage', ['LandingPage', 'AlarmsComponents', 'AlarmServiceModule', 'CustomFilters', 'CreateAlarmModal', 'ModalModule'])
+angular.module('AlarmsPage', [
+    'LandingPage', 'AlarmsComponents', 'AlarmServiceModule', 'ChartAPIModule',  'ChartServiceModule',
+    'CustomFilters', 'CreateAlarmModal', 'ModalModule'
+])
     .controller('AlarmsCtrl', ['$scope', '$timeout', 'AlarmService', 'ModalService', function ($scope, $timeout, AlarmService, ModalService) {
         $scope.alarms = [];
         $scope.selectedAlarm = null;

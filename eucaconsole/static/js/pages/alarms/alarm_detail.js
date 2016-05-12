@@ -69,6 +69,11 @@ angular.module('AlarmDetailPage', [
                 });
             });
 
+            $scope.$watch('alarm.threshold', function (newVal, oldVal) {
+                if (newVal && newVal !== oldVal && !!oldVal) {
+                    $scope.$broadcast('alarmThresholdChanged', {threshold: newVal, dimensions: $scope.alarm.dimensions});
+                }
+            });
 
             $scope.deleteAlarm = function (event) {
                 event.preventDefault();
@@ -107,75 +112,4 @@ angular.module('AlarmDetailPage', [
         }]
     };
 }])
-.directive('metricChart', function () {
-    return {
-        restrict: 'A',
-        scope: {
-            metric: '@',
-            namespace: '@',
-            duration: '=',
-            statistic: '=',
-            unit: '@',
-            dimensions: '='
-        },
-        link: function (scope, element) {
-            scope.target = element[0];
-        },
-        controller: ['$scope', 'CloudwatchAPI', 'ChartService',
-        function ($scope, CloudwatchAPI, ChartService) {
-
-            // ids and idtype comes from passed in dimensions
-            // iterate over dimensions, will need a separate
-            // chart line for each dimension
-            //
-            $scope.$watch('dimensions', function (newVal, oldVal) {
-                if(!newVal) {
-                    return;
-                }
-                var parsedDims = angular.isObject(newVal) ? newVal : JSON.parse(newVal);
-                var resourceLabel = '';
-                var resourceLabels = [];
-                var dimensionField = angular.element('form[name="alarmUpdateForm"]').find('[name="dimensions"]');
-                var selectedDimField = dimensionField.find('[selected]');
-                if (selectedDimField.length && newVal === $scope.dimensions) {
-                    resourceLabel = selectedDimField.text();
-                }
-                if (newVal !== oldVal) {
-                    resourceLabel = dimensionField.find("[value='" + newVal + "']").text();
-                }
-                if (!resourceLabel) {
-                    angular.forEach(parsedDims, function (val, key) {
-                        if (key !== '$$hashkey') {
-                            resourceLabels.push(key + ' = ' + val);
-                        }
-                    });
-                    resourceLabel = resourceLabels.join(', ');
-                }
-                var dimensions = [{
-                    'dimensions': parsedDims,
-                    'label': resourceLabel
-                }];
-
-                CloudwatchAPI.getChartData({
-                    metric: $scope.metric,
-                    dimensions: JSON.stringify(dimensions),
-                    namespace: $scope.namespace,
-                    duration: $scope.duration,
-                    statistic: $scope.statistic,
-                    unit: $scope.unit
-                }).then(function(oData) {
-                    var results = oData ? oData.results : '';
-                    var maxValue = oData.max_value || 100;
-                    if (!results.values.length) {
-                        ChartService.resetChart('.metric-chart');
-                    }
-                    ChartService.renderChart($scope.target, results, {
-                        unit: oData.unit || $scope.unit,
-                        metric: $scope.metric,
-                        maxValue: maxValue
-                    });
-                });
-            });
-        }]
-    };
-});
+;
