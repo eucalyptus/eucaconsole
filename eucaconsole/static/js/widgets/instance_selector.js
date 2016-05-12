@@ -29,6 +29,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.tableText = {};
             $scope.instancesLoading = true;
             $scope.selectedZones = [];
+            $scope.elbScalingGroupNames = [];
             $scope.initSelector = function () {
                 var options = JSON.parse(eucaUnescapeJson($scope.option_json));
                 $scope.setInitialValues(options);
@@ -57,6 +58,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.instanceHealthMapping = $scope.getInstanceHealthMapping();
                 $scope.allAvailabilityZones = options.availability_zone_choices;
                 $scope.allSubnets = options.vpc_subnet_choices;
+                $scope.elbScalingGroupNames = options.elb_scaling_group_names;
                 if (options.hasOwnProperty('is_vpc_supported')) {
                     $scope.isVPCSupported = options.is_vpc_supported;
                 }

@@ -875,6 +875,8 @@ class ELBInstancesView(BaseELBView):
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
         filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
+        self.elb_scaling_group_names = [
+            asg.name for asg in self.autoscale_conn.get_all_groups() if self.elb.name in asg.load_balancers]
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -940,6 +942,7 @@ class ELBInstancesView(BaseELBView):
             'instances': self.get_elb_instance_list(),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'cross_zone_enabled': self.cross_zone_enabled,
+            'elb_scaling_group_names': self.elb_scaling_group_names,
         }))
 
     def get_all_instances(self):
