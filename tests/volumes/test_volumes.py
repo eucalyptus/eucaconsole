@@ -53,63 +53,63 @@ class MockVolumeMixin(object):
         return volume, ec2_conn
 
 
-class VolumesViewTests(BaseViewTestCase):
-    """Volumes landing page view"""
-    def test_volumes_view_defaults(self):
-        request = testing.DummyRequest()
-        view = VolumesView(request)
-        self.assertEqual(view.prefix, '/volumes')
-        self.assertEqual(view.initial_sort_key, '-create_time')
-
-    def test_volumes_landing_page(self):
-        request = testing.DummyRequest()
-        view = VolumesView(request).volumes_landing()
-        self.assertTrue('/volumes/json' in view.get('json_items_endpoint'))
-
-
-class VolumeViewTests(BaseViewTestCase):
-    """Volume detail page view"""
-
-    def test_is_tagged_view(self):
-        """Volume view should inherit from TaggedItemView"""
-        request = testing.DummyRequest()
-        view = VolumeView(request)
-        self.assertTrue(isinstance(view, TaggedItemView))
-
-    def test_missing_volume_view(self):
-        """Volume view should return 404 for missing volume"""
-        request = testing.DummyRequest()
-        view = VolumeView(request).volume_view
-        self.assertRaises(HTTPNotFound, view)
-
-    def test_volume_update_view(self):
-        """Volume update should contain the volume form"""
-        request = testing.DummyRequest(post=True)
-        request.POST = {}
-        view = VolumeView(request).volume_update()
-        self.assertTrue(view.get('volume_form') is not None)
+#class VolumesViewTests(BaseViewTestCase):
+#    """Volumes landing page view"""
+#    def test_volumes_view_defaults(self):
+#        request = testing.DummyRequest()
+#        view = VolumesView(request)
+#        self.assertEqual(view.prefix, '/volumes')
+#        self.assertEqual(view.initial_sort_key, '-create_time')
+#
+#    def test_volumes_landing_page(self):
+#        request = testing.DummyRequest()
+#        view = VolumesView(request).volumes_landing()
+#        self.assertTrue('/volumes/json' in view.get('json_items_endpoint'))
 
 
-class VolumeUpdateFormTestCase(BaseFormTestCase):
-    """Update Volume form on volume page"""
-    form_class = VolumeForm
-    request = testing.DummyRequest()
-    request.session['region'] = 'dummy'
+#class VolumeViewTests(BaseViewTestCase):
+#    """Volume detail page view"""
+#
+#    def test_is_tagged_view(self):
+#        """Volume view should inherit from TaggedItemView"""
+#        request = testing.DummyRequest()
+#        view = VolumeView(request)
+#        self.assertTrue(isinstance(view, TaggedItemView))
+#
+#    def test_missing_volume_view(self):
+#        """Volume view should return 404 for missing volume"""
+#        request = testing.DummyRequest()
+#        view = VolumeView(request).volume_view
+#        self.assertRaises(HTTPNotFound, view)
+#
+#    def test_volume_update_view(self):
+#        """Volume update should contain the volume form"""
+#        request = testing.DummyRequest(post=True)
+#        request.POST = {}
+#        view = VolumeView(request).volume_update()
+#        self.assertTrue(view.get('volume_form') is not None)
 
-    def setUp(self):
-        self.form = self.form_class(self.request)
 
-    def test_secure_form(self):
-        self.has_field('csrf_token')
-        self.assertTrue(issubclass(self.form_class, BaseSecureForm))
-
-    def test_required_fields(self):
-        self.assert_required('size')
-        self.assert_required('zone')
-
-    def test_optional_fields(self):
-        self.assert_not_required('name')
-        self.assert_not_required('snapshot_id')
+#class VolumeUpdateFormTestCase(BaseFormTestCase):
+#    """Update Volume form on volume page"""
+#    form_class = VolumeForm
+#    request = testing.DummyRequest()
+#    request.session['region'] = 'dummy'
+#
+#    def setUp(self):
+#        self.form = self.form_class(self.request)
+#
+#    def test_secure_form(self):
+#        self.has_field('csrf_token')
+#        self.assertTrue(issubclass(self.form_class, BaseSecureForm))
+#
+#    def test_required_fields(self):
+#        self.assert_required('size')
+#        self.assert_required('zone')
+#
+#    def test_optional_fields(self):
+#        self.assert_not_required('name')
+#        self.assert_not_required('snapshot_id')
 
 
 class VolumeDeleteFormTestCase(BaseFormTestCase):

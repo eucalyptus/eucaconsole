@@ -124,17 +124,17 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if not zones:
-            zones.extend(self.get_availability_zones(region))
+            zones.extend(self.get_availability_zones(self.conn.host))
         for zone in zones:
             choices.append((zone.name, zone.name))
         return sorted(choices)
 
-    def get_availability_zones(self, region):
+    def get_availability_zones(self, ufshost):
         @extra_long_term.cache_on_arguments(namespace='availability_zones')
-        def _get_zones_cache_(self, region):
-            return _get_zones_(self, region)
+        def _get_zones_cache_(self, ufshost):
+            return _get_zones_(self, ufshost)
 
-        def _get_zones_(self, region):
+        def _get_zones_(self, ufshost):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
@@ -143,9 +143,9 @@ class ChoicesManager(object):
                 del zone.region
             return zones
         try:
-            return _get_zones_cache_(self, region)
+            return _get_zones_cache_(self, ufshost)
         except pylibmc.Error:
-            return _get_zones_(self, region)
+            return _get_zones_(self, ufshost)
 
     def instances(self, instances=None, states=None, escapebraces=True, add_blank=True, id_first=False):
         from ..views import TaggedItemView
