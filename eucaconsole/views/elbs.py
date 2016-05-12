@@ -943,6 +943,7 @@ class ELBInstancesView(BaseELBView):
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'cross_zone_enabled': self.cross_zone_enabled,
             'elb_scaling_group_names': self.elb_scaling_group_names,
+            'is_detail_page': True
         }))
 
     def get_all_instances(self):

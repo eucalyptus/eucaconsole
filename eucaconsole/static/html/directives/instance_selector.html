@@ -15,7 +15,7 @@
             <tr ng-repeat="instance in instanceList track by instance.id">
                 <td>
                     <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}"
-                           ng-disabled="elbScalingGroupNames.indexOf(instance.scaling_group) !== -1" />
+                           ng-disabled="isDetailPage &amp;&amp; elbScalingGroupNames.indexOf(instance.scaling_group) !== -1" />
                 </td>
                 <td>
                     <span id="instance-name-{{ instance.id }}" class="id breakword">
