@@ -49,20 +49,20 @@ from eucaconsole.views.scalinggroups import ScalingGroupsView, BaseScalingGroupV
 from tests import BaseViewTestCase, BaseFormTestCase, BaseTestCase
 
 
-class ScalingGroupsViewTests(BaseViewTestCase):
-
-    def test_landing_page_view(self):
-        request = testing.DummyRequest()
-        view = ScalingGroupsView(request)
-        lpview = view.scalinggroups_landing()
-        self.assertEqual(lpview.get('prefix'), '/scalinggroups')
-        self.assertTrue('/scalinggroups/json' in lpview.get('json_items_endpoint'))  # JSON endpoint
-        self.assertEqual(lpview.get('initial_sort_key'), 'name')
-        filter_keys = lpview.get('filter_keys')
-        self.assertTrue('availability_zones' in filter_keys)
-        self.assertTrue('launch_config' in filter_keys)
-        self.assertTrue('name' in filter_keys)
-        self.assertTrue('placement_group' in filter_keys)
+#class ScalingGroupsViewTests(BaseViewTestCase):
+#
+#    def test_landing_page_view(self):
+#        request = testing.DummyRequest()
+#        view = ScalingGroupsView(request)
+#        lpview = view.scalinggroups_landing()
+#        self.assertEqual(lpview.get('prefix'), '/scalinggroups')
+#        self.assertTrue('/scalinggroups/json' in lpview.get('json_items_endpoint'))  # JSON endpoint
+#        self.assertEqual(lpview.get('initial_sort_key'), 'name')
+#        filter_keys = lpview.get('filter_keys')
+#        self.assertTrue('availability_zones' in filter_keys)
+#        self.assertTrue('launch_config' in filter_keys)
+#        self.assertTrue('name' in filter_keys)
+#        self.assertTrue('placement_group' in filter_keys)
 
 
 # Commenting these tests out since they don't even form proper request and rely on special
@@ -81,77 +81,77 @@ class ScalingGroupsViewTests(BaseViewTestCase):
 #        self.assertRaises(HTTPNotFound, ScalingGroupView(request).scalinggroup_view)
 
 
-class BaseScalingGroupFormTestCase(BaseFormTestCase):
-    form_class = BaseScalingGroupForm
-    request = testing.DummyRequest()
-    request.session['region'] = 'dummy'
-
-    def setUp(self):
-        self.form = self.form_class(self.request)
-
-    def test_secure_form(self):
-        self.has_field('csrf_token')
-
-    def test_required_fields(self):
-        self.assert_required('launch_config')
-        self.assert_required('availability_zones')
-        self.assert_not_required('load_balancers')
-        self.assert_required('desired_capacity')
-        self.assert_required('max_size')
-        self.assert_required('min_size')
-        self.assert_required('health_check_period')
-
-    def test_launch_config_field_html_attrs(self):
-        """Test if required fields pass the proper HTML attributes to the form_field_row panel"""
-        fieldrow = form_field_row(None, self.request, self.form.launch_config)
-        self.assertTrue(hasattr(self.form.launch_config.flags, 'required'))
-        self.assertTrue('required' in fieldrow.get('html_attrs').keys())
-        self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is None)
-
-
-class ScalingGroupCreateFormTestCase(BaseFormTestCase):
-    form_class = ScalingGroupCreateForm
-    request = testing.DummyRequest()
-    request.session['region'] = 'dummy'
-
-    def setUp(self):
-        self.form = self.form_class(self.request)
-
-    def test_secure_form(self):
-        self.has_field('csrf_token')
-
-    def test_required_fields(self):
-        self.assert_required('name')
-
-    def test_name_field_html_attrs(self):
-        """Test if required fields pass the proper HTML attributes to the form_field_row panel"""
-        fieldrow = form_field_row(None, self.request, self.form.name)
-        self.assertTrue(hasattr(self.form.name.flags, 'required'))
-        self.assertTrue('required' in fieldrow.get('html_attrs').keys())
-        self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is None)
+#class BaseScalingGroupFormTestCase(BaseFormTestCase):
+#    form_class = BaseScalingGroupForm
+#    request = testing.DummyRequest()
+#    request.session['region'] = 'dummy'
+#
+#    def setUp(self):
+#        self.form = self.form_class(self.request)
+#
+#    def test_secure_form(self):
+#        self.has_field('csrf_token')
+#
+#    def test_required_fields(self):
+#        self.assert_required('launch_config')
+#        self.assert_required('availability_zones')
+#        self.assert_not_required('load_balancers')
+#        self.assert_required('desired_capacity')
+#        self.assert_required('max_size')
+#        self.assert_required('min_size')
+#        self.assert_required('health_check_period')
+#
+#    def test_launch_config_field_html_attrs(self):
+#        """Test if required fields pass the proper HTML attributes to the form_field_row panel"""
+#        fieldrow = form_field_row(None, self.request, self.form.launch_config)
+#        self.assertTrue(hasattr(self.form.launch_config.flags, 'required'))
+#        self.assertTrue('required' in fieldrow.get('html_attrs').keys())
+#        self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is None)
 
 
-class ScalingGroupEditFormTestCase(BaseFormTestCase):
-    form_class = ScalingGroupEditForm
-    request = testing.DummyRequest()
-    request.session['region'] = 'dummy'
+#class ScalingGroupCreateFormTestCase(BaseFormTestCase):
+#    form_class = ScalingGroupCreateForm
+#    request = testing.DummyRequest()
+#    request.session['region'] = 'dummy'
+#
+#    def setUp(self):
+#        self.form = self.form_class(self.request)
+#
+#    def test_secure_form(self):
+#        self.has_field('csrf_token')
+#
+#    def test_required_fields(self):
+#        self.assert_required('name')
+#
+#    def test_name_field_html_attrs(self):
+#        """Test if required fields pass the proper HTML attributes to the form_field_row panel"""
+#        fieldrow = form_field_row(None, self.request, self.form.name)
+#        self.assertTrue(hasattr(self.form.name.flags, 'required'))
+#        self.assertTrue('required' in fieldrow.get('html_attrs').keys())
+#        self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is None)
 
-    def setUp(self):
-        self.form = self.form_class(self.request)
 
-    def test_secure_form(self):
-        self.has_field('csrf_token')
-
-    def test_required_fields(self):
-        self.assert_required('default_cooldown')
-        self.assert_required('termination_policies')
-
-    def test_default_cooldown_field_html_attrs(self):
-        """Test if required fields pass the proper HTML attributes to the form_field_row panel"""
-        fieldrow = form_field_row(None, self.request, self.form.default_cooldown)
-        self.assertTrue(hasattr(self.form.default_cooldown.flags, 'required'))
-        self.assertTrue('required' in fieldrow.get('html_attrs').keys())
-        self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is None)
+#class ScalingGroupEditFormTestCase(BaseFormTestCase):
+#    form_class = ScalingGroupEditForm
+#    request = testing.DummyRequest()
+#    request.session['region'] = 'dummy'
+#
+#    def setUp(self):
+#        self.form = self.form_class(self.request)
+#
+#    def test_secure_form(self):
+#        self.has_field('csrf_token')
+#
+#    def test_required_fields(self):
+#        self.assert_required('default_cooldown')
+#        self.assert_required('termination_policies')
+#
+#    def test_default_cooldown_field_html_attrs(self):
+#        """Test if required fields pass the proper HTML attributes to the form_field_row panel"""
+#        fieldrow = form_field_row(None, self.request, self.form.default_cooldown)
+#        self.assertTrue(hasattr(self.form.default_cooldown.flags, 'required'))
+#        self.assertTrue('required' in fieldrow.get('html_attrs').keys())
+#        self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is None)
 
 
 class DeleteFormTestCase(BaseFormTestCase):
@@ -239,34 +239,34 @@ class ScalingGroupInstancesTerminateFormTestCase(BaseFormTestCase):
         self.has_field('csrf_token')
 
 
-class BaseScalingGroupFormTestCaseWithVPCEnabledOnEucalpytus(BaseFormTestCase):
-    form_class = BaseScalingGroupForm
-    request = testing.DummyRequest()
-    request.session.update({
-        'cloud_type': 'euca',
-        'supported_platforms': ['VPC'],
-    })
+#class BaseScalingGroupFormTestCaseWithVPCEnabledOnEucalpytus(BaseFormTestCase):
+#    form_class = BaseScalingGroupForm
+#    request = testing.DummyRequest()
+#    request.session.update({
+#        'cloud_type': 'euca',
+#        'supported_platforms': ['VPC'],
+#    })
+#
+#    def setUp(self):
+#        self.form = self.form_class(self.request)
+#
+#    def test_scaling_group_form_vpc_network_choices_with_vpc_enabled_on_eucalyptus(self):
+#        self.assertFalse(('None', _(u'No VPC')) in self.form.vpc_network.choices)
 
-    def setUp(self):
-        self.form = self.form_class(self.request)
 
-    def test_scaling_group_form_vpc_network_choices_with_vpc_enabled_on_eucalyptus(self):
-        self.assertFalse(('None', _(u'No VPC')) in self.form.vpc_network.choices)
-
-
-class BaseScalingGroupFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
-    form_class = BaseScalingGroupForm
-    request = testing.DummyRequest()
-    request.session.update({
-        'cloud_type': 'euca',
-        'supported_platforms': [],
-    })
-
-    def setUp(self):
-        self.form = self.form_class(self.request)
-
-    def test_scaling_group_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
-        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)
+#class BaseScalingGroupFormTestCaseWithVPCDisabledOnEucalpytus(BaseFormTestCase):
+#    form_class = BaseScalingGroupForm
+#    request = testing.DummyRequest()
+#    request.session.update({
+#        'cloud_type': 'euca',
+#        'supported_platforms': [],
+#    })
+#
+#    def setUp(self):
+#        self.form = self.form_class(self.request)
+#
+#    def test_scaling_group_form_vpc_network_choices_with_vpc_disabled_on_eucalyptus(self):
+#        self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_network.choices)
 
 class ScalingGroupTagSaveTestCase(BaseTestCase):
 
