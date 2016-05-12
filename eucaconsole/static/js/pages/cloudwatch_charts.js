@@ -36,17 +36,10 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         link: function (scope, element, attrs, ctrl) {
             scope.graphs = nv.graphs;
 
-            // Being the div that shields the underlying content and handles all mouse events.
             var interactionLayer = document.createElement('div');
             interactionLayer.setAttribute('class', 'interactionLayer');
 
-            // Being the line that hovers over the charts and marks user interaction.
-            //var indexLine = document.createElement('div');
-            //indexLine.setAttribute('class', 'indexLine');
-            //ctrl.indexLine = indexLine;
-
             var $layer = angular.element(interactionLayer);
-            //$layer.append(indexLine);
             element.append(interactionLayer);
 
             $layer.on('mousemove', function (event) {
@@ -56,8 +49,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         controller: ['$scope', function ($scope) {
             var vm = this;
             this.moveIndexLine = function (x, y) {
-                //angular.element(vm.indexLine).css('left', x + 'px');
-
                 $scope.graphs.forEach(function (graph) {
                     dispatchEvents(graph, x, y);
                 });
