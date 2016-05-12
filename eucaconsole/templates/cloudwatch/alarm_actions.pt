@@ -14,7 +14,7 @@
             </a>
         </span>
     </div>
-    <span ng-show="alarmActions.length < 1" i18n:translate="">Add an action:</span>
+    <span ng-show="alarmActions.length &lt; 1" i18n:translate="">Add an action:</span>
     <span ng-show="alarmActions.length > 0" i18n:translate="">Add another action:</span>
     <div>
         <div class="row controls-wrapper">
