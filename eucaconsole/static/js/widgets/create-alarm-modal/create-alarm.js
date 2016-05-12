@@ -87,8 +87,8 @@ angular.module('CreateAlarmModal', [
                     name = name + [' (', ')'].join(count);
                 }
 
-                var collision = $scope.existingAlarms.some(function (alarm) {
-                    return alarm.name === name;
+                var collision = $scope.existingAlarmNames.some(function (alarmName) {
+                    return alarmName === name;
                 });
 
                 if(collision) {
@@ -137,7 +137,7 @@ angular.module('CreateAlarmModal', [
                     // Build dimension choices for Copy Alarm on alarm details page
                     $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices);
                 }
-                $scope.existingAlarms = [];
+                $scope.existingAlarmNames = [];
                 if(attrs.alarmName) {
                     AlarmService.getAlarm(attrs.alarmName)
                         .then(function (res) {
@@ -310,10 +310,10 @@ angular.module('CreateAlarmModal', [
             };
 
             $scope.checkNameCollision = function () {
-                $scope.existingAlarms = [];
-                AlarmService.getAlarmsForDimensions($scope.dimensions)
-                    .then(function success(alarms) {
-                        $scope.existingAlarms = alarms;
+                $scope.existingAlarmNames = [];
+                AlarmService.getAlarmNames()
+                    .then(function success(alarmNames) {
+                        $scope.existingAlarmNames = alarmNames;
                         $scope.alarm.name = $scope.alarmName();
                     });
             };
@@ -349,8 +349,8 @@ angular.module('CreateAlarmModal', [
                 formCtrl = ctrls[1];
 
             modelCtrl.$validators.uniqueName = function (modelValue, viewValue) {
-                return !scope.existingAlarms.some(function (alarm) {
-                    return alarm.name === viewValue;
+                return !scope.existingAlarmNames.some(function (alarmName) {
+                    return alarmName === viewValue;
                 });
             };
 
