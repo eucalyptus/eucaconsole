@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview AngularJS CloudWatch chart directive
  * @requires AngularJS, D3, nvd3.js
  *

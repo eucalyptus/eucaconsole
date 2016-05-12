@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview directive for chosen widget (home grown)
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('EucaChosenModule', [])
 .directive('chosen', function () {
     return {

@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview factory method for metric fetch XHR call
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('MetricServiceModule', ['EucaRoutes'])
 .factory('MetricService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
     return {

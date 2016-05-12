@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview directive to show aws warning dialogs
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('StackAWSDialogs', ['EucaRoutes', 'EucaConsoleUtils'])
     .directive('awsTemplateDialogs', function (eucaUnescapeJson) {
         return {

@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview directive and factory to manage modal dialogs
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('ModalModule', [])
 .directive('modal', ['ModalService', '$interpolate', function (ModalService, $interpolate) {
     var template = '<div class="modal-bg" ng-click="closeModal(\'{{modalName}}\')"></div><div class="modal-content">' +

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following

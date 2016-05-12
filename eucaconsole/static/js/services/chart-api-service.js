@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview factory method for chart XHR call
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('ChartAPIModule', ['EucaConsoleUtils'])
 .factory('CloudwatchAPI', ['$http', 'eucaHandleError', function ($http, eucaHandleError) {
     return {
