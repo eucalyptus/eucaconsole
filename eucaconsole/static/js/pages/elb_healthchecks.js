@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview ELB Health Checks Page JS
  * @requires AngularJS
  *

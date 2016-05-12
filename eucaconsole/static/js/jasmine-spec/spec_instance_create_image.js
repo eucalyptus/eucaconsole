@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Instance Create Image JS 
  * @requires Jasmine, AngularJS mock
  *

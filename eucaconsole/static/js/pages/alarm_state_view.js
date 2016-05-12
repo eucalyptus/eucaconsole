@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview directive to show alarms for resource and allow deletion
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServiceModule', 'AlarmsComponents'])
     .directive('alarmStateView', function() {
         return {

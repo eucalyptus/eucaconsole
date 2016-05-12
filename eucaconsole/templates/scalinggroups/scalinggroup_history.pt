@@ -69,7 +69,7 @@
                                     <th i18n:translate="">START TIME</th>
                                     <th i18n:translate="">END TIME</th>
                                 </tr></thead>
-                                <tbody expando="" ng-repeat="item in history | orderBy: sortBy:sortReverse"
+                                <tbody expando="" ng-repeat="item in history | orderBy: sortBy:sortReverse | limitTo:displayCount"
                                     url="${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}"
                                     item_id="{{item.activity_id}}">
                                     <tr ng-class="{'history-tr-even': $odd}" ng-cloak="true"> 

@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview directive to show cancel stack update dialog
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('StackCancelUpdateDialog', ['EucaRoutes', 'EucaConsoleUtils'])
     .directive('stackCancelUpdateDialog', function (eucaUnescapeJson) {
         return {

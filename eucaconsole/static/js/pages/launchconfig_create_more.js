@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Launchconfig create more like this launchconfig page JS
  * @requires AngularJS
  *

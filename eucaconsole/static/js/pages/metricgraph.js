@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview controller for metric graph page for mobile
+ * @requires AngularJS, jQuery
+ *
+ */
 
 angular.module('MetricGraphPage', ['CloudWatchCharts'])
     .controller('MetricsCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaHandleError, ModalService) {

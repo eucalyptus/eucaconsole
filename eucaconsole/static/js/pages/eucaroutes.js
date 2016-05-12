@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview service that provides route information for XHR requests
+ * @requires AngularJS, jQuery
+ *
+ */
 
 angular.module('EucaRoutes', [])
 .service('eucaRoutes', function($http, $interpolate) {
