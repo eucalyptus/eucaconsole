@@ -31,10 +31,18 @@
             <ul ng-if="!editDimensions">
                 <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
             </ul>
-            <select ng-model="alarm.dimensions" ng-if="editDimensions" id="dimensions-select">
-                <option ng-repeat="dimension in dimensionChoices" ng-selected="dimension.selected"
+            <select name="dimensions" ng-model="alarm.dimensions" ng-if="editDimensions"
+                    id="dimensions-select" required="required">
+                <option ng-if="alarmsLanding &amp;&amp; invalidDimensions" i18n:translate="" value="">
+                    Select dimension...
+                </option>
+                <option ng-repeat="dimension in dimensionChoices"
+                        ng-selected="dimension.selected || dimension.value === alarm.dimensions"
                         ng-value="dimension.value">{{ dimension.label }}</option>
             </select>
+            <small class="error"
+                   ng-show="createAlarmForm.dimensions.$touched &amp;&amp; createAlarmForm.dimensions.$error.required"
+                   i18n:translate="">Dimension is required.</small>
         </div>
     </div>
     <div class="row controls-wrapper">
@@ -66,9 +74,9 @@
         <div class="small-2 columns">
             <select name="comparison" ng-model="alarm.comparison">
                 <option value=">=">&gt;&#61;</option>
-                <option value="<=">&lt;&#61;</option>
+                <option value="&lt;=">&lt;&#61;</option>
                 <option value=">">&gt;</option>
-                <option value="<">&lt;</option>
+                <option value="&lt;">&lt;</option>
             </select>
         </div>
         <div class="small-3 columns">
@@ -112,9 +120,28 @@
             </select>
         </div>
     </div>
+    <div class="metric-chart chart-wrapper">
+        <h6>{{ alarm.metric.name }}</h6>
+        <svg class="cwchart"
+            metric-chart=""
+            metric="{{alarm.metric.name}}"
+            namespace="{{ alarm.namespace || alarm.metric.namespace }}"
+            duration="3600"
+            statistic="alarm.statistic"
+            unit="{{ alarm.unit || alarm.metric.unit }}"
+            threshold="{{alarm.threshold}}"
+            form-name="createAlarmForm"
+            dimensions="alarm.dimensions"></svg>
+    </div>
     <div ng-if="!hideAlarmActions">
         <hr/>
-        ${panel('alarm_actions_panel')}
+        <alarm-actions
+            ng-model="alarm.actions"
+            ok-actions="alarm.ok_actions"
+            alarm-actions="alarm.alarm_actions"
+            insufficient-data-actions="alarm.insufficient_data_actions"
+            template="${request.route_path('render_template', subpath='cloudwatch/alarm_actions')}">
+        </alarm-actions>
         <hr/>
     </div>
     <div class="controls">

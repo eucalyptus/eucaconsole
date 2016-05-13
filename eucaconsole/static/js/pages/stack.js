@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Stack Detail Page JS
  * @requires AngularJS
  *
@@ -195,7 +197,8 @@ angular.module('StackPage', ['MagicSearch', 'EucaConsoleUtils', 'StackCancelUpda
             });
         };
         $scope.displayStatus = function(stackStatus) {
-            return stackStatus.replace(/-/g, ' ');
+            stackStatus = stackStatus.replace(/-/g, ' ');
+            return stackStatus.charAt(0).toUpperCase() + stackStatus.slice(1);
         };
         $scope.searchEvents = function() {
             var filterText = ($scope.searchFilter || '').toLowerCase();

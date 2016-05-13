@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -93,9 +93,15 @@ class DimensionChoicesManager(BaseView):
             ]
             choices += ebs_choices
 
+        if namespace == 'AWS/AutoScaling':  # No need for custom_ns check here as ASGs are part of AWS/EC2 condition
+            scaling_group_choices = [
+                self._get_scaling_group_choices()
+            ]
+            choices += scaling_group_choices
+
         dimension_choices = list(chain.from_iterable(choices))
 
-        if self._none_selected(dimension_choices):
+        if self._none_selected(dimension_choices) and self.existing_dimensions is not None:
             dimension_choices.append({'label': _('Select dimension...'), 'value': '', 'selected': True})
 
         return dimension_choices
@@ -204,10 +210,13 @@ class DimensionChoicesManager(BaseView):
         return True
 
     def _build_option(self, resource_type, resource_id, resource_label):
+        selected = False
+        if self.existing_dimensions is not None:
+            selected = [resource_id] == self.existing_dimensions.get(resource_type)
         return {
             'label': '{0} = {1}'.format(resource_type, resource_label),
             'value': re.sub(r'\s+', '', json.dumps({resource_type: [resource_id]})),
-            'selected': [resource_id] == self.existing_dimensions.get(resource_type)
+            'selected': selected
         }
 
 
@@ -256,6 +265,13 @@ class CloudWatchAlarmsView(LandingPageView):
 
     @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
     def alarms_landing(self):
+        dimension_options = {}
+        for namespace in ['AWS/EC2', 'AWS/ELB', 'AWS/EBS', 'AWS/AutoScaling']:
+            dimension_options[namespace] = DimensionChoicesManager(self.request).choices_by_namespace(namespace)
+
+        self.render_dict.update(
+            dimension_options_json=json.dumps(dimension_options)
+        )
         return self.render_dict
 
     @view_config(route_name='cloudwatch_alarms_create', renderer=TEMPLATE, request_method='POST')
@@ -417,6 +433,8 @@ class CloudWatchAlarmsJsonView(BaseView):
             items = self.get_items()
             alarms = []
             for alarm in items:
+                duration_label = '{0} {1} {2}'.format(
+                    _('for'), alarm.evaluation_periods * int(alarm.period / 60.0), _('minutes'))
                 alarms.append(dict(
                     name=alarm.name,
                     description=alarm.description,
@@ -431,31 +449,16 @@ class CloudWatchAlarmsJsonView(BaseView):
                     threshold=alarm.threshold,
                     unit=alarm.unit,
                     state=alarm.state_value,
+                    duration_label=duration_label,
                 ))
             return dict(results=alarms)
 
-    @view_config(route_name="cloudwatch_alarms_for_metric_json", renderer='json', request_method='GET')
-    def cloudwatch_alarm_for_metric_json(self):
+    @view_config(route_name='cloudwatch_alarm_names_json', renderer='json', request_method='GET')
+    def cloudwatch_alarm_names_json(self):
         with boto_error_handler(self.request):
-            metric_name = self.request.params.get('metric_name')
-            namespace = self.request.params.get('namespace')
-            statistic = self.request.params.get('statistic')
-            period = self.request.params.get('period')
-            items = self.get_alarms_for_metric(metric_name, namespace, statistic, period)
-            alarms = []
-
-            for alarm in items:
-                alarms.append(dict(
-                    name=alarm.name,
-                    statistic=alarm.statistic,
-                    metric=alarm.metric,
-                    period=alarm.period,
-                    comparison=alarm.comparison,
-                    threshold=alarm.threshold,
-                    unit=alarm.unit,
-                ))
-
-            return dict(results=alarms)
+            alarms = self.get_items()
+            alarm_names = [alarm.name for alarm in alarms]
+            return dict(results=alarm_names)
 
     @view_config(route_name="cloudwatch_alarms_for_resource_json", renderer='json', request_method='GET')
     def cloudwatch_alarms_for_resource_json(self):
@@ -467,30 +470,6 @@ class CloudWatchAlarmsJsonView(BaseView):
                 res_id,
                 cw_conn=self.get_connection(conn_type="cloudwatch"),
                 dimension_key=res_type)
-            alarms = []
-            if items:
-                for alarm in items:
-                    alarms.append(dict(
-                        name=alarm.name,
-                        metric=alarm.metric,
-                        comparison=alarm.comparison,
-                        threshold=alarm.threshold,
-                        unit=alarm.unit,
-                        state=alarm.state_value
-                    ))
-
-            return dict(results=alarms)
-
-    @view_config(route_name="cloudwatch_alarms_for_dimensions_json", renderer='json', request_method='GET')
-    def cloudwatch_alarms_for_dimensions_json(self):
-        with boto_error_handler(self.request):
-            dimensions = self.request.params.get('dimensions')
-            dimensions = json.loads(dimensions)
-
-            items = Alarm.get_alarms_for_dimensions(
-                dimensions,
-                cw_conn=self.get_connection(conn_type="cloudwatch")
-            )
             alarms = []
             if items:
                 for alarm in items:
@@ -531,6 +510,22 @@ class CloudWatchAlarmDetailView(BaseView):
         self.alarm = self.get_alarm(alarm_id)
         self.alarm_form = CloudWatchAlarmUpdateForm(request)
 
+        alarm_actions = []
+        for action in self.alarm.alarm_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'ALARM'
+            alarm_actions.append(detail)
+
+        for action in self.alarm.insufficient_data_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'INSUFFICIENT_DATA'
+            alarm_actions.append(detail)
+
+        for action in self.alarm.ok_actions:
+            detail = self.get_alarm_action_detail(action)
+            detail['alarm_state'] = 'OK'
+            alarm_actions.append(detail)
+
         self.alarm_json = json.dumps({
             'name': self.alarm.name,
             'state': self.alarm.state_value,
@@ -544,7 +539,11 @@ class CloudWatchAlarmDetailView(BaseView):
             'evaluation_periods': self.alarm.evaluation_periods,
             'comparison': self.alarm.comparison,
             'threshold': self.alarm.threshold,
-            'description': self.alarm.description
+            'description': self.alarm.description,
+            'actions': alarm_actions,
+            'alarm_actions': self.alarm.alarm_actions,
+            'insufficient_data_actions': self.alarm.insufficient_data_actions,
+            'ok_actions': self.alarm.ok_actions
         })
 
         self.render_dict = dict(
@@ -568,25 +567,8 @@ class CloudWatchAlarmDetailView(BaseView):
         # Handle when resource in dimensions is no longer available (e.g. instance was terminated)
         invalid_dimensions = len([option for option in dimension_options if option.get('value') == ''])
 
-        alarm_actions = []
-        for action in self.alarm.alarm_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'ALARM'
-            alarm_actions.append(detail)
-
-        for action in self.alarm.insufficient_data_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'INSUFFICIENT_DATA'
-            alarm_actions.append(detail)
-
-        for action in self.alarm.ok_actions:
-            detail = self.get_alarm_action_detail(action)
-            detail['alarm_state'] = 'OK'
-            alarm_actions.append(detail)
-
         self.render_dict.update(
             metric_display_name=METRIC_TITLE_MAPPING.get(self.alarm.metric, self.alarm.metric),
-            alarm_actions_json=json.dumps(alarm_actions),
             dimension_options=dimension_options,
             dimension_options_json=json.dumps(dimension_options),
             invalid_dimensions=invalid_dimensions,
@@ -705,4 +687,3 @@ class CloudWatchAlarmHistoryView(BaseView):
         with boto_error_handler(self.request):
             history = conn.describe_alarm_history(alarm_name=alarm_id)
         return history
-

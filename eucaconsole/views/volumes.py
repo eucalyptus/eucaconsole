@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -322,7 +322,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
             snapshots = self.conn.get_all_snapshots(owner='self') if self.conn else []
-            zones = ChoicesManager(self.conn).get_availability_zones(self.region)
+            zones = ChoicesManager(self.conn).get_availability_zones(self.conn.host)
             instances = self.conn.get_only_instances() if self.conn else []
         self.volume_form = VolumeForm(
             self.request, conn=self.conn, volume=self.volume, snapshots=snapshots,

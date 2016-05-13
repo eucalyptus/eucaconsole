@@ -103,6 +103,13 @@ svg {
             stroke-dasharray: 3 3;
         }
     }
+    // Make alarm threshold lines dashed (Note: Chrome converts hex to rgb values in SVG)
+    g.nv-group[style*='#ff0000'], g.nv-group[style*='rgb(255, 0, 0)']  {
+        stroke-dasharray: 3 3;
+        .nv-point {
+            stroke-dasharray: 0 0;
+        }
+    }
 }
 
 .large-chart-wrapper {

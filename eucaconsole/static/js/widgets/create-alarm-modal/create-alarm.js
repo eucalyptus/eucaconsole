@@ -28,8 +28,8 @@ angular.module('CreateAlarmModal', [
                 createAlarmCtrl.initializeModal(attrs);
             });
             scope.$on('modal:close', function (event, name) {
-                if(name === modalName && modalName !== 'copyAlarm') {
-                    scope.resetForm();
+                if(name === modalName) {
+                    scope.resetForm(name);
                 }
             });
         },
@@ -87,8 +87,8 @@ angular.module('CreateAlarmModal', [
                     name = name + [' (', ')'].join(count);
                 }
 
-                var collision = $scope.existingAlarms.some(function (alarm) {
-                    return alarm.name === name;
+                var collision = $scope.existingAlarmNames.some(function (alarmName) {
+                    return alarmName === name;
                 });
 
                 if(collision) {
@@ -103,12 +103,15 @@ angular.module('CreateAlarmModal', [
                     $scope.alarm.metric.namespace = $scope.namespace;
                 }
                 $scope.alarm.dimensions = attrs.alarmName ? JSON.stringify($scope.dimensions) : $scope.dimensions;
+                if ($scope.invalidDimensions) {
+                    $scope.alarm.dimensions = '';
+                }
                 $scope.alarm.statistic = $scope.alarm.statistic ? $scope.alarm.statistic : attrs.defaultStatistic;
                 $scope.alarm.comparison = '>=';
                 $scope.alarm.evaluation_periods = defaults.evaluation_periods;
                 $scope.alarm.period = defaults.period;
 
-                if (attrs.alarmName) {
+                if (attrs.alarmName && !attrs.alarmsLanding) {
                     $('#dimensions-select').chosen({'width': '100%', search_contains: true});
                 } else {
                     $scope.updateStaticDimensions($scope.alarm);
@@ -128,8 +131,13 @@ angular.module('CreateAlarmModal', [
                 $scope.title = attrs.title || 'Create Alarm';
                 $scope.hideAlarmActions = attrs.hideAlarmActions || false;
                 $scope.editDimensions = attrs.editDimensions || false;
-                $scope.dimensionChoices = $scope.editDimensions ? JSON.parse(attrs.dimensionChoices) : [];
-                $scope.existingAlarms = [];
+                $scope.dimensionChoices = [];
+                $scope.alarmsLanding = attrs.alarmsLanding || false;
+                if (attrs.editDimensions && !attrs.alarmsLanding) {
+                    // Build dimension choices for Copy Alarm on alarm details page
+                    $scope.dimensionChoices = JSON.parse(attrs.dimensionChoices);
+                }
+                $scope.existingAlarmNames = [];
                 if(attrs.alarmName) {
                     AlarmService.getAlarm(attrs.alarmName)
                         .then(function (res) {
@@ -146,13 +154,43 @@ angular.module('CreateAlarmModal', [
             };
 
             this.initializeForCopy = function (alarm, attrs) {
+                var parsedDimensionChoices = null;
+                var selectedChoices = [];
+                var allDimensionChoices = [];
+                var stdDimensionNamespaces = ['AWS/EC2', 'AWS/ELB', 'AWS/EBS', 'AWS/AutoScaling'];
+                if (attrs.alarmName) {
+                    $scope.title = 'Create alarm like ' + attrs.alarmName;
+                }
                 $scope.alarm = alarm;
                 $scope.alarm.name = '';
                 $scope.alarm.dimensions = alarm.dimensions;
+                $scope.alarm.actions = alarm.actions || [];
                 $scope.dimensions = alarm.dimensions;
+                $scope.invalidDimensions = false;
                 $scope.namespace = alarm.namespace;
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
+                if (attrs.editDimensions && attrs.alarmsLanding) {
+                    // Handle dimension choices on alarms landing page
+                    parsedDimensionChoices = JSON.parse(attrs.dimensionChoices);
+                    if (stdDimensionNamespaces.indexOf(alarm.namespace) === -1) {
+                        // Alarms with custom metric/namespace
+                        stdDimensionNamespaces.forEach(function (namespace) {
+                            Array.prototype.push.apply(allDimensionChoices, parsedDimensionChoices[namespace]);
+                        });
+                        $scope.dimensionChoices = allDimensionChoices;
+                    } else {
+                        // Alarms with standard namespace
+                        $scope.dimensionChoices = parsedDimensionChoices[alarm.namespace];
+                    }
+                    selectedChoices = $scope.dimensionChoices.filter(function (item) {
+                        return !!item.selected || item.value === JSON.stringify($scope.alarm.dimensions);
+                    });
+                    if (selectedChoices.length === 0) {
+                        // Handle when resource in dimensions is no longer available (e.g. instance was terminated)
+                        $scope.invalidDimensions = true;
+                    }
+                }
                 finishInit(attrs);
             };
 
@@ -162,6 +200,7 @@ angular.module('CreateAlarmModal', [
                 $scope.resourceType = attrs.resourceType;
                 $scope.resourceId = attrs.resourceId;
                 $scope.dimensions = attrs.dimensions ? JSON.parse(attrs.dimensions) : undefined;
+                $scope.alarm.actions = [];
                 if ($scope.dimensions === undefined) {
                     $scope.dimensions = {};
                     $scope.dimensions[$scope.resourceType] = [$scope.resourceId];
@@ -255,18 +294,26 @@ angular.module('CreateAlarmModal', [
                 });
             });
 
-            $scope.resetForm = function () {
-                $scope.alarm = angular.copy(defaults);
-                $scope.checkNameCollision();
+            $scope.$watch('alarm.threshold', function (newVal, oldVal) {
+                if (newVal && newVal !== oldVal && !!oldVal) {
+                    $scope.$broadcast('alarmThresholdChanged', {threshold: newVal, dimensions: $scope.dimensions});
+                }
+            });
+
+            $scope.resetForm = function (modalName) {
+                if (modalName !== 'copyAlarm') {
+                    $scope.alarm = angular.copy(defaults);
+                    $scope.checkNameCollision();
+                }
                 $scope.createAlarmForm.$setPristine();
                 $scope.createAlarmForm.$setUntouched();
             };
 
             $scope.checkNameCollision = function () {
-                $scope.existingAlarms = [];
-                AlarmService.getAlarmsForDimensions($scope.dimensions)
-                    .then(function success(alarms) {
-                        $scope.existingAlarms = alarms;
+                $scope.existingAlarmNames = [];
+                AlarmService.getAlarmNames()
+                    .then(function success(alarmNames) {
+                        $scope.existingAlarmNames = alarmNames;
                         $scope.alarm.name = $scope.alarmName();
                     });
             };
@@ -302,11 +349,124 @@ angular.module('CreateAlarmModal', [
                 formCtrl = ctrls[1];
 
             modelCtrl.$validators.uniqueName = function (modelValue, viewValue) {
-                return !scope.existingAlarms.some(function (alarm) {
-                    return alarm.name === viewValue;
+                return !scope.existingAlarmNames.some(function (alarmName) {
+                    return alarmName === viewValue;
                 });
             };
 
         }
     };
-});
+})
+.directive('metricChart', function () {
+    return {
+        restrict: 'A',
+        scope: {
+            metric: '@',
+            namespace: '@',
+            duration: '=',
+            statistic: '=',
+            unit: '@',
+            dimensions: '=',
+            threshold: '@',
+            formName: '@'
+        },
+        link: function (scope, element) {
+            scope.target = element[0];
+        },
+        controller: ['$scope', 'CloudwatchAPI', 'ChartService',
+        function ($scope, CloudwatchAPI, ChartService) {
+            var vm = this;
+
+            $scope.alarModalOpened = false;
+
+            this.drawChart = function (dimensions) {
+                if ($scope.threshold) {
+                    vm._drawChart(dimensions);
+                }
+            };
+
+            this._drawChart = function (dimensions) {
+                CloudwatchAPI.getChartData({
+                    metric: $scope.metric,
+                    dimensions: JSON.stringify(dimensions),
+                    namespace: $scope.namespace,
+                    duration: $scope.duration,
+                    statistic: $scope.statistic,
+                    unit: $scope.unit,
+                    threshold: $scope.threshold
+                }).then(function (oData) {
+                    var results = oData ? oData.results : [];
+                    var maxValue = oData.max_value || 100;
+                    var resultsWithValues = results.filter(function(item) {
+                        return item.values.length;
+                    });
+                    if (resultsWithValues.length === 0) {
+                        ChartService.resetChart('.metric-chart');
+                    }
+                    ChartService.renderChart($scope.target, results, {
+                        unit: oData.unit || $scope.unit,
+                        metric: $scope.metric,
+                        maxValue: maxValue,
+                        threshold: $scope.threshold
+                    });
+                });
+            };
+
+            this.drawChartForDimensions = function (newVal, oldVal) {
+                if(!newVal) {
+                    return;
+                }
+                var parsedDims = angular.isObject(newVal) ? newVal : JSON.parse(newVal);
+                var resourceLabel = '';
+                var resourceLabels = [];
+                var dimensionField = angular.element('form[name="' + $scope.formName + '"]').find('[name="dimensions"]');
+                var selectedDimField = dimensionField.find('[selected]');
+                if (selectedDimField.length && newVal === $scope.dimensions) {
+                    resourceLabel = selectedDimField.text();
+                }
+                if (newVal !== oldVal) {
+                    resourceLabel = dimensionField.find("[value='" + newVal + "']").text();
+                }
+                if (!resourceLabel) {
+                    angular.forEach(parsedDims, function (val, key) {
+                        if (key !== '$$hashkey') {
+                            resourceLabels.push(key + ' = ' + val);
+                        }
+                    });
+                    resourceLabel = resourceLabels.join(', ');
+                }
+                var dimensions = [{
+                    'dimensions': parsedDims,
+                    'label': resourceLabel
+                }];
+
+                if ($scope.formName === 'alarmUpdateForm') {
+                    vm.drawChart(dimensions);
+                }
+
+                if ($scope.formName === 'createAlarmForm' && $scope.alarmModalOpened) {
+                    vm.drawChart(dimensions);
+                }
+            };
+
+            $scope.$watch('dimensions', function (newVal, oldVal) {
+                vm.drawChartForDimensions(newVal, oldVal);
+            });
+
+            $scope.$on('alarmThresholdChanged', function (event, params) {
+                $scope.threshold = params.threshold;
+                vm.drawChartForDimensions(params.dimensions, params.dimensions);
+            });
+
+            $scope.$on('modal:open', function (event, modalName) {
+                if (modalName === 'createAlarm' || modalName === 'copyAlarm') {
+                    $scope.alarmModalOpened = true;
+                    var dims = $scope.dimensions;
+                    vm.drawChartForDimensions(dims, dims);
+                }
+            });
+
+        }]
+    };
+})
+;

@@ -1,5 +1,7 @@
 @import "../includes/_eucavariables";
 .actions {
+    background: none !important;
+
     .item-list {
         margin: 0 0 15px;
 
@@ -30,10 +32,21 @@
         padding: 0.375rem;
     }
 
+    &.ng-valid-action-editor-empty,
     &.ng-pristine,
     &.ng-invalid {
         .button {
-            @include disabled-button-mixin;
+            @include primary-disabled-button-mixin;
+            &:hover {
+                box-shadow: none;
+            }
+        }
+    }
+
+    .button {
+        &.incomplete,
+        &.empty {
+            @include primary-disabled-button-mixin;
             &:hover {
                 box-shadow: none;
             }

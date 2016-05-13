@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
    * @fileOverview Common JS for Custom Filters
    * @requires AngularJS, jQuery, and Purl jQuery URL parser plugin
 **/
@@ -45,7 +47,7 @@ angular.module('CustomFilters', [])
 .filter('urlSafe', function () {
     return function (input) {
         var gen_delims = /[:\/\?#\[\]@\s]+/g;
-        var sub_delims = /[!\$&\'\(\)\*\+,;=]+/g;
+        var sub_delims = /[!\$&'\(\)\*\+,;=]+/g;
         input = input.replace(gen_delims, '-');
         input = input.replace(sub_delims, '');
         return input.toLowerCase();

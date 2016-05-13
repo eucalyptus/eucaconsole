@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/metrics.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
 <div metal:fill-slot="main_content" ng-app="MetricGraphPage" ng-controller="MetricsCtrl">
     <div class="row" id="contentwrap">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -137,7 +136,7 @@
     <div id="metrics-copy-url-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Copy URL</h3>
         <p i18n:translate="">The URL below will bring you to the metric landing page with preselected metric(s) and graph.</p>
-        <div class="">
+        <div>
             <input class="metrics-url-field" ng-model="graphURL"/>
         </div>
         <a href="#" id="metrics-copy-url-close-link" class="close-reveal-modal">&#215;</a>
@@ -146,7 +145,7 @@
 
 <metal:block metal:fill-slot="offcanvas_right">
     <div id="help-content-div" class="help-content">
-        <div id="help-html-console_metrics" ng-include="'${layout.help_path('console_volumes.html')}'"></div> 
+        <div id="help-html-console_metrics" ng-include="'${layout.help_path('console_volumes.html')}'"></div>
     </div>
 </metal:block>
 

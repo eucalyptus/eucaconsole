@@ -20,19 +20,19 @@ $stack-status-update-rollback-complete-cleanup-in-progress: $hpe-lightgray;
 $stack-status-update-rollback-complete: $hpe-gray;
 
 // Stack status
-.status.Create-in-progress { background-color: $stack-status-color-create-in-progress; }
-.status.Create-complete { background-color: $stack-status-color-create-complete; }
-.status.Create-failed { background-color: $stack-status-color-create-failed; }
-.status.Rollback-in-progress { background-color: $stack-status-color-rollback-in-progress; }
-.status.Rollback-complete { background-color: $stack-status-color-rollback-complete; }
-.status.Rollback-failed { background-color: $stack-status-color-rollback-failed; }
-.status.Delete-in-progress { background-color: $stack-status-color-delete-in-progress; }
-.status.Delete-complete { background-color: $stack-status-color-delete-complete; }
-.status.Delete-failed { background-color: $stack-status-color-delete-failed; }
-.status.Update-in-progress { background-color: $stack-status-update-in-progress; }
-.status.Update-complete-cleanup-in-progress { background-color: $stack-status-update-complete-cleanup-in-progress; }
-.status.Update-complete { background-color: $stack-status-update-complete; }
-.status.Update-rollback-in-progress { background-color: $stack-status-update-rollback-in-progress; }
-.status.Update-rollback-failed { background-color: $stack-status-update-rollback-failed; }
-.status.Update-rollback-complete-cleanup-in-progress { background-color: $stack-status-update-rollback-complete-cleanup-in-progress; }
-.status.Update-rollback-complete { background-color: $stack-status-update-rollback-complete; }
+.status.create-in-progress { background-color: $stack-status-color-create-in-progress; }
+.status.create-complete { background-color: $stack-status-color-create-complete; }
+.status.create-failed { background-color: $stack-status-color-create-failed; }
+.status.rollback-in-progress { background-color: $stack-status-color-rollback-in-progress; }
+.status.rollback-complete { background-color: $stack-status-color-rollback-complete; }
+.status.rollback-failed { background-color: $stack-status-color-rollback-failed; }
+.status.delete-in-progress { background-color: $stack-status-color-delete-in-progress; }
+.status.delete-complete { background-color: $stack-status-color-delete-complete; }
+.status.delete-failed { background-color: $stack-status-color-delete-failed; }
+.status.update-in-progress { background-color: $stack-status-update-in-progress; }
+.status.update-complete-cleanup-in-progress { background-color: $stack-status-update-complete-cleanup-in-progress; }
+.status.update-complete { background-color: $stack-status-update-complete; }
+.status.update-rollback-in-progress { background-color: $stack-status-update-rollback-in-progress; }
+.status.update-rollback-failed { background-color: $stack-status-update-rollback-failed; }
+.status.update-rollback-complete-cleanup-in-progress { background-color: $stack-status-update-rollback-complete-cleanup-in-progress; }
+.status.update-rollback-complete { background-color: $stack-status-update-rollback-complete; }

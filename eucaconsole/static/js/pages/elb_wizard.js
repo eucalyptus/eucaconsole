@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Elastic Load Balancer Wizard JS
  * @requires AngularJS
  *
@@ -272,6 +274,8 @@ angular.module('ELBWizard', [
                         $('#securitygroup').chosen({'width': '100%', search_contains: true});
                     }
                 });
+            } else {
+                $scope.getAllSecurityGroups($scope.vpcNetwork);
             }
         }, true);
         $scope.$watch('securityGroups', function (newVal, oldVal) {
@@ -403,9 +407,6 @@ angular.module('ELBWizard', [
                 // TODO: ensure this doesn't clear existing validation error
                 $scope.isValidationError = newVal && !$scope.bucketName;
             }
-        });
-        $scope.$watch('isValidationError', function (newVal, oldVal) {
-            console.log("validation error : "+newVal);
         });
         $scope.$watch('bucketName', function (newVal, oldVal) {
             if (newVal !== oldVal) {

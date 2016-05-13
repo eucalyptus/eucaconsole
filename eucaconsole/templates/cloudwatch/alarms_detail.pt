@@ -7,8 +7,7 @@
     </head>
 
     <div metal:fill-slot="main_content">
-        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}"
-             alarm-actions="${alarm_actions_json}" invalid-dimensions="${invalid_dimensions}">
+        <div class="row" id="contentwrap" ng-app="AlarmDetailPage" alarm-detail="${alarm_json}" invalid-dimensions="${invalid_dimensions}">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
@@ -23,7 +22,7 @@
             </h3>
             <div class="large-12 columns">
                 <dl class="tabs" id="alarm-subnav">
-                    <dd class="active"><a href="#" i18n:translate="">General</a><dd>
+                    <dd class="active"><a href="#" i18n:translate="">General</a></dd>
                     <dd>
                         <a href="${request.route_path('cloudwatch_alarm_history', alarm_id=encoded_id)}">
                             History</a>
@@ -70,7 +69,7 @@
                         </div>
                         <hr/>
                         <h6 i18n:translate="">Alarm</h6>
-                        <div class="row inline  controls-wrapper" id="controls_description">
+                        <div class="row inline controls-wrapper" id="controls_description">
                             <div class="large-3 small-3 columns">
                                 <label class="right" i18n:translate="">Description</label>
                             </div>
@@ -169,12 +168,20 @@
                                 metric="${alarm.metric}"
                                 namespace="${alarm.namespace}"
                                 duration="3600"
-                                statistic="${alarm.statistic}"
+                                statistic="alarm.statistic"
                                 unit="${alarm.unit}"
+                                threshold="${alarm.threshold}"
+                                form-name="alarmUpdateForm"
                                 dimensions="alarm.dimensions"></svg>
                         </div>
                         <hr/>
-                        ${panel('alarm_actions_panel', alarm_actions_json=alarm_actions_json, alarm_id=alarm_id)}
+                        <alarm-actions
+                            ng-model="alarm.actions"
+                            ok-actions="alarm.ok_actions"
+                            alarm-actions="alarm.alarm_actions"
+                            insufficient-data-actions="alarm.insufficient_data_actions"
+                            template="${request.route_path('render_template', subpath='cloudwatch/alarm_actions')}">
+                        </alarm-actions>
                         <hr/>
                         <div class="controls">
                             <button type="submit" class="button submit" i18n:translate="">Save Changes</button>

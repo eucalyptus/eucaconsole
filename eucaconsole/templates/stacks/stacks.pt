@@ -59,7 +59,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
                 <td class="status">
-                    <span class="label radius status {{ item.status }}">{{ displayStatus(item.status) }}</span>
+                    <span class="label radius status {{ item.status.toLowerCase() }}">{{ displayStatus(item.status) }}</span>
                     <span class="busy" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td class="breakword">{{ item.description }}</td>

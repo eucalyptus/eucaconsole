@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -571,9 +571,10 @@ class CreateMoreLaunchConfigView(BlockDeviceMappingItemView):
         with boto_error_handler(request):
             lc = autoscale_conn.get_all_launch_configurations(names=[name])
             launch_config = lc[0]
-            images = self.get_connection().get_all_images(image_ids=[launch_config.image_id])
+            images = self.get_connection().get_all_images(filters={'image_id': launch_config.image_id})
             self.image = images[0] if images else None
-            self.image.platform_name = ImageView.get_platform(self.image)[2]
+            if self.image:
+                self.image.platform_name = ImageView.get_platform(self.image)[2]
 
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,

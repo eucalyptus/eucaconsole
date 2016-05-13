@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Elastic Load Balander Security Policy Editor JS
  * @requires AngularJS
  *

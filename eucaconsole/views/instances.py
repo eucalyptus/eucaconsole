@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -720,7 +720,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_stop(self):
         if self.instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
-            if self.image.root_device_type == 'ebs':
+            if self.instance.root_device_type == 'ebs':
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Stopping instance {0}").format(self.instance.id))
                     self.instance.stop()

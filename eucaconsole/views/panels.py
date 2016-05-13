@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -445,12 +445,4 @@ def elb_listener_editor(context, request, listener_list=None, protocol_list=None
     return dict(
         controller_options_json=controller_options_json,
         elb_security_policy=elb_security_policy,
-    )
-
-
-@panel_config('alarm_actions_panel', renderer='../templates/cloudwatch/alarm_actions.pt')
-def alarm_actions_panel(context, request, alarm_actions_json='[]', alarm_id=None):
-    return dict(
-        alarm_actions_json=alarm_actions_json,
-        alarm_id=alarm_id
     )

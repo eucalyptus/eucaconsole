@@ -129,7 +129,7 @@ requires = [
     'gunicorn >= 18.0',
     'M2Crypto >= 0.20.2',
     'markupsafe >= 0.9.2',
-    'pycrypto >= 2.0.1',
+    'pycryptopp',
     'Paste >= 1.7.4',
     'pyramid >= 1.4',
     'pyramid_beaker >= 0.8',

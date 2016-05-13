@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -552,6 +552,7 @@ class BaseELBView(TaggedItemView):
         return subnets
 
     def get_availability_zones(self):
+        # TODO: switch this over to choice manager in next release to leverage caching
         availability_zones = []
         if self.ec2_conn:
             with boto_error_handler(self.request):

@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview factory methods for alarm XHR calls
+ * @requires AngularJS, jQuery
+ *
+ */
 angular.module('AlarmServiceModule', ['EucaRoutes'])
 .factory('AlarmService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -96,20 +103,17 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
                 });
         },
 
-        getAlarmsForDimensions: function (dims) {
-            return eucaRoutes.getRouteDeferred('cloudwatch_alarms_for_dimensions_json')
+        getAlarmNames: function (id, type) {
+            return eucaRoutes.getRouteDeferred('cloudwatch_alarm_names_json')
                 .then(function (path) {
                     return $http({
                         method: 'GET',
-                        url: path,
-                        params: {
-                            'dimensions': JSON.stringify(dims)
-                        }
+                        url: path
                     }).then(function success (response) {
-                        var data = response.data.results || [];
-                        return data;
+                        return response.data.results || [];
                     });
                 });
-        }
+        },
+
     };
 }]);

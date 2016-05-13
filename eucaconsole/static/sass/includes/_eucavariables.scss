@@ -235,6 +235,7 @@ $alarm-status-color-ok: $hp-green;
     background-color: white;
     border-color: $hpe-disabledgray;
     color: $hpe-disabledgray;
+    cursor: default;
     &:hover {
         cursor: default;
         pointer-events: none;
