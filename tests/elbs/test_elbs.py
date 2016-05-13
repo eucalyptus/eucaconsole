@@ -95,18 +95,18 @@ class ELBMonitoringViewTests(BaseViewTestCase, MockELBMixin):
         self.assert_(chart_item in options_json.get('charts_list'))
 
 
-class ELBInstancesViewTests(BaseViewTestCase, MockELBMixin):
-    """ELB detail page view - Instances tab"""
-#    def test_elb_instances_tab_view(self):
-#        elb_conn, elb = self.make_elb()
-#        request = self.create_request()
-#        elb_attrs = LbAttributes(connection=elb_conn)
-#        elb_attrs.cross_zone_load_balancing = CrossZoneLoadBalancingAttribute(connection=elb_conn)
-#        elb_attrs.cross_zone_load_balancing.enabled = True
-#        view = ELBInstancesView(request, elb=elb, elb_attrs=elb_attrs).elb_instances()
-#        options_json = json.loads(view.get('controller_options_json'))
-#        self.assertEqual(view.get('elb_name'), 'test_elb')
-#        self.assertEqual(options_json.get('cross_zone_enabled'), True)
+# class ELBInstancesViewTests(BaseViewTestCase, MockELBMixin):
+#     """ELB detail page view - Instances tab"""
+#     def test_elb_instances_tab_view(self):
+#         elb_conn, elb = self.make_elb()
+#         request = self.create_request()
+#         elb_attrs = LbAttributes(connection=elb_conn)
+#         elb_attrs.cross_zone_load_balancing = CrossZoneLoadBalancingAttribute(connection=elb_conn)
+#         elb_attrs.cross_zone_load_balancing.enabled = True
+#         view = ELBInstancesView(request, elb=elb, elb_attrs=elb_attrs).elb_instances()
+#         options_json = json.loads(view.get('controller_options_json'))
+#         self.assertEqual(view.get('elb_name'), 'test_elb')
+#         self.assertEqual(options_json.get('cross_zone_enabled'), True)
 
 
 class ELBHealthChecksViewTests(BaseViewTestCase, MockELBMixin):
