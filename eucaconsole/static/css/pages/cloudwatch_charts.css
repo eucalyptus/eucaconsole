@@ -31,6 +31,8 @@ svg g.euca-alarmLines line.alarm { stroke: red; stroke-width: 1px; stroke-dashar
 svg g.nv-group[style*='#ff0000'], svg g.nv-group[style*='rgb(255, 0, 0)'] { stroke-dasharray: 3 3; }
 svg g.nv-group[style*='#ff0000'] .nv-point, svg g.nv-group[style*='rgb(255, 0, 0)'] .nv-point { stroke-dasharray: 0 0; }
 
+.nvd3 line.nv-guideline { stroke: #333333; }
+
 .large-chart-wrapper svg { width: 100%; height: 500px; }
 .large-chart-wrapper .busy.loading { position: absolute; top: 12rem; left: 48%; width: 3rem; height: 3rem; font-size: 3rem; color: #666666; }
 

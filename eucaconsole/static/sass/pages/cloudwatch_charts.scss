@@ -133,6 +133,9 @@ svg {
         }
     }
 }
+.nvd3 line.nv-guideline {
+  stroke: $hpe-black;
+}
 
 .large-chart-wrapper {
     svg {
