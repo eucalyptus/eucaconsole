@@ -157,7 +157,7 @@ angular.module('CreateAlarmModal', [
                 var parsedDimensionChoices = null;
                 var selectedChoices = [];
                 var allDimensionChoices = [];
-                var stdDimensionNamespaces = ['AWS/EC2', 'AWS/ELB', 'AWS/EBS'];
+                var stdDimensionNamespaces = ['AWS/EC2', 'AWS/ELB', 'AWS/EBS', 'AWS/AutoScaling'];
                 if (attrs.alarmName) {
                     $scope.title = 'Create alarm like ' + attrs.alarmName;
                 }
