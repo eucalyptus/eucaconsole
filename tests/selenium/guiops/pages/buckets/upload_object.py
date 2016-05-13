@@ -25,3 +25,5 @@ class UploadObjectPage(BasePage):
     def upload_object_by_path(self, path):
         self.tester.send_keys_by_id('files', path, clear_field=False)
         self.tester.click_element_by_id(self._upload_object_submit_button_id)
+
+
