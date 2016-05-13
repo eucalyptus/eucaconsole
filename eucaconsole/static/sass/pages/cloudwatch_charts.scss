@@ -43,6 +43,28 @@
         margin-left: 0.7rem;
         margin-right: 0.7rem;
     }
+
+    div[chart-overlay] {
+        position: relative;
+
+        .interactionLayer {
+            background: transparent;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .indexLine {
+            border-right: 1px solid black;
+            width: 1px;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: 5px;
+        }
+    }
 }
 
 #metric-time-range {
@@ -110,6 +132,9 @@ svg {
             stroke-dasharray: 0 0;
         }
     }
+}
+.nvd3 line.nv-guideline {
+  stroke: $hpe-black;
 }
 
 .large-chart-wrapper {

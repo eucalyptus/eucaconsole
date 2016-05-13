@@ -32,6 +32,59 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         }
     }; 
 })
+.directive('chartOverlay', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs, ctrl) {
+            scope.graphs = nv.graphs;
+
+            var interactionLayer = document.createElement('div');
+            interactionLayer.setAttribute('class', 'interactionLayer');
+
+            var $layer = angular.element(interactionLayer);
+            element.append(interactionLayer);
+
+            $layer.on('mousemove', function (event) {
+                ctrl.moveIndexLine(event.offsetX, event.offsetY);
+            });
+        },
+        controller: ['$scope', function ($scope) {
+            var vm = this;
+            this.moveIndexLine = function (x, y) {
+                $scope.graphs.forEach(function (graph) {
+                    dispatchEvents(graph, x, y);
+                });
+            };
+
+            function dispatchEvents (graph, x, y) {
+                var margin = graph.margin();
+                x -= margin.left;
+                y -= margin.top;
+
+                var width = graph.interactiveLayer.width(),
+                    height = graph.interactiveLayer.height();
+
+                if(     (x < 0 || y < 0) ||
+                        (x > width || (y % height) > height)
+                ) {
+                    graph.interactiveLayer.dispatch.elementMouseout({
+                        mouseX: x,
+                        mouseY: y
+                    });
+                    graph.interactiveLayer.renderGuideLine(null);
+                    return;
+                }
+
+                var pointXValue = graph.interactiveLayer.xScale().invert(x);
+                graph.interactiveLayer.dispatch.elementMousemove({
+                    mouseX: x,
+                    mouseY: (y % 362) - (margin.bottom + margin.top),
+                    pointXValue: pointXValue
+                });
+            }
+        }]
+    };
+})
 .controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray, ModalService) {
     var vm = this;
     vm.duration = 3600;  // Default duration value is one hour
