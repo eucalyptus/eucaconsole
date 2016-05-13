@@ -74,9 +74,9 @@
         <div class="small-2 columns">
             <select name="comparison" ng-model="alarm.comparison">
                 <option value=">=">&gt;&#61;</option>
-                <option value="<=">&lt;&#61;</option>
+                <option value="&lt;=">&lt;&#61;</option>
                 <option value=">">&gt;</option>
-                <option value="<">&lt;</option>
+                <option value="&lt;">&lt;</option>
             </select>
         </div>
         <div class="small-3 columns">

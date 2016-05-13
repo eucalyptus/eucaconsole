@@ -22,7 +22,7 @@
             </h3>
             <div class="large-12 columns">
                 <dl class="tabs" id="alarm-subnav">
-                    <dd class="active"><a href="#" i18n:translate="">General</a><dd>
+                    <dd class="active"><a href="#" i18n:translate="">General</a></dd>
                     <dd>
                         <a href="${request.route_path('cloudwatch_alarm_history', alarm_id=encoded_id)}">
                             History</a>

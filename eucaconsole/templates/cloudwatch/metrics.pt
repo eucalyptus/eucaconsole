@@ -28,7 +28,7 @@
                         <a ng-if="(items | filter:{ _selected:true }).length > 0" ng-click="metricsCtrl.clearSelections()" i18n:translate="">Clear all</a>
                     </div>
                 </div>
-                <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading && landingPageView == 'gridview'">
+                <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading &amp;&amp; landingPageView == 'gridview'">
                     <strong>Sort by</strong>
                     <a href="#" data-dropdown="sorting-dropdown" ng-cloak="">
                         <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
