@@ -245,13 +245,20 @@ class CloudWatchAlarmsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
             dict(key='metric', name=_(u'Metric')),
         ]
+        search_facets=[
+            {'name': 'state', 'label': _(u"State"), 'options': [
+                {'key': 'alarm', 'label': _("Alarm")},
+                {'key': 'insufficient_data', 'label': _("Insufficient data")},
+                {'key': 'ok', 'label': _("OK")}
+            ]}
+        ]
         self.render_dict = dict(
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.request.route_path('cloudwatch_alarms_json'),
-            search_facets=[],
+            search_facets=BaseView.escape_json(json.dumps(search_facets)),
             alarm_form=self.create_form,
             metric_unit_mapping=self.get_metric_unit_mapping(),
             create_alarm_redirect=self.request.route_path('cloudwatch_alarms'),
