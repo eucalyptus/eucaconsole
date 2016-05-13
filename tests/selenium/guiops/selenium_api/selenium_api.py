@@ -1085,3 +1085,17 @@ class SeleniumApi(object):
         """
         element = self.driver.find_element_by_xpath(xpath)
         self.driver.execute_script('arguments[0].scrollIntoView(true);', element)
+
+    def take_screenshot_as_file(self, screenshot_file_path):
+        print "Executing: take_screenshot_as_file"
+        self.driver.implicitly_wait(self.implicit_wait_default_in_seconds)
+        self.driver.save_screenshot(screenshot_file_path)
+
+    def save_dated_screenshot(self, name):
+        print "Executing: save_dated_screenshot"
+        now = datetime.now().strftime('-%Y-%m-%d_%H-%M-%S')
+        img_file_name = "screenshot"+"-"+name+now+".png"
+        screen = self.driver.get_screenshot_as_base64()
+        with open(img_file_name, 'wb') as img_file:
+            img_file.write(screen.decode('base64'))
+
