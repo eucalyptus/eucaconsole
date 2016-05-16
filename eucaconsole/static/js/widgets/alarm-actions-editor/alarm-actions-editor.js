@@ -22,6 +22,9 @@ angular.module('AlarmActionsModule', ['AlarmServiceModule', 'ScalingGroupsServic
             scope.$watchCollection('action', function (newVal) {
                 var validity = actionsCtrl.validate(newVal);
                 modelCtrl.$setValidity('actionEditor', validity);
+                if (validity && scope.state === 'complete') {
+                    modelCtrl.$setDirty();  // We seem to require this for the dialog on the resource monitoring pages
+                }
             });
 
             scope.$watchCollection('allActions', function (newVal, oldVal) {
