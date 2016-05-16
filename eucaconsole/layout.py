@@ -98,7 +98,9 @@ class MasterLayout(object):
                     self.has_regions = False
         if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
-            if self.selected_region == '' or self.selected_region == 'undefined':
+            if (self.selected_region == '' or
+                self.selected_region == 'undefined' or
+                self.selected_region == 'euca'):
                 self.selected_region = self.default_region
             self.selected_region_label = self.get_selected_region_label(self.selected_region, self.regions)
         self.username_label = self.request.session.get('username_label')
