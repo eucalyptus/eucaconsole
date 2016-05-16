@@ -128,8 +128,7 @@ class RegionCache(object):
                 del region.connection
             return regions
         try:
-            regions = _get_regions_cache_(self, host)
-            return regions
+            return _get_regions_cache_(self, host)
         except pylibmc.Error:
             return _get_regions_(self)
 
@@ -381,7 +380,6 @@ class EucaAuthenticator(object):
         host = self.host
         if self.dns_enabled:
             host = 'tokens.{0}'.format(host)
-        import logging; logging.info("using hostname : "+host)
         if self.validate_certs:
             conn = CertValidatingHTTPSConnection(host, self.port, timeout=timeout, **self.kwargs)
         else:
