@@ -5,28 +5,35 @@ angular.module('AlarmDetailPage', [
 .directive('alarmDetail', ['eucaRoutes', function (eucaRoutes) {
     return {
         restrict: 'A',
-        link: function (scope, element, attrs) {
-            scope.alarm = JSON.parse(attrs.alarmDetail);
-            console.log(scope.alarm);
-            scope.alarm.actions = scope.alarm.actions || [];
-            scope.alarms = [scope.alarm];  // Delete alarm confirmation dialog expects a list of alarms
-            scope.expanded = true;
-            scope.alarmDimensions = scope.alarm.dimensions;  // Leveraged in delete alarm confirmation dialog
-            // Need stringified form on details page (and Copy Alarm dialog) to set current dimension choice
-            scope.alarm.dimensions = JSON.stringify(scope.alarm.dimensions);
+        compile: function (tElement, tAttrs) {
+            var alarm = JSON.parse(tAttrs.alarmDetail);
 
-            if (parseInt(attrs.invalidDimensions, 10) || 0) {
-                // Handle when resource in dimensions is no longer available
-                scope.alarm.dimensions = '';
-            }
+            return {
+                pre: function (scope, element, attrs) {
+                    scope.alarm = alarm;
+                },
+                post: function (scope, element, attrs) {
+                    scope.alarm.actions = scope.alarm.actions || [];
+                    scope.alarms = [scope.alarm];  // Delete alarm confirmation dialog expects a list of alarms
+                    scope.expanded = true;
+                    scope.alarmDimensions = scope.alarm.dimensions;  // Leveraged in delete alarm confirmation dialog
+                    // Need stringified form on details page (and Copy Alarm dialog) to set current dimension choice
+                    scope.alarm.dimensions = JSON.stringify(scope.alarm.dimensions);
 
-            eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
-                scope.redirectPath = path;
-            });
+                    if (parseInt(attrs.invalidDimensions, 10) || 0) {
+                        // Handle when resource in dimensions is no longer available
+                        scope.alarm.dimensions = '';
+                    }
 
-            scope.$watchCollection('alarm.actions', function () {
-                scope.collateActions();
-            });
+                    eucaRoutes.getRouteDeferred('cloudwatch_alarms').then(function (path) {
+                        scope.redirectPath = path;
+                    });
+
+                    scope.$watchCollection('alarm.actions', function () {
+                        scope.collateActions();
+                    });
+                }
+            };
         },
         controller: ['$scope', '$window', 'AlarmService', 'ModalService',
         function ($scope, $window, AlarmService, ModalService) {
@@ -98,7 +105,6 @@ angular.module('AlarmDetailPage', [
                 if(description) {
                     $scope.alarm.description = description;
                 }
-                console.log($scope.alarm.description);
                 return $scope.alarm.description;
             };
         }]
