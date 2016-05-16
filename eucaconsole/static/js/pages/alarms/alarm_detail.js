@@ -100,19 +100,6 @@ angular.module('AlarmDetailPage', [
                     $scope.alarm[target].push(action.arn);
                 });
             };
-
-            $scope.descriptionDisplay = function (description) {
-                if(description) {
-                    $scope.alarm.description = description;
-                }
-                return $scope.alarm.description;
-            };
         }]
     };
-}])
-.filter('strip', function () {
-    return function (input) {
-        console.log(input);
-        return input;
-    };
-});
+}]);

@@ -76,8 +76,7 @@
                             <div class="large-9 small-9 columns field">
                                 <textarea id="description" maxlength="255"
                                     name="description"
-                                    ng-model="descriptionDisplay"
-                                    ng-model-options="{ getterSetter: true }"></textarea>
+                                    ng-model="alarm.description"></textarea>
                             </div>
                         </div>
                         <div class="row controls-wrapper">
