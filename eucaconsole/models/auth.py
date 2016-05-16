@@ -240,9 +240,10 @@ class ConnectionManager(object):
                 ufshost, port, 'euca', access_id, secret_key, token, 'ec2', dns_enabled
             )
             regions = RegionCache(conn).get_regions(ufshost)
-            region = [reg.endpoint for reg in regions if reg.name == region]
-            if region:
-                endpoint = region[0]
+            # result will only ever be 1 or none
+            endpoint = [reg.endpoint for reg in regions if reg.name == region]
+            if endpoint:
+                endpoint = endpoint[0]
                 parsed = urlparse(endpoint)
                 ufshost = parsed.hostname[4:]  # remove 'ec2.' prefix
                 port = parsed.port
