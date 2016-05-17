@@ -49,8 +49,7 @@
             </div>
             <div class="tag-entry-submit">
                 <div class="columns">
-                    <a href="javascript:void(0);" ng-click="addTag()" class="button round tiny"
-                       id="add-tag-btn" title="Add tag" i18n:translate="">Add Tag</a>
+                    <a ng-click="addTag($event)" class="button round tiny" id="add-tag-btn" title="Add tag" i18n:translate="">Add Tag</a>
                 </div>
             </div>
             <div class="tag-entry-result">

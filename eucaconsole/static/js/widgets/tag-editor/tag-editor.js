@@ -13,8 +13,10 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                 return attributes.template;
             },
             controller: ['$scope', '$window', function ($scope, $window) {
-                $scope.addTag = function () {
-                    if($scope.tagForm.$invalid) {
+                $scope.addTag = function ($event) {
+                    $event.preventDefault();
+
+                    if($scope.tagForm.$invalid || $scope.tagForm.$pristine) {
                         return;
                     }
 
