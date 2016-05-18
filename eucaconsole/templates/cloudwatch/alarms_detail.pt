@@ -74,7 +74,9 @@
                                 <label class="right" i18n:translate="">Description</label>
                             </div>
                             <div class="large-9 small-9 columns field">
-                                <textarea id="description" maxlength="255" name="description" ng-model="alarm.description"></textarea>
+                                <textarea id="description" maxlength="255"
+                                    name="description"
+                                    ng-model="alarm.description"></textarea>
                             </div>
                         </div>
                         <div class="row controls-wrapper">
