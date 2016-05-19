@@ -9,6 +9,7 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
             scope.alarmId = attrs.alarmId;
             scope.historicEvents = JSON.parse(attrs.alarmHistory);
             scope.unfilteredEvents = angular.copy(scope.historicEvents);
+            scope.facetFilteredEvents = scope.unfilteredEvents;
 
             scope.$on('searchUpdated', scope.searchUpdatedHandler);
             scope.$on('textSearch', scope.textSearchHandler);
@@ -16,26 +17,31 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
         controller: ['$scope', 'AlarmService', 'ModalService',
         function ($scope, AlarmService, ModalService) {
             $scope.textSearchHandler = function (event, filterText) {
-                if(filterText === '') {
-                    $scope.historicEvents = $scope.unfilteredEvents;
+                $scope.searchFilter = filterText.toLowerCase();
+                $scope.textFilterEvents();
+            };
+            $scope.textFilterEvents = function() {
+                if($scope.searchFilter === '') {
+                    $scope.historicEvents = $scope.facetFilteredEvents;
                     return;
                 }
 
-                $scope.historicEvents = $scope.unfilteredEvents.filter(function (item) {
-                    return item.history_item_type.toLowerCase() == filterText.toLowerCase();
+                $scope.historicEvents = $scope.facetFilteredEvents.filter(function (item) {
+                    return item.HistorySummary.toLowerCase().indexOf($scope.searchFilter) !== -1;
                 });
+                $scope.$apply();
             };
 
             $scope.searchUpdatedHandler = function (event, query) {
                 if(query === '') {
-                    $scope.historicEvents = $scope.unfilteredEvents;
+                    $scope.facetFilteredEvents = $scope.unfilteredEvents;
                     return;
                 }
 
                 var facets = {};
                 query.split('&').forEach(function (item) {
                     var q = item.split('=');
-                    var field = q.shift().toLowerCase(),
+                    var field = q.shift(),
                         value = q.shift();
 
                     if(!(field in facets)) {
@@ -44,13 +50,14 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
                     facets[field].push(value);
                 });
 
-                $scope.historicEvents = $scope.unfilteredEvents.filter(function (item) {
+                $scope.facetFilteredEvents = $scope.unfilteredEvents.filter(function (item) {
                     return Object.keys(facets).some(function (key) {
                         return facets[key].some(function (value) {
                             return item[key] == value;
                         });
                     });
                 });
+                $scope.textFilterEvents();
             };
 
             $scope.getItems = function () {
