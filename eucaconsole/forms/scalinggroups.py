@@ -237,6 +237,7 @@ class ScalingGroupCreateForm(BaseScalingGroupForm):
 
         # Set initial data
         self.availability_zones.data = [value for value, label in self.availability_zones.choices]
+        self.termination_policies.data = ['Default']
 
 
 class ScalingGroupEditForm(BaseScalingGroupForm):
