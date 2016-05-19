@@ -150,8 +150,10 @@
                             <div tal:condition="preset" ng-cloak="true">
                                 <div class="row">
                                     <div class="large-3 small-4 columns"><label class="right">Security group&nbsp;</label></div>
-                                    <div class="large-9 small-8 columns field inline" ng-repeat="sgroup in securityGroups">
-                                        {{ securityGroupChoices[sgroup] }}
+                                    <div class="large-9 small-8 columns field inline">
+                                        <div ng-repeat="sgroup in securityGroups">
+                                            {{ securityGroupChoices[sgroup] }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div ng-repeat="sGroup in securityGroups" class="hide">
