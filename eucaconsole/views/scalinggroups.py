@@ -251,6 +251,7 @@ class BaseScalingGroupView(BaseView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.ec2_conn = self.get_connection()
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.termination_policies_placeholder_text = _(u'Select one or more termination policies...')
 
     def get_scaling_group(self):
         scalinggroup_param = self.request.matchdict.get('id')  # id = scaling_group.name
@@ -344,7 +345,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             edit_form=self.edit_form,
             delete_form=self.delete_form,
             avail_zone_placeholder_text=_(u'Select one or more availability zones...'),
-            termination_policies_placeholder_text=_(u'Select one or more termination policies...'),
+            termination_policies_placeholder_text=self.termination_policies_placeholder_text,
             controller_options_json=self.get_controller_options_json(),
             is_vpc_supported=self.is_vpc_supported,
         )
@@ -883,6 +884,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             vpc_subnet_placeholder_text=_(u'Select VPC subnets...'),
             controller_options_json=self.get_controller_options_json(),
             is_vpc_supported=self.is_vpc_supported,
+            termination_policies_placeholder_text=self.termination_policies_placeholder_text,
         )
 
     def get_controller_options_json(self):
@@ -951,6 +953,12 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                         vpc_zone_identifier=vpc_subnets,
                     ))
                     scaling_group = AutoScalingGroup(**params)
+
+                scaling_group.termination_policies = self.request.params.getall('termination_policies')
+                # The 'Default' option must appear at the end of the list
+                if 'Default' in scaling_group.termination_policies:
+                    scaling_group.termination_policies.remove('Default')
+                    scaling_group.termination_policies.append('Default')
 
                 self.autoscale_conn.create_auto_scaling_group(scaling_group)
                 msg = _(u'Successfully created scaling group')

@@ -34,6 +34,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils', '
             $('#load_balancers').chosen({'width': '100%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
             $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
+            $('#termination_policies').chosen({'width': '100%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
