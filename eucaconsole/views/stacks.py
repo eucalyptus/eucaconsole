@@ -407,6 +407,8 @@ class StackStateView(BaseView):
         elif "AWS::S3::" in res_type:
             if "Bucket" in res_type:
                 url = request.route_path('bucket_contents', name=resource_id, subpath='')
+        elif res_type == "AWS::CloudWatch::Alarm":
+            url = request.route_path('cloudwatch_alarm_view', alarm_id=base64.b64encode(bytes(resource_id), '--'))
         return url
 
 
