@@ -62,6 +62,8 @@ class StackMixin(object):
                 stack_param = self.request.matchdict.get('name')
                 if not(stack_param):
                     stack_param = self.request.params.get('stack-name')
+                if not(stack_param):
+                    return None
                 stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
                 return stacks[0] if stacks else None
             except BotoServerError:
