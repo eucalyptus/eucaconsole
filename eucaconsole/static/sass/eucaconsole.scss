@@ -867,6 +867,15 @@ form {
         position: relative;
         left: -1rem;
     }
+    &.readonly {
+        a {
+            color: $hpe-green;
+            &:hover {
+                color: $hpe-green;
+                text-decoration: underline;
+            }
+        }
+    }
     .helptext-icon.reverse {
         position: relative;
         left: 1.5rem;
