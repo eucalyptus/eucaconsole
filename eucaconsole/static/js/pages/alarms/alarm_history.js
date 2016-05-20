@@ -1,4 +1,7 @@
 angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalModule'])
+.config(function($locationProvider) {
+    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
+})
 .config(['$compileProvider', function ($compileProvider) {
     var whitelist = /^\s*(https?|ftp|mailto|tel|file|data):/;
     $compileProvider.aHrefSanitizationWhitelist(whitelist);
@@ -15,10 +18,9 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
             scope.$on('searchUpdated', scope.searchUpdatedHandler);
             scope.$on('textSearch', scope.textSearchHandler);
         },
-        controller: ['$scope', '$timeout', 'AlarmService', 'ModalService',
-        function ($scope, $timeout, AlarmService, ModalService) {
+        controller: ['$scope', '$timeout', '$location', 'AlarmService', 'ModalService',
+        function ($scope, $timeout, $location, AlarmService, ModalService) {
             $scope.textSearchHandler = function (event, filterText) {
-                console.log("text = "+filterText);
                 $scope.searchFilter = filterText.toLowerCase();
                 $scope.textFilterEvents();
             };
@@ -37,7 +39,16 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
             };
 
             $scope.searchUpdatedHandler = function (event, query) {
-                console.log("query = "+query);
+                // update url
+                var url = window.location.href;
+                if (url.indexOf("?") > -1) {
+                    url = url.split("?")[0];
+                }
+                if (query.length > 0) {
+                    url = url + "?" + query;
+                }
+                $location.search(query);
+                window.history.pushState(null, "", $location.absUrl());
                 if(query === '') {
                     $scope.facetFilteredEvents = $scope.unfilteredEvents;
                     $scope.textFilterEvents();
