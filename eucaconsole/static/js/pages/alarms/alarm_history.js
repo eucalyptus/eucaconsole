@@ -10,19 +10,23 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
             scope.historicEvents = JSON.parse(attrs.alarmHistory);
             scope.unfilteredEvents = angular.copy(scope.historicEvents);
             scope.facetFilteredEvents = scope.unfilteredEvents;
+            scope.searchFilter = '';
 
             scope.$on('searchUpdated', scope.searchUpdatedHandler);
             scope.$on('textSearch', scope.textSearchHandler);
         },
-        controller: ['$scope', 'AlarmService', 'ModalService',
-        function ($scope, AlarmService, ModalService) {
+        controller: ['$scope', '$timeout', 'AlarmService', 'ModalService',
+        function ($scope, $timeout, AlarmService, ModalService) {
             $scope.textSearchHandler = function (event, filterText) {
+                console.log("text = "+filterText);
                 $scope.searchFilter = filterText.toLowerCase();
                 $scope.textFilterEvents();
             };
             $scope.textFilterEvents = function() {
                 if($scope.searchFilter === '') {
-                    $scope.historicEvents = $scope.facetFilteredEvents;
+                    $timeout(function() {
+                        $scope.historicEvents = $scope.facetFilteredEvents;
+                    });
                     return;
                 }
 
@@ -33,8 +37,10 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
             };
 
             $scope.searchUpdatedHandler = function (event, query) {
+                console.log("query = "+query);
                 if(query === '') {
                     $scope.facetFilteredEvents = $scope.unfilteredEvents;
+                    $scope.textFilterEvents();
                     return;
                 }
 
