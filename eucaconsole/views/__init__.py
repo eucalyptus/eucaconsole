@@ -282,8 +282,7 @@ class BaseView(object):
         ca_certs_file = conn.ca_certificates_file
         conn = None
         ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-        dns_enabled = self.request.session.get('dns_enabled', True)
-        auth = EucaAuthenticator(host, port, dns_enabled, validate_certs=validate_certs, ca_certs=ca_certs_file)
+        auth = EucaAuthenticator(host, port, True, validate_certs=validate_certs, ca_certs=ca_certs_file)
         return auth
 
     def get_account_attributes(self, attribute_names=None):
