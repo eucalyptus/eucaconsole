@@ -53,7 +53,7 @@
                                                      download="{{ currentHistoryItem.AlarmName }}.json" i18n:translate="">Download</a>
                         </div>
                     </div>
-                    <div ng-show="!itemsLoading">
+                    <div ng-show="!itemsLoading" ng-init="facetFilterItems()">
                         <p ng-show="!historicEvents.length" i18n:translate="">
                         No recent alarm activity.
                         </p>

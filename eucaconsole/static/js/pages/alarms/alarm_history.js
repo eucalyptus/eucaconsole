@@ -49,7 +49,15 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
                 }
                 $location.search(query);
                 window.history.pushState(null, "", $location.absUrl());
-                if(query === '') {
+                $scope.facetFilterItems();
+            };
+            $scope.facetFilterItems = function() {
+                var query = '';
+                var url = window.location.href;
+                if (url.indexOf("?") > -1) {
+                    query = url.split("?")[1];
+                }
+                if (query === '') {
                     $scope.facetFilteredEvents = $scope.unfilteredEvents;
                     $scope.textFilterEvents();
                     return;
@@ -81,6 +89,7 @@ angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalM
                 AlarmService.getHistory($scope.alarmId).then(function (items) {
                     $scope.historicEvents = items;
                     $scope.itemsLoading = false;
+                    $scope.facetFilterItems();
                 });
             };
 
