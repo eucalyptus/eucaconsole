@@ -43,7 +43,7 @@
                     <input class="value" type="text" placeholder="value..."
                            name="value" ng-model="newTagValue" tag-value=""/>
                     <span class="error" ng-show="tagForm.value.$error.tagValue" i18n:translate="">
-                        Tag may not begin with "aws:" or its length be longer than 128 chars
+                        Tag is required and may not begin with "aws:" or its length be longer than 256 chars
                     </span>
                 </div>
             </div>
