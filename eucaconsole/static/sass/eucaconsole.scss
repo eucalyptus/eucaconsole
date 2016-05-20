@@ -561,27 +561,17 @@ textarea.policy-area {
 }
 
 .expando {
-    i {
-        color: $hpe-gray;
-        &:hover {
-                color: $hpe-green;
-                text-decoration: none;
-        }
-        &.helptext-icon {
-            color: $hpe-gray;
-        }
-    }
     .title {
+        display: inline-block;
         font-family: $euca-text-font-family;
         font-size: $euca-l-font-size;
         text-transform: none;
+        &:hover a, &:hover i {
+            color: $hpe-green;
+            text-decoration: none;
+        }
         a {
             color: $hpe-gray;
-            &:hover {
-                color: $hpe-green;
-                text-decoration: none;
-                border-bottom: 1px solid $hpe-green;
-            }
         }
     }
 }
