@@ -72,7 +72,7 @@
                                 </div>
                             </div>
                             <div tal:define="term_policies_html_attrs {'data-placeholder': termination_policies_placeholder_text}" ng-cloak="">
-                                ${panel('form_field', field=create_form['termination_policies'], leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'terminationPolicies'}, **term_policies_html_attrs)}
+                                ${panel('form_field', field=create_form['termination_policies'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'terminationPolicies'}, **term_policies_html_attrs)}
                             </div>
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}

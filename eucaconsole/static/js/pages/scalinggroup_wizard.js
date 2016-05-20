@@ -27,6 +27,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils', '
         $scope.vpcSubnetZonesMap = {};
         $scope.availZones = '';
         $scope.loadBalancers = '';
+        $scope.terminationPolicies = ['Default'];
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
         $scope.isNotValid = true;
