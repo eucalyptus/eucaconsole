@@ -13,6 +13,9 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                 return attributes.template;
             },
             controller: ['$scope', '$window', function ($scope, $window) {
+                $scope.newTagKey = '';
+                $scope.newTagValue = '';
+
                 $scope.addTag = function ($event) {
                     $event.preventDefault();
 
@@ -77,7 +80,7 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
         };
     }])
     .directive('tagName', function () {
-        var validPattern = /^(?!aws:)(?!euca:).{0,128}$/;
+        var validPattern = /^(?!aws:)(?!euca:).{1,128}$/;
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
@@ -88,7 +91,7 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
         };
     })
     .directive('tagValue', function () {
-        var validPattern = /^(?!aws:).{0,256}$/;
+        var validPattern = /^(?!aws:).{1,256}$/;
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
