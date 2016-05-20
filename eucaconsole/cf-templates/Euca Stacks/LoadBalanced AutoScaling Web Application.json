@@ -207,7 +207,7 @@
           "yum update -y\n",
           "yum localinstall -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm\n",
           "yum install -y ntp gcc pip openssl-devel python-devel libffi-devel\n",
-          "pip install 'requests[security]'", 
+          "pip install 'requests[security]'\n",
           "/usr/sbin/ntpdate -u 0.centos.pool.ntp.org\n",
           "service ntpd start\n",
           "chkconfig ntpd on\n",
