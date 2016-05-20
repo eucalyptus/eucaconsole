@@ -386,7 +386,7 @@ class StackStateView(BaseView):
         elif "AWS::EC2::" in res_type:
             if "SecurityGroup" in res_type:
                 url = request.route_path('securitygroup_view', id=resource_id)
-            elif "EIP" in res_type:
+            elif res_type[10:] == "EIP":
                 url = request.route_path('ipaddress_view', public_ip=resource_id)
             elif "Instance" in res_type:
                 url = request.route_path('instance_view', id=resource_id)
