@@ -415,7 +415,7 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, sh
         sharing_form=sharing_form,
         show_caution=show_caution,
         grantee_choices=grantee_choices,
-        account_placeholder_text=_(u'Select or type to enter account/user'),
+        account_placeholder_text=_(u'Select account or type to enter account ID'),
         controller_options_json=controller_options_json,
     )
 
