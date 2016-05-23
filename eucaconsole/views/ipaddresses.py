@@ -194,6 +194,7 @@ class IPAddressesJsonView(LandingPageView):
             instances = self.get_instances(items)
             for address in items:
                 ipaddresses.append(dict(
+                    id=address.public_ip,
                     public_ip=address.public_ip,
                     allocation_id=address.allocation_id,
                     instance_id=address.instance_id,
