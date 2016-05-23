@@ -159,7 +159,7 @@ class BaseInstanceView(BaseView):
 
     def get_monitoring_state(self, instance=None):
         if not instance:
-            return False;
+            return False
         if self.cloud_type == 'euca':
             return instance.monitoring_state.capitalize()
         if self.cloud_type == 'aws':
