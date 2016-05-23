@@ -93,8 +93,8 @@
                                 </metal:block>
                             </strong>
                             <metal:block metal:define-slot="tile_dropdown_button">
-                                <a id="tile-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
-                                <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown" data-dropdown-content="">
+                                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                                     <li><a i18n:translate="" ng-click="metricsCtrl.showGraphForItem('${request.route_path('cloudwatch_graph')}', item)">Show graph</a></li>
                                     <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(item)">Create alarm</a></li>
                                     <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
@@ -145,7 +145,9 @@
                                     <td ng-if="item.heading == true" colspan="4">
                                         {{ item.cat_label }} ({{ item.cat_total }})
                                     </td>
-                                    <td ng-if="item.heading != true"><input type="checkbox" ng-model="item._selected"/></td>
+                                    <td ng-if="item.heading != true">
+                                        <input type="checkbox" ng-model="item.selected" ng-change="handleItemSelection()" />
+                                    </td>
                                     <td ng-if="item.heading != true">
                                         <div ng-repeat="res in item.resources">
                                             {{ res.res_type_label }}:&nbsp;
@@ -162,8 +164,8 @@
                                     <td ng-if="item.heading != true">{{ item.metric_label }}</td>
                                     <td ng-if="item.heading != true">
                                         <span class="actions" ng-show="item.status !== 'deleting'">
-                                            <a id="table-item-dropdown_{{ item.unique_id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.unique_id }}"><i class="grid-action"></i></a>
-                                            <ul id="item-dropdown_{{ item.unique_id }}" class="f-dropdown" data-dropdown-content="">
+                                            <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                                            <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                                                 <li><a i18n:translate="" ng-click="metricsCtrl.showCreateAlarm(item)">Create alarm</a></li>
                                                 <li><a href="" ng-click="metricsCtrl.copyUrl(item)" i18n:translate="">Copy URL</a></li>
                                             </ul>
