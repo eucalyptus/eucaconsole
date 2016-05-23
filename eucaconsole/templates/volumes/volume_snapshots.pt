@@ -56,7 +56,7 @@
                     </div>
                     <div class="content">
                         <div>
-                            <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                            <span class="label" title="Size" i18n:attributes="title" data-tooltip="">SZ</span>
                             {{ snapshot.volume_size }} GB
                         </div>
                         <div>
