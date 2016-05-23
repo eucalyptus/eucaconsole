@@ -470,7 +470,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                     else:
                         images = [self.handle_instance_being_bundled(instances[0], do_not_finish=True)]
                 else:
-                    images = self.conn.get_all_images(image_ids=images_param)
+                    images = self.conn.get_all_images(filters={'image_id':images_param})
         image = images[0] if images else None
         if image:
             attrs = image.__dict__
