@@ -201,7 +201,7 @@
                 <div class="row">
                     <div class="small-6 columns connect-center"> <span i18n:translate="">USERNAME</span> </div>
                     <div class="small-6 columns connect-center"> <span i18n:translate="">PASSWORD</span> </div>
-                    <div class="small-6 columns connect-center"> <span> {{ publicDNS }}\\Administrator </span> </div>
+                    <div class="small-6 columns connect-center"> <span> {{ publicDNS }}\Administrator </span> </div>
                     <div class="small-6 columns connect-center">
                         <span id="the-password"> <a id="password-link" ng-click="promptFile('${request.route_path('instance_get_password', id='_id_')}')" i18n:translate="">get password for {{ keyName }}</a></span>
                     </div>
