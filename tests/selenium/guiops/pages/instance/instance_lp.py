@@ -11,15 +11,15 @@ class InstanceLanding(LandingPage):
     _launch_instance_button_id = "launch-instance-btn"
     _instance_action_menu_id = "table-item-dropdown_{0}"  # instance_id required
     _manage_volumes_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(7)>a"  # instance_id required
-    _terminate_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(13)>a"  # instance_id required
+    _terminate_instance_actions_menu_item_css = "#item-dropdown_{0}>li:nth-of-type(14)>a"  # instance_id required
     _first_pending_instance_status_css = "status>span:contains('pending')"
     _first_instance_link_in_list_css = "#tableview>table>tbody>tr>td>a"
     _first_instance_status_css = "td:contains('{0}')~td>span"  # instance_id required; webdriver does not accept it
     _instance_link_css = 'a[ng-href="/instances/{0}"]'  # instance_id required;
     _view_details_actionmenu_item_css = "#item-dropdown_{0}>li>a"  # instance_id required
     _launch_more_like_this_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(3)>a"  # instance_id required
-    _associate_ip_address_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(8)>a"  #instance_id required
-    _disassociate_ip_address_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(9)>a"  #instance_id required
+    _associate_ip_address_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(9)>a"  #instance_id required
+    _disassociate_ip_address_actionmenu_item_css = "#item-dropdown_{0}>li:nth-of-type(10)>a"  #instance_id required
     _terminate_all_instances_btn_id = "terminate-instances-btn"
     _more_actions_menu_terminate_instances_css = "#more-actions-dropdown .more-actions-terminate"
     _search_input_field_css = ".search-input"
