@@ -1530,6 +1530,10 @@ ul.resources-nav {
             margin-top: 0.5rem;
             height: 2rem;
             width: 2rem;
+            &.fa-ellipsis-v {
+                left: 1.25rem;
+                color: $hpe-lightgray;
+            }
         }
         i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
         i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
