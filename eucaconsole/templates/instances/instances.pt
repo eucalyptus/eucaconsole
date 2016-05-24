@@ -55,7 +55,7 @@
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
                             <a i18n:translate="" class="more-actions-monitoring"
                                ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/monitoring">
-                                View monitoring
+                                Monitor
                             </a>
                         </li>
                         <hr />
@@ -150,6 +150,9 @@
                     </li>
                     <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                         <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}/monitoring">Monitor</a>
                     </li>
                     <li ng-show="item.status == 'running'">
                         <a i18n:translate="" ng-click="revealModal('associate-ip-to', item)">
@@ -336,6 +339,9 @@
                             </li>
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                                 <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}/monitoring">Monitor</a>
                             </li>
                             <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('associate-ip-to', item)">
