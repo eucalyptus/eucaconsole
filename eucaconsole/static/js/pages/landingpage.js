@@ -398,7 +398,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 $scope.state.allSelected = false;
             }
             // Set indeterminate state on select-all checkbox when checked and at least one item is unselected
-            allItemsCheckbox.indeterminate = !!($scope.state.allSelected && checkedIems.length < $scope.items.length);
+            if (allItemsCheckbox) {
+                allItemsCheckbox.indeterminate = !!($scope.state.allSelected && checkedIems.length < $scope.items.length);
+            }
             if (!$scope.state.allSelected && checkedIems.length === $scope.items.length) {
                 $scope.state.allSelected = true;
             }
