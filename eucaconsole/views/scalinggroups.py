@@ -306,6 +306,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.title_parts = [_(u'Scaling Group'), request.matchdict.get('id'), _(u'General')]
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
+            if not self.scaling_group:
+                raise HTTPNotFound()
             self.policies = self.get_policies(self.scaling_group)
             self.vpc = self.get_vpc(self.scaling_group)
             self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else ''
