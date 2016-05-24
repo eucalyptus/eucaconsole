@@ -73,7 +73,7 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
         },
 
         getHistory: function (id) {
-            return eucaRoutes.getRouteDeferred('cloudwatch_alarm_history_json', { alarm_id: id })
+            return eucaRoutes.getRouteDeferred('cloudwatch_alarm_history_json', { alarm_id: btoa(id) })
                 .then(function (path) {
                     return $http({
                         method: 'GET',

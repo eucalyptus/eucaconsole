@@ -10,7 +10,7 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
-                            CloudWatchAlarms</a></li>
+                            Alarms</a></li>
                     <li><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=encoded_id)}">${alarm_id}</a></li>
                     <li class="current"><a href="#">History</a></li>
                 </metal:crumbs>
@@ -53,7 +53,7 @@
                                                      download="{{ currentHistoryItem.AlarmName }}.json" i18n:translate="">Download</a>
                         </div>
                     </div>
-                    <div ng-show="!itemsLoading">
+                    <div ng-show="!itemsLoading" ng-init="facetFilterItems()">
                         <p ng-show="!historicEvents.length" i18n:translate="">
                         No recent alarm activity.
                         </p>
