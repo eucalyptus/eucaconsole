@@ -205,7 +205,8 @@
                         <div>
                              <instance-selector
                                  template="${request.static_path('eucaconsole:static/html/directives/instance_selector.html')}"
-                                 options="${controller_options_json}">
+                                 options="${controller_options_json}"
+                                 instance-list="{{ instanceList }}">
                              </instance-selector>
                         </div>
                     </div>
