@@ -1728,12 +1728,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 .helptext-icon { color: #666666; font-size: 1.2rem; }
 
-.expando i { color: #666666; }
-.expando i:hover { color: #01a982; text-decoration: none; }
-.expando i.helptext-icon { color: #666666; }
-.expando .title { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 18px; text-transform: none; }
+.expando .title { display: inline-block; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 18px; text-transform: none; }
+.expando .title:hover a, .expando .title:hover i { color: #01a982; text-decoration: none; }
 .expando .title a { color: #666666; }
-.expando .title a:hover { color: #01a982; text-decoration: none; border-bottom: 1px solid #01a982; }
 
 .action-icon { display: inline-block; font-size: 1.4rem; color: #333333; padding-right: 0.5rem; padding-left: 0.5rem; }
 .action-icon:hover { cursor: pointer; color: #01a982; }
@@ -1822,6 +1819,8 @@ form .error .chosen-container .chosen-single, form .ng-invalid.ng-touched { bord
 .row.controls-wrapper label.nowrap { white-space: nowrap; }
 .row.controls-wrapper label.stack-label { margin-bottom: 4px; white-space: nowrap; }
 .row.controls-wrapper label.reverse { display: inline-block; text-align: left; position: relative; left: -1rem; }
+.row.controls-wrapper.readonly a { color: #01a982; }
+.row.controls-wrapper.readonly a:hover { color: #01a982; text-decoration: underline; }
 .row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }
 .row.controls-wrapper .reverse .error { white-space: nowrap; }
 .row.controls-wrapper .checkbox-row { margin-left: 1rem; }
