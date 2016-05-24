@@ -42,7 +42,7 @@ from ..views import BaseView
 NO_CERTIFICATES_CHOICE = ('None', _(u'There are no certificates available'))
 
 
-class PingPathRequired(validators.Required):
+class PingPathRequired(validators.DataRequired):
     """Ping path is conditionally required based on protocol value"""
 
     def __init__(self, *args, **kwargs):
@@ -53,7 +53,7 @@ class PingPathRequired(validators.Required):
             super(PingPathRequired, self).__call__(form, field)
 
 
-class BucketInfoRequired(validators.Required):
+class BucketInfoRequired(validators.DataRequired):
     """Bucket info (name, interval) conditionally required based on logging_enabled value"""
 
     def __init__(self, *args, **kwargs):
@@ -64,7 +64,7 @@ class BucketInfoRequired(validators.Required):
             super(BucketInfoRequired, self).__call__(form, field)
 
 
-class CertificateARNRequired(validators.Required):
+class CertificateARNRequired(validators.DataRequired):
     """Custom validator to conditionally require certificate_arn when certificate_name is missing"""
 
     def __init__(self, *args, **kwargs):
@@ -585,7 +585,7 @@ class BackendCertificateForm(BaseSecureForm):
         self.backend_certificate_body.error_msg = self.backend_certificate_body_error_msg
 
 
-class PredefinedPolicyRequired(validators.Required):
+class PredefinedPolicyRequired(validators.DataRequired):
     """Custom validator to conditionally require predefined policy if custom policy isn't uploaded"""
 
     def __init__(self, *args, **kwargs):
