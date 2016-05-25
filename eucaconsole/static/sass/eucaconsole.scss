@@ -1530,10 +1530,16 @@ ul.resources-nav {
             margin-top: 0.5rem;
             height: 2rem;
             width: 2rem;
-            &.fa-ellipsis-v {
-                left: 1.25rem;
-                color: $hpe-lightgray;
-            }
+        }
+        span.connection {
+            position: absolute;
+            left: 1.3rem;
+            width: 0px;
+            padding: 0;
+            height: 2.75rem;
+            border-width: 6px;
+            border-style: none none none dotted;
+            color: $hpe-lightgray;
         }
         i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
         i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }

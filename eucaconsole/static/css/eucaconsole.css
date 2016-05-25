@@ -2021,7 +2021,7 @@ ul.resources-nav li:hover { background-color: #F0F0F0; color: #666666; }
 ul.resources-nav li span { padding-left: 0.5rem; white-space: nowrap; display: inline-block; vertical-align: middle; }
 ul.resources-nav li span.active { background-color: #01a982; color: white; }
 ul.resources-nav li i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; }
-ul.resources-nav li i.icon.fa-ellipsis-v { left: 1.25rem; color: #cccccc; }
+ul.resources-nav li span.connection { position: absolute; left: 1.3rem; width: 0px; padding: 0; height: 2.75rem; border-width: 6px; border-style: none none none dotted; color: #cccccc; }
 ul.resources-nav li i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
 ul.resources-nav li i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
 ul.resources-nav li i.icon.images { background-image: url(../img/nav/Images.svg); }

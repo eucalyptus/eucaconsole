@@ -33,78 +33,78 @@
     </div>
     <i class="icon cloudformation"></i><label i18n:translate="">CLOUDFORMATION</label>
     <li class="stacks">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-stacks" class="stacks" href="${request.route_path('stacks')}">
             <span i18n:translate="">Stacks</span>
         </a>
     </li>
     <i class="icon networksecurity"></i><label i18n:translate="">NETWORK &amp; SECURITY</label>
     <li class="ipaddresses">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-ipaddresses" class="ipaddresses" href="${request.route_path('ipaddresses')}">
             <span i18n:translate="">Elastic IP addresses</span>
         </a>
     </li>
     <li class="securitygroups">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-securitygroups" class="securitygroups" href="${request.route_path('securitygroups')}">
             <span i18n:translate="">Security groups</span>
         </a>
     </li>
     <li class="elbs">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-elbs" class="elbs" href="${request.route_path('elbs')}">
             <span i18n:translate="">Load balancers</span>
         </a>
     </li>
     <li class="keypairs">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-keypairs" class="keypairs" href="${request.route_path('keypairs')}">
             <span i18n:translate="">Key pairs</span>
         </a>
     </li>
     <i class="icon storage"></i><label i18n:translate="">STORAGE</label>
     <li class="volumes">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-volumes" class="volumes" href="${request.route_path('volumes')}">
             <span i18n:translate="">Volumes</span>
         </a>
     </li>
     <li class="snapshots">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-snapshots" class="snapshots" href="${request.route_path('snapshots')}">
             <span i18n:translate="">Snapshots</span>
         </a>
     </li>
     <li class="buckets">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-buckets" class="buckets" href="${request.route_path('buckets')}">
             <span i18n:translate="">Buckets (S3)</span>
         </a>
     </li>
     <i class="icon autoscaling"></i><label i18n:translate="">AUTO SCALING</label>
     <li class="scalinggroups">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-scalinggroups" class="scalinggroups" href="${request.route_path('scalinggroups')}">
             <i class="icon scalinggroups"></i>
             <span i18n:translate="">Auto scaling groups</span>
         </a>
     </li>
     <li class="launchconfigs">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-launchconfigs" class="launchconfigs" href="${request.route_path('launchconfigs')}">
             <span i18n:translate="">Launch configurations</span>
         </a>
     </li>
     <span class="euca-nav-size"><i class="icon fa fa-line-chart fa-1x"></i></span><label i18n:translate="">CLOUDWATCH</label>
     <li class="alarms">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-alarms" class="alarms" href="${request.route_path('cloudwatch_alarms')}">
             <span i18n:translate="">Alarms</span>
         </a>
     </li>
     <li class="metrics">
-        <i class="icon fa fa-ellipsis-v fa-2x"></i>
+        <span class="connection"></span>
         <a id="resource-menuitem-metrics" class="metrics" href="${request.route_path('cloudwatch_metrics')}">
             <span i18n:translate="">Metrics</span>
         </a>
@@ -118,19 +118,19 @@
             </a>
         </li>
         <li tal:condition="layout.user_access" class="users">
-            <i class="icon fa fa-ellipsis-v fa-2x"></i>
+            <span class="connection"></span>
             <a id="resource-menuitem-users" class="users" href="${request.route_path('users')}">
                 <span i18n:translate="">Users</span>
             </a>
         </li>
         <li tal:condition="layout.group_access" class="groups">
-            <i class="icon fa fa-ellipsis-v fa-2x"></i>
+            <span class="connection"></span>
             <a id="resource-menuitem-groups" class="groups" href="${request.route_path('groups')}">
                 <span i18n:translate="">Groups</span>
             </a>
         </li>
         <li tal:condition="layout.role_access" class="roles">
-            <i class="icon fa fa-ellipsis-v fa-2x"></i>
+            <span class="connection"></span>
             <a id="resource-menuitem-roles" class="roles" href="${request.route_path('roles')}">
                 <span i18n:translate="">Roles</span>
             </a>
