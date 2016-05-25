@@ -876,8 +876,9 @@ class ELBInstancesView(BaseELBView):
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
         filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
+        self.scaling_groups = self.autoscale_conn.get_all_groups()
         self.elb_scaling_group_names = [
-            asg.name for asg in self.autoscale_conn.get_all_groups() if self.elb.name in asg.load_balancers]
+            asg.name for asg in self.scaling_groups if self.elb.name in asg.load_balancers]
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -901,6 +902,10 @@ class ELBInstancesView(BaseELBView):
             zones = self.request.params.getall('zone') or []
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') == 'y'
             instances = self.request.params.getall('instances') or None
+            for scaling_group_name in self.elb_scaling_group_names:
+                # NOTE: Disabled checkboxes don't populate request.params.getall('instances')
+                #       So ensure ASG instances aren't de-registered when updating ELB instances list
+                instances += self.get_scaling_group_instance_ids(scaling_group_name)
             location = self.request.route_path('elb_instances', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
@@ -922,6 +927,14 @@ class ELBInstancesView(BaseELBView):
         else:
             self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
+
+    def get_scaling_group_instance_ids(self, scaling_group_name):
+        with boto_error_handler(self.request):
+            scaling_groups = [asg for asg in self.scaling_groups if asg.name == scaling_group_name]
+            if scaling_groups:
+                instances = scaling_groups[0].instances or []
+                return [instance.instance_id for instance in instances]
+            return []
 
     def is_cross_zone_enabled(self, elb_attrs=None):
         attrs = elb_attrs or self.elb.get_attributes()
