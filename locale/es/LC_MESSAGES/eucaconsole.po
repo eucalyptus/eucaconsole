@@ -33,7 +33,7 @@ msgstr ""
 
 #: eucaconsole/layout.py:129
 msgid "Clear search"
-msgstr ""
+msgstr "Limpiar búsqueda"
 
 #: eucaconsole/layout.py:130
 msgid "Select facets for filter, or enter text to search"
@@ -41,11 +41,11 @@ msgstr ""
 
 #: eucaconsole/layout.py:131
 msgid "Enter text to search"
-msgstr ""
+msgstr "Introduzca texto a buscar"
 
 #: eucaconsole/layout.py:132
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 #: eucaconsole/constants/cloudwatch.py:99
 msgid "CPU utilization"
@@ -99,7 +99,7 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:111
 msgid "Latency"
-msgstr ""
+msgstr "Latencia"
 
 #: eucaconsole/constants/cloudwatch.py:112
 #: eucaconsole/templates/elbs/elbs.pt:48
@@ -220,13 +220,13 @@ msgstr "Más reciente instancia"
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:100
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:54
 msgid "Average"
-msgstr ""
+msgstr "Media"
 
 #: eucaconsole/constants/cloudwatch.py:144
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:101
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:55
 msgid "Minimum"
-msgstr ""
+msgstr "Mínimo"
 
 #: eucaconsole/constants/cloudwatch.py:145
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:102
@@ -239,76 +239,76 @@ msgstr "Usuarios (máximo)"
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:103
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:57
 msgid "Sum"
-msgstr ""
+msgstr "Suma"
 
 #: eucaconsole/constants/cloudwatch.py:147
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:104
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:58
 msgid "Data samples"
-msgstr ""
+msgstr "Datos de ejemplo"
 
 #: eucaconsole/constants/cloudwatch.py:164
 msgid "Last hour"
-msgstr ""
+msgstr "Última hora"
 
 #: eucaconsole/constants/cloudwatch.py:165
 msgid "Last 3 hours"
-msgstr ""
+msgstr "Últimas 3 horas"
 
 #: eucaconsole/constants/cloudwatch.py:166
 msgid "Last 6 hours"
-msgstr ""
+msgstr "Últimas 6 horas"
 
 #: eucaconsole/constants/cloudwatch.py:167
 msgid "Last 12 hours"
-msgstr ""
+msgstr "Últimas 12 horas"
 
 #: eucaconsole/constants/cloudwatch.py:168
 msgid "Last day"
-msgstr ""
+msgstr "Último día"
 
 #: eucaconsole/constants/cloudwatch.py:169
 msgid "Last 3 days"
-msgstr ""
+msgstr "Últimos 3 días"
 
 #: eucaconsole/constants/cloudwatch.py:170
 msgid "Last 1 week"
-msgstr ""
+msgstr "Última semana"
 
 #: eucaconsole/constants/cloudwatch.py:171
 msgid "Last 2 weeks"
-msgstr ""
+msgstr "Últimas 2 semanas"
 
 #: eucaconsole/constants/cloudwatch.py:175 eucaconsole/forms/buckets.py:100
 #: eucaconsole/forms/elbs.py:108 eucaconsole/forms/elbs.py:278
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:155
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:115
 msgid "5 minutes"
-msgstr ""
+msgstr "5 minutos"
 
 #: eucaconsole/constants/cloudwatch.py:176
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:156
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:116
 msgid "15 minutes"
-msgstr ""
+msgstr "15 minutos"
 
 #: eucaconsole/constants/cloudwatch.py:177 eucaconsole/forms/buckets.py:102
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:157
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:117
 msgid "1 hour"
-msgstr ""
+msgstr "1 hora"
 
 #: eucaconsole/constants/cloudwatch.py:178
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:158
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:118
 msgid "6 hours"
-msgstr ""
+msgstr "6 horas"
 
 #: eucaconsole/constants/cloudwatch.py:179 eucaconsole/forms/buckets.py:103
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:159
 #: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:119
 msgid "1 day"
-msgstr ""
+msgstr "1 día"
 
 #: eucaconsole/constants/elbs.py:38
 msgid "No data available until this load balancer receives traffic."
@@ -2461,7 +2461,7 @@ msgstr "Instancia"
 #: eucaconsole/forms/volumes.py:179
 #, fuzzy
 msgid "No available instances in availability zone"
-msgstr "No hay volúmenes disponibles en esta zona disponibilidad"
+msgstr "No hay instancias disponibles en esta zona disponibilidad"
 
 #: eucaconsole/forms/volumes.py:224
 #, fuzzy
@@ -2471,7 +2471,7 @@ msgstr "Crear volumen"
 #: eucaconsole/forms/volumes.py:225
 #, fuzzy
 msgid "Available"
-msgstr "Aona de disponibilidad"
+msgstr "Disponible"
 
 #: eucaconsole/forms/volumes.py:226
 msgid "Attached"
@@ -2487,7 +2487,7 @@ msgstr ""
 
 #: eucaconsole/models/alarms.py:92
 msgid "Insufficient data"
-msgstr ""
+msgstr "Datos insuficientes"
 
 #: eucaconsole/models/alarms.py:94
 #: eucaconsole/templates/buckets/bucket_new.pt:60
@@ -2523,7 +2523,7 @@ msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:12 eucaconsole/views/dashboard.py:67
 msgid "Dashboard"
-msgstr "Salpicadero"
+msgstr "Panel de control"
 
 #: eucaconsole/templates/dashboard.pt:16 eucaconsole/templates/dashboard.pt:21
 msgid "All availability zones"
@@ -2545,7 +2545,7 @@ msgstr "Inicie instancia"
 
 #: eucaconsole/templates/dashboard.pt:53 eucaconsole/views/dashboard.py:44
 msgid "Stopped instances"
-msgstr "Instancias detenido"
+msgstr "Instancias detenidas"
 
 #: eucaconsole/templates/dashboard.pt:68 eucaconsole/views/dashboard.py:47
 msgid "Instances in scaling groups"
@@ -2669,13 +2669,13 @@ msgstr ""
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:92
 #: eucaconsole/views/dashboard.py:51
 msgid "Load balancers"
-msgstr "Los balanceadores de carga"
+msgstr "Balanceadores de carga"
 
 #: eucaconsole/templates/dashboard.pt:230
 #: eucaconsole/templates/elbs/elb_wizard.pt:15
 #, fuzzy
 msgid "Create load balancer"
-msgstr "Equilibrador de carga"
+msgstr "Crear balanceador de carga"
 
 #: eucaconsole/templates/dashboard.pt:236
 #: eucaconsole/templates/accounts/account_new.pt:17
@@ -11061,7 +11061,7 @@ msgstr ""
 
 # | msgid "Availability zone"
 #~ msgid "AVAILABILITY ZONE"
-#~ msgstr "Aona de disponibilidad"
+#~ msgstr "Zona de disponibilidad"
 
 # | msgid "Public IP address"
 #~ msgid "PUBLIC ADDRESS"
