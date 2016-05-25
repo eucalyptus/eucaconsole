@@ -10,7 +10,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
     return {
         restrict: 'E',
         scope: {
-            option_json: '@options'
+            option_json: '@options',
+            selectedIds: '=instanceList'
         },
         templateUrl: function (scope, elem) {
             return elem.template;
@@ -229,6 +230,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     var results = oData ? oData.results : [];
                     $scope.allInstanceList = results;
                     $scope.instancesLoading = false;
+                    $scope.initSelectedInstances($scope.selectedIds);
                 }).error(function (oData) {
                     eucaHandleError(oData, status);
                 });
