@@ -894,6 +894,7 @@ angular.module('ELBWizard', [
         $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
     };
     $scope.createELB = function ($event, confirmed) {
+        $event.preventDefault();
         confirmed = confirmed || false;
         var bucketNameField = $('#bucket_name');
         if (!$scope.isNotValid && !$scope.isValidationError) {
@@ -916,7 +917,6 @@ angular.module('ELBWizard', [
         inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
         if (!confirmed && !inboundOutboundPortChecksPass) {
             modal.foundation('reveal', 'open');
-            $event.preventDefault();
         } else {
             $scope.elbForm.submit();
         }
