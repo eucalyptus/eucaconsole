@@ -115,6 +115,27 @@ class BaseView(object):
         self.security_token = request.session.get('session_token')
         self.euca_logout_form = EucaLogoutForm(self.request)
 
+    def get_connection3(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
+                       secret_key=None, security_token=None):
+        # For this spike, rely on existing model/auth.py code to do the hard stuff.
+        # later, we'd convert all that from the ground up
+        conn2 = self.get_connection(conn_type, cloud_type, region, access_key, secret_key, security_token)
+
+        # convert the boto2 connection to a boto3 connection
+        import boto3
+        conn3 = boto3.resource(
+            conn_type,
+            aws_access_key_id=conn2.aws_access_key_id,
+            aws_secret_access_key=conn2.aws_secret_access_key,
+            aws_session_token=conn2.provider.security_token,
+            #region_name=conn2.region,
+            api_version=conn2.APIVersion,
+            use_ssl=conn2.is_secure,
+            endpoint_url='{protocol}://{host}:{port}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port),
+            verify=False
+            )
+        return conn3
+
     def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
                        secret_key=None, security_token=None):
         conn = None

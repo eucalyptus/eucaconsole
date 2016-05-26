@@ -76,7 +76,7 @@ class KeyPairsView(LandingPageView):
 class KeyPairsJsonView(BaseView):
     def __init__(self, request):
         super(KeyPairsJsonView, self).__init__(request)
-        self.conn = self.get_connection()
+        self.conn = self.get_connection3()
 
     @view_config(route_name='keypairs_json', renderer='json', request_method='POST')
     def keypairs_json(self):
@@ -87,14 +87,14 @@ class KeyPairsJsonView(BaseView):
             for keypair in self.get_items():
                 keypairs.append(dict(
                     name=keypair.name,
-                    fingerprint=keypair.fingerprint,
+                    fingerprint=keypair.key_fingerprint,
                 ))
             return dict(results=keypairs)
 
     def get_items(self):
         ret = []
         if self.conn:
-            ret = self.conn.get_all_key_pairs()
+            ret = self.conn.key_pairs.all()
         return ret
 
 

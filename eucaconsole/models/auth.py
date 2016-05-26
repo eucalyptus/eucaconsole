@@ -233,7 +233,7 @@ class ConnectionManager(object):
         """
         path = 'compute'
         conn_class = EC2Connection
-        api_version = '2012-12-01'
+        api_version = '2015-10-01'
         if region != 'euca':
             # look up region endpoint
             conn = ConnectionManager.euca_connection(
