@@ -630,13 +630,13 @@ angular.module('ELBWizard', [
             $scope.availabilityZoneChoices[zone.name] = zone.name +
                 ": " + instanceCount + " instances";
         });
+        if ($scope.availabilityZones.length === 0) {
+            $scope.availabilityZones.push(Object.keys($scope.availabilityZoneChoices)[0]);
+        }
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
-            if ($scope.availabilityZones.length === 0) {
-                $scope.availabilityZones.push(Object.keys($scope.availabilityZoneChoices)[0]);
-            }
             $('#zone').trigger('chosen:updated');
-        }, 500);
+        });
     };
     $scope.updateVPCSubnetChoices = function () {
         $scope.vpcSubnetChoices = {};
