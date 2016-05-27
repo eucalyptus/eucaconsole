@@ -9,5 +9,8 @@
 .tag-editor .item-list .item a.remove:hover { color: #01a982; }
 .tag-editor .add-label { color: #666666; font-size: 18px; margin-bottom: 6px; }
 .tag-editor .tag-entry-result { display: none; }
-.tag-editor.ng-pristine .button, .tag-editor.ng-invalid .button { background-color: #FFF; border-color: #B3B3B3; color: #B3B3B3; }
-.tag-editor input.ng-invalid.ng-touched ~ .error { display: block; }
+.tag-editor.ng-pristine .button, .tag-editor.ng-invalid .button { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; border-color: #CCEEE6; }
+.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
+.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { border: 2px solid #CCEEE6; }
+.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { box-shadow: none; }
+.tag-editor input.ng-invalid.ng-touched ~ .error { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }

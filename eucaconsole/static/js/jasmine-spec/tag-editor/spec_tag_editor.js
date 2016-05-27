@@ -21,6 +21,7 @@ describe('TagEditorModule', function () {
             propagate_at_launch: false
         }
     ];
+    var mockEvent = jasmine.createSpyObj('event', ['preventDefault']);
 
     beforeEach(angular.mock.inject(function (_$compile_, _$rootScope_, _$templateCache_) {
         $compile = _$compile_;
@@ -42,6 +43,7 @@ describe('TagEditorModule', function () {
         scope = element.isolateScope();
         scope.tagForm.$valid = true;
         scope.tagForm.$invalid = false;
+        scope.tagForm.$pristine = false;
         spyOn(scope.tagForm.key, '$setPristine').and.callThrough();
         spyOn(scope.tagForm.key, '$setUntouched').and.callThrough();
         spyOn(scope.tagForm.value, '$setPristine').and.callThrough();
@@ -59,14 +61,13 @@ describe('TagEditorModule', function () {
     describe('#addTag', function () {
 
         beforeEach(function () {
-            scope.addTag({
-                name: 'tag3',
-                value: 'value3',
-                propagate_at_launch: false
-            });
+            scope.newTagKey = 'tag3';
+            scope.newTagValue = 'value3';
+            scope.addTag(mockEvent);
         });
 
         it('should add a tag when called', function () {
+            expect(mockEvent.preventDefault).toHaveBeenCalled();
             expect(scope.tags.length).toEqual(3);
         });
 

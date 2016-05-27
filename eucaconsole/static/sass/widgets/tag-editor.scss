@@ -43,13 +43,15 @@
   &.ng-pristine,
   &.ng-invalid {
     .button {
-      background-color: #FFF;
-      border-color: #B3B3B3;
-      color: #B3B3B3;
+        @include primary-disabled-button-mixin;
+        &:hover {
+            box-shadow: none;
+        }
     }
   }
 
   input.ng-invalid.ng-touched ~ .error {
     display: block;
+    @include validation-error-mixin;
   }
 }
