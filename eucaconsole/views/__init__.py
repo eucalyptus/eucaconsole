@@ -120,6 +120,9 @@ class BaseView(object):
         # For this spike, rely on existing model/auth.py code to do the hard stuff.
         # later, we'd convert all that from the ground up
         conn2 = self.get_connection(conn_type, cloud_type, region, access_key, secret_key, security_token)
+        if conn2 is None:
+            # return because of unit tests..
+            return None
 
         # convert the boto2 connection to a boto3 connection
         import boto3
