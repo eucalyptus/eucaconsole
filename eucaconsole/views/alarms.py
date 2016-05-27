@@ -33,7 +33,7 @@ import base64
 import simplejson as json
 
 from itertools import chain
-from operator import itemgetter
+from operator import attrgetter, itemgetter
 
 from boto.ec2.cloudwatch import MetricAlarm
 
@@ -689,8 +689,7 @@ class CloudWatchAlarmHistoryView(BaseView):
         )
 
     def get_alarm_history(self, alarm_id):
-        history = None
         conn = self.get_connection(conn_type='cloudwatch')
         with boto_error_handler(self.request):
             history = conn.describe_alarm_history(alarm_name=alarm_id)
-        return history
+        return sorted(history, key=attrgetter('timestamp'), reverse=True)

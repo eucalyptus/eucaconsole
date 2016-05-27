@@ -206,6 +206,8 @@ class RoleView(BaseView):
         principal = parsed_policy['Statement'][0]['Principal']
         if 'AWS' in principal.keys():
             arn = principal['AWS']
+            if arn == "*":
+                return _(u'All')
             if isinstance(arn, list):
                 arn = arn[0]
             return _(u'Account ') + arn[arn.rindex('::') + 2:arn.rindex(':')]
