@@ -165,10 +165,12 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .gridwrapper .tile .header a.has-bucket-icon { padding-left: 26px; background-size: 11px; background-position: 8px 9px; }
 .gridwrapper .tile .header a.has-shared-icon { padding-left: 20px; }
 
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) { /* IE10/11 specific styles */
+  .gridwrapper .tile .header a.has-bucket-icon { background-size: 90px; } }
 .button.cancel { background-color: #990000; }
 
 #open-shared-btn { margin-left: 1rem; }
 
 .bucket-progress { border: 1px solid black; position: relative; width: 100%; height: 30px; margin-bottom: 15px; }
 .bucket-progress .meter { position: absolute; background-color: #007dba; background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent); -webkit-animation: move 2s linear infinite; animation: move 2s linear infinite; padding-left: 3px; height: 28px; margin: 0px; }
-.bucket-progress .status { position: absolute; width: 100%; text-align: center; margin-top: 5px; margin-bottom: 0px; font-size: 1.0rem; font-weight: bold; }
+.bucket-progress .status { position: absolute; width: 100%; text-align: center; margin-top: 5px; margin-bottom: 0; font-size: 1.0rem; font-weight: bold; }
