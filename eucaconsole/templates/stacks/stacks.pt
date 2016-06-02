@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
-                    {{ item.description }}
+                    <span title="{{ item.description }}">{{ item.description | ellipsis:125 }}</span>
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
