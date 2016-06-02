@@ -121,8 +121,10 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     });
                     $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
                 }, true);
-                $scope.$watch('availabilityZones', function () {
-                    $scope.$emit('eventUpdateAvailabilityZones', $scope.availabilityZones);
+                $scope.$watch('availabilityZones', function (newVal, oldVal) {
+                    if (newVal != oldVal) {
+                        $scope.$emit('eventUpdateAvailabilityZones', $scope.availabilityZones);
+                    }
                 }, true);
                 $scope.$watch('vpcSubnets', function () {
                     $scope.$emit('eventUpdateVPCSubnets', $scope.vpcSubnets);
