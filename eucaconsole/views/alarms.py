@@ -251,7 +251,7 @@ class CloudWatchAlarmsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
             dict(key='metric', name=_(u'Metric')),
         ]
-        search_facets=[
+        search_facets = [
             {'name': 'state', 'label': _(u"State"), 'options': [
                 {'key': 'alarm', 'label': _("Alarm")},
                 {'key': 'insufficient_data', 'label': _("Insufficient data")},

@@ -1,22 +1,25 @@
 angular.module('AlarmHistoryPage', ['MagicSearch', 'AlarmServiceModule', 'ModalModule'])
-.config(function($locationProvider) {
-    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
-})
-.config(['$compileProvider', function ($compileProvider) {
+.config(['$compileProvider', '$locationProvider', function ($compileProvider, $locationProvider) {
     var whitelist = /^\s*(https?|ftp|mailto|tel|file|data):/;
     $compileProvider.aHrefSanitizationWhitelist(whitelist);
+
+    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
 }])
 .directive('alarmHistory', function () {
     return {
-        link: function (scope, element, attrs) {
-            scope.alarmId = attrs.alarmId;
-            scope.historicEvents = JSON.parse(attrs.alarmHistory);
-            scope.unfilteredEvents = angular.copy(scope.historicEvents);
-            scope.facetFilteredEvents = scope.unfilteredEvents;
-            scope.searchFilter = '';
+        compile: function (tElement, tAttrs) {
+            var alarm = JSON.parse(tAttrs.alarmHistory);
 
-            scope.$on('searchUpdated', scope.searchUpdatedHandler);
-            scope.$on('textSearch', scope.textSearchHandler);
+            return function (scope, element, attrs) {
+                scope.alarmId = attrs.alarmId;
+                scope.historicEvents = alarm;
+                scope.unfilteredEvents = angular.copy(scope.historicEvents);
+                scope.facetFilteredEvents = scope.unfilteredEvents;
+                scope.searchFilter = '';
+
+                scope.$on('searchUpdated', scope.searchUpdatedHandler);
+                scope.$on('textSearch', scope.textSearchHandler);
+            };
         },
         controller: ['$scope', '$timeout', '$location', 'AlarmService', 'ModalService',
         function ($scope, $timeout, $location, AlarmService, ModalService) {
