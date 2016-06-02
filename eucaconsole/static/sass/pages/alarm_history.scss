@@ -11,6 +11,9 @@ table {
 .alarm-history-details-modal {
     pre {
         margin: 1rem 0 0;
+        font-size: 0.9rem;
+        height: 75vh;
+        overflow: scroll;
     }
 
     .button {
