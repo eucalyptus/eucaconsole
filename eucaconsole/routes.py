@@ -388,4 +388,7 @@ urls = [
     # Update
     Route(name='stack_update', pattern='/stacks/{name}/update'),
     Route(name='stack_cancel_update', pattern='/stacks/{name}/cancelupdate'),
+
+    Route(name='queues', pattern='/queues'),
+    Route(name='topics', pattern='/topics'),
 ]
