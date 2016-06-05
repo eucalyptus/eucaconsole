@@ -390,5 +390,7 @@ urls = [
     Route(name='stack_cancel_update', pattern='/stacks/{name}/cancelupdate'),
 
     Route(name='queues', pattern='/queues'),
+    Route(name='queues_json', pattern='/queues/json'),
+    Route(name='queue_view', pattern='/queue/{id}'),
     Route(name='topics', pattern='/topics'),
 ]
