@@ -46,6 +46,7 @@
                     </div>
                 </div>
                 <alarm-state-view
+                    tal:condition="volume.status != 'failed'"
                     template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
                     resource-id="${volume.id}" resource-name="${volume_name}"
                     resource-type="VolumeId" resource-type-name="volume" i18n:attributes="resource-type-name">
