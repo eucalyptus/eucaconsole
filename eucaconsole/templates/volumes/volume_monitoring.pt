@@ -31,7 +31,7 @@
             </dl>
             <div class="panel no-title cloudwatch-charts">
                 <div>
-                    <div tal:condition="volume.status == 'failed'" i18n:translate="">You cannot create alarms for a failed volume</div>
+                    <div tal:condition="volume.status == 'failed'" i18n:translate="">You cannot create alarms for a failed volume.</div>
                     <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate=""
                         tal:condition="volume.status != 'failed'">Create Alarm</button>
                     <div class="modal xlarge create-alarm-modal" modal="createAlarm">
