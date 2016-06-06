@@ -2,7 +2,13 @@
 @import "../widgets/delete_alarm_dialog";
 
 
-// Stack status
+#manage-resource-alarms {
+    .label.status.alert {
+        background-color: darkred;
+    }
+}
+
+// Alarm status
 .status.ALARM { background-color: $alarm-status-color-alarm; }
 .status.INSUFFICIENT_DATA { background-color: $alarm-status-color-insufficient-data; }
 .status.OK { background-color: $alarm-status-color-ok; }

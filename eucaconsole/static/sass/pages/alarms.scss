@@ -30,6 +30,9 @@
                 }
             }
             td {
+                .label.status.alert {
+                    background-color: darkred;
+                }
                 &.id {
                     max-width: none;
                 }

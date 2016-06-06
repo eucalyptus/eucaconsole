@@ -13,7 +13,9 @@
 #delete-alarm-modal .alarm-dimensions .columns { padding: 0; }
 #delete-alarm-modal .row.control { margin: 0 0 15px; }
 
-.status.ALARM { background-color: #ff0000; }
+#manage-resource-alarms .label.status.alert { background-color: darkred; }
+
+.status.ALARM { background-color: darkred; }
 
 .status.INSUFFICIENT_DATA { background-color: #5a5a5a; }
 
