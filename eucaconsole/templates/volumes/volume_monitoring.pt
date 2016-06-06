@@ -65,7 +65,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="actions">
+                    <div class="actions" tal:condition="monitoring_enabled">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
                               ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
                     </div>
