@@ -113,5 +113,11 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 $('#false-aws-login-form').submit();
             });
         };
+        $scope.handleGlobusLogin = function() {
+            // redirect_url and client_id need to be configurable. Generate this url on server side.
+            var url = "https://auth.globus.org/v2/oauth2/authorization?response_type=code&state=globus-" +
+                $('#csrf_token').val() + "&access_type=online&scope=login&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Flogin&client_id=";
+            window.location = url;
+        };
     })
 ;

@@ -136,6 +136,15 @@ class LoginView(BaseView, PermissionCheckMixin):
             status = getattr(self.request.exception, 'status', "403 Forbidden")
             status = int(status[:status.index(' ')]) or 403
             return JSONResponse(status=status, message=message)
+        state = self.request.params.get('state')
+        if state and state.find('globus-') == 0:
+            # ok, it's globus, validate and get token
+            csrf_token = state[7:]
+            if not self.is_csrf_valid(csrf_token):
+                self.login_form_errors.append("Globus authentication failed")
+                return self.render_dict
+            # post to token service
+            url = 'https://auth.globus.org/v2/oauth2/token?code={code}&redirect_uri={uri}&grant_type=authorization_code'.format(code='blah', uri='http%3A%2F%2Flocalhost%3A8888%2F')
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
