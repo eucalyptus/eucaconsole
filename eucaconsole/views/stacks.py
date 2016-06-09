@@ -928,7 +928,6 @@ class StackWizardView(BaseView, StackMixin):
             'AWS::CloudFront',
             'AWS::CloudTrail',
             'AWS::DynamoDB',
-            'AWS::EC2::NetworkInterfaceAttachment',
             'AWS::EC2::VPCPeeringConnection',
             'AWS::EC2::VPCConnection',
             'AWS::EC2::VPCConnectionRoute',
