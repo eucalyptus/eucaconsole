@@ -56,6 +56,7 @@ except ImportError:
 from boto.connection import AWSAuthConnection
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
+from botocore.exceptions import ClientError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
 from pyramid.i18n import TranslationString
@@ -764,6 +765,14 @@ def conn_error(exc, request):
 def boto_error_handler(request, location=None, template="{0}"):
     try:
         yield
+    except ClientError as err:
+        old_err = BotoServerError(
+            status=err.response.get('ResponseMetadata').get('HTTPStatusCode'),
+            reason=err.response.get('Error').get('Code')
+        )
+        old_err.message = err.response.get('Error').get('Message')
+        old_err.error_code = err.response.get('Error').get('Code')
+        BaseView.handle_error(err=old_err, request=request, location=location, template=template)
     except BotoServerError as err:
         BaseView.handle_error(err=err, request=request, location=location, template=template)
     except socket.error as err:
