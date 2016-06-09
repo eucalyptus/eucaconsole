@@ -29,6 +29,7 @@ Pyramid views for Login/Logout
 
 """
 import base64
+import httplib
 import logging
 import simplejson as json
 from urllib2 import HTTPError, URLError
@@ -143,8 +144,14 @@ class LoginView(BaseView, PermissionCheckMixin):
             if not self.is_csrf_valid(csrf_token):
                 self.login_form_errors.append("Globus authentication failed")
                 return self.render_dict
+            auth_code = self.request.params.get('code')
             # post to token service
             url = 'https://auth.globus.org/v2/oauth2/token?code={code}&redirect_uri={uri}&grant_type=authorization_code'.format(code='blah', uri='http%3A%2F%2Flocalhost%3A8888%2F')
+            conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
+            headers = {'code': auth_code, 'redirect_uri': 'https%3A%2F%2Flocalhost%2Flogin', 'grant_type'='authorization_code'}
+            conn.request('POST', '', self.package, headers)
+            response = conn.getresponse()
+            body = response.read()
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
