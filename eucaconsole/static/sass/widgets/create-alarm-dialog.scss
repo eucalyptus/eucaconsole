@@ -36,4 +36,10 @@
             }
         }
     }
+    .metric-chart {
+        svg {
+            @include hide-alarm-threshold-legend-mixin;
+        }
+        @include hide-alarm-threshold-tooltip-mixin;
+    }
 }
