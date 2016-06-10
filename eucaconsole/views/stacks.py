@@ -603,7 +603,7 @@ class StackWizardView(BaseView, StackMixin):
         with boto_error_handler(self.request):
             (template_url, template_name, parsed) = self.parse_store_template()
             StackWizardView.identify_aws_template(parsed, modify=True)
-            template_body = json.dumps(parsed)
+            template_body = json.dumps(parsed, indent=2)
 
             # now, store it back in S3
             bucket = self.get_create_template_bucket(create=True)
@@ -928,7 +928,6 @@ class StackWizardView(BaseView, StackMixin):
             'AWS::CloudFront',
             'AWS::CloudTrail',
             'AWS::DynamoDB',
-            'AWS::EC2::NetworkInterfaceAttachment',
             'AWS::EC2::VPCPeeringConnection',
             'AWS::EC2::VPCConnection',
             'AWS::EC2::VPCConnectionRoute',
@@ -961,7 +960,7 @@ class StackWizardView(BaseView, StackMixin):
                 'AllocationId', 'NetworkInterfaceId', 'PrivateIpAddress'
             ]},
             {'resource': 'AWS::EC2::Instance', 'properties': [
-                'NetworkInterfaces', 'SecurityGroupIds', 'SourceDestCheck', 'Tags', 'Tenancy'
+                'NetworkInterfaces', 'SecurityGroupIds', 'SourceDestCheck', 'Tenancy'
             ]},
             {'resource': 'AWS::EC2::SecurityGroup', 'properties': [
                 'SecurityGroupEgress', 'Tags', 'VpcId'

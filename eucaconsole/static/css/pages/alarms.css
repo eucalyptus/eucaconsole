@@ -231,6 +231,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .unit-label { position: relative; top: 6px; }
 
 .gridwrapper .table tr th.alarm-actions { text-align: center; }
+.gridwrapper .table tr td .label.status.alert { background-color: darkred; }
 .gridwrapper .table tr td.id { max-width: none; }
 .gridwrapper .table tr td.dimensions { font-size: 0.6875rem; }
 .gridwrapper .table tr td.dimensions dt { font-weight: bold; }

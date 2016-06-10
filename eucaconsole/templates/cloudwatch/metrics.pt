@@ -24,8 +24,8 @@
             <div class="lp-header">
                 <div class="lp-action-buttons" id="primary-buttons" ng-cloak="">
                     <div class="metrics-selected" ng-if="landingPageView == 'tableview'">
-                        {{ (items | filter:{ _selected:true }).length }} selected
-                        <a ng-if="(items | filter:{ _selected:true }).length > 0" ng-click="metricsCtrl.clearSelections()" i18n:translate="">Clear all</a>
+                        {{ (items | filter:{ selected:true }).length }} selected
+                        <a ng-if="(items | filter:{ selected:true }).length > 0" ng-click="metricsCtrl.clearSelections()" i18n:translate="">Clear all</a>
                     </div>
                 </div>
                 <div class="lp-sort" id="sorting-controls" ng-show="!itemsLoading &amp;&amp; landingPageView == 'gridview'">
@@ -195,7 +195,7 @@
                 <div class="split-bottom cloudwatch-charts" id="graph-area">
                     <div ng-controller="CloudWatchChartsCtrl as chartsCtrl"
                         ng-init="chartsCtrl.initController('${chart_options_json}')">
-                        <div class="toprow" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                        <div class="toprow" ng-show="(items | filter:{ selected: true }).length > 0" ng-cloak="">
                             <div class="blurb">
                                 <div class="field-wrapper">
                                     <div>
@@ -255,7 +255,7 @@
                                       ng-click="chartsCtrl.refreshLargeChart()"><i class="fa fa-refresh"></i></span>
                             </div>
                         </div>
-                        <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                        <div class="time-shift" ng-show="(items | filter:{ selected: true }).length > 0" ng-cloak="">
                             <a ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left" ng-disabled="!chartsCtrl.shiftTimeLeftAllowed()">
                                 <i class="fa fa-arrow-circle-o-left fa-2x"></i>
                             </a>
@@ -265,7 +265,7 @@
                             <svg></svg>
                         </div>
                         <div chart-overlay="">
-                            <div class="chart-wrapper" ng-repeat="(metric, chart) in items | filter:{ _selected: true } | groupBy: 'metric_name'" ng-cloak="true">
+                            <div class="chart-wrapper" ng-repeat="(metric, chart) in items | filter:{ selected: true } | groupBy: 'metric_name'" ng-cloak="true">
                                 <h6>{{ chart[0].metric_label }}</h6>
                                 <a href="" id="metric-close-graph-{{ metric }}" class="graph-close" ng-click="metricsCtrl.clearThisChart(chart)" >&#215;</a>
                                 <span id="metric-chart-menu-{{ metric }}" class="metric-chart-menu" data-dropdown="chart-dropdown-{{ metric }}">
@@ -294,7 +294,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="time-shift" ng-show="(items | filter:{ _selected: true }).length > 0" ng-cloak="">
+                        <div class="time-shift" ng-show="(items | filter:{ selected: true }).length > 0" ng-cloak="">
                             <svg></svg>
                             <a ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left" ng-disabled="!chartsCtrl.shiftTimeLeftAllowed()">
                                 <i class="fa fa-arrow-circle-o-left fa-2x"></i>

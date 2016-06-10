@@ -31,7 +31,9 @@
             </dl>
             <div class="panel no-title cloudwatch-charts">
                 <div>
-                    <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
+                    <div tal:condition="volume.status == 'failed'" i18n:translate="">You cannot create alarms for a failed volume.</div>
+                    <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate=""
+                        tal:condition="volume.status != 'failed'">Create Alarm</button>
                     <div class="modal xlarge create-alarm-modal" modal="createAlarm">
                         <div create-alarm=""
                             template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
@@ -44,6 +46,7 @@
                     </div>
                 </div>
                 <alarm-state-view
+                    tal:condition="volume.status != 'failed'"
                     template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
                     resource-id="${volume.id}" resource-name="${volume_name}"
                     resource-type="VolumeId" resource-type-name="volume" i18n:attributes="resource-type-name">
@@ -62,7 +65,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="actions">
+                    <div class="actions" tal:condition="monitoring_enabled">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
                               ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
                     </div>
@@ -75,7 +78,7 @@
                         <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">monitoring enabled.</span>
                         <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">detailed monitoring enabled.</span>
                     </p>
-                    <p tal:condition="not is_attached" id="volume-unattached-notice">
+                    <p tal:condition="not is_attached and volume.status != 'failed'" id="volume-unattached-notice">
                         <a href="${request.route_path('volume_view', id=volume.id)}?attachmodal=1" i18n:translate="">
                             Attach this volume to an instance
                         </a>

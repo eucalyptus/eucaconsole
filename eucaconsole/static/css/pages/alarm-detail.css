@@ -125,6 +125,8 @@
 
 .metric-chart svg { border: 1px solid #CCC; border-width: 0 1px 1px; width: 100%; height: 350px; margin: 0 auto 15px; }
 
+.label.status.alert { background-color: darkred; }
+
 form.alarm-update input[type="number"] { width: 100%; }
 form.alarm-update.alarm-update .trigger-conditions { margin: 1.5rem 0 0; }
 form.alarm-update.alarm-update .trigger-conditions select { margin: 0 0 0.5rem; }

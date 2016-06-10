@@ -15,6 +15,10 @@
     }
 }
 
+.label.status.alert {
+    background-color: darkred;
+}
+
 form.alarm-update {
     input[type="number"] {
         width: 100%;
