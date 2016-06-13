@@ -118,12 +118,12 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                         // check dimensions
                         graph.dimensions.forEach(function(dim) {
                             if (metric.resources.length === 0 && Object.keys(dim).length === 0) {
-                                metric._selected = true;
+                                metric.selected = true;
                             }
                             if (metric.resources.length > 0 && metric.resources.every(function(res) {
                                     return (dim[res.res_type] === res.res_id);
                                 })) {
-                                metric._selected = true;
+                                metric.selected = true;
                             }
                         });
                     }
@@ -150,12 +150,12 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         });
         vm.clearSelections = function() {
             vm.items.forEach(function(metric) {
-                metric._selected = false;
+                metric.selected = false;
             });
         };
         vm.clearThisChart = function(charts) {
             charts.forEach(function(metric) {
-                metric._selected = false;
+                metric.selected = false;
             });
         };
         vm.sortGetters = {
