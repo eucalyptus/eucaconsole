@@ -132,8 +132,6 @@ class KeyPairView(BaseView):
             keypair_import_form=self.keypair_import_form,
             keypair_created=self.new_keypair_created,
             delete_form=self.delete_form,
-            # not used anywhere!
-            #keypair_names=self.get_keypair_names(),
             controller_options_json=controller_options_json,
         )
 
@@ -154,13 +152,6 @@ class KeyPairView(BaseView):
     @view_config(route_name='keypair_view', renderer=TEMPLATE)
     def keypair_view(self):
         return self.render_dict
-
-    #def get_keypair_names(self):
-    #    keypairs = []
-    #    with boto_error_handler(self.request):
-    #        if self.conn:
-    #            keypairs = [k.name for k in self.conn.get_all_key_pairs()]
-    #    return sorted(set(keypairs))
 
     @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
     def keypair_create(self):
