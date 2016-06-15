@@ -113,11 +113,16 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 $('#false-aws-login-form').submit();
             });
         };
-        $scope.handleGlobusLogin = function() {
+        $scope.handleGlobusLogin = function($event) {
+            $event.preventDefault();
             // redirect_url and client_id need to be configurable. Generate this url on server side.
-            var url = "https://auth.globus.org/v2/oauth2/authorization?response_type=code&state=globus-" +
-                $('#csrf_token').val() + "&access_type=online&scope=login&redirect_uri=https%3A%2F%2Flocalhost%2Flogin&client_id=";
-            window.location = url;
+            var url = "https://auth.globus.org/v2/oauth2/authorization?" +
+                "scope=urn%3Aglobus%3Aauth%3Ascope%3Aauth.globus.org%3Atransfer&" +
+                "state=globus-" + $('#csrf_token').val() + "&access_type=online&" +
+                "redirect_uri=https%3A%2F%2Flocalhost%2Flogin&" +
+                "response_type=code&" +
+                "client_id=659067ec-9698-44a8-88ea-db31e071447a";
+            window.location.href = url;
         };
     })
 ;

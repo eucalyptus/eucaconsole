@@ -146,9 +146,13 @@ class LoginView(BaseView, PermissionCheckMixin):
                 return self.render_dict
             auth_code = self.request.params.get('code')
             # post to token service
+            client_id = '659067ec-9698-44a8-88ea-db31e071447a'
+            client_secret = '0VoUmfM+A5MrrcTlQQuZVLH54lkSceCzyB9x/beqTybOluz0QfmfAs79vG6xWTb2XflwJvv8hpobV0cmKh+WuA=='
+            import pdb; pdb.set_trace()
             url = 'https://auth.globus.org/v2/oauth2/token?code={code}&redirect_uri={uri}&grant_type=authorization_code'.format(code='blah', uri='http%3A%2F%2Flocalhost%3A8888%2F')
             conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
-            headers = {'code': auth_code, 'redirect_uri': 'https%3A%2F%2Flocalhost%2Flogin', 'grant_type'='authorization_code'}
+            auth_string = "{0}:{1}".format(client_id, client_secret)
+            headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': auth_string}
             conn.request('POST', '', self.package, headers)
             response = conn.getresponse()
             body = response.read()

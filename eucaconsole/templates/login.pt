@@ -103,7 +103,7 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <button type="submit" class="submit button" ng-click="handleGlobusLogin()" id="globus-login-button" i18n:translate="">
+                                    <button type="submit" class="submit button" ng-click="handleGlobusLogin($event)" id="globus-login-button" i18n:translate="">
                                         Sign in with Globus
                                     </button>
                                 </div>
