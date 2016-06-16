@@ -42,13 +42,13 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 rpt += str;
               }
               count >>>= 1;
-              if (count == 0) {
+              if (count === 0) {
                 break;
               }
               str += str;
             }
             return rpt;
-          }
+          };
         }
         vm.initPage = function(itemNamesEndpoint, categoriesJson) {
             itemNamesUrl = itemNamesEndpoint;
