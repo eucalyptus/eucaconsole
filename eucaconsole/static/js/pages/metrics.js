@@ -297,9 +297,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             $scope.metricForAlarm = {};
             // core piece of Object.assign polyfill to replace missing call in IE11
             for (var key in metric[0]) {
-              if (Object.prototype.hasOwnProperty.call(metric[0], key)) {
-                $scope.metricForAlarm[key] = metric[0][key];
-              }
+              $scope.metricForAlarm[key] = metric[0][key];
             }
             $scope.metricForAlarm.dimensions = dims;
             $scope.metricForAlarm.names = names;
