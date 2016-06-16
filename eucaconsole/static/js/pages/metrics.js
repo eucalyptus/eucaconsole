@@ -294,7 +294,11 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                 });
             });
             names = names.join('');
-            $scope.metricForAlarm = Object.assign({}, metric[0]);
+            $scope.metricForAlarm = {};
+            // core piece of Object.assign polyfill to replace missing call in IE11
+            for (var key in metric[0]) {
+              $scope.metricForAlarm[key] = metric[0][key];
+            }
             $scope.metricForAlarm.dimensions = dims;
             $scope.metricForAlarm.names = names;
             $timeout(function() {
