@@ -32,6 +32,24 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         var categoryIndex = {};
         var itemNamesUrl;
         var graphParams = "";
+        if (!String.prototype.repeat) {
+          String.prototype.repeat = function(count) {
+            'use strict';
+            var str = '' + this;
+            var rpt = '';
+            for (;;) {
+              if ((count & 1) == 1) {
+                rpt += str;
+              }
+              count >>>= 1;
+              if (count === 0) {
+                break;
+              }
+              str += str;
+            }
+            return rpt;
+          };
+        }
         vm.initPage = function(itemNamesEndpoint, categoriesJson) {
             itemNamesUrl = itemNamesEndpoint;
             var categories = JSON.parse(categoriesJson);
@@ -169,7 +187,8 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     idx = Object.keys(categoryIndex).length - idx;
                 }
                 idx = " ".repeat(3-(""+idx).length) + idx;
-                if (value.heading === true && value.res_ids === undefined || value.res_ids.length === 0) {
+                var sortVal = (value.heading === true && value.res_ids === undefined || value.res_ids.length === 0) ? undefined : (value.resources[0].res_short_name !== undefined ? value.resources[0].res_short_name : value.res_ids[0]);
+                if (value.heading === true || sortVal === undefined) {
                     if (descending) {
                         return idx + "z".repeat(200);
                     }
@@ -178,7 +197,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
                     }
                 }
                 else {
-                    return idx + value.res_ids[0] + " ".repeat(200 - value.res_ids[0].length);
+                    return idx + sortVal + " ".repeat(200 - sortVal.length);
                 }
             },
             metric_name: function(value, descending) {
