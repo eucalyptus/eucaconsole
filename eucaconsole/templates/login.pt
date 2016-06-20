@@ -101,7 +101,7 @@
                                     <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" tal:condition="oauth_enabled">
                                 <div class="small-12 columns">
                                     <button type="submit" class="submit button" ng-click="handleGlobusLogin($event)" id="globus-login-button" i18n:translate="">
                                         Sign in with Globus

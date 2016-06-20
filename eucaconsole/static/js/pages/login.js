@@ -116,8 +116,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         $scope.handleGlobusLogin = function($event) {
             $event.preventDefault();
             // redirect_url and client_id need to be configurable. Generate this url on server side.
-            var url = "https://auth.globus.org/v2/oauth2/authorization?" +
-                "scope=urn%3Aglobus%3Aauth%3Ascope%3Aauth.globus.org%3Atransfer&" +
+            var url = "https://auth.globus.org/v2/oauth2/authorize?" +
+                "scope=urn%3Aglobus%3Aauth%3Ascope%3Atransfer.api.globus.org%3Aall&" +
                 "state=globus-" + $('#csrf_token').val() + "&access_type=online&" +
                 "redirect_uri=https%3A%2F%2Flocalhost%2Flogin&" +
                 "response_type=code&" +

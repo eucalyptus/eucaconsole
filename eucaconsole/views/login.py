@@ -29,7 +29,7 @@ Pyramid views for Login/Logout
 
 """
 import base64
-import httplib
+import httplib, urllib
 import logging
 import simplejson as json
 from urllib2 import HTTPError, URLError
@@ -112,6 +112,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             account=request.params.get('account', default=''),
             username=request.params.get('username', default=''),
         )))
+        self.oauth_host = self.request.registry.settings.get('oauth.hostname', None)
         self.render_dict = dict(
             https_required=self.show_https_warning(),
             euca_login_form=self.euca_login_form,
@@ -122,6 +123,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             login_refresh=self.login_refresh,
             came_from=self.came_from,
             controller_options_json=options_json,
+            oauth_enabled = self.oauth_host is not None
         )
 
     def show_https_warning(self):
@@ -146,16 +148,27 @@ class LoginView(BaseView, PermissionCheckMixin):
                 return self.render_dict
             auth_code = self.request.params.get('code')
             # post to token service
-            client_id = '659067ec-9698-44a8-88ea-db31e071447a'
-            client_secret = '0VoUmfM+A5MrrcTlQQuZVLH54lkSceCzyB9x/beqTybOluz0QfmfAs79vG6xWTb2XflwJvv8hpobV0cmKh+WuA=='
-            import pdb; pdb.set_trace()
-            url = 'https://auth.globus.org/v2/oauth2/token?code={code}&redirect_uri={uri}&grant_type=authorization_code'.format(code='blah', uri='http%3A%2F%2Flocalhost%3A8888%2F')
-            conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
-            auth_string = "{0}:{1}".format(client_id, client_secret)
-            headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': auth_string}
-            conn.request('POST', '', self.package, headers)
+            oauth_console_host = self.request.registry.settings.get('oauth.console.hostname', None)
+            data = {
+                'grant_type': 'authorization_code',
+                'code': auth_code,
+                'redirect_uri': 'https://%s/login' % oauth_console_host
+            }
+            conn = httplib.HTTPSConnection(self.oauth_host, 443, timeout=300)
+            oauth_client_id = self.request.registry.settings.get('oauth.client.id', None)
+            oauth_client_secret = self.request.registry.settings.get('oauth.client.secret', None)
+            auth_string = base64.b64encode(('%s:%s' % (oauth_client_id, oauth_client_secret)).encode('latin1')).strip()
+            headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/vnd.api+json',
+                'Authorization': 'Basic ' + auth_string
+            }
+            conn.request('POST', '/v2/oauth2/token', urllib.urlencode(data), headers)
             response = conn.getresponse()
+            if response.status == 401:
+                self.login_form_errors.append("Globus authentication failed")
             body = response.read()
+            logging.info("got globus response: "+body)
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
