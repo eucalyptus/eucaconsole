@@ -212,6 +212,8 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .create-alarm-modal .controls-wrapper.dimensions small.error { position: relative; top: -8px; }
 .create-alarm-modal .metric-chart svg .nvd3.nv-legend .nv-series:last-child { display: none; }
 .create-alarm-modal .metric-chart .nvtooltip table tbody tr.nv-pointer-events-none:last-child { display: none; }
+.create-alarm-modal .help { margin: 15px 0 0; }
+.create-alarm-modal .help .help-content { overflow: auto; max-height: 90vh; }
 
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
