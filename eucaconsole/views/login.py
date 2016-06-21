@@ -108,11 +108,20 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
+        self.oauth_host = self.request.registry.settings.get('oauth.hostname', None)
+        login_link = 'https://{oauth_host}/v2/oauth2/authorize?' \
+            'scope=urn%3Aglobus%3Aauth%3Ascope%3Atransfer.api.globus.org%3Aall&' \
+            'redirect_uri=https%3A%2F%2F{oauth_console_host}%2Flogin&' \
+            'access_type=online&response_type=code&' \
+            'client_id={oauth_client_id}'
+        oauth_client_id = self.request.registry.settings.get('oauth.client.id', None)
+        oauth_console_host = self.request.registry.settings.get('oauth.console.hostname', None)
+        login_link = login_link.format(oauth_host=self.oauth_host, oauth_console_host=oauth_console_host, oauth_client_id=oauth_client_id)
         options_json = BaseView.escape_json(json.dumps(dict(
             account=request.params.get('account', default=''),
             username=request.params.get('username', default=''),
+            oauthLoginLink=login_link
         )))
-        self.oauth_host = self.request.registry.settings.get('oauth.hostname', None)
         self.render_dict = dict(
             https_required=self.show_https_warning(),
             euca_login_form=self.euca_login_form,
@@ -123,7 +132,8 @@ class LoginView(BaseView, PermissionCheckMixin):
             login_refresh=self.login_refresh,
             came_from=self.came_from,
             controller_options_json=options_json,
-            oauth_enabled = self.oauth_host is not None
+            oauth_enabled=self.oauth_host is not None,
+            oauth_link_text=_(u'Sign in with Globus')
         )
 
     def show_https_warning(self):
@@ -140,11 +150,11 @@ class LoginView(BaseView, PermissionCheckMixin):
             status = int(status[:status.index(' ')]) or 403
             return JSONResponse(status=status, message=message)
         state = self.request.params.get('state')
-        if state and state.find('globus-') == 0:
+        if state and state.find('oauth-') == 0:
             # ok, it's globus, validate and get token
-            csrf_token = state[7:]
+            csrf_token = state[6:]
             if not self.is_csrf_valid(csrf_token):
-                self.login_form_errors.append("Globus authentication failed")
+                self.login_form_errors.append("OAuth authentication failed")
                 return self.render_dict
             auth_code = self.request.params.get('code')
             # post to token service
@@ -166,7 +176,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             conn.request('POST', '/v2/oauth2/token', urllib.urlencode(data), headers)
             response = conn.getresponse()
             if response.status == 401:
-                self.login_form_errors.append("Globus authentication failed")
+                self.login_form_errors.append("OAuth authentication failed")
             body = response.read()
             logging.info("got globus response: "+body)
         return self.render_dict

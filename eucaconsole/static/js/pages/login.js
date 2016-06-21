@@ -13,6 +13,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
             $scope.prefillForms(options.account, options.username);
+            $scope.oauthLoginLink = options.oauthLoginLink;
             $scope.addListeners();
             Modernizr.load([
                 {
@@ -115,14 +116,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         };
         $scope.handleGlobusLogin = function($event) {
             $event.preventDefault();
-            // redirect_url and client_id need to be configurable. Generate this url on server side.
-            var url = "https://auth.globus.org/v2/oauth2/authorize?" +
-                "scope=urn%3Aglobus%3Aauth%3Ascope%3Atransfer.api.globus.org%3Aall&" +
-                "state=globus-" + $('#csrf_token').val() + "&access_type=online&" +
-                "redirect_uri=https%3A%2F%2Flocalhost%2Flogin&" +
-                "response_type=code&" +
-                "client_id=659067ec-9698-44a8-88ea-db31e071447a";
-            window.location.href = url;
+            window.location.href = $scope.oauthLoginLink + "&state=oauth-" + $('#csrf_token').val();
         };
     })
 ;
