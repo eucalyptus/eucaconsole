@@ -26,7 +26,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Fire up development server
-pserve console.ini --reload
+pserve console.ini worker_class=eventlet --reload
 
 
 
