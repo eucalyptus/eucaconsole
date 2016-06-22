@@ -151,7 +151,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             return JSONResponse(status=status, message=message)
         state = self.request.params.get('state')
         if state and state.find('oauth-') == 0:
-            # ok, it's globus, validate and get token
+            # ok, it's oauth, validate and get token
             csrf_token = state[6:]
             if not self.is_csrf_valid(csrf_token):
                 self.login_form_errors.append("OAuth authentication failed")
@@ -178,7 +178,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             if response.status == 401:
                 self.login_form_errors.append("OAuth authentication failed")
             body = response.read()
-            logging.info("got globus response: "+body)
+            logging.info("got oauth response: "+body)
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
