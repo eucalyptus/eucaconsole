@@ -452,3 +452,25 @@ $alarm-status-color-ok: $hp-green;
     }
 }
 
+@mixin hide-alarm-threshold-legend-mixin {
+    .nvd3.nv-legend {
+        .nv-series {
+            &:last-child {
+                display: none;
+            }
+        }
+    }
+}
+
+@mixin hide-alarm-threshold-tooltip-mixin {
+    .nvtooltip {
+        table {
+            tbody {
+                tr.nv-pointer-events-none:last-child {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
