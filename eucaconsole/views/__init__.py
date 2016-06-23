@@ -56,6 +56,7 @@ except ImportError:
 from boto.connection import AWSAuthConnection
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
+import botocore.session
 from botocore.exceptions import ClientError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
@@ -125,19 +126,29 @@ class BaseView(object):
             # return because of unit tests..
             return None
 
-        # convert the boto2 connection to a boto3 connection
-        import boto3
-        conn3 = boto3.resource(
-            conn_type,
+        # convert the boto2 connection to a botocore client
+        session = botocore.session.get_session()
+        conn3 = session.create_client(
+            conn_type, 
             aws_access_key_id=conn2.aws_access_key_id,
             aws_secret_access_key=conn2.aws_secret_access_key,
             aws_session_token=conn2.provider.security_token,
-            #region_name=conn2.region,
             api_version=conn2.APIVersion,
             use_ssl=conn2.is_secure,
             endpoint_url='{protocol}://{host}:{port}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port),
             verify=False
-            )
+        )
+        #conn3 = boto3.resource(
+        #    conn_type,
+        #    aws_access_key_id=conn2.aws_access_key_id,
+        #    aws_secret_access_key=conn2.aws_secret_access_key,
+        #    aws_session_token=conn2.provider.security_token,
+        #    #region_name=conn2.region,
+        #    api_version=conn2.APIVersion,
+        #    use_ssl=conn2.is_secure,
+        #    endpoint_url='{protocol}://{host}:{port}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port),
+        #    verify=False
+        #    )
         return conn3
 
     def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,

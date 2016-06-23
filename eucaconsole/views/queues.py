@@ -77,7 +77,7 @@ class QueuesView(LandingPageView):
 class QueuesJsonView(BaseView):
     def __init__(self, request):
         super(QueuesJsonView, self).__init__(request)
-        self.conn = self.get_connection(conn_type='sqs')
+        self.conn = self.get_connection3(conn_type='sqs')
 
     @view_config(route_name='queues_json', renderer='json', request_method='POST')
     def queues_json(self):
@@ -102,7 +102,7 @@ class QueuesJsonView(BaseView):
     def get_items(self):
         ret = []
         if self.conn:
-            ret = self.conn.get_all_queues()
+            ret = self.conn.list_queues()
         return ret
 
 
