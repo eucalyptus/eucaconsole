@@ -135,20 +135,9 @@ class BaseView(object):
             aws_session_token=conn2.provider.security_token,
             api_version=conn2.APIVersion,
             use_ssl=conn2.is_secure,
-            endpoint_url='{protocol}://{host}:{port}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port),
+            endpoint_url='{protocol}://{host}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host),
             verify=False
         )
-        #conn3 = boto3.resource(
-        #    conn_type,
-        #    aws_access_key_id=conn2.aws_access_key_id,
-        #    aws_secret_access_key=conn2.aws_secret_access_key,
-        #    aws_session_token=conn2.provider.security_token,
-        #    #region_name=conn2.region,
-        #    api_version=conn2.APIVersion,
-        #    use_ssl=conn2.is_secure,
-        #    endpoint_url='{protocol}://{host}:{port}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port),
-        #    verify=False
-        #    )
         return conn3
 
     def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,

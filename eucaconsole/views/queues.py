@@ -86,13 +86,13 @@ class QueuesJsonView(BaseView):
         queues = []
         with boto_error_handler(self.request):
             for queue in self.get_items():
-                name = urlparse(queue.url).path
+                name = urlparse(queue).path
                 name = name[name.rindex('/')+1:]
-                queue_attrs = queue.get_attributes()
+                queue_attrs = self.conn.get_queue_attributes(QueueUrl=queue, AttributeNames=['ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible', 'CreatedTimestamp'])['Attributes']
                 create_time=datetime.fromtimestamp(float(queue_attrs.get('CreatedTimestamp'))).isoformat()
                 queues.append(dict(
                     name=name,
-                    url=queue.url,
+                    url=queue,
                     size=queue_attrs.get('ApproximateNumberOfMessages'),
                     active=queue_attrs.get('ApproximateNumberOfMessagesNotVisible'),
                     create_time=create_time
@@ -103,7 +103,7 @@ class QueuesJsonView(BaseView):
         ret = []
         if self.conn:
             ret = self.conn.list_queues()
-        return ret
+        return ret['QueueUrls']
 
 
 class KeyPairView(BaseView):

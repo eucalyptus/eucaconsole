@@ -86,16 +86,16 @@ class KeyPairsJsonView(BaseView):
         with boto_error_handler(self.request):
             for keypair in self.get_items():
                 keypairs.append(dict(
-                    name=keypair.name,
-                    fingerprint=keypair.key_fingerprint,
+                    name=keypair['KeyName'],
+                    fingerprint=keypair['KeyFingerprint'],
                 ))
             return dict(results=keypairs)
 
     def get_items(self):
         ret = []
         if self.conn:
-            ret = self.conn.key_pairs.all()
-        return ret
+            ret = self.conn.describe_key_pairs()
+        return ret['KeyPairs']
 
 
 class KeyPairView(BaseView):
@@ -126,7 +126,8 @@ class KeyPairView(BaseView):
         }))
         self.render_dict = dict(
             keypair=self.keypair,
-            keypair_name=self.escape_braces(self.keypair.name) if self.keypair else '',
+            keypair_name=self.escape_braces(self.keypair['KeyName']) if self.keypair else '',
+            keypair_fingerprint=self.keypair['KeyFingerprint'] if self.keypair else '',
             keypair_route_id=self.keypair_route_id,
             keypair_form=self.keypair_form,
             keypair_import_form=self.keypair_import_form,
@@ -143,10 +144,10 @@ class KeyPairView(BaseView):
         keypairs = []
         if self.conn:
             try:
-                keypairs = list(self.conn.key_pairs.filter(KeyNames=keypairs_param))
+                keypairs = self.conn.describe_key_pairs(KeyNames=keypairs_param)
             except ClientError:
                 return None
-        keypair = keypairs[0] if keypairs else None
+        keypair = keypairs['KeyPairs'][0] if keypairs['KeyPairs'] else None
         return keypair 
 
     @view_config(route_name='keypair_view', renderer=TEMPLATE)
@@ -162,9 +163,9 @@ class KeyPairView(BaseView):
                 self.log_request(_(u"Creating keypair ") + name)
                 new_keypair = self.conn.create_key_pair(KeyName=name)
                 # Store the new keypair material information in the session
-                self._store_file_(new_keypair.name + ".pem",
+                self._store_file_(new_keypair['KeyName'] + ".pem",
                                   'application/x-pem-file;charset=ISO-8859-1',
-                                  new_keypair.key_material)
+                                  new_keypair['KeyMaterial'])
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
             if self.request.is_xhr:
@@ -207,7 +208,7 @@ class KeyPairView(BaseView):
             with boto_error_handler(self.request, location):
                 for keypair_name in keypair_names:
                     self.log_request(_(u"Deleting keypair ") + keypair_name)
-                    self.conn.KeyPair(keypair_name).delete()
+                    self.conn.delete_key_pair(KeyName=keypair_name)
                 prefix = _(u'Successfully deleted keypair')
                 if len(keypair_names) == 1:
                     msg = prefix
