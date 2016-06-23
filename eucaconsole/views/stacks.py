@@ -1034,9 +1034,10 @@ class StackWizardView(BaseView, StackMixin):
                         Type='String'
                     )
             # and, because we provide instance types, remove 'AllowedValues' for InstanceType
-            for name in parsed['Parameters']:
-                if name == 'InstanceType' and 'AllowedValues' in parsed['Parameters'][name]:
-                    del parsed['Parameters'][name]['AllowedValues']
+            if 'Parameters' in parsed.keys():
+                for name in parsed['Parameters']:
+                    if name == 'InstanceType' and 'AllowedValues' in parsed['Parameters'][name]:
+                        del parsed['Parameters'][name]['AllowedValues']
 
         return ret
 
