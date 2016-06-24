@@ -62,7 +62,7 @@ describe("Dashboard", function() {
 
         it("Should call setInitialZone() when initController() is called", function() {
             spyOn(scope, 'setInitialZone');
-            scope.initController('{}');
+            scope.initController('{"json_items_url": ""}');
             expect(scope.setInitialZone).toHaveBeenCalled();
         });
     });

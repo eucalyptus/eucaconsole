@@ -73,7 +73,7 @@ describe("InstancePage", function() {
 
         it("Should call getInstanceState() when initController() is called", function() {
             spyOn(scope, 'getInstanceState');
-            scope.initController('{}');
+            scope.initController('{"instance_state_json_url": "", "instance_userdata_json_url": ""}');
             expect(scope.getInstanceState).toHaveBeenCalled();
         });
     });
