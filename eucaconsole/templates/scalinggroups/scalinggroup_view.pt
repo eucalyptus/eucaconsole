@@ -108,7 +108,7 @@
                     </tag-editor>
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isInvalid()">
+                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged || isInvalid()">
                             <span tal:condition="scaling_group" i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('scalinggroups')}"

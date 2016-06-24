@@ -36,4 +36,18 @@
             }
         }
     }
+    .metric-chart {
+        svg {
+            @include hide-alarm-threshold-legend-mixin;
+        }
+        @include hide-alarm-threshold-tooltip-mixin;
+    }
+
+    .help {
+        margin: 15px 0 0;
+        .help-content {
+            overflow: auto;
+            max-height: 90vh;
+        }
+    }
 }

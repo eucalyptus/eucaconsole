@@ -12,7 +12,9 @@
         width: 100%;
         height: 350px;
         margin: 0 auto 15px;
+        @include hide-alarm-threshold-legend-mixin;
     }
+    @include hide-alarm-threshold-tooltip-mixin;
 }
 
 .label.status.alert {

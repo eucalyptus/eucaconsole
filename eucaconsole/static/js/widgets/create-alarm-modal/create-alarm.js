@@ -221,9 +221,15 @@ angular.module('CreateAlarmModal', [
                                 loadBalancers = JSON.parse(attrs.loadBalancers);
                             }
 
-                            $scope.alarm.metric = results.metrics.find(function(metric) {
-                                return metric.name === defaults.metric;
-                            });
+                            $scope.alarm.metric = (function () {
+                                var res;
+                                results.metrics.forEach(function (metric) {
+                                    if(metric.name === defaults.metric) {
+                                        res = metric;
+                                    }
+                                });
+                                return res;
+                            })();
 
                             defaults.metric = $scope.alarm.metric;
                             vm.composeAlarmMetric(attrs);
