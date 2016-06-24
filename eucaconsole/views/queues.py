@@ -77,7 +77,7 @@ class QueuesView(LandingPageView):
 class QueuesJsonView(BaseView):
     def __init__(self, request):
         super(QueuesJsonView, self).__init__(request)
-        self.conn = self.get_connection(conn_type='sqs')
+        self.conn = self.get_connection3(conn_type='sqs')
 
     @view_config(route_name='queues_json', renderer='json', request_method='POST')
     def queues_json(self):
@@ -86,13 +86,13 @@ class QueuesJsonView(BaseView):
         queues = []
         with boto_error_handler(self.request):
             for queue in self.get_items():
-                name = urlparse(queue.url).path
+                name = urlparse(queue).path
                 name = name[name.rindex('/')+1:]
-                queue_attrs = queue.get_attributes()
+                queue_attrs = self.conn.get_queue_attributes(QueueUrl=queue, AttributeNames=['ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible', 'CreatedTimestamp'])['Attributes']
                 create_time=datetime.fromtimestamp(float(queue_attrs.get('CreatedTimestamp'))).isoformat()
                 queues.append(dict(
                     name=name,
-                    url=queue.url,
+                    url=queue,
                     size=queue_attrs.get('ApproximateNumberOfMessages'),
                     active=queue_attrs.get('ApproximateNumberOfMessagesNotVisible'),
                     create_time=create_time
@@ -102,8 +102,8 @@ class QueuesJsonView(BaseView):
     def get_items(self):
         ret = []
         if self.conn:
-            ret = self.conn.get_all_queues()
-        return ret
+            ret = self.conn.list_queues()
+        return ret['QueueUrls']
 
 
 class KeyPairView(BaseView):
