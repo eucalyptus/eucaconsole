@@ -87,7 +87,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
 })
 .controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray, ModalService) {
     var vm = this;
-    vm.duration = 3600;  // Default duration value is one hour
+    vm.duration = '3600';  // Default duration value is one hour
     vm.largeChartStatistic = "Sum";
     vm.largeChartDuration = 3600;
     vm.largeChartGranularity = 300;
