@@ -18,6 +18,9 @@ module.exports = function(grunt) {
                 'angular.min.js': 'angular/angular.min.js',
                 'angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
                 'angular-mocks.js': 'angular-mocks/angular-mocks.js',
+                'select.js': 'angular-ui-select/dist/select.js',
+                'select.min.js': 'angular-ui-select/dist/select.min.js',
+                'select.css': 'angular-ui-select/dist/select.css',
               }
           },
           jquery: {
