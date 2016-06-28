@@ -7,7 +7,7 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
+angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils', 'ui.select'])
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
@@ -72,7 +72,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.setInitialValues();
             $scope.getAllSecurityGroupsRules();
             $scope.preventFormSubmitOnEnter();
-            $scope.initChosenSelectors();
+            //$scope.initChosenSelectors();
             $scope.watchTags();
             $scope.watchBdMapping();
             $scope.focusEnterImageID();
