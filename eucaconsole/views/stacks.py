@@ -928,11 +928,12 @@ class StackWizardView(BaseView, StackMixin):
             'AWS::CloudFront',
             'AWS::CloudTrail',
             'AWS::DynamoDB',
+            'AWS::EC2::VPCEndpoint',
             'AWS::EC2::VPCPeeringConnection',
-            'AWS::EC2::VPCConnection',
-            'AWS::EC2::VPCConnectionRoute',
-            'AWS::EC2::VPCGateway',
-            'AWS::EC2::VPCGatewayRoutePropagation',
+            'AWS::EC2::VPNConnection',
+            'AWS::EC2::VPNConnectionRoute',
+            'AWS::EC2::VPNGateway',
+            'AWS::EC2::VPNGatewayRoutePropagation',
             'AWS::ElastiCache',
             'AWS::ElasticBeanstalk',
             'AWS::Kinesis',
@@ -955,18 +956,6 @@ class StackWizardView(BaseView, StackMixin):
             ]},
             {'resource': 'AWS::EC2::EIP', 'properties': [
                 'Domain'
-            ]},
-            {'resource': 'AWS::EC2::EIPAssociation', 'properties': [
-                'AllocationId', 'NetworkInterfaceId', 'PrivateIpAddress'
-            ]},
-            {'resource': 'AWS::EC2::Instance', 'properties': [
-                'NetworkInterfaces', 'SecurityGroupIds', 'SourceDestCheck', 'Tenancy'
-            ]},
-            {'resource': 'AWS::EC2::SecurityGroup', 'properties': [
-                'SecurityGroupEgress', 'Tags', 'VpcId'
-            ]},
-            {'resource': 'AWS::EC2::SecurityGroupIngress', 'properties': [
-                'SourceSecurityGroupId'
             ]},
             {'resource': 'AWS::EC2::Volume', 'properties': [
                 'HealthCheckType', 'Tags'
