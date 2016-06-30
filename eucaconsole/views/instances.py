@@ -1151,7 +1151,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.owner_choices = self.get_owner_choices()
         controller_options_json = BaseView.escape_json(json.dumps({
-            'securitygroups_choices': dict(self.launch_form.securitygroup.choices),
+            'securitygroups_choices': [dict(name=val[1], id=val[0]) for val in self.launch_form.securitygroup.choices],
             'keypair_choices': dict(self.launch_form.keypair.choices),
             'role_choices': dict(self.launch_form.role.choices),
             'vpc_subnet_choices': self.get_vpc_subnets(),

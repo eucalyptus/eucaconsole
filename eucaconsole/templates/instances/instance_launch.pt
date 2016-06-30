@@ -149,9 +149,11 @@
                                     </label>
                                 </div>
                                 <div class="large-8 small-8 columns field">
-                                    <ui-select id="securitygroup" ng-model="securityGroups">
-                                        <ui-select-match placeholder="Select..."></ui-select-match>
-                                        <ui-select-choices repeat="k as v for (k, v) in securityGroupChoices">
+                                    <ui-select id="securitygroup" ng-model="securityGroups" theme="select2">
+                                        <ui-select-match placeholder="Select...">{{$select.selected.value.name}}</ui-select-match>
+                                        <ui-select-choices repeat="group.name as (key, group) in securityGroupChoices">
+                                            <div ng-bind-html="group.id"></div>
+                                            <small>{{ group.name }}</small>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
@@ -354,7 +356,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/select.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/select.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance_launch.js')}"></script>
 </div>
 
