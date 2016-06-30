@@ -3,6 +3,7 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_launch.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/angular/select.css')}" />
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
 </head>
 
 <div metal:fill-slot="main_content">
@@ -150,10 +151,9 @@
                                 </div>
                                 <div class="large-8 small-8 columns field">
                                     <ui-select id="securitygroup" ng-model="securityGroups" theme="select2">
-                                        <ui-select-match placeholder="Select...">{{$select.selected.value.name}}</ui-select-match>
-                                        <ui-select-choices repeat="group.name as (key, group) in securityGroupChoices">
-                                            <div ng-bind-html="group.id"></div>
-                                            <small>{{ group.name }}</small>
+                                        <ui-select-match placeholder="Select...">{{$select.selected.name}}</ui-select-match>
+                                        <ui-select-choices repeat="group in securityGroupChoices">
+                                            <div ng-bind-html="group.name"></div>
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
