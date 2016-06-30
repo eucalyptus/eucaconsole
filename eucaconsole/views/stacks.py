@@ -957,9 +957,6 @@ class StackWizardView(BaseView, StackMixin):
             {'resource': 'AWS::EC2::EIP', 'properties': [
                 'Domain'
             ]},
-            {'resource': 'AWS::EC2::EIPAssociation', 'properties': [
-                'AllocationId', 'NetworkInterfaceId', 'PrivateIpAddress'
-            ]},
             {'resource': 'AWS::EC2::Volume', 'properties': [
                 'HealthCheckType', 'Tags'
             ]},
