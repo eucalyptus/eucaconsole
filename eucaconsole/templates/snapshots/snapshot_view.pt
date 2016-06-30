@@ -139,15 +139,15 @@
         <div class="large-12 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! help content -->
                 <div tal:condition="not snapshot" tal:omit-tag="">
                     <div id="help-html-console_create_snapshot" ng-include="'${layout.help_path('console_create_snapshot.html')}'"></div> 
                 </div>
                 <div tal:condition="snapshot" tal:omit-tag="">
+                    <div id="help-html-console_snapshot_details" 
+                        ng-include="'${layout.help_path('console_snapshot_details.html')}'">
+                    </div> 
                 </div>
-                <!--! help content -->
-                <div id="help-html-console_snapshot_details" 
-                    ng-include="'${layout.help_path('console_snapshot_details.html')}'">
-                </div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
