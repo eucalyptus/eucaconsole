@@ -502,7 +502,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (securityGroupName.length > 45) {
                     securityGroupName = securityGroupName.substr(0, 45) + "...";
                 }
-                $scope.securityGroupChoices[newSecurityGroupID] = securityGroupName;
+                //$scope.securityGroupChoices[newSecurityGroupID] = securityGroupName;
                 $scope.securityGroups.push(newSecurityGroupID);
                 var groupRulesObject = JSON.parse($('#rules').val());
                 var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
@@ -558,7 +558,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.updateSecurityGroupChoices = function () {
-            $scope.securityGroupChoices = {};
+            //$scope.securityGroupChoices = {};
             $scope.securityGroupChoicesFullName = {};
             if ($.isEmptyObject($scope.securityGroupCollection)) {
                 return;
@@ -570,7 +570,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (sGroup.name.length > 45) {
                     securityGroupName = sGroup.name.substr(0, 45) + "...";
                 }
-                $scope.securityGroupChoices[sGroup.id] = securityGroupName;
+                //$scope.securityGroupChoices[sGroup.id] = securityGroupName;
             }); 
             $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options
