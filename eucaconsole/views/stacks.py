@@ -576,7 +576,9 @@ class StackWizardView(BaseView, StackMixin):
                     if self.stack:
                         # populate defaults with actual values from stack
                         for param in params:
-                            param['default'] = [p.value for p in self.stack.parameters if p.key == param['name']][0]
+                            result = [p.value for p in self.stack.parameters if p.key == param['name']]
+                            if result:
+                                param['default'] = result[0]
                 return dict(
                     results=dict(
                         template_key=template_name,
