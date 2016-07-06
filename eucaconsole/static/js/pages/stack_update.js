@@ -416,8 +416,9 @@ angular.module('StackUpdate', ['EucaConsoleUtils', 'localytics.directives', 'Sta
             $event.preventDefault();
             try {
                 $('#json-error').css('display', 'none');
-                var policy_json = $scope.codeEditor.getValue();
-                JSON.parse(policy_json);
+                var template_json = $scope.codeEditor.getValue();
+                JSON.parse(template_json);
+                $scope.stackTemplate = template_json;
                 // now, save the template
                 $scope.savingTemplate = true;
                 $scope.getStackTemplateInfo().then(function successCallback(oData) {
