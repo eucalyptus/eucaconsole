@@ -344,6 +344,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 if (x.hasOwnProperty('name')) {
                     flatString += x.name + ' ';
                 }
+                if (x.hasOwnProperty('res_name')) {
+                    flatString += x.res_name + ' ';
+                }
             });
             return flatString;
         };
