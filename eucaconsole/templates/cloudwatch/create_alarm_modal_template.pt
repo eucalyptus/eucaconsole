@@ -1,4 +1,5 @@
-<form name="createAlarmForm" ng-submit="createAlarm()" novalidate="" i18n:domain="eucaconsole">
+<div i18n:domain="eucaconsole" tal:omit-tag="">
+<form name="createAlarmForm" ng-submit="createAlarm()" novalidate="">
     <h3>{{ title }}</h3>
     <h6 i18n:translate="">Alarm</h6>
     <div class="row inline controls-wrapper">
@@ -156,4 +157,5 @@
         <!--! HELP CONTENT HERE -->
         <div id="help-html-console_create_alarm" ng-include="'${layout.help_path('console_create_alarm.html')}'"></div> 
     </div>
+</div>
 </div>

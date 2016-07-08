@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-05-11 18:52-0700\n"
+"POT-Creation-Date: 2016-07-07 13:02-0700\n"
 "PO-Revision-Date: 2014-03-25 13:15-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -18,32 +18,32 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: eucaconsole/layout.py:110
+#: eucaconsole/layout.py:112
 #, python-format
 msgid "%I:%M:%S %p %b %d %Y"
 msgstr ""
 
-#: eucaconsole/layout.py:111
+#: eucaconsole/layout.py:113
 msgid "hh:mm:ss a MMM d yyyy"
 msgstr ""
 
-#: eucaconsole/layout.py:128
+#: eucaconsole/layout.py:130
 msgid "Remove facet"
 msgstr ""
 
-#: eucaconsole/layout.py:129
+#: eucaconsole/layout.py:131
 msgid "Clear search"
 msgstr ""
 
-#: eucaconsole/layout.py:130
+#: eucaconsole/layout.py:132
 msgid "Select facets for filter, or enter text to search"
 msgstr ""
 
-#: eucaconsole/layout.py:131
+#: eucaconsole/layout.py:133
 msgid "Enter text to search"
 msgstr ""
 
-#: eucaconsole/layout.py:132
+#: eucaconsole/layout.py:134
 msgid "Text"
 msgstr ""
 
@@ -53,13 +53,11 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:100
 #, fuzzy
-#| msgid "Disk read data"
 msgid "Disk read bytes"
 msgstr "Los datos del usuario"
 
 #: eucaconsole/constants/cloudwatch.py:101
 #, fuzzy
-#| msgid "Disk read data"
 msgid "Disk read ops"
 msgstr "Los datos del usuario"
 
@@ -102,12 +100,12 @@ msgid "Latency"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:112
-#: eucaconsole/templates/elbs/elbs.pt:48
+#: eucaconsole/templates/elbs/elbs.pt:49
 msgid "Unhealthy hosts"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:113
-#: eucaconsole/templates/elbs/elbs.pt:52
+#: eucaconsole/templates/elbs/elbs.pt:53
 msgid "Healthy hosts"
 msgstr ""
 
@@ -182,14 +180,12 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:133
 #, fuzzy
-#| msgid "Stopped instances"
 msgid "Group in service instances"
 msgstr "Instancias detenido"
 
 #: eucaconsole/constants/cloudwatch.py:134
 #: eucaconsole/constants/scalinggroups.py:51
 #, fuzzy
-#| msgid "Groups (maximum)"
 msgid "Group max size"
 msgstr "Grupos (máximo)"
 
@@ -200,50 +196,47 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:136
 #, fuzzy
-#| msgid "Stopped instances"
 msgid "Group pending instances"
 msgstr "Instancias detenido"
 
 #: eucaconsole/constants/cloudwatch.py:137
 #, fuzzy
-#| msgid "No matching instances"
 msgid "Group terminating instances"
 msgstr "Instancias en ejecución"
 
 #: eucaconsole/constants/cloudwatch.py:138
 #, fuzzy
-#| msgid "For all instances"
 msgid "Group total instances"
 msgstr "Más reciente instancia"
 
 #: eucaconsole/constants/cloudwatch.py:143
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:100
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:54
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:102
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:55
 msgid "Average"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:144
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:101
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:55
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:103
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:56
 msgid "Minimum"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:145
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:102
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:56
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:104
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:57
 #, fuzzy
 msgid "Maximum"
 msgstr "Usuarios (máximo)"
 
 #: eucaconsole/constants/cloudwatch.py:146
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:103
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:57
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:105
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:58
 msgid "Sum"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:147
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:104
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:58
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:106
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:59
 msgid "Data samples"
 msgstr ""
 
@@ -281,32 +274,32 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:175 eucaconsole/forms/buckets.py:100
 #: eucaconsole/forms/elbs.py:108 eucaconsole/forms/elbs.py:278
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:155
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:115
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:157
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:116
 msgid "5 minutes"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:176
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:156
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:116
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:158
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:117
 msgid "15 minutes"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:177 eucaconsole/forms/buckets.py:102
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:157
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:117
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:159
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:118
 msgid "1 hour"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:178
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:158
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:118
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:160
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:119
 msgid "6 hours"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:179 eucaconsole/forms/buckets.py:103
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:159
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:119
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:161
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:120
 msgid "1 day"
 msgstr ""
 
@@ -425,7 +418,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:34
 #, fuzzy
-#| msgid "For all instances"
 msgid "Total instances"
 msgstr "Más reciente instancia"
 
@@ -437,7 +429,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:40
 #, fuzzy
-#| msgid "Running instances"
 msgid "In service instances"
 msgstr "Instancias en ejecución"
 
@@ -461,7 +452,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:61
 #, fuzzy
-#| msgid "Running instances"
 msgid "Pending instances"
 msgstr "Instancias en ejecución"
 
@@ -474,7 +464,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:67
 #, fuzzy
-#| msgid "No matching instances"
 msgid "Terminating instances"
 msgstr "Instancias en ejecución"
 
@@ -486,7 +475,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:80
 #, fuzzy
-#| msgid "No available instances in availability zone"
 msgid "No data available for instances in the scaling group."
 msgstr "No hay volúmenes disponibles en esta zona disponibilidad"
 
@@ -645,8 +633,8 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/forms/__init__.py:53 eucaconsole/views/dialogs.py:341
-#: eucaconsole/views/elbs.py:657 eucaconsole/views/elbs.py:1161
-#: eucaconsole/views/instances.py:1169 eucaconsole/views/launchconfigs.py:455
+#: eucaconsole/views/elbs.py:658 eucaconsole/views/elbs.py:1178
+#: eucaconsole/views/instances.py:1172 eucaconsole/views/launchconfigs.py:455
 #: eucaconsole/views/launchconfigs.py:617
 #, fuzzy
 msgid "Select..."
@@ -678,7 +666,7 @@ msgid "Select volume..."
 msgstr "Seleccione el volumen ..."
 
 #: eucaconsole/forms/__init__.py:228 eucaconsole/forms/__init__.py:278
-#: eucaconsole/views/__init__.py:599
+#: eucaconsole/views/__init__.py:598
 msgid "None"
 msgstr "Ninguno"
 
@@ -715,12 +703,12 @@ msgstr ""
 msgid "Local"
 msgstr ""
 
-#: eucaconsole/forms/accounts.py:42 eucaconsole/forms/users.py:49
-#: eucaconsole/forms/users.py:100
+#: eucaconsole/forms/accounts.py:42 eucaconsole/forms/users.py:45
+#: eucaconsole/forms/users.py:98
 msgid "Create and download random password"
 msgstr "Crear y descargar contraseña aleatoria"
 
-#: eucaconsole/forms/accounts.py:44 eucaconsole/forms/users.py:50
+#: eucaconsole/forms/accounts.py:44 eucaconsole/forms/users.py:46
 msgid "Create and download access keys"
 msgstr "Crear y descargar claves de acceso"
 
@@ -747,11 +735,11 @@ msgstr ""
 #: eucaconsole/forms/instances.py:46 eucaconsole/forms/instances.py:518
 #: eucaconsole/forms/keypairs.py:44 eucaconsole/forms/keypairs.py:63
 #: eucaconsole/forms/launchconfigs.py:52 eucaconsole/forms/policies.py:43
-#: eucaconsole/forms/roles.py:20 eucaconsole/forms/scalinggroups.py:212
-#: eucaconsole/forms/scalinggroups.py:288
+#: eucaconsole/forms/roles.py:45 eucaconsole/forms/scalinggroups.py:223
+#: eucaconsole/forms/scalinggroups.py:287
 #: eucaconsole/forms/securitygroups.py:46 eucaconsole/forms/snapshots.py:42
 #: eucaconsole/forms/snapshots.py:91 eucaconsole/forms/stacks.py:45
-#: eucaconsole/forms/users.py:56 eucaconsole/forms/volumes.py:45
+#: eucaconsole/forms/users.py:52 eucaconsole/forms/volumes.py:45
 #: eucaconsole/forms/volumes.py:106 eucaconsole/forms/volumes.py:127
 #: eucaconsole/templates/accounts/account_view.pt:52
 #: eucaconsole/templates/buckets/bucket_contents.pt:123
@@ -759,12 +747,12 @@ msgstr ""
 #: eucaconsole/templates/buckets/buckets.pt:106
 #: eucaconsole/templates/elbs/elb_view.pt:54
 #: eucaconsole/templates/elbs/elb_wizard.pt:292
-#: eucaconsole/templates/elbs/elbs.pt:57
+#: eucaconsole/templates/elbs/elbs.pt:58
 #: eucaconsole/templates/images/images.pt:137
 #: eucaconsole/templates/instances/instance_launch.pt:69
 #: eucaconsole/templates/keypairs/keypair_view.pt:51
 #: eucaconsole/templates/keypairs/keypairs.pt:76
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:285
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:287
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:58
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:139
 #: eucaconsole/templates/roles/role_view.pt:152
@@ -775,7 +763,7 @@ msgstr ""
 #: eucaconsole/templates/stacks/stack_view.pt:184
 #: eucaconsole/templates/stacks/stack_wizard.pt:50
 #: eucaconsole/templates/stacks/stack_wizard.pt:208
-#: eucaconsole/templates/stacks/stacks.pt:53 eucaconsole/views/alarms.py:245
+#: eucaconsole/templates/stacks/stacks.pt:53 eucaconsole/views/alarms.py:251
 msgid "Name"
 msgstr "Nombre"
 
@@ -791,7 +779,7 @@ msgstr "Descripción se requiere"
 #: eucaconsole/forms/volumes.py:131
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:74
 #: eucaconsole/templates/cloudwatch/alarms_history.pt:65
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:19
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:20
 #: eucaconsole/templates/images/image_view.pt:68
 #: eucaconsole/templates/images/images.pt:108
 #: eucaconsole/templates/images/images.pt:139
@@ -818,7 +806,7 @@ msgid "Description must be less than 255 characters"
 msgstr "La descripción debe tener menos de 255 caracteres"
 
 #: eucaconsole/forms/alarms.py:56 eucaconsole/forms/keypairs.py:59
-#: eucaconsole/forms/scalinggroups.py:286
+#: eucaconsole/forms/scalinggroups.py:285
 msgid "Name is required"
 msgstr "El nombre es necesario"
 
@@ -829,7 +817,7 @@ msgstr "Se requiere métrico"
 #: eucaconsole/forms/alarms.py:72
 #: eucaconsole/templates/cloudwatch/metrics.pt:106
 #: eucaconsole/templates/cloudwatch/metrics.pt:114
-#: eucaconsole/views/alarms.py:246
+#: eucaconsole/views/alarms.py:252
 msgid "Metric"
 msgstr "Métrico"
 
@@ -847,7 +835,7 @@ msgstr "Se requiere estadísticas"
 
 #: eucaconsole/forms/alarms.py:86
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:34
-#: eucaconsole/templates/cloudwatch/metrics.pt:200
+#: eucaconsole/templates/cloudwatch/metrics.pt:202
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:9
 msgid "Statistic"
 msgstr "Estadística"
@@ -896,10 +884,10 @@ msgstr "Unidad"
 #: eucaconsole/templates/instances/instance_launch.pt:30
 #: eucaconsole/templates/instances/instance_launch.pt:245
 #: eucaconsole/templates/instances/instance_view.pt:260
-#: eucaconsole/templates/instances/instances.pt:193
+#: eucaconsole/templates/instances/instances.pt:196
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:96
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:30
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:267
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:269
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:59
 #: eucaconsole/views/images.py:406 eucaconsole/views/metrics.py:49
 msgid "Image"
@@ -1106,7 +1094,7 @@ msgstr "Se requiere de grupo de seguridad"
 #: eucaconsole/forms/elbs.py:122 eucaconsole/forms/elbs.py:357
 #: eucaconsole/templates/dashboard.pt:188
 #: eucaconsole/templates/elbs/elb_wizard.pt:328
-#: eucaconsole/templates/instances/instances.pt:229
+#: eucaconsole/templates/instances/instances.pt:232
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:45
 #: eucaconsole/templates/panels/top_nav.pt:48
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:18
@@ -1146,8 +1134,8 @@ msgid "Ping path is required and must start with a /"
 msgstr "Se requiere un mínimo"
 
 #: eucaconsole/forms/elbs.py:197 eucaconsole/forms/groups.py:51
-#: eucaconsole/forms/groups.py:79 eucaconsole/forms/roles.py:27
-#: eucaconsole/forms/users.py:53 eucaconsole/templates/elbs/elb_wizard.pt:360
+#: eucaconsole/forms/groups.py:79 eucaconsole/forms/roles.py:52
+#: eucaconsole/forms/users.py:49 eucaconsole/templates/elbs/elb_wizard.pt:360
 #: eucaconsole/templates/roles/role_view.pt:164
 msgid "Path"
 msgstr "Ruta"
@@ -1193,8 +1181,8 @@ msgid "30 seconds"
 msgstr ""
 
 #: eucaconsole/forms/elbs.py:277
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:154
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:114
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:156
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:115
 msgid "1 minute"
 msgstr ""
 
@@ -1209,25 +1197,25 @@ msgstr ""
 
 #: eucaconsole/forms/elbs.py:311 eucaconsole/forms/elbs.py:420
 #: eucaconsole/forms/instances.py:105 eucaconsole/forms/instances.py:369
-#: eucaconsole/forms/scalinggroups.py:404 eucaconsole/forms/volumes.py:54
+#: eucaconsole/forms/scalinggroups.py:403 eucaconsole/forms/volumes.py:54
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:59
 #: eucaconsole/templates/elbs/elb_instances.pt:164
 #: eucaconsole/templates/instances/instance_view.pt:144
-#: eucaconsole/templates/instances/instances.pt:208
+#: eucaconsole/templates/instances/instances.pt:211
 #: eucaconsole/templates/policies/policy_generator.pt:191
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:53
 #: eucaconsole/templates/volumes/volume_view.pt:119
 #: eucaconsole/templates/volumes/volumes.pt:126
-#: eucaconsole/views/instances.py:222 eucaconsole/views/metrics.py:52
+#: eucaconsole/views/instances.py:224 eucaconsole/views/metrics.py:52
 #: eucaconsole/views/volumes.py:213
 msgid "Availability zone"
 msgstr "Aona de disponibilidad"
 
 #: eucaconsole/forms/elbs.py:312 eucaconsole/forms/elbs.py:424
 #: eucaconsole/forms/instances.py:108 eucaconsole/forms/instances.py:378
-#: eucaconsole/forms/scalinggroups.py:405
+#: eucaconsole/forms/scalinggroups.py:404
 #: eucaconsole/templates/instances/instance_view.pt:156
-#: eucaconsole/templates/instances/instances.pt:212
+#: eucaconsole/templates/instances/instances.pt:215
 msgid "VPC subnet"
 msgstr ""
 
@@ -1301,13 +1289,13 @@ msgstr ""
 #: eucaconsole/templates/users/users.pt:81
 #: eucaconsole/templates/volumes/volume_view.pt:60
 #: eucaconsole/templates/volumes/volumes.pt:152
-#: eucaconsole/views/scalinggroups.py:614 eucaconsole/views/snapshots.py:192
-#: eucaconsole/views/stacks.py:236 eucaconsole/views/volumes.py:212
+#: eucaconsole/views/scalinggroups.py:617 eucaconsole/views/snapshots.py:192
+#: eucaconsole/views/stacks.py:238 eucaconsole/views/volumes.py:212
 msgid "Status"
 msgstr "Estatus"
 
 #: eucaconsole/forms/elbs.py:421 eucaconsole/forms/images.py:77
-#: eucaconsole/forms/instances.py:375 eucaconsole/forms/scalinggroups.py:406
+#: eucaconsole/forms/instances.py:375 eucaconsole/forms/scalinggroups.py:405
 #: eucaconsole/forms/securitygroups.py:98 eucaconsole/forms/snapshots.py:106
 #: eucaconsole/forms/stacks.py:81 eucaconsole/forms/volumes.py:205
 #: eucaconsole/templates/instances/instance_launch.pt:279
@@ -1327,7 +1315,7 @@ msgstr "Etiquetas"
 #: eucaconsole/forms/instances.py:373 eucaconsole/forms/launchconfigs.py:67
 #: eucaconsole/forms/launchconfigs.py:161
 #: eucaconsole/templates/instances/instance_launch.pt:305
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:305
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:307
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:61
 #: eucaconsole/templates/panels/securitygroup_rules.pt:135
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:52
@@ -1467,7 +1455,7 @@ msgstr "Imágenes propiedad de mí"
 #: eucaconsole/templates/instances/instance_view.pt:127
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:51
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:110
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:271
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:273
 #: eucaconsole/views/images.py:246
 msgid "Platform"
 msgstr "Plataforma"
@@ -1615,7 +1603,7 @@ msgstr "Se requiere par de claves"
 #: eucaconsole/forms/instances.py:115 eucaconsole/forms/launchconfigs.py:62
 #: eucaconsole/templates/instances/instance_launch_more.pt:80
 #: eucaconsole/templates/instances/instance_view.pt:183
-#: eucaconsole/templates/instances/instances.pt:221
+#: eucaconsole/templates/instances/instances.pt:224
 msgid "Key name"
 msgstr "Nombre de clave"
 
@@ -1730,9 +1718,9 @@ msgstr "seleccione ..."
 #: eucaconsole/forms/instances.py:372 eucaconsole/forms/launchconfigs.py:160
 #: eucaconsole/templates/keypairs/keypair_view.pt:49
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:51
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:301
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:303
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:41
-#: eucaconsole/views/instances.py:223
+#: eucaconsole/views/instances.py:225
 msgid "Key pair"
 msgstr "Par clave"
 
@@ -1740,7 +1728,7 @@ msgstr "Par clave"
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:69
 #: eucaconsole/templates/instances/instance_view.pt:211
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:63
-#: eucaconsole/views/scalinggroups.py:983
+#: eucaconsole/views/scalinggroups.py:996
 msgid "Scaling group"
 msgstr "Grupo de escala"
 
@@ -1884,7 +1872,7 @@ msgstr "Se requieren contenidos de clave pública"
 msgid "Public SSH Key Contents"
 msgstr "Contenido de clave SSH pública"
 
-#: eucaconsole/forms/launchconfigs.py:50 eucaconsole/forms/scalinggroups.py:210
+#: eucaconsole/forms/launchconfigs.py:50 eucaconsole/forms/scalinggroups.py:221
 msgid ""
 "Name must be between 1 and 255 characters long, and must not contain '/' "
 "and '\\'"
@@ -1902,7 +1890,7 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/forms/launchconfigs.py:80
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:216
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:218
 msgid "Create scaling group using this launch configuration"
 msgstr "Crear un grupo de escala utilizando esta configuración de lanzamiento"
 
@@ -1968,22 +1956,22 @@ msgstr "Clave secreta"
 msgid "Current password"
 msgstr "Contraseña actual"
 
-#: eucaconsole/forms/login.py:72 eucaconsole/forms/users.py:59
+#: eucaconsole/forms/login.py:72 eucaconsole/forms/users.py:55
 msgid "New password"
 msgstr "Nueva contraseña"
 
 #: eucaconsole/forms/login.py:74 eucaconsole/forms/login.py:82
-#: eucaconsole/forms/users.py:61 eucaconsole/forms/users.py:68
+#: eucaconsole/forms/users.py:57 eucaconsole/forms/users.py:64
 msgid "New Password is required"
 msgstr "Se requiere nueva contraseña"
 
 #: eucaconsole/forms/login.py:75 eucaconsole/forms/login.py:83
-#: eucaconsole/forms/users.py:62 eucaconsole/forms/users.py:69
-#: eucaconsole/forms/users.py:108 eucaconsole/forms/users.py:118
+#: eucaconsole/forms/users.py:58 eucaconsole/forms/users.py:65
+#: eucaconsole/forms/users.py:107 eucaconsole/forms/users.py:118
 msgid "Password must be more than 6 characters"
 msgstr "La contraseña debe tener más de seis caracteres"
 
-#: eucaconsole/forms/login.py:80 eucaconsole/forms/users.py:66
+#: eucaconsole/forms/login.py:80 eucaconsole/forms/users.py:62
 msgid "Confirm new password"
 msgstr "Confirmar nueva contraseña"
 
@@ -2089,7 +2077,7 @@ msgstr "Perfiles de instancia (máximo)"
 msgid "Launch configuration is required"
 msgstr "Se requiere una configuración de lanzamiento"
 
-#: eucaconsole/forms/scalinggroups.py:44 eucaconsole/forms/scalinggroups.py:403
+#: eucaconsole/forms/scalinggroups.py:44 eucaconsole/forms/scalinggroups.py:402
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:10
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:45
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:57
@@ -2171,35 +2159,48 @@ msgstr ""
 msgid "Health check grace period (secs)"
 msgstr "Se requiere chequeo período de gracia"
 
-#: eucaconsole/forms/scalinggroups.py:154
+#: eucaconsole/forms/scalinggroups.py:101
+msgid "At least one termination policy is required"
+msgstr "Se requiere al menos una política de terminación"
+
+#: eucaconsole/forms/scalinggroups.py:102
+msgid "Add termination policies in the order they should be executed."
+msgstr "Añadir políticas de terminación en el orden en que se deben ejecutar."
+
+#: eucaconsole/forms/scalinggroups.py:104
+#: eucaconsole/templates/scalinggroups/scalinggroups.pt:71
+msgid "Termination policies"
+msgstr "Políticas de terminación"
+
+#: eucaconsole/forms/scalinggroups.py:165
 msgid "Select a launch configuration..."
 msgstr "Seleccione una configuración de lanzamiento ..."
 
-#: eucaconsole/forms/scalinggroups.py:200
+#: eucaconsole/forms/scalinggroups.py:211
 msgid "Default"
 msgstr "Predeterminada"
 
-#: eucaconsole/forms/scalinggroups.py:201
+#: eucaconsole/forms/scalinggroups.py:212
 msgid "Oldest instance"
 msgstr "Instancia más antiguo"
 
-#: eucaconsole/forms/scalinggroups.py:202
+#: eucaconsole/forms/scalinggroups.py:213
 msgid "Newest instance"
 msgstr "Más reciente instancia"
 
-#: eucaconsole/forms/scalinggroups.py:203
+#: eucaconsole/forms/scalinggroups.py:214
 msgid "Oldest launch configuration"
 msgstr "Configuración de lanzamiento más antiguo"
 
-#: eucaconsole/forms/scalinggroups.py:204
+#: eucaconsole/forms/scalinggroups.py:215
 msgid "Closest to next instance hour"
 msgstr "Más cercano a la próxima hora instancia"
 
-#: eucaconsole/forms/scalinggroups.py:233
+#: eucaconsole/forms/scalinggroups.py:245
 msgid "Default cooldown period is required"
 msgstr "Predeterminada periodo de enfriamiento se requiere"
 
-#: eucaconsole/forms/scalinggroups.py:234
+#: eucaconsole/forms/scalinggroups.py:246
 msgid ""
 "Number of seconds after a Scaling Activity completes before any further "
 "scaling activities can start"
@@ -2207,57 +2208,44 @@ msgstr ""
 "Segundos después de una actividad de escala completa antes de cualquier "
 "actividad mayor escala pueden comenzar"
 
-#: eucaconsole/forms/scalinggroups.py:237
+#: eucaconsole/forms/scalinggroups.py:249
 #, fuzzy
 msgid "Default cooldown period (secs)"
 msgstr "Predeterminada periodo de enfriamiento (segundos)"
 
-#: eucaconsole/forms/scalinggroups.py:242
-msgid "At least one termination policy is required"
-msgstr "Se requiere al menos una política de terminación"
-
-#: eucaconsole/forms/scalinggroups.py:243
-msgid "Add termination policies in the order they should be executed."
-msgstr "Añadir políticas de terminación en el orden en que se deben ejecutar."
-
-#: eucaconsole/forms/scalinggroups.py:245
-#: eucaconsole/templates/scalinggroups/scalinggroups.pt:71
-msgid "Termination policies"
-msgstr "Políticas de terminación"
-
-#: eucaconsole/forms/scalinggroups.py:293
+#: eucaconsole/forms/scalinggroups.py:292
 msgid "Action is required"
 msgstr "Se requiere una acción"
 
-#: eucaconsole/forms/scalinggroups.py:295
+#: eucaconsole/forms/scalinggroups.py:294
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:37
-#: eucaconsole/views/alarms.py:677
+#: eucaconsole/views/alarms.py:673
 msgid "Action"
 msgstr "Acción"
 
-#: eucaconsole/forms/scalinggroups.py:300
+#: eucaconsole/forms/scalinggroups.py:299
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:44
 msgid "Amount is required"
 msgstr "Se requiere cantidad"
 
-#: eucaconsole/forms/scalinggroups.py:302
+#: eucaconsole/forms/scalinggroups.py:301
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:35
 msgid "Amount"
 msgstr "Cantidad"
 
-#: eucaconsole/forms/scalinggroups.py:307
+#: eucaconsole/forms/scalinggroups.py:306
 msgid "Measure is required"
 msgstr "Se requiere medida"
 
-#: eucaconsole/forms/scalinggroups.py:309
+#: eucaconsole/forms/scalinggroups.py:308
 msgid "Measure"
 msgstr "Medida"
 
-#: eucaconsole/forms/scalinggroups.py:314
+#: eucaconsole/forms/scalinggroups.py:313
 msgid "Cooldown period is required"
 msgstr "Se requiere periodo de enfriamiento"
 
-#: eucaconsole/forms/scalinggroups.py:315
+#: eucaconsole/forms/scalinggroups.py:314
 msgid ""
 "Time (in seconds) before Alarm related Scaling Activities can start after"
 " the previous Scaling Activity ends."
@@ -2265,56 +2253,57 @@ msgstr ""
 "Tiempo (en segundos) antes de escalar relacionada alarma actividades "
 "puede comenzar después de que termine la anterior escala de actividad"
 
-#: eucaconsole/forms/scalinggroups.py:319
+#: eucaconsole/forms/scalinggroups.py:318
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:53
 msgid "Cooldown period (seconds)"
 msgstr "Período de enfriamiento (segundos)"
 
-#: eucaconsole/forms/scalinggroups.py:324
+#: eucaconsole/forms/scalinggroups.py:323
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:78
 msgid "Alarm is required"
 msgstr "Se requiere de alarma"
 
-#: eucaconsole/forms/scalinggroups.py:326 eucaconsole/models/alarms.py:90
+#: eucaconsole/forms/scalinggroups.py:325 eucaconsole/models/alarms.py:90
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:71
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:3
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:4
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:71
+#: eucaconsole/views/alarms.py:256
 msgid "Alarm"
 msgstr "Alarma"
 
-#: eucaconsole/forms/scalinggroups.py:363
+#: eucaconsole/forms/scalinggroups.py:362
 msgid "No alarms are available."
 msgstr "No hay alarmas están disponibles"
 
-#: eucaconsole/forms/scalinggroups.py:369
-#: eucaconsole/views/scalinggroups.py:741
-#: eucaconsole/views/scalinggroups.py:786
+#: eucaconsole/forms/scalinggroups.py:368
+#: eucaconsole/views/scalinggroups.py:747
+#: eucaconsole/views/scalinggroups.py:792
 msgid "Scale up by"
 msgstr "Escala por"
 
-#: eucaconsole/forms/scalinggroups.py:370
-#: eucaconsole/views/scalinggroups.py:740
-#: eucaconsole/views/scalinggroups.py:785
+#: eucaconsole/forms/scalinggroups.py:369
+#: eucaconsole/views/scalinggroups.py:746
+#: eucaconsole/views/scalinggroups.py:791
 msgid "Scale down by"
 msgstr "Reducir a escala por"
 
-#: eucaconsole/forms/scalinggroups.py:376
+#: eucaconsole/forms/scalinggroups.py:375
 msgid "Instance(s)"
 msgstr "Instancias"
 
-#: eucaconsole/forms/scalinggroups.py:377
+#: eucaconsole/forms/scalinggroups.py:376
 msgid "Percentage"
 msgstr "Porcentaje"
 
-#: eucaconsole/forms/scalinggroups.py:388
+#: eucaconsole/forms/scalinggroups.py:387
 msgid "Respect grace period?"
 msgstr "¿Respetar período de gracia?"
 
-#: eucaconsole/forms/scalinggroups.py:393
+#: eucaconsole/forms/scalinggroups.py:392
 msgid "Also decrement desired capacity of scaling group"
 msgstr "También reducir la capacidad del grupo de escala"
 
-#: eucaconsole/forms/scalinggroups.py:423
+#: eucaconsole/forms/scalinggroups.py:422
 msgid "No subnets"
 msgstr ""
 
@@ -2342,7 +2331,7 @@ msgstr "Eliminar en terminar"
 msgid "Register as Windows OS image"
 msgstr "Registrar imagen del sistema operativo Windows como"
 
-#: eucaconsole/forms/snapshots.py:119 eucaconsole/views/scalinggroups.py:616
+#: eucaconsole/forms/snapshots.py:119 eucaconsole/views/scalinggroups.py:619
 msgid "In progress"
 msgstr ""
 
@@ -2403,30 +2392,30 @@ msgstr ""
 msgid "Delete failed"
 msgstr "seleccione ..."
 
-#: eucaconsole/forms/users.py:51
+#: eucaconsole/forms/users.py:47
 msgid "Allow read/write access to all resource except users and groups"
 msgstr ""
 "Permitir acceso de lectura / escritura a todos los recursos excepto para "
 "usuarios y grupos"
 
-#: eucaconsole/forms/users.py:57
+#: eucaconsole/forms/users.py:53
 msgid "E-mail address"
 msgstr "Dirección de correo electrónico"
 
-#: eucaconsole/forms/users.py:73
+#: eucaconsole/forms/users.py:69
 msgid "Download keys after generation"
 msgstr "Descarga claves después de generar"
 
-#: eucaconsole/forms/users.py:105 eucaconsole/forms/users.py:115
+#: eucaconsole/forms/users.py:104 eucaconsole/forms/users.py:115
 #: eucaconsole/templates/instances/instance_create_image.pt:106
 msgid "Your password"
 msgstr "Su contraseña"
 
-#: eucaconsole/forms/users.py:107 eucaconsole/forms/users.py:117
+#: eucaconsole/forms/users.py:106 eucaconsole/forms/users.py:117
 msgid "A password is required"
 msgstr "Se requiere una contraseña"
 
-#: eucaconsole/forms/users.py:127
+#: eucaconsole/forms/users.py:129
 msgid "Group is required"
 msgstr "Se requiere grupo"
 
@@ -2452,8 +2441,8 @@ msgstr "Se requiere zona de disponibilidad"
 #: eucaconsole/templates/instances/instance_view.pt:100
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:89
 #: eucaconsole/templates/volumes/volumes.pt:155
-#: eucaconsole/views/instances.py:600 eucaconsole/views/instances.py:949
-#: eucaconsole/views/instances.py:1058 eucaconsole/views/ipaddresses.py:176
+#: eucaconsole/views/instances.py:603 eucaconsole/views/instances.py:952
+#: eucaconsole/views/instances.py:1061 eucaconsole/views/ipaddresses.py:176
 #: eucaconsole/views/metrics.py:47
 msgid "Instance"
 msgstr "Instancia"
@@ -2485,13 +2474,13 @@ msgstr ""
 msgid "Detaching"
 msgstr ""
 
-#: eucaconsole/models/alarms.py:92
+#: eucaconsole/models/alarms.py:92 eucaconsole/views/alarms.py:257
 msgid "Insufficient data"
 msgstr ""
 
 #: eucaconsole/models/alarms.py:94
 #: eucaconsole/templates/buckets/bucket_new.pt:60
-#: eucaconsole/templates/users/user_view.pt:266
+#: eucaconsole/templates/users/user_view.pt:266 eucaconsole/views/alarms.py:258
 msgid "OK"
 msgstr ""
 
@@ -2563,7 +2552,7 @@ msgstr "Crear grupo de escala"
 #: eucaconsole/templates/stacks/stack_wizard.pt:12
 #: eucaconsole/templates/stacks/stacks.pt:13
 #: eucaconsole/templates/stacks/stacks.pt:18 eucaconsole/views/dashboard.py:45
-#: eucaconsole/views/stacks.py:126
+#: eucaconsole/views/stacks.py:128
 msgid "Stacks"
 msgstr ""
 
@@ -2593,7 +2582,7 @@ msgstr "Direcciones IP elásticas"
 #: eucaconsole/templates/volumes/volume_view.pt:13
 #: eucaconsole/templates/volumes/volumes.pt:16
 #: eucaconsole/templates/volumes/volumes.pt:21
-#: eucaconsole/views/dashboard.py:53 eucaconsole/views/instances.py:949
+#: eucaconsole/views/dashboard.py:53 eucaconsole/views/instances.py:952
 #: eucaconsole/views/volumes.py:88
 msgid "Volumes"
 msgstr "Volúmenes"
@@ -2876,40 +2865,38 @@ msgid "No items were found <dynamic element>"
 msgstr ""
 
 #: eucaconsole/templates/macros.pt:142
-#: eucaconsole/templates/cloudwatch/metrics.pt:178
+#: eucaconsole/templates/cloudwatch/metrics.pt:180
 #: eucaconsole/templates/instances/instance_types.pt:103
 msgid "No items were found"
 msgstr ""
 
 #: eucaconsole/templates/macros.pt:149
-#: eucaconsole/templates/cloudwatch/metrics.pt:185
+#: eucaconsole/templates/cloudwatch/metrics.pt:187
 msgid "Displaying"
 msgstr ""
 
 #: eucaconsole/templates/macros.pt:151
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:17
-#: eucaconsole/templates/cloudwatch/metrics.pt:187
+#: eucaconsole/templates/cloudwatch/metrics.pt:189
 msgid "of"
 msgstr ""
 
 #: eucaconsole/templates/macros.pt:153
-#: eucaconsole/templates/cloudwatch/metrics.pt:189
+#: eucaconsole/templates/cloudwatch/metrics.pt:191
 msgid "items"
 msgstr ""
 
 #: eucaconsole/templates/macros.pt:239
 #, fuzzy
-#| msgid "Select tile"
 msgid "Select all"
 msgstr "seleccione ..."
 
 #: eucaconsole/templates/macros.pt:251
 #, fuzzy
-#| msgid "Creating"
 msgid "More Actions"
 msgstr "Crear volumen"
 
-#: eucaconsole/templates/macros.pt:294 eucaconsole/views/scalinggroups.py:717
+#: eucaconsole/templates/macros.pt:294 eucaconsole/views/scalinggroups.py:723
 msgid "Remove"
 msgstr ""
 
@@ -2932,11 +2919,11 @@ msgstr ""
 #: eucaconsole/templates/keypairs/keypair_view.pt:71
 #: eucaconsole/templates/keypairs/keypair_view.pt:102
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:102
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:176
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:178
 #: eucaconsole/templates/roles/role_view.pt:140
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:88
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:84
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:111
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:83
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:110
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:82
 #: eucaconsole/templates/snapshots/snapshot_view.pt:119
 #: eucaconsole/templates/stacks/stack_wizard.pt:104
@@ -2952,7 +2939,7 @@ msgstr ""
 #: eucaconsole/templates/buckets/buckets.pt:110
 #: eucaconsole/templates/cloudwatch/alarms.pt:90
 #: eucaconsole/templates/cloudwatch/metrics.pt:139
-#: eucaconsole/templates/elbs/elbs.pt:62
+#: eucaconsole/templates/elbs/elbs.pt:63
 #: eucaconsole/templates/groups/groups.pt:56
 #: eucaconsole/templates/images/images.pt:142
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:89
@@ -3049,7 +3036,6 @@ msgstr "Su contraseña ha caducado. Por favor, actualice su contraseña."
 
 #: eucaconsole/templates/managecredentials.pt:86
 #, fuzzy
-#| msgid "Password must be more than 6 characters"
 msgid "Password must be a minimum of six characters long."
 msgstr "La contraseña debe tener más de seis caracteres"
 
@@ -3075,9 +3061,9 @@ msgstr "Cambiar contraseña"
 #: eucaconsole/templates/buckets/bucket_new.pt:35
 #: eucaconsole/templates/buckets/bucket_upload.pt:82
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:74
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:188
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:190
 #: eucaconsole/templates/elbs/elb_healthchecks.pt:70
-#: eucaconsole/templates/elbs/elb_instances.pt:218
+#: eucaconsole/templates/elbs/elb_instances.pt:219
 #: eucaconsole/templates/elbs/elb_view.pt:130
 #: eucaconsole/templates/elbs/elb_wizard.pt:89
 #: eucaconsole/templates/elbs/elb_wizard.pt:118
@@ -3095,15 +3081,15 @@ msgstr "Cambiar contraseña"
 #: eucaconsole/templates/keypairs/keypair_view.pt:107
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:112
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:111
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:187
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:220
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:189
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:222
 #: eucaconsole/templates/panels/elb_listener_editor.pt:205
 #: eucaconsole/templates/panels/securitygroup_rules.pt:155
 #: eucaconsole/templates/roles/role_view.pt:133
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:95
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:114
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:93
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:120
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:92
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:119
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:92
 #: eucaconsole/templates/snapshots/snapshot_view.pt:133
 #: eucaconsole/templates/stacks/stack_update.pt:90
@@ -3200,14 +3186,14 @@ msgstr ""
 msgid "Session Timeout"
 msgstr ""
 
-#: eucaconsole/templates/master_layout.pt:123 eucaconsole/views/__init__.py:390
+#: eucaconsole/templates/master_layout.pt:123 eucaconsole/views/__init__.py:389
 msgid ""
 "Your session has timed out. This may be due to inactivity, a policy that "
 "does not provide login permissions, or an unexpected error. Please log in"
 " again, and contact your cloud administrator if the problem persists."
 msgstr ""
 
-#: eucaconsole/templates/master_layout.pt:125 eucaconsole/views/login.py:93
+#: eucaconsole/templates/master_layout.pt:125 eucaconsole/views/login.py:94
 msgid "Login"
 msgstr ""
 
@@ -3291,9 +3277,9 @@ msgstr ""
 #: eucaconsole/templates/volumes/volume_monitoring.pt:28
 #: eucaconsole/templates/volumes/volume_snapshots.pt:26
 #: eucaconsole/templates/volumes/volume_view.pt:35
-#: eucaconsole/views/elbs.py:594 eucaconsole/views/elbs.py:1193
-#: eucaconsole/views/elbs.py:1198 eucaconsole/views/instances.py:600
-#: eucaconsole/views/scalinggroups.py:305 eucaconsole/views/volumes.py:319
+#: eucaconsole/views/elbs.py:595 eucaconsole/views/elbs.py:1210
+#: eucaconsole/views/elbs.py:1215 eucaconsole/views/instances.py:603
+#: eucaconsole/views/scalinggroups.py:306 eucaconsole/views/volumes.py:319
 msgid "General"
 msgstr ""
 
@@ -3331,7 +3317,7 @@ msgstr ""
 #: eucaconsole/templates/buckets/buckets.pt:79
 #: eucaconsole/templates/buckets/buckets.pt:142
 #: eucaconsole/templates/cloudwatch/alarms.pt:27
-#: eucaconsole/templates/elbs/elbs.pt:27 eucaconsole/templates/elbs/elbs.pt:82
+#: eucaconsole/templates/elbs/elbs.pt:27 eucaconsole/templates/elbs/elbs.pt:83
 #: eucaconsole/templates/groups/groups.pt:26
 #: eucaconsole/templates/groups/groups.pt:67
 #: eucaconsole/templates/images/images.pt:24
@@ -3341,7 +3327,7 @@ msgstr ""
 #: eucaconsole/templates/images/images.pt:172
 #: eucaconsole/templates/instances/instances.pt:25
 #: eucaconsole/templates/instances/instances.pt:126
-#: eucaconsole/templates/instances/instances.pt:312
+#: eucaconsole/templates/instances/instances.pt:315
 #: eucaconsole/templates/keypairs/keypairs.pt:34
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:26
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:81
@@ -3625,9 +3611,9 @@ msgstr ""
 
 #: eucaconsole/templates/buckets/bucket_details.pt:105
 #: eucaconsole/templates/buckets/bucket_item_details.pt:112
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:187
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:189
 #: eucaconsole/templates/elbs/elb_healthchecks.pt:68
-#: eucaconsole/templates/elbs/elb_instances.pt:216
+#: eucaconsole/templates/elbs/elb_instances.pt:217
 #: eucaconsole/templates/elbs/elb_view.pt:128
 #: eucaconsole/templates/groups/group_view.pt:143
 #: eucaconsole/templates/images/image_view.pt:211
@@ -3812,8 +3798,8 @@ msgstr ""
 
 #: eucaconsole/templates/buckets/buckets.pt:101
 #: eucaconsole/templates/buckets/buckets.pt:164
-#: eucaconsole/templates/instances/instances.pt:177
-#: eucaconsole/templates/instances/instances.pt:363
+#: eucaconsole/templates/instances/instances.pt:180
+#: eucaconsole/templates/instances/instances.pt:369
 msgid "Remove from view"
 msgstr ""
 
@@ -3873,25 +3859,21 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:7
 #, fuzzy
-#| msgid "security group"
 msgid "for group"
 msgstr "Grupo de seguridad"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:9
 #, fuzzy
-#| msgid "Select security policy"
 msgid "execute policy"
 msgstr "Crear grupo de seguridad"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:17
 #, fuzzy
-#| msgid "All Load Balancing actions"
 msgid "Add an action:"
 msgstr "Todas las acciones de balanceo de carga"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:18
 #, fuzzy
-#| msgid "Add another tag:"
 msgid "Add another action:"
 msgstr "Añadir otra etiqueta"
 
@@ -3905,19 +3887,16 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:45
 #, fuzzy
-#| msgid "Auto scaling groups"
 msgid "For scaling group"
 msgstr "Crear grupo de escala"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:50
 #, fuzzy
-#| msgid "Create scaling group"
 msgid "Select scaling group..."
 msgstr "Crear grupo de escala"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:56
 #, fuzzy
-#| msgid "Create Scaling Policy"
 msgid "Execute scaling policy"
 msgstr "Crear grupo de escala"
 
@@ -3927,7 +3906,6 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:73
 #, fuzzy
-#| msgid "Action"
 msgid "Add Action"
 msgstr "Acción"
 
@@ -3941,7 +3919,6 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:17
 #, fuzzy
-#| msgid "instances"
 msgid "in state"
 msgstr "Instancia"
 
@@ -3949,7 +3926,6 @@ msgstr "Instancia"
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:38
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:6
 #, fuzzy
-#| msgid "Delete failed"
 msgid "Delete alarm"
 msgstr "seleccione ..."
 
@@ -3966,8 +3942,8 @@ msgid "Alarm Name"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:44
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:82
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:28
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:84
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:29
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:23
 msgid "Dimension"
 msgstr ""
@@ -3975,35 +3951,34 @@ msgstr ""
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:57
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:43
 #, fuzzy
-#| msgid "Yes, Delete Load Balancer"
 msgid "Yes, Delete Alarm"
 msgstr "Equilibrador de carga"
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:56
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:149
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:151
 msgid "<dynamic element>"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:15
 #: eucaconsole/templates/cloudwatch/alarms.pt:20
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:13
-#: eucaconsole/templates/elbs/elbs.pt:58
+#: eucaconsole/templates/cloudwatch/alarms_history.pt:12
+#: eucaconsole/templates/elbs/elbs.pt:59
 #: eucaconsole/templates/panels/top_nav.pt:92
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:89
-#: eucaconsole/templates/volumes/volumes.pt:153 eucaconsole/views/alarms.py:230
-#: eucaconsole/views/alarms.py:519
+#: eucaconsole/templates/volumes/volumes.pt:153 eucaconsole/views/alarms.py:236
+#: eucaconsole/views/alarms.py:515
 #, fuzzy
-#| msgid "Alarm"
 msgid "Alarms"
 msgstr "Alarma"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:23
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:148
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:149
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:149
 #: eucaconsole/templates/elbs/elb_monitoring.pt:37
 #: eucaconsole/templates/instances/instance_monitoring.pt:35
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:36
-#: eucaconsole/templates/volumes/volume_monitoring.pt:34
+#: eucaconsole/templates/volumes/volume_monitoring.pt:35
 msgid "Create Alarm"
 msgstr ""
 
@@ -4012,7 +3987,6 @@ msgstr ""
 #: eucaconsole/templates/cloudwatch/alarms.pt:116
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:35
 #, fuzzy
-#| msgid "Create launch configuration like this"
 msgid "Create alarm like this one"
 msgstr "Configuración de lanzamiento más antiguo"
 
@@ -4024,14 +3998,12 @@ msgstr ""
 #: eucaconsole/templates/cloudwatch/alarms.pt:67
 #: eucaconsole/templates/cloudwatch/alarms.pt:88
 #, fuzzy
-#| msgid "Trigger threshold"
 msgid "Threshold"
 msgstr "Cantidad umbral"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:75
 #: eucaconsole/templates/cloudwatch/alarms.pt:89
 #, fuzzy
-#| msgid "All S3/Walrus actions"
 msgid "Alarm Actions"
 msgstr "Todas las acciones de S3/Walrus"
 
@@ -4039,7 +4011,7 @@ msgstr "Todas las acciones de S3/Walrus"
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:57
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:60
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:61
-#: eucaconsole/views/alarms.py:244
+#: eucaconsole/views/alarms.py:250 eucaconsole/views/alarms.py:255
 msgid "State"
 msgstr ""
 
@@ -4060,78 +4032,69 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:20
 #, fuzzy
-#| msgid "Details for load balancer:"
 msgid "Details for alarm:"
 msgstr "Equilibrador de carga"
 
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:66
 #, fuzzy
-#| msgid "Account details"
 msgid "State details"
 msgstr "Nombre de la cuenta"
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:89
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:91
 #, fuzzy
-#| msgid "Description is required"
 msgid "Dimensions is a required value."
 msgstr "Descripción se requiere"
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:96
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:50
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:98
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:51
 msgid "Trigger alarm when the"
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:113
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:72
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:115
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:73
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:106
 msgid "is"
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:125
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:85
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:127
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:86
 #, fuzzy
-#| msgid "Trigger threshold amount is required"
 msgid "Threshold value is required."
 msgstr "Se requiere cantidad de disparador"
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:127
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:87
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:129
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:88
 msgid "Threshold value must be a number."
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:129
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:89
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:131
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:90
 msgid "Threshold value must be a positive number."
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:138
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:98
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:140
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:99
 msgid "for at least"
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:142
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:102
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:144
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:103
 #, fuzzy
-#| msgid "Volume is required"
 msgid "Period value is required."
 msgstr "Se requiere volumen"
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:144
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:104
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:146
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:105
 msgid "Period value must be a number."
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:146
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:106
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:148
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:107
 msgid "Period value must be a positive number."
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:150
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:152
 msgid "consecutive periods of"
-msgstr ""
-
-#: eucaconsole/templates/cloudwatch/alarms_history.pt:12
-msgid "CloudWatchAlarms"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarms_history.pt:20
@@ -4152,46 +4115,42 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarms_history.pt:64
 #: eucaconsole/templates/instances/instance_launch_more.pt:56
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:289
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:291
 #: eucaconsole/templates/panels/securitygroup_rules.pt:91
-#: eucaconsole/templates/roles/role_view.pt:60 eucaconsole/views/alarms.py:674
+#: eucaconsole/templates/roles/role_view.pt:60 eucaconsole/views/alarms.py:670
 msgid "Type"
 msgstr "Tipo"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:6
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:7
 msgid "Name<dynamic element>"
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:11
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:12
 msgid "Alarm name must be unique."
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:13
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:14
 #, fuzzy
-#| msgid "Tag name is required"
 msgid "Alarm name is required."
 msgstr "Se requiere el nombre de imagen"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:36
-#: eucaconsole/views/alarms.py:99
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:37
+#: eucaconsole/views/alarms.py:105
 #, fuzzy
-#| msgid "Select instance..."
 msgid "Select dimension..."
 msgstr "Seleccione instancia ..."
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:43
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:44
 #, fuzzy
-#| msgid "Min is required"
 msgid "Dimension is required."
 msgstr "Se requiere un mínimo"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:83
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:84
 #, fuzzy
-#| msgid "Amount"
 msgid "amount..."
 msgstr "Cantidad"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:110
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:111
 msgid "consecutive period(s) of"
 msgstr ""
 
@@ -4200,7 +4159,6 @@ msgstr ""
 #: eucaconsole/templates/cloudwatch/metrics.pt:20
 #: eucaconsole/templates/panels/top_nav.pt:97 eucaconsole/views/metrics.py:180
 #, fuzzy
-#| msgid "Metric"
 msgid "Metrics"
 msgstr "Métrico"
 
@@ -4209,50 +4167,48 @@ msgid "graph"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:47
-#: eucaconsole/templates/cloudwatch/metrics.pt:213
+#: eucaconsole/templates/cloudwatch/metrics.pt:215
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:22
 #, fuzzy
 msgid "Measurement period"
 msgstr "Se requiere periodos de medición"
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:58
-#: eucaconsole/templates/cloudwatch/metrics.pt:224
+#: eucaconsole/templates/cloudwatch/metrics.pt:226
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:33
 #, fuzzy
-#| msgid "Port range"
 msgid "Time range"
 msgstr "Intervalo de puertos"
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:60
-#: eucaconsole/templates/cloudwatch/metrics.pt:226
+#: eucaconsole/templates/cloudwatch/metrics.pt:228
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:35
 #, fuzzy
-#| msgid "Creating"
 msgid "Relative"
 msgstr "Crear volumen"
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:62
-#: eucaconsole/templates/cloudwatch/metrics.pt:228
+#: eucaconsole/templates/cloudwatch/metrics.pt:230
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:37
 msgid "Absolute"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:74
-#: eucaconsole/templates/cloudwatch/metrics.pt:240
+#: eucaconsole/templates/cloudwatch/metrics.pt:242
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:49
 msgid "From"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:78
-#: eucaconsole/templates/cloudwatch/metrics.pt:244
+#: eucaconsole/templates/cloudwatch/metrics.pt:246
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:53
 msgid "To"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:104
 #: eucaconsole/templates/cloudwatch/metrics.pt:99
-#: eucaconsole/templates/cloudwatch/metrics.pt:167
-#: eucaconsole/templates/cloudwatch/metrics.pt:273
+#: eucaconsole/templates/cloudwatch/metrics.pt:169
+#: eucaconsole/templates/cloudwatch/metrics.pt:276
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:9
 msgid "Create alarm"
 msgstr ""
@@ -4260,14 +4216,14 @@ msgstr ""
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:105
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:137
 #: eucaconsole/templates/cloudwatch/metrics.pt:100
-#: eucaconsole/templates/cloudwatch/metrics.pt:168
-#: eucaconsole/templates/cloudwatch/metrics.pt:275
-#: eucaconsole/templates/cloudwatch/metrics.pt:319
+#: eucaconsole/templates/cloudwatch/metrics.pt:170
+#: eucaconsole/templates/cloudwatch/metrics.pt:278
+#: eucaconsole/templates/cloudwatch/metrics.pt:323
 msgid "Copy URL"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:138
-#: eucaconsole/templates/cloudwatch/metrics.pt:320
+#: eucaconsole/templates/cloudwatch/metrics.pt:324
 msgid ""
 "The URL below will bring you to the metric landing page with preselected "
 "metric(s) and graph."
@@ -4278,18 +4234,16 @@ msgid "Clear all"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metrics.pt:85
-#: eucaconsole/templates/cloudwatch/metrics.pt:155
-#: eucaconsole/views/alarms.py:105
+#: eucaconsole/templates/cloudwatch/metrics.pt:157
+#: eucaconsole/views/alarms.py:111
 #, fuzzy
-#| msgid "For all instances"
 msgid "All instances"
 msgstr "Más reciente instancia"
 
 #: eucaconsole/templates/cloudwatch/metrics.pt:88
-#: eucaconsole/templates/cloudwatch/metrics.pt:158
-#: eucaconsole/views/alarms.py:152
+#: eucaconsole/templates/cloudwatch/metrics.pt:160
+#: eucaconsole/views/alarms.py:158
 #, fuzzy
-#| msgid "Load balancers"
 msgid "All load balancers"
 msgstr "Los balanceadores de carga"
 
@@ -4305,7 +4259,6 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metrics.pt:138
 #, fuzzy
-#| msgid "Policy name"
 msgid "Metric Name"
 msgstr "Nombre de clave"
 
@@ -4493,7 +4446,7 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:54
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:57
-#: eucaconsole/views/alarms.py:431
+#: eucaconsole/views/alarms.py:444
 msgid "for"
 msgstr ""
 
@@ -4520,7 +4473,7 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:136
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:58
-#: eucaconsole/views/alarms.py:431
+#: eucaconsole/views/alarms.py:444
 msgid "minutes"
 msgstr ""
 
@@ -4561,7 +4514,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:7
 #, fuzzy
-#| msgid "Delete failed"
 msgid "Delete alarms"
 msgstr "seleccione ..."
 
@@ -4606,7 +4558,7 @@ msgstr ""
 #: eucaconsole/templates/elbs/elb_healthchecks.pt:33
 #: eucaconsole/templates/elbs/elb_instances.pt:37
 #: eucaconsole/templates/elbs/elb_view.pt:47
-#: eucaconsole/templates/elbs/elbs.pt:29 eucaconsole/templates/elbs/elbs.pt:84
+#: eucaconsole/templates/elbs/elbs.pt:30 eucaconsole/templates/elbs/elbs.pt:86
 #, fuzzy
 msgid "Delete load balancer"
 msgstr "Equilibrador de carga"
@@ -4637,7 +4589,7 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/templates/dialogs/elb_security_group_warning_dialog.pt:15
-#: eucaconsole/templates/instances/instances.pt:260
+#: eucaconsole/templates/instances/instances.pt:263
 #, fuzzy
 msgid "SECURITY GROUP"
 msgstr "Grupo de seguridad"
@@ -4727,13 +4679,11 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/image_dialogs.pt:44
 #, fuzzy
-#| msgid "Delete associated snapshot"
 msgid "Delete associated snapshots"
 msgstr "Crear instantánea"
 
 #: eucaconsole/templates/dialogs/image_dialogs.pt:49
 #, fuzzy
-#| msgid "image"
 msgid "for image"
 msgstr "Imagen"
 
@@ -4769,7 +4719,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:37
 #, fuzzy
-#| msgid "instances"
 msgid "Start instances"
 msgstr "Instancia"
 
@@ -4779,7 +4728,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:50
 #, fuzzy
-#| msgid "Oldest instance"
 msgid "Yes, Start Instance(s)"
 msgstr "Instancia más antiguo"
 
@@ -4789,7 +4737,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:66
 #, fuzzy
-#| msgid "Stopped instances"
 msgid "Stop instances"
 msgstr "Instancias detenido"
 
@@ -4803,7 +4750,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:81
 #, fuzzy
-#| msgid "Stopped instances"
 msgid "Yes, Stop Instances"
 msgstr "Instancias detenido"
 
@@ -5062,7 +5008,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/keypair_dialogs.pt:9
 #, fuzzy
-#| msgid "Secret key"
 msgid "Delete keys"
 msgstr "Clave secreta"
 
@@ -5135,7 +5080,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:9
 #, fuzzy
-#| msgid "Create security group"
 msgid "Delete security groups"
 msgstr "Crear grupo de seguridad"
 
@@ -5225,7 +5169,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:9
 #, fuzzy
-#| msgid "Create snapshot"
 msgid "Delete snapshots"
 msgstr "Crear instantánea"
 
@@ -5255,7 +5198,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:39
 #, fuzzy
-#| msgid "Create snapshot"
 msgid "Yes, Delete Snapshots"
 msgstr "Crear instantánea"
 
@@ -5405,7 +5347,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:51
 #, fuzzy
-#| msgid "Create volume"
 msgid "Detach volumes"
 msgstr "Crear volumen"
 
@@ -5447,7 +5388,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:132
 #, fuzzy
-#| msgid "Create volume"
 msgid "Delete volumes"
 msgstr "Crear volumen"
 
@@ -5476,8 +5416,8 @@ msgstr "Equilibrador de carga"
 #: eucaconsole/templates/volumes/volume_monitoring.pt:30
 #: eucaconsole/templates/volumes/volume_snapshots.pt:28
 #: eucaconsole/templates/volumes/volume_view.pt:37
-#: eucaconsole/views/elbs.py:1090 eucaconsole/views/instances.py:168
-#: eucaconsole/views/instances.py:1058 eucaconsole/views/scalinggroups.py:983
+#: eucaconsole/views/elbs.py:1107 eucaconsole/views/instances.py:170
+#: eucaconsole/views/instances.py:1061 eucaconsole/views/scalinggroups.py:996
 #: eucaconsole/views/volumes.py:630
 msgid "Monitoring"
 msgstr ""
@@ -5500,9 +5440,9 @@ msgstr ""
 #: eucaconsole/templates/roles/roles.pt:53
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:28
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:85
-#: eucaconsole/views/elbs.py:863 eucaconsole/views/elbs.py:1195
-#: eucaconsole/views/elbs.py:1200 eucaconsole/views/instances.py:176
-#: eucaconsole/views/scalinggroups.py:496
+#: eucaconsole/views/elbs.py:864 eucaconsole/views/elbs.py:1212
+#: eucaconsole/views/elbs.py:1217 eucaconsole/views/instances.py:178
+#: eucaconsole/views/scalinggroups.py:499
 msgid "Instances"
 msgstr ""
 
@@ -5579,7 +5519,7 @@ msgstr "Tipo de instancia"
 
 #: eucaconsole/templates/elbs/elb_instances.pt:96
 #: eucaconsole/templates/elbs/elb_instances.pt:170
-#: eucaconsole/views/scalinggroups.py:718
+#: eucaconsole/views/scalinggroups.py:724
 #, fuzzy
 msgid "instances"
 msgstr "Instancia"
@@ -5640,19 +5580,18 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_monitoring.pt:91
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:74
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:129
-#: eucaconsole/templates/volumes/volume_monitoring.pt:66
+#: eucaconsole/templates/volumes/volume_monitoring.pt:69
 msgid "Refresh data"
 msgstr ""
 
 #: eucaconsole/templates/elbs/elb_monitoring.pt:49
 #, fuzzy
-#| msgid "Load balancer"
 msgid "loadbalancer"
 msgstr "Equilibrador de carga"
 
 #: eucaconsole/templates/elbs/elb_monitoring.pt:55
 #: eucaconsole/templates/instances/instance_monitoring.pt:77
-#: eucaconsole/templates/volumes/volume_monitoring.pt:52
+#: eucaconsole/templates/volumes/volume_monitoring.pt:55
 msgid "CloudWatch metrics"
 msgstr ""
 
@@ -5660,7 +5599,7 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_monitoring.pt:81
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:62
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:117
-#: eucaconsole/templates/volumes/volume_monitoring.pt:56
+#: eucaconsole/templates/volumes/volume_monitoring.pt:59
 msgid "Show data for"
 msgstr ""
 
@@ -5713,7 +5652,7 @@ msgstr "Crear volumen"
 #: eucaconsole/templates/instances/instance_launch.pt:114
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:109
 #: eucaconsole/templates/panels/image_picker.pt:70
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:92
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:91
 #: eucaconsole/templates/stacks/stack_update.pt:88
 #: eucaconsole/templates/stacks/stack_wizard.pt:114
 msgid "Next"
@@ -5741,8 +5680,8 @@ msgstr "Equilibrador de carga"
 
 #: eucaconsole/templates/elbs/elb_wizard.pt:289
 #: eucaconsole/templates/instances/instance_launch.pt:242
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:264
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:144
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:266
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:143
 #: eucaconsole/templates/stacks/stack_update.pt:179
 #: eucaconsole/templates/stacks/stack_wizard.pt:205
 msgid "Summary"
@@ -5762,28 +5701,41 @@ msgstr "Requerido tipo de control de salud"
 msgid "Access logs enabled"
 msgstr ""
 
-#: eucaconsole/templates/elbs/elbs.pt:28 eucaconsole/templates/elbs/elbs.pt:83
+#: eucaconsole/templates/elbs/elbs.pt:28 eucaconsole/templates/elbs/elbs.pt:84
+#: eucaconsole/templates/instances/instances.pt:56
+#: eucaconsole/templates/instances/instances.pt:155
+#: eucaconsole/templates/instances/instances.pt:344
+#: eucaconsole/templates/scalinggroups/scalinggroups.pt:31
+#: eucaconsole/templates/scalinggroups/scalinggroups.pt:134
+#: eucaconsole/templates/volumes/volumes.pt:54
+#: eucaconsole/templates/volumes/volumes.pt:87
+#: eucaconsole/templates/volumes/volumes.pt:206
+#, fuzzy
+msgid "Monitor"
+msgstr "Activar el monitoreo"
+
+#: eucaconsole/templates/elbs/elbs.pt:29 eucaconsole/templates/elbs/elbs.pt:85
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:34
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:140
 msgid "Manage instances"
 msgstr ""
 
-#: eucaconsole/templates/elbs/elbs.pt:37
-#: eucaconsole/templates/instances/instances.pt:187
+#: eucaconsole/templates/elbs/elbs.pt:38
+#: eucaconsole/templates/instances/instances.pt:190
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:75
 #: eucaconsole/templates/volumes/volumes.pt:111
 msgid "CloudWatch alarm status"
 msgstr ""
 
-#: eucaconsole/templates/elbs/elbs.pt:44 eucaconsole/templates/elbs/elbs.pt:59
+#: eucaconsole/templates/elbs/elbs.pt:45 eucaconsole/templates/elbs/elbs.pt:60
 msgid "Avg Latency (ms)"
 msgstr ""
 
-#: eucaconsole/templates/elbs/elbs.pt:60
+#: eucaconsole/templates/elbs/elbs.pt:61
 msgid "Unhealthy Hosts"
 msgstr ""
 
-#: eucaconsole/templates/elbs/elbs.pt:61
+#: eucaconsole/templates/elbs/elbs.pt:62
 msgid "Healthy Hosts"
 msgstr ""
 
@@ -5879,9 +5831,9 @@ msgstr ""
 #: eucaconsole/templates/images/images.pt:181
 #: eucaconsole/templates/instances/instance_view.pt:45
 #: eucaconsole/templates/instances/instances.pt:135
-#: eucaconsole/templates/instances/instances.pt:321
+#: eucaconsole/templates/instances/instances.pt:324
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:13
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:198
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:197
 msgid "Create launch configuration"
 msgstr ""
 
@@ -5991,7 +5943,7 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_view.pt:51
 #: eucaconsole/templates/instances/instances.pt:82
 #: eucaconsole/templates/instances/instances.pt:141
-#: eucaconsole/templates/instances/instances.pt:327
+#: eucaconsole/templates/instances/instances.pt:330
 #, fuzzy
 msgid "Create image"
 msgstr "Crear volumen"
@@ -6130,7 +6082,7 @@ msgid "Or:"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_launch.pt:153
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:163
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:165
 msgid ""
 "Specify an IAM role if you would like to give this instance special "
 "access privileges."
@@ -6141,8 +6093,8 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_launch_more.pt:90
 #: eucaconsole/templates/instances/instance_view.pt:205
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:126
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:166
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:311
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:168
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:313
 #: eucaconsole/views/roles.py:159
 #, fuzzy
 msgid "Role"
@@ -6153,14 +6105,14 @@ msgid "Launch Instance<dynamic element>"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_launch.pt:179
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:192
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:194
 msgid "Select advanced options"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_launch.pt:253
-#: eucaconsole/templates/instances/instances.pt:217
+#: eucaconsole/templates/instances/instances.pt:220
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:106
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:275
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:277
 msgid "Root device"
 msgstr ""
 
@@ -6180,7 +6132,7 @@ msgid "Name(s)"
 msgstr "Instancias"
 
 #: eucaconsole/templates/instances/instance_launch.pt:293
-#: eucaconsole/views/elbs.py:1194 eucaconsole/views/elbs.py:1199
+#: eucaconsole/views/elbs.py:1211 eucaconsole/views/elbs.py:1216
 msgid "Network"
 msgstr ""
 
@@ -6259,7 +6211,7 @@ msgstr "Activar el monitoreo detallado"
 
 #: eucaconsole/templates/instances/instance_monitoring.pt:71
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:49
-#: eucaconsole/views/scalinggroups.py:720
+#: eucaconsole/views/scalinggroups.py:726
 msgid "instance"
 msgstr ""
 
@@ -6269,7 +6221,6 @@ msgstr ""
 
 #: eucaconsole/templates/instances/instance_monitoring.pt:98
 #, fuzzy
-#| msgid "Monitoring for instance {0} {1}"
 msgid "Enable Monitoring for this Instance"
 msgstr "Instancias en ejecución"
 
@@ -6327,71 +6278,71 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_view.pt:36
 #: eucaconsole/templates/instances/instances.pt:31
 #: eucaconsole/templates/instances/instances.pt:129
-#: eucaconsole/templates/instances/instances.pt:315
+#: eucaconsole/templates/instances/instances.pt:318
 msgid "Connect to instance"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:39
 #: eucaconsole/templates/instances/instances.pt:37
 #: eucaconsole/templates/instances/instances.pt:132
-#: eucaconsole/templates/instances/instances.pt:318
+#: eucaconsole/templates/instances/instances.pt:321
 msgid "Launch more like this"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:57
 #: eucaconsole/templates/instances/instances.pt:43
 #: eucaconsole/templates/instances/instances.pt:147
-#: eucaconsole/templates/instances/instances.pt:333
+#: eucaconsole/templates/instances/instances.pt:336
 msgid "View console output"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:62
 #: eucaconsole/templates/instances/instances.pt:63
-#: eucaconsole/templates/instances/instances.pt:155
-#: eucaconsole/templates/instances/instances.pt:341
+#: eucaconsole/templates/instances/instances.pt:158
+#: eucaconsole/templates/instances/instances.pt:347
 msgid "Associate IP address"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:67
 #: eucaconsole/templates/instances/instances.pt:69
-#: eucaconsole/templates/instances/instances.pt:160
-#: eucaconsole/templates/instances/instances.pt:346
+#: eucaconsole/templates/instances/instances.pt:163
+#: eucaconsole/templates/instances/instances.pt:352
 msgid "Disassociate IP address"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:72
 #: eucaconsole/templates/instances/instances.pt:95
-#: eucaconsole/templates/instances/instances.pt:165
-#: eucaconsole/templates/instances/instances.pt:351
+#: eucaconsole/templates/instances/instances.pt:168
+#: eucaconsole/templates/instances/instances.pt:357
 msgid "Start"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:76
 #: eucaconsole/templates/instances/instances.pt:89
-#: eucaconsole/templates/instances/instances.pt:168
-#: eucaconsole/templates/instances/instances.pt:354
+#: eucaconsole/templates/instances/instances.pt:171
+#: eucaconsole/templates/instances/instances.pt:360
 msgid "Stop"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:80
 #: eucaconsole/templates/instances/instances.pt:101
-#: eucaconsole/templates/instances/instances.pt:171
-#: eucaconsole/templates/instances/instances.pt:357
+#: eucaconsole/templates/instances/instances.pt:174
+#: eucaconsole/templates/instances/instances.pt:363
 msgid "Reboot"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:85
 #: eucaconsole/templates/instances/instances.pt:107
-#: eucaconsole/templates/instances/instances.pt:174
-#: eucaconsole/templates/instances/instances.pt:360
+#: eucaconsole/templates/instances/instances.pt:177
+#: eucaconsole/templates/instances/instances.pt:366
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:48
 msgid "Terminate"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:140
-#: eucaconsole/templates/instances/instances.pt:183
+#: eucaconsole/templates/instances/instances.pt:186
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:49
-#: eucaconsole/views/instances.py:219
+#: eucaconsole/views/instances.py:221
 msgid "Instance ID"
 msgstr ""
 
@@ -6408,8 +6359,8 @@ msgid "Private hostname"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:192
-#: eucaconsole/templates/instances/instances.pt:231
-#: eucaconsole/templates/instances/instances.pt:299
+#: eucaconsole/templates/instances/instances.pt:234
+#: eucaconsole/templates/instances/instances.pt:302
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:62
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:47
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:71
@@ -6417,7 +6368,7 @@ msgid "Warning: No rules defined for security group. Instance may be unreachable
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_view.pt:199
-#: eucaconsole/templates/instances/instances.pt:237
+#: eucaconsole/templates/instances/instances.pt:240
 msgid "Launch time"
 msgstr ""
 
@@ -6495,34 +6446,26 @@ msgstr ""
 
 #: eucaconsole/templates/instances/instances.pt:50
 #: eucaconsole/templates/instances/instances.pt:152
-#: eucaconsole/templates/instances/instances.pt:338
+#: eucaconsole/templates/instances/instances.pt:341
 msgid "Manage volumes"
 msgstr ""
 
-#: eucaconsole/templates/instances/instances.pt:56
-#: eucaconsole/templates/volumes/volumes.pt:54
-#, fuzzy
-#| msgid "Enable monitoring"
-msgid "View monitoring"
-msgstr "Activar el monitoreo"
-
 #: eucaconsole/templates/instances/instances.pt:76
 #, fuzzy
-#| msgid "Create scaling group using this launch configuration"
 msgid "Create scaling group launch configuration"
 msgstr "Crear un grupo de escala utilizando esta configuración de lanzamiento"
 
-#: eucaconsole/templates/instances/instances.pt:202
+#: eucaconsole/templates/instances/instances.pt:205
 #: eucaconsole/templates/panels/securitygroup_rules.pt:114
 msgid "IP address"
 msgstr ""
 
-#: eucaconsole/templates/instances/instances.pt:250
+#: eucaconsole/templates/instances/instances.pt:253
 #: eucaconsole/views/elbs.py:489
 msgid "NAME (ID)"
 msgstr ""
 
-#: eucaconsole/templates/instances/instances.pt:251
+#: eucaconsole/templates/instances/instances.pt:254
 #: eucaconsole/templates/scalinggroups/scalinggroup_history.pt:67
 #: eucaconsole/templates/stacks/stack_view.pt:136
 #: eucaconsole/templates/stacks/stack_view.pt:241
@@ -6531,44 +6474,41 @@ msgstr ""
 msgid "STATUS"
 msgstr ""
 
-#: eucaconsole/templates/instances/instances.pt:252
+#: eucaconsole/templates/instances/instances.pt:255
 #, fuzzy
-#| msgid "Alarm"
 msgid "ALARMS"
 msgstr "Alarma"
 
-#: eucaconsole/templates/instances/instances.pt:253
+#: eucaconsole/templates/instances/instances.pt:256
 #, fuzzy
 msgid "IMAGE ID"
 msgstr "Imagen"
 
-#: eucaconsole/templates/instances/instances.pt:256
+#: eucaconsole/templates/instances/instances.pt:259
 msgid "VPC SUBNET/"
 msgstr ""
 
-#: eucaconsole/templates/instances/instances.pt:256
+#: eucaconsole/templates/instances/instances.pt:259
 #, fuzzy
-#| msgid "None"
 msgid "ZONE"
 msgstr "Ninguno"
 
-#: eucaconsole/templates/instances/instances.pt:258
+#: eucaconsole/templates/instances/instances.pt:261
 #, fuzzy
 msgid "PUBLIC ADDR"
 msgstr "Dirección IP pública"
 
-#: eucaconsole/templates/instances/instances.pt:259
+#: eucaconsole/templates/instances/instances.pt:262
 #, fuzzy
 msgid "KEY NAME"
 msgstr "Nombre de clave"
 
-#: eucaconsole/templates/instances/instances.pt:261
+#: eucaconsole/templates/instances/instances.pt:264
 #, fuzzy
-#| msgid "Launch Instance"
 msgid "LAUNCH TIME"
 msgstr "Inicie instancia"
 
-#: eucaconsole/templates/instances/instances.pt:262
+#: eucaconsole/templates/instances/instances.pt:265
 #: eucaconsole/templates/securitygroups/securitygroups.pt:79
 #: eucaconsole/templates/users/user_view.pt:295
 msgid "ACTIONS"
@@ -6730,31 +6670,27 @@ msgstr "Configuración de lanzamiento más antiguo"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:24
 #, fuzzy
-#| msgid "Create launch configuration like:"
 msgid "Unable to create a launch configuration like"
 msgstr "Configuración de lanzamiento más antiguo"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:26
 #, fuzzy
-#| msgid "Delete associated snapshot"
 msgid "The associated image"
 msgstr "Crear instantánea"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:28
 #, fuzzy
-#| msgid "No alarms are available."
 msgid "is no longer available."
 msgstr "No hay alarmas están disponibles"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:31
 #, fuzzy
-#| msgid "Create launch configuration like:"
 msgid "Return to launch configurations page"
 msgstr "Configuración de lanzamiento más antiguo"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:110
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:185
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:218
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:187
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:220
 msgid "Create Launch Configuration"
 msgstr ""
 
@@ -6823,7 +6759,7 @@ msgstr ""
 msgid "Please specify your network and security settings."
 msgstr ""
 
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:279
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:281
 msgid "Manifest"
 msgstr ""
 
@@ -6862,7 +6798,6 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:35
-#: eucaconsole/templates/tag-editor/tag-editor.pt:45
 msgid "Tag may not begin with \"aws:\" or its length be longer than 128 chars"
 msgstr ""
 
@@ -7361,20 +7296,17 @@ msgstr ""
 
 #: eucaconsole/templates/panels/top_nav.pt:6
 #, fuzzy
-#| msgid "Dashboard"
 msgid "DASHBOARD"
 msgstr "Salpicadero"
 
 #: eucaconsole/templates/panels/top_nav.pt:12
 #, fuzzy
-#| msgid "image"
 msgid "IMAGES"
 msgstr "Imagen"
 
 #: eucaconsole/templates/panels/top_nav.pt:18
 #: eucaconsole/templates/panels/top_nav.pt:22
 #, fuzzy
-#| msgid "instances"
 msgid "INSTANCES"
 msgstr "Instancia"
 
@@ -7415,7 +7347,6 @@ msgstr ""
 
 #: eucaconsole/templates/panels/user_editor.pt:26
 #, fuzzy
-#| msgid "Add another listener:"
 msgid "Add another user:"
 msgstr "Añadir otra etiqueta"
 
@@ -7802,7 +7733,6 @@ msgstr ""
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:26
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:27
 #, fuzzy
-#| msgid "Scaling Policies"
 msgid "Scaling policies"
 msgstr "Políticas de escala (máximo)"
 
@@ -7877,31 +7807,26 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:51
 #, fuzzy
-#| msgid "Scaling group"
 msgid "scaling group"
 msgstr "Grupo de escala"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:57
 #, fuzzy
-#| msgid "No matching instances"
 msgid "CloudWatch instance metrics"
 msgstr "Instancias en ejecución"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:82
 #, fuzzy
-#| msgid "Enable monitoring"
 msgid "Instance monitoring"
 msgstr "Activar el monitoreo"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:83
 #, fuzzy
-#| msgid "Detailed Monitoring"
 msgid "Detailed instance monitoring"
 msgstr "Activar el monitoreo detallado"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:84
 #, fuzzy
-#| msgid "Create scaling group using this launch configuration"
 msgid "is not enabled for this scaling group's launch configuration,"
 msgstr "Crear un grupo de escala utilizando esta configuración de lanzamiento"
 
@@ -7914,19 +7839,16 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:112
 #, fuzzy
-#| msgid "Auto scaling groups"
 msgid "CloudWatch scaling group metrics"
 msgstr "Crear grupo de escala"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:139
 #, fuzzy
-#| msgid "Turn monitoring"
 msgid "Turn monitoring on"
 msgstr "Activar el monitoreo"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:142
 #, fuzzy
-#| msgid "Turn monitoring"
 msgid "Turn monitoring off"
 msgstr "Activar el monitoreo"
 
@@ -7942,19 +7864,16 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:32
 #, fuzzy
-#| msgid "Create Scaling Policy"
 msgid "Add scaling policy"
 msgstr "Crear grupo de escala"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:36
 #, fuzzy
-#| msgid "Policy name"
 msgid "Policy Name"
 msgstr "Nombre de clave"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:39
 #, fuzzy
-#| msgid "Trigger threshold"
 msgid "Alarm Threshold"
 msgstr "Cantidad umbral"
 
@@ -7964,7 +7883,6 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:41
 #, fuzzy
-#| msgid "Cooldown period (seconds)"
 msgid "Cooldown (Secs)"
 msgstr "Período de enfriamiento (segundos)"
 
@@ -7982,13 +7900,11 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:61
 #, fuzzy
-#| msgid "Cooldown period (seconds)"
 msgid "Cooldown period must be a number"
 msgstr "Período de enfriamiento (segundos)"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:64
 #, fuzzy
-#| msgid "Cooldown period is required"
 msgid "Cooldown is required"
 msgstr "Se requiere periodo de enfriamiento"
 
@@ -8020,47 +7936,47 @@ msgstr ""
 msgid "Membership"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:118
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:117
 msgid "Create Scaling Group"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:147
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:146
 msgid "Name:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:151
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:150
 msgid "Launch configuration:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:158
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:157
 msgid "VPC network:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:162
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:161
 msgid "VPC subnet:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:168
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:167
 msgid "Instances:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:176
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:175
 msgid "Health check:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:180
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:179
 msgid "Grace period:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:184
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:183
 msgid "Availability zones:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:194
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:193
 msgid "No launch configurations found"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:195
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:194
 msgid ""
 "You must create a launch configuration before you can create a scaling "
 "group."
@@ -8069,15 +7985,6 @@ msgstr ""
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:20
 msgid "Create New Scaling Group"
 msgstr ""
-
-#: eucaconsole/templates/scalinggroups/scalinggroups.pt:31
-#: eucaconsole/templates/scalinggroups/scalinggroups.pt:134
-#: eucaconsole/templates/volumes/volumes.pt:87
-#: eucaconsole/templates/volumes/volumes.pt:206
-#, fuzzy
-#| msgid "Turn monitoring"
-msgid "Monitor"
-msgstr "Activar el monitoreo"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:37
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:146
@@ -8333,7 +8240,6 @@ msgstr ""
 #: eucaconsole/templates/stacks/stacks.pt:30
 #: eucaconsole/templates/stacks/stacks.pt:73
 #, fuzzy
-#| msgid "Create stack"
 msgid "Update stack"
 msgstr "Crear volumen"
 
@@ -8395,7 +8301,6 @@ msgstr ""
 #: eucaconsole/templates/stacks/stack_update.pt:85
 #: eucaconsole/templates/stacks/stack_update.pt:146
 #, fuzzy
-#| msgid "Create stack"
 msgid "Update Stack"
 msgstr "Crear volumen"
 
@@ -8408,7 +8313,6 @@ msgstr ""
 
 #: eucaconsole/templates/stacks/stack_update.pt:155
 #, fuzzy
-#| msgid "Creating stack"
 msgid "Updating stack"
 msgstr "Seleccione instancia ..."
 
@@ -8453,8 +8357,8 @@ msgid "Cancel update"
 msgstr ""
 
 #: eucaconsole/templates/stacks/stack_view.pt:50
-#: eucaconsole/views/stacks.py:230 eucaconsole/views/stacks.py:421
-#: eucaconsole/views/stacks.py:462
+#: eucaconsole/views/stacks.py:232 eucaconsole/views/stacks.py:425
+#: eucaconsole/views/stacks.py:466
 #, fuzzy
 msgid "Stack"
 msgstr "Instancia"
@@ -8555,6 +8459,12 @@ msgstr ""
 
 #: eucaconsole/templates/tag-editor/tag-editor.pt:38
 msgid "Tag names must be unique"
+msgstr ""
+
+#: eucaconsole/templates/tag-editor/tag-editor.pt:45
+msgid ""
+"Tag is required and may not begin with \"aws:\" or its length be longer "
+"than 256 chars"
 msgstr ""
 
 #: eucaconsole/templates/users/quotas.pt:8
@@ -8708,7 +8618,7 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:261
-#: eucaconsole/views/instances.py:1526 eucaconsole/views/users.py:553
+#: eucaconsole/views/instances.py:1529 eucaconsole/views/users.py:553
 msgid "The password you entered is incorrect."
 msgstr ""
 
@@ -8783,53 +8693,51 @@ msgstr ""
 msgid "Details for volume:"
 msgstr ""
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:46
+#: eucaconsole/templates/volumes/volume_monitoring.pt:34
+msgid "You cannot create alarms for a failed volume."
+msgstr ""
+
+#: eucaconsole/templates/volumes/volume_monitoring.pt:48
 #, fuzzy
-#| msgid "Volume"
 msgid "volume"
 msgstr "Volumen"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:72
+#: eucaconsole/templates/volumes/volume_monitoring.pt:75
 msgid ""
 "Metrics are collected only for volumes that are attached to a running "
 "instance with"
 msgstr ""
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:75
+#: eucaconsole/templates/volumes/volume_monitoring.pt:78
 #, fuzzy
-#| msgid "Monitoring enabled"
 msgid "monitoring enabled."
 msgstr "Monitoreo habilitado"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:76
+#: eucaconsole/templates/volumes/volume_monitoring.pt:79
 #, fuzzy
-#| msgid "Monitoring enabled"
 msgid "detailed monitoring enabled."
 msgstr "Monitoreo habilitado"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:79
+#: eucaconsole/templates/volumes/volume_monitoring.pt:82
 msgid "Attach this volume to an instance"
 msgstr ""
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:82
+#: eucaconsole/templates/volumes/volume_monitoring.pt:85
 msgid "to collect and view metrics for the volume."
 msgstr ""
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:86
+#: eucaconsole/templates/volumes/volume_monitoring.pt:89
 #, fuzzy
-#| msgid "Enable monitoring"
 msgid "Enable Monitoring"
 msgstr "Activar el monitoreo"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:87
+#: eucaconsole/templates/volumes/volume_monitoring.pt:90
 #, fuzzy
-#| msgid "Enable detailed monitoring"
 msgid "Enable Detailed Monitoring"
 msgstr "Activar el monitoreo detallado"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:88
+#: eucaconsole/templates/volumes/volume_monitoring.pt:91
 #, fuzzy
-#| msgid "instances"
 msgid "for Instance"
 msgstr "Instancia"
 
@@ -8910,19 +8818,16 @@ msgstr ""
 
 #: eucaconsole/templates/volumes/volumes.pt:236
 #, fuzzy
-#| msgid "Policy name"
 msgid "VOLUME NAME"
 msgstr "Nombre de clave"
 
 #: eucaconsole/templates/volumes/volumes.pt:240
 #, fuzzy
-#| msgid "Volume"
 msgid "VOLUME ID"
 msgstr "Volumen"
 
 #: eucaconsole/templates/volumes/volumes.pt:248
 #, fuzzy
-#| msgid "Create image"
 msgid "CREATION TIME"
 msgstr "Crear volumen"
 
@@ -8945,25 +8850,23 @@ msgstr "Aona de disponibilidad"
 
 #: eucaconsole/templates/volumes/volumes.pt:268
 #, fuzzy
-#| msgid "Snapshots"
 msgid "SNAPSHOT NAME"
 msgstr "Instantánea"
 
 #: eucaconsole/templates/volumes/volumes.pt:272
 #, fuzzy
-#| msgid "Snapshots"
 msgid "SNAPSHOT ID"
 msgstr "Instantánea"
 
-#: eucaconsole/views/__init__.py:378
+#: eucaconsole/views/__init__.py:377
 msgid ""
 "You do not have the required permissions to perform this operation. "
 "Please retry the operation, and contact your cloud administrator to "
 "request an updated access policy if the problem persists."
 msgstr ""
 
-#: eucaconsole/views/__init__.py:398 eucaconsole/views/login.py:206
-#: eucaconsole/views/login.py:253
+#: eucaconsole/views/__init__.py:397 eucaconsole/views/login.py:207
+#: eucaconsole/views/login.py:254
 msgid "No response from host"
 msgstr ""
 
@@ -8990,14 +8893,13 @@ msgid "Unable to delete account."
 msgstr ""
 
 #: eucaconsole/views/accounts.py:156 eucaconsole/views/elbs.py:256
-#: eucaconsole/views/elbs.py:1125 eucaconsole/views/groups.py:143
+#: eucaconsole/views/elbs.py:1142 eucaconsole/views/groups.py:143
 #: eucaconsole/views/keypairs.py:109 eucaconsole/views/launchconfigs.py:417
-#: eucaconsole/views/roles.py:159 eucaconsole/views/scalinggroups.py:869
+#: eucaconsole/views/roles.py:159 eucaconsole/views/scalinggroups.py:875
 #: eucaconsole/views/securitygroups.py:233 eucaconsole/views/snapshots.py:257
-#: eucaconsole/views/stacks.py:421 eucaconsole/views/users.py:228
+#: eucaconsole/views/stacks.py:425 eucaconsole/views/users.py:228
 #: eucaconsole/views/volumes.py:318 eucaconsole/views/volumes.py:525
 #, fuzzy
-#| msgid "Secret key"
 msgid "Create"
 msgstr "Clave secreta"
 
@@ -9070,55 +8972,51 @@ msgstr ""
 msgid "Successfully deleted account policy"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:298
+#: eucaconsole/views/alarms.py:311
 msgid "Creating alarm {0}"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:305 eucaconsole/views/alarms.py:365
+#: eucaconsole/views/alarms.py:318 eucaconsole/views/alarms.py:378
 msgid "Successfully created alarm"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:358
+#: eucaconsole/views/alarms.py:371
 #, fuzzy
-#| msgid "Updating load balancer"
 msgid "Updating alarm {0}"
 msgstr "Equilibrador de carga"
 
-#: eucaconsole/views/alarms.py:363
+#: eucaconsole/views/alarms.py:376
 #, fuzzy
-#| msgid "Successfully deleted load balancer"
 msgid "Successfully updated alarm"
 msgstr "Equilibrador de carga"
 
-#: eucaconsole/views/alarms.py:368
+#: eucaconsole/views/alarms.py:381
 msgid "There was a problem updating alarm"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:370
+#: eucaconsole/views/alarms.py:383
 msgid "There was a problem creating alarm"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:391
+#: eucaconsole/views/alarms.py:404
 msgid "Deleting alarm(s) {0}"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:395
+#: eucaconsole/views/alarms.py:408
 #, fuzzy
-#| msgid "Successfully deleted load balancer"
 msgid "Successfully deleted alarm(s)"
 msgstr "Equilibrador de carga"
 
-#: eucaconsole/views/alarms.py:397
+#: eucaconsole/views/alarms.py:410
 msgid "There was a problem deleting alarm(s)"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:675
+#: eucaconsole/views/alarms.py:671
 #, fuzzy
-#| msgid "launch configuration"
 msgid "ConfigurationUpdate"
 msgstr "configuración de lanzamiento"
 
-#: eucaconsole/views/alarms.py:676
+#: eucaconsole/views/alarms.py:672
 msgid "StateUpdate"
 msgstr ""
 
@@ -9131,12 +9029,12 @@ msgid "Bucket name: Z to A"
 msgstr ""
 
 #: eucaconsole/views/buckets.py:99 eucaconsole/views/launchconfigs.py:116
-#: eucaconsole/views/stacks.py:174 eucaconsole/views/volumes.py:208
+#: eucaconsole/views/stacks.py:176 eucaconsole/views/volumes.py:208
 msgid "Creation time: Oldest to Newest"
 msgstr ""
 
 #: eucaconsole/views/buckets.py:100 eucaconsole/views/launchconfigs.py:117
-#: eucaconsole/views/stacks.py:175 eucaconsole/views/volumes.py:209
+#: eucaconsole/views/stacks.py:177 eucaconsole/views/volumes.py:209
 msgid "Creation time: Newest to Oldest"
 msgstr ""
 
@@ -9184,7 +9082,7 @@ msgstr ""
 #: eucaconsole/views/keypairs.py:61 eucaconsole/views/launchconfigs.py:114
 #: eucaconsole/views/scalinggroups.py:155
 #: eucaconsole/views/securitygroups.py:79 eucaconsole/views/snapshots.py:190
-#: eucaconsole/views/stacks.py:172 eucaconsole/views/volumes.py:210
+#: eucaconsole/views/stacks.py:174 eucaconsole/views/volumes.py:210
 msgid "Name: A to Z"
 msgstr ""
 
@@ -9192,7 +9090,7 @@ msgstr ""
 #: eucaconsole/views/keypairs.py:62 eucaconsole/views/launchconfigs.py:115
 #: eucaconsole/views/scalinggroups.py:156
 #: eucaconsole/views/securitygroups.py:80 eucaconsole/views/snapshots.py:191
-#: eucaconsole/views/stacks.py:173 eucaconsole/views/volumes.py:211
+#: eucaconsole/views/stacks.py:175 eucaconsole/views/volumes.py:211
 msgid "Name: Z to A"
 msgstr ""
 
@@ -9260,7 +9158,6 @@ msgstr ""
 
 #: eucaconsole/views/cloudwatchapi.py:277
 #, fuzzy
-#| msgid "Trigger threshold"
 msgid "Alarm threshold"
 msgstr "Cantidad umbral"
 
@@ -9314,11 +9211,10 @@ msgstr ""
 
 #: eucaconsole/views/elbs.py:75
 #, fuzzy
-#| msgid "Load balancers"
 msgid "Load Balancers"
 msgstr "Los balanceadores de carga"
 
-#: eucaconsole/views/elbs.py:110 eucaconsole/views/elbs.py:705
+#: eucaconsole/views/elbs.py:110 eucaconsole/views/elbs.py:706
 msgid "Unable to delete elb"
 msgstr ""
 
@@ -9351,9 +9247,8 @@ msgstr ""
 msgid "Healthy hosts (high to low)"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:256 eucaconsole/views/elbs.py:1125
+#: eucaconsole/views/elbs.py:256 eucaconsole/views/elbs.py:1142
 #, fuzzy
-#| msgid "Load balancer"
 msgid "Load Balancer"
 msgstr "Equilibrador de carga"
 
@@ -9385,64 +9280,63 @@ msgstr "Dispositivo"
 msgid "Out of service"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:676 eucaconsole/views/elbs.py:902
-#: eucaconsole/views/elbs.py:1071
+#: eucaconsole/views/elbs.py:677 eucaconsole/views/elbs.py:910
+#: eucaconsole/views/elbs.py:1088
 msgid "Unable to update load balancer"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:690
+#: eucaconsole/views/elbs.py:691
 #, fuzzy
 msgid "Updating load balancer"
 msgstr "Equilibrador de carga"
 
-#: eucaconsole/views/elbs.py:692
+#: eucaconsole/views/elbs.py:693
 msgid "Successfully updated load balancer."
 msgstr ""
 
-#: eucaconsole/views/elbs.py:708
+#: eucaconsole/views/elbs.py:709
 msgid "Deleting elb"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:711
+#: eucaconsole/views/elbs.py:712
 msgid "Successfully deleted elb."
 msgstr ""
 
-#: eucaconsole/views/elbs.py:914
+#: eucaconsole/views/elbs.py:922
 msgid "Successfully updated load balancer"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1047
+#: eucaconsole/views/elbs.py:1064
 #, fuzzy
-#| msgid "Health check ping"
 msgid "Health Checks"
 msgstr "Requerido tipo de control de salud"
 
-#: eucaconsole/views/elbs.py:1075
+#: eucaconsole/views/elbs.py:1092
 msgid "Successfully updated health checks for"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1163
+#: eucaconsole/views/elbs.py:1180
 #, fuzzy
 msgid "Select availability zones"
 msgstr "Todas las zonas de disponibilidad"
 
-#: eucaconsole/views/elbs.py:1164
+#: eucaconsole/views/elbs.py:1181
 msgid "Select VPC subnets"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1196 eucaconsole/views/elbs.py:1201
+#: eucaconsole/views/elbs.py:1213 eucaconsole/views/elbs.py:1218
 msgid "Health Check & Advanced"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1224
+#: eucaconsole/views/elbs.py:1241
 msgid "Creating elastic load balancer {0}"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1245
+#: eucaconsole/views/elbs.py:1262
 msgid "Successfully created elastic load balancer"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1264
+#: eucaconsole/views/elbs.py:1281
 msgid "Successfully uploaded server certificate"
 msgstr ""
 
@@ -9581,281 +9475,274 @@ msgstr ""
 msgid "Successfully cancelled image creation"
 msgstr ""
 
-#: eucaconsole/views/instances.py:95 eucaconsole/views/instances.py:444
+#: eucaconsole/views/instances.py:95 eucaconsole/views/instances.py:446
 msgid "linux"
 msgstr ""
 
-#: eucaconsole/views/instances.py:164
+#: eucaconsole/views/instances.py:166
 msgid "Detailed"
 msgstr ""
 
-#: eucaconsole/views/instances.py:164
+#: eucaconsole/views/instances.py:166
 msgid "Basic"
 msgstr ""
 
-#: eucaconsole/views/instances.py:170
+#: eucaconsole/views/instances.py:172
 #, fuzzy
 msgid "Detailed Monitoring"
 msgstr "Activar el monitoreo detallado"
 
-#: eucaconsole/views/instances.py:170
+#: eucaconsole/views/instances.py:172
 #, fuzzy
 msgid "Basic Monitoring"
 msgstr "Activar el monitoreo"
 
-#: eucaconsole/views/instances.py:217
+#: eucaconsole/views/instances.py:219
 msgid "Launch time: Oldest to Newest"
 msgstr ""
 
-#: eucaconsole/views/instances.py:218
+#: eucaconsole/views/instances.py:220
 msgid "Launch time: Newest to Oldest"
 msgstr ""
 
-#: eucaconsole/views/instances.py:220
+#: eucaconsole/views/instances.py:222
 msgid "Instance name: A to Z"
 msgstr ""
 
-#: eucaconsole/views/instances.py:221
+#: eucaconsole/views/instances.py:223
 msgid "Instance name: Z to A"
 msgstr ""
 
-#: eucaconsole/views/instances.py:255
+#: eucaconsole/views/instances.py:257
 #, fuzzy
-#| msgid "Bundling instance {0}"
 msgid "Starting instances {0}"
 msgstr "Instancias en ejecución"
 
-#: eucaconsole/views/instances.py:259 eucaconsole/views/instances.py:714
+#: eucaconsole/views/instances.py:261 eucaconsole/views/instances.py:717
 msgid ""
 "Successfully sent start instance request.  It may take a moment to start "
 "the instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:261
+#: eucaconsole/views/instances.py:263
 msgid "Successfully sent request to start the following instances:"
 msgstr ""
 
-#: eucaconsole/views/instances.py:266
+#: eucaconsole/views/instances.py:268
 #, fuzzy
-#| msgid "Oldest instance"
 msgid "Unable to start instances"
 msgstr "Instancia más antiguo"
 
-#: eucaconsole/views/instances.py:269
+#: eucaconsole/views/instances.py:271
 msgid "Unable to start instance"
 msgstr ""
 
-#: eucaconsole/views/instances.py:278
+#: eucaconsole/views/instances.py:280
 #, fuzzy
-#| msgid "Bundling instance {0}"
 msgid "Stopping instance(s) {0}"
 msgstr "Instancias en ejecución"
 
-#: eucaconsole/views/instances.py:282 eucaconsole/views/instances.py:727
+#: eucaconsole/views/instances.py:284 eucaconsole/views/instances.py:730
 msgid ""
 "Successfully sent stop instance request.  It may take a moment to stop "
 "the instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:284
+#: eucaconsole/views/instances.py:286
 msgid "Successfully sent request to stop the following instances:"
 msgstr ""
 
-#: eucaconsole/views/instances.py:289
+#: eucaconsole/views/instances.py:291
 #, fuzzy
-#| msgid "Number of instances"
 msgid "Unable to stop the instance(s)."
 msgstr "Número de instancias"
 
-#: eucaconsole/views/instances.py:292
+#: eucaconsole/views/instances.py:294
 msgid "Unable to stop instance"
 msgstr ""
 
-#: eucaconsole/views/instances.py:302
+#: eucaconsole/views/instances.py:304
 #, fuzzy
-#| msgid "Bundling instance {0}"
 msgid "Rebooting instance(s) {0}"
 msgstr "Instancias en ejecución"
 
-#: eucaconsole/views/instances.py:305 eucaconsole/views/instances.py:739
+#: eucaconsole/views/instances.py:307 eucaconsole/views/instances.py:742
 msgid ""
 "Successfully sent reboot request.  It may take a moment to reboot the "
 "instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:307
+#: eucaconsole/views/instances.py:309
 msgid "Successfully sent request to reboot the following instances:"
 msgstr ""
 
-#: eucaconsole/views/instances.py:312 eucaconsole/views/instances.py:742
+#: eucaconsole/views/instances.py:314 eucaconsole/views/instances.py:745
 msgid "Unable to reboot the instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:315
+#: eucaconsole/views/instances.py:317
 #, fuzzy
-#| msgid "Number of instances"
 msgid "Unable to reboot instance(s)"
 msgstr "Número de instancias"
 
-#: eucaconsole/views/instances.py:325 eucaconsole/views/instances.py:751
+#: eucaconsole/views/instances.py:327 eucaconsole/views/instances.py:754
 msgid "Terminating instance {0}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:328
+#: eucaconsole/views/instances.py:330
 msgid ""
 "Successfully sent terminate request.  It may take a moment to shut down "
 "the instance(s)."
 msgstr ""
 
-#: eucaconsole/views/instances.py:331
+#: eucaconsole/views/instances.py:333
 msgid "Successfully sent request to terminate the following instances:"
 msgstr ""
 
-#: eucaconsole/views/instances.py:338
+#: eucaconsole/views/instances.py:340
 msgid "Unable to terminate instance(s)"
 msgstr ""
 
-#: eucaconsole/views/instances.py:348
+#: eucaconsole/views/instances.py:350
 msgid "Associating IP {0} with instances {1}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:354 eucaconsole/views/instances.py:787
+#: eucaconsole/views/instances.py:356 eucaconsole/views/instances.py:790
 msgid "Successfully associated the IP to the instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:357
+#: eucaconsole/views/instances.py:359
 msgid "Failed to associate the IP address to the instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:368
+#: eucaconsole/views/instances.py:370
 msgid "Disassociating IP {0}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:375 eucaconsole/views/instances.py:803
+#: eucaconsole/views/instances.py:377 eucaconsole/views/instances.py:806
 msgid "Successfully disassociated the IP from the instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:377
+#: eucaconsole/views/instances.py:379
 msgid "Successfully sent request to disassociate the follow IP addresses:"
 msgstr ""
 
-#: eucaconsole/views/instances.py:381
+#: eucaconsole/views/instances.py:383
 msgid "Failed to disassociate the IP address from the instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:685
+#: eucaconsole/views/instances.py:688
 msgid "Updating instance {0} (type={1}, kernel={2}, ramidisk={3})"
 msgstr ""
 
-#: eucaconsole/views/instances.py:699 eucaconsole/views/instances.py:711
+#: eucaconsole/views/instances.py:702 eucaconsole/views/instances.py:714
 msgid "Starting instance {0}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:702
+#: eucaconsole/views/instances.py:705
 msgid "Successfully modified instance"
 msgstr ""
 
-#: eucaconsole/views/instances.py:725
+#: eucaconsole/views/instances.py:728
 msgid "Stopping instance {0}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:737
+#: eucaconsole/views/instances.py:740
 msgid "Rebooting instance {0}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:753
+#: eucaconsole/views/instances.py:756
 msgid ""
 "Successfully sent terminate instance request.  It may take a moment to "
 "shut down the instance."
 msgstr ""
 
-#: eucaconsole/views/instances.py:774
+#: eucaconsole/views/instances.py:777
 msgid ""
 "There was a problem with the key, please try again, verifying the correct"
 " private key is used."
 msgstr ""
 
-#: eucaconsole/views/instances.py:838
+#: eucaconsole/views/instances.py:841
 msgid "Disassociating ip {0} from instance {1}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1027 eucaconsole/views/volumes.py:162
+#: eucaconsole/views/instances.py:1030 eucaconsole/views/volumes.py:162
 #: eucaconsole/views/volumes.py:440
 msgid "Attaching volume {0} to {1} as {2}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1030
+#: eucaconsole/views/instances.py:1033
 msgid ""
 "Request successfully submitted.  It may take a moment to attach the "
 "volume."
 msgstr ""
 
-#: eucaconsole/views/instances.py:1041
+#: eucaconsole/views/instances.py:1044
 msgid "Dettaching volume {0} from {1}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1043 eucaconsole/views/volumes.py:181
+#: eucaconsole/views/instances.py:1046 eucaconsole/views/volumes.py:181
 #: eucaconsole/views/volumes.py:457
 msgid ""
 "Request successfully submitted.  It may take a moment to detach the "
 "volume."
 msgstr ""
 
-#: eucaconsole/views/instances.py:1097 eucaconsole/views/volumes.py:671
+#: eucaconsole/views/instances.py:1100 eucaconsole/views/volumes.py:671
 #, fuzzy
 msgid "Monitoring for instance {0} {1}"
 msgstr "Instancias en ejecución"
 
-#: eucaconsole/views/instances.py:1102
+#: eucaconsole/views/instances.py:1105
 msgid ""
 "Request successfully submitted.  It may take a moment for the monitoring "
 "status to update"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1218 eucaconsole/views/instances.py:1385
+#: eucaconsole/views/instances.py:1221 eucaconsole/views/instances.py:1388
 msgid "Running instance(s) (num={0}, image={1}, type={2})"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1266 eucaconsole/views/instances.py:1436
+#: eucaconsole/views/instances.py:1269 eucaconsole/views/instances.py:1439
 msgid ""
 "Successfully sent launch instances request.  It may take a moment to "
 "launch instances "
 msgstr ""
 
-#: eucaconsole/views/instances.py:1465
+#: eucaconsole/views/instances.py:1468
 msgid "created from instance {0} running image {1}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1514
+#: eucaconsole/views/instances.py:1517
 #, fuzzy
 msgid "Bundling instance {0}"
 msgstr "Instancias en ejecución"
 
-#: eucaconsole/views/instances.py:1564 eucaconsole/views/instances.py:1578
+#: eucaconsole/views/instances.py:1567 eucaconsole/views/instances.py:1581
 msgid ""
 "Successfully sent create image request.  It may take a few minutes to "
 "create the image."
 msgstr ""
 
-#: eucaconsole/views/instances.py:1570
+#: eucaconsole/views/instances.py:1573
 msgid "Creating image from instance {0}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1606
+#: eucaconsole/views/instances.py:1609
 msgid "Unauthorized"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1643
+#: eucaconsole/views/instances.py:1646
 msgid "Failed to instance type attributes"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1644
+#: eucaconsole/views/instances.py:1647
 msgid "Successfully updated instance type attributes"
 msgstr ""
 
-#: eucaconsole/views/ipaddresses.py:50 eucaconsole/views/ipaddresses.py:236
+#: eucaconsole/views/ipaddresses.py:50 eucaconsole/views/ipaddresses.py:237
 #, fuzzy
-#| msgid "IP address:"
 msgid "IP Addresses"
 msgstr "Dirección IP:"
 
@@ -9867,11 +9754,11 @@ msgstr ""
 msgid "Successfully allocated IPs"
 msgstr ""
 
-#: eucaconsole/views/ipaddresses.py:112 eucaconsole/views/ipaddresses.py:264
+#: eucaconsole/views/ipaddresses.py:112 eucaconsole/views/ipaddresses.py:265
 msgid "Associating Elastic IP {0} with instance {1}"
 msgstr ""
 
-#: eucaconsole/views/ipaddresses.py:115 eucaconsole/views/ipaddresses.py:266
+#: eucaconsole/views/ipaddresses.py:115 eucaconsole/views/ipaddresses.py:267
 msgid "Successfully associated IP {ip} with instance {instance}"
 msgstr ""
 
@@ -9879,11 +9766,11 @@ msgstr ""
 msgid "Unable to associate IP with instance"
 msgstr ""
 
-#: eucaconsole/views/ipaddresses.py:132 eucaconsole/views/ipaddresses.py:277
+#: eucaconsole/views/ipaddresses.py:132 eucaconsole/views/ipaddresses.py:278
 msgid "Disassociating Elastic IP {0} from instance {1}"
 msgstr ""
 
-#: eucaconsole/views/ipaddresses.py:136 eucaconsole/views/ipaddresses.py:280
+#: eucaconsole/views/ipaddresses.py:136 eucaconsole/views/ipaddresses.py:281
 msgid "Successfully disassociated IP {ip} from instance {instance}"
 msgstr ""
 
@@ -9895,7 +9782,7 @@ msgstr ""
 msgid "Releasing Elastic IP(s) {0}"
 msgstr ""
 
-#: eucaconsole/views/ipaddresses.py:157 eucaconsole/views/ipaddresses.py:293
+#: eucaconsole/views/ipaddresses.py:157 eucaconsole/views/ipaddresses.py:294
 msgid "Successfully released {ip} to the cloud"
 msgstr ""
 
@@ -9907,13 +9794,12 @@ msgstr ""
 msgid "IP Address"
 msgstr ""
 
-#: eucaconsole/views/ipaddresses.py:291
+#: eucaconsole/views/ipaddresses.py:292
 msgid "Releasing Elastic IP {0}"
 msgstr ""
 
 #: eucaconsole/views/keypairs.py:112
 #, fuzzy
-#| msgid "Key pair"
 msgid "Key Pair"
 msgstr "Par clave"
 
@@ -9943,7 +9829,6 @@ msgstr ""
 
 #: eucaconsole/views/launchconfigs.py:58
 #, fuzzy
-#| msgid "launch configuration"
 msgid "Launch Configs"
 msgstr "configuración de lanzamiento"
 
@@ -9975,7 +9860,6 @@ msgstr ""
 #: eucaconsole/views/launchconfigs.py:252
 #: eucaconsole/views/launchconfigs.py:417
 #, fuzzy
-#| msgid "launch configuration"
 msgid "Launch Config"
 msgstr "configuración de lanzamiento"
 
@@ -9999,15 +9883,15 @@ msgid ""
 "cloud administrator."
 msgstr ""
 
-#: eucaconsole/views/login.py:134
+#: eucaconsole/views/login.py:135
 msgid "Session Timed Out"
 msgstr ""
 
-#: eucaconsole/views/login.py:197 eucaconsole/views/managecredentials.py:138
+#: eucaconsole/views/login.py:198 eucaconsole/views/managecredentials.py:138
 msgid "Invalid user/account name and/or password."
 msgstr ""
 
-#: eucaconsole/views/login.py:247
+#: eucaconsole/views/login.py:248
 msgid "Invalid access key and/or secret key."
 msgstr ""
 
@@ -10025,13 +9909,11 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:46
 #, fuzzy
-#| msgid "Auto scaling groups"
 msgid "Auto scaling group"
 msgstr "Crear grupo de escala"
 
 #: eucaconsole/views/metrics.py:60
 #, fuzzy
-#| msgid "Auto scaling groups"
 msgid "Auto scaling group - Group metrics"
 msgstr "Crear grupo de escala"
 
@@ -10041,25 +9923,21 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:72
 #, fuzzy
-#| msgid "Select instance..."
 msgid "EC2 - Per-instance"
 msgstr "Seleccione instancia ..."
 
 #: eucaconsole/views/metrics.py:78
 #, fuzzy
-#| msgid "For all instances"
 msgid "EC2 - Across all instances"
 msgstr "Más reciente instancia"
 
 #: eucaconsole/views/metrics.py:84
 #, fuzzy
-#| msgid "Instances in scaling groups"
 msgid "EC2 - Instance metrics by scaling group"
 msgstr "Instancias en grupos de escala"
 
 #: eucaconsole/views/metrics.py:90
 #, fuzzy
-#| msgid "Instance type"
 msgid "EC2 - Per instance type"
 msgstr "Tipo de instancia"
 
@@ -10073,7 +9951,6 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:108
 #, fuzzy
-#| msgid "Select zone"
 msgid "ELB - Per zone"
 msgstr "seleccione ..."
 
@@ -10083,7 +9960,6 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:120
 #, fuzzy
-#| msgid "Details for load balancer:"
 msgid "ELB - Across all load balancers"
 msgstr "Equilibrador de carga"
 
@@ -10093,49 +9969,41 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:187
 #, fuzzy
-#| msgid "Account name: Z to A"
 msgid "Resource name: A to Z"
 msgstr "Nombre de la cuenta"
 
 #: eucaconsole/views/metrics.py:188
 #, fuzzy
-#| msgid "Account name: Z to A"
 msgid "Resource name: Z to A"
 msgstr "Nombre de la cuenta"
 
 #: eucaconsole/views/metrics.py:189
 #, fuzzy
-#| msgid "Account name: Z to A"
 msgid "Metric name: A to Z"
 msgstr "Nombre de la cuenta"
 
 #: eucaconsole/views/metrics.py:190
 #, fuzzy
-#| msgid "Account name: Z to A"
 msgid "Metric name: Z to A"
 msgstr "Nombre de la cuenta"
 
 #: eucaconsole/views/metrics.py:193
 #, fuzzy
-#| msgid "Instance type"
 msgid "Resource type"
 msgstr "Tipo de instancia"
 
 #: eucaconsole/views/metrics.py:196
 #, fuzzy
-#| msgid "Scaling group"
 msgid "Scaling group metric"
 msgstr "Grupo de escala"
 
 #: eucaconsole/views/metrics.py:199
 #, fuzzy
-#| msgid "instances"
 msgid "Instance metric"
 msgstr "Instancia"
 
 #: eucaconsole/views/metrics.py:202
 #, fuzzy
-#| msgid "Load balancer"
 msgid "Load balancer metric"
 msgstr "Equilibrador de carga"
 
@@ -10149,13 +10017,11 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:265
 #, fuzzy
-#| msgid "Disable detailed monitoring"
 msgid " (requires detailed monitoring on AWS)"
 msgstr "Activar el monitoreo detallado"
 
 #: eucaconsole/views/metrics.py:364 eucaconsole/views/metrics.py:377
 #, fuzzy
-#| msgid "Metric"
 msgid "metrics"
 msgstr "Métrico"
 
@@ -10177,7 +10043,7 @@ msgid "Press enter to select"
 msgstr ""
 
 #: eucaconsole/views/panels.py:418
-msgid "Select or type to enter account/user"
+msgid "Select account or type to enter account ID"
 msgstr ""
 
 #: eucaconsole/views/panels.py:431
@@ -10253,11 +10119,11 @@ msgstr ""
 msgid "Role name: Z to A"
 msgstr ""
 
-#: eucaconsole/views/roles.py:88 eucaconsole/views/roles.py:285
+#: eucaconsole/views/roles.py:88 eucaconsole/views/roles.py:287
 msgid "Deleting role {0}"
 msgstr ""
 
-#: eucaconsole/views/roles.py:92 eucaconsole/views/roles.py:289
+#: eucaconsole/views/roles.py:92 eucaconsole/views/roles.py:291
 msgid "Successfully deleted role"
 msgstr ""
 
@@ -10272,61 +10138,64 @@ msgid ""
 "spaces."
 msgstr ""
 
-#: eucaconsole/views/roles.py:211
+#: eucaconsole/views/roles.py:210
+msgid "All"
+msgstr ""
+
+#: eucaconsole/views/roles.py:213
 #, fuzzy
 msgid "Account "
 msgstr "Nombre de la cuenta"
 
-#: eucaconsole/views/roles.py:216
+#: eucaconsole/views/roles.py:218
 #, fuzzy
 msgid "Service "
 msgstr "Dispositivo"
 
-#: eucaconsole/views/roles.py:255
+#: eucaconsole/views/roles.py:257
 msgid "Creating role {0}"
 msgstr ""
 
-#: eucaconsole/views/roles.py:269
+#: eucaconsole/views/roles.py:271
 msgid "Successfully created role {role}"
 msgstr ""
 
-#: eucaconsole/views/roles.py:316
+#: eucaconsole/views/roles.py:318
 msgid "Updating policy {0} for role {1}"
 msgstr ""
 
-#: eucaconsole/views/roles.py:320
+#: eucaconsole/views/roles.py:322
 msgid "Successfully updated role policy"
 msgstr ""
 
-#: eucaconsole/views/roles.py:328
+#: eucaconsole/views/roles.py:330
 msgid "Updating trust policy for role {0}"
 msgstr ""
 
-#: eucaconsole/views/roles.py:333
+#: eucaconsole/views/roles.py:335
 msgid "Successfully updated trust role policy"
 msgstr ""
 
-#: eucaconsole/views/roles.py:343
+#: eucaconsole/views/roles.py:345
 msgid "Deleting policy {0} for role {1}"
 msgstr ""
 
-#: eucaconsole/views/roles.py:345
+#: eucaconsole/views/roles.py:347
 msgid "Successfully deleted role policy"
 msgstr ""
 
 #: eucaconsole/views/scalinggroups.py:92
 #, fuzzy
-#| msgid "Scaling group"
 msgid "Scaling Groups"
 msgstr "Grupo de escala"
 
 #: eucaconsole/views/scalinggroups.py:130
-#: eucaconsole/views/scalinggroups.py:391
+#: eucaconsole/views/scalinggroups.py:394
 msgid "Deleting scaling group {0}"
 msgstr ""
 
 #: eucaconsole/views/scalinggroups.py:137
-#: eucaconsole/views/scalinggroups.py:393
+#: eucaconsole/views/scalinggroups.py:396
 msgid "Successfully deleted scaling group"
 msgstr ""
 
@@ -10338,175 +10207,166 @@ msgstr ""
 msgid "Current instances"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:305
-#: eucaconsole/views/scalinggroups.py:496
-#: eucaconsole/views/scalinggroups.py:700
-#: eucaconsole/views/scalinggroups.py:869
-#, fuzzy
-#| msgid "Scaling group"
-msgid "Scaling Group"
-msgstr "Grupo de escala"
-
-#: eucaconsole/views/scalinggroups.py:346
-msgid "Select one or more availability zones..."
-msgstr ""
-
-#: eucaconsole/views/scalinggroups.py:347
+#: eucaconsole/views/scalinggroups.py:254
 msgid "Select one or more termination policies..."
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:368
-msgid "Updating scaling group {0}"
+#: eucaconsole/views/scalinggroups.py:306
+#: eucaconsole/views/scalinggroups.py:499
+#: eucaconsole/views/scalinggroups.py:706
+#: eucaconsole/views/scalinggroups.py:875
+#, fuzzy
+msgid "Scaling Group"
+msgstr "Grupo de escala"
+
+#: eucaconsole/views/scalinggroups.py:349
+msgid "Select one or more availability zones..."
 msgstr ""
 
 #: eucaconsole/views/scalinggroups.py:371
+msgid "Updating scaling group {0}"
+msgstr ""
+
+#: eucaconsole/views/scalinggroups.py:374
 msgid "Successfully updated scaling group"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:388
+#: eucaconsole/views/scalinggroups.py:391
 msgid "Terminating scaling group {0} instances"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:522
+#: eucaconsole/views/scalinggroups.py:525
 msgid "Marking instance {0} unhealthy"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:525
+#: eucaconsole/views/scalinggroups.py:528
 msgid "Successfully marked the following instance as unhealthy:"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:540
+#: eucaconsole/views/scalinggroups.py:543
 msgid "Terminating scaling group {0} instance {1}"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:543
+#: eucaconsole/views/scalinggroups.py:546
 msgid "Successfully sent terminate request for instance"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:615
+#: eucaconsole/views/scalinggroups.py:618
 msgid "Successful"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:617
+#: eucaconsole/views/scalinggroups.py:620
 #, fuzzy
-#| msgid "Delete failed"
 msgid "Failed"
 msgstr "seleccione ..."
 
-#: eucaconsole/views/scalinggroups.py:618
+#: eucaconsole/views/scalinggroups.py:621
 #, fuzzy
-#| msgid "out of service"
 msgid "Not yet in service"
 msgstr "Dispositivo"
 
-#: eucaconsole/views/scalinggroups.py:619
+#: eucaconsole/views/scalinggroups.py:622
 #, fuzzy
-#| msgid "Cancel"
 msgid "Canceled"
 msgstr "Cancelar"
 
-#: eucaconsole/views/scalinggroups.py:620
+#: eucaconsole/views/scalinggroups.py:623
 #, fuzzy
-#| msgid "Updating load balancer"
 msgid "Waiting for launch"
 msgstr "Equilibrador de carga"
 
-#: eucaconsole/views/scalinggroups.py:621
+#: eucaconsole/views/scalinggroups.py:624
 #, fuzzy
-#| msgid "Delete on terminate"
 msgid "Waiting for terminate"
 msgstr "Eliminar en terminar"
 
-#: eucaconsole/views/scalinggroups.py:680
+#: eucaconsole/views/scalinggroups.py:686
 msgid "Activity ID not found "
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:685
+#: eucaconsole/views/scalinggroups.py:691
 msgid "Start time: most recent"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:686
+#: eucaconsole/views/scalinggroups.py:692
 msgid "End time: most recent"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:687
+#: eucaconsole/views/scalinggroups.py:693
 msgid "Status: A to Z"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:688
+#: eucaconsole/views/scalinggroups.py:694
 msgid "Status: Z to A"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:689
+#: eucaconsole/views/scalinggroups.py:695
 #, fuzzy
-#| msgid "Description"
 msgid "Description: A to Z"
 msgstr "Descripción"
 
-#: eucaconsole/views/scalinggroups.py:690
+#: eucaconsole/views/scalinggroups.py:696
 #, fuzzy
-#| msgid "Description"
 msgid "Description: Z to A"
 msgstr "Descripción"
 
-#: eucaconsole/views/scalinggroups.py:700
+#: eucaconsole/views/scalinggroups.py:706
 #, fuzzy
-#| msgid "Denial policies"
 msgid "Policies"
 msgstr "Políticas de terminación"
 
-#: eucaconsole/views/scalinggroups.py:717
+#: eucaconsole/views/scalinggroups.py:723
 msgid "Add"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:754
+#: eucaconsole/views/scalinggroups.py:760
 msgid "Deleting scaling group {0} policy {1}"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:757
+#: eucaconsole/views/scalinggroups.py:763
 msgid "Successfully deleted scaling group policy"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:810
+#: eucaconsole/views/scalinggroups.py:816
 msgid "Creating scaling group {0} policy {1}"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:824
+#: eucaconsole/views/scalinggroups.py:830
 msgid "Successfully created scaling group policy"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:878
+#: eucaconsole/views/scalinggroups.py:884
 msgid "Select availability zones..."
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:879
+#: eucaconsole/views/scalinggroups.py:885
 msgid "Select load balancers..."
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:880
+#: eucaconsole/views/scalinggroups.py:886
 #, fuzzy
 msgid "Select VPC subnets..."
 msgstr "Seleccione el volumen ..."
 
-#: eucaconsole/views/scalinggroups.py:922
+#: eucaconsole/views/scalinggroups.py:929
 msgid "Creating scaling group {0}"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:953
+#: eucaconsole/views/scalinggroups.py:966
 msgid "Successfully created scaling group"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:993
+#: eucaconsole/views/scalinggroups.py:1006
 msgid ""
 "Changing the time will update charts for both instance and scaling group "
 "metrics."
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:1024
+#: eucaconsole/views/scalinggroups.py:1037
 msgid "Metrics collection for scaling group {0} {1}"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:1032
+#: eucaconsole/views/scalinggroups.py:1045
 msgid ""
 "Request successfully submitted.  It may take a moment for metrics "
 "collection to update."
@@ -10514,7 +10374,6 @@ msgstr ""
 
 #: eucaconsole/views/securitygroups.py:50
 #, fuzzy
-#| msgid "security group"
 msgid "Security Groups"
 msgstr "Grupo de seguridad"
 
@@ -10534,7 +10393,6 @@ msgstr ""
 
 #: eucaconsole/views/securitygroups.py:229
 #, fuzzy
-#| msgid "security group"
 msgid "Security Group"
 msgstr "Grupo de seguridad"
 
@@ -10572,7 +10430,6 @@ msgstr ""
 
 #: eucaconsole/views/snapshots.py:109
 #, fuzzy
-#| msgid "Successfully deleted load balancer"
 msgid "Successfully deleted snapshots "
 msgstr "Equilibrador de carga"
 
@@ -10614,96 +10471,96 @@ msgid ""
 "create the snapshot."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:95
+#: eucaconsole/views/stacks.py:97
 msgid ""
 "Cannot create S3 bucket to store your CloudFormation template due to "
 "namespace collision. Please contact your cloud administrator."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:159 eucaconsole/views/stacks.py:274
+#: eucaconsole/views/stacks.py:161 eucaconsole/views/stacks.py:276
 msgid "Unable to delete stack"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:163 eucaconsole/views/stacks.py:280
+#: eucaconsole/views/stacks.py:165 eucaconsole/views/stacks.py:282
 msgid "Successfully sent delete stack request. It may take a moment to delete "
 msgstr ""
 
-#: eucaconsole/views/stacks.py:237
+#: eucaconsole/views/stacks.py:239
 #, fuzzy
 msgid "Create Complete"
 msgstr "Crear volumen"
 
-#: eucaconsole/views/stacks.py:238
+#: eucaconsole/views/stacks.py:240
 #, fuzzy
 msgid "Create In Progresss"
 msgstr "Crear volumen"
 
-#: eucaconsole/views/stacks.py:239
+#: eucaconsole/views/stacks.py:241
 #, fuzzy
 msgid "Create Failed"
 msgstr "Crear volumen"
 
-#: eucaconsole/views/stacks.py:240
+#: eucaconsole/views/stacks.py:242
 msgid "Delete In Progresss"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:241
+#: eucaconsole/views/stacks.py:243
 #, fuzzy
 msgid "Delete Failed"
 msgstr "seleccione ..."
 
-#: eucaconsole/views/stacks.py:242
+#: eucaconsole/views/stacks.py:244
 msgid "Rollback Complete"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:243
+#: eucaconsole/views/stacks.py:245
 msgid "Rollback In Progresss"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:244
+#: eucaconsole/views/stacks.py:246
 msgid "Rollback Failed"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:277
+#: eucaconsole/views/stacks.py:279
 #, fuzzy
 msgid "Deleting stack"
 msgstr "Seleccione instancia ..."
 
-#: eucaconsole/views/stacks.py:441
+#: eucaconsole/views/stacks.py:445
 msgid ""
 "Configuration error: cloudformation.samples.bucket is referencing bucket "
 "that is not visible to this user."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:462
+#: eucaconsole/views/stacks.py:466
 msgid "Update"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:466
+#: eucaconsole/views/stacks.py:470
 msgid "Edit template"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:504
+#: eucaconsole/views/stacks.py:508
 msgid ""
 "Successfully sent update stack request. It may take a moment to update "
 "the stack."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:519
+#: eucaconsole/views/stacks.py:523
 msgid ""
 "Successfully sent cancel update request. It may take a moment to cancel "
 "the stack update."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:533
+#: eucaconsole/views/stacks.py:537
 msgid "Invalid CloudFormation Template, Resources not found"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:585
+#: eucaconsole/views/stacks.py:591
 msgid "Invalid JSON File ({0})"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:587
+#: eucaconsole/views/stacks.py:593
 msgid ""
 "\n"
 "                    Cannot read URL ({0}) If this URL is for an S3 "
@@ -10714,33 +10571,33 @@ msgid ""
 "                 "
 msgstr ""
 
-#: eucaconsole/views/stacks.py:826
+#: eucaconsole/views/stacks.py:832
 msgid ""
 "Successfully sent create stack request. It may take a moment to create "
 "the stack."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:854
+#: eucaconsole/views/stacks.py:860
 msgid "File too large: "
 msgstr ""
 
-#: eucaconsole/views/stacks.py:866
+#: eucaconsole/views/stacks.py:872
 msgid "The URL is invalid. Valid URLs can only include "
 msgstr ""
 
-#: eucaconsole/views/stacks.py:869
+#: eucaconsole/views/stacks.py:875
 msgid " or"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:870
+#: eucaconsole/views/stacks.py:876
 msgid " Please change your URL."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:878
+#: eucaconsole/views/stacks.py:884
 msgid "Cannot read from url provided."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:881
+#: eucaconsole/views/stacks.py:887
 msgid "Template too large: "
 msgstr ""
 
@@ -11389,5 +11246,15 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Disassociating ElasticIP {0} from instance {1}"
+#~ msgstr ""
+
+#~ msgid "CloudWatchAlarms"
+#~ msgstr ""
+
+# | msgid "Enable monitoring"
+#~ msgid "View monitoring"
+#~ msgstr "Activar el monitoreo"
+
+#~ msgid "Select or type to enter account/user"
 #~ msgstr ""
 
