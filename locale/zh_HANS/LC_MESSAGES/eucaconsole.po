@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-07-07 13:02-0700\n"
+"POT-Creation-Date: 2016-07-12 10:47-0700\n"
 "PO-Revision-Date: 2014-06-16 08:12+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans <LL@li.org>\n"
@@ -8542,8 +8542,6 @@ msgstr ""
 
 #: eucaconsole/templates/tag-editor/tag-editor.pt:45
 #, fuzzy
-#| msgid "Tag may not begin with \"aws:\" or its length be longer than 128
-#| chars"
 msgid ""
 "Tag is required and may not begin with \"aws:\" or its length be longer "
 "than 256 chars"
@@ -8778,7 +8776,6 @@ msgstr "存储卷详细信息"
 
 #: eucaconsole/templates/volumes/volume_monitoring.pt:34
 #, fuzzy
-#| msgid "You cannot create new snapshots from a failed volume."
 msgid "You cannot create alarms for a failed volume."
 msgstr "从存储卷创建快照"
 
@@ -10168,7 +10165,6 @@ msgstr "请选择"
 
 #: eucaconsole/views/panels.py:418
 #, fuzzy
-#| msgid "Select or type to enter account/user"
 msgid "Select account or type to enter account ID"
 msgstr "选择或者输入帐户/用户"
 
@@ -10267,7 +10263,6 @@ msgstr "名字长度必须是3到128个字符,可以包含字母,数字,'(', ')'
 
 #: eucaconsole/views/roles.py:210
 #, fuzzy
-#| msgid "and all"
 msgid "All"
 msgstr "和所有的"
 
