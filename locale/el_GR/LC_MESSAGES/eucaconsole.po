@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-07-07 13:02-0700\n"
+"POT-Creation-Date: 2016-07-12 10:47-0700\n"
 "PO-Revision-Date: 2014-10-19 23:02+0200\n"
 "Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -8767,8 +8767,6 @@ msgstr ""
 
 #: eucaconsole/templates/tag-editor/tag-editor.pt:45
 #, fuzzy
-#| msgid "Tag may not begin with \"aws:\" or its length be longer than 128
-#| chars"
 msgid ""
 "Tag is required and may not begin with \"aws:\" or its length be longer "
 "than 256 chars"
@@ -9017,7 +9015,6 @@ msgstr "Λεπτομέρειες τόμου:"
 
 #: eucaconsole/templates/volumes/volume_monitoring.pt:34
 #, fuzzy
-#| msgid "You cannot create new snapshots from a failed volume."
 msgid "You cannot create alarms for a failed volume."
 msgstr "Δημιουργία στιγμιότυπου από τόμο"
 
