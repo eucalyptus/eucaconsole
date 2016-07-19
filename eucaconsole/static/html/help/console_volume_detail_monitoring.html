@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Volume Detail - Monitoring"/>
+<meta name="abstract" content="This tab allows you to view and create alarms based on criteria you define, and provides a graphical view of various data points being monitored for your volume."/>
+<meta name="description" content="This tab allows you to view and create alarms based on criteria you define, and provides a graphical view of various data points being monitored for your volume."/>
+<meta name="prodname" content="Eucalyptus"/>
+<meta name="version" content="4.3.0"/>
+<meta name="copyright" content="© 2015-2016 Hewlett Packard Enterprise Development LP 2016" type="primary"/>
+<meta name="DC.Rights.Owner" content="© 2015-2016 Hewlett Packard Enterprise Development LP 2016" type="primary"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="volume_details_monitoring"/>
+<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
+<title>Volume Detail - Monitoring</title>
+</head>
+<body id="volume_details_monitoring">
+
+
+    <h1 class="title topictitle1">Volume Detail - Monitoring</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc">This tab allows you to view and create alarms based on criteria you define, and provides a graphical view of various data points being monitored for your volume.</p>
+</div>
+
+    <div class="topic task nested1" id="volume_monitoring_alarms">
+        <h2 class="title topictitle2">Alarms</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This section displays a list of configured alarms and allows you to create a new alarm.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">To view the details of currently configured CloudWatch alarms, expand it by clicking the plus symbol <span class="ph uicontrol">(+)</span> next to  
+                        the Cloudwatch alarms summary.</span>
+                    <div class="itemgroup stepresult">The expanded view displays the state of each alarm, the alarm name, and their thresholds.</div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">To create a new alarm, click the <span class="ph uicontrol">Create Alarm</span> button.</span>
+                            <div class="itemgroup stepresult">The Create Alarm page opens. Refer to the Help in the Create Alarm page for further instructions.</div>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+<div class="topic task nested1" id="volumes_details_monitoring_actions">
+    <h2 class="title topictitle2">Context menu actions</h2>
+
+    
+    <div class="body taskbody"><p class="shortdesc">A context menu, accessible by clicking the menu icon (row of three dots), contains actions associated with the monitoring of your instance.</p>
+
+        <div class="section context">The following context menu actions are available:</div>
+
+        <ul class="ul steps-unordered"><li class="li step stepexpand">
+                <span class="ph cmd"><span class="ph uicontrol">Turn monitoring on</span> displays monitoring data associated with your instance.</span>
+            </li>
+<li class="li step stepexpand">
+                <span class="ph cmd"><span class="ph uicontrol">Turn monitoring off</span> disables monitoring data completely.</span>
+                <div class="itemgroup stepresult">When you select this option, no charts display. Instead, a reminder that monitoring is currently 
+                    turned off, but you can turn it back on by clicking the <span class="ph uicontrol">Enable Monitoring for this Instance</span> button. </div>
+            </li>
+</ul>
+
+    </div>
+
+</div>
+
+       
+    <div class="topic task nested1" id="volumes_detail_monitoring_ui_view_graphs">
+        <h2 class="title topictitle2">CloudWatch metrics</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This part of the page displays the CloudWatch data when you enabled monitoring for your instances.</p>
+
+            <ol class="ol steps"><li class="li step" id="volumes_detail_monitoring_ui_view_graphs__volumes_monitoring_graphs">
+                    <span class="ph cmd">The graphs displayed by default are:</span>
+                    <ul class="ul choices">
+                        <li class="li choice"><strong class="ph b">Read bandwidth</strong>. Represents the total number of bytes transferred during a specified 
+                            period of time to complete read operations over a 1024k I/O.</li>
+
+                        <li class="li choice"><strong class="ph b">Write bandwidth</strong>.Represents the total number of bytes transferred during a specified 
+                            period of time to complete write operations over a 1024k I/O.</li>
+
+                        <li class="li choice"><strong class="ph b">Read throughput (ops/sec)</strong>. The total number of read I/O operations that has completed in a specified period of time.</li>
+
+                        <li class="li choice"><strong class="ph b">Write  throughput (ops/sec)</strong>. The total number of write I/O operations that has completed in a specified period of time.</li>
+
+                        <li class="li choice"><strong class="ph b">Average queue length</strong>. The average read and write operation requests waiting to be completed in a specified period of time.</li>
+
+                        <li class="li choice"><strong class="ph b">Percent time spent idle</strong>. The percentage of time over a specified period where no read or write operations are present.</li>
+
+                        <li class="li choice"><strong class="ph b">Average read size (KiB/op)</strong>. The average size of each read I/O operation in a specified period of time.</li>
+
+                        <li class="li choice"><strong class="ph b">Average write size (KiB/op)</strong>. The average size of each write I/O operation in a specified period of time.</li>
+
+                        <li class="li choice"><strong class="ph b">Average read latency (ms/op)</strong>. The average number of seconds spent by read operations that completed in a specified period of time.</li>
+
+                        <li class="li choice"><strong class="ph b">Average write latency (ms/op)</strong>. The average number of seconds spent by write operations that completed in a specified period of time</li>
+
+                        
+                    </ul>
+
+                </li>
+<li class="li step">
+                    <span class="ph cmd">The various ways to view the data in the graphs are:</span>
+                                <ul class="ul choices">
+                                    <li class="li choice">Click on a graph to expand it.</li>
+
+                                    <li class="li choice">Hover inside the graph to display a read-out of data-points desired.</li>
+
+                                    <li class="li choice">Use the drop-down list boxes for <span class="ph uicontrol">Show data for</span> to focus 
+                                        in on a set of data within a specific period of time.</li>
+
+                                </ul>
+
+                            </li>
+</ol>
+
+                    </div>
+
+    </div>
+
+
+</body>
+</html>
