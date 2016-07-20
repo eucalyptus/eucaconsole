@@ -413,7 +413,7 @@ class BaseELBView(TaggedItemView):
         instance_port = 443
         self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
 
-    def set_security_policy(self, elb_name, elb=None):
+    def set_security_policy(self, elb_name, create=False):
         """
         See http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/ssl-config-update.html
         """
@@ -425,8 +425,8 @@ class BaseELBView(TaggedItemView):
         if not has_https_listener:
             return None  # Don't set security policy unless an HTTPS listener is set
         elb_security_policy_updated = req_params.get('elb_security_policy_updated') == 'on'
-        if not elb_security_policy_updated:
-            return None  # Don't set security policy unless Security Policy dialog submit button has been clicked
+        if not create and not elb_security_policy_updated:
+            return None  # Set security policy only when policy has been updated on ELB details page
         latest_predefined_policy = self.get_latest_predefined_policy()
         if not latest_predefined_policy:
             return None  # Policy will fail unless at least one predefined security policy is configured for the cloud
@@ -459,6 +459,8 @@ class BaseELBView(TaggedItemView):
             # Set security policy for HTTPS listener in ELB
             policies = [policy_name]
             self.elb_conn.set_lb_policies_of_listener(elb_name, 443, policies)
+            if create:  # Delete default policy auto-assigned during ELB creation to ensure only selected policy is set
+                self.elb_conn.delete_lb_policy(elb_name, latest_predefined_policy)
 
     def get_latest_predefined_policy(self):
         if self.predefined_policy_choices:
@@ -1255,7 +1257,7 @@ class CreateELBView(BaseELBView):
                 if backend_certificates is not None and backend_certificates != '[]':
                     self.handle_backend_certificate_create(name)
                 self.add_elb_tags(name)
-                self.set_security_policy(name)
+                self.set_security_policy(name, create=True)
                 if self.request.params.get('logging_enabled') == 'y':
                     self.configure_access_logs(elb_name=name)
                 prefix = _(u'Successfully created elastic load balancer')
