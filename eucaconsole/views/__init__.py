@@ -135,7 +135,7 @@ class BaseView(object):
             aws_session_token=conn2.provider.security_token,
             api_version=conn2.APIVersion,
             use_ssl=conn2.is_secure,
-            endpoint_url='{protocol}://{host}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host),
+            endpoint_url='{protocol}://{host}:{port}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port),
             verify=False
         )
         return conn3
