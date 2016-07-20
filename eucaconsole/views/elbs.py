@@ -683,6 +683,7 @@ class ELBView(BaseELBView):
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 self.set_security_policy(self.elb.name)
+                self.cleanup_security_policies(delete_stale_policies=True)
                 self.configure_access_logs(elb=self.elb)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
@@ -774,7 +775,6 @@ class ELBView(BaseELBView):
 
             listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
             listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
-            self.cleanup_security_policies(delete_stale_policies=True)
             if listeners_to_remove:
                 if 443 in listeners_to_remove:
                     self.cleanup_backend_policies()  # Note: this must be before HTTPS listeners are removed
@@ -793,7 +793,6 @@ class ELBView(BaseELBView):
                 return None  # Skip cleanup if security policy wasn't updated
             elb_listener_ports = [x[0] for x in self.elb.listeners]
             if 443 in elb_listener_ports:
-                self.elb_conn.set_lb_policies_of_listener(self.elb.name, 443, [])
                 if delete_stale_policies:
                     self.delete_stale_policies()
 
