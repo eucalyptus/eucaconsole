@@ -797,7 +797,7 @@ class StackWizardView(BaseView, StackMixin):
 
     def get_availability_zone_options(self):
         conn = self.get_connection()
-        zones = ChoicesManager(conn).availability_zones(self.cloud_type)
+        zones = ChoicesManager(conn).availability_zones(self.cloud_type, add_blank=False)
         return zones
 
     @view_config(route_name='stack_create', renderer=TEMPLATE, request_method='POST')
