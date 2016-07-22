@@ -35,12 +35,15 @@ class KeypairLanding(LandingPage):
         self.tester.click_element_by_id(self._import_keypair_btn_id)
 
     def click_keypair_link_on_view_page(self, keypair_name):
+        self.tester.hover_by_id('user-dropdown-section')
         self.tester.click_element_by_css(self._keypair_link_css.format(keypair_name))
 
     def verify_keypair_present_on_view_page(self, keypair_name):
+        self.tester.hover_by_id('user-dropdown-section')
         self.tester.wait_for_element_present_by_css(self._keypair_link_css.format(keypair_name))
 
     def verify_keypair_not_present_on_view_page(self, keypair_name):
+        self.tester.hover_by_id('user-dropdown-section')
         self.tester.wait_for_element_not_present_by_css(self._keypair_link_css.format(keypair_name))
 
     def click_action_delete_keypair_on_view_page(self, keypair_name):
