@@ -1133,6 +1133,21 @@ class ELBMonitoringView(BaseELBView):
         }))
 
 
+class ELBWizardView(BaseView):
+
+    TEMPLATE = '../templates/elbs/wizard/main.pt'
+
+    def __init__(self, request):
+        self.base_href = '/elb/wizard'
+
+    @view_config(route_name='elb_wizard', renderer=TEMPLATE)
+    def elb_wizard(self):
+        self.render_dict = dict(
+            base_href=self.base_href
+        )
+        return self.render_dict
+
+
 class CreateELBView(BaseELBView):
     """Create ELB wizard"""
     TEMPLATE = '../templates/elbs/elb_wizard.pt'

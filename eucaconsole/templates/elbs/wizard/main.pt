@@ -1,0 +1,57 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row">
+
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create load balancer</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new load balancer</strong>
+        </h3>
+
+        <div class="large-8 columns">
+            <div class="wizard" ng-app="ELBWizard" ng-controller="MainController as main">
+                <dl class="tabs">
+                    <dd>
+                        <a href="/elbs/wizard">General</a>
+                    </dd>
+                    <dd>
+                        <a href="/elbs/wizard/network">Network</a>
+                    </dd>
+                    <dd>
+                        <a href="/elbs/wizard/instances">Instances</a>
+                    </dd>
+                    <dd>
+                        <a href="/elbs/wizard/advanced">Health &amp; Advanced</a>
+                    </dd>
+                </dl>
+
+                <div ng-view=""/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-route.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/wizard.js')}"></script>
+</div>
+</metal:block>
