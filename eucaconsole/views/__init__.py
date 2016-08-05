@@ -137,7 +137,7 @@ class BaseView(object):
             aws_session_token=conn2.provider.security_token,
             api_version=conn2.APIVersion,
             use_ssl=conn2.is_secure,
-            endpoint_url=endpont_url,
+            endpoint_url=endpoint_url,
             verify=False
         )
         return conn3
