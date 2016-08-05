@@ -28,6 +28,7 @@ class KeypairLanding(LandingPage):
 
     def click_create_keypair_button_on_view_page(self):
         self.tester.hover_by_id('user-dropdown-section')
+        time.sleep(1)
         self.tester.click_element_by_id(self._create_keypair_btn_id)
 
     def click_import_keypair_button(self):
