@@ -127,9 +127,10 @@ class BaseView(object):
             return None
 
         # convert the boto2 connection to a botocore client
-        session = botocore.session.get_session()
         endpoint_url='{protocol}://{host}:{port}/'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port)
         logging.error("endpoint URL = "+endpoint_url)
+        print endpoint_url
+        session = botocore.session.get_session()
         conn3 = session.create_client(
             conn_type, 
             aws_access_key_id=conn2.aws_access_key_id,
