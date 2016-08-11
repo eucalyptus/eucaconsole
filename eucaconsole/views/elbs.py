@@ -1138,12 +1138,15 @@ class ELBWizardView(BaseView):
     TEMPLATE = '../templates/elbs/wizard/main.pt'
 
     def __init__(self, request):
+        super(ELBWizardView, self).__init__(request)
         self.base_href = '/elb/wizard'
 
     @view_config(route_name='elb_wizard', renderer=TEMPLATE)
     def elb_wizard(self):
         self.render_dict = dict(
-            base_href=self.base_href
+            base_href=self.base_href,
+            cloud_type=self.cloud_type,
+            is_vpc_supported=BaseView.is_vpc_supported(self.request)
         )
         return self.render_dict
 

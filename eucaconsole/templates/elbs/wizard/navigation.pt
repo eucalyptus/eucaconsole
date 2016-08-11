@@ -1,5 +1,5 @@
 <dl class="tabs">
-    <dd ng-repeat="step in nav.steps track by $index" ng-class="nav.status(step)">
+    <dd ng-repeat="step in nav.validSteps() track by $index" ng-class="nav.status(step)">
         <a ng-href="{{ step.href }}">
             <span class="cir">{{ $index + 1 }}</span>
             {{ step.label }}
