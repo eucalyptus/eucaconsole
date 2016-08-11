@@ -2,7 +2,7 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="delete-keypair-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('keypair_delete');
-                     detailpage_action request.route_path('keypair_delete', id=keypair.name) if keypair else '';
+                     detailpage_action request.route_path('keypair_delete', id=keypair_name) if keypair else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3>
             <span i18n:translate="" ng-if="!multipleItemsSelected">Delete key</span>

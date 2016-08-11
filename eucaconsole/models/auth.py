@@ -45,6 +45,8 @@ from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
+from boto.sqs.connection import SQSConnection
+from boto.sns.connection import SNSConnection
 # uncomment to enable boto request logger. Use only for development (see ref in euca_connection)
 # from boto.requestlog import RequestLogger
 import boto
@@ -191,6 +193,12 @@ class ConnectionManager(object):
         elif conn_type == 'elb':
             conn = ec2.elb.connect_to_region(
                 region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'sqs':
+            conn = boto.sqs.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'sns':
+            conn = boto.sns.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
         elif conn_type == 'vpc':
             conn = vpc.connect_to_region(
                 region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
@@ -233,7 +241,7 @@ class ConnectionManager(object):
         """
         path = 'compute'
         conn_class = EC2Connection
-        api_version = '2012-12-01'
+        api_version = '2015-10-01'
         if region != 'euca':
             # look up region endpoint
             conn = ConnectionManager.euca_connection(

@@ -97,6 +97,18 @@
             <span i18n:translate="">Metrics</span>
         </a>
     </li>
+    <li class="topics">
+        <a id="resource-menuitem-topics" class="images" href="${request.route_path('topics')}">
+            <i class="icon topics"></i>
+            <span i18n:translate="">Topics</span>
+        </a>
+    </li>
+    <li class="queues">
+        <a id="resource-menuitem-queues" class="images" href="${request.route_path('queues')}">
+            <i class="icon queues"></i>
+            <span i18n:translate="">Queues</span>
+        </a>
+    </li>
     <div tal:condition="layout.user_access or layout.group_access or layout.role_access" tal:omit-tag="">
         <i class="icon iam"></i><label i18n:translate="">IDENTITY &amp; ACCESS</label>
         <li tal:condition="layout.account_access" class="accounts">

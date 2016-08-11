@@ -51,7 +51,7 @@ class KeyPairsViewTests(BaseViewTestCase):
         self.assertEqual(lpview.get('initial_sort_key'), 'name')
         filter_keys = lpview.get('filter_keys')
         self.assertTrue('name' in filter_keys)
-        self.assertTrue('fingerprint' in filter_keys)
+        self.assertTrue('key_fingerprint' in filter_keys)
 
 
 class KeyPairViewTests(BaseViewTestCase):
