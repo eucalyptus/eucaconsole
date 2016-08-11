@@ -1,36 +1,106 @@
-angular.module('ELBWizard', ['ngRoute'])
-.controller('MainController', function () {
-    console.log('main');
+angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorModule'])
+.directive('wizardNav', function () {
+    var steps = [
+        {
+            label: 'General',
+            href: '/elbs/wizard/',
+            complete: false
+        },
+        {
+            label: 'Instances',
+            href: '/elbs/wizard/instances',
+            complete: false
+        },
+        {
+            label: 'Network',
+            href: '/elbs/wizard/network',
+            complete: false
+        },
+        {
+            label: 'Health Check & Advanced',
+            href: '/elbs/wizard/advanced',
+            complete: false
+        }
+    ];
+
+    return {
+        restrict: 'E',
+        templateUrl: '/_template/elbs/wizard/navigation',
+        controller: ['$scope', '$location', function ($scope, $location) {
+            this.steps = steps;
+
+            this.status = function (step) {
+                var path = $location.path();
+                return {
+                    active: (path == step.href),
+                    complete: step.complete
+                };
+            };
+        }],
+        controllerAs: 'nav'
+    };
 })
-.controller('GeneralController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    console.log('general');
+.directive('focusOnLoad', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, elem) {
+            $timeout(function () {
+                elem[0].focus();
+            });
+        }
+    };
+})
+.controller('MainController', function () {
+    this.status = function (step) {
+        return {
+            active: step.active,
+            complete: step.complete
+        };
+    };
+})
+.controller('GeneralController', ['$scope', '$routeParams', '$location', function ($scope, $routeParams, $location) {
+    this.listeners = [{
+        'fromPort': 80,
+        'toPort': 80,
+        'fromProtocol': 'HTTP',
+        'toProtocol': 'HTTP'
+    }];
+
+    this.submit = function () {
+        $location.path('/elbs/wizard/instances');
+    };
 }])
 .controller('NetworkController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     console.log('network');
 }])
+.controller('InstancesController', ['$scope', '$routeParams', function ($scope, $routeParams) {
+    console.log('instances');
+}])
+.controller('AdvancedController', ['$scope', '$routeParams', function ($scope, $routeParams) {
+    console.log('advanced');
+}])
 .config(function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/elbs/wizard/', {
-            template: 'General',
+            templateUrl: '/_template/elbs/wizard/general',
             controller: 'GeneralController',
             controllerAs: 'general'
         })
         .when('/elbs/wizard/network', {
-            template: 'Network',
+            templateUrl: '/_template/elbs/wizard/network',
             controller: 'NetworkController',
             controllerAs: 'network'
         })
         .when('/elbs/wizard/instances', {
-            template: 'Instances',
+            templateUrl: '/_template/elbs/wizard/instances',
             controller: 'InstancesController',
             controllerAs: 'instances'
         })
         .when('/elbs/wizard/advanced', {
-            template: 'Advanced',
+            templateUrl: '/_template/elbs/wizard/advanced',
             controller: 'AdvancedController',
             controllerAs: 'advanced'
         });
 
-    //  Enable HTML5 mode when we've gotten far enough for url rewriting
     $locationProvider.html5Mode(true);
 });

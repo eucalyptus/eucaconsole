@@ -9,9 +9,7 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             transclude: true,
             restrict: 'E',
             require: 'ngModel',
-            templateUrl: function (element, attributes) {
-                return attributes.template;
-            },
+            templateUrl: '/_template/tag-editor/tag-editor',
             controller: ['$scope', '$window', function ($scope, $window) {
                 $scope.newTagKey = '';
                 $scope.newTagValue = '';

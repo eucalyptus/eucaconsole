@@ -1,42 +1,42 @@
-<div class="content" ng-class="stepClasses[0]" id="step1"
-    tal:define="html_attrs_val {'class': 'text-input', 'focus-on-load': 'true'};">
-    <div ng-cloak="true">
-        <h6 i18n:translate="">General</h6>
-        ${panel('form_field', field=create_form['name'], stack_label=True, ng_attrs={'model': 'elbName'}, pattern=create_form.ELB_NAME_PATTERN, **html_attrs_val)}
-    </div>
-    <hr />
-    <div>
-        ${panel('elb_listener_editor', listener_list=listener_list, protocol_list=protocol_list, elb_security_policy=elb_security_policy)}
-        <div id="hidden_certificate_arn_input_div" class="hide">
-            <input type="hidden" id="hidden_certificate_arn_input" name="certificate_arn" />
+<form ng-submit="general.submit()">
+    <h6 i18n:translate="">General</h6>
+
+    <div class="row inline stacked controls-wrapper">
+        <div class="columns">
+            <label class="left stack-label">Name <span class="req">*</span></label>
+            <input type="text" class="text-input"
+                   focus-on-load="true" name="name" ng-model="elbName" required="required"/>
         </div>
-        <div id="hidden_backend_certificates_input_div">
-            <textarea id="hidden_backend_certificates" name="backend_certificates" class="hidden"></textarea>
+        <hr/>
+
+        <div>
+            <listener-editor ng-model="general.listeners"></listener-editor>
+        </div>
+
+        <hr/>
+
+        <div>
+            <tag-editor ng-model="general.tags">[]</tag-editor>
+        </div>
+
+        <hr/>
+
+
+        <div>
+            <label>
+                <span class="req">*</span>
+                <span i18n:translate="">Required fields</span>
+            </label>
+        </div>
+        <div class="row">
+            <div class="small-3 columns">&nbsp;</div>
+            <div class="small-9 columns field inline">
+                <button class="button small round">
+                    <span i18n:translate="">Next</span>
+                </button>
+                <a href="${request.route_path('elbs')}"
+                   class="cancel-link" i18n:translate="">Cancel</a>
+            </div>
         </div>
     </div>
-    <hr />
-    <div>
-        <tag-editor
-                ng-model="tags"
-                template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                tal:content="tags | structure">
-        </tag-editor>
-    </div>
-    <hr />
-    <div>
-        <label>
-            <span class="req">*</span>
-            <span i18n:translate="">Required fields</span>
-        </label>
-    </div>
-    <div class="row">
-        <div class="small-3 columns">&nbsp;</div>
-        <div class="small-9 columns field inline">
-            <a id="visit-next-step-from-step1" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
-                <span i18n:translate="">Next</span>
-            </a>
-            <a href="${request.route_path('elbs')}"
-               class="cancel-link" i18n:translate="">Cancel</a>
-        </div>
-    </div>
-</div>
+</form>

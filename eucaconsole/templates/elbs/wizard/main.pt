@@ -29,22 +29,13 @@
 
         <div class="large-8 columns">
             <div class="wizard" ng-app="ELBWizard" ng-controller="MainController as main">
-                <dl class="tabs">
-                    <dd>
-                        <a href="/elbs/wizard">General</a>
-                    </dd>
-                    <dd>
-                        <a href="/elbs/wizard/network">Network</a>
-                    </dd>
-                    <dd>
-                        <a href="/elbs/wizard/instances">Instances</a>
-                    </dd>
-                    <dd>
-                        <a href="/elbs/wizard/advanced">Health &amp; Advanced</a>
-                    </dd>
-                </dl>
+                <wizard-nav></wizard-nav>
 
-                <div ng-view=""/>
+                <div class="tabs-content">
+                    <div class="content active">
+                        <div ng-view=""/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -53,5 +44,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-route.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/wizard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/listener-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
 </div>
 </metal:block>
