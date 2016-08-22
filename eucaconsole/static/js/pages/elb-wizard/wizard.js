@@ -1,4 +1,8 @@
 angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorModule'])
+.factory('ELBWizardService', function () {
+    var svc = {};
+    return svc;
+})
 .directive('wizardNav', function () {
     var steps = [
         {
@@ -34,7 +38,7 @@ angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorMod
             vpcEnabled: '@vpcEnabled'
         },
         templateUrl: '/_template/elbs/wizard/navigation',
-        controller: ['$scope', '$location', function ($scope, $location) {
+        controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
             this.steps = steps;
 
             this.validSteps = function () {
