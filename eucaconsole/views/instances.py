@@ -482,6 +482,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 scaling_group=instance.tags.get('aws:autoscaling:groupName')
             ))
         image_ids = [i['image_id'] for i in instances]
+        image_ids = list(set(image_ids))
         images = self.conn.get_all_images(filters={'image-id': image_ids})
         for instance in instances:
             image = self.get_image_by_id(images, instance['image_id'])

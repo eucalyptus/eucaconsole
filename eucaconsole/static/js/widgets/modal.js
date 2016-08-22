@@ -17,6 +17,19 @@ angular.module('ModalModule', [])
             tElem.append(tmp);
             return function (scope, element, attrs) {
                 ModalService.registerModal(attrs.modal, element);
+
+                // Set the height of the containing div based upon the content
+                // height of the modal content.
+                var el = angular.element(element);
+                var content = el.find('.modal-content');
+
+                scope.$watch(function () {
+                    return content.height();
+                }, function (newVal, oldVal) {
+                    if(newVal !== oldVal) {
+                        element.height(newVal);
+                    }
+                });
             };
         },
         controller: ['$scope', function ($scope) {

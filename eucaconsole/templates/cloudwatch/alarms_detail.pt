@@ -106,7 +106,7 @@
                                         <option value="SampleCount" i18n:translate="">Data samples</option>
                                     </select>
                                 </div>
-                                <div class="large-6 small-4 columns">
+                                <div class="large-6 small-4 columns" ng-non-bindable="">
                                     ${alarm.metric}
                                 </div>
                             </div>

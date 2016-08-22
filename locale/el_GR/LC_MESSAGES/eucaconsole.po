@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-05-11 18:52-0700\n"
+"POT-Creation-Date: 2016-07-12 10:47-0700\n"
 "PO-Revision-Date: 2014-10-19 23:02+0200\n"
 "Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -18,34 +18,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: eucaconsole/layout.py:110
+#: eucaconsole/layout.py:112
 #, python-format
 msgid "%I:%M:%S %p %b %d %Y"
 msgstr "%I:%M:%S %p %b %d %Y"
 
-#: eucaconsole/layout.py:111
+#: eucaconsole/layout.py:113
 msgid "hh:mm:ss a MMM d yyyy"
 msgstr "hh:mm:ss a MMM d yyyy"
 
-#: eucaconsole/layout.py:128
+#: eucaconsole/layout.py:130
 #, fuzzy
 msgid "Remove facet"
 msgstr "Αφαίρεση συσκευής"
 
-#: eucaconsole/layout.py:129
+#: eucaconsole/layout.py:131
 msgid "Clear search"
 msgstr ""
 
-#: eucaconsole/layout.py:130
+#: eucaconsole/layout.py:132
 msgid "Select facets for filter, or enter text to search"
 msgstr ""
 
-#: eucaconsole/layout.py:131
+#: eucaconsole/layout.py:133
 #, fuzzy
 msgid "Enter text to search"
 msgstr "Εισάγετε κείμενο"
 
-#: eucaconsole/layout.py:132
+#: eucaconsole/layout.py:134
 #, fuzzy
 msgid "Text"
 msgstr "Επόμενο"
@@ -56,13 +56,11 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:100
 #, fuzzy
-#| msgid "Disk read data"
 msgid "Disk read bytes"
 msgstr "Δεδομένα χρήστη"
 
 #: eucaconsole/constants/cloudwatch.py:101
 #, fuzzy
-#| msgid "Disk read data"
 msgid "Disk read ops"
 msgstr "Δεδομένα χρήστη"
 
@@ -92,7 +90,6 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:107
 #, fuzzy
-#| msgid "Launch new instance"
 msgid "Status check failed (instance)"
 msgstr "Έναρξη νέας μηχανής"
 
@@ -102,7 +99,6 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:110
 #, fuzzy
-#| msgid "Delete account"
 msgid "Request count"
 msgstr "Διαγραφή λογαριασμού"
 
@@ -111,12 +107,12 @@ msgid "Latency"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:112
-#: eucaconsole/templates/elbs/elbs.pt:48
+#: eucaconsole/templates/elbs/elbs.pt:49
 msgid "Unhealthy hosts"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:113
-#: eucaconsole/templates/elbs/elbs.pt:52
+#: eucaconsole/templates/elbs/elbs.pt:53
 msgid "Healthy hosts"
 msgstr ""
 
@@ -178,7 +174,6 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:129
 #, fuzzy
-#| msgid "Volume type"
 msgid "Volume write bytes"
 msgstr "Τύπος τόμου"
 
@@ -193,71 +188,65 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:133
 #, fuzzy
-#| msgid "Terminate instances"
 msgid "Group in service instances"
 msgstr "Τερματισμός μηχανών"
 
 #: eucaconsole/constants/cloudwatch.py:134
 #: eucaconsole/constants/scalinggroups.py:51
 #, fuzzy
-#| msgid "Volume size"
 msgid "Group max size"
 msgstr "Μέγεθος τόμου"
 
 #: eucaconsole/constants/cloudwatch.py:135
 #: eucaconsole/constants/scalinggroups.py:46
 #, fuzzy
-#| msgid "Volume size"
 msgid "Group min size"
 msgstr "Μέγεθος τόμου"
 
 #: eucaconsole/constants/cloudwatch.py:136
 #, fuzzy
-#| msgid "Stopped instances"
 msgid "Group pending instances"
 msgstr "Σταματημένες μηχανές"
 
 #: eucaconsole/constants/cloudwatch.py:137
 #, fuzzy
-#| msgid "Terminating instances {0}"
 msgid "Group terminating instances"
 msgstr "Τερματισμός μηχανών {0}"
 
 #: eucaconsole/constants/cloudwatch.py:138
 #, fuzzy
-#| msgid "For all instances"
 msgid "Group total instances"
 msgstr "Για όλες τις μηχανές"
 
 #: eucaconsole/constants/cloudwatch.py:143
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:100
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:54
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:102
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:55
 #, fuzzy
 msgid "Average"
 msgstr "Αποθήκευση αλλαγών"
 
 #: eucaconsole/constants/cloudwatch.py:144
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:101
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:55
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:103
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:56
 msgid "Minimum"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:145
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:102
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:56
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:104
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:57
 #, fuzzy
 msgid "Maximum"
 msgstr "Χρήστες (μέγιστο)"
 
 #: eucaconsole/constants/cloudwatch.py:146
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:103
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:57
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:105
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:58
 msgid "Sum"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:147
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:104
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:58
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:106
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:59
 msgid "Data samples"
 msgstr ""
 
@@ -295,34 +284,34 @@ msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:175 eucaconsole/forms/buckets.py:100
 #: eucaconsole/forms/elbs.py:108 eucaconsole/forms/elbs.py:278
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:155
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:115
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:157
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:116
 #, fuzzy
 msgid "5 minutes"
 msgstr "λεπτά"
 
 #: eucaconsole/constants/cloudwatch.py:176
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:156
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:116
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:158
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:117
 #, fuzzy
 msgid "15 minutes"
 msgstr "λεπτά"
 
 #: eucaconsole/constants/cloudwatch.py:177 eucaconsole/forms/buckets.py:102
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:157
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:117
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:159
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:118
 msgid "1 hour"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:178
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:158
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:118
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:160
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:119
 msgid "6 hours"
 msgstr ""
 
 #: eucaconsole/constants/cloudwatch.py:179 eucaconsole/forms/buckets.py:103
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:159
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:119
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:161
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:120
 msgid "1 day"
 msgstr ""
 
@@ -438,13 +427,11 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:30
 #, fuzzy
-#| msgid "No data available for this instance."
 msgid "No data available for this scaling group."
 msgstr "Αδυναμία επανεκκίνησης της μηχανής."
 
 #: eucaconsole/constants/scalinggroups.py:34
 #, fuzzy
-#| msgid "to an instance"
 msgid "Total instances"
 msgstr "σε μια μηχανή"
 
@@ -456,7 +443,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:40
 #, fuzzy
-#| msgid "Terminate instances"
 msgid "In service instances"
 msgstr "Τερματισμός μηχανών"
 
@@ -480,7 +466,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:61
 #, fuzzy
-#| msgid "Running instances"
 msgid "Pending instances"
 msgstr "Εκτελούμενες μηχανές"
 
@@ -493,7 +478,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:67
 #, fuzzy
-#| msgid "Terminating instances {0}"
 msgid "Terminating instances"
 msgstr "Τερματισμός μηχανών {0}"
 
@@ -505,7 +489,6 @@ msgstr ""
 
 #: eucaconsole/constants/scalinggroups.py:80
 #, fuzzy
-#| msgid "No data available for this instance."
 msgid "No data available for instances in the scaling group."
 msgstr "Αδυναμία επανεκκίνησης της μηχανής."
 
@@ -561,7 +544,6 @@ msgstr ""
 
 #: eucaconsole/constants/volumes.py:30
 #, fuzzy
-#| msgid "No data available for this instance."
 msgid "No data available for this volume."
 msgstr "Αδυναμία επανεκκίνησης της μηχανής."
 
@@ -666,8 +648,8 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/forms/__init__.py:53 eucaconsole/views/dialogs.py:341
-#: eucaconsole/views/elbs.py:657 eucaconsole/views/elbs.py:1161
-#: eucaconsole/views/instances.py:1169 eucaconsole/views/launchconfigs.py:455
+#: eucaconsole/views/elbs.py:658 eucaconsole/views/elbs.py:1178
+#: eucaconsole/views/instances.py:1172 eucaconsole/views/launchconfigs.py:455
 #: eucaconsole/views/launchconfigs.py:617
 msgid "Select..."
 msgstr "Επιλογή..."
@@ -703,7 +685,7 @@ msgid "Select volume..."
 msgstr "Επιλογή τόμου..."
 
 #: eucaconsole/forms/__init__.py:228 eucaconsole/forms/__init__.py:278
-#: eucaconsole/views/__init__.py:599
+#: eucaconsole/views/__init__.py:598
 msgid "None"
 msgstr "Κανένα"
 
@@ -740,12 +722,12 @@ msgstr "Δε βρέθηκαν υποδίκτυα"
 msgid "Local"
 msgstr ""
 
-#: eucaconsole/forms/accounts.py:42 eucaconsole/forms/users.py:49
-#: eucaconsole/forms/users.py:100
+#: eucaconsole/forms/accounts.py:42 eucaconsole/forms/users.py:45
+#: eucaconsole/forms/users.py:98
 msgid "Create and download random password"
 msgstr "Δημιουργία και λήψη τυχαίου κωδικού πρόσβασης"
 
-#: eucaconsole/forms/accounts.py:44 eucaconsole/forms/users.py:50
+#: eucaconsole/forms/accounts.py:44 eucaconsole/forms/users.py:46
 msgid "Create and download access keys"
 msgstr "Δημιουργία και λήψη κλειδιών πρόσβασης"
 
@@ -771,11 +753,11 @@ msgstr ""
 #: eucaconsole/forms/instances.py:46 eucaconsole/forms/instances.py:518
 #: eucaconsole/forms/keypairs.py:44 eucaconsole/forms/keypairs.py:63
 #: eucaconsole/forms/launchconfigs.py:52 eucaconsole/forms/policies.py:43
-#: eucaconsole/forms/roles.py:20 eucaconsole/forms/scalinggroups.py:212
-#: eucaconsole/forms/scalinggroups.py:288
+#: eucaconsole/forms/roles.py:45 eucaconsole/forms/scalinggroups.py:223
+#: eucaconsole/forms/scalinggroups.py:287
 #: eucaconsole/forms/securitygroups.py:46 eucaconsole/forms/snapshots.py:42
 #: eucaconsole/forms/snapshots.py:91 eucaconsole/forms/stacks.py:45
-#: eucaconsole/forms/users.py:56 eucaconsole/forms/volumes.py:45
+#: eucaconsole/forms/users.py:52 eucaconsole/forms/volumes.py:45
 #: eucaconsole/forms/volumes.py:106 eucaconsole/forms/volumes.py:127
 #: eucaconsole/templates/accounts/account_view.pt:52
 #: eucaconsole/templates/buckets/bucket_contents.pt:123
@@ -783,12 +765,12 @@ msgstr ""
 #: eucaconsole/templates/buckets/buckets.pt:106
 #: eucaconsole/templates/elbs/elb_view.pt:54
 #: eucaconsole/templates/elbs/elb_wizard.pt:292
-#: eucaconsole/templates/elbs/elbs.pt:57
+#: eucaconsole/templates/elbs/elbs.pt:58
 #: eucaconsole/templates/images/images.pt:137
 #: eucaconsole/templates/instances/instance_launch.pt:69
 #: eucaconsole/templates/keypairs/keypair_view.pt:51
 #: eucaconsole/templates/keypairs/keypairs.pt:76
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:285
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:287
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:58
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:139
 #: eucaconsole/templates/roles/role_view.pt:152
@@ -799,7 +781,7 @@ msgstr ""
 #: eucaconsole/templates/stacks/stack_view.pt:184
 #: eucaconsole/templates/stacks/stack_wizard.pt:50
 #: eucaconsole/templates/stacks/stack_wizard.pt:208
-#: eucaconsole/templates/stacks/stacks.pt:53 eucaconsole/views/alarms.py:245
+#: eucaconsole/templates/stacks/stacks.pt:53 eucaconsole/views/alarms.py:251
 msgid "Name"
 msgstr "Όνομα"
 
@@ -815,7 +797,7 @@ msgstr "Απαιτείται περιγραφή"
 #: eucaconsole/forms/volumes.py:131
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:74
 #: eucaconsole/templates/cloudwatch/alarms_history.pt:65
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:19
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:20
 #: eucaconsole/templates/images/image_view.pt:68
 #: eucaconsole/templates/images/images.pt:108
 #: eucaconsole/templates/images/images.pt:139
@@ -842,7 +824,7 @@ msgid "Description must be less than 255 characters"
 msgstr "Η περιγραφή πρέπει να είναι μικρότερη από 255 χαρακτήρες"
 
 #: eucaconsole/forms/alarms.py:56 eucaconsole/forms/keypairs.py:59
-#: eucaconsole/forms/scalinggroups.py:286
+#: eucaconsole/forms/scalinggroups.py:285
 msgid "Name is required"
 msgstr "Απαιτείται όνομα"
 
@@ -853,7 +835,7 @@ msgstr ""
 #: eucaconsole/forms/alarms.py:72
 #: eucaconsole/templates/cloudwatch/metrics.pt:106
 #: eucaconsole/templates/cloudwatch/metrics.pt:114
-#: eucaconsole/views/alarms.py:246
+#: eucaconsole/views/alarms.py:252
 msgid "Metric"
 msgstr ""
 
@@ -871,7 +853,7 @@ msgstr ""
 
 #: eucaconsole/forms/alarms.py:86
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:34
-#: eucaconsole/templates/cloudwatch/metrics.pt:200
+#: eucaconsole/templates/cloudwatch/metrics.pt:202
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:9
 msgid "Statistic"
 msgstr "Στατιστικά"
@@ -920,10 +902,10 @@ msgstr "Μονάδα"
 #: eucaconsole/templates/instances/instance_launch.pt:30
 #: eucaconsole/templates/instances/instance_launch.pt:245
 #: eucaconsole/templates/instances/instance_view.pt:260
-#: eucaconsole/templates/instances/instances.pt:193
+#: eucaconsole/templates/instances/instances.pt:196
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:96
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:30
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:267
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:269
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:59
 #: eucaconsole/views/images.py:406 eucaconsole/views/metrics.py:49
 msgid "Image"
@@ -1134,7 +1116,7 @@ msgstr "Απαιτείται όμάδα ασφαλείας"
 #: eucaconsole/forms/elbs.py:122 eucaconsole/forms/elbs.py:357
 #: eucaconsole/templates/dashboard.pt:188
 #: eucaconsole/templates/elbs/elb_wizard.pt:328
-#: eucaconsole/templates/instances/instances.pt:229
+#: eucaconsole/templates/instances/instances.pt:232
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:45
 #: eucaconsole/templates/panels/top_nav.pt:48
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:18
@@ -1175,8 +1157,8 @@ msgid "Ping path is required and must start with a /"
 msgstr "Απαιτείται το ελάχιστο"
 
 #: eucaconsole/forms/elbs.py:197 eucaconsole/forms/groups.py:51
-#: eucaconsole/forms/groups.py:79 eucaconsole/forms/roles.py:27
-#: eucaconsole/forms/users.py:53 eucaconsole/templates/elbs/elb_wizard.pt:360
+#: eucaconsole/forms/groups.py:79 eucaconsole/forms/roles.py:52
+#: eucaconsole/forms/users.py:49 eucaconsole/templates/elbs/elb_wizard.pt:360
 #: eucaconsole/templates/roles/role_view.pt:164
 msgid "Path"
 msgstr "Διαδρομή"
@@ -1222,8 +1204,8 @@ msgid "30 seconds"
 msgstr ""
 
 #: eucaconsole/forms/elbs.py:277
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:154
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:114
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:156
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:115
 #, fuzzy
 msgid "1 minute"
 msgstr "λεπτά"
@@ -1240,25 +1222,25 @@ msgstr "Elastic εξισορρόπηση φόρτου"
 
 #: eucaconsole/forms/elbs.py:311 eucaconsole/forms/elbs.py:420
 #: eucaconsole/forms/instances.py:105 eucaconsole/forms/instances.py:369
-#: eucaconsole/forms/scalinggroups.py:404 eucaconsole/forms/volumes.py:54
+#: eucaconsole/forms/scalinggroups.py:403 eucaconsole/forms/volumes.py:54
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:59
 #: eucaconsole/templates/elbs/elb_instances.pt:164
 #: eucaconsole/templates/instances/instance_view.pt:144
-#: eucaconsole/templates/instances/instances.pt:208
+#: eucaconsole/templates/instances/instances.pt:211
 #: eucaconsole/templates/policies/policy_generator.pt:191
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:53
 #: eucaconsole/templates/volumes/volume_view.pt:119
 #: eucaconsole/templates/volumes/volumes.pt:126
-#: eucaconsole/views/instances.py:222 eucaconsole/views/metrics.py:52
+#: eucaconsole/views/instances.py:224 eucaconsole/views/metrics.py:52
 #: eucaconsole/views/volumes.py:213
 msgid "Availability zone"
 msgstr "Ζώνη διεθεσιμότητας"
 
 #: eucaconsole/forms/elbs.py:312 eucaconsole/forms/elbs.py:424
 #: eucaconsole/forms/instances.py:108 eucaconsole/forms/instances.py:378
-#: eucaconsole/forms/scalinggroups.py:405
+#: eucaconsole/forms/scalinggroups.py:404
 #: eucaconsole/templates/instances/instance_view.pt:156
-#: eucaconsole/templates/instances/instances.pt:212
+#: eucaconsole/templates/instances/instances.pt:215
 msgid "VPC subnet"
 msgstr "Υποδίκτυο VPC"
 
@@ -1335,13 +1317,13 @@ msgstr ""
 #: eucaconsole/templates/users/users.pt:81
 #: eucaconsole/templates/volumes/volume_view.pt:60
 #: eucaconsole/templates/volumes/volumes.pt:152
-#: eucaconsole/views/scalinggroups.py:614 eucaconsole/views/snapshots.py:192
-#: eucaconsole/views/stacks.py:236 eucaconsole/views/volumes.py:212
+#: eucaconsole/views/scalinggroups.py:617 eucaconsole/views/snapshots.py:192
+#: eucaconsole/views/stacks.py:238 eucaconsole/views/volumes.py:212
 msgid "Status"
 msgstr "Κατάσταση"
 
 #: eucaconsole/forms/elbs.py:421 eucaconsole/forms/images.py:77
-#: eucaconsole/forms/instances.py:375 eucaconsole/forms/scalinggroups.py:406
+#: eucaconsole/forms/instances.py:375 eucaconsole/forms/scalinggroups.py:405
 #: eucaconsole/forms/securitygroups.py:98 eucaconsole/forms/snapshots.py:106
 #: eucaconsole/forms/stacks.py:81 eucaconsole/forms/volumes.py:205
 #: eucaconsole/templates/instances/instance_launch.pt:279
@@ -1361,7 +1343,7 @@ msgstr "Ετικέτες"
 #: eucaconsole/forms/instances.py:373 eucaconsole/forms/launchconfigs.py:67
 #: eucaconsole/forms/launchconfigs.py:161
 #: eucaconsole/templates/instances/instance_launch.pt:305
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:305
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:307
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:61
 #: eucaconsole/templates/panels/securitygroup_rules.pt:135
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:52
@@ -1505,7 +1487,7 @@ msgstr "Εικόνες ανήκουν σε"
 #: eucaconsole/templates/instances/instance_view.pt:127
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:51
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:110
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:271
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:273
 #: eucaconsole/views/images.py:246
 msgid "Platform"
 msgstr "Πλατφόρμα"
@@ -1654,7 +1636,7 @@ msgstr "Απαιτείται ζεύγος κλειδιών"
 #: eucaconsole/forms/instances.py:115 eucaconsole/forms/launchconfigs.py:62
 #: eucaconsole/templates/instances/instance_launch_more.pt:80
 #: eucaconsole/templates/instances/instance_view.pt:183
-#: eucaconsole/templates/instances/instances.pt:221
+#: eucaconsole/templates/instances/instances.pt:224
 msgid "Key name"
 msgstr "Όνομα κλειδιού"
 
@@ -1768,9 +1750,9 @@ msgstr "επιλογή..."
 #: eucaconsole/forms/instances.py:372 eucaconsole/forms/launchconfigs.py:160
 #: eucaconsole/templates/keypairs/keypair_view.pt:49
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:51
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:301
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:303
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:41
-#: eucaconsole/views/instances.py:223
+#: eucaconsole/views/instances.py:225
 msgid "Key pair"
 msgstr "Ζεύγος κλειδιών"
 
@@ -1778,7 +1760,7 @@ msgstr "Ζεύγος κλειδιών"
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:69
 #: eucaconsole/templates/instances/instance_view.pt:211
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:63
-#: eucaconsole/views/scalinggroups.py:983
+#: eucaconsole/views/scalinggroups.py:996
 msgid "Scaling group"
 msgstr "Ομάδα κλιμάκωσης"
 
@@ -1935,7 +1917,7 @@ msgstr "Απαιτείται το περιεχόμενο του δημόσιου
 msgid "Public SSH Key Contents"
 msgstr "Περιεχόμενα δημόσιου κλειδιού SSH"
 
-#: eucaconsole/forms/launchconfigs.py:50 eucaconsole/forms/scalinggroups.py:210
+#: eucaconsole/forms/launchconfigs.py:50 eucaconsole/forms/scalinggroups.py:221
 msgid ""
 "Name must be between 1 and 255 characters long, and must not contain '/' "
 "and '\\'"
@@ -1954,7 +1936,7 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/forms/launchconfigs.py:80
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:216
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:218
 msgid "Create scaling group using this launch configuration"
 msgstr "Δημιουργία ομάδας κλιμάκωσης χρησιμοποιώντας αυτή τη ρύθμιση εκκίνησης"
 
@@ -2019,22 +2001,22 @@ msgstr "Μυστικό κλειδί"
 msgid "Current password"
 msgstr "Τρέχων κωδικός πρόσβασης"
 
-#: eucaconsole/forms/login.py:72 eucaconsole/forms/users.py:59
+#: eucaconsole/forms/login.py:72 eucaconsole/forms/users.py:55
 msgid "New password"
 msgstr "Νέος κωδικός πρόσβασης"
 
 #: eucaconsole/forms/login.py:74 eucaconsole/forms/login.py:82
-#: eucaconsole/forms/users.py:61 eucaconsole/forms/users.py:68
+#: eucaconsole/forms/users.py:57 eucaconsole/forms/users.py:64
 msgid "New Password is required"
 msgstr "Απαιτείται νέος κωδικός πρόσβασης"
 
 #: eucaconsole/forms/login.py:75 eucaconsole/forms/login.py:83
-#: eucaconsole/forms/users.py:62 eucaconsole/forms/users.py:69
-#: eucaconsole/forms/users.py:108 eucaconsole/forms/users.py:118
+#: eucaconsole/forms/users.py:58 eucaconsole/forms/users.py:65
+#: eucaconsole/forms/users.py:107 eucaconsole/forms/users.py:118
 msgid "Password must be more than 6 characters"
 msgstr "Ο κωδικός χρήστη πρέπει να είναι μεγαλύτερος από 6 χαρακτήρες"
 
-#: eucaconsole/forms/login.py:80 eucaconsole/forms/users.py:66
+#: eucaconsole/forms/login.py:80 eucaconsole/forms/users.py:62
 msgid "Confirm new password"
 msgstr "Επιβεβαίωση νέου κωδικού πρόσβασης"
 
@@ -2140,7 +2122,7 @@ msgstr "Προφίλ μηχανών (μέγιστο)"
 msgid "Launch configuration is required"
 msgstr "Απαιτούνται οι ρυθμίσεις εκκίνησης"
 
-#: eucaconsole/forms/scalinggroups.py:44 eucaconsole/forms/scalinggroups.py:403
+#: eucaconsole/forms/scalinggroups.py:44 eucaconsole/forms/scalinggroups.py:402
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:10
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:45
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:57
@@ -2216,145 +2198,146 @@ msgstr ""
 msgid "Health check grace period (secs)"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:154
+#: eucaconsole/forms/scalinggroups.py:101
+msgid "At least one termination policy is required"
+msgstr "Απαιτείται τουλάχιστον μια πολιτική τερματισμού"
+
+#: eucaconsole/forms/scalinggroups.py:102
+msgid "Add termination policies in the order they should be executed."
+msgstr "Προσθέστε τις πολιτικές τερματισμού με τη σειρά που θέλετε να εκτελεστούν."
+
+#: eucaconsole/forms/scalinggroups.py:104
+#: eucaconsole/templates/scalinggroups/scalinggroups.pt:71
+msgid "Termination policies"
+msgstr "Πολιτικές τερματισμού"
+
+#: eucaconsole/forms/scalinggroups.py:165
 msgid "Select a launch configuration..."
 msgstr "Επιλογή ρύθμισης εκκίνησης..."
 
-#: eucaconsole/forms/scalinggroups.py:200
+#: eucaconsole/forms/scalinggroups.py:211
 msgid "Default"
 msgstr "Προεπιλεγμένο"
 
-#: eucaconsole/forms/scalinggroups.py:201
+#: eucaconsole/forms/scalinggroups.py:212
 msgid "Oldest instance"
 msgstr "Παλιότερη μηχανή"
 
-#: eucaconsole/forms/scalinggroups.py:202
+#: eucaconsole/forms/scalinggroups.py:213
 msgid "Newest instance"
 msgstr "Νεότερη μηχανή"
 
-#: eucaconsole/forms/scalinggroups.py:203
+#: eucaconsole/forms/scalinggroups.py:214
 msgid "Oldest launch configuration"
 msgstr "Παλιότερη ρύθμιση εκκίνησης"
 
-#: eucaconsole/forms/scalinggroups.py:204
+#: eucaconsole/forms/scalinggroups.py:215
 msgid "Closest to next instance hour"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:233
+#: eucaconsole/forms/scalinggroups.py:245
 msgid "Default cooldown period is required"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:234
+#: eucaconsole/forms/scalinggroups.py:246
 msgid ""
 "Number of seconds after a Scaling Activity completes before any further "
 "scaling activities can start"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:237
+#: eucaconsole/forms/scalinggroups.py:249
 msgid "Default cooldown period (secs)"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:242
-msgid "At least one termination policy is required"
-msgstr "Απαιτείται τουλάχιστον μια πολιτική τερματισμού"
-
-#: eucaconsole/forms/scalinggroups.py:243
-msgid "Add termination policies in the order they should be executed."
-msgstr "Προσθέστε τις πολιτικές τερματισμού με τη σειρά που θέλετε να εκτελεστούν."
-
-#: eucaconsole/forms/scalinggroups.py:245
-#: eucaconsole/templates/scalinggroups/scalinggroups.pt:71
-msgid "Termination policies"
-msgstr "Πολιτικές τερματισμού"
-
-#: eucaconsole/forms/scalinggroups.py:293
+#: eucaconsole/forms/scalinggroups.py:292
 msgid "Action is required"
 msgstr "Απαιτείται ενέργεια"
 
-#: eucaconsole/forms/scalinggroups.py:295
+#: eucaconsole/forms/scalinggroups.py:294
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:37
-#: eucaconsole/views/alarms.py:677
+#: eucaconsole/views/alarms.py:673
 msgid "Action"
 msgstr "Ενέργεια"
 
-#: eucaconsole/forms/scalinggroups.py:300
+#: eucaconsole/forms/scalinggroups.py:299
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:44
 msgid "Amount is required"
 msgstr "Απαιτείται ποσοστό"
 
-#: eucaconsole/forms/scalinggroups.py:302
+#: eucaconsole/forms/scalinggroups.py:301
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:35
 msgid "Amount"
 msgstr "Ποσοστό"
 
-#: eucaconsole/forms/scalinggroups.py:307
+#: eucaconsole/forms/scalinggroups.py:306
 msgid "Measure is required"
 msgstr "Απαιτείται μέτρηση"
 
-#: eucaconsole/forms/scalinggroups.py:309
+#: eucaconsole/forms/scalinggroups.py:308
 msgid "Measure"
 msgstr "Μέτρηση"
 
-#: eucaconsole/forms/scalinggroups.py:314
+#: eucaconsole/forms/scalinggroups.py:313
 msgid "Cooldown period is required"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:315
+#: eucaconsole/forms/scalinggroups.py:314
 msgid ""
 "Time (in seconds) before Alarm related Scaling Activities can start after"
 " the previous Scaling Activity ends."
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:319
+#: eucaconsole/forms/scalinggroups.py:318
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:53
 msgid "Cooldown period (seconds)"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:324
+#: eucaconsole/forms/scalinggroups.py:323
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:78
 msgid "Alarm is required"
 msgstr "Απαιτείται ειδοποίηση"
 
-#: eucaconsole/forms/scalinggroups.py:326 eucaconsole/models/alarms.py:90
+#: eucaconsole/forms/scalinggroups.py:325 eucaconsole/models/alarms.py:90
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:71
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:3
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:4
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:71
+#: eucaconsole/views/alarms.py:256
 msgid "Alarm"
 msgstr "Ειδοποίηση"
 
-#: eucaconsole/forms/scalinggroups.py:363
+#: eucaconsole/forms/scalinggroups.py:362
 msgid "No alarms are available."
 msgstr "Μη διαθέσιμες ειδοποιήσεις."
 
-#: eucaconsole/forms/scalinggroups.py:369
-#: eucaconsole/views/scalinggroups.py:741
-#: eucaconsole/views/scalinggroups.py:786
+#: eucaconsole/forms/scalinggroups.py:368
+#: eucaconsole/views/scalinggroups.py:747
+#: eucaconsole/views/scalinggroups.py:792
 msgid "Scale up by"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:370
-#: eucaconsole/views/scalinggroups.py:740
-#: eucaconsole/views/scalinggroups.py:785
+#: eucaconsole/forms/scalinggroups.py:369
+#: eucaconsole/views/scalinggroups.py:746
+#: eucaconsole/views/scalinggroups.py:791
 msgid "Scale down by"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:376
+#: eucaconsole/forms/scalinggroups.py:375
 msgid "Instance(s)"
 msgstr "Μηχανή(ές)"
 
-#: eucaconsole/forms/scalinggroups.py:377
+#: eucaconsole/forms/scalinggroups.py:376
 msgid "Percentage"
 msgstr "Ποσοστό"
 
-#: eucaconsole/forms/scalinggroups.py:388
+#: eucaconsole/forms/scalinggroups.py:387
 msgid "Respect grace period?"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:393
+#: eucaconsole/forms/scalinggroups.py:392
 msgid "Also decrement desired capacity of scaling group"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:423
+#: eucaconsole/forms/scalinggroups.py:422
 msgid "No subnets"
 msgstr "Χωρίς υποδίκτυα"
 
@@ -2386,7 +2369,7 @@ msgstr "Διαγραφή στον τερματισμό"
 msgid "Register as Windows OS image"
 msgstr "Εγγραφή ως εικόνα Windows OS"
 
-#: eucaconsole/forms/snapshots.py:119 eucaconsole/views/scalinggroups.py:616
+#: eucaconsole/forms/snapshots.py:119 eucaconsole/views/scalinggroups.py:619
 #, fuzzy
 msgid "In progress"
 msgstr "Διαγραφή σε εξέλιξη"
@@ -2454,30 +2437,30 @@ msgstr "Διαγραφή ρόλου"
 msgid "Delete failed"
 msgstr "Επιλογή πλακιδίου"
 
-#: eucaconsole/forms/users.py:51
+#: eucaconsole/forms/users.py:47
 msgid "Allow read/write access to all resource except users and groups"
 msgstr ""
 "Να επιτρέπεται πρόσβαση ανάγνωσης/εγγραφής σε όλους τους πόρους εκτός των"
 " χρηστών και ομάδων"
 
-#: eucaconsole/forms/users.py:57
+#: eucaconsole/forms/users.py:53
 msgid "E-mail address"
 msgstr "Διεύθυνση ηλ. ταχυδρομείου"
 
-#: eucaconsole/forms/users.py:73
+#: eucaconsole/forms/users.py:69
 msgid "Download keys after generation"
 msgstr "Λήψη κλειδιών μετά τη δημιουργία"
 
-#: eucaconsole/forms/users.py:105 eucaconsole/forms/users.py:115
+#: eucaconsole/forms/users.py:104 eucaconsole/forms/users.py:115
 #: eucaconsole/templates/instances/instance_create_image.pt:106
 msgid "Your password"
 msgstr "Ο κωδικός πρόσβασης σας"
 
-#: eucaconsole/forms/users.py:107 eucaconsole/forms/users.py:117
+#: eucaconsole/forms/users.py:106 eucaconsole/forms/users.py:117
 msgid "A password is required"
 msgstr "Απαιτείται κωδικός πρόσβασης"
 
-#: eucaconsole/forms/users.py:127
+#: eucaconsole/forms/users.py:129
 msgid "Group is required"
 msgstr "Απαιτείται ομάδα"
 
@@ -2503,8 +2486,8 @@ msgstr "Απαιτείται ζώνη διεθεσιμότητας"
 #: eucaconsole/templates/instances/instance_view.pt:100
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:89
 #: eucaconsole/templates/volumes/volumes.pt:155
-#: eucaconsole/views/instances.py:600 eucaconsole/views/instances.py:949
-#: eucaconsole/views/instances.py:1058 eucaconsole/views/ipaddresses.py:176
+#: eucaconsole/views/instances.py:603 eucaconsole/views/instances.py:952
+#: eucaconsole/views/instances.py:1061 eucaconsole/views/ipaddresses.py:176
 #: eucaconsole/views/metrics.py:47
 msgid "Instance"
 msgstr "Μηχανή"
@@ -2538,13 +2521,13 @@ msgstr "Μηχάνημα"
 msgid "Detaching"
 msgstr "Μηχάνημα"
 
-#: eucaconsole/models/alarms.py:92
+#: eucaconsole/models/alarms.py:92 eucaconsole/views/alarms.py:257
 msgid "Insufficient data"
 msgstr ""
 
 #: eucaconsole/models/alarms.py:94
 #: eucaconsole/templates/buckets/bucket_new.pt:60
-#: eucaconsole/templates/users/user_view.pt:266
+#: eucaconsole/templates/users/user_view.pt:266 eucaconsole/views/alarms.py:258
 msgid "OK"
 msgstr "Εντάξει"
 
@@ -2616,7 +2599,7 @@ msgstr "Δημιουργία ομάδας κλιμάκωσης"
 #: eucaconsole/templates/stacks/stack_wizard.pt:12
 #: eucaconsole/templates/stacks/stacks.pt:13
 #: eucaconsole/templates/stacks/stacks.pt:18 eucaconsole/views/dashboard.py:45
-#: eucaconsole/views/stacks.py:126
+#: eucaconsole/views/stacks.py:128
 #, fuzzy
 msgid "Stacks"
 msgstr "Μηχανές"
@@ -2647,7 +2630,7 @@ msgstr "Elastic IP"
 #: eucaconsole/templates/volumes/volume_view.pt:13
 #: eucaconsole/templates/volumes/volumes.pt:16
 #: eucaconsole/templates/volumes/volumes.pt:21
-#: eucaconsole/views/dashboard.py:53 eucaconsole/views/instances.py:949
+#: eucaconsole/views/dashboard.py:53 eucaconsole/views/instances.py:952
 #: eucaconsole/views/volumes.py:88
 msgid "Volumes"
 msgstr "Τόμοι"
@@ -2925,40 +2908,38 @@ msgid "No items were found <dynamic element>"
 msgstr "Δεδομένα χρήστη<dynamic element>"
 
 #: eucaconsole/templates/macros.pt:142
-#: eucaconsole/templates/cloudwatch/metrics.pt:178
+#: eucaconsole/templates/cloudwatch/metrics.pt:180
 #: eucaconsole/templates/instances/instance_types.pt:103
 msgid "No items were found"
 msgstr "Δε βρέθηκαν αντικείμενα"
 
 #: eucaconsole/templates/macros.pt:149
-#: eucaconsole/templates/cloudwatch/metrics.pt:185
+#: eucaconsole/templates/cloudwatch/metrics.pt:187
 msgid "Displaying"
 msgstr "Εμφάνιση"
 
 #: eucaconsole/templates/macros.pt:151
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:17
-#: eucaconsole/templates/cloudwatch/metrics.pt:187
+#: eucaconsole/templates/cloudwatch/metrics.pt:189
 msgid "of"
 msgstr "από"
 
 #: eucaconsole/templates/macros.pt:153
-#: eucaconsole/templates/cloudwatch/metrics.pt:189
+#: eucaconsole/templates/cloudwatch/metrics.pt:191
 msgid "items"
 msgstr "αντικείμενα"
 
 #: eucaconsole/templates/macros.pt:239
 #, fuzzy
-#| msgid "select alarm..."
 msgid "Select all"
 msgstr "επιλογή ειδοποίησης..."
 
 #: eucaconsole/templates/macros.pt:251
 #, fuzzy
-#| msgid "Actions"
 msgid "More Actions"
 msgstr "Ενέργειες"
 
-#: eucaconsole/templates/macros.pt:294 eucaconsole/views/scalinggroups.py:717
+#: eucaconsole/templates/macros.pt:294 eucaconsole/views/scalinggroups.py:723
 msgid "Remove"
 msgstr "Αφαίρεση"
 
@@ -2981,11 +2962,11 @@ msgstr "Αφαίρεση"
 #: eucaconsole/templates/keypairs/keypair_view.pt:71
 #: eucaconsole/templates/keypairs/keypair_view.pt:102
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:102
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:176
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:178
 #: eucaconsole/templates/roles/role_view.pt:140
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:88
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:84
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:111
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:83
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:110
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:82
 #: eucaconsole/templates/snapshots/snapshot_view.pt:119
 #: eucaconsole/templates/stacks/stack_wizard.pt:104
@@ -3001,7 +2982,7 @@ msgstr "Απαιτούμενα πεδία"
 #: eucaconsole/templates/buckets/buckets.pt:110
 #: eucaconsole/templates/cloudwatch/alarms.pt:90
 #: eucaconsole/templates/cloudwatch/metrics.pt:139
-#: eucaconsole/templates/elbs/elbs.pt:62
+#: eucaconsole/templates/elbs/elbs.pt:63
 #: eucaconsole/templates/groups/groups.pt:56
 #: eucaconsole/templates/images/images.pt:142
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:89
@@ -3102,7 +3083,6 @@ msgstr ""
 
 #: eucaconsole/templates/managecredentials.pt:86
 #, fuzzy
-#| msgid "Password must be at least 6 characters"
 msgid "Password must be a minimum of six characters long."
 msgstr "Ο κωδικός χρήστη πρέπει να είναι τουλάχιστον 6 χαρακτήρες"
 
@@ -3127,9 +3107,9 @@ msgstr "Αλλαγή κωδικού πρόσβασης"
 #: eucaconsole/templates/buckets/bucket_new.pt:35
 #: eucaconsole/templates/buckets/bucket_upload.pt:82
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:74
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:188
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:190
 #: eucaconsole/templates/elbs/elb_healthchecks.pt:70
-#: eucaconsole/templates/elbs/elb_instances.pt:218
+#: eucaconsole/templates/elbs/elb_instances.pt:219
 #: eucaconsole/templates/elbs/elb_view.pt:130
 #: eucaconsole/templates/elbs/elb_wizard.pt:89
 #: eucaconsole/templates/elbs/elb_wizard.pt:118
@@ -3147,15 +3127,15 @@ msgstr "Αλλαγή κωδικού πρόσβασης"
 #: eucaconsole/templates/keypairs/keypair_view.pt:107
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:112
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:111
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:187
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:220
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:189
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:222
 #: eucaconsole/templates/panels/elb_listener_editor.pt:205
 #: eucaconsole/templates/panels/securitygroup_rules.pt:155
 #: eucaconsole/templates/roles/role_view.pt:133
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:95
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:114
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:93
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:120
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:92
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:119
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:92
 #: eucaconsole/templates/snapshots/snapshot_view.pt:133
 #: eucaconsole/templates/stacks/stack_update.pt:90
@@ -3257,7 +3237,7 @@ msgstr "Έκδοση λογισμικού του Eucalyptus cloud:"
 msgid "Session Timeout"
 msgstr "Λήξη συνεδρίας"
 
-#: eucaconsole/templates/master_layout.pt:123 eucaconsole/views/__init__.py:390
+#: eucaconsole/templates/master_layout.pt:123 eucaconsole/views/__init__.py:389
 msgid ""
 "Your session has timed out. This may be due to inactivity, a policy that "
 "does not provide login permissions, or an unexpected error. Please log in"
@@ -3268,7 +3248,7 @@ msgstr ""
 "Παρακαλούμε συνδεθείτε ξανά, και επικοινωνήστε με τον διαχειριστή του "
 "cloud αν επιμένει το πρόβλημα."
 
-#: eucaconsole/templates/master_layout.pt:125 eucaconsole/views/login.py:93
+#: eucaconsole/templates/master_layout.pt:125 eucaconsole/views/login.py:94
 msgid "Login"
 msgstr "Σύνδεση"
 
@@ -3353,9 +3333,9 @@ msgstr "Λεπτομέρεις λογαριασμού:"
 #: eucaconsole/templates/volumes/volume_monitoring.pt:28
 #: eucaconsole/templates/volumes/volume_snapshots.pt:26
 #: eucaconsole/templates/volumes/volume_view.pt:35
-#: eucaconsole/views/elbs.py:594 eucaconsole/views/elbs.py:1193
-#: eucaconsole/views/elbs.py:1198 eucaconsole/views/instances.py:600
-#: eucaconsole/views/scalinggroups.py:305 eucaconsole/views/volumes.py:319
+#: eucaconsole/views/elbs.py:595 eucaconsole/views/elbs.py:1210
+#: eucaconsole/views/elbs.py:1215 eucaconsole/views/instances.py:603
+#: eucaconsole/views/scalinggroups.py:306 eucaconsole/views/volumes.py:319
 msgid "General"
 msgstr "Γενικά"
 
@@ -3392,7 +3372,7 @@ msgstr ""
 #: eucaconsole/templates/buckets/buckets.pt:79
 #: eucaconsole/templates/buckets/buckets.pt:142
 #: eucaconsole/templates/cloudwatch/alarms.pt:27
-#: eucaconsole/templates/elbs/elbs.pt:27 eucaconsole/templates/elbs/elbs.pt:82
+#: eucaconsole/templates/elbs/elbs.pt:27 eucaconsole/templates/elbs/elbs.pt:83
 #: eucaconsole/templates/groups/groups.pt:26
 #: eucaconsole/templates/groups/groups.pt:67
 #: eucaconsole/templates/images/images.pt:24
@@ -3402,7 +3382,7 @@ msgstr ""
 #: eucaconsole/templates/images/images.pt:172
 #: eucaconsole/templates/instances/instances.pt:25
 #: eucaconsole/templates/instances/instances.pt:126
-#: eucaconsole/templates/instances/instances.pt:312
+#: eucaconsole/templates/instances/instances.pt:315
 #: eucaconsole/templates/keypairs/keypairs.pt:34
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:26
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:81
@@ -3710,9 +3690,9 @@ msgstr "Ώρα δημιουργίας"
 
 #: eucaconsole/templates/buckets/bucket_details.pt:105
 #: eucaconsole/templates/buckets/bucket_item_details.pt:112
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:187
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:189
 #: eucaconsole/templates/elbs/elb_healthchecks.pt:68
-#: eucaconsole/templates/elbs/elb_instances.pt:216
+#: eucaconsole/templates/elbs/elb_instances.pt:217
 #: eucaconsole/templates/elbs/elb_view.pt:128
 #: eucaconsole/templates/groups/group_view.pt:143
 #: eucaconsole/templates/images/image_view.pt:211
@@ -3913,8 +3893,8 @@ msgstr "Ώρα δημιουργίας"
 
 #: eucaconsole/templates/buckets/buckets.pt:101
 #: eucaconsole/templates/buckets/buckets.pt:164
-#: eucaconsole/templates/instances/instances.pt:177
-#: eucaconsole/templates/instances/instances.pt:363
+#: eucaconsole/templates/instances/instances.pt:180
+#: eucaconsole/templates/instances/instances.pt:369
 msgid "Remove from view"
 msgstr "Αφαίρεση από τη προβολή"
 
@@ -3979,31 +3959,26 @@ msgstr "Όταν"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:7
 #, fuzzy
-#| msgid "Details for group:"
 msgid "for group"
 msgstr "Λεπτομέρειες ομάδας:"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:9
 #, fuzzy
-#| msgid "Delete policy"
 msgid "execute policy"
 msgstr "Διαγραφή πολιτικής"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:17
 #, fuzzy
-#| msgid "Add a condition:"
 msgid "Add an action:"
 msgstr "Προσθήκη κριτηρίου:"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:18
 #, fuzzy
-#| msgid "Add another condition:"
 msgid "Add another action:"
 msgstr "Προσθήκη άλλου κριτηρίου:"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:22
 #, fuzzy
-#| msgid "Creation time"
 msgid "Action type"
 msgstr "Ώρα δημιουργίας"
 
@@ -4013,19 +3988,16 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:45
 #, fuzzy
-#| msgid "Auto scaling groups"
 msgid "For scaling group"
 msgstr "Δημιουργία ομάδας κλιμάκωσης"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:50
 #, fuzzy
-#| msgid "Delete scaling group"
 msgid "Select scaling group..."
 msgstr "Διαγραφή ομάδας κλιμάκωσης"
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:56
 #, fuzzy
-#| msgid "Delete scaling group policy"
 msgid "Execute scaling policy"
 msgstr "Διαγραφή πολιτικής της ομάδας κλιμάκωσης"
 
@@ -4035,13 +4007,11 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarm_actions.pt:73
 #, fuzzy
-#| msgid "Add a condition:"
 msgid "Add Action"
 msgstr "Προσθήκη κριτηρίου:"
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:10
 #, fuzzy
-#| msgid "CloudWatch Alarms"
 msgid "Cloudwatch alarms:"
 msgstr "Ειδοποιήσεις CloudWatch"
 
@@ -4051,7 +4021,6 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:17
 #, fuzzy
-#| msgid "instance"
 msgid "in state"
 msgstr "μηχανή"
 
@@ -4059,14 +4028,12 @@ msgstr "μηχανή"
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:38
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:6
 #, fuzzy
-#| msgid "Create alarm"
 msgid "Delete alarm"
 msgstr "Δημιουργία ειδοποίησης"
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:40
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:9
 #, fuzzy
-#| msgid "Are you sure you want to delete the scaling group"
 msgid "Are you sure you want to delete the following alarm?"
 msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε την ομάδα κλιμάκωσης"
 
@@ -4075,53 +4042,49 @@ msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετ�
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:22
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:38
 #, fuzzy
-#| msgid "User name"
 msgid "Alarm Name"
 msgstr "Όνομα χρήστη"
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:44
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:82
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:28
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:84
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:29
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:23
 #, fuzzy
-#| msgid "Version"
 msgid "Dimension"
 msgstr "Δικαιώματα"
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:57
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:43
 #, fuzzy
-#| msgid "Successfully deleted alarm"
 msgid "Yes, Delete Alarm"
 msgstr "Η ειδοποίηση διαγράφηκε επιτυχώς"
 
 #: eucaconsole/templates/cloudwatch/alarm_state_view.pt:56
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:149
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:151
 #, fuzzy
-#| msgid "Account ID<dynamic element>"
 msgid "<dynamic element>"
 msgstr "ID λογαριασμού<dynamic element>"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:15
 #: eucaconsole/templates/cloudwatch/alarms.pt:20
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:13
-#: eucaconsole/templates/elbs/elbs.pt:58
+#: eucaconsole/templates/cloudwatch/alarms_history.pt:12
+#: eucaconsole/templates/elbs/elbs.pt:59
 #: eucaconsole/templates/panels/top_nav.pt:92
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:89
-#: eucaconsole/templates/volumes/volumes.pt:153 eucaconsole/views/alarms.py:230
-#: eucaconsole/views/alarms.py:519
+#: eucaconsole/templates/volumes/volumes.pt:153 eucaconsole/views/alarms.py:236
+#: eucaconsole/views/alarms.py:515
 #, fuzzy
-#| msgid "Alarms:"
 msgid "Alarms"
 msgstr "Ειδοποιήσεις:"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:23
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:148
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:149
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:149
 #: eucaconsole/templates/elbs/elb_monitoring.pt:37
 #: eucaconsole/templates/instances/instance_monitoring.pt:35
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:36
-#: eucaconsole/templates/volumes/volume_monitoring.pt:34
+#: eucaconsole/templates/volumes/volume_monitoring.pt:35
 msgid "Create Alarm"
 msgstr "Δημιουργία ειδοποίησης"
 
@@ -4130,28 +4093,24 @@ msgstr "Δημιουργία ειδοποίησης"
 #: eucaconsole/templates/cloudwatch/alarms.pt:116
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:35
 #, fuzzy
-#| msgid "Create launch configuration like this"
 msgid "Create alarm like this one"
 msgstr "Δημιουργία ρύθμισης εκκίνησης"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:50
 #: eucaconsole/templates/cloudwatch/alarms.pt:112
 #, fuzzy
-#| msgid "View details"
 msgid "View/edit details"
 msgstr "Προβολή λεπτομερειών"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:67
 #: eucaconsole/templates/cloudwatch/alarms.pt:88
 #, fuzzy
-#| msgid "Trigger threshold"
 msgid "Threshold"
 msgstr "Όριο ενεργοποίησης"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:75
 #: eucaconsole/templates/cloudwatch/alarms.pt:89
 #, fuzzy
-#| msgid "All S3/Walrus actions"
 msgid "Alarm Actions"
 msgstr "Όλες οι ενέργειες S3/Walrus"
 
@@ -4159,13 +4118,12 @@ msgstr "Όλες οι ενέργειες S3/Walrus"
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:57
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:60
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:61
-#: eucaconsole/views/alarms.py:244
+#: eucaconsole/views/alarms.py:250 eucaconsole/views/alarms.py:255
 msgid "State"
 msgstr "Κατάσταση"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:134
 #, fuzzy
-#| msgid "You must have volumes before you can create snapshots."
 msgid "A metric must be selected before you can create an alarm."
 msgstr "Πρέπει να έχετε τόμους πρωτού δημιουργήσετε στιγμιότυπα."
 
@@ -4182,89 +4140,74 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:20
 #, fuzzy
-#| msgid "Details for volume:"
 msgid "Details for alarm:"
 msgstr "Λεπτομέρειες τόμου:"
 
 #: eucaconsole/templates/cloudwatch/alarms_detail.pt:66
 #, fuzzy
-#| msgid "View details"
 msgid "State details"
 msgstr "Προβολή λεπτομερειών"
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:89
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:91
 #, fuzzy
-#| msgid "Description is required"
 msgid "Dimensions is a required value."
 msgstr "Απαιτείται περιγραφή"
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:96
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:50
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:98
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:51
 msgid "Trigger alarm when the"
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:113
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:72
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:115
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:73
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:106
 msgid "is"
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:125
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:85
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:127
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:86
 #, fuzzy
-#| msgid "Trigger threshold amount is required"
 msgid "Threshold value is required."
 msgstr "Απαιτείται το ποστοστό του ορίου ενεργοποίησης"
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:127
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:87
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:129
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:88
 #, fuzzy
-#| msgid "Memory values must be positive numbers."
 msgid "Threshold value must be a number."
 msgstr "Οι τιμές της μνήμης πρέπει να είναι θετικοί αριθμοί."
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:129
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:89
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:131
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:90
 #, fuzzy
-#| msgid "Memory values must be positive numbers."
 msgid "Threshold value must be a positive number."
 msgstr "Οι τιμές της μνήμης πρέπει να είναι θετικοί αριθμοί."
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:138
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:98
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:140
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:99
 msgid "for at least"
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:142
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:102
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:144
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:103
 #, fuzzy
-#| msgid "Volume is required"
 msgid "Period value is required."
 msgstr "Απαιτείται τόμος"
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:144
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:104
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:146
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:105
 #, fuzzy
-#| msgid "Memory values must be positive numbers."
 msgid "Period value must be a number."
 msgstr "Οι τιμές της μνήμης πρέπει να είναι θετικοί αριθμοί."
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:146
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:106
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:148
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:107
 #, fuzzy
-#| msgid "Memory values must be positive numbers."
 msgid "Period value must be a positive number."
 msgstr "Οι τιμές της μνήμης πρέπει να είναι θετικοί αριθμοί."
 
-#: eucaconsole/templates/cloudwatch/alarms_detail.pt:150
+#: eucaconsole/templates/cloudwatch/alarms_detail.pt:152
 msgid "consecutive periods of"
 msgstr ""
-
-#: eucaconsole/templates/cloudwatch/alarms_history.pt:12
-#, fuzzy
-#| msgid "CloudWatch Alarms"
-msgid "CloudWatchAlarms"
-msgstr "Ειδοποιήσεις CloudWatch"
 
 #: eucaconsole/templates/cloudwatch/alarms_history.pt:20
 msgid "History for alarm:"
@@ -4280,54 +4223,48 @@ msgstr ""
 
 #: eucaconsole/templates/cloudwatch/alarms_history.pt:63
 #, fuzzy
-#| msgid "times"
 msgid "Timestamp"
 msgstr "φορές"
 
 #: eucaconsole/templates/cloudwatch/alarms_history.pt:64
 #: eucaconsole/templates/instances/instance_launch_more.pt:56
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:289
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:291
 #: eucaconsole/templates/panels/securitygroup_rules.pt:91
-#: eucaconsole/templates/roles/role_view.pt:60 eucaconsole/views/alarms.py:674
+#: eucaconsole/templates/roles/role_view.pt:60 eucaconsole/views/alarms.py:670
 msgid "Type"
 msgstr "Τύπος"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:6
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:7
 #, fuzzy
-#| msgid "Account ID<dynamic element>"
 msgid "Name<dynamic element>"
 msgstr "ID λογαριασμού<dynamic element>"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:11
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:12
 msgid "Alarm name must be unique."
 msgstr ""
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:13
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:14
 #, fuzzy
-#| msgid "Tag name is required"
 msgid "Alarm name is required."
 msgstr "Απαιτείται όνομα εικόνας"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:36
-#: eucaconsole/views/alarms.py:99
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:37
+#: eucaconsole/views/alarms.py:105
 #, fuzzy
-#| msgid "Select instance..."
 msgid "Select dimension..."
 msgstr "Επιλογή μηχανής..."
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:43
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:44
 #, fuzzy
-#| msgid "Min is required"
 msgid "Dimension is required."
 msgstr "Απαιτείται το ελάχιστο"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:83
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:84
 #, fuzzy
-#| msgid "Amount"
 msgid "amount..."
 msgstr "Ποσοστό"
 
-#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:110
+#: eucaconsole/templates/cloudwatch/create_alarm_modal_template.pt:111
 msgid "consecutive period(s) of"
 msgstr ""
 
@@ -4343,53 +4280,49 @@ msgid "graph"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:47
-#: eucaconsole/templates/cloudwatch/metrics.pt:213
+#: eucaconsole/templates/cloudwatch/metrics.pt:215
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:22
 msgid "Measurement period"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:58
-#: eucaconsole/templates/cloudwatch/metrics.pt:224
+#: eucaconsole/templates/cloudwatch/metrics.pt:226
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:33
 #, fuzzy
-#| msgid "Port range"
 msgid "Time range"
 msgstr "Εύρος πορτών"
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:60
-#: eucaconsole/templates/cloudwatch/metrics.pt:226
+#: eucaconsole/templates/cloudwatch/metrics.pt:228
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:35
 #, fuzzy
-#| msgid "active"
 msgid "Relative"
 msgstr "ενεργό"
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:62
-#: eucaconsole/templates/cloudwatch/metrics.pt:228
+#: eucaconsole/templates/cloudwatch/metrics.pt:230
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:37
 #, fuzzy
-#| msgid "Value"
 msgid "Absolute"
 msgstr "Τιμή"
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:74
-#: eucaconsole/templates/cloudwatch/metrics.pt:240
+#: eucaconsole/templates/cloudwatch/metrics.pt:242
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:49
 msgid "From"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:78
-#: eucaconsole/templates/cloudwatch/metrics.pt:244
+#: eucaconsole/templates/cloudwatch/metrics.pt:246
 #: eucaconsole/templates/dialogs/cloudwatch_chart_dialog.pt:53
 #, fuzzy
-#| msgid "Stop"
 msgid "To"
 msgstr "Διακοπή"
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:104
 #: eucaconsole/templates/cloudwatch/metrics.pt:99
-#: eucaconsole/templates/cloudwatch/metrics.pt:167
-#: eucaconsole/templates/cloudwatch/metrics.pt:273
+#: eucaconsole/templates/cloudwatch/metrics.pt:169
+#: eucaconsole/templates/cloudwatch/metrics.pt:276
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:9
 msgid "Create alarm"
 msgstr "Δημιουργία ειδοποίησης"
@@ -4397,14 +4330,14 @@ msgstr "Δημιουργία ειδοποίησης"
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:105
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:137
 #: eucaconsole/templates/cloudwatch/metrics.pt:100
-#: eucaconsole/templates/cloudwatch/metrics.pt:168
-#: eucaconsole/templates/cloudwatch/metrics.pt:275
-#: eucaconsole/templates/cloudwatch/metrics.pt:319
+#: eucaconsole/templates/cloudwatch/metrics.pt:170
+#: eucaconsole/templates/cloudwatch/metrics.pt:278
+#: eucaconsole/templates/cloudwatch/metrics.pt:323
 msgid "Copy URL"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metricgraph.pt:138
-#: eucaconsole/templates/cloudwatch/metrics.pt:320
+#: eucaconsole/templates/cloudwatch/metrics.pt:324
 msgid ""
 "The URL below will bring you to the metric landing page with preselected "
 "metric(s) and graph."
@@ -4415,18 +4348,16 @@ msgid "Clear all"
 msgstr ""
 
 #: eucaconsole/templates/cloudwatch/metrics.pt:85
-#: eucaconsole/templates/cloudwatch/metrics.pt:155
-#: eucaconsole/views/alarms.py:105
+#: eucaconsole/templates/cloudwatch/metrics.pt:157
+#: eucaconsole/views/alarms.py:111
 #, fuzzy
-#| msgid "For all instances"
 msgid "All instances"
 msgstr "Για όλες τις μηχανές"
 
 #: eucaconsole/templates/cloudwatch/metrics.pt:88
-#: eucaconsole/templates/cloudwatch/metrics.pt:158
-#: eucaconsole/views/alarms.py:152
+#: eucaconsole/templates/cloudwatch/metrics.pt:160
+#: eucaconsole/views/alarms.py:158
 #, fuzzy
-#| msgid "Load balancers"
 msgid "All load balancers"
 msgstr "Load balancers"
 
@@ -4442,7 +4373,6 @@ msgstr "Πόροι"
 
 #: eucaconsole/templates/cloudwatch/metrics.pt:138
 #, fuzzy
-#| msgid "User name"
 msgid "Metric Name"
 msgstr "Όνομα χρήστη"
 
@@ -4647,7 +4577,7 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:54
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:57
-#: eucaconsole/views/alarms.py:431
+#: eucaconsole/views/alarms.py:444
 msgid "for"
 msgstr "για"
 
@@ -4674,7 +4604,7 @@ msgstr "με κάθε μέτρηση να διαρκεί"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:136
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:58
-#: eucaconsole/views/alarms.py:431
+#: eucaconsole/views/alarms.py:444
 msgid "minutes"
 msgstr "λεπτά"
 
@@ -4717,13 +4647,11 @@ msgstr "Δημιουργία ομάδας ασφαλείας"
 
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:7
 #, fuzzy
-#| msgid "Create alarm"
 msgid "Delete alarms"
 msgstr "Δημιουργία ειδοποίησης"
 
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:10
 #, fuzzy
-#| msgid "Are you sure you want to delete the scaling group"
 msgid "Are you sure you want to delete the following alarms?"
 msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε την ομάδα κλιμάκωσης"
 
@@ -4737,7 +4665,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/delete_alarm_dialog.pt:42
 #, fuzzy
-#| msgid "No items were found <dynamic element>"
 msgid "<dynamic element> <dynamic element>"
 msgstr "Δεδομένα χρήστη<dynamic element>"
 
@@ -4766,7 +4693,7 @@ msgstr ""
 #: eucaconsole/templates/elbs/elb_healthchecks.pt:33
 #: eucaconsole/templates/elbs/elb_instances.pt:37
 #: eucaconsole/templates/elbs/elb_view.pt:47
-#: eucaconsole/templates/elbs/elbs.pt:29 eucaconsole/templates/elbs/elbs.pt:84
+#: eucaconsole/templates/elbs/elbs.pt:30 eucaconsole/templates/elbs/elbs.pt:86
 #, fuzzy
 msgid "Delete load balancer"
 msgstr "Επιλογή load balancers..."
@@ -4799,7 +4726,7 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/templates/dialogs/elb_security_group_warning_dialog.pt:15
-#: eucaconsole/templates/instances/instances.pt:260
+#: eucaconsole/templates/instances/instances.pt:263
 msgid "SECURITY GROUP"
 msgstr "ΟΜΑΔΑ ΑΣΦΑΛΕΙΑΣ"
 
@@ -4896,13 +4823,11 @@ msgstr "από το cloud;"
 
 #: eucaconsole/templates/dialogs/image_dialogs.pt:44
 #, fuzzy
-#| msgid "Delete associated snapshot"
 msgid "Delete associated snapshots"
 msgstr "Διαγραφή συσχετισμένου στιγμιότυπου"
 
 #: eucaconsole/templates/dialogs/image_dialogs.pt:49
 #, fuzzy
-#| msgid "image"
 msgid "for image"
 msgstr "εικόνα"
 
@@ -4940,7 +4865,6 @@ msgstr "Εκκίνηση μηχανής"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:37
 #, fuzzy
-#| msgid "Start instance"
 msgid "Start instances"
 msgstr "Εκκίνηση μηχανής"
 
@@ -4950,7 +4874,6 @@ msgstr "Είστε σίγουροι ότι θέλετε να ξεκινήσετ�
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:50
 #, fuzzy
-#| msgid "Yes, Start Instance"
 msgid "Yes, Start Instance(s)"
 msgstr "Ναι, εκκίνηση μηχανής"
 
@@ -4960,7 +4883,6 @@ msgstr "Διακοπή μηχανής"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:66
 #, fuzzy
-#| msgid "Stop instance"
 msgid "Stop instances"
 msgstr "Διακοπή μηχανής"
 
@@ -4974,7 +4896,6 @@ msgstr "Ναι, διακοπή μηχανής"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:81
 #, fuzzy
-#| msgid "Yes, Stop Instance"
 msgid "Yes, Stop Instances"
 msgstr "Ναι, διακοπή μηχανής"
 
@@ -5144,7 +5065,6 @@ msgstr "Διαχωρισμός διεύθυνσης elastic IP από τη μη�
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:271
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:43
 #, fuzzy
-#| msgid "Disassociate elastic IP address from instance"
 msgid "Disassociate elastic IP addresses from instances"
 msgstr "Διαχωρισμός διεύθυνσης elastic IP από τη μηχανή"
 
@@ -5185,7 +5105,6 @@ msgstr "Ναι, διαχωρισμός διεύθυνσης από τη μηχα
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:312
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:62
 #, fuzzy
-#| msgid "Yes, Disassociate Address from Instance"
 msgid "Yes, Disassociate Addresses from Instances"
 msgstr "Ναι, διαχωρισμός διεύθυνσης από τη μηχανή"
 
@@ -5217,7 +5136,6 @@ msgstr "Απελευθέρωση διεύθυνσης IP στο cloud"
 
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:73
 #, fuzzy
-#| msgid "Release IP address to cloud"
 msgid "Release IP addresses to cloud"
 msgstr "Απελευθέρωση διεύθυνσης IP στο cloud"
 
@@ -5249,7 +5167,6 @@ msgstr "Ναι, απελευθέρωση διεύθυνσης στο Cloud"
 
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:91
 #, fuzzy
-#| msgid "Yes, Release Address to Cloud"
 msgid "Yes, Release Addresses to Cloud"
 msgstr "Ναι, απελευθέρωση διεύθυνσης στο Cloud"
 
@@ -5261,7 +5178,6 @@ msgstr "Διαγραφή κλειδιού"
 
 #: eucaconsole/templates/dialogs/keypair_dialogs.pt:9
 #, fuzzy
-#| msgid "Delete key"
 msgid "Delete keys"
 msgstr "Διαγραφή κλειδιού"
 
@@ -5339,7 +5255,6 @@ msgstr "Διαγραφή ομάδας ασφάλειας"
 
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:9
 #, fuzzy
-#| msgid "Delete security group"
 msgid "Delete security groups"
 msgstr "Διαγραφή ομάδας ασφάλειας"
 
@@ -5431,7 +5346,6 @@ msgstr "Διαγραφή στιγμιότυπου"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:9
 #, fuzzy
-#| msgid "Delete snapshot"
 msgid "Delete snapshots"
 msgstr "Διαγραφή στιγμιότυπου"
 
@@ -5445,8 +5359,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:15
 #, fuzzy
-#| msgid "" "This snapshot has been registered as an image. Deleting this
-#| snapshot " "will also de-register the image."
 msgid ""
 "One or more of the selected snapshots have been registered as an image. "
 "Deleting those snapshots will also de-register their respective image."
@@ -5468,7 +5380,6 @@ msgstr "Ναι, διαγραφή στιγμιότυπου"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:39
 #, fuzzy
-#| msgid "Yes, Delete Snapshot"
 msgid "Yes, Delete Snapshots"
 msgstr "Ναι, διαγραφή στιγμιότυπου"
 
@@ -5625,7 +5536,6 @@ msgstr "Απόσπαση τόμου"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:51
 #, fuzzy
-#| msgid "Detach volume"
 msgid "Detach volumes"
 msgstr "Απόσπαση τόμου"
 
@@ -5650,7 +5560,6 @@ msgstr "Είστε σίγουροι ότι θέλετε να αποσπάσετ�
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:105
 #, fuzzy
-#| msgid "Yes, Detach Volume"
 msgid "Yes, Detach"
 msgstr "Ναι, απόσπαση τόμου"
 
@@ -5674,7 +5583,6 @@ msgstr "Διαγραφή τόμου"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:132
 #, fuzzy
-#| msgid "Delete volume"
 msgid "Delete volumes"
 msgstr "Διαγραφή τόμου"
 
@@ -5703,8 +5611,8 @@ msgstr "Λεπτομέρειες μηχανής:"
 #: eucaconsole/templates/volumes/volume_monitoring.pt:30
 #: eucaconsole/templates/volumes/volume_snapshots.pt:28
 #: eucaconsole/templates/volumes/volume_view.pt:37
-#: eucaconsole/views/elbs.py:1090 eucaconsole/views/instances.py:168
-#: eucaconsole/views/instances.py:1058 eucaconsole/views/scalinggroups.py:983
+#: eucaconsole/views/elbs.py:1107 eucaconsole/views/instances.py:170
+#: eucaconsole/views/instances.py:1061 eucaconsole/views/scalinggroups.py:996
 #: eucaconsole/views/volumes.py:630
 msgid "Monitoring"
 msgstr "Παρακολούθηση"
@@ -5727,9 +5635,9 @@ msgstr "Παρακολούθηση"
 #: eucaconsole/templates/roles/roles.pt:53
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:28
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:85
-#: eucaconsole/views/elbs.py:863 eucaconsole/views/elbs.py:1195
-#: eucaconsole/views/elbs.py:1200 eucaconsole/views/instances.py:176
-#: eucaconsole/views/scalinggroups.py:496
+#: eucaconsole/views/elbs.py:864 eucaconsole/views/elbs.py:1212
+#: eucaconsole/views/elbs.py:1217 eucaconsole/views/instances.py:178
+#: eucaconsole/views/scalinggroups.py:499
 msgid "Instances"
 msgstr "Μηχανές"
 
@@ -5807,7 +5715,7 @@ msgstr "μηχανή"
 
 #: eucaconsole/templates/elbs/elb_instances.pt:96
 #: eucaconsole/templates/elbs/elb_instances.pt:170
-#: eucaconsole/views/scalinggroups.py:718
+#: eucaconsole/views/scalinggroups.py:724
 #, fuzzy
 msgid "instances"
 msgstr "μηχανή"
@@ -5873,21 +5781,19 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_monitoring.pt:91
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:74
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:129
-#: eucaconsole/templates/volumes/volume_monitoring.pt:66
+#: eucaconsole/templates/volumes/volume_monitoring.pt:69
 msgid "Refresh data"
 msgstr ""
 
 #: eucaconsole/templates/elbs/elb_monitoring.pt:49
 #, fuzzy
-#| msgid "Load balancer"
 msgid "loadbalancer"
 msgstr "Load balancer"
 
 #: eucaconsole/templates/elbs/elb_monitoring.pt:55
 #: eucaconsole/templates/instances/instance_monitoring.pt:77
-#: eucaconsole/templates/volumes/volume_monitoring.pt:52
+#: eucaconsole/templates/volumes/volume_monitoring.pt:55
 #, fuzzy
-#| msgid "CloudWatch Alarms"
 msgid "CloudWatch metrics"
 msgstr "Ειδοποιήσεις CloudWatch"
 
@@ -5895,7 +5801,7 @@ msgstr "Ειδοποιήσεις CloudWatch"
 #: eucaconsole/templates/instances/instance_monitoring.pt:81
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:62
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:117
-#: eucaconsole/templates/volumes/volume_monitoring.pt:56
+#: eucaconsole/templates/volumes/volume_monitoring.pt:59
 msgid "Show data for"
 msgstr ""
 
@@ -5952,7 +5858,7 @@ msgstr "Δημιουργία νέου φακέλου"
 #: eucaconsole/templates/instances/instance_launch.pt:114
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:109
 #: eucaconsole/templates/panels/image_picker.pt:70
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:92
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:91
 #: eucaconsole/templates/stacks/stack_update.pt:88
 #: eucaconsole/templates/stacks/stack_wizard.pt:114
 msgid "Next"
@@ -5981,8 +5887,8 @@ msgstr "Επιλογή load balancers..."
 
 #: eucaconsole/templates/elbs/elb_wizard.pt:289
 #: eucaconsole/templates/instances/instance_launch.pt:242
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:264
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:144
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:266
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:143
 #: eucaconsole/templates/stacks/stack_update.pt:179
 #: eucaconsole/templates/stacks/stack_wizard.pt:205
 msgid "Summary"
@@ -6002,30 +5908,42 @@ msgstr ""
 msgid "Access logs enabled"
 msgstr "Ο χρήστης ενεργοποιήθηκε επιτυχώς"
 
-#: eucaconsole/templates/elbs/elbs.pt:28 eucaconsole/templates/elbs/elbs.pt:83
+#: eucaconsole/templates/elbs/elbs.pt:28 eucaconsole/templates/elbs/elbs.pt:84
+#: eucaconsole/templates/instances/instances.pt:56
+#: eucaconsole/templates/instances/instances.pt:155
+#: eucaconsole/templates/instances/instances.pt:344
+#: eucaconsole/templates/scalinggroups/scalinggroups.pt:31
+#: eucaconsole/templates/scalinggroups/scalinggroups.pt:134
+#: eucaconsole/templates/volumes/volumes.pt:54
+#: eucaconsole/templates/volumes/volumes.pt:87
+#: eucaconsole/templates/volumes/volumes.pt:206
+#, fuzzy
+msgid "Monitor"
+msgstr "Παρακολούθηση"
+
+#: eucaconsole/templates/elbs/elbs.pt:29 eucaconsole/templates/elbs/elbs.pt:85
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:34
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:140
 msgid "Manage instances"
 msgstr "Διαχείριση μηχανών"
 
-#: eucaconsole/templates/elbs/elbs.pt:37
-#: eucaconsole/templates/instances/instances.pt:187
+#: eucaconsole/templates/elbs/elbs.pt:38
+#: eucaconsole/templates/instances/instances.pt:190
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:75
 #: eucaconsole/templates/volumes/volumes.pt:111
 #, fuzzy
-#| msgid "CloudWatch Alarms"
 msgid "CloudWatch alarm status"
 msgstr "Ειδοποιήσεις CloudWatch"
 
-#: eucaconsole/templates/elbs/elbs.pt:44 eucaconsole/templates/elbs/elbs.pt:59
+#: eucaconsole/templates/elbs/elbs.pt:45 eucaconsole/templates/elbs/elbs.pt:60
 msgid "Avg Latency (ms)"
 msgstr ""
 
-#: eucaconsole/templates/elbs/elbs.pt:60
+#: eucaconsole/templates/elbs/elbs.pt:61
 msgid "Unhealthy Hosts"
 msgstr ""
 
-#: eucaconsole/templates/elbs/elbs.pt:61
+#: eucaconsole/templates/elbs/elbs.pt:62
 msgid "Healthy Hosts"
 msgstr ""
 
@@ -6121,9 +6039,9 @@ msgstr "Έναρξη μηχανής"
 #: eucaconsole/templates/images/images.pt:181
 #: eucaconsole/templates/instances/instance_view.pt:45
 #: eucaconsole/templates/instances/instances.pt:135
-#: eucaconsole/templates/instances/instances.pt:321
+#: eucaconsole/templates/instances/instances.pt:324
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:13
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:198
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:197
 msgid "Create launch configuration"
 msgstr "Δημιουργία ρύθμισης εκκίνησης"
 
@@ -6233,7 +6151,7 @@ msgstr "Συσκευη root"
 #: eucaconsole/templates/instances/instance_view.pt:51
 #: eucaconsole/templates/instances/instances.pt:82
 #: eucaconsole/templates/instances/instances.pt:141
-#: eucaconsole/templates/instances/instances.pt:327
+#: eucaconsole/templates/instances/instances.pt:330
 msgid "Create image"
 msgstr "Δημιουργία εικόνας"
 
@@ -6385,7 +6303,7 @@ msgid "Or:"
 msgstr "Ή:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:153
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:163
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:165
 msgid ""
 "Specify an IAM role if you would like to give this instance special "
 "access privileges."
@@ -6398,8 +6316,8 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_launch_more.pt:90
 #: eucaconsole/templates/instances/instance_view.pt:205
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:126
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:166
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:311
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:168
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:313
 #: eucaconsole/views/roles.py:159
 msgid "Role"
 msgstr "Ρόλος"
@@ -6409,14 +6327,14 @@ msgid "Launch Instance<dynamic element>"
 msgstr "Έναρξη μηχανής<dynamic element>"
 
 #: eucaconsole/templates/instances/instance_launch.pt:179
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:192
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:194
 msgid "Select advanced options"
 msgstr "Επιλογή προχωρημένων ρυθμίσεων"
 
 #: eucaconsole/templates/instances/instance_launch.pt:253
-#: eucaconsole/templates/instances/instances.pt:217
+#: eucaconsole/templates/instances/instances.pt:220
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:106
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:275
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:277
 msgid "Root device"
 msgstr "Συσκευή root"
 
@@ -6437,7 +6355,7 @@ msgid "Name(s)"
 msgstr "Ονόματα"
 
 #: eucaconsole/templates/instances/instance_launch.pt:293
-#: eucaconsole/views/elbs.py:1194 eucaconsole/views/elbs.py:1199
+#: eucaconsole/views/elbs.py:1211 eucaconsole/views/elbs.py:1216
 #, fuzzy
 msgid "Network"
 msgstr "Δίκτυο:"
@@ -6520,7 +6438,7 @@ msgstr "Ενεργοποίηση λεπτομερούς παρακολούθησ
 
 #: eucaconsole/templates/instances/instance_monitoring.pt:71
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:49
-#: eucaconsole/views/scalinggroups.py:720
+#: eucaconsole/views/scalinggroups.py:726
 msgid "instance"
 msgstr "μηχανή"
 
@@ -6530,7 +6448,6 @@ msgstr ""
 
 #: eucaconsole/templates/instances/instance_monitoring.pt:98
 #, fuzzy
-#| msgid "Unable to reboot the instance."
 msgid "Enable Monitoring for this Instance"
 msgstr "Αδυναμία επανεκκίνησης της μηχανής."
 
@@ -6589,71 +6506,71 @@ msgstr "Οι τιμές του δίσκου πρέπει να είναι θετ�
 #: eucaconsole/templates/instances/instance_view.pt:36
 #: eucaconsole/templates/instances/instances.pt:31
 #: eucaconsole/templates/instances/instances.pt:129
-#: eucaconsole/templates/instances/instances.pt:315
+#: eucaconsole/templates/instances/instances.pt:318
 msgid "Connect to instance"
 msgstr "Σύνδεση στη μηχανή"
 
 #: eucaconsole/templates/instances/instance_view.pt:39
 #: eucaconsole/templates/instances/instances.pt:37
 #: eucaconsole/templates/instances/instances.pt:132
-#: eucaconsole/templates/instances/instances.pt:318
+#: eucaconsole/templates/instances/instances.pt:321
 msgid "Launch more like this"
 msgstr "Εκκίνηση περισσοτέρων"
 
 #: eucaconsole/templates/instances/instance_view.pt:57
 #: eucaconsole/templates/instances/instances.pt:43
 #: eucaconsole/templates/instances/instances.pt:147
-#: eucaconsole/templates/instances/instances.pt:333
+#: eucaconsole/templates/instances/instances.pt:336
 msgid "View console output"
 msgstr "Εμφάνιση εξόδου κονσόλας"
 
 #: eucaconsole/templates/instances/instance_view.pt:62
 #: eucaconsole/templates/instances/instances.pt:63
-#: eucaconsole/templates/instances/instances.pt:155
-#: eucaconsole/templates/instances/instances.pt:341
+#: eucaconsole/templates/instances/instances.pt:158
+#: eucaconsole/templates/instances/instances.pt:347
 msgid "Associate IP address"
 msgstr "Συσχέτιση διεύθυνσης IP"
 
 #: eucaconsole/templates/instances/instance_view.pt:67
 #: eucaconsole/templates/instances/instances.pt:69
-#: eucaconsole/templates/instances/instances.pt:160
-#: eucaconsole/templates/instances/instances.pt:346
+#: eucaconsole/templates/instances/instances.pt:163
+#: eucaconsole/templates/instances/instances.pt:352
 msgid "Disassociate IP address"
 msgstr "Διαχωρισμός διεύθυνσης IP"
 
 #: eucaconsole/templates/instances/instance_view.pt:72
 #: eucaconsole/templates/instances/instances.pt:95
-#: eucaconsole/templates/instances/instances.pt:165
-#: eucaconsole/templates/instances/instances.pt:351
+#: eucaconsole/templates/instances/instances.pt:168
+#: eucaconsole/templates/instances/instances.pt:357
 msgid "Start"
 msgstr "Έναρξη"
 
 #: eucaconsole/templates/instances/instance_view.pt:76
 #: eucaconsole/templates/instances/instances.pt:89
-#: eucaconsole/templates/instances/instances.pt:168
-#: eucaconsole/templates/instances/instances.pt:354
+#: eucaconsole/templates/instances/instances.pt:171
+#: eucaconsole/templates/instances/instances.pt:360
 msgid "Stop"
 msgstr "Διακοπή"
 
 #: eucaconsole/templates/instances/instance_view.pt:80
 #: eucaconsole/templates/instances/instances.pt:101
-#: eucaconsole/templates/instances/instances.pt:171
-#: eucaconsole/templates/instances/instances.pt:357
+#: eucaconsole/templates/instances/instances.pt:174
+#: eucaconsole/templates/instances/instances.pt:363
 msgid "Reboot"
 msgstr "Επανεκκίνηση"
 
 #: eucaconsole/templates/instances/instance_view.pt:85
 #: eucaconsole/templates/instances/instances.pt:107
-#: eucaconsole/templates/instances/instances.pt:174
-#: eucaconsole/templates/instances/instances.pt:360
+#: eucaconsole/templates/instances/instances.pt:177
+#: eucaconsole/templates/instances/instances.pt:366
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:48
 msgid "Terminate"
 msgstr "Τερματισμός"
 
 #: eucaconsole/templates/instances/instance_view.pt:140
-#: eucaconsole/templates/instances/instances.pt:183
+#: eucaconsole/templates/instances/instances.pt:186
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:49
-#: eucaconsole/views/instances.py:219
+#: eucaconsole/views/instances.py:221
 msgid "Instance ID"
 msgstr "ID μηχανής"
 
@@ -6670,8 +6587,8 @@ msgid "Private hostname"
 msgstr "Ιδιωτικό όνομα"
 
 #: eucaconsole/templates/instances/instance_view.pt:192
-#: eucaconsole/templates/instances/instances.pt:231
-#: eucaconsole/templates/instances/instances.pt:299
+#: eucaconsole/templates/instances/instances.pt:234
+#: eucaconsole/templates/instances/instances.pt:302
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:62
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:47
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:71
@@ -6680,7 +6597,7 @@ msgid "Warning: No rules defined for security group. Instance may be unreachable
 msgstr "Προειδοποίηση: Δεν καθορίστηκαν κανόνες για την ομάδα ασφαλείας"
 
 #: eucaconsole/templates/instances/instance_view.pt:199
-#: eucaconsole/templates/instances/instances.pt:237
+#: eucaconsole/templates/instances/instances.pt:240
 msgid "Launch time"
 msgstr "'Ωρα έναρξης"
 
@@ -6758,34 +6675,26 @@ msgstr "Εκκίνηση νέας μηχανής"
 
 #: eucaconsole/templates/instances/instances.pt:50
 #: eucaconsole/templates/instances/instances.pt:152
-#: eucaconsole/templates/instances/instances.pt:338
+#: eucaconsole/templates/instances/instances.pt:341
 msgid "Manage volumes"
 msgstr "Διαχείριση τόμων"
 
-#: eucaconsole/templates/instances/instances.pt:56
-#: eucaconsole/templates/volumes/volumes.pt:54
-#, fuzzy
-#| msgid "Enable monitoring"
-msgid "View monitoring"
-msgstr "Ενεργοποίηση παρακολούθησης"
-
 #: eucaconsole/templates/instances/instances.pt:76
 #, fuzzy
-#| msgid "Create scaling group using this launch configuration"
 msgid "Create scaling group launch configuration"
 msgstr "Δημιουργία ομάδας κλιμάκωσης χρησιμοποιώντας αυτή τη ρύθμιση εκκίνησης"
 
-#: eucaconsole/templates/instances/instances.pt:202
+#: eucaconsole/templates/instances/instances.pt:205
 #: eucaconsole/templates/panels/securitygroup_rules.pt:114
 msgid "IP address"
 msgstr "Διεύθυνση IP"
 
-#: eucaconsole/templates/instances/instances.pt:250
+#: eucaconsole/templates/instances/instances.pt:253
 #: eucaconsole/views/elbs.py:489
 msgid "NAME (ID)"
 msgstr "ΟΝΟΜΑ (ID)"
 
-#: eucaconsole/templates/instances/instances.pt:251
+#: eucaconsole/templates/instances/instances.pt:254
 #: eucaconsole/templates/scalinggroups/scalinggroup_history.pt:67
 #: eucaconsole/templates/stacks/stack_view.pt:136
 #: eucaconsole/templates/stacks/stack_view.pt:241
@@ -6794,43 +6703,39 @@ msgstr "ΟΝΟΜΑ (ID)"
 msgid "STATUS"
 msgstr "ΚΑΤΑΣΤΑΣΗ"
 
-#: eucaconsole/templates/instances/instances.pt:252
+#: eucaconsole/templates/instances/instances.pt:255
 #, fuzzy
-#| msgid "Alarms:"
 msgid "ALARMS"
 msgstr "Ειδοποιήσεις:"
 
-#: eucaconsole/templates/instances/instances.pt:253
+#: eucaconsole/templates/instances/instances.pt:256
 msgid "IMAGE ID"
 msgstr "ID ΕΙΚΟΝΑΣ"
 
-#: eucaconsole/templates/instances/instances.pt:256
+#: eucaconsole/templates/instances/instances.pt:259
 #, fuzzy
-#| msgid "VPC subnet"
 msgid "VPC SUBNET/"
 msgstr "Υποδίκτυο VPC"
 
-#: eucaconsole/templates/instances/instances.pt:256
+#: eucaconsole/templates/instances/instances.pt:259
 #, fuzzy
-#| msgid "Zone"
 msgid "ZONE"
 msgstr "Ζώνη"
 
-#: eucaconsole/templates/instances/instances.pt:258
+#: eucaconsole/templates/instances/instances.pt:261
 msgid "PUBLIC ADDR"
 msgstr "ΔΗΜΟΣΙΑ ΔΙΕΥΘ"
 
-#: eucaconsole/templates/instances/instances.pt:259
+#: eucaconsole/templates/instances/instances.pt:262
 msgid "KEY NAME"
 msgstr "ΟΝΟΜΑ ΚΛΕΙΔΙΟΥ"
 
-#: eucaconsole/templates/instances/instances.pt:261
+#: eucaconsole/templates/instances/instances.pt:264
 #, fuzzy
-#| msgid "Launch time"
 msgid "LAUNCH TIME"
 msgstr "'Ωρα έναρξης"
 
-#: eucaconsole/templates/instances/instances.pt:262
+#: eucaconsole/templates/instances/instances.pt:265
 #: eucaconsole/templates/securitygroups/securitygroups.pt:79
 #: eucaconsole/templates/users/user_view.pt:295
 msgid "ACTIONS"
@@ -6999,31 +6904,27 @@ msgstr "Δημιουργία ρύθμισης εκκίνησης"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:24
 #, fuzzy
-#| msgid "Unable to delete launch configuration"
 msgid "Unable to create a launch configuration like"
 msgstr "Αδυναμία διαγραφής ρύθμισης εκκίνησης"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:26
 #, fuzzy
-#| msgid "Delete associated snapshot"
 msgid "The associated image"
 msgstr "Διαγραφή συσχετισμένου στιγμιότυπου"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:28
 #, fuzzy
-#| msgid "No alarms are available."
 msgid "is no longer available."
 msgstr "Μη διαθέσιμες ειδοποιήσεις."
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:31
 #, fuzzy
-#| msgid "Create launch configuration"
 msgid "Return to launch configurations page"
 msgstr "Δημιουργία ρύθμισης εκκίνησης"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_create_more.pt:110
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:185
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:218
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:187
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:220
 msgid "Create Launch Configuration"
 msgstr "Δημιουργία ρύθμισης εκκίνησης"
 
@@ -7096,7 +6997,7 @@ msgstr ""
 msgid "Please specify your network and security settings."
 msgstr "Παρακαλούμε καθορίστε τις ρυθμίσεις δικτύου και ασφάλειας."
 
-#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:279
+#: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:281
 #, fuzzy
 msgid "Manifest"
 msgstr "Μανιφέστο:"
@@ -7138,7 +7039,6 @@ msgstr ""
 "χαρακτήρες"
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:35
-#: eucaconsole/templates/tag-editor/tag-editor.pt:45
 msgid "Tag may not begin with \"aws:\" or its length be longer than 128 chars"
 msgstr ""
 "Η ετικέτα δεν μπορεί να ξεκινά με \"aws:\" ή να είναι μεγαλύτερη από 128 "
@@ -7656,20 +7556,17 @@ msgstr ""
 
 #: eucaconsole/templates/panels/top_nav.pt:6
 #, fuzzy
-#| msgid "Dashboard"
 msgid "DASHBOARD"
 msgstr "Πινακας ελεγχου"
 
 #: eucaconsole/templates/panels/top_nav.pt:12
 #, fuzzy
-#| msgid "image"
 msgid "IMAGES"
 msgstr "εικόνα"
 
 #: eucaconsole/templates/panels/top_nav.pt:18
 #: eucaconsole/templates/panels/top_nav.pt:22
 #, fuzzy
-#| msgid "instances"
 msgid "INSTANCES"
 msgstr "μηχανή"
 
@@ -7699,7 +7596,6 @@ msgstr "Δημιουργία ομάδας κλιμάκωσης"
 
 #: eucaconsole/templates/panels/top_nav.pt:89
 #, fuzzy
-#| msgid "CloudWatch"
 msgid "CLOUDWATCH"
 msgstr "CloudWatch"
 
@@ -7715,13 +7611,11 @@ msgstr "Αφαίρεση χρήστη"
 
 #: eucaconsole/templates/panels/user_editor.pt:26
 #, fuzzy
-#| msgid "Add another user"
 msgid "Add another user:"
 msgstr "Προσθήκη άλλου χρήστη"
 
 #: eucaconsole/templates/panels/user_editor.pt:27
 #, fuzzy
-#| msgid "Add a user"
 msgid "Add a user:"
 msgstr "Προσθήκη χρήστη"
 
@@ -8017,7 +7911,6 @@ msgstr "Λεπτομέρειες ρόλου:"
 
 #: eucaconsole/templates/roles/role_view.pt:54
 #, fuzzy
-#| msgid "Add role to account:"
 msgid "Add role to account"
 msgstr "Προσθήκη ρόλου στον λογαριασμό:"
 
@@ -8121,7 +8014,6 @@ msgstr ""
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:26
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:27
 #, fuzzy
-#| msgid "add scaling policies"
 msgid "Scaling policies"
 msgstr "προσθήκη πολιτικών κλιμάκωσης"
 
@@ -8137,13 +8029,11 @@ msgstr "ΠΕΡΙΓΡΑΦΗ"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_history.pt:69
 #, fuzzy
-#| msgid "Start time"
 msgid "START TIME"
 msgstr "Ώρα έναρξης"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_history.pt:70
 #, fuzzy
-#| msgid "Current time"
 msgid "END TIME"
 msgstr "Τρέχουσα ώρα"
 
@@ -8153,7 +8043,6 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_history.pt:103
 #, fuzzy
-#| msgid "Value"
 msgid "Cause"
 msgstr "Τιμή"
 
@@ -8201,31 +8090,26 @@ msgstr "Είστε σίγουροι ότι θέλετε να τερματήσε�
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:51
 #, fuzzy
-#| msgid "Scaling group"
 msgid "scaling group"
 msgstr "Ομάδα κλιμάκωσης"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:57
 #, fuzzy
-#| msgid "No matching instances"
 msgid "CloudWatch instance metrics"
 msgstr "σε μια μηχανή"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:82
 #, fuzzy
-#| msgid "Enable monitoring"
 msgid "Instance monitoring"
 msgstr "Ενεργοποίηση παρακολούθησης"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:83
 #, fuzzy
-#| msgid "Detailed Monitoring"
 msgid "Detailed instance monitoring"
 msgstr "Ενεργοποίηση λεπτομερούς παρακολούθησης"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:84
 #, fuzzy
-#| msgid "Create scaling group using this launch configuration"
 msgid "is not enabled for this scaling group's launch configuration,"
 msgstr "Δημιουργία ομάδας κλιμάκωσης χρησιμοποιώντας αυτή τη ρύθμιση εκκίνησης"
 
@@ -8238,19 +8122,16 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:112
 #, fuzzy
-#| msgid "Auto scaling groups"
 msgid "CloudWatch scaling group metrics"
 msgstr "Δημιουργία ομάδας κλιμάκωσης"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:139
 #, fuzzy
-#| msgid "Turn monitoring"
 msgid "Turn monitoring on"
 msgstr "Ενεργοποίηση παρακολούθησης"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_monitoring.pt:142
 #, fuzzy
-#| msgid "Turn monitoring"
 msgid "Turn monitoring off"
 msgstr "Ενεργοποίηση παρακολούθησης"
 
@@ -8266,19 +8147,16 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:32
 #, fuzzy
-#| msgid "add scaling policies"
 msgid "Add scaling policy"
 msgstr "προσθήκη πολιτικών κλιμάκωσης"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:36
 #, fuzzy
-#| msgid "Policy name"
 msgid "Policy Name"
 msgstr "Όνομα κλειδιού"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:39
 #, fuzzy
-#| msgid "Trigger threshold"
 msgid "Alarm Threshold"
 msgstr "Όριο ενεργοποίησης"
 
@@ -8296,7 +8174,6 @@ msgstr "Δημιουργία πολιτικής κλιμάκωσης για:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:41
 #, fuzzy
-#| msgid "Account ID must be a 12 digit number"
 msgid "Amount must be a number"
 msgstr "Το ID λογαριασμού πρέπει να είναι αριθμός 12 ψηφίων"
 
@@ -8306,13 +8183,11 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:61
 #, fuzzy
-#| msgid "Account ID must be a 12 digit number"
 msgid "Cooldown period must be a number"
 msgstr "Το ID λογαριασμού πρέπει να είναι αριθμός 12 ψηφίων"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:64
 #, fuzzy
-#| msgid "Action is required"
 msgid "Cooldown is required"
 msgstr "Απαιτείται ενέργεια"
 
@@ -8343,47 +8218,47 @@ msgstr "Δημιουργία νέας ομάδας κλιμάκωσης"
 msgid "Membership"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:118
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:117
 msgid "Create Scaling Group"
 msgstr "Δημιουργία ομάδας κλιμάκωσης"
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:147
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:146
 msgid "Name:"
 msgstr "Όνομα:"
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:151
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:150
 msgid "Launch configuration:"
 msgstr "Ρύθμιση εκκίνησης:"
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:158
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:157
 msgid "VPC network:"
 msgstr "Δίκτυο VPC:"
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:162
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:161
 msgid "VPC subnet:"
 msgstr "Υποδίκτυο VPC:"
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:168
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:167
 msgid "Instances:"
 msgstr "Μηχανές:"
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:176
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:175
 msgid "Health check:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:180
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:179
 msgid "Grace period:"
 msgstr ""
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:184
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:183
 msgid "Availability zones:"
 msgstr "Ζώνες διαθεσιμότητας:"
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:194
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:193
 msgid "No launch configurations found"
 msgstr "Δε βρέθηκαν ρυθμίσεις εκκίνησης"
 
-#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:195
+#: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:194
 msgid ""
 "You must create a launch configuration before you can create a scaling "
 "group."
@@ -8394,15 +8269,6 @@ msgstr ""
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:20
 msgid "Create New Scaling Group"
 msgstr "Δημιουργία νέας ομάδας κλιμάκωσης"
-
-#: eucaconsole/templates/scalinggroups/scalinggroups.pt:31
-#: eucaconsole/templates/scalinggroups/scalinggroups.pt:134
-#: eucaconsole/templates/volumes/volumes.pt:87
-#: eucaconsole/templates/volumes/volumes.pt:206
-#, fuzzy
-#| msgid "Monitoring"
-msgid "Monitor"
-msgstr "Παρακολούθηση"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:37
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:146
@@ -8643,7 +8509,6 @@ msgstr ""
 
 #: eucaconsole/templates/stacks/stack_cancel_update_dialog.pt:9
 #, fuzzy
-#| msgid "Are you sure you want to delete the stack"
 msgid "Are you sure you want to cancel update for stack"
 msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε την πολιτική"
 
@@ -8659,7 +8524,6 @@ msgstr ""
 #: eucaconsole/templates/stacks/stacks.pt:30
 #: eucaconsole/templates/stacks/stacks.pt:73
 #, fuzzy
-#| msgid "Create stack"
 msgid "Update stack"
 msgstr "Δημιουργία bucket"
 
@@ -8691,13 +8555,11 @@ msgstr ""
 
 #: eucaconsole/templates/stacks/stack_update.pt:58
 #, fuzzy
-#| msgid "Use sample template"
 msgid "Use current template"
 msgstr "Επιλογή προτύπου"
 
 #: eucaconsole/templates/stacks/stack_update.pt:60
 #, fuzzy
-#| msgid "View template"
 msgid "View/edit template"
 msgstr "Επιλογή προτύπου"
 
@@ -8727,7 +8589,6 @@ msgstr ""
 #: eucaconsole/templates/stacks/stack_update.pt:85
 #: eucaconsole/templates/stacks/stack_update.pt:146
 #, fuzzy
-#| msgid "Create stack"
 msgid "Update Stack"
 msgstr "Δημιουργία bucket"
 
@@ -8741,7 +8602,6 @@ msgstr "Επιλογή προχωρημένων ρυθμίσεων"
 
 #: eucaconsole/templates/stacks/stack_update.pt:155
 #, fuzzy
-#| msgid "Creating stack"
 msgid "Updating stack"
 msgstr "Επιλογή μηχανής..."
 
@@ -8759,19 +8619,16 @@ msgstr "Διαγραφή bucket"
 
 #: eucaconsole/templates/stacks/stack_update.pt:202
 #, fuzzy
-#| msgid "View template"
 msgid "View/Edit Template"
 msgstr "Επιλογή προτύπου"
 
 #: eucaconsole/templates/stacks/stack_update.pt:207
 #, fuzzy
-#| msgid "View template"
 msgid "Save Template"
 msgstr "Επιλογή προτύπου"
 
 #: eucaconsole/templates/stacks/stack_update.pt:210
 #, fuzzy
-#| msgid "Reading template"
 msgid "Validating template..."
 msgstr "Επιλογή προτύπου"
 
@@ -8794,8 +8651,8 @@ msgid "Cancel update"
 msgstr ""
 
 #: eucaconsole/templates/stacks/stack_view.pt:50
-#: eucaconsole/views/stacks.py:230 eucaconsole/views/stacks.py:421
-#: eucaconsole/views/stacks.py:462
+#: eucaconsole/views/stacks.py:232 eucaconsole/views/stacks.py:425
+#: eucaconsole/views/stacks.py:466
 #, fuzzy
 msgid "Stack"
 msgstr "μηχανή"
@@ -8907,6 +8764,15 @@ msgstr ""
 #: eucaconsole/templates/tag-editor/tag-editor.pt:38
 msgid "Tag names must be unique"
 msgstr ""
+
+#: eucaconsole/templates/tag-editor/tag-editor.pt:45
+#, fuzzy
+msgid ""
+"Tag is required and may not begin with \"aws:\" or its length be longer "
+"than 256 chars"
+msgstr ""
+"Η ετικέτα δεν μπορεί να ξεκινά με \"aws:\" ή να είναι μεγαλύτερη από 128 "
+"χαρακτήρες"
 
 #: eucaconsole/templates/users/quotas.pt:8
 #, fuzzy
@@ -9071,7 +8937,7 @@ msgstr ""
 "αίτηση. Παρακαλούμε πληκτρολογήστε παρακάτω τον κωδικό πρόσβαση σας"
 
 #: eucaconsole/templates/users/user_view.pt:261
-#: eucaconsole/views/instances.py:1526 eucaconsole/views/users.py:553
+#: eucaconsole/views/instances.py:1529 eucaconsole/views/users.py:553
 msgid "The password you entered is incorrect."
 msgstr "Ο κωδικός πρόσβασης που εισάγατε είναι λάθος."
 
@@ -9147,55 +9013,53 @@ msgstr "ενεργό"
 msgid "Details for volume:"
 msgstr "Λεπτομέρειες τόμου:"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:46
+#: eucaconsole/templates/volumes/volume_monitoring.pt:34
 #, fuzzy
-#| msgid "Volume"
+msgid "You cannot create alarms for a failed volume."
+msgstr "Δημιουργία στιγμιότυπου από τόμο"
+
+#: eucaconsole/templates/volumes/volume_monitoring.pt:48
+#, fuzzy
 msgid "volume"
 msgstr "Τόμος"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:72
+#: eucaconsole/templates/volumes/volume_monitoring.pt:75
 msgid ""
 "Metrics are collected only for volumes that are attached to a running "
 "instance with"
 msgstr ""
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:75
+#: eucaconsole/templates/volumes/volume_monitoring.pt:78
 #, fuzzy
-#| msgid "Monitoring enabled"
 msgid "monitoring enabled."
-msgstr "Ενεργή παρακολούθηση"
-
-#: eucaconsole/templates/volumes/volume_monitoring.pt:76
-#, fuzzy
-#| msgid "Monitoring enabled"
-msgid "detailed monitoring enabled."
 msgstr "Ενεργή παρακολούθηση"
 
 #: eucaconsole/templates/volumes/volume_monitoring.pt:79
 #, fuzzy
-#| msgid "Attach a volume to instance"
+msgid "detailed monitoring enabled."
+msgstr "Ενεργή παρακολούθηση"
+
+#: eucaconsole/templates/volumes/volume_monitoring.pt:82
+#, fuzzy
 msgid "Attach this volume to an instance"
 msgstr "Επισύναψη τόμου σε μηχανή"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:82
+#: eucaconsole/templates/volumes/volume_monitoring.pt:85
 msgid "to collect and view metrics for the volume."
 msgstr ""
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:86
+#: eucaconsole/templates/volumes/volume_monitoring.pt:89
 #, fuzzy
-#| msgid "Enable monitoring"
 msgid "Enable Monitoring"
 msgstr "Ενεργοποίηση παρακολούθησης"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:87
+#: eucaconsole/templates/volumes/volume_monitoring.pt:90
 #, fuzzy
-#| msgid "Enable detailed monitoring"
 msgid "Enable Detailed Monitoring"
 msgstr "Ενεργοποίηση λεπτομερούς παρακολούθησης"
 
-#: eucaconsole/templates/volumes/volume_monitoring.pt:88
+#: eucaconsole/templates/volumes/volume_monitoring.pt:91
 #, fuzzy
-#| msgid "from instance"
 msgid "for Instance"
 msgstr "από τη μηχανή"
 
@@ -9279,31 +9143,26 @@ msgstr "Ζώνες διαθ."
 
 #: eucaconsole/templates/volumes/volumes.pt:236
 #, fuzzy
-#| msgid "Image name"
 msgid "VOLUME NAME"
 msgstr "Όνομα εικόνας"
 
 #: eucaconsole/templates/volumes/volumes.pt:240
 #, fuzzy
-#| msgid "Volume size"
 msgid "VOLUME ID"
 msgstr "Μέγεθος τόμου"
 
 #: eucaconsole/templates/volumes/volumes.pt:248
 #, fuzzy
-#| msgid "Creation time"
 msgid "CREATION TIME"
 msgstr "Ώρα δημιουργίας"
 
 #: eucaconsole/templates/volumes/volumes.pt:252
 #, fuzzy
-#| msgid "Attach to instance"
 msgid "ATTACHED TO INSTANCE (NAME)"
 msgstr "Δημιουργία νέου στιγμιότυπου"
 
 #: eucaconsole/templates/volumes/volumes.pt:256
 #, fuzzy
-#| msgid "Attach to instance"
 msgid "ATTACHED TO INSTANCE (ID)"
 msgstr "Δημιουργία νέου στιγμιότυπου"
 
@@ -9318,25 +9177,23 @@ msgstr "Ζώνη διεθεσιμότητας"
 
 #: eucaconsole/templates/volumes/volumes.pt:268
 #, fuzzy
-#| msgid "Snapshot ID"
 msgid "SNAPSHOT NAME"
 msgstr "ID στιγμιότυπου"
 
 #: eucaconsole/templates/volumes/volumes.pt:272
 #, fuzzy
-#| msgid "Snapshot"
 msgid "SNAPSHOT ID"
 msgstr "Στιγμιότυπο"
 
-#: eucaconsole/views/__init__.py:378
+#: eucaconsole/views/__init__.py:377
 msgid ""
 "You do not have the required permissions to perform this operation. "
 "Please retry the operation, and contact your cloud administrator to "
 "request an updated access policy if the problem persists."
 msgstr ""
 
-#: eucaconsole/views/__init__.py:398 eucaconsole/views/login.py:206
-#: eucaconsole/views/login.py:253
+#: eucaconsole/views/__init__.py:397 eucaconsole/views/login.py:207
+#: eucaconsole/views/login.py:254
 msgid "No response from host"
 msgstr "Καμία απάντηση από τον κεντρικό υπολογιστή"
 
@@ -9361,14 +9218,13 @@ msgid "Unable to delete account."
 msgstr "Αδυναμία διαγραφής λογαριασμού."
 
 #: eucaconsole/views/accounts.py:156 eucaconsole/views/elbs.py:256
-#: eucaconsole/views/elbs.py:1125 eucaconsole/views/groups.py:143
+#: eucaconsole/views/elbs.py:1142 eucaconsole/views/groups.py:143
 #: eucaconsole/views/keypairs.py:109 eucaconsole/views/launchconfigs.py:417
-#: eucaconsole/views/roles.py:159 eucaconsole/views/scalinggroups.py:869
+#: eucaconsole/views/roles.py:159 eucaconsole/views/scalinggroups.py:875
 #: eucaconsole/views/securitygroups.py:233 eucaconsole/views/snapshots.py:257
-#: eucaconsole/views/stacks.py:421 eucaconsole/views/users.py:228
+#: eucaconsole/views/stacks.py:425 eucaconsole/views/users.py:228
 #: eucaconsole/views/volumes.py:318 eucaconsole/views/volumes.py:525
 #, fuzzy
-#| msgid "Secret key"
 msgid "Create"
 msgstr "Μυστικό κλειδί"
 
@@ -9441,57 +9297,52 @@ msgstr "Διαγραφή πολιτικής {0} για το λογαριασμό
 msgid "Successfully deleted account policy"
 msgstr "Η πολιτική λογαριασμού διαγράφηκε επιτυχώς"
 
-#: eucaconsole/views/alarms.py:298
+#: eucaconsole/views/alarms.py:311
 msgid "Creating alarm {0}"
 msgstr "Δημιουργία ειδοποίησης {0}"
 
-#: eucaconsole/views/alarms.py:305 eucaconsole/views/alarms.py:365
+#: eucaconsole/views/alarms.py:318 eucaconsole/views/alarms.py:378
 msgid "Successfully created alarm"
 msgstr "Η ειδοποίηση δημιουργήθηκε επιτυχώς"
 
-#: eucaconsole/views/alarms.py:358
+#: eucaconsole/views/alarms.py:371
 #, fuzzy
-#| msgid "Creating alarm {0}"
 msgid "Updating alarm {0}"
 msgstr "Δημιουργία ειδοποίησης {0}"
 
-#: eucaconsole/views/alarms.py:363
+#: eucaconsole/views/alarms.py:376
 #, fuzzy
-#| msgid "Successfully deleted alarm"
 msgid "Successfully updated alarm"
 msgstr "Η ειδοποίηση διαγράφηκε επιτυχώς"
 
-#: eucaconsole/views/alarms.py:368
+#: eucaconsole/views/alarms.py:381
 msgid "There was a problem updating alarm"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:370
+#: eucaconsole/views/alarms.py:383
 msgid "There was a problem creating alarm"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:391
+#: eucaconsole/views/alarms.py:404
 #, fuzzy
-#| msgid "Deleting alarm {0}"
 msgid "Deleting alarm(s) {0}"
 msgstr "Διαγραφή ειδοποίησης {0}"
 
-#: eucaconsole/views/alarms.py:395
+#: eucaconsole/views/alarms.py:408
 #, fuzzy
-#| msgid "Successfully deleted alarm"
 msgid "Successfully deleted alarm(s)"
 msgstr "Η ειδοποίηση διαγράφηκε επιτυχώς"
 
-#: eucaconsole/views/alarms.py:397
+#: eucaconsole/views/alarms.py:410
 msgid "There was a problem deleting alarm(s)"
 msgstr ""
 
-#: eucaconsole/views/alarms.py:675
+#: eucaconsole/views/alarms.py:671
 #, fuzzy
-#| msgid "launch configuration"
 msgid "ConfigurationUpdate"
 msgstr "της εικονικής μηχανής"
 
-#: eucaconsole/views/alarms.py:676
+#: eucaconsole/views/alarms.py:672
 msgid "StateUpdate"
 msgstr ""
 
@@ -9504,12 +9355,12 @@ msgid "Bucket name: Z to A"
 msgstr "Όνομα bucket: Ω σε Α"
 
 #: eucaconsole/views/buckets.py:99 eucaconsole/views/launchconfigs.py:116
-#: eucaconsole/views/stacks.py:174 eucaconsole/views/volumes.py:208
+#: eucaconsole/views/stacks.py:176 eucaconsole/views/volumes.py:208
 msgid "Creation time: Oldest to Newest"
 msgstr "Ώρα δημιουργίας: Παλιότερη σε νεότερη"
 
 #: eucaconsole/views/buckets.py:100 eucaconsole/views/launchconfigs.py:117
-#: eucaconsole/views/stacks.py:175 eucaconsole/views/volumes.py:209
+#: eucaconsole/views/stacks.py:177 eucaconsole/views/volumes.py:209
 msgid "Creation time: Newest to Oldest"
 msgstr "Ώρα δημιουργίας:  Νεότερη σε παλιότερη"
 
@@ -9560,7 +9411,7 @@ msgstr ""
 #: eucaconsole/views/keypairs.py:61 eucaconsole/views/launchconfigs.py:114
 #: eucaconsole/views/scalinggroups.py:155
 #: eucaconsole/views/securitygroups.py:79 eucaconsole/views/snapshots.py:190
-#: eucaconsole/views/stacks.py:172 eucaconsole/views/volumes.py:210
+#: eucaconsole/views/stacks.py:174 eucaconsole/views/volumes.py:210
 msgid "Name: A to Z"
 msgstr "Όνομα: Α σε Ω"
 
@@ -9568,7 +9419,7 @@ msgstr "Όνομα: Α σε Ω"
 #: eucaconsole/views/keypairs.py:62 eucaconsole/views/launchconfigs.py:115
 #: eucaconsole/views/scalinggroups.py:156
 #: eucaconsole/views/securitygroups.py:80 eucaconsole/views/snapshots.py:191
-#: eucaconsole/views/stacks.py:173 eucaconsole/views/volumes.py:211
+#: eucaconsole/views/stacks.py:175 eucaconsole/views/volumes.py:211
 msgid "Name: Z to A"
 msgstr "Όνομα: Ω σε Α"
 
@@ -9636,13 +9487,11 @@ msgstr ""
 
 #: eucaconsole/views/cloudwatchapi.py:277
 #, fuzzy
-#| msgid "Trigger threshold"
 msgid "Alarm threshold"
 msgstr "Όριο ενεργοποίησης"
 
 #: eucaconsole/views/dashboard.py:46
 #, fuzzy
-#| msgid "CloudWatch Alarms"
 msgid "CloudWatch alarms"
 msgstr "Ειδοποιήσεις CloudWatch"
 
@@ -9695,11 +9544,10 @@ msgstr ""
 
 #: eucaconsole/views/elbs.py:75
 #, fuzzy
-#| msgid "Load balancers"
 msgid "Load Balancers"
 msgstr "Load balancers"
 
-#: eucaconsole/views/elbs.py:110 eucaconsole/views/elbs.py:705
+#: eucaconsole/views/elbs.py:110 eucaconsole/views/elbs.py:706
 #, fuzzy
 msgid "Unable to delete elb"
 msgstr "Αδυναμία διαγραφής ρόλου."
@@ -9733,9 +9581,8 @@ msgstr ""
 msgid "Healthy hosts (high to low)"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:256 eucaconsole/views/elbs.py:1125
+#: eucaconsole/views/elbs.py:256 eucaconsole/views/elbs.py:1142
 #, fuzzy
-#| msgid "Load balancer"
 msgid "Load Balancer"
 msgstr "Load balancer"
 
@@ -9769,70 +9616,70 @@ msgstr "Υπηρεσία EC2"
 msgid "Out of service"
 msgstr "Συσκευή root"
 
-#: eucaconsole/views/elbs.py:676 eucaconsole/views/elbs.py:902
-#: eucaconsole/views/elbs.py:1071
+#: eucaconsole/views/elbs.py:677 eucaconsole/views/elbs.py:910
+#: eucaconsole/views/elbs.py:1088
 #, fuzzy
 msgid "Unable to update load balancer"
 msgstr "Επιλογή load balancers..."
 
-#: eucaconsole/views/elbs.py:690
+#: eucaconsole/views/elbs.py:691
 #, fuzzy
 msgid "Updating load balancer"
 msgstr "Load balancer"
 
-#: eucaconsole/views/elbs.py:692
+#: eucaconsole/views/elbs.py:693
 #, fuzzy
 msgid "Successfully updated load balancer."
 msgstr "Η ομάδα κλιμάκωσης ενημερώθηκε επιτυχώς"
 
-#: eucaconsole/views/elbs.py:708
+#: eucaconsole/views/elbs.py:709
 #, fuzzy
 msgid "Deleting elb"
 msgstr "Διαγραφή χρήστη {0}"
 
-#: eucaconsole/views/elbs.py:711
+#: eucaconsole/views/elbs.py:712
 #, fuzzy
 msgid "Successfully deleted elb."
 msgstr "Το κλειδί διαγράφηκε επιτυχώς"
 
-#: eucaconsole/views/elbs.py:914
+#: eucaconsole/views/elbs.py:922
 #, fuzzy
 msgid "Successfully updated load balancer"
 msgstr "Η ομάδα κλιμάκωσης ενημερώθηκε επιτυχώς"
 
-#: eucaconsole/views/elbs.py:1047
+#: eucaconsole/views/elbs.py:1064
 msgid "Health Checks"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1075
+#: eucaconsole/views/elbs.py:1092
 #, fuzzy
 msgid "Successfully updated health checks for"
 msgstr "Οι πληροφορίες του χρήστη ενημερώθηκαν επιτυχώς"
 
-#: eucaconsole/views/elbs.py:1163
+#: eucaconsole/views/elbs.py:1180
 #, fuzzy
 msgid "Select availability zones"
 msgstr "Επιλογή ζωνών διαθεσιμότητας..."
 
-#: eucaconsole/views/elbs.py:1164
+#: eucaconsole/views/elbs.py:1181
 msgid "Select VPC subnets"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1196 eucaconsole/views/elbs.py:1201
+#: eucaconsole/views/elbs.py:1213 eucaconsole/views/elbs.py:1218
 msgid "Health Check & Advanced"
 msgstr ""
 
-#: eucaconsole/views/elbs.py:1224
+#: eucaconsole/views/elbs.py:1241
 #, fuzzy
 msgid "Creating elastic load balancer {0}"
 msgstr "Δημιουργία πολιτικής για το χρήστη {0}"
 
-#: eucaconsole/views/elbs.py:1245
+#: eucaconsole/views/elbs.py:1262
 #, fuzzy
 msgid "Successfully created elastic load balancer"
 msgstr "Η ειδοποίηση δημιουργήθηκε επιτυχώς"
 
-#: eucaconsole/views/elbs.py:1264
+#: eucaconsole/views/elbs.py:1281
 #, fuzzy
 msgid "Successfully uploaded server certificate"
 msgstr "Ο χρήστης {user} προστέθηκε επιτυχώς"
@@ -9859,7 +9706,6 @@ msgstr "Αδυναμία διαγραφής ομάδας."
 
 #: eucaconsole/views/groups.py:143
 #, fuzzy
-#| msgid "Groups"
 msgid "Group"
 msgstr "Ομάδες"
 
@@ -9931,7 +9777,6 @@ msgstr ""
 
 #: eucaconsole/views/images.py:207
 #, fuzzy
-#| msgid "Successfully sent request to deregistered image."
 msgid "Successfully sent request to deregister image"
 msgstr "Η αίτηση απεγγραφής της εικόνας στάλθηκε επιτυχώς."
 
@@ -9979,52 +9824,51 @@ msgstr "Η αίτηση απεγγραφής της εικόνας στάλθη�
 msgid "Successfully cancelled image creation"
 msgstr "Η δημιουργία εικόνας ακυρώθηκε επιτυχώς"
 
-#: eucaconsole/views/instances.py:95 eucaconsole/views/instances.py:444
+#: eucaconsole/views/instances.py:95 eucaconsole/views/instances.py:446
 msgid "linux"
 msgstr "linux"
 
-#: eucaconsole/views/instances.py:164
+#: eucaconsole/views/instances.py:166
 #, fuzzy
 msgid "Detailed"
 msgstr "ενεργό"
 
-#: eucaconsole/views/instances.py:164
+#: eucaconsole/views/instances.py:166
 msgid "Basic"
 msgstr ""
 
-#: eucaconsole/views/instances.py:170
+#: eucaconsole/views/instances.py:172
 #, fuzzy
 msgid "Detailed Monitoring"
 msgstr "Ενεργοποίηση λεπτομερούς παρακολούθησης"
 
-#: eucaconsole/views/instances.py:170
+#: eucaconsole/views/instances.py:172
 #, fuzzy
 msgid "Basic Monitoring"
 msgstr "Ενεργοποίηση παρακολούθησης"
 
-#: eucaconsole/views/instances.py:217
+#: eucaconsole/views/instances.py:219
 msgid "Launch time: Oldest to Newest"
 msgstr "Ώρα εκκίνησης: Παλιότερη σε νεότερη"
 
-#: eucaconsole/views/instances.py:218
+#: eucaconsole/views/instances.py:220
 msgid "Launch time: Newest to Oldest"
 msgstr "Ώρα εκκίνησης:  Νεότερη σε παλιότερη"
 
-#: eucaconsole/views/instances.py:220
+#: eucaconsole/views/instances.py:222
 msgid "Instance name: A to Z"
 msgstr "Όνομα μηχανής: Α σε Ω"
 
-#: eucaconsole/views/instances.py:221
+#: eucaconsole/views/instances.py:223
 msgid "Instance name: Z to A"
 msgstr "Όνομα μηχανής:: Α σε Ω"
 
-#: eucaconsole/views/instances.py:255
+#: eucaconsole/views/instances.py:257
 #, fuzzy
-#| msgid "Starting instance {0}"
 msgid "Starting instances {0}"
 msgstr "Εκκίνηση μηχανής {0}"
 
-#: eucaconsole/views/instances.py:259 eucaconsole/views/instances.py:714
+#: eucaconsole/views/instances.py:261 eucaconsole/views/instances.py:717
 msgid ""
 "Successfully sent start instance request.  It may take a moment to start "
 "the instance."
@@ -10032,29 +9876,26 @@ msgstr ""
 "Η αίτηση εκκίνησης της μηχανής στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη "
 "ώρα για να ξεκινήσει η μηχανή."
 
-#: eucaconsole/views/instances.py:261
+#: eucaconsole/views/instances.py:263
 #, fuzzy
-#| msgid "Successfully sent request to terminate the following instances:"
 msgid "Successfully sent request to start the following instances:"
 msgstr "Η αίτηση τερματισμού στάλθηκε επιτυχώς για τις ακόλουθες μηχανές:"
 
-#: eucaconsole/views/instances.py:266
+#: eucaconsole/views/instances.py:268
 #, fuzzy
-#| msgid "Unable to start instance"
 msgid "Unable to start instances"
 msgstr "Αδυναμία έναρξης μηχανής"
 
-#: eucaconsole/views/instances.py:269
+#: eucaconsole/views/instances.py:271
 msgid "Unable to start instance"
 msgstr "Αδυναμία έναρξης μηχανής"
 
-#: eucaconsole/views/instances.py:278
+#: eucaconsole/views/instances.py:280
 #, fuzzy
-#| msgid "Stopping instance {0}"
 msgid "Stopping instance(s) {0}"
 msgstr "Διακοπή μηχανής {0}"
 
-#: eucaconsole/views/instances.py:282 eucaconsole/views/instances.py:727
+#: eucaconsole/views/instances.py:284 eucaconsole/views/instances.py:730
 msgid ""
 "Successfully sent stop instance request.  It may take a moment to stop "
 "the instance."
@@ -10062,29 +9903,26 @@ msgstr ""
 "Η αίτηση διακοπής της μηχανής στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη ώρα"
 " για να σταματήσει η μηχανή."
 
-#: eucaconsole/views/instances.py:284
+#: eucaconsole/views/instances.py:286
 #, fuzzy
-#| msgid "Successfully sent request to terminate the following instances:"
 msgid "Successfully sent request to stop the following instances:"
 msgstr "Η αίτηση τερματισμού στάλθηκε επιτυχώς για τις ακόλουθες μηχανές:"
 
-#: eucaconsole/views/instances.py:289
+#: eucaconsole/views/instances.py:291
 #, fuzzy
-#| msgid "Unable to stop instance"
 msgid "Unable to stop the instance(s)."
 msgstr "Αδυναμία διακοπής μηχανής"
 
-#: eucaconsole/views/instances.py:292
+#: eucaconsole/views/instances.py:294
 msgid "Unable to stop instance"
 msgstr "Αδυναμία διακοπής μηχανής"
 
-#: eucaconsole/views/instances.py:302
+#: eucaconsole/views/instances.py:304
 #, fuzzy
-#| msgid "Rebooting instance {0}"
 msgid "Rebooting instance(s) {0}"
 msgstr "Επανεκκίνηση μηχανής {0}"
 
-#: eucaconsole/views/instances.py:305 eucaconsole/views/instances.py:739
+#: eucaconsole/views/instances.py:307 eucaconsole/views/instances.py:742
 msgid ""
 "Successfully sent reboot request.  It may take a moment to reboot the "
 "instance."
@@ -10092,30 +9930,26 @@ msgstr ""
 "Η αίτηση επανεκκίνησης της μηχανής στάλθηκε επιτυχώς. Μπορεί να πάρει "
 "λίγη ώρα για να επανεκκινήσει η μηχανή."
 
-#: eucaconsole/views/instances.py:307
+#: eucaconsole/views/instances.py:309
 #, fuzzy
-#| msgid "Successfully sent request to terminate the following instances:"
 msgid "Successfully sent request to reboot the following instances:"
 msgstr "Η αίτηση τερματισμού στάλθηκε επιτυχώς για τις ακόλουθες μηχανές:"
 
-#: eucaconsole/views/instances.py:312 eucaconsole/views/instances.py:742
+#: eucaconsole/views/instances.py:314 eucaconsole/views/instances.py:745
 msgid "Unable to reboot the instance."
 msgstr "Αδυναμία επανεκκίνησης της μηχανής."
 
-#: eucaconsole/views/instances.py:315
+#: eucaconsole/views/instances.py:317
 #, fuzzy
-#| msgid "Unable to reboot instance"
 msgid "Unable to reboot instance(s)"
 msgstr "Αδυναμία επανεκκίνησης της μηχανής"
 
-#: eucaconsole/views/instances.py:325 eucaconsole/views/instances.py:751
+#: eucaconsole/views/instances.py:327 eucaconsole/views/instances.py:754
 msgid "Terminating instance {0}"
 msgstr "Τερματισμός μηχανής {0}"
 
-#: eucaconsole/views/instances.py:328
+#: eucaconsole/views/instances.py:330
 #, fuzzy
-#| msgid "" "Successfully sent terminate instance request.  It may take a
-#| moment to " "shut down the instance."
 msgid ""
 "Successfully sent terminate request.  It may take a moment to shut down "
 "the instance(s)."
@@ -10123,69 +9957,67 @@ msgstr ""
 "Η αίτηση τερματισμού της μηχανής στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη "
 "ώρα για να τερματιστεί η μηχανή."
 
-#: eucaconsole/views/instances.py:331
+#: eucaconsole/views/instances.py:333
 msgid "Successfully sent request to terminate the following instances:"
 msgstr "Η αίτηση τερματισμού στάλθηκε επιτυχώς για τις ακόλουθες μηχανές:"
 
-#: eucaconsole/views/instances.py:338
+#: eucaconsole/views/instances.py:340
 #, fuzzy
-#| msgid "Unable to terminate instances"
 msgid "Unable to terminate instance(s)"
 msgstr "Αδυναμία τερματισμού των μηχανών"
 
-#: eucaconsole/views/instances.py:348
+#: eucaconsole/views/instances.py:350
 msgid "Associating IP {0} with instances {1}"
 msgstr "Συσχέτιση IP {0} με μηχανές {1}"
 
-#: eucaconsole/views/instances.py:354 eucaconsole/views/instances.py:787
+#: eucaconsole/views/instances.py:356 eucaconsole/views/instances.py:790
 msgid "Successfully associated the IP to the instance."
 msgstr "Η συσχέτιση της διεύθυνσης IP με τη μηχανή έγινε επιτυχώς."
 
-#: eucaconsole/views/instances.py:357
+#: eucaconsole/views/instances.py:359
 #, fuzzy
 msgid "Failed to associate the IP address to the instance."
 msgstr "Η συσχέτιση της διεύθυνσης IP με τη μηχανή έγινε επιτυχώς."
 
-#: eucaconsole/views/instances.py:368
+#: eucaconsole/views/instances.py:370
 msgid "Disassociating IP {0}"
 msgstr "Διαχωρισμός IP {0}"
 
-#: eucaconsole/views/instances.py:375 eucaconsole/views/instances.py:803
+#: eucaconsole/views/instances.py:377 eucaconsole/views/instances.py:806
 msgid "Successfully disassociated the IP from the instance."
 msgstr "Ο διαχωρισμός της διεύθυνσης IP από τη μηχανή έγινε επιτυχώς."
 
-#: eucaconsole/views/instances.py:377
+#: eucaconsole/views/instances.py:379
 #, fuzzy
-#| msgid "Successfully sent request to terminate the following instances:"
 msgid "Successfully sent request to disassociate the follow IP addresses:"
 msgstr "Η αίτηση τερματισμού στάλθηκε επιτυχώς για τις ακόλουθες μηχανές:"
 
-#: eucaconsole/views/instances.py:381
+#: eucaconsole/views/instances.py:383
 #, fuzzy
 msgid "Failed to disassociate the IP address from the instance."
 msgstr "Αδυναμία διαχωρισμού διεύθυνσης IP από τη μηχανή"
 
-#: eucaconsole/views/instances.py:685
+#: eucaconsole/views/instances.py:688
 msgid "Updating instance {0} (type={1}, kernel={2}, ramidisk={3})"
 msgstr "Ενημέρωση μηχνής {0} (type={1}, kernel={2}, ramidisk={3})"
 
-#: eucaconsole/views/instances.py:699 eucaconsole/views/instances.py:711
+#: eucaconsole/views/instances.py:702 eucaconsole/views/instances.py:714
 msgid "Starting instance {0}"
 msgstr "Εκκίνηση μηχανής {0}"
 
-#: eucaconsole/views/instances.py:702
+#: eucaconsole/views/instances.py:705
 msgid "Successfully modified instance"
 msgstr "Η μηχανή τροποποιήθηκε επιτυχώς"
 
-#: eucaconsole/views/instances.py:725
+#: eucaconsole/views/instances.py:728
 msgid "Stopping instance {0}"
 msgstr "Διακοπή μηχανής {0}"
 
-#: eucaconsole/views/instances.py:737
+#: eucaconsole/views/instances.py:740
 msgid "Rebooting instance {0}"
 msgstr "Επανεκκίνηση μηχανής {0}"
 
-#: eucaconsole/views/instances.py:753
+#: eucaconsole/views/instances.py:756
 msgid ""
 "Successfully sent terminate instance request.  It may take a moment to "
 "shut down the instance."
@@ -10193,7 +10025,7 @@ msgstr ""
 "Η αίτηση τερματισμού της μηχανής στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη "
 "ώρα για να τερματιστεί η μηχανή."
 
-#: eucaconsole/views/instances.py:774
+#: eucaconsole/views/instances.py:777
 msgid ""
 "There was a problem with the key, please try again, verifying the correct"
 " private key is used."
@@ -10201,16 +10033,16 @@ msgstr ""
 "Προέκυψε ένα πρόβλημα με το κλειδί, παρακαλούμε προσπαθήστε ξανά, "
 "επιβεβαιώνοντας πως χρησιμοποιείτε το σωστό ιδιωτικό κλειδί."
 
-#: eucaconsole/views/instances.py:838
+#: eucaconsole/views/instances.py:841
 msgid "Disassociating ip {0} from instance {1}"
 msgstr "Διαχωρισμός διεύθυνσης ip {0} από τη μηχανή {1}"
 
-#: eucaconsole/views/instances.py:1027 eucaconsole/views/volumes.py:162
+#: eucaconsole/views/instances.py:1030 eucaconsole/views/volumes.py:162
 #: eucaconsole/views/volumes.py:440
 msgid "Attaching volume {0} to {1} as {2}"
 msgstr "Επισύναψη τόμου{0} στο {1} ως {2}"
 
-#: eucaconsole/views/instances.py:1030
+#: eucaconsole/views/instances.py:1033
 msgid ""
 "Request successfully submitted.  It may take a moment to attach the "
 "volume."
@@ -10218,34 +10050,34 @@ msgstr ""
 "Η αίτηση στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη ώρα η επισύναψη του "
 "τόμου."
 
-#: eucaconsole/views/instances.py:1041
+#: eucaconsole/views/instances.py:1044
 msgid "Dettaching volume {0} from {1}"
 msgstr "Απόσπαση τόμου {0} από {1}"
 
-#: eucaconsole/views/instances.py:1043 eucaconsole/views/volumes.py:181
+#: eucaconsole/views/instances.py:1046 eucaconsole/views/volumes.py:181
 #: eucaconsole/views/volumes.py:457
 msgid ""
 "Request successfully submitted.  It may take a moment to detach the "
 "volume."
 msgstr "Η αίτηση στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη ώρα η απόσπαση του τόμου."
 
-#: eucaconsole/views/instances.py:1097 eucaconsole/views/volumes.py:671
+#: eucaconsole/views/instances.py:1100 eucaconsole/views/volumes.py:671
 #, fuzzy
 msgid "Monitoring for instance {0} {1}"
 msgstr "Διακοπή μηχανής {0}"
 
-#: eucaconsole/views/instances.py:1102
+#: eucaconsole/views/instances.py:1105
 #, fuzzy
 msgid ""
 "Request successfully submitted.  It may take a moment for the monitoring "
 "status to update"
 msgstr "Η αίτηση στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη ώρα η απόσπαση του τόμου."
 
-#: eucaconsole/views/instances.py:1218 eucaconsole/views/instances.py:1385
+#: eucaconsole/views/instances.py:1221 eucaconsole/views/instances.py:1388
 msgid "Running instance(s) (num={0}, image={1}, type={2})"
 msgstr "Εκτελούμενη μηχανή(-ες) (num={0}, image={1}, type={2})"
 
-#: eucaconsole/views/instances.py:1266 eucaconsole/views/instances.py:1436
+#: eucaconsole/views/instances.py:1269 eucaconsole/views/instances.py:1439
 msgid ""
 "Successfully sent launch instances request.  It may take a moment to "
 "launch instances "
@@ -10253,15 +10085,15 @@ msgstr ""
 "Η αίτηση εκκίνησης των μηχανών στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη "
 "ώρα για να ξεκινήσουν οι μηχανές."
 
-#: eucaconsole/views/instances.py:1465
+#: eucaconsole/views/instances.py:1468
 msgid "created from instance {0} running image {1}"
 msgstr "δημιουργήθηκε από τη μηχανή {0} εκτελούμενη εικόνα {1}"
 
-#: eucaconsole/views/instances.py:1514
+#: eucaconsole/views/instances.py:1517
 msgid "Bundling instance {0}"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1564 eucaconsole/views/instances.py:1578
+#: eucaconsole/views/instances.py:1567 eucaconsole/views/instances.py:1581
 msgid ""
 "Successfully sent create image request.  It may take a few minutes to "
 "create the image."
@@ -10269,31 +10101,29 @@ msgstr ""
 "Η αίτηση δημιουργίας εικόνας στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη ώρα "
 "για να δημιουργηθεί η μηχανή."
 
-#: eucaconsole/views/instances.py:1570
+#: eucaconsole/views/instances.py:1573
 msgid "Creating image from instance {0}"
 msgstr "Δημιουργία εικόνας από μηχανή {0}"
 
-#: eucaconsole/views/instances.py:1606
+#: eucaconsole/views/instances.py:1609
 msgid "Unauthorized"
 msgstr "Μη εξουσιοδοτημένος"
 
-#: eucaconsole/views/instances.py:1643
+#: eucaconsole/views/instances.py:1646
 msgid "Failed to instance type attributes"
 msgstr ""
 
-#: eucaconsole/views/instances.py:1644
+#: eucaconsole/views/instances.py:1647
 msgid "Successfully updated instance type attributes"
 msgstr "Τα χαρακτηριστικά τύπου της μηχανής ενημερώθηκαν επιτυχώς"
 
-#: eucaconsole/views/ipaddresses.py:50 eucaconsole/views/ipaddresses.py:236
+#: eucaconsole/views/ipaddresses.py:50 eucaconsole/views/ipaddresses.py:237
 #, fuzzy
-#| msgid "IP address"
 msgid "IP Addresses"
 msgstr "Διεύθυνση IP"
 
 #: eucaconsole/views/ipaddresses.py:83
 #, fuzzy
-#| msgid "Allocating {0} ElasticIPs"
 msgid "Allocating {0} Elastic IPs"
 msgstr "Ανάθεση {0} ElasticIPs"
 
@@ -10301,13 +10131,12 @@ msgstr "Ανάθεση {0} ElasticIPs"
 msgid "Successfully allocated IPs"
 msgstr "Η ανάθεση των IP έγινε επιτυχώς"
 
-#: eucaconsole/views/ipaddresses.py:112 eucaconsole/views/ipaddresses.py:264
+#: eucaconsole/views/ipaddresses.py:112 eucaconsole/views/ipaddresses.py:265
 #, fuzzy
-#| msgid "Associating ElasticIP {0} with instance {1}"
 msgid "Associating Elastic IP {0} with instance {1}"
 msgstr "Συσχέτιση ElasticIP {0} με τη μηχανή {1}"
 
-#: eucaconsole/views/ipaddresses.py:115 eucaconsole/views/ipaddresses.py:266
+#: eucaconsole/views/ipaddresses.py:115 eucaconsole/views/ipaddresses.py:267
 msgid "Successfully associated IP {ip} with instance {instance}"
 msgstr "Η συσχέτιση της διεύθυνσης IP {ip} με τη μηχανή {instance} έγινε επιτυχώς"
 
@@ -10315,13 +10144,12 @@ msgstr "Η συσχέτιση της διεύθυνσης IP {ip} με τη μη
 msgid "Unable to associate IP with instance"
 msgstr "Αδυναμία συσχέτισης διεύθυνσης IP με τη μηχανή"
 
-#: eucaconsole/views/ipaddresses.py:132 eucaconsole/views/ipaddresses.py:277
+#: eucaconsole/views/ipaddresses.py:132 eucaconsole/views/ipaddresses.py:278
 #, fuzzy
-#| msgid "Disassociating ElasticIP {0} from instance {1}"
 msgid "Disassociating Elastic IP {0} from instance {1}"
 msgstr "Διαχωρισμός ElasticIP {0} από τη μηχανή {1}"
 
-#: eucaconsole/views/ipaddresses.py:136 eucaconsole/views/ipaddresses.py:280
+#: eucaconsole/views/ipaddresses.py:136 eucaconsole/views/ipaddresses.py:281
 msgid "Successfully disassociated IP {ip} from instance {instance}"
 msgstr ""
 "Ο διαχωρισμός της διεύθυνσης IP {ip} από τη μηχανή {instance} έγινε "
@@ -10333,11 +10161,10 @@ msgstr "Αδυναμία διαχωρισμού διεύθυνσης IP από �
 
 #: eucaconsole/views/ipaddresses.py:151
 #, fuzzy
-#| msgid "Releasing ElasticIP {0}"
 msgid "Releasing Elastic IP(s) {0}"
 msgstr "Απελευθέρωση ElasticIP {0}"
 
-#: eucaconsole/views/ipaddresses.py:157 eucaconsole/views/ipaddresses.py:293
+#: eucaconsole/views/ipaddresses.py:157 eucaconsole/views/ipaddresses.py:294
 msgid "Successfully released {ip} to the cloud"
 msgstr "Η απελευθέρωση της {ip} στο cloud έγινε επιτυχώς"
 
@@ -10349,15 +10176,13 @@ msgstr "Αδυναμία απελευθέρωσης διεύθυνσης IP"
 msgid "IP Address"
 msgstr "Διεύθυνση IP"
 
-#: eucaconsole/views/ipaddresses.py:291
+#: eucaconsole/views/ipaddresses.py:292
 #, fuzzy
-#| msgid "Releasing ElasticIP {0}"
 msgid "Releasing Elastic IP {0}"
 msgstr "Απελευθέρωση ElasticIP {0}"
 
 #: eucaconsole/views/keypairs.py:112
 #, fuzzy
-#| msgid "Key pair"
 msgid "Key Pair"
 msgstr "Ζεύγος κλειδιών"
 
@@ -10387,7 +10212,6 @@ msgstr "Διαγράφηκε επιτυχώς το ζεύγος κλειδιών
 
 #: eucaconsole/views/launchconfigs.py:58
 #, fuzzy
-#| msgid "Launch config"
 msgid "Launch Configs"
 msgstr "Ρύθμιση εκκίνησης"
 
@@ -10419,7 +10243,6 @@ msgstr "Ζεύγος κλειδιών: Ω σε Α"
 #: eucaconsole/views/launchconfigs.py:252
 #: eucaconsole/views/launchconfigs.py:417
 #, fuzzy
-#| msgid "Launch config"
 msgid "Launch Config"
 msgstr "Ρύθμιση εκκίνησης"
 
@@ -10447,21 +10270,20 @@ msgstr ""
 "Δεν είναι έγκυρο το πιστοποιητικό SSL αυτού του cloud. Παρακαλούμε "
 "επικοινωνήστε με το διαχειριστή του cloud."
 
-#: eucaconsole/views/login.py:134
+#: eucaconsole/views/login.py:135
 msgid "Session Timed Out"
 msgstr "Έληξε η συνεδρία"
 
-#: eucaconsole/views/login.py:197 eucaconsole/views/managecredentials.py:138
+#: eucaconsole/views/login.py:198 eucaconsole/views/managecredentials.py:138
 msgid "Invalid user/account name and/or password."
 msgstr "Μη έγκυρο όνομα χρήστη/λογαριασμού και/ή κωδικός πρόσβασης."
 
-#: eucaconsole/views/login.py:247
+#: eucaconsole/views/login.py:248
 msgid "Invalid access key and/or secret key."
 msgstr "Μη έγκυρο κλειδί πρόσβασης και/η μυστικό κλειδί."
 
 #: eucaconsole/views/managecredentials.py:53
 #, fuzzy
-#| msgid "Manage credentials"
 msgid "Manage Credentials"
 msgstr "Διαχείριση διαπιστευτηρίων"
 
@@ -10476,43 +10298,36 @@ msgstr "Καμία απάντηση από τον κεντρικό υπολογ�
 
 #: eucaconsole/views/metrics.py:46
 #, fuzzy
-#| msgid "Auto scaling groups"
 msgid "Auto scaling group"
 msgstr "Δημιουργία ομάδας κλιμάκωσης"
 
 #: eucaconsole/views/metrics.py:60
 #, fuzzy
-#| msgid "Auto scaling groups"
 msgid "Auto scaling group - Group metrics"
 msgstr "Δημιουργία ομάδας κλιμάκωσης"
 
 #: eucaconsole/views/metrics.py:66
 #, fuzzy
-#| msgid "Details for volume:"
 msgid "EBS - Per volume"
 msgstr "Λεπτομέρειες τόμου:"
 
 #: eucaconsole/views/metrics.py:72
 #, fuzzy
-#| msgid "Connect to instance"
 msgid "EC2 - Per-instance"
 msgstr "Σύνδεση στη μηχανή"
 
 #: eucaconsole/views/metrics.py:78
 #, fuzzy
-#| msgid "For all instances"
 msgid "EC2 - Across all instances"
 msgstr "Για όλες τις μηχανές"
 
 #: eucaconsole/views/metrics.py:84
 #, fuzzy
-#| msgid "Instances in scaling groups"
 msgid "EC2 - Instance metrics by scaling group"
 msgstr "Μηχανές σε ομάδες κλιμάκωσης"
 
 #: eucaconsole/views/metrics.py:90
 #, fuzzy
-#| msgid "Instance type"
 msgid "EC2 - Per instance type"
 msgstr "Τύπος μηχανής"
 
@@ -10526,7 +10341,6 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:108
 #, fuzzy
-#| msgid "Select zone"
 msgid "ELB - Per zone"
 msgstr "Επιλογή πλακιδίου"
 
@@ -10536,7 +10350,6 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:120
 #, fuzzy
-#| msgid "Select load balancers..."
 msgid "ELB - Across all load balancers"
 msgstr "Επιλογή load balancers..."
 
@@ -10546,49 +10359,41 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:187
 #, fuzzy
-#| msgid "Group name: Z to A"
 msgid "Resource name: A to Z"
 msgstr "Όνομα ομάδας: Ω σε Α"
 
 #: eucaconsole/views/metrics.py:188
 #, fuzzy
-#| msgid "Group name: Z to A"
 msgid "Resource name: Z to A"
 msgstr "Όνομα ομάδας: Ω σε Α"
 
 #: eucaconsole/views/metrics.py:189
 #, fuzzy
-#| msgid "User name: Z to A"
 msgid "Metric name: A to Z"
 msgstr "Όνομα χρήστη: Ω σε Α"
 
 #: eucaconsole/views/metrics.py:190
 #, fuzzy
-#| msgid "User name: Z to A"
 msgid "Metric name: Z to A"
 msgstr "Όνομα χρήστη: Ω σε Α"
 
 #: eucaconsole/views/metrics.py:193
 #, fuzzy
-#| msgid "Volume type"
 msgid "Resource type"
 msgstr "Τύπος τόμου"
 
 #: eucaconsole/views/metrics.py:196
 #, fuzzy
-#| msgid "Scaling group"
 msgid "Scaling group metric"
 msgstr "Ομάδα κλιμάκωσης"
 
 #: eucaconsole/views/metrics.py:199
 #, fuzzy
-#| msgid "instance"
 msgid "Instance metric"
 msgstr "μηχανή"
 
 #: eucaconsole/views/metrics.py:202
 #, fuzzy
-#| msgid "Load balancer"
 msgid "Load balancer metric"
 msgstr "Load balancer"
 
@@ -10602,7 +10407,6 @@ msgstr ""
 
 #: eucaconsole/views/metrics.py:265
 #, fuzzy
-#| msgid "Disable detailed monitoring"
 msgid " (requires detailed monitoring on AWS)"
 msgstr "Ενεργοποίηση λεπτομερούς παρακολούθησης"
 
@@ -10629,7 +10433,7 @@ msgid "Press enter to select"
 msgstr ""
 
 #: eucaconsole/views/panels.py:418
-msgid "Select or type to enter account/user"
+msgid "Select account or type to enter account ID"
 msgstr ""
 
 #: eucaconsole/views/panels.py:431
@@ -10705,11 +10509,11 @@ msgstr "Όνομα ρόλου: Α σε Ω"
 msgid "Role name: Z to A"
 msgstr "Όνομα ρόλου: Ω σε Α"
 
-#: eucaconsole/views/roles.py:88 eucaconsole/views/roles.py:285
+#: eucaconsole/views/roles.py:88 eucaconsole/views/roles.py:287
 msgid "Deleting role {0}"
 msgstr "Διαγραφή ρόλου {0}"
 
-#: eucaconsole/views/roles.py:92 eucaconsole/views/roles.py:289
+#: eucaconsole/views/roles.py:92 eucaconsole/views/roles.py:291
 msgid "Successfully deleted role"
 msgstr "Ο ρόλος διαγράφθηκε επιτυχώς"
 
@@ -10728,59 +10532,62 @@ msgstr ""
 "μπορούν να περιέχουν γράμματα, αριθμούς, '+', '=', ',', '.'. '@' and '-',"
 " και δεν πρέπει να περιέχουν κενά."
 
-#: eucaconsole/views/roles.py:211
+#: eucaconsole/views/roles.py:210
+msgid "All"
+msgstr ""
+
+#: eucaconsole/views/roles.py:213
 msgid "Account "
 msgstr "Λογαριασμός"
 
-#: eucaconsole/views/roles.py:216
+#: eucaconsole/views/roles.py:218
 msgid "Service "
 msgstr "Υπηρεσία"
 
-#: eucaconsole/views/roles.py:255
+#: eucaconsole/views/roles.py:257
 msgid "Creating role {0}"
 msgstr "Δημιουργία ρόλου {0}"
 
-#: eucaconsole/views/roles.py:269
+#: eucaconsole/views/roles.py:271
 msgid "Successfully created role {role}"
 msgstr "Ο ρόλος {role} διαγράφθηκε επιτυχώς"
 
-#: eucaconsole/views/roles.py:316
+#: eucaconsole/views/roles.py:318
 msgid "Updating policy {0} for role {1}"
 msgstr "Ενημέρωση πολιτικής {0} για το ρόλο {1}"
 
-#: eucaconsole/views/roles.py:320
+#: eucaconsole/views/roles.py:322
 msgid "Successfully updated role policy"
 msgstr "Ο ρόλος πολιτικής ενημερώθηκε επιτυχώς"
 
-#: eucaconsole/views/roles.py:328
+#: eucaconsole/views/roles.py:330
 msgid "Updating trust policy for role {0}"
 msgstr "Ενημέρωση πολιτικής εμπιστοσύνης για το ρόλο {0}"
 
-#: eucaconsole/views/roles.py:333
+#: eucaconsole/views/roles.py:335
 msgid "Successfully updated trust role policy"
 msgstr "Ο ρόλος της πολιτικής εμπιστοσύνης ενημερώθηκε επιτυχώς"
 
-#: eucaconsole/views/roles.py:343
+#: eucaconsole/views/roles.py:345
 msgid "Deleting policy {0} for role {1}"
 msgstr "Διαγραφή πολιτικής {0} για το ρόλο {1}"
 
-#: eucaconsole/views/roles.py:345
+#: eucaconsole/views/roles.py:347
 msgid "Successfully deleted role policy"
 msgstr "Ο ρόλος πολιτικής διαγράφθηκε επιτυχώς"
 
 #: eucaconsole/views/scalinggroups.py:92
 #, fuzzy
-#| msgid "Scaling groups"
 msgid "Scaling Groups"
 msgstr "Ομάδες κλιμάκωσης"
 
 #: eucaconsole/views/scalinggroups.py:130
-#: eucaconsole/views/scalinggroups.py:391
+#: eucaconsole/views/scalinggroups.py:394
 msgid "Deleting scaling group {0}"
 msgstr "Διαγραφή ομάδας κλιμάκωσης {0}"
 
 #: eucaconsole/views/scalinggroups.py:137
-#: eucaconsole/views/scalinggroups.py:393
+#: eucaconsole/views/scalinggroups.py:396
 msgid "Successfully deleted scaling group"
 msgstr "Η ομάδα κλιμάκωσης διαγράφηκε επιτυχώς"
 
@@ -10792,184 +10599,170 @@ msgstr ""
 msgid "Current instances"
 msgstr "Τρέχουσες μηχανές"
 
-#: eucaconsole/views/scalinggroups.py:305
-#: eucaconsole/views/scalinggroups.py:496
-#: eucaconsole/views/scalinggroups.py:700
-#: eucaconsole/views/scalinggroups.py:869
-#, fuzzy
-#| msgid "Scaling group"
-msgid "Scaling Group"
-msgstr "Ομάδα κλιμάκωσης"
-
-#: eucaconsole/views/scalinggroups.py:346
-msgid "Select one or more availability zones..."
-msgstr "Επιλέξτε μία ή περισσότερες ζώνες διαθεσιμότητας..."
-
-#: eucaconsole/views/scalinggroups.py:347
+#: eucaconsole/views/scalinggroups.py:254
 msgid "Select one or more termination policies..."
 msgstr "Επιλέξτε μία ή περισσότερες πολιτικές τερματισμού..."
 
-#: eucaconsole/views/scalinggroups.py:368
+#: eucaconsole/views/scalinggroups.py:306
+#: eucaconsole/views/scalinggroups.py:499
+#: eucaconsole/views/scalinggroups.py:706
+#: eucaconsole/views/scalinggroups.py:875
+#, fuzzy
+msgid "Scaling Group"
+msgstr "Ομάδα κλιμάκωσης"
+
+#: eucaconsole/views/scalinggroups.py:349
+msgid "Select one or more availability zones..."
+msgstr "Επιλέξτε μία ή περισσότερες ζώνες διαθεσιμότητας..."
+
+#: eucaconsole/views/scalinggroups.py:371
 msgid "Updating scaling group {0}"
 msgstr "Ενημέρωση ομάδας κλιμάκωσης {0}"
 
-#: eucaconsole/views/scalinggroups.py:371
+#: eucaconsole/views/scalinggroups.py:374
 msgid "Successfully updated scaling group"
 msgstr "Η ομάδα κλιμάκωσης ενημερώθηκε επιτυχώς"
 
-#: eucaconsole/views/scalinggroups.py:388
+#: eucaconsole/views/scalinggroups.py:391
 msgid "Terminating scaling group {0} instances"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:522
+#: eucaconsole/views/scalinggroups.py:525
 msgid "Marking instance {0} unhealthy"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:525
+#: eucaconsole/views/scalinggroups.py:528
 msgid "Successfully marked the following instance as unhealthy:"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:540
+#: eucaconsole/views/scalinggroups.py:543
 msgid "Terminating scaling group {0} instance {1}"
 msgstr "Τερματισμός ομάδας κλιμάκωσης {0} για τη μηχανή {1}"
 
-#: eucaconsole/views/scalinggroups.py:543
+#: eucaconsole/views/scalinggroups.py:546
 msgid "Successfully sent terminate request for instance"
 msgstr "Η αίτηση τερματισμού στάλθηκε επιτυχώς για τη μηχανή"
 
-#: eucaconsole/views/scalinggroups.py:615
+#: eucaconsole/views/scalinggroups.py:618
 #, fuzzy
-#| msgid "Successfully created"
 msgid "Successful"
 msgstr "Δημιουργήθηκε επιτυχώς"
 
-#: eucaconsole/views/scalinggroups.py:617
+#: eucaconsole/views/scalinggroups.py:620
 #, fuzzy
-#| msgid "Detailed"
 msgid "Failed"
 msgstr "ενεργό"
 
-#: eucaconsole/views/scalinggroups.py:618
+#: eucaconsole/views/scalinggroups.py:621
 #, fuzzy
-#| msgid "out of service"
 msgid "Not yet in service"
 msgstr "Συσκευή root"
 
-#: eucaconsole/views/scalinggroups.py:619
+#: eucaconsole/views/scalinggroups.py:622
 #, fuzzy
-#| msgid "Cancel"
 msgid "Canceled"
 msgstr "Ακύρωση"
 
-#: eucaconsole/views/scalinggroups.py:620
+#: eucaconsole/views/scalinggroups.py:623
 #, fuzzy
-#| msgid "Updating load balancer"
 msgid "Waiting for launch"
 msgstr "Load balancer"
 
-#: eucaconsole/views/scalinggroups.py:621
+#: eucaconsole/views/scalinggroups.py:624
 #, fuzzy
-#| msgid "Delete on terminate"
 msgid "Waiting for terminate"
 msgstr "Διαγραφή στον τερματισμό"
 
-#: eucaconsole/views/scalinggroups.py:680
+#: eucaconsole/views/scalinggroups.py:686
 #, fuzzy
-#| msgid "Image not found"
 msgid "Activity ID not found "
 msgstr "Δε βρέθηκε η εικόνα"
 
-#: eucaconsole/views/scalinggroups.py:685
+#: eucaconsole/views/scalinggroups.py:691
 msgid "Start time: most recent"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:686
+#: eucaconsole/views/scalinggroups.py:692
 msgid "End time: most recent"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:687
+#: eucaconsole/views/scalinggroups.py:693
 msgid "Status: A to Z"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:688
+#: eucaconsole/views/scalinggroups.py:694
 msgid "Status: Z to A"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:689
+#: eucaconsole/views/scalinggroups.py:695
 #, fuzzy
-#| msgid "Description"
 msgid "Description: A to Z"
 msgstr "Περιγραφή"
 
-#: eucaconsole/views/scalinggroups.py:690
+#: eucaconsole/views/scalinggroups.py:696
 #, fuzzy
-#| msgid "Description"
 msgid "Description: Z to A"
 msgstr "Περιγραφή"
 
-#: eucaconsole/views/scalinggroups.py:700
+#: eucaconsole/views/scalinggroups.py:706
 #, fuzzy
-#| msgid "User policies"
 msgid "Policies"
 msgstr "Πολιτικές χρήστη"
 
-#: eucaconsole/views/scalinggroups.py:717
+#: eucaconsole/views/scalinggroups.py:723
 msgid "Add"
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:754
+#: eucaconsole/views/scalinggroups.py:760
 msgid "Deleting scaling group {0} policy {1}"
 msgstr "Διγραφή ομάδας κλιμάκωσης {0} για την ομάδα {1}"
 
-#: eucaconsole/views/scalinggroups.py:757
+#: eucaconsole/views/scalinggroups.py:763
 msgid "Successfully deleted scaling group policy"
 msgstr "Η πολιτική της ομάδας κλιμάκωσης διαγράφηκε επιτυχώς"
 
-#: eucaconsole/views/scalinggroups.py:810
+#: eucaconsole/views/scalinggroups.py:816
 msgid "Creating scaling group {0} policy {1}"
 msgstr "Δημιουργία ομάδας κλιμάκωσης {0} για την πολιτική {1}"
 
-#: eucaconsole/views/scalinggroups.py:824
+#: eucaconsole/views/scalinggroups.py:830
 msgid "Successfully created scaling group policy"
 msgstr "Η πολιτική της ομάδας κλιμάκωσης δημιουργήθηκε επιτυχώς"
 
-#: eucaconsole/views/scalinggroups.py:878
+#: eucaconsole/views/scalinggroups.py:884
 msgid "Select availability zones..."
 msgstr "Επιλογή ζωνών διαθεσιμότητας..."
 
-#: eucaconsole/views/scalinggroups.py:879
+#: eucaconsole/views/scalinggroups.py:885
 msgid "Select load balancers..."
 msgstr "Επιλογή load balancers..."
 
-#: eucaconsole/views/scalinggroups.py:880
+#: eucaconsole/views/scalinggroups.py:886
 #, fuzzy
 msgid "Select VPC subnets..."
 msgstr "Επιλογή τόμου..."
 
-#: eucaconsole/views/scalinggroups.py:922
+#: eucaconsole/views/scalinggroups.py:929
 msgid "Creating scaling group {0}"
 msgstr "Δημιουργία ομάδας κλιμάκωσης {0}"
 
-#: eucaconsole/views/scalinggroups.py:953
+#: eucaconsole/views/scalinggroups.py:966
 msgid "Successfully created scaling group"
 msgstr "Η ομάδα κλιμάκωσης δημιουργήθηκε επιτυχώς"
 
-#: eucaconsole/views/scalinggroups.py:993
+#: eucaconsole/views/scalinggroups.py:1006
 msgid ""
 "Changing the time will update charts for both instance and scaling group "
 "metrics."
 msgstr ""
 
-#: eucaconsole/views/scalinggroups.py:1024
+#: eucaconsole/views/scalinggroups.py:1037
 #, fuzzy
-#| msgid "Deleting scaling group {0} policy {1}"
 msgid "Metrics collection for scaling group {0} {1}"
 msgstr "Διγραφή ομάδας κλιμάκωσης {0} για την ομάδα {1}"
 
-#: eucaconsole/views/scalinggroups.py:1032
+#: eucaconsole/views/scalinggroups.py:1045
 #, fuzzy
-#| msgid "" "Request successfully submitted.  It may take a moment for the
-#| monitoring " "status to update"
 msgid ""
 "Request successfully submitted.  It may take a moment for metrics "
 "collection to update."
@@ -10977,7 +10770,6 @@ msgstr "Η αίτηση στάλθηκε επιτυχώς. Μπορεί να π�
 
 #: eucaconsole/views/securitygroups.py:50
 #, fuzzy
-#| msgid "security group"
 msgid "Security Groups"
 msgstr "η ομάδα ασφάλειας"
 
@@ -10997,7 +10789,6 @@ msgstr "Αδυναμία διαγραφής ομάδας ασφαλείας"
 
 #: eucaconsole/views/securitygroups.py:229
 #, fuzzy
-#| msgid "security group"
 msgid "Security Group"
 msgstr "η ομάδα ασφάλειας"
 
@@ -11035,7 +10826,6 @@ msgstr "Το στιγμιότυπο διαγράφηκε επιτυχώς"
 
 #: eucaconsole/views/snapshots.py:109
 #, fuzzy
-#| msgid "Successfully deleted snapshot"
 msgid "Successfully deleted snapshots "
 msgstr "Το στιγμιότυπο διαγράφηκε επιτυχώς"
 
@@ -11079,87 +10869,84 @@ msgstr ""
 "Η αίτηση δημιουργίας στιγμιότυπου στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη"
 " ώρα για να δημιουργηθεί το στιγμιότυπο."
 
-#: eucaconsole/views/stacks.py:95
+#: eucaconsole/views/stacks.py:97
 msgid ""
 "Cannot create S3 bucket to store your CloudFormation template due to "
 "namespace collision. Please contact your cloud administrator."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:159 eucaconsole/views/stacks.py:274
+#: eucaconsole/views/stacks.py:161 eucaconsole/views/stacks.py:276
 #, fuzzy
 msgid "Unable to delete stack"
 msgstr "Αδυναμία διαγραφής στιγμιότυπου"
 
-#: eucaconsole/views/stacks.py:163 eucaconsole/views/stacks.py:280
+#: eucaconsole/views/stacks.py:165 eucaconsole/views/stacks.py:282
 #, fuzzy
 msgid "Successfully sent delete stack request. It may take a moment to delete "
 msgstr ""
 "Η αίτηση δημιουργίας στιγμιότυπου στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη"
 " ώρα για να δημιουργηθεί το στιγμιότυπο."
 
-#: eucaconsole/views/stacks.py:237
+#: eucaconsole/views/stacks.py:239
 #, fuzzy
 msgid "Create Complete"
 msgstr "Δημιουργία ρόλου"
 
-#: eucaconsole/views/stacks.py:238
+#: eucaconsole/views/stacks.py:240
 #, fuzzy
 msgid "Create In Progresss"
 msgstr "Διαγραφή σε εξέλιξη"
 
-#: eucaconsole/views/stacks.py:239
+#: eucaconsole/views/stacks.py:241
 #, fuzzy
 msgid "Create Failed"
 msgstr "Δημιουργία φακέλου"
 
-#: eucaconsole/views/stacks.py:240
+#: eucaconsole/views/stacks.py:242
 #, fuzzy
 msgid "Delete In Progresss"
 msgstr "Διαγραφή σε εξέλιξη"
 
-#: eucaconsole/views/stacks.py:241
+#: eucaconsole/views/stacks.py:243
 #, fuzzy
 msgid "Delete Failed"
 msgstr "Επιλογή πλακιδίου"
 
-#: eucaconsole/views/stacks.py:242
+#: eucaconsole/views/stacks.py:244
 msgid "Rollback Complete"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:243
+#: eucaconsole/views/stacks.py:245
 #, fuzzy
 msgid "Rollback In Progresss"
 msgstr "Διαγραφή σε εξέλιξη"
 
-#: eucaconsole/views/stacks.py:244
+#: eucaconsole/views/stacks.py:246
 msgid "Rollback Failed"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:277
+#: eucaconsole/views/stacks.py:279
 #, fuzzy
 msgid "Deleting stack"
 msgstr "Επιλογή μηχανής..."
 
-#: eucaconsole/views/stacks.py:441
+#: eucaconsole/views/stacks.py:445
 msgid ""
 "Configuration error: cloudformation.samples.bucket is referencing bucket "
 "that is not visible to this user."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:462
+#: eucaconsole/views/stacks.py:466
 msgid "Update"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:466
+#: eucaconsole/views/stacks.py:470
 #, fuzzy
-#| msgid "Reading template"
 msgid "Edit template"
 msgstr "Επιλογή προτύπου"
 
-#: eucaconsole/views/stacks.py:504
+#: eucaconsole/views/stacks.py:508
 #, fuzzy
-#| msgid "" "Successfully sent create stack request. It may take a moment to
-#| create " "the stack."
 msgid ""
 "Successfully sent update stack request. It may take a moment to update "
 "the stack."
@@ -11167,10 +10954,8 @@ msgstr ""
 "Η αίτηση δημιουργίας στιγμιότυπου στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη"
 " ώρα για να δημιουργηθεί το στιγμιότυπο."
 
-#: eucaconsole/views/stacks.py:519
+#: eucaconsole/views/stacks.py:523
 #, fuzzy
-#| msgid "" "Successfully sent create stack request. It may take a moment to
-#| create " "the stack."
 msgid ""
 "Successfully sent cancel update request. It may take a moment to cancel "
 "the stack update."
@@ -11178,15 +10963,15 @@ msgstr ""
 "Η αίτηση δημιουργίας στιγμιότυπου στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη"
 " ώρα για να δημιουργηθεί το στιγμιότυπο."
 
-#: eucaconsole/views/stacks.py:533
+#: eucaconsole/views/stacks.py:537
 msgid "Invalid CloudFormation Template, Resources not found"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:585
+#: eucaconsole/views/stacks.py:591
 msgid "Invalid JSON File ({0})"
 msgstr ""
 
-#: eucaconsole/views/stacks.py:587
+#: eucaconsole/views/stacks.py:593
 msgid ""
 "\n"
 "                    Cannot read URL ({0}) If this URL is for an S3 "
@@ -11197,7 +10982,7 @@ msgid ""
 "                 "
 msgstr ""
 
-#: eucaconsole/views/stacks.py:826
+#: eucaconsole/views/stacks.py:832
 #, fuzzy
 msgid ""
 "Successfully sent create stack request. It may take a moment to create "
@@ -11206,29 +10991,29 @@ msgstr ""
 "Η αίτηση δημιουργίας στιγμιότυπου στάλθηκε επιτυχώς. Μπορεί να πάρει λίγη"
 " ώρα για να δημιουργηθεί το στιγμιότυπο."
 
-#: eucaconsole/views/stacks.py:854
+#: eucaconsole/views/stacks.py:860
 #, fuzzy
 msgid "File too large: "
 msgstr "Μέγεθος: Μικρότερο σε μεγαλύτερο"
 
-#: eucaconsole/views/stacks.py:866
+#: eucaconsole/views/stacks.py:872
 msgid "The URL is invalid. Valid URLs can only include "
 msgstr ""
 
-#: eucaconsole/views/stacks.py:869
+#: eucaconsole/views/stacks.py:875
 #, fuzzy
 msgid " or"
 msgstr "για"
 
-#: eucaconsole/views/stacks.py:870
+#: eucaconsole/views/stacks.py:876
 msgid " Please change your URL."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:878
+#: eucaconsole/views/stacks.py:884
 msgid "Cannot read from url provided."
 msgstr ""
 
-#: eucaconsole/views/stacks.py:881
+#: eucaconsole/views/stacks.py:887
 msgid "Template too large: "
 msgstr ""
 
@@ -11364,7 +11149,6 @@ msgstr ""
 
 #: eucaconsole/views/volumes.py:143
 #, fuzzy
-#| msgid "Successfully sent request to deregistered image."
 msgid "Successfully sent request to delete volumes"
 msgstr "Η αίτηση απεγγραφής της εικόνας στάλθηκε επιτυχώς."
 
@@ -11390,7 +11174,6 @@ msgstr "Απόσπαση τόμου {0}"
 
 #: eucaconsole/views/volumes.py:183
 #, fuzzy
-#| msgid "Successfully sent request to deregistered image."
 msgid "Successfully sent request to detach volumes"
 msgstr "Η αίτηση απεγγραφής της εικόνας στάλθηκε επιτυχώς."
 
@@ -11420,8 +11203,6 @@ msgstr "Το στιγμιότυπο διαγράφηκε επιτυχώς."
 
 #: eucaconsole/views/volumes.py:676
 #, fuzzy
-#| msgid "" "Request successfully submitted.  It may take a moment for the
-#| monitoring " "status to update"
 msgid ""
 "Request successfully submitted.  It may take a moment for the monitoring "
 "status to update."
@@ -11969,4 +11750,15 @@ msgstr "Η αίτηση στάλθηκε επιτυχώς. Μπορεί να π�
 
 #~ msgid "Successfully disassociated IP {ip} from instance"
 #~ msgstr "Ο διαχωρισμός της διεύθυνσης IP {ip} από τη μηχανή έγινε επιτυχώς."
+
+# | msgid "CloudWatch Alarms"
+#~ msgid "CloudWatchAlarms"
+#~ msgstr "Ειδοποιήσεις CloudWatch"
+
+# | msgid "Enable monitoring"
+#~ msgid "View monitoring"
+#~ msgstr "Ενεργοποίηση παρακολούθησης"
+
+#~ msgid "Select or type to enter account/user"
+#~ msgstr ""
 

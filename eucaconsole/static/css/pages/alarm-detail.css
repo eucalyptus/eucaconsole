@@ -111,6 +111,10 @@
 .create-alarm-modal .unit-label { font-weight: bold; color: #666666; }
 .create-alarm-modal input[name=threshold] { margin-bottom: 0; }
 .create-alarm-modal .controls-wrapper.dimensions small.error { position: relative; top: -8px; }
+.create-alarm-modal .metric-chart svg .nvd3.nv-legend .nv-series:last-child { display: none; }
+.create-alarm-modal .metric-chart .nvtooltip table tbody tr.nv-pointer-events-none:last-child { display: none; }
+.create-alarm-modal .help { margin: 15px 0 0; }
+.create-alarm-modal .help .help-content { overflow: auto; max-height: 90vh; }
 
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
@@ -124,6 +128,8 @@
 #delete-alarm-modal .row.control { margin: 0 0 15px; }
 
 .metric-chart svg { border: 1px solid #CCC; border-width: 0 1px 1px; width: 100%; height: 350px; margin: 0 auto 15px; }
+.metric-chart svg .nvd3.nv-legend .nv-series:last-child { display: none; }
+.metric-chart .nvtooltip table tbody tr.nv-pointer-events-none:last-child { display: none; }
 
 .label.status.alert { background-color: darkred; }
 

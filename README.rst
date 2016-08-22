@@ -35,7 +35,6 @@ Prerequisites
 -------------
 Prior to installing Pyramid and its dependencies, you may need to install the following libraries...
 
-* libevent-dev (required by gevent)
 * openssl (required by M2Crypto)
 * gcc, python development headers, swig (required to install Python libraries)
 
@@ -118,7 +117,7 @@ Run the server with
 
 Compilation Issues on OS X
 --------------------------
-On OS X (Yosemite and El Capitan), you may encounter issues installing M2Crypto and/or gevent.
+On OS X (Yosemite and El Capitan), you may encounter issues installing M2Crypto
 
 There is a known bug in the M2Crypto bindings and swig versions greater than 3.0.4.
 Using Homebrew you may install swig 3.0.4...
@@ -133,13 +132,10 @@ Using Homebrew you may install swig 3.0.4...
 If there are issues with M2Crypto locating the OpenSSL libraries (which could happen after an XCode update),
 reinstall the XCode Command Line Tools  via `xcode-select --install`
 
-If gevent has trouble compiling, use `CFLAGS='-std=c99' pip install gevent` as a workaround
-
-
 
 Running the server in development/debug mode
 --------------------------------------------
-The launcher.sh script runs the application with gunicorn and gevent,
+The launcher.sh script runs the application with gunicorn and eventlet,
 closely matching the production deployment setup.
 
 To have Pyramid automatically detect modifications to templates and views,

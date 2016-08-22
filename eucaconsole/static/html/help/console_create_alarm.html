@@ -3,6 +3,18 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Create CloudWatch Alarm"/>
+<meta name="abstract" content="Auto Scaling uses CloudWatch alarms to trigger scaling actions. An alarm watches a single metric (for example: CPU utilization) over a time period you set, and performs one or more actions based on the value of the metric relative to a given threshold. CloudWatch alarms will not invoke actions just because they are in a particular state. For more information, please see the Eucalyptus CloudWatch documentation in the Eucalyptus User Guide."/>
+<meta name="description" content="Auto Scaling uses CloudWatch alarms to trigger scaling actions. An alarm watches a single metric (for example: CPU utilization) over a time period you set, and performs one or more actions based on the value of the metric relative to a given threshold. CloudWatch alarms will not invoke actions just because they are in a particular state. For more information, please see the Eucalyptus CloudWatch documentation in the Eucalyptus User Guide."/>
+<meta name="prodname" content="Eucalyptus"/>
+<meta name="version" content="4.3.0"/>
+<meta name="copyright" content="© 2015-2016 Hewlett Packard Enterprise Development LP 2016" type="primary"/>
+<meta name="DC.Rights.Owner" content="© 2015-2016 Hewlett Packard Enterprise Development LP 2016" type="primary"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="create_load_balancer_ui_help_context"/>
+<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
 <title>Create CloudWatch Alarm</title>
 </head>
 <body id="create_load_balancer_ui_help_context">
@@ -25,56 +37,100 @@
         
         <div class="body taskbody"><p class="shortdesc"/>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd">Enter the name for your alarm in the <span class="ph uicontrol">Name</span> text
                         box.</span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Type a description for your alarm in the <span class="ph uicontrol">Description</span>
                         text box.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Select a statistic from the first drop-down list box. A statistic is
-                        computed aggregation of metric data over a specified period of time; valid
-                        values are minimum, maximum, average, sum, and sample count. </span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Select trigger dimensions, if not already pre-populated with the selected 
+                        resource such as an image or scaling group. A dimension is
+                        a name-value pair that uniquely identifies a metric; for example:
+                        "<samp class="ph codeph">Scaling group</samp>" = "<samp class="ph codeph">myscalinggroup</samp>".
+                    </span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Select a metric from the next drop-down list box. A metric is a
-                        time-ordered set of data points - for example, CPU utilization or volume
-                        write ops. You can get metric data from Eucalyptus cloud resources (like
-                        instances or volumes), or you can publish your own set of custom metric data
+<li class="li step stepexpand">
+                    <span class="ph cmd">When <span class="ph uicontrol">Create Alarm</span> is launched from a resources' detail page, 
+                        pre-defined metrics specific to those resources display. Select a metric from the 
+                        drop-down list box. A metric is a time-ordered set of data points - for example, 
+                        CPU utilization or volume write ops. You can get metric data from Eucalyptus cloud 
+                        resources (like instances or volumes), or you can publish your own set of custom metric data
                         points to CloudWatch. You then retrieve statistics about those data points
                         as an ordered set of time-series data.</span>
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Select trigger dimensions. A dimension is
-                        a name-value pair that uniquely identifies a metric; for example:
-                            "<samp class="ph codeph">Scaling group</samp>" = "<samp class="ph codeph">myscalinggroup</samp>".
-                    </span>
+<li class="li step stepexpand">
+                    <span class="ph cmd">Select a statistic from the <span class="ph uicontrol">Trigger alarm when the</span> drop-down list
+                        box. A statistic is computed aggregation of metric data over a specified
+                        period of time; valid values are average, minimum, maximum, sum, and data samples. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Select a comparison operator for the statistic value.</span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Select a trigger threshold value. This is value is used in combination with
                         the comparison operator and the measurement period and time length to
                         determine whether the alarm should be triggered. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">Select the number of measurement periods and the period lengths using the
-                        controls in the <span class="ph uicontrol">Evaluation</span> section of the dialog box.
-                        Periods define the time period over which the metric value is compared to
-                        the trigger threshold, as well as how many consecutive periods the trigger
-                        threshold must be breached before the alarm is triggered.</span>
+                        controls in the <span class="ph uicontrol">for at least</span> and <span class="ph uicontrol">consecutive period(s) 
+                        of</span> areas of the dialog box. Periods define the time period over which the 
+                        metric value is compared to the trigger threshold, as well as how many consecutive 
+                        periods the trigger threshold must be breached before the alarm is triggered.</span>
+                    <div class="itemgroup stepresult">As you specify the values in this section, the chart that follows display the 
+                    graphical representation of that statistic data.</div>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
+                    <span class="ph cmd">In the <strong class="ph b">Actions</strong> section of the Create alarm window, specify the action to be 
+                        taken when an alarm is triggered.</span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> This section does not display if creating alarms is launched from the create 
+                        scaling policy workflow. </div>
+</div>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">The <span class="ph uicontrol">Action type</span> is pre-populated with the resource 
+                            activity associated with the alarm.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select the state you want the alarm to take action from the 
+                                <span class="ph uicontrol">When alarm state is</span> drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">If launched from a scaling group, the name of that scaling group displays  
+                               as the default selection in the <span class="ph uicontrol">For scaling group</span> 
+                                drop-down list box. Select a different scaling group, if needed.</span>
+                            <div class="itemgroup stepresult">When a scaling group is selected, the <span class="ph uicontrol">Execute scaling policy</span> 
+                                drop-down list box displays with only the policies associated with the selected 
+                                scaling group.</div>
+                        </li>
+
+                       <li class="li substep substepexpand">
+                           <span class="ph cmd">Choose a policy to execute from the <span class="ph uicontrol">Execute scaling policy</span> 
+                               drop-down list box.</span>
+                           <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> If there is already an action associated with this alarm, the policy selection is not applicable.</div>
+
+                           <div class="note note"><span class="notetitle">Note:</span> If all scaling policies are already associated with actions, or there are none defined, the policy 
+                           selection displays, "No policies available."</div>
+
+                           
+                           </div>
+                       </li>
+
+                    </ol>
+
+                </li>
+<li class="li step stepexpand">
                     <span class="ph cmd">To save your new alarm, click the <span class="ph uicontrol">Create Alarm</span>
                         button.</span>
                 </li>
 </ol>
 
-            <div class="section result">For more information on Auto Scaling and CloudWatch, see the Eucalyptus User
-                Guide.</div>
+            <div class="section result">For more details about CloudWatch alarm properties, see <a class="xref" href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cw-alarm.html" target="_blank">AWS Resource Types Reference for Alarms</a>.</div>
 
         </div>
 
