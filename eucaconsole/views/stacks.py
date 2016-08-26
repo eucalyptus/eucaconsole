@@ -699,6 +699,8 @@ class StackWizardView(BaseView, StackMixin):
             if ('vmtype' in name_l or 'instancetype' in name_l) and \
                     'options' not in param_vals.keys():
                 param_vals['options'] = self.get_vmtype_options()
+            if 'zone' in name_l or param_type == 'AWS::EC2::AvailabilityZone::Name':
+                param_vals['options'] = self.get_availability_zone_options()
             # if no default, and options are a single value, set that as default
             if 'default' not in param_vals.keys() and \
                     'options' in param_vals.keys() and len(param_vals['options']) == 1:
@@ -792,6 +794,11 @@ class StackWizardView(BaseView, StackMixin):
         conn = self.get_connection()
         vmtypes = ChoicesManager(conn).instance_types(self.cloud_type)
         return vmtypes
+
+    def get_availability_zone_options(self):
+        conn = self.get_connection()
+        zones = ChoicesManager(conn).availability_zones(self.cloud_type, add_blank=False)
+        return zones
 
     @view_config(route_name='stack_create', renderer=TEMPLATE, request_method='POST')
     def stack_create(self):
