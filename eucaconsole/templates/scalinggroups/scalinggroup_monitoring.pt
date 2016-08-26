@@ -72,7 +72,7 @@
                     </div>
                     <div class="actions">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
-                              ng-click="chartsCtrl.refreshCharts({'namespace': 'EC2'})"
+                              ng-click="chartsCtrl.refreshCharts({'namespace': 'AWS/EC2'})"
                               tal:condition="launchconfig_monitoring_enabled"><i class="fa fa-refresh"></i></span>
                     </div>
                 </div>
@@ -127,7 +127,7 @@
                     </div>
                     <div class="actions">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
-                              ng-click="chartsCtrl.refreshCharts({'namespace': 'AutoScaling'})"
+                              ng-click="chartsCtrl.refreshCharts({'namespace': 'AWS/AutoScaling'})"
                               tal:condition="metrics_collection_enabled"><i class="fa fa-refresh"></i></span>
                         <span id="enable-monitoring-icon" class="action-icon dropdown"
                               tal:condition="launchconfig_monitoring_enabled"

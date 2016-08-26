@@ -612,7 +612,10 @@ angular.module('ELBWizard', [
                 securityGroupName = sGroup.name.substr(0, 45) + "...";
             }
             $scope.securityGroupChoices[sGroup.id] = securityGroupName;
-        }); 
+            if (securityGroupName === 'default') {
+                $scope.securityGroups = [sGroup.id];  // Pre-populate default security group for VPC clouds
+            }
+        });
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
             $('#securitygroup').trigger('chosen:updated');
