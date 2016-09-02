@@ -33,7 +33,7 @@ import mimetypes
 import simplejson as json
 import urllib
 
-from boto.exception import StorageCreateError
+from boto.exception import StorageCreateError, S3ResponseError
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
@@ -686,12 +686,15 @@ class BucketDetailsView(BaseView, BucketMixin):
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = bucket
         self.bucket_acl = bucket_acl
+        self.cors_configuration = None
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             request.subpath = self.get_subpath(self.bucket.name) if self.bucket else ''
             if self.bucket and self.bucket_acl is None:
                 self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+            if self.bucket:
+                self.cors_configuration = self.get_cors_configuration(self.bucket)
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
@@ -714,6 +717,7 @@ class BucketDetailsView(BaseView, BucketMixin):
                 versioning_status=self.versioning_status,
                 update_versioning_action=self.get_versioning_update_action(self.versioning_status),
                 logging_status=self.get_logging_status(),
+                cors_configuration=self.cors_configuration,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 bucket_objects_count_url=self.request.route_path(
                     'bucket_objects_count_versioning_json', name=self.bucket.name)
@@ -772,6 +776,20 @@ class BucketDetailsView(BaseView, BucketMixin):
                 logs_prefix=logging_prefix,
                 logs_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=logging_subpath)
             )
+
+    @staticmethod
+    def get_cors_configuration(bucket, xml=True):
+        try:
+            if xml:
+                cors = bucket.get_cors_xml()
+            else:
+                cors = bucket.get_cors()
+            return cors
+        except S3ResponseError as err:
+            if err.error_code == 'NoSuchCORSConfiguration':
+                return None  # CORS config is empty
+            else:
+                raise  # Re-raise S3ResponseError (e.g. to handle session timeouts)
 
     @staticmethod
     def update_acl(request, bucket_object=None):

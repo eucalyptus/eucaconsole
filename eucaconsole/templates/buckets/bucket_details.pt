@@ -97,7 +97,7 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form)}
+                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, cors_configuration=cors_configuration)}
                     <hr />
                     <div>
                         <button type="submit" id="save_changes_bucket_details_button" class="button"
