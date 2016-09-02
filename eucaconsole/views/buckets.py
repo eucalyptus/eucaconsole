@@ -784,12 +784,12 @@ class BucketDetailsView(BaseView, BucketMixin):
                 cors = bucket.get_cors_xml()
             else:
                 cors = bucket.get_cors()
-            return cors
+            return cors or None
         except S3ResponseError as err:
             if err.error_code == 'NoSuchCORSConfiguration':
                 return None  # CORS config is empty
             else:
-                raise  # Re-raise S3ResponseError (e.g. to handle session timeouts)
+                raise  # Re-raise exception to handle session timeouts
 
     @staticmethod
     def update_acl(request, bucket_object=None):

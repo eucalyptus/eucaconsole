@@ -148,6 +148,15 @@ class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
         self.assertEqual(view.get('versioning_status'), 'Enabled')
         self.assertEqual(view.get('update_versioning_action'), 'disable')
 
+    @mock_s3
+    def test_bucket_with_empty_cors_configuration_object(self):
+        request = self.create_request()
+        bucket, bucket_acl = self.make_bucket()
+        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl)
+        # Note: moto hasn't implemented CORS handling (yet), so we can only check the empty config object case
+        bucket_cors = view.get_cors_configuration(bucket, xml=False)
+        self.assertEqual(bucket_cors, None)
+
 
 class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
 
