@@ -32,7 +32,7 @@ import re
 import simplejson as json
 import logging
 
-from boto.exception import BotoServerError
+from boto.exception import BotoServerError, S3ResponseError
 from boto.ec2.image import Image
 from boto.s3.key import Key
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -62,9 +62,14 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             return None
         bucket, bundle_id = bundling_tag.split('/')
         s3_conn = self.get_connection(conn_type='s3')
-        k = Key(s3_conn.get_bucket(bucket))
-        k.key = bundle_id
-        metadata = json.loads(k.get_contents_as_string())
+        try:
+            k = Key(s3_conn.get_bucket(bucket))
+            k.key = bundle_id
+            metadata = json.loads(k.get_contents_as_string())
+        except S3ResponseError as err:
+            logging.warn("bundle task bucket does not exist, deleting tag!")
+            self.conn.delete_tags(instance.id, ['ec_bundling'])
+            return None
         tasks = self.conn.get_all_bundle_tasks([bundle_id])
         image_id = None
         if do_not_finish and len(tasks) > 0:
