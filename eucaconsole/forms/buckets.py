@@ -231,3 +231,8 @@ class CreateFolderForm(BaseSecureForm):
     def __init__(self, request, **kwargs):
         super(CreateFolderForm, self).__init__(request, **kwargs)
         self.folder_name.error_msg = self.folder_name_error_msg
+
+
+class CorsConfigurationForm(BaseSecureForm):
+    """S3 Bucket CORS Configuration form"""
+    pass

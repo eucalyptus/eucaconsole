@@ -1,0 +1,15 @@
+<!--! Modal dialog for S3 bucket CORS configuration -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="cors-configuration-modal" class="reveal-modal medium" data-reveal="">
+        <h3 i18n:translate="">Add CORS Configuration</h3>
+        <div>&nbsp</div>
+        <form id="cors-configuration-form" method="post">
+            ${structure:cors_configuration_form['csrf_token']}
+            <div>
+                <textarea name="cors_configuration_xml" id="cors-config-textarea">${cors_configuration_xml}</textarea>
+            </div>
+            <button class="expand" i18n:translate="">Save CORS Configuration</button>
+        </form>
+        <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>

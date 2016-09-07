@@ -356,6 +356,15 @@ def elb_bucket_access_log_dialog(context, request):
     return dict()
 
 
+@panel_config('bucket_cors_configuration_dialog', renderer='../templates/dialogs/bucket_cors_configuration_dialog.pt')
+def bucket_cors_configuration_dialog(context, request, cors_configuration_form=None, cors_configuration_xml=None):
+    """ Modal dialog for CORS configuration on an S3 bucket"""
+    return dict(
+        cors_configuration_form=cors_configuration_form,
+        cors_configuration_xml=cors_configuration_xml,
+    )
+
+
 @panel_config('elb_security_group_warning_dialog', renderer='../templates/dialogs/elb_security_group_warning_dialog.pt')
 def elb_security_group_warning_dialog(context, request, create=False):
     """ Modal confirmation when the security group rules for an ELB don't cover the listener and health check ports"""
@@ -379,3 +388,4 @@ def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_c
 def ufshost_warn_dialog(context, request):
     """ Modal warning when trying to create a stack, but ufshost set to localhost"""
     return dict()
+

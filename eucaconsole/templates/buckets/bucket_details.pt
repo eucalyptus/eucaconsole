@@ -97,7 +97,7 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, cors_configuration=cors_configuration)}
+                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, cors_configuration_xml=cors_configuration_xml)}
                     <hr />
                     <div>
                         <button type="submit" id="save_changes_bucket_details_button" class="button"
@@ -122,6 +122,7 @@
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form, delete_form=delete_form)}
         ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
+        ${panel('bucket_cors_configuration_dialog', cors_configuration_form=cors_configuration_form, cors_configuration_xml=cors_configuration_xml)}
     </div>
 </div>
 

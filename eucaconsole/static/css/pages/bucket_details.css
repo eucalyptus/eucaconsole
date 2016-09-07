@@ -4,3 +4,9 @@
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 #bucket-section-title { position: relative; top: -1rem; }
+
+#cors-config-textarea { height: 5rem; }
+
+#existing-cors-config-wrapper { line-height: 2rem; }
+#existing-cors-config-wrapper .icon { margin-right: 0.5rem; }
+#existing-cors-config-wrapper .icon .fi-pencil { position: relative; bottom: 2px; }

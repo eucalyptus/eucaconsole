@@ -7,3 +7,18 @@
     top: -1rem;
 }
 
+#cors-config-textarea {
+    height: 5rem;
+}
+
+#existing-cors-config-wrapper{
+    line-height: 2rem;
+    .icon {
+        margin-right: 0.5rem;
+        .fi-pencil {
+            position: relative;
+            bottom: 2px;
+        }
+    }
+}
+

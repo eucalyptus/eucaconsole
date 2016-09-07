@@ -71,8 +71,16 @@
             HTTP methods you want to allow for those origins. Optionally, you can also specify the headers users can
             set in requests or access in responses and the duration the preflight responses should be cached.
         </p>
-        <p>${cors_configuration}</p>
-        <div tal:condition="not cors_configuration">
+        <div tal:condition="cors_configuration_xml">
+            <div id="existing-cors-config-wrapper">
+                <a href="#" class="icon remove has-tip" i18n:attributes="title"
+                   title="Remove CORS Configuration"><i class="fi-minus-circle"></i></a>
+                <a href="#" class="icon edit has-tip" i18n:attributes="title" data-reveal-id="cors-configuration-modal"
+                   title="View/Edit CORS Configuration"><i class="fi-pencil"></i></a>
+                <span i18n:translate="">CORS Configuration</span>
+            </div>
+        </div>
+        <div tal:condition="not cors_configuration_xml">
             <a class="button round tiny" i18n:translate="">Add CORS Configuration</a>
         </div>
     </div>

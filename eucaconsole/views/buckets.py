@@ -47,7 +47,7 @@ from pyramid.view import view_config
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
-    BucketItemSharedURLForm)
+    BucketItemSharedURLForm, CorsConfigurationForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -686,7 +686,7 @@ class BucketDetailsView(BaseView, BucketMixin):
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = bucket
         self.bucket_acl = bucket_acl
-        self.cors_configuration = None
+        self.cors_configuration_xml = None
         with boto_error_handler(request):
             if self.s3_conn and self.bucket is None:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
@@ -694,12 +694,13 @@ class BucketDetailsView(BaseView, BucketMixin):
             if self.bucket and self.bucket_acl is None:
                 self.bucket_acl = self.bucket.get_acl() if self.bucket else None
             if self.bucket:
-                self.cors_configuration = self.get_cors_configuration(self.bucket)
+                self.cors_configuration_xml = self.get_cors_configuration(self.bucket, xml=True)
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
+        self.cors_configuration_form = CorsConfigurationForm(request, formdata=self.request.params or None)
         self.versioning_status = self.get_versioning_status(self.bucket)
         if self.bucket is None:
             self.render_dict = dict()
@@ -717,7 +718,8 @@ class BucketDetailsView(BaseView, BucketMixin):
                 versioning_status=self.versioning_status,
                 update_versioning_action=self.get_versioning_update_action(self.versioning_status),
                 logging_status=self.get_logging_status(),
-                cors_configuration=self.cors_configuration,
+                cors_configuration_form=self.cors_configuration_form,
+                cors_configuration_xml=self.cors_configuration_xml,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 bucket_objects_count_url=self.request.route_path(
                     'bucket_objects_count_versioning_json', name=self.bucket.name)

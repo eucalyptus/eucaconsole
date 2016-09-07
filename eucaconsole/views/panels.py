@@ -386,7 +386,7 @@ def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
 
 @panel_config('s3_sharing_panel', renderer='../templates/panels/s3_sharing_panel.pt')
 def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None,
-                     show_caution=False, cors_configuration=None):
+                     show_caution=False, cors_configuration_xml=None):
     grants_list = []
     if bucket_object is not None:
         for grant in bucket_object.get_acl().acl.grants:
@@ -418,7 +418,7 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None,
         grantee_choices=grantee_choices,
         account_placeholder_text=_(u'Select account or type to enter account ID'),
         controller_options_json=controller_options_json,
-        cors_configuration=cors_configuration,
+        cors_configuration_xml=cors_configuration_xml,
     )
 
 
