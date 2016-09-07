@@ -40,6 +40,8 @@ from boto.s3.key import Key
 from boto.s3.prefix import Prefix
 from boto.exception import BotoServerError
 
+from lxml import etree
+
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from pyramid.settings import asbool
 from pyramid.view import view_config
@@ -695,6 +697,8 @@ class BucketDetailsView(BaseView, BucketMixin):
                 self.bucket_acl = self.bucket.get_acl() if self.bucket else None
             if self.bucket:
                 self.cors_configuration_xml = self.get_cors_configuration(self.bucket, xml=True)
+                if self.cors_configuration_xml:
+                    self.cors_configuration_xml = self.pretty_print_xml(self.cors_configuration_xml)
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
@@ -806,6 +810,11 @@ class BucketDetailsView(BaseView, BucketMixin):
                 return None  # CORS config is empty
             else:
                 raise  # Re-raise exception to handle session timeouts
+
+    @staticmethod
+    def pretty_print_xml(xml_string=''):
+        xml = etree.fromstring(xml_string)
+        return etree.tostring(xml, pretty_print=True)
 
     @staticmethod
     def update_acl(request, bucket_object=None):

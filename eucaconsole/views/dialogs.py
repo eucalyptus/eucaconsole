@@ -34,6 +34,7 @@ from ..i18n import _
 
 from pyramid_layout.panel import panel_config
 
+from ..constants.buckets import SAMPLE_CORS_CONFIGURATION
 from ..views import BaseView
 from ..views.buckets import BucketDetailsView, FOLDER_NAME_PATTERN
 
@@ -362,6 +363,7 @@ def bucket_cors_configuration_dialog(context, request, cors_configuration_form=N
     return dict(
         cors_configuration_form=cors_configuration_form,
         cors_configuration_xml=cors_configuration_xml,
+        sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
     )
 
 

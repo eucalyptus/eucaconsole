@@ -81,7 +81,8 @@
             </div>
         </div>
         <div tal:condition="not cors_configuration_xml">
-            <a class="button round tiny" i18n:translate="">Add CORS Configuration</a>
+            <a href="#" class="button round tiny" i18n:translate=""
+               data-reveal-id="cors-configuration-modal">Add CORS Configuration</a>
         </div>
     </div>
     <div id="unsaved-sharing-warning-modal" class="reveal-modal small" data-reveal="">
