@@ -224,6 +224,7 @@ urls = [
     Route(name='bucket_delete', pattern='/buckets/{name}/delete'),
     Route(name='bucket_delete_keys', pattern='/buckets/{name}/delete_keys'),
     Route(name='bucket_delete_cors_configuration', pattern='/buckets/{name}/delete_cors_configuration'),
+    Route(name='bucket_set_cors_configuration', pattern='/buckets/{name}/set_cors_configuration'),
     Route(name='bucket_update_versioning', pattern='/buckets/{name}/updateversioning'),
     Route(name='bucket_contents', pattern='/buckets/{name}/contents/*subpath'),
     Route(name='bucket_keys', pattern='/buckets/{name}/keys/*subpath'),

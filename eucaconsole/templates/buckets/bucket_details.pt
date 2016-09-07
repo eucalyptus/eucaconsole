@@ -122,7 +122,7 @@
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form, delete_form=delete_form)}
         ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
-        ${panel('bucket_cors_configuration_dialog', cors_configuration_form=cors_configuration_form, cors_configuration_xml=cors_configuration_xml)}
+        ${panel('bucket_cors_configuration_dialog', bucket_name=bucket_name, cors_configuration_form=cors_configuration_form, cors_configuration_xml=cors_configuration_xml)}
         <!--! Modal dialog for confirming deletion of S3 bucket CORS configuration -->
         <div id="cors-delete-confirmation-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Delete CORS Configuration</h3>

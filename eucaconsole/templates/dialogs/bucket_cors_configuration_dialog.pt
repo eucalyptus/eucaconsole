@@ -7,7 +7,8 @@
             <span tal:condition="not cors_configuration_xml"
                   tal:omit-tag="" i18n:translate="">Add CORS Configuration</span>
         </h3>
-        <form id="cors-configuration-form" method="post">
+        <form id="cors-configuration-form" method="post"
+              action="${request.route_path('bucket_set_cors_configuration', name=bucket_name)}">
             ${structure:cors_configuration_form['csrf_token']}
             <div id="sample-link-wrapper">
                 <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html#how-do-i-enable-cors"

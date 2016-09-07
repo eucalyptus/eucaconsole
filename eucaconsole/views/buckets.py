@@ -749,6 +749,19 @@ class BucketDetailsView(BaseView, BucketMixin):
             self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
 
+    @view_config(route_name='bucket_set_cors_configuration', renderer=VIEW_TEMPLATE, request_method='POST')
+    def bucket_set_cors_configuration(self):
+        location = self.request.route_path('bucket_details', name=self.bucket.name)
+        cors_xml = self.request.params.get('cors_configuration_xml')
+        if self.bucket and self.cors_configuration_form.validate() and cors_xml:
+            with boto_error_handler(self.request, location):
+                self.log_request(u"Setting CORS configuration for bucket {0}".format(self.bucket.name))
+                self.bucket.set_cors_xml(cors_xml)
+                msg = u'{0} {1}'.format(_(u'Successfully set CORS configuration for bucket'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        return self.render_dict
+
     @view_config(route_name='bucket_delete_cors_configuration', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_delete_cors_configuration(self):
         location = self.request.route_path('bucket_details', name=self.bucket.name)
