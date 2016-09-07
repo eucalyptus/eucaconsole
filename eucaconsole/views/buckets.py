@@ -47,7 +47,7 @@ from pyramid.view import view_config
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
-    BucketItemSharedURLForm, CorsConfigurationForm)
+    BucketItemSharedURLForm, CorsConfigurationForm, CorsDeletionForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -701,6 +701,7 @@ class BucketDetailsView(BaseView, BucketMixin):
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.cors_configuration_form = CorsConfigurationForm(request, formdata=self.request.params or None)
+        self.cors_deletion_form = CorsDeletionForm(request, formdata=self.request.params or None)
         self.versioning_status = self.get_versioning_status(self.bucket)
         if self.bucket is None:
             self.render_dict = dict()
@@ -719,6 +720,7 @@ class BucketDetailsView(BaseView, BucketMixin):
                 update_versioning_action=self.get_versioning_update_action(self.versioning_status),
                 logging_status=self.get_logging_status(),
                 cors_configuration_form=self.cors_configuration_form,
+                cors_deletion_form=self.cors_deletion_form,
                 cors_configuration_xml=self.cors_configuration_xml,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 bucket_objects_count_url=self.request.route_path(
@@ -741,6 +743,18 @@ class BucketDetailsView(BaseView, BucketMixin):
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.details_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='bucket_delete_cors_configuration', renderer=VIEW_TEMPLATE, request_method='POST')
+    def bucket_delete_cors_configuration(self):
+        location = self.request.route_path('bucket_details', name=self.bucket.name)
+        if self.bucket and self.cors_deletion_form.validate():
+            with boto_error_handler(self.request, location):
+                self.log_request(u"Deleting CORS configuration for bucket {0}".format(self.bucket.name))
+                self.bucket.delete_cors()
+                msg = u'{0} {1}'.format(_(u'Successfully deleted CORS configuration for bucket'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='bucket_update_versioning', request_method='POST')

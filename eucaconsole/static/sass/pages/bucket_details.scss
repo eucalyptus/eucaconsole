@@ -8,16 +8,19 @@
 }
 
 #cors-config-textarea {
-    height: 5rem;
+    height: 8rem;
 }
 
 #existing-cors-config-wrapper{
-    line-height: 2rem;
     .icon {
         margin-right: 0.5rem;
-        .fi-pencil {
-            position: relative;
-            bottom: 2px;
+        position: relative;
+        top: 2px;
+        &.edit {
+            font-size: 1.1rem;
+        }
+        &.remove {
+            top: 3px;
         }
     }
 }

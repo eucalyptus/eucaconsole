@@ -236,3 +236,8 @@ class CreateFolderForm(BaseSecureForm):
 class CorsConfigurationForm(BaseSecureForm):
     """S3 Bucket CORS Configuration form"""
     pass
+
+
+class CorsDeletionForm(BaseSecureForm):
+    """S3 Bucket CORS Deletion Confirmation form"""
+    pass

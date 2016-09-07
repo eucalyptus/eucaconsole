@@ -5,8 +5,8 @@
 ----------------------------------------- */
 #bucket-section-title { position: relative; top: -1rem; }
 
-#cors-config-textarea { height: 5rem; }
+#cors-config-textarea { height: 8rem; }
 
-#existing-cors-config-wrapper { line-height: 2rem; }
-#existing-cors-config-wrapper .icon { margin-right: 0.5rem; }
-#existing-cors-config-wrapper .icon .fi-pencil { position: relative; bottom: 2px; }
+#existing-cors-config-wrapper .icon { margin-right: 0.5rem; position: relative; top: 2px; }
+#existing-cors-config-wrapper .icon.edit { font-size: 1.1rem; }
+#existing-cors-config-wrapper .icon.remove { top: 3px; }

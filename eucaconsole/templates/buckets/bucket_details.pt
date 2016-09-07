@@ -123,6 +123,21 @@
         ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form, delete_form=delete_form)}
         ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
         ${panel('bucket_cors_configuration_dialog', cors_configuration_form=cors_configuration_form, cors_configuration_xml=cors_configuration_xml)}
+        <!--! Modal dialog for confirming deletion of S3 bucket CORS configuration -->
+        <div id="cors-delete-confirmation-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete CORS Configuration</h3>
+            <div>&nbsp</div>
+            <form id="cors-deletion-form" method="post"
+                  action="${request.route_path('bucket_delete_cors_configuration', name=bucket_name)}">
+                ${structure:cors_deletion_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete the CORS configuration for</span>
+                    <strong>${bucket_name}</strong><span i18n:translate="">?</span>
+                </p>
+                <button class="expand" i18n:translate="">Yes, Delete CORS Configuration</button>
+            </form>
+            <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 
