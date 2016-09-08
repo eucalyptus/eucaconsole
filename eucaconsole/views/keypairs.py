@@ -141,13 +141,13 @@ class KeyPairView(BaseView):
         if keypair_param == "new" or keypair_param == "new2":
             return None
         keypairs_param = [keypair_param]
-        keypairs = []
+        keypairs = {}
         if self.conn:
             try:
                 keypairs = self.conn.describe_key_pairs(KeyNames=keypairs_param)
             except ClientError:
                 return None
-        keypair = keypairs['KeyPairs'][0] if keypairs['KeyPairs'] else None
+        keypair = keypairs['KeyPairs'][0] if keypairs.get('KeyPairs') else None
         return keypair 
 
     @view_config(route_name='keypair_view', renderer=TEMPLATE)

@@ -228,6 +228,11 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
             $(document).on('click', '.cancel-link', function(event) {
                 window.onbeforeunload = null;
             });
+
+            $scope.$on('tagUpdate', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){

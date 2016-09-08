@@ -54,6 +54,7 @@ class EipLanding(LandingPage):
     def verify_elastic_ip_associate_instance(self, instance_id, elastic_ip):
         self.tester.wait_for_element_present_by_css(self._instance_id_link_css.format(instance_id))
         self.tester.click_element_by_css(self._instance_id_link_css.format(instance_id))
+        self.tester.hover_by_id('user-dropdown-section')
         self.tester.wait_for_element_present_by_link_text(elastic_ip)
 
     def disassociate_with_instance_actions_menu_item(self, elastic_ip, instance_id):
