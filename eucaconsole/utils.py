@@ -28,6 +28,9 @@
 A collection of reusable utility methods
 
 """
+from StringIO import StringIO
+
+from lxml import etree
 
 
 def is_ufshost_error(conn, cloud_type):
@@ -42,3 +45,22 @@ def is_ufshost_error(conn, cloud_type):
     """
     ufshost = conn.host if cloud_type == 'euca' else ''
     return (ufshost in ['localhost', '127.0.0.1'])
+
+
+def validate_xml(xml, schema):
+    """
+    :param xml: XML to validate
+    :type xml: str
+    :param schema: RelaxNG schema as string
+    :type schema: str
+    :return: tuple of (True, None) if valid, else (False, exception)
+    :rtype: tuple
+    """
+    xml = etree.parse(StringIO(xml))
+    relaxng_schema = etree.parse(StringIO(schema))
+    relaxng = etree.RelaxNG(relaxng_schema)
+    try:
+        relaxng.assertValid(xml)
+        return True, None
+    except etree.DocumentInvalid as err:
+        return False, err

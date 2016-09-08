@@ -39,3 +39,43 @@ SAMPLE_CORS_CONFIGURATION = """
     </CORSRule>
 </CORSConfiguration>
 """
+
+# CORS RelaxNG Schema Definition
+# See http://relaxng.org/tutorial-20011203.html
+# See http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
+#
+CORS_XML_RELAXNG_SCHEMA = """
+<element name="CORSConfiguration" xmlns="http://relaxng.org/ns/structure/1.0">
+  <oneOrMore>
+    <element name="CORSRule">
+      <interleave>
+        <oneOrMore>
+          <element name="AllowedOrigin"><text /></element>
+        </oneOrMore>
+        <oneOrMore>
+          <element name="AllowedMethod">
+            <choice>
+              <value>GET</value>
+              <value>PUT</value>
+              <value>POST</value>
+              <value>DELETE</value>
+              <value>HEAD</value>
+            </choice>
+          </element>
+        </oneOrMore>
+        <zeroOrMore>
+          <element name="AllowedHeader"><text /></element>
+        </zeroOrMore>
+        <zeroOrMore>
+          <element name="ExposeHeader"><text /></element>
+        </zeroOrMore>
+        <optional>
+          <element name="MaxAgeSeconds">
+            <data type="integer" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"/>
+          </element>
+        </optional>
+      </interleave>
+    </element>
+  </oneOrMore>
+</element>
+"""
