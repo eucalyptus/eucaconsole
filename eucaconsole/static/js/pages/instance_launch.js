@@ -7,7 +7,7 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils', 'ui.select'])
+angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils', 'ui.select', 'ngSanitize'])
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
@@ -32,7 +32,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.isLoadingKeyPair = false;
         $scope.securityGroups = [];
         $scope.securityGroupsRules = {};
-        $scope.securityGroupCollection = {};
+        $scope.securityGroupCollection = [];
         $scope.securityGroupVPC = 'None';
         $scope.securityGroupJsonEndpoint = '';
         $scope.securityGroupsRulesJsonEndpoint = '';
@@ -60,6 +60,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.monitoringType = 'basic';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
+
+            console.log('options', options);
+
             $scope.keyPairChoices = options.keypair_choices;
             $scope.securityGroupChoices = options.securitygroups_choices;
             $scope.vpcSubnetList = options.vpc_subnet_choices;
@@ -241,9 +244,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
             });
+
+            /*
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
             });
+            */
+
             $scope.$watch('instanceVPC', function () {
                 $scope.getInstanceVPCName($scope.instanceVPC);
                 $scope.getAllSecurityGroups($scope.instanceVPC);
@@ -558,7 +565,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.updateSecurityGroupChoices = function () {
-            $scope.securityGroupChoices = {};
+            console.log('updating');
+            $scope.securityGroupChoices = [];
             $scope.securityGroupChoicesFullName = {};
             if ($.isEmptyObject($scope.securityGroupCollection)) {
                 return;
@@ -570,7 +578,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (sGroup.name.length > 45) {
                     securityGroupName = sGroup.name.substr(0, 45) + "...";
                 }
-                $scope.securityGroupChoices[sGroup.id] = securityGroupName;
+                $scope.securityGroupChoices.push({
+                    id: sGroup.id,
+                    name: securityGroupName
+                });
             }); 
             $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options

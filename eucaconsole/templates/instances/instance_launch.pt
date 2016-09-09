@@ -152,7 +152,7 @@
                                 <div class="large-8 small-8 columns field">
                                     <ui-select id="securitygroup" ng-model="securityGroups" theme="select2">
                                         <ui-select-match placeholder="Select...">{{$select.selected.name}}</ui-select-match>
-                                        <ui-select-choices repeat="group in securityGroupChoices">
+                                        <ui-select-choices repeat="group in securityGroupChoices track by group.id">
                                             <div ng-bind-html="group.name"></div>
                                         </ui-select-choices>
                                     </ui-select>
