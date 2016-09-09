@@ -60,9 +60,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.monitoringType = 'basic';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
-
-            console.log('options', options);
-
             $scope.keyPairChoices = options.keypair_choices;
             $scope.securityGroupChoices = options.securitygroups_choices;
             $scope.vpcSubnetList = options.vpc_subnet_choices;
@@ -245,11 +242,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
             });
 
-            /*
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
             });
-            */
 
             $scope.$watch('instanceVPC', function () {
                 $scope.getInstanceVPCName($scope.instanceVPC);
@@ -565,7 +560,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.updateSecurityGroupChoices = function () {
-            console.log('updating');
             $scope.securityGroupChoices = [];
             $scope.securityGroupChoicesFullName = {};
             if ($.isEmptyObject($scope.securityGroupCollection)) {
