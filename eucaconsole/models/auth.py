@@ -269,6 +269,9 @@ class ConnectionManager(object):
         elif conn_type == 'iam':
             path = 'Euare'
             conn_class = boto.iam.IAMConnection
+        elif conn_type == 'sts':
+            path = 'Tokens'
+            conn_class = boto.sts.STSConnection
         elif conn_type == 's3':
             path = 'objectstorage'
             conn_class = S3Connection
@@ -282,7 +285,7 @@ class ConnectionManager(object):
             path = '/services/{0}/'.format(path)
         region = RegionInfo(name='eucalyptus', endpoint=ufshost)
         # IAM and S3 connections need host instead of region info
-        if conn_type in ['iam', 's3']:
+        if conn_type in ['iam', 'sts', 's3']:
             conn = conn_class(
                 access_id,
                 secret_key,

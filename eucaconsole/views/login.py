@@ -36,6 +36,8 @@ from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
 from boto.exception import BotoServerError
+from boto.regioninfo import RegionInfo
+from boto.sts.connection import STSConnection
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
@@ -44,7 +46,7 @@ from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..i18n import _
-from ..models.auth import AWSAuthenticator, ConnectionManager
+from ..models.auth import AWSAuthenticator, ConnectionManager, HttpsConnectionFactory
 from ..views import BaseView
 from ..views import JSONResponse
 from ..constants import AWS_REGIONS
@@ -152,7 +154,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         state = self.request.params.get('state')
         if state and state.find('oauth-') == 0:
             # ok, it's oauth, validate and get token
-            csrf_token = state[6:]
+            csrf_token = state.split('-')[2]
             if not self.is_csrf_valid(csrf_token):
                 self.login_form_errors.append("OAuth authentication failed")
                 return self.render_dict
@@ -179,6 +181,8 @@ class LoginView(BaseView, PermissionCheckMixin):
                 self.login_form_errors.append("OAuth authentication failed")
             body = response.read()
             logging.info("got oauth response: "+body)
+            token = json.loads(body)
+            return self.handle_web_identity_login(token)
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
@@ -192,6 +196,76 @@ class LoginView(BaseView, PermissionCheckMixin):
         elif login_type == 'AWS':
             return self.handle_aws_login()
 
+        return self.render_dict
+
+    def handle_web_identity_login(self, token):
+        session = self.request.session
+
+        # TODO: what to use for these values? Extract from token?
+        account = '' #self.request.params.get('account')
+        username = '' #self.request.params.get('username')
+        password = '' #self.request.params.get('password')
+        euca_region = 'euca' #self.request.params.get('euca-region')
+        try:
+            state = role_session_name=token['state']
+            (oauth, account_id, csrf_token) = state.split('-')
+            region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self._get_ufs_host_setting_())
+            port = self._get_ufs_port_setting_()
+            conn = STSConnection(
+                port=port,
+                region=region,
+                https_connection_factory=(HttpsConnectionFactory(port).https_connection_factory, ())
+            )
+            result = conn.assume_role_with_web_identity(
+                role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_id),
+                role_session_name=token['state'],
+                web_identity_token=token['id_token'],
+                duration_seconds=self.duration
+            )
+            creds = auth.authenticate(
+                account=account, user=username, passwd=password,
+                new_passwd=new_passwd, timeout=8, duration=self.duration)
+            logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
+                acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
+            # TODO: refactory below to get as much reuse with handle_euca_login() as possible
+            default_region = self.request.registry.settings.get('default.region', 'euca')
+            user_account = u'{user}@{account}'.format(user=username, account=account)
+            session.invalidate()  # Refresh session
+            session['cloud_type'] = 'euca'
+            session['account'] = account
+            session['username'] = username
+            session['session_token'] = creds.session_token
+            session['access_id'] = creds.access_key
+            session['secret_key'] = creds.secret_key
+            session['region'] = euca_region if euca_region != '' else default_region
+            session['username_label'] = user_account
+            session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
+            session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
+            session['default_vpc'] = self.get_account_attributes(['default-vpc'])
+
+            # handle checks for IAM perms
+            self.check_iam_perms(session, creds)
+            headers = remember(self.request, user_account)
+            return HTTPFound(location=self.came_from, headers=headers)
+        except HTTPError, err:
+            logging.info("http error " + str(vars(err)))
+            if err.code == 403:  # password expired
+                changepwd_url = self.request.route_path('managecredentials')
+                return HTTPFound(
+                    changepwd_url + ("?came_from=&expired=true&account=%s&username=%s" % (account, username))
+                )
+            elif err.msg == u'Unauthorized':
+                msg = _(u'Invalid user/account name and/or password.')
+                self.login_form_errors.append(msg)
+        except URLError, err:
+            logging.info("url error " + str(vars(err)))
+            # if str(err.reason) == 'timed out':
+            # opened this up since some other errors should be reported as well.
+            if err.reason.find('ssl') > -1:
+                msg = INVALID_SSL_CERT_MSG
+            else:
+                msg = _(u'No response from host')
+            self.login_form_errors.append(msg)
         return self.render_dict
 
     def handle_euca_login(self):
