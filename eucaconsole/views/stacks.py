@@ -576,7 +576,9 @@ class StackWizardView(BaseView, StackMixin):
                     if self.stack:
                         # populate defaults with actual values from stack
                         for param in params:
-                            param['default'] = [p.value for p in self.stack.parameters if p.key == param['name']][0]
+                            result = [p.value for p in self.stack.parameters if p.key == param['name']]
+                            if result:
+                                param['default'] = result[0]
                 return dict(
                     results=dict(
                         template_key=template_name,
@@ -697,6 +699,8 @@ class StackWizardView(BaseView, StackMixin):
             if ('vmtype' in name_l or 'instancetype' in name_l) and \
                     'options' not in param_vals.keys():
                 param_vals['options'] = self.get_vmtype_options()
+            if 'zone' in name_l or param_type == 'AWS::EC2::AvailabilityZone::Name':
+                param_vals['options'] = self.get_availability_zone_options()
             # if no default, and options are a single value, set that as default
             if 'default' not in param_vals.keys() and \
                     'options' in param_vals.keys() and len(param_vals['options']) == 1:
@@ -790,6 +794,11 @@ class StackWizardView(BaseView, StackMixin):
         conn = self.get_connection()
         vmtypes = ChoicesManager(conn).instance_types(self.cloud_type)
         return vmtypes
+
+    def get_availability_zone_options(self):
+        conn = self.get_connection()
+        zones = ChoicesManager(conn).availability_zones(self.cloud_type, add_blank=False)
+        return zones
 
     @view_config(route_name='stack_create', renderer=TEMPLATE, request_method='POST')
     def stack_create(self):
@@ -928,11 +937,12 @@ class StackWizardView(BaseView, StackMixin):
             'AWS::CloudFront',
             'AWS::CloudTrail',
             'AWS::DynamoDB',
+            'AWS::EC2::VPCEndpoint',
             'AWS::EC2::VPCPeeringConnection',
-            'AWS::EC2::VPCConnection',
-            'AWS::EC2::VPCConnectionRoute',
-            'AWS::EC2::VPCGateway',
-            'AWS::EC2::VPCGatewayRoutePropagation',
+            'AWS::EC2::VPNConnection',
+            'AWS::EC2::VPNConnectionRoute',
+            'AWS::EC2::VPNGateway',
+            'AWS::EC2::VPNGatewayRoutePropagation',
             'AWS::ElastiCache',
             'AWS::ElasticBeanstalk',
             'AWS::Kinesis',
@@ -955,18 +965,6 @@ class StackWizardView(BaseView, StackMixin):
             ]},
             {'resource': 'AWS::EC2::EIP', 'properties': [
                 'Domain'
-            ]},
-            {'resource': 'AWS::EC2::EIPAssociation', 'properties': [
-                'AllocationId', 'NetworkInterfaceId', 'PrivateIpAddress'
-            ]},
-            {'resource': 'AWS::EC2::Instance', 'properties': [
-                'NetworkInterfaces', 'SecurityGroupIds', 'SourceDestCheck', 'Tenancy'
-            ]},
-            {'resource': 'AWS::EC2::SecurityGroup', 'properties': [
-                'SecurityGroupEgress', 'Tags', 'VpcId'
-            ]},
-            {'resource': 'AWS::EC2::SecurityGroupIngress', 'properties': [
-                'SourceSecurityGroupId'
             ]},
             {'resource': 'AWS::EC2::Volume', 'properties': [
                 'HealthCheckType', 'Tags'

@@ -7,7 +7,7 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils', 'ngSanitize', 'ui.select'])
+angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
@@ -72,7 +72,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.setInitialValues();
             $scope.getAllSecurityGroupsRules();
             $scope.preventFormSubmitOnEnter();
-            //$scope.initChosenSelectors();
+            $scope.initChosenSelectors();
             $scope.watchTags();
             $scope.watchBdMapping();
             $scope.focusEnterImageID();
@@ -241,9 +241,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
             });
+
             $scope.$watch('securityGroupCollection', function () {
                 $scope.updateSecurityGroupChoices();
             });
+
             $scope.$watch('instanceVPC', function () {
                 $scope.getInstanceVPCName($scope.instanceVPC);
                 $scope.getAllSecurityGroups($scope.instanceVPC);
@@ -558,7 +560,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.updateSecurityGroupChoices = function () {
-            //$scope.securityGroupChoices = {};
+            $scope.securityGroupChoices = {};
             $scope.securityGroupChoicesFullName = {};
             if ($.isEmptyObject($scope.securityGroupCollection)) {
                 return;
@@ -570,7 +572,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (sGroup.name.length > 45) {
                     securityGroupName = sGroup.name.substr(0, 45) + "...";
                 }
-                //$scope.securityGroupChoices[sGroup.id] = securityGroupName;
+                $scope.securityGroupChoices[sGroup.id] = securityGroupName;
             }); 
             $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options

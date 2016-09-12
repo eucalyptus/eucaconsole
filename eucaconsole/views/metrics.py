@@ -181,7 +181,7 @@ class CloudWatchMetricsView(LandingPageView):
         self.initial_sort_key = 'res_name'
         self.prefix = '/cloudwatch/metrics'
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
-        self.filter_keys = ['name']
+        self.filter_keys = ['metric_label', 'resources']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='res_name', name=_(u'Resource name: A to Z')),
