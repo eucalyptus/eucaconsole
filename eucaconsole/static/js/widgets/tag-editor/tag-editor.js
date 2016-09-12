@@ -2,7 +2,6 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
     .directive('tagEditor', ['eucaUnescapeJson', function (eucaUnescapeJson) {
         return {
             scope: {
-                template: '@',
                 showNameTag: '@',
                 autoscale: '@'
             },
