@@ -172,7 +172,9 @@
                                     <label class="right" i18n:translate="">Role</label>
                                 </div>
                                 <div class="large-8 small-8 columns field">
-                                    <select id="role" ng-options="k as v for (k, v) in roleList" ng-model="role" name="role"></select>
+                                    <select id="role" ng-options="k as v for (k, v) in roleList track by v" ng-model="role" name="role">
+                                        <option value="" disabled="" selected="">Select...</option>
+                                    </select>
                                 </div>
                             </div>
                             <hr />

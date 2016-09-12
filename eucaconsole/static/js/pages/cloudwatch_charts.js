@@ -90,7 +90,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     vm.duration = '3600';  // Default duration value is one hour
     vm.largeChartStatistic = "Sum";
     vm.largeChartDuration = 3600;
-    vm.largeChartGranularity = 300;
     vm._largeChartStartTime = new Date();
     vm._largeChartStartTime.setSeconds(-vm.largeChartDuration);
     vm._largeChartEndTime = new Date();
@@ -272,7 +271,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     vm.refreshLargeChart = function() {
         $scope.$broadcast('cloudwatch:refreshLargeChart');
         // for external listeners
-        $scope.$emit('cloudwatch:refreshLargeChart', vm.largeChartStatistic, vm.largeChartGranularity, vm.timeRange, vm.largeChartDuration, vm._largeChartStartTime, vm._largeChartEndTime);
+        $scope.$emit(
+            'cloudwatch:refreshLargeChart',
+            vm.largeChartStatistic,
+            vm.largeChartGranularity,
+            vm.timeRange,
+            vm.largeChartDuration,
+            vm._largeChartStartTime,
+            vm._largeChartEndTime);
     };
 
     function emptyLargeChartDialogOnOpen() {
