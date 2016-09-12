@@ -377,7 +377,7 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         self.choices_manager = ChoicesManager(conn=conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_choices(request)
-        self.securitygroup.help_text = self.securitygroup_help_text
+        # self.securitygroup.help_text = self.securitygroup_help_text
         self.cross_zone_enabled.help_text = self.cross_zone_enabled_help_text
         self.bucket_name.help_text = self.bucket_name_help_text
         self.bucket_prefix.help_text = self.bucket_prefix_help_text

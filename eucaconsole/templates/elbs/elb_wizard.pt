@@ -26,7 +26,7 @@
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
                     <div id="elb-ssl-hidden-fields-wrapper" class="hide">
-                        <input type="text" name="elb_predefined_policy" id="predefined_policy_hidden_input" />
+                        <input type="text" name="elb_predefined_policy" id="predefined_policy_hidden_input" value="${latest_predefined_policy}" />
                         <input type="text" name="elb_ssl_protocols" id="ssl_protocols_hidden_input" />
                         <input type="text" name="elb_ssl_ciphers" id="ssl_ciphers_hidden_input" />
                         <input type="checkbox" name="elb_security_policy_updated" id="security_policy_updated" />

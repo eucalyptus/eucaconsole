@@ -29,7 +29,7 @@
                                 <span class="cir">1</span> <b i18n:translate="">General</b>
                             </a>
                         </dd>
-                        <dd>
+                        <dd ng-class="{'disabled': isNotValid}">
                             <a id="tabStep2" href="#step2" ng-click="visitNextStep(2, $event)">
                                 <span class="cir">2</span> <b i18n:translate="">Membership</b>
                             </a>
