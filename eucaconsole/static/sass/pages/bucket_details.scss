@@ -7,11 +7,6 @@
     top: -1rem;
 }
 
-#cors-configuration-modal {
-    textarea {
-        height: 10rem;
-    }
-}
 
 #sample-link-wrapper {
     text-align: right;
@@ -31,3 +26,12 @@
     }
 }
 
+// CORS Configuration modal dialog
+#cors-configuration-modal {
+    textarea {
+        height: 10rem;
+    }
+}
+#cors-error-wrapper {
+    color: darkred;
+}

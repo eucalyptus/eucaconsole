@@ -82,7 +82,10 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                 }
             });
         };
-        $scope.validateCorsXml = function ($event, validationUrl) {
+        $scope.setCorsConfiguration = function ($event, setConfigurationUrl) {
+            $event.preventDefault();
+            $scope.corsError = '';
+            var corsDialog = $('#cors-configuration-modal');
             var corsForm = $('#cors-configuration-form');
             var csrfToken = corsForm.find('#csrf_token').val();
             var corsTextarea = corsForm.find('textarea');
@@ -90,10 +93,11 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                 'csrf_token': csrfToken,
                 'cors_configuration_xml': corsTextarea.val()
             };
-            $http.post(validationUrl, data, config).then(function successCallback() {
-                // TODO Submit form
+            $http.post(setConfigurationUrl, data).then(function successCallback(response) {
+                corsDialog.foundation('reveal', 'close');
+                Notify.success(response.data.message);
             }, function errorCallback(errData) {
-                console.log(errData);  // TODO: Handle error case
+                $scope.corsError = errData.data.message;
             });
 
         };

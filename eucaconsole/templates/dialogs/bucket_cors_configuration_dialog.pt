@@ -8,8 +8,7 @@
                   tal:omit-tag="" i18n:translate="">Add CORS Configuration</span>
         </h3>
         <form id="cors-configuration-form" method="post"
-              ng-submit="validateCorsXml($event, '${cors_validation_url}')"
-              action="${request.route_path('bucket_set_cors_configuration', name=bucket_name)}">
+              ng-submit="setCorsConfiguration($event, '${cors_configuration_url}')">
             ${structure:cors_configuration_form['csrf_token']}
             <div id="sample-link-wrapper">
                 <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html#how-do-i-enable-cors"
@@ -19,6 +18,7 @@
                       tal:condition="cors_configuration_xml">${cors_configuration_xml}</textarea>
             <textarea name="cors_configuration_xml" title="Add CORS Configuration"
                           tal:condition="not cors_configuration_xml">${sample_cors_configuration}</textarea>
+            <p id="cors-error-wrapper">{{corsError}}</p>
             <button class="expand" i18n:translate="">Save CORS Configuration</button>
         </form>
         <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>

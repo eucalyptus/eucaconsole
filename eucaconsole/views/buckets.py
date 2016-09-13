@@ -750,18 +750,23 @@ class BucketDetailsView(BaseView, BucketMixin):
             self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
 
-    @view_config(route_name='bucket_set_cors_configuration', renderer=VIEW_TEMPLATE, request_method='POST')
+    @view_config(route_name='bucket_set_cors_configuration', renderer='json', request_method='POST', xhr=True)
     def bucket_set_cors_configuration(self):
-        location = self.request.route_path('bucket_details', name=self.bucket.name)
-        cors_xml = self.request.params.get('cors_configuration_xml')
-        if self.bucket and self.cors_configuration_form.validate() and cors_xml:
-            with boto_error_handler(self.request, location):
+        params = json.loads(self.request.body)
+        csrf_token = params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        cors_xml = params.get('cors_configuration_xml')
+        if self.bucket and cors_xml:
+            valid, error = utils.validate_xml(cors_xml, CORS_XML_RELAXNG_SCHEMA)
+            if valid:
                 self.log_request(u"Setting CORS configuration for bucket {0}".format(self.bucket.name))
-                self.bucket.set_cors_xml(cors_xml)
+                with boto_error_handler(self.request):
+                    self.bucket.set_cors_xml(cors_xml)
                 msg = u'{0} {1}'.format(_(u'Successfully set CORS configuration for bucket'), self.bucket.name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-        return self.render_dict
+                return JSONResponse(status=200, message=msg)
+            else:
+                return JSONResponse(status=400, message=error.message)
 
     @view_config(route_name='bucket_delete_cors_configuration', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_delete_cors_configuration(self):
@@ -774,21 +779,6 @@ class BucketDetailsView(BaseView, BucketMixin):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
-
-    @view_config(route_name='bucket_validate_cors_xml', renderer='json', request_method='POST', xhr=True)
-    def bucket_validate_cors_xml(self):
-        params = json.loads(self.request.body)
-        csrf_token = params.get('csrf_token')
-        if not self.is_csrf_valid(token=csrf_token):
-            return JSONResponse(status=400, message=_('Missing CSRF token'))
-        cors_xml = params.get('cors_configuration_xml')
-        if self.bucket and cors_xml:
-            valid, error = utils.validate_xml(cors_xml, CORS_XML_RELAXNG_SCHEMA)
-            if valid:
-                return JSONResponse(status=200, messag='OK')
-            else:
-                return JSONResponse(status=400, message=error.message)
-        return JSONResponse(status=400, message=_('Bad request'))
 
     @view_config(route_name='bucket_update_versioning', request_method='POST')
     def bucket_update_versioning(self):

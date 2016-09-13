@@ -366,7 +366,7 @@ def bucket_cors_configuration_dialog(context, request, bucket_name=None,
         cors_configuration_form=cors_configuration_form,
         cors_configuration_xml=cors_configuration_xml,
         sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
-        cors_validation_url=request.route_path('bucket_validate_cors_xml', name=bucket_name),
+        cors_configuration_url=request.route_path('bucket_set_cors_configuration', name=bucket_name),
     )
 
 
