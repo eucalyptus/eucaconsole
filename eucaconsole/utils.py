@@ -28,7 +28,7 @@
 A collection of reusable utility methods
 
 """
-from StringIO import StringIO
+from string import Template
 
 from lxml import etree
 
@@ -56,11 +56,30 @@ def validate_xml(xml, schema):
     :return: tuple of (True, None) if valid, else (False, exception)
     :rtype: tuple
     """
-    xml = etree.parse(StringIO(xml))
-    relaxng_schema = etree.parse(StringIO(schema))
+    xml_tree = etree.fromstring(xml)
+    relaxng_schema = etree.fromstring(schema)
     relaxng = etree.RelaxNG(relaxng_schema)
     try:
-        relaxng.assertValid(xml)
+        relaxng.assertValid(xml_tree)
         return True, None
     except etree.DocumentInvalid as err:
         return False, err
+
+
+def remove_namespace(xml, root_elem='CORSConfiguration', namespace='http://s3.amazonaws.com/doc/2006-03-01/'):
+    """
+    :param xml: XML to remove namespace from
+    :type xml: str
+    :param root_elem: root element of XML doc
+    :type root_elem: str
+    :param namespace: Namespace to remove
+    :type namespace: str
+    :return: XML string with namespaces removed
+    :rtype: str
+    """
+    xml_tree = etree.fromstring(xml)
+    ns_template = Template('{$ns}$elem')
+    ns_pattern = ns_template.substitute(ns=namespace, elem=root_elem)
+    etree.strip_attributes(xml_tree, ns_pattern)
+    etree.cleanup_namespaces(xml_tree)
+    return etree.tostring(xml_tree, pretty_print=True)

@@ -44,6 +44,9 @@ SAMPLE_CORS_CONFIGURATION = """
 # See http://relaxng.org/tutorial-20011203.html
 # See http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 #
+# NOTE: This schema does not include the "http://s3.amazonaws.com/doc/2006-03-01/" namespace declaration,
+#       so any CORS XML validated against this schema will need namespaces removed
+#
 CORS_XML_RELAXNG_SCHEMA = """
 <element name="CORSConfiguration" xmlns="http://relaxng.org/ns/structure/1.0">
   <oneOrMore>

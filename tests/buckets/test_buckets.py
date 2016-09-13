@@ -43,7 +43,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
 from eucaconsole.constants.buckets import SAMPLE_CORS_CONFIGURATION, CORS_XML_RELAXNG_SCHEMA
 from eucaconsole.forms.buckets import SharingPanelForm
-from eucaconsole.utils import validate_xml
+from eucaconsole.utils import remove_namespace, validate_xml
 from eucaconsole.views.buckets import (
     BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketItemDetailsView, BucketXHRView,
     FOLDER_NAME_PATTERN
@@ -382,3 +382,18 @@ class CorsSchemaValidationTestCase(BaseTestCase):
         valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
         expected_error = u'Extra element MaxAgeSeconds in interleave'
         self.assertEqual(error.message, expected_error)
+
+    def test_cors_xml_with_namespace(self):
+        test_xml = """
+        <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        test_xml = remove_namespace(test_xml)
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
