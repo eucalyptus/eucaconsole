@@ -24,4 +24,14 @@ angular.module('ELBListenerEditorModule', [])
         }],
         controllerAs: 'ctrl'
     };
+})
+.directive('protocolPort', function () {
+    return {
+        require: '^listenerEditor'
+    };
+})
+.directive('validListener', function () {
+    return {
+        require: '^listenerEditor'
+    };
 });

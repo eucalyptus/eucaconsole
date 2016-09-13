@@ -1,4 +1,4 @@
-<div>
+<div id="elb-listener-editor">
     <h6 i18n:translate="">Listeners</h6>
     <table>
         <thead>
@@ -41,14 +41,14 @@
     <div>
         <div class="subsection-label" i18n:translate="">Client side</div>
         <div class="controls-wrapper">
-            <label i18n:translate="">Protocol</label>
+            <label i18n:translate="" class="inline">Protocol</label>
             <select ng-options="protocol.name for protocol in ctrl.protocols"
                 ng-model="protocol" ng-change="ctrl.onUpdate(protocol)"
-                placeholder="select...">
+                placeholder="select..." class="ip-protocol">
             </select>
         </div>
         <div class="controls-wrapper">
-            <label i18n:translate="">Port</label>
+            <label i18n:translate="" class="inline">Port</label>
             <input type="number" ng-model="port"></input>
         </div>
     </div>
