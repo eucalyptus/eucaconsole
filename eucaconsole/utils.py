@@ -28,7 +28,7 @@
 A collection of reusable utility methods
 
 """
-from string import Template
+import re
 
 from lxml import etree
 
@@ -49,6 +49,7 @@ def is_ufshost_error(conn, cloud_type):
 
 def validate_xml(xml, schema):
     """
+    Validate XML string against a RelaxNG schema
     :param xml: XML to validate
     :type xml: str
     :param schema: RelaxNG schema as string
@@ -66,20 +67,12 @@ def validate_xml(xml, schema):
         return False, err
 
 
-def remove_namespace(xml, root_elem='CORSConfiguration', namespace='http://s3.amazonaws.com/doc/2006-03-01/'):
+def remove_namespace(xml):
     """
+    Remove namespace from XML root element
     :param xml: XML to remove namespace from
     :type xml: str
-    :param root_elem: root element of XML doc
-    :type root_elem: str
-    :param namespace: Namespace to remove
-    :type namespace: str
     :return: XML string with namespaces removed
     :rtype: str
     """
-    xml_tree = etree.fromstring(xml)
-    ns_template = Template('{$ns}$elem')
-    ns_pattern = ns_template.substitute(ns=namespace, elem=root_elem)
-    etree.strip_attributes(xml_tree, ns_pattern)
-    etree.cleanup_namespaces(xml_tree)
-    return etree.tostring(xml_tree, pretty_print=True)
+    return re.sub(' xmlns="[^"]+"', '', xml, count=1)
