@@ -46,6 +46,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from pyramid.settings import asbool
 from pyramid.view import view_config
 
+from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
@@ -773,6 +774,21 @@ class BucketDetailsView(BaseView, BucketMixin):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
+
+    @view_config(route_name='bucket_validate_cors_xml', renderer='json', request_method='POST', xhr=True)
+    def bucket_validate_cors_xml(self):
+        params = json.loads(self.request.body)
+        csrf_token = params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        cors_xml = params.get('cors_configuration_xml')
+        if self.bucket and cors_xml:
+            valid, error = utils.validate_xml(cors_xml, CORS_XML_RELAXNG_SCHEMA)
+            if valid:
+                return JSONResponse(status=200, messag='OK')
+            else:
+                return JSONResponse(status=400, message=error.message)
+        return JSONResponse(status=400, message=_('Bad request'))
 
     @view_config(route_name='bucket_update_versioning', request_method='POST')
     def bucket_update_versioning(self):

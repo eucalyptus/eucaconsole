@@ -82,6 +82,21 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                 }
             });
         };
+        $scope.validateCorsXml = function ($event, validationUrl) {
+            var corsForm = $('#cors-configuration-form');
+            var csrfToken = corsForm.find('#csrf_token').val();
+            var corsTextarea = corsForm.find('textarea');
+            var data = {
+                'csrf_token': csrfToken,
+                'cors_configuration_xml': corsTextarea.val()
+            };
+            $http.post(validationUrl, data, config).then(function successCallback() {
+                // TODO Submit form
+            }, function errorCallback(errData) {
+                console.log(errData);  // TODO: Handle error case
+            });
+
+        };
         // Receive postMessage from file upload window, refreshing list when file upload completes
         window.addEventListener('message', function (event) {
             if (event.data === 's3:fileUploaded') {
