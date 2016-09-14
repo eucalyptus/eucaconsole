@@ -397,3 +397,22 @@ class CorsSchemaValidationTestCase(BaseTestCase):
         test_xml = remove_namespace(test_xml)
         valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
         self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_malformed_cors_xml(self):
+        """CORS configuration validation should surface malformed XML errors"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration
+        """
+        test_xml = remove_namespace(test_xml)
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        expected_error = u"expected '>', line 10, column 9"
+        self.assertEqual(valid, False)
+        self.assertEqual(error.message, expected_error)

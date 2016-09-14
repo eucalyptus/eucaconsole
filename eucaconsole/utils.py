@@ -57,9 +57,16 @@ def validate_xml(xml, schema):
     :return: tuple of (True, None) if valid, else (False, exception)
     :rtype: tuple
     """
-    xml_tree = etree.fromstring(xml)
+    # Ensure XML document is well-formed
+    try:
+        xml_tree = etree.fromstring(xml)
+    except etree.XMLSyntaxError as err:
+        return False, err
+
+    # Now validate against schema
     relaxng_schema = etree.fromstring(schema)
     relaxng = etree.RelaxNG(relaxng_schema)
+
     try:
         relaxng.assertValid(xml_tree)
         return True, None
