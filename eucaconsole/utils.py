@@ -44,7 +44,7 @@ def is_ufshost_error(conn, cloud_type):
     :param cloud_type: usually 'aws' or 'euca'
     """
     ufshost = conn.host if cloud_type == 'euca' else ''
-    return (ufshost in ['localhost', '127.0.0.1'])
+    return ufshost in ['localhost', '127.0.0.1']
 
 
 def validate_xml(xml, schema):
@@ -67,12 +67,14 @@ def validate_xml(xml, schema):
         return False, err
 
 
-def remove_namespace(xml):
+def remove_namespace(xml, count=1):
     """
-    Remove namespace from XML root element
-    :param xml: XML to remove namespace from
+    Remove namespaces from XML root element
+    :param xml: XML to remove namespaces from
     :type xml: str
-    :return: XML string with namespaces removed
+    :param count: Limit namespace removal to ___ items
+    :type count: int
+    :return: XML string with namespace removed
     :rtype: str
     """
-    return re.sub(' xmlns="[^"]+"', '', xml, count=1)
+    return re.sub(' xmlns="[^"]+"', '', xml, count=count)

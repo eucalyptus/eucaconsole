@@ -19,7 +19,13 @@
             <textarea name="cors_configuration_xml" title="Add CORS Configuration"
                           tal:condition="not cors_configuration_xml">${sample_cors_configuration}</textarea>
             <p id="cors-error-wrapper">{{corsError}}</p>
-            <button class="expand" i18n:translate="">Save CORS Configuration</button>
+            <button class="expand" i18n:translate="" ng-if="!savingCorsConfig">
+                Save CORS Configuration
+            </button>
+            <button class="expand" disabled="disabled" ng-if="savingCorsConfig">
+                <span i18n:translate="">Saving CORS Configuration</span>&nbsp;
+                <span class="busy"></span>
+            </button>
         </form>
         <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>
     </div>

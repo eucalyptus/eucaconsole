@@ -14,6 +14,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectsCountLoading = true;
+        $scope.savingCorsConfig = false;
         $scope.initController = function (bucketObjectsCountUrl) {
             $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
             $scope.getBucketObjectsCount();
@@ -84,6 +85,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
         };
         $scope.setCorsConfiguration = function ($event, setConfigurationUrl) {
             $event.preventDefault();
+            $scope.savingCorsConfig = true;
             $scope.corsError = '';
             var corsDialog = $('#cors-configuration-modal');
             var corsForm = $('#cors-configuration-form');
@@ -95,9 +97,11 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             };
             $http.post(setConfigurationUrl, data).then(function successCallback(response) {
                 corsDialog.foundation('reveal', 'close');
+                $scope.savingCorsConfig = false;
                 Notify.success(response.data.message);
             }, function errorCallback(errData) {
                 $scope.corsError = errData.data.message;
+                $scope.savingCorsConfig = false;
             });
 
         };

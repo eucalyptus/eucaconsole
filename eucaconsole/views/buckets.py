@@ -758,6 +758,7 @@ class BucketDetailsView(BaseView, BucketMixin):
             return JSONResponse(status=400, message=_('Missing CSRF token'))
         cors_xml = params.get('cors_configuration_xml')
         if self.bucket and cors_xml:
+            cors_xml = utils.remove_namespace(cors_xml)
             valid, error = utils.validate_xml(cors_xml, CORS_XML_RELAXNG_SCHEMA)
             if valid:
                 self.log_request(u"Setting CORS configuration for bucket {0}".format(self.bucket.name))
