@@ -36,6 +36,7 @@ from boto.s3.acl import ACL, Policy
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
 from boto.s3.user import User
+from lxml import etree
 from moto import mock_s3
 
 from pyramid import testing
@@ -413,6 +414,5 @@ class CorsSchemaValidationTestCase(BaseTestCase):
         """
         test_xml = remove_namespace(test_xml)
         valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
-        expected_error = u"expected '>', line 10, column 9"
         self.assertEqual(valid, False)
-        self.assertEqual(error.message, expected_error)
+        self.assertEqual(isinstance(error, etree.XMLSyntaxError), True)
