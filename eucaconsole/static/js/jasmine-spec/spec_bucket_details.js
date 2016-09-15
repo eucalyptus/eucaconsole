@@ -46,10 +46,16 @@ describe("BucketDetailsPage", function() {
     });
 
     describe("Function initController() Test", function() {
+        var optionsJson = '{"bucket_objects_count_url": "objects_count_url", "has_cors_config": false}';
 
         it("Should set bucketObjectsCountUrl when initController() is called", function() {
-            scope.initController('a');
-            expect(scope.bucketObjectsCountUrl).toEqual('a');
+            scope.initController(optionsJson);
+            expect(scope.bucketObjectsCountUrl).toEqual('objects_count_url');
+        });
+
+        it("Should set hasCorsConfig boolean when controller is initialized", function() {
+            scope.initController(optionsJson);
+            expect(scope.hasCorsConfig).toEqual(false);
         });
 
         it("Should call handleUnsavedChanges() when initController() is called", function() {
