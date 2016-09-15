@@ -751,7 +751,7 @@ class BucketDetailsView(BaseView, BucketMixin):
             self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
 
-    @view_config(route_name='bucket_set_cors_configuration', renderer='json', request_method='POST', xhr=True)
+    @view_config(route_name='bucket_set_cors_configuration', renderer='json', request_method='PUT', xhr=True)
     def bucket_set_cors_configuration(self):
         params = json.loads(self.request.body)
         csrf_token = params.get('csrf_token')
@@ -807,6 +807,7 @@ class BucketDetailsView(BaseView, BucketMixin):
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
+            'bucket_name': self.bucket.name,
             'has_cors_config': bool(self.cors_configuration_xml),
             'bucket_objects_count_url': self.request.route_path(
                 'bucket_objects_count_versioning_json', name=self.bucket.name),

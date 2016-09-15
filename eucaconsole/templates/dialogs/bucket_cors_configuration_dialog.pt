@@ -8,7 +8,7 @@
                   tal:omit-tag="" i18n:translate="">Add CORS Configuration</span>
         </h3>
         <form id="cors-configuration-form" method="post"
-              ng-submit="setCorsConfiguration($event, '${cors_configuration_url}')">
+              ng-submit="setCorsConfiguration($event)">
             ${structure:cors_configuration_form['csrf_token']}
             <div id="sample-link-wrapper">
                 <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html#how-do-i-enable-cors"
