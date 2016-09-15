@@ -8,7 +8,7 @@
 
 /* Bucket details page includes the S3 Sharing Panel */
 angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
-    .controller('BucketDetailsPageCtrl', function ($scope, $http, eucaHandleErrorS3) {
+    .controller('BucketDetailsPageCtrl', function ($scope, $http, eucaHandleErrorS3, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketDetailsForm = $('#bucket-details-form');
         $scope.isSubmitted = false;
@@ -16,8 +16,11 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
         $scope.objectsCountLoading = true;
         $scope.savingCorsConfig = false;
         $scope.deletingCorsConfig = false;
-        $scope.initController = function (bucketObjectsCountUrl) {
-            $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
+        $scope.hasCorsConfig = false;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
+            $scope.hasCorsConfig = options.has_cors_config;
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
@@ -99,6 +102,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             $http.post(setConfigurationUrl, data).then(function successCallback(response) {
                 corsDialog.foundation('reveal', 'close');
                 $scope.savingCorsConfig = false;
+                $scope.hasCorsConfig = true;
                 Notify.success(response.data.message);
             }, function errorCallback(errData) {
                 $scope.corsError = errData.data.message;
@@ -118,6 +122,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             $http.delete(deleteConfigurationUrl, data).then(function successCallback(response) {
                 deleteDialog.foundation('reveal', 'close');
                 $scope.deletingCorsConfig = false;
+                $scope.hasCorsConfig = false;
                 Notify.success(response.data.message);
             }, function errorCallback(errData) {
                 $scope.deleteError = errData.data.message;

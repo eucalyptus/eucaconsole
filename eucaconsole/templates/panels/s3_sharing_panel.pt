@@ -71,7 +71,7 @@
             HTTP methods you want to allow for those origins. Optionally, you can also specify the headers users can
             set in requests or access in responses and the duration the preflight responses should be cached.
         </p>
-        <div tal:condition="cors_configuration_xml">
+        <div ng-if="hasCorsConfig">
             <div id="existing-cors-config-wrapper">
                 <a href="#" class="icon remove has-tip" i18n:attributes="title" data-reveal-id="cors-delete-confirmation-modal"
                    title="Remove CORS Configuration"><i class="fi-minus-circle"></i></a>
@@ -80,7 +80,7 @@
                 <span i18n:translate="">CORS Configuration</span>
             </div>
         </div>
-        <div tal:condition="not cors_configuration_xml">
+        <div ng-if="!hasCorsConfig">
             <a href="#" class="button round tiny" i18n:translate=""
                data-reveal-id="cors-configuration-modal">Add CORS Configuration</a>
         </div>

@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="BucketDetailsPage" ng-controller="BucketDetailsPageCtrl"
-         ng-init="initController('${bucket_objects_count_url}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>

@@ -728,8 +728,7 @@ class BucketDetailsView(BaseView, BucketMixin):
                 cors_deletion_form=self.cors_deletion_form,
                 cors_configuration_xml=self.cors_configuration_xml,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
-                bucket_objects_count_url=self.request.route_path(
-                    'bucket_objects_count_versioning_json', name=self.bucket.name),
+                controller_options_json=self.get_controller_options_json(),
                 delete_cors_config_url=self.request.route_path(
                     'bucket_delete_cors_configuration', name=self.bucket.name),
             )
@@ -805,6 +804,13 @@ class BucketDetailsView(BaseView, BucketMixin):
         else:
             self.request.error_messages = self.versioning_form.get_errors_list()
         return self.render_dict
+
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'has_cors_config': bool(self.cors_configuration_xml),
+            'bucket_objects_count_url': self.request.route_path(
+                'bucket_objects_count_versioning_json', name=self.bucket.name),
+        }))
 
     def get_logging_status(self):
         """Returns the logging status as a dict, with the logs URL included for templates"""
