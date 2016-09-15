@@ -726,7 +726,7 @@ class BucketDetailsView(BaseView, BucketMixin):
                 logging_status=self.get_logging_status(),
                 cors_configuration_form=self.cors_configuration_form,
                 cors_deletion_form=self.cors_deletion_form,
-                cors_configuration_xml=utils.remove_namespace(self.cors_configuration_xml),
+                cors_configuration_xml=self.cors_configuration_xml,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 bucket_objects_count_url=self.request.route_path(
                     'bucket_objects_count_versioning_json', name=self.bucket.name)
@@ -822,6 +822,8 @@ class BucketDetailsView(BaseView, BucketMixin):
         try:
             if xml:
                 cors = bucket.get_cors_xml()
+                if cors:
+                    cors = utils.remove_namespace(cors)
             else:
                 cors = bucket.get_cors()
             return cors or None
