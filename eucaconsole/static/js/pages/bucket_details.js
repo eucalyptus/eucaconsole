@@ -15,6 +15,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
         $scope.hasChangesToBeSaved = false;
         $scope.objectsCountLoading = true;
         $scope.savingCorsConfig = false;
+        $scope.deletingCorsConfig = false;
         $scope.initController = function (bucketObjectsCountUrl) {
             $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
             $scope.getBucketObjectsCount();
@@ -103,7 +104,25 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                 $scope.corsError = errData.data.message;
                 $scope.savingCorsConfig = false;
             });
-
+        };
+        $scope.deleteCorsConfig = function ($event, deleteConfigurationUrl) {
+            $event.preventDefault();
+            $scope.deleteError = '';
+            $scope.deletingCorsConfig = true;
+            var deleteDialog = $('#cors-delete-confirmation-modal');
+            var corsForm = $('#cors-deletion-form');
+            var csrfToken = corsForm.find('#csrf_token').val();
+            var data = {
+                params: {'csrf_token': csrfToken}
+            };
+            $http.delete(deleteConfigurationUrl, data).then(function successCallback(response) {
+                deleteDialog.foundation('reveal', 'close');
+                $scope.deletingCorsConfig = false;
+                Notify.success(response.data.message);
+            }, function errorCallback(errData) {
+                $scope.deleteError = errData.data.message;
+                $scope.deletingCorsConfig = false;
+            });
         };
         // Receive postMessage from file upload window, refreshing list when file upload completes
         window.addEventListener('message', function (event) {

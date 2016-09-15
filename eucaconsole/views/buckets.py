@@ -729,7 +729,9 @@ class BucketDetailsView(BaseView, BucketMixin):
                 cors_configuration_xml=self.cors_configuration_xml,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 bucket_objects_count_url=self.request.route_path(
-                    'bucket_objects_count_versioning_json', name=self.bucket.name)
+                    'bucket_objects_count_versioning_json', name=self.bucket.name),
+                delete_cors_config_url=self.request.route_path(
+                    'bucket_delete_cors_configuration', name=self.bucket.name),
             )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
@@ -769,17 +771,21 @@ class BucketDetailsView(BaseView, BucketMixin):
             else:
                 return JSONResponse(status=400, message=error.message)
 
-    @view_config(route_name='bucket_delete_cors_configuration', renderer=VIEW_TEMPLATE, request_method='POST')
+    @view_config(route_name='bucket_delete_cors_configuration', renderer=VIEW_TEMPLATE, request_method='DELETE')
     def bucket_delete_cors_configuration(self):
-        location = self.request.route_path('bucket_details', name=self.bucket.name)
-        if self.bucket and self.cors_deletion_form.validate():
-            with boto_error_handler(self.request, location):
+        csrf_token = self.request.params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        if self.bucket:
+            with boto_error_handler(self.request):
                 self.log_request(u"Deleting CORS configuration for bucket {0}".format(self.bucket.name))
                 self.bucket.delete_cors()
-                msg = u'{0} {1}'.format(_(u'Successfully deleted CORS configuration for bucket'), self.bucket.name)
+                msg = '{0} {1}'.format(_(u'Successfully deleted CORS configuration for bucket'), self.bucket.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-        return self.render_dict
+            return JSONResponse(status=200, message=msg)
+        else:
+            error = '{0} {1}'.format(_('Unable to delete CORS configuration for bucket'), self.bucket.name)
+            return JSONResponse(status=400, message=error)
 
     @view_config(route_name='bucket_update_versioning', request_method='POST')
     def bucket_update_versioning(self):

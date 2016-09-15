@@ -128,13 +128,20 @@
             <h3 i18n:translate="">Delete CORS Configuration</h3>
             <div>&nbsp</div>
             <form id="cors-deletion-form" method="post"
-                  action="${request.route_path('bucket_delete_cors_configuration', name=bucket_name)}">
+                  ng-submit="deleteCorsConfig($event, '${delete_cors_config_url}')">
                 ${structure:cors_deletion_form['csrf_token']}
                 <p>
                     <span i18n:translate="">Are you sure you want to delete the CORS configuration for</span>
                     <strong>${bucket_name}</strong><span i18n:translate="">?</span>
                 </p>
-                <button class="expand" i18n:translate="">Yes, Delete CORS Configuration</button>
+                <p id="delete-error-wrapper">{{deleteError}}</p>
+                <button class="expand" i18n:translate="" ng-if="!deletingCorsConfig">
+                    Yes, Delete CORS Configuration
+                </button>
+                <button class="expand" i18n:translate="" ng-if="deletingCorsConfig">
+                    <span i18n:translate="">Deleting CORS Configuration</span>&nbsp;
+                    <span class="busy"></span>
+                </button>
             </form>
             <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>
         </div>
