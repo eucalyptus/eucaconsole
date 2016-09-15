@@ -1,22 +1,23 @@
-<div id="elb-listener-editor">
+<div class="elb-listener-editor">
     <h6 i18n:translate="">Listeners</h6>
-    <table>
+    <table class="table" ng-show="listeners.length">
         <thead>
             <tr class="top-header">
-                <th colspan="2">Client Side:</th>
-                <th colspan="2">Instance Side:</th>
-                <th colspan="2">Security:</th>
+                <th class="vertical-border-header" colspan="2">Client Side:</th>
+                <th class="vertical-border-header" colspan="2">Instance Side:</th>
+                <th colspan="3">Security:</th>
             </tr>
             <tr>
                 <th>PROTOCOL</th>
-                <th>PORT</th>
+                <th class="vertical-border-header">PORT</th>
                 <th>PROTOCOL</th>
-                <th>PORT</th>
+                <th class="vertical-border-header">PORT</th>
                 <th>POLICY</th>
                 <th>
                     <span i18n:translate="">CERTIFICATES</span>
                     <i class="helptext-icon"></i>
                 </th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -24,10 +25,20 @@
                 <td>{{ listener.fromProtocol }}</td>
                 <td>{{ listener.fromPort }}</td>
                 <td>{{ listener.toProtocol }}</td>
-                <td>{{ listener.toProtocol }}</td>
+                <td>{{ listener.toPort }}</td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a class="circle remove" ng-click="ctrl.removeListener($index)" title="RemoveListener">
+                        <i class="fi-minus-circle"></i>
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>
+    <div class="error" ng-show="!listeners.length" i18n:translate="">
+        You must define at least one listener.
+    </div>
 
     <div>
         <div ng-show="listeners.length === 0">
@@ -38,18 +49,17 @@
         </div>
     </div>
 
-    <div>
-        <div class="subsection-label" i18n:translate="">Client side</div>
-        <div class="controls-wrapper">
-            <label i18n:translate="" class="inline">Protocol</label>
-            <select ng-options="protocol.name for protocol in ctrl.protocols"
-                ng-model="protocol" ng-change="ctrl.onUpdate(protocol)"
-                placeholder="select..." class="ip-protocol">
-            </select>
-        </div>
-        <div class="controls-wrapper">
-            <label i18n:translate="" class="inline">Port</label>
-            <input type="number" ng-model="port"></input>
-        </div>
+    <protocol-port label="Client side" name="clientSide"
+        ng-model="ctrl.clientSide" valid-listener=""></protocol-port>
+    <protocol-port label="Server side" name="serverSide"
+        ng-model="ctrl.serverSide" valid-listener=""></protocol-port>
+
+    <div id="add-listener-button-div">
+        <span id="button-add-listener" class="button round tiny" i18n:translate=""
+            ng-class="addListenerButtonClass" ng-click="ctrl.addListener($event)">
+            Add Listener
+        </span>
+        <a href="#" id="button-cancel-listener" class="cancel-link" i18n:translate=""
+           ng-click="ctrl.cancelListener($event)">Cancel</a>
     </div>
 </div>

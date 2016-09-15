@@ -1,0 +1,13 @@
+@import "../includes/eucavariables";
+
+.wizard {
+    .error {
+        font-size: small;
+        display: none;
+    }
+
+    input.ng-invalid.ng-touched ~ .error {
+        display: block;
+        @include validation-error-mixin;
+    }
+}

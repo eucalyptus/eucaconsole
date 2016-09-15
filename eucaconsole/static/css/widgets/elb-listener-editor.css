@@ -1,0 +1,6 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.wizard .error { font-size: small; display: none; }
+.wizard input.ng-invalid.ng-touched ~ .error { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }

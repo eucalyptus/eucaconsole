@@ -6,6 +6,8 @@
     <link rel="stylesheet" type="text/css"
         href="${request.static_path('eucaconsole:static/css/widgets/elb_listener_editor.css')}" />
     <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/widgets/elb-listener-editor.css')}" />
+    <link rel="stylesheet" type="text/css"
         href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css"
         href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
