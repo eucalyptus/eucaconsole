@@ -1,32 +1,28 @@
 <!--! Modal dialog for S3 bucket CORS configuration -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
-    <div id="cors-configuration-modal" class="reveal-modal medium" data-reveal="">
-        <h3>
-            <span tal:condition="cors_configuration_xml"
-                  tal:omit-tag="" i18n:translate="">Edit CORS Configuration</span>
-            <span tal:condition="not cors_configuration_xml"
-                  tal:omit-tag="" i18n:translate="">Add CORS Configuration</span>
-        </h3>
-        <form id="cors-configuration-form" method="post"
-              ng-submit="setCorsConfiguration($event)">
-            ${structure:cors_configuration_form['csrf_token']}
-            <div id="sample-link-wrapper">
-                <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html#how-do-i-enable-cors"
-                    target="_blank" i18n:translate="">Sample CORS Configurations</a>
-            </div>
-            <textarea name="cors_configuration_xml" title="Edit CORS Configuration"
-                      tal:condition="cors_configuration_xml">${cors_configuration_xml}</textarea>
-            <textarea name="cors_configuration_xml" title="Add CORS Configuration"
-                          tal:condition="not cors_configuration_xml">${sample_cors_configuration}</textarea>
-            <p id="cors-error-wrapper">{{corsError}}</p>
-            <button class="expand" i18n:translate="" ng-if="!savingCorsConfig">
-                Save CORS Configuration
-            </button>
-            <button class="expand" disabled="disabled" ng-if="savingCorsConfig">
-                <span i18n:translate="">Saving CORS Configuration</span>&nbsp;
-                <span class="busy"></span>
-            </button>
-        </form>
-        <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>
-    </div>
+    <h3>
+        <span ng-if="hasCorsConfig"
+              i18n:translate="">Edit CORS Configuration</span>
+        <span ng-if="!hasCorsConfig"
+              i18n:translate="">Add CORS Configuration</span>
+    </h3>
+    <form id="cors-configuration-form" method="post"
+          ng-submit="setCorsConfiguration($event)">
+        <div id="sample-link-wrapper">
+            <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html#how-do-i-enable-cors"
+                target="_blank" i18n:translate="">Sample CORS Configurations</a>
+        </div>
+        <textarea name="cors_configuration_xml" title="Edit CORS Configuration"
+                  ng-if="hasCorsConfig">{{ corsConfigXml }}</textarea>
+        <textarea name="cors_configuration_xml" title="Add CORS Configuration"
+                  ng-if="!hasCorsConfig">{{ sampleCorsConfig }}</textarea>
+        <p class="cors-error-wrapper">{{corsError}}</p>
+        <button class="expand" i18n:translate="" ng-if="!savingCorsConfig">
+            Save CORS Configuration
+        </button>
+        <button class="expand" disabled="disabled" ng-if="savingCorsConfig">
+            <span i18n:translate="">Saving CORS Configuration</span>&nbsp;
+            <span class="busy"></span>
+        </button>
+    </form>
 </div>

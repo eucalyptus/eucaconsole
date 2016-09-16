@@ -46,7 +46,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from pyramid.settings import asbool
 from pyramid.view import view_config
 
-from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA
+from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA, SAMPLE_CORS_CONFIGURATION
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
@@ -727,6 +727,7 @@ class BucketDetailsView(BaseView, BucketMixin):
                 cors_configuration_form=self.cors_configuration_form,
                 cors_deletion_form=self.cors_deletion_form,
                 cors_configuration_xml=self.cors_configuration_xml,
+                sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 controller_options_json=self.get_controller_options_json(),
                 delete_cors_config_url=self.request.route_path(

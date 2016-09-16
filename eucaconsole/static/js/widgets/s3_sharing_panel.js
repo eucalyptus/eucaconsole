@@ -5,8 +5,8 @@
  * @requires AngularJS
  *
  */
-angular.module('S3SharingPanel', ['EucaConsoleUtils'])
-    .controller('S3SharingPanelCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+angular.module('S3SharingPanel', ['EucaConsoleUtils', 'ModalModule'])
+    .controller('S3SharingPanelCtrl', function ($scope, $timeout, eucaUnescapeJson, ModalService) {
         $scope.s3AclTextarea = $('#s3-sharing-acl');
         $scope.sharingAccountList = [];
         $scope.isNotValid = true;
@@ -77,6 +77,11 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
                 if (newVal !== oldVal) {
                     $scope.$emit('s3:sharingPanelAclUpdated');
                 }
+            });
+        };
+        $scope.openCorsConfigModal = function () {
+            $timeout(function () {
+                ModalService.openModal('corsConfigModal');
             });
         };
         $scope.syncGrants = function() {

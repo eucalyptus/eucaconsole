@@ -356,20 +356,6 @@ def elb_bucket_access_log_dialog(context, request):
     """ Modal confirmation when enabling access logs for an ELB"""
     return dict()
 
-
-@panel_config('bucket_cors_configuration_dialog', renderer='../templates/dialogs/bucket_cors_configuration_dialog.pt')
-def bucket_cors_configuration_dialog(context, request, bucket_name=None,
-                                     cors_configuration_form=None, cors_configuration_xml=None):
-    """ Modal dialog for CORS configuration on an S3 bucket"""
-    return dict(
-        bucket_name=bucket_name,
-        cors_configuration_form=cors_configuration_form,
-        cors_configuration_xml=cors_configuration_xml,
-        sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
-        cors_configuration_url=request.route_path('bucket_set_cors_configuration', name=bucket_name),
-    )
-
-
 @panel_config('elb_security_group_warning_dialog', renderer='../templates/dialogs/elb_security_group_warning_dialog.pt')
 def elb_security_group_warning_dialog(context, request, create=False):
     """ Modal confirmation when the security group rules for an ELB don't cover the listener and health check ports"""

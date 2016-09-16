@@ -7,7 +7,7 @@
  */
 
 /* Bucket details page includes the S3 Sharing Panel */
-angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule'])
+angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'ModalModule'])
     .controller('BucketDetailsPageCtrl', function ($scope, $http, eucaHandleErrorS3,
                                                    eucaUnescapeJson, CorsService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -90,25 +90,6 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                 }
             });
         };
-        $scope.setCorsConfiguration = function ($event) {
-            $event.preventDefault();
-            $scope.savingCorsConfig = true;
-            $scope.corsError = '';
-            var corsDialog = $('#cors-configuration-modal');
-            var corsForm = $('#cors-configuration-form');
-            var csrfToken = corsForm.find('#csrf_token').val();
-            var corsTextarea = corsForm.find('textarea');
-            CorsService.setCorsConfig($scope.bucketName, csrfToken, corsTextarea.val())
-                .then(function success (response) {
-                    corsDialog.foundation('reveal', 'close');
-                    $scope.savingCorsConfig = false;
-                    $scope.hasCorsConfig = true;
-                    Notify.success(response.data.message);
-                }, function error (errData) {
-                    $scope.corsError = errData.data.message;
-                    $scope.savingCorsConfig = false;
-                });
-        };
         $scope.deleteCorsConfig = function ($event) {
             $event.preventDefault();
             $scope.deleteError = '';
@@ -133,6 +114,43 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                 $scope.getBucketObjectsCount();
             }
         }, false);
+    })
+    .directive('corsConfigModal', function() {
+        return {
+            restrict: 'A',
+            scope: {
+                template: '@',
+                bucketName: '@',
+                hasCorsConfig: '=',
+                corsConfigXml: '@',
+                sampleCorsConfig: '@'
+            },
+            templateUrl: function (element, attributes) {
+                return attributes.template;
+            },
+            controller: ['$scope', 'CorsService', 'ModalService',
+                function($scope, CorsService, ModalService) {
+                    $scope.setCorsConfiguration = function ($event) {
+                        $event.preventDefault();
+                        $scope.savingCorsConfig = true;
+                        $scope.corsError = '';
+                        var corsForm = $('#cors-configuration-form');
+                        var csrfToken = $('#csrf_token').val();
+                        var corsTextarea = corsForm.find('textarea');
+                        CorsService.setCorsConfig($scope.bucketName, csrfToken, corsTextarea.val())
+                            .then(function success (response) {
+                                ModalService.closeModal('corsConfigModal');
+                                $scope.savingCorsConfig = false;
+                                $scope.hasCorsConfig = true;
+                                Notify.success(response.data.message);
+                            }, function error (errData) {
+                                $scope.corsError = errData.data.message;
+                                $scope.savingCorsConfig = false;
+                            });
+                    };
+                }
+            ]
+        };
     })
 ;
 

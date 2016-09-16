@@ -73,16 +73,16 @@
         </p>
         <div ng-if="hasCorsConfig">
             <div id="existing-cors-config-wrapper">
-                <a href="#" class="icon remove has-tip" i18n:attributes="title" data-reveal-id="cors-delete-confirmation-modal"
+                <a class="icon remove has-tip" i18n:attributes="title" data-reveal-id="cors-delete-confirmation-modal"
                    title="Remove CORS Configuration"><i class="fi-minus-circle"></i></a>
-                <a href="#" class="icon edit has-tip" i18n:attributes="title" data-reveal-id="cors-configuration-modal"
+                <a class="icon edit has-tip" i18n:attributes="title" ng-click="openCorsConfigModal()"
                    title="View/Edit CORS Configuration"><i class="fi-pencil"></i></a>
                 <span i18n:translate="">CORS Configuration</span>
             </div>
         </div>
         <div ng-if="!hasCorsConfig">
-            <a href="#" class="button round tiny" i18n:translate=""
-               data-reveal-id="cors-configuration-modal">Add CORS Configuration</a>
+            <a class="button round tiny" i18n:translate=""
+               ng-click="openCorsConfigModal()">Add CORS Configuration</a>
         </div>
     </div>
     <div id="unsaved-sharing-warning-modal" class="reveal-modal small" data-reveal="">

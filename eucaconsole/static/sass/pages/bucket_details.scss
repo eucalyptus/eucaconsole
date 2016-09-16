@@ -1,6 +1,8 @@
 /* @fileOverview Bucket details page CSS */
 
 @import "../includes/eucavariables";
+@import "../widgets/modal";
+
 
 #bucket-section-title {
     position: relative;
@@ -27,11 +29,32 @@
 }
 
 // CORS Configuration modal dialog
-#cors-configuration-modal {
+.cors-config-modal {
     textarea {
         height: 10rem;
     }
 }
-#cors-error-wrapper {
+.cors-error-wrapper {
     color: darkred;
+}
+
+
+// Modal overrides for top position (TODO: Devise a better way to handle this)
+$modal-open-top-position: 50px;
+
+@keyframes slidedown {
+  from {
+      opacity: 0;
+      top: -1000px;
+  }
+  to {
+      opacity: 1;
+      top: $modal-open-top-position;
+  }
+}
+
+.modal {
+    .modal-content {
+        top: $modal-open-top-position;
+    }
 }
