@@ -209,22 +209,25 @@ class LoginView(BaseView, PermissionCheckMixin):
         try:
             state = role_session_name=token['state']
             (oauth, account_id, csrf_token) = state.split('-')
-            region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self._get_ufs_host_setting_())
+            # TODO: need to test/set dns enablement!
+            #region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self._get_ufs_host_setting_())
+            region = RegionInfo(name='eucalyptus', endpoint=self._get_ufs_host_setting_())
             port = self._get_ufs_port_setting_()
             conn = STSConnection(
                 port=port,
+                path='/services/Tokens',
                 region=region,
                 https_connection_factory=(HttpsConnectionFactory(port).https_connection_factory, ())
             )
+            if self.duration > 3600:  # this call won't allow than 1 hour duration
+                self.duration = 3600
             result = conn.assume_role_with_web_identity(
                 role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_id),
                 role_session_name=token['state'],
                 web_identity_token=token['id_token'],
                 duration_seconds=self.duration
             )
-            creds = auth.authenticate(
-                account=account, user=username, passwd=password,
-                new_passwd=new_passwd, timeout=8, duration=self.duration)
+            creds = result.credentials
             logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
                 acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
             # TODO: refactory below to get as much reuse with handle_euca_login() as possible
@@ -239,7 +242,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             session['secret_key'] = creds.secret_key
             session['region'] = euca_region if euca_region != '' else default_region
             session['username_label'] = user_account
-            session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
+            session['dns_enabled'] = False # this *must* be prior to line below
             session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
             session['default_vpc'] = self.get_account_attributes(['default-vpc'])
 

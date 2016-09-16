@@ -116,7 +116,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         };
         $scope.handleGlobusLogin = function($event) {
             $event.preventDefault();
-            window.location.href = $scope.oauthLoginLink + "&state=oauth-000680909386-" + $('#csrf_token').val();
+            window.location.href = $scope.oauthLoginLink + "&state=oauth-000196687477-" + $('#csrf_token').val();
         };
     })
 ;
