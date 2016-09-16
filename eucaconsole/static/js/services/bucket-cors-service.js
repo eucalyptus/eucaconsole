@@ -2,7 +2,7 @@
  * Copyright 2016 Hewlett Packard Enterprise Development LP
  *
  * @fileOverview factory methods for S3 bucket CORS config XHR calls
- * @requires AngularJS, jQuery
+ * @requires AngularJS
  *
  */
 angular.module('CorsServiceModule', ['EucaRoutes'])
@@ -10,8 +10,8 @@ angular.module('CorsServiceModule', ['EucaRoutes'])
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
     return {
-        setCorsConfig: function (name, csrfToken, corsConfigXml) {
-            return eucaRoutes.getRouteDeferred('bucket_set_cors_configuration', { name: name })
+        setCorsConfig: function (bucketName, csrfToken, corsConfigXml) {
+            return eucaRoutes.getRouteDeferred('bucket_set_cors_configuration', { name: bucketName })
                 .then(function (path) {
                     return $http({
                         method: 'PUT',
@@ -22,7 +22,19 @@ angular.module('CorsServiceModule', ['EucaRoutes'])
                         }
                     });
                 });
-        }
+        },
 
-    };
+        deleteCorsConfig: function (bucketName, csrfToken) {
+            return eucaRoutes.getRouteDeferred('bucket_delete_cors_configuration', { name: bucketName })
+                .then(function (path) {
+                    return $http({
+                        method: 'DELETE',
+                        url: path,
+                        params: {
+                            csrf_token: csrfToken
+                        }
+                    });
+                });
+        }
+   };
 }]);

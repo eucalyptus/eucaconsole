@@ -128,7 +128,7 @@
             <h3 i18n:translate="">Delete CORS Configuration</h3>
             <div>&nbsp</div>
             <form id="cors-deletion-form" method="post"
-                  ng-submit="deleteCorsConfig($event, '${delete_cors_config_url}')">
+                  ng-submit="deleteCorsConfig($event)">
                 ${structure:cors_deletion_form['csrf_token']}
                 <p>
                     <span i18n:translate="">Are you sure you want to delete the CORS configuration for</span>
