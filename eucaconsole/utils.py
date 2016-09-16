@@ -59,7 +59,7 @@ def validate_xml(xml, schema):
     """
     # Ensure XML document is well-formed
     try:
-        xml_tree = etree.fromstring(xml)
+        xml_tree = etree.fromstring(xml.strip())
     except etree.XMLSyntaxError as err:
         return False, err
 

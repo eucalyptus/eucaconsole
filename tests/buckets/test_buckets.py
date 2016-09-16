@@ -347,7 +347,7 @@ class CorsSchemaValidationTestCase(BaseTestCase):
         </CORSConfiguration>
         """
         valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
-        expected_error = u'Expecting an element AllowedOrigin, got nothing, line 3'
+        expected_error = u'Expecting an element AllowedOrigin, got nothing, line 2'
         self.assertEqual(valid, False)
         self.assertEqual(error.message, expected_error)
 
@@ -363,7 +363,7 @@ class CorsSchemaValidationTestCase(BaseTestCase):
         </CORSConfiguration>
         """
         valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
-        expected_error = u"Type integer doesn't allow value 'foobar', line 6"
+        expected_error = u"Type integer doesn't allow value 'foobar', line 5"
         self.assertEqual(valid, False)
         self.assertEqual(error.message, expected_error)
 
@@ -386,6 +386,23 @@ class CorsSchemaValidationTestCase(BaseTestCase):
 
     def test_cors_xml_with_namespace(self):
         test_xml = """
+        <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        test_xml = remove_namespace(test_xml)
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_cors_xml_with_version_and_encoding_stanza(self):
+        test_xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
         <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
             <CORSRule>
                 <AllowedOrigin>*</AllowedOrigin>
