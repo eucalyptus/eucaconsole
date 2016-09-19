@@ -11,15 +11,13 @@ angular.module('ELBListenerEditorModule', [])
             vm.from = {};
             vm.to = {};
 
-            console.log('listener editor', $scope);
-
             this.clientSideValid = function () {
-                return vm.from.port && vm.from.protocol;
+                return !!(vm.from.port && vm.from.protocol);
             };
 
             this.portsValid = function () {
-                var fromValid = vm.from.port && vm.from.protocol;
-                var toValid = vm.to.port && vm.to.protocol;
+                var fromValid = !!(vm.from.port && vm.from.protocol);
+                var toValid = !!(vm.to.port && vm.to.protocol);
 
                 return fromValid && toValid;
             };
@@ -29,6 +27,10 @@ angular.module('ELBListenerEditorModule', [])
             };
 
             this.addListener = function () {
+                if(!vm.portsValid()) {
+                    return;
+                }
+
                 var listener = {
                     fromPort: vm.from.port,
                     fromProtocol: vm.from.protocol,
@@ -53,6 +55,7 @@ angular.module('ELBListenerEditorModule', [])
     ];
 
     return {
+        restrict: 'E',
         require: 'ngModel',
         scope: {
             target: '=ngModel',
