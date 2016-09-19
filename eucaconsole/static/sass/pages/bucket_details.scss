@@ -39,22 +39,5 @@
 }
 
 
-// Modal overrides for top position (TODO: Devise a better way to handle this)
-$modal-open-top-position: 50px;
-
-@keyframes slidedown {
-  from {
-      opacity: 0;
-      top: -1000px;
-  }
-  to {
-      opacity: 1;
-      top: $modal-open-top-position;
-  }
-}
-
-.modal {
-    .modal-content {
-        top: $modal-open-top-position;
-    }
-}
+// Overrides for CORS config modal positioning
+@include modal-position(50px, fixed);
