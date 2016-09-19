@@ -49,10 +49,46 @@
         </div>
     </div>
 
-    <protocol-port label="Client side" name="clientSide"
-        ng-model="ctrl.clientSide" valid-listener=""></protocol-port>
-    <protocol-port label="Server side" name="serverSide"
-        ng-model="ctrl.serverSide" valid-listener=""></protocol-port>
+    <protocol-port label="Client side" name="from"
+        ng-model="ctrl.from" valid-listener=""></protocol-port>
+    <protocol-port label="Instance side" name="to" ng-model="ctrl.to"
+        valid-listener="" ng-show="ctrl.clientSideValid()"></protocol-port>
+
+    <div class="security-section" ng-show="ctrl.portsValid()">
+        <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>
+        <div class="security-row">
+            <label class="inline" i18n:translate="">Policy</label>
+            <span>{{ selectedSecurityPolicy }}</span>
+            <a ng-click="openSecurityPolicyModal()" title="Change policy" i18n:translate="">
+                Change
+            </a>
+        </div>
+        <div class="security-row">
+            <label class="inline">
+                <span i18n:translate="">Certificates</span>
+                <span class="req">*</span>
+            </label>
+            <span ng-show="pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+                <span i18n:translate="">SSL cert</span>
+                {{ pruneCertificateLabel(serverCertificateARN || serverCertificateName) }}<span ng-show="backendCertificateArray.length">, </span>
+            </span>
+            <span ng-show="backendCertificateArray.length" i18n:translate="">
+                Back-end certs
+            </span>
+            <span ng-repeat="bcert in backendCertificateArray">
+                {{ bcert.name }}<span ng-hide="$last">, </span>
+            </span>
+            <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
+                title="Change certficate">
+                <span i18n:translate="" ng-show="!pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+                    Select
+                </span>
+                <span i18n:translate="" ng-show="pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+                    Change
+                </span>
+            </a>
+        </div>
+    </div>
 
     <div id="add-listener-button-div">
         <span id="button-add-listener" class="button round tiny" i18n:translate=""

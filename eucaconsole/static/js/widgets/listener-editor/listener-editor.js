@@ -8,8 +8,21 @@ angular.module('ELBListenerEditorModule', [])
         templateUrl: '/_template/elbs/listener-editor/listener-editor',
         controller: ['$scope', function ($scope) {
             var vm = this;
-            vm.clientSide = {};
-            vm.serverSide = {};
+            vm.from = {};
+            vm.to = {};
+
+            console.log('listener editor', $scope);
+
+            this.clientSideValid = function () {
+                return vm.from.port && vm.from.protocol;
+            };
+
+            this.portsValid = function () {
+                var fromValid = vm.from.port && vm.from.protocol;
+                var toValid = vm.to.port && vm.to.protocol;
+
+                return fromValid && toValid;
+            };
 
             this.removeListener = function (index) {
                 $scope.listeners.splice(index, 1);
@@ -17,12 +30,15 @@ angular.module('ELBListenerEditorModule', [])
 
             this.addListener = function () {
                 var listener = {
-                    fromPort: vm.clientSide.port,
-                    fromProtocol: vm.clientSide.protocol,
-                    toPort: vm.clientSide.port,
-                    toProtocol: vm.clientSide.protocol
+                    fromPort: vm.from.port,
+                    fromProtocol: vm.from.protocol,
+                    toPort: vm.to.port,
+                    toProtocol: vm.to.protocol
                 };
                 $scope.listeners.push(listener);
+
+                vm.from = {};
+                vm.to = {};
             };
         }],
         controllerAs: 'ctrl'
@@ -37,12 +53,34 @@ angular.module('ELBListenerEditorModule', [])
     ];
 
     return {
-        require: '^listenerEditor',
+        require: 'ngModel',
         scope: {
             target: '=ngModel',
             label: '@'
         },
         templateUrl: '/_template/elbs/listener-editor/protocol-port',
+        link: function (scope, element, attrs, ctrl) {
+            var protocolField = element.find('select'),
+                portField = element.find('input');
+
+            protocolField.on('change blur', updateViewValue);
+            portField.on('change blur', updateViewValue);
+
+            function updateViewValue () {
+                var protocol = protocolField.val(),
+                    port = portField.val();
+
+                ctrl.$setViewValue({
+                    protocol: protocol,
+                    port: port
+                });
+            }
+
+            ctrl.$render = function () {
+                protocolField.val(scope.target.protocol);
+                portField.val(scope.target.port);
+            };
+        },
         controller: ['$scope', function ($scope) {
             this.protocols = protocols;
 
@@ -57,28 +95,12 @@ angular.module('ELBListenerEditorModule', [])
     return {
         require: 'ngModel',
         link: function (scope, element, attrs, ctrl) {
-            var protocolField = element.find('select'),
-                portField = element.find('input');
-
             ctrl.$validators.validListener = function (modelValue, viewValue) {
                 if(modelValue.protocol === undefined) {
                     return false;
                 }
                 return true;
             };
-
-            protocolField.on('change blur', updateViewValue);
-            portField.on('change blur', updateViewValue);
-
-            function updateViewValue () {
-                var protocol = protocolField.val(),
-                    port = portField.val();
-
-                ctrl.$setViewValue({
-                    protocol: protocol,
-                    port: port
-                });
-            }
         }
     };
 });
