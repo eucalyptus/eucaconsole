@@ -108,6 +108,9 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                     $scope.deletingCorsConfig = false;
                 });
         };
+        $scope.$on('s3:corsConfigSaved', function () {
+            $scope.hasCorsConfig = true;
+        });
         // Receive postMessage from file upload window, refreshing list when file upload completes
         window.addEventListener('message', function (event) {
             if (event.data === 's3:fileUploaded') {
@@ -130,6 +133,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
             },
             controller: ['$scope', 'CorsService', 'ModalService',
                 function($scope, CorsService, ModalService) {
+                    var pageScope = angular.element('#contentwrap').scope();
                     $scope.setCorsConfiguration = function ($event) {
                         $event.preventDefault();
                         $scope.savingCorsConfig = true;
@@ -140,7 +144,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                         CorsService.setCorsConfig($scope.bucketName, csrfToken, corsTextarea.val())
                             .then(function success (response) {
                                 $scope.savingCorsConfig = false;
-                                $scope.hasCorsConfig = true;
+                                pageScope.$broadcast('s3:corsConfigSaved');
                                 ModalService.closeModal('corsConfigModal');
                                 Notify.success(response.data.message);
                             }, function error (errData) {
