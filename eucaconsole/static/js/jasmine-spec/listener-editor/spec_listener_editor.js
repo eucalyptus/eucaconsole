@@ -152,7 +152,7 @@ describe('ELB Listener Editor', function () {
         });
     });
 
-    fdescribe('protocolPort directive', function () {
+    describe('protocolPort directive', function () {
 
         beforeEach(angular.mock.inject(function ($injector) {
             $httpBackend = $injector.get('$httpBackend');
