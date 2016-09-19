@@ -809,6 +809,7 @@ class BucketDetailsView(BaseView, BucketMixin):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'bucket_name': self.bucket.name,
+            'cors_config_xml': self.cors_configuration_xml,
             'has_cors_config': bool(self.cors_configuration_xml),
             'bucket_objects_count_url': self.request.route_path(
                 'bucket_objects_count_versioning_json', name=self.bucket.name),

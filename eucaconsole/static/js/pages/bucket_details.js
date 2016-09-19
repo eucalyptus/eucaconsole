@@ -18,11 +18,13 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
         $scope.objectsCountLoading = true;
         $scope.savingCorsConfig = false;
         $scope.deletingCorsConfig = false;
+        $scope.corsConfigXml = '';
         $scope.hasCorsConfig = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bucketName = options.bucket_name;
             $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
+            $scope.corsConfigXml = options.cors_config_xml;
             $scope.hasCorsConfig = options.has_cors_config;
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
@@ -134,14 +136,15 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
             controller: ['$scope', 'CorsService', 'ModalService',
                 function($scope, CorsService, ModalService) {
                     var pageScope = angular.element('#contentwrap').scope();
+                    if (!$scope.hasCorsConfig) {
+                        $scope.corsConfigXml = $scope.sampleCorsConfig;
+                    }
                     $scope.setCorsConfiguration = function ($event) {
                         $event.preventDefault();
                         $scope.savingCorsConfig = true;
                         $scope.corsError = '';
-                        var corsForm = $('#cors-configuration-form');
                         var csrfToken = $('#csrf_token').val();
-                        var corsTextarea = corsForm.find('textarea');
-                        CorsService.setCorsConfig($scope.bucketName, csrfToken, corsTextarea.val())
+                        CorsService.setCorsConfig($scope.bucketName, csrfToken, $scope.corsConfigXml)
                             .then(function success (response) {
                                 $scope.savingCorsConfig = false;
                                 pageScope.$broadcast('s3:corsConfigSaved');
@@ -152,6 +155,14 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                                 $scope.savingCorsConfig = false;
                             });
                     };
+                    $scope.$on('modal:open', function ($event, modalName) {
+                        // Reset to sample CORS config when re-adding post-deletion
+                        if (modalName === 'corsConfigModal') {
+                            if (!$scope.hasCorsConfig) {
+                                $scope.corsConfigXml = $scope.sampleCorsConfig;
+                            }
+                        }
+                    });
                 }
             ]
         };
