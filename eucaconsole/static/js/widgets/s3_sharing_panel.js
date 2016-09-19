@@ -80,9 +80,7 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils', 'ModalModule'])
             });
         };
         $scope.openCorsConfigModal = function () {
-            $timeout(function () {
-                ModalService.openModal('corsConfigModal');
-            });
+            ModalService.openModal('corsConfigModal');
         };
         $scope.syncGrants = function() {
             $scope.s3AclTextarea.val(JSON.stringify($scope.grantsArray));

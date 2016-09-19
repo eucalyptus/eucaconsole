@@ -1,10 +1,8 @@
 <!--! Modal dialog for S3 bucket CORS configuration -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <h3>
-        <span ng-if="hasCorsConfig"
-              i18n:translate="">Edit CORS Configuration</span>
-        <span ng-if="!hasCorsConfig"
-              i18n:translate="">Add CORS Configuration</span>
+        <span ng-if="hasCorsConfig" i18n:translate="">Edit CORS Configuration</span>
+        <span ng-if="!hasCorsConfig" i18n:translate="">Add CORS Configuration</span>
     </h3>
     <form id="cors-configuration-form" method="post"
           ng-submit="setCorsConfiguration($event)">
@@ -13,9 +11,9 @@
                 target="_blank" i18n:translate="">Sample CORS Configurations</a>
         </div>
         <textarea name="cors_configuration_xml" title="Edit CORS Configuration"
-                  ng-if="hasCorsConfig">{{ corsConfigXml }}</textarea>
+                  ng-if="hasCorsConfig" i18n:attributes="title">{{ corsConfigXml }}</textarea>
         <textarea name="cors_configuration_xml" title="Add CORS Configuration"
-                  ng-if="!hasCorsConfig">{{ sampleCorsConfig }}</textarea>
+                  ng-if="!hasCorsConfig" i18n:attributes="title">{{ sampleCorsConfig }}</textarea>
         <p class="cors-error-wrapper">{{corsError}}</p>
         <button class="expand" i18n:translate="" ng-if="!savingCorsConfig">
             Save CORS Configuration

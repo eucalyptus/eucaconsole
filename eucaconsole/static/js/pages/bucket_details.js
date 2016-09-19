@@ -139,9 +139,9 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                         var corsTextarea = corsForm.find('textarea');
                         CorsService.setCorsConfig($scope.bucketName, csrfToken, corsTextarea.val())
                             .then(function success (response) {
-                                ModalService.closeModal('corsConfigModal');
                                 $scope.savingCorsConfig = false;
                                 $scope.hasCorsConfig = true;
+                                ModalService.closeModal('corsConfigModal');
                                 Notify.success(response.data.message);
                             }, function error (errData) {
                                 $scope.corsError = errData.data.message;
