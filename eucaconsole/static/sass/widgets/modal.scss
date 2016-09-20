@@ -2,7 +2,8 @@
 
 
 // Allow modal dialog positioning to be configurable
-// Note: Used position: fixed only for modals with a height smaller than the viewport height
+// Modal position defaults to 40px above containing element set with positioning context
+// Note: Use fixed position only for modals with a height smaller than the viewport height
 //
 @mixin modal-position($top: -40px, $position: absolute) {
     @keyframes slidedown {
