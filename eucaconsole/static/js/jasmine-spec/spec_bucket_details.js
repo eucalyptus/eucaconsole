@@ -30,7 +30,7 @@ describe("BucketDetailsPage", function() {
         setFixtures(template);
     });
 
-    describe("Initial Values Test", function() {
+    describe("Initial Values Tests", function() {
 
         it("Initial value of isSubmitted is false", function() {
             expect(scope.isSubmitted).not.toBeTruthy();
@@ -43,9 +43,22 @@ describe("BucketDetailsPage", function() {
         it("Initial value of objectsCountLoading is true", function() {
             expect(scope.objectsCountLoading).toBeTruthy();
         });
+
+        it("Initial value of hasCorsConfig is false", function() {
+            expect(scope.hasCorsConfig).not.toBeTruthy();
+        });
+
+        it("Initial value of savingCorsConfig is false", function() {
+            expect(scope.savingCorsConfig).not.toBeTruthy();
+        });
+
+        it("Initial value of deletingCorsConfig is false", function() {
+            expect(scope.deletingCorsConfig).not.toBeTruthy();
+        });
+
     });
 
-    describe("Function initController() Test", function() {
+    describe("Function initController() Tests", function() {
         var optionsJson = '{"bucket_objects_count_url": "objects_count_url", "has_cors_config": false}';
 
         it("Should set bucketObjectsCountUrl when initController() is called", function() {
@@ -62,6 +75,52 @@ describe("BucketDetailsPage", function() {
             spyOn(scope, 'handleUnsavedChanges');
             scope.initController('{}');
             expect(scope.handleUnsavedChanges).toHaveBeenCalled();
+        });
+    });
+
+    describe("CORS Config save event Test", function() {
+        it("Should set hasCorsConfig to after CORS config is saved", function() {
+            scope.$broadcast('s3:corsConfigSaved');
+            expect(scope.hasCorsConfig).toBeTruthy();
+        });
+
+    });
+});
+
+
+xdescribe("CORS Configuration Modal Directive", function() {
+
+    beforeEach(angular.mock.module('BucketDetailsPage'));
+
+    var $compile, $rootScope, $templateCache, element, scope;
+    var template = window.__html__['templates/dialogs/bucket_cors_configuration_dialog.pt'];
+
+    beforeEach(angular.mock.inject(function (_$compile_, _$rootScope_, _$templateCache_) {
+        $compile = _$compile_;
+        $rootScope = _$rootScope_;
+        $templateCache = _$templateCache_;
+
+        $templateCache.put('mock.template.html', template);
+    }));
+
+    beforeEach(function () {
+        var directiveHtml = [
+            '<div cors-config-modal=""',
+            'template="mock.template.html"',
+            'has-cors-config="false"',
+            'cors-config-xml=""',
+            'sample-cors-config=""',
+            '></div>'
+        ].join('');
+        element = $compile(directiveHtml)($rootScope);
+        $rootScope.$digest();
+        scope = element.isolateScope();
+        scope.hasCorsConfig = false;
+    });
+
+    describe('CORS Configuration Modal Tests', function () {
+        it('should default hasCorsConfig to false', function () {
+            expect(scope.hasCorsConfig).toBe(false);
         });
     });
 });
