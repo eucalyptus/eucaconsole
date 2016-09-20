@@ -74,9 +74,9 @@
         <div ng-if="hasCorsConfig">
             <div id="existing-cors-config-wrapper">
                 <a class="icon remove has-tip" i18n:attributes="title" data-reveal-id="cors-delete-confirmation-modal"
-                   title="Remove CORS Configuration"><i class="fi-minus-circle"></i></a>
+                   title="Remove CORS Configuration" data-tooltip=""><i class="fi-minus-circle"></i></a>
                 <a class="icon edit has-tip" i18n:attributes="title" ng-click="openCorsConfigModal()"
-                   title="View/Edit CORS Configuration"><i class="fi-pencil"></i></a>
+                   title="View/Edit CORS Configuration" data-tooltip=""><i class="fi-pencil"></i></a>
                 <span i18n:translate="">CORS Configuration</span>
             </div>
         </div>
