@@ -162,6 +162,8 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/xml.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/closetag.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/xml-fold.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/bucket-cors-service.js')}"></script>

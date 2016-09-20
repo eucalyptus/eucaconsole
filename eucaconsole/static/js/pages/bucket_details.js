@@ -165,6 +165,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                                     mode: "xml",
                                     lineWrapping: true,
                                     styleActiveLine: true,
+                                    autoCloseTags: true,
                                     lineNumbers: true
                                 });
                             }
