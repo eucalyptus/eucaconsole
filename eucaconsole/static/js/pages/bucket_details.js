@@ -144,7 +144,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                         $scope.savingCorsConfig = true;
                         $scope.corsError = '';
                         var csrfToken = $('#csrf_token').val();
-                        CorsService.setCorsConfig($scope.bucketName, csrfToken, $scope.corsConfigXml)
+                        CorsService.setCorsConfig($scope.bucketName, csrfToken, $scope.codeEditor.getValue())
                             .then(function success (response) {
                                 $scope.savingCorsConfig = false;
                                 pageScope.$broadcast('s3:corsConfigSaved');
@@ -156,10 +156,21 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                             });
                     };
                     $scope.$on('modal:open', function ($event, modalName) {
-                        // Reset to sample CORS config when re-adding post-deletion
                         if (modalName === 'corsConfigModal') {
-                            if (!$scope.hasCorsConfig) {
-                                $scope.corsConfigXml = $scope.sampleCorsConfig;
+                            // Initialize CodeMirror for CORS XML textarea
+                            var corsTextarea = document.getElementById('cors-textarea');
+                            $('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
+                            if (corsTextarea !== null) {
+                                $scope.codeEditor = CodeMirror.fromTextArea(corsTextarea, {
+                                    mode: "xml",
+                                    lineWrapping: true,
+                                    styleActiveLine: true,
+                                    lineNumbers: true
+                                });
+                            }
+                            // Reset to sample CORS config when re-adding post-deletion
+                            if (!$scope.hasCorsConfig && !!$scope.codeEditor) {
+                                 $scope.codeEditor.setValue($scope.sampleCorsConfig);
                             }
                         }
                     });

@@ -35,6 +35,7 @@
 #existing-cors-config-wrapper .icon.remove { top: 3px; }
 
 .cors-config-modal textarea { height: 10rem; }
+.cors-config-modal .CodeMirror { border: 1px solid #999; font-size: 1rem; line-height: 1.1rem; }
 
 .cors-error-wrapper { color: darkred; }
 
