@@ -34,8 +34,9 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             if (Modernizr.sessionstorage) {
                 sessionStorage.removeItem('copy-object-buffer');
             }
-            var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || '';
+            var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || 'euca';
             $("#euca-region").val(storedRegion);
+            $scope.oauthUrl = $scope.oauthLoginLink + "&state=oauth-000248303150-" + storedRegion;
         };
         $scope.setFocus = function () {
             var inputs = [];
@@ -98,7 +99,6 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 params = params + "&SignatureMethod=HmacSHA256";
                 params = params + "&SignatureVersion=2";
                 params = params + "&Timestamp=" + encodeURIComponent(new Date().toISOString().substring(0, 19) + "Z");
-                //params = params+"&Timestamp="+"2014-01-16T19%3A36%3A32Z";
                 params = params + "&Version=2011-06-15";
                 // sign request
                 var string_to_sign = "POST\nsts.amazonaws.com\n/\n" + params;
@@ -114,9 +114,10 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 $('#false-aws-login-form').submit();
             });
         };
-        $scope.handleGlobusLogin = function($event) {
+        $scope.handleOAuthLogin = function($event) {
             $event.preventDefault();
-            window.location.href = $scope.oauthLoginLink + "&state=oauth-000196687477-" + $('#csrf_token').val();
+            window.location.href = $scope.oauthUrl;
+            //window.location.href = $scope.oauthLoginLink + "&state=oauth-000196687477-" + $('#csrf_token').val();
         };
     })
 ;

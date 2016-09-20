@@ -32,6 +32,7 @@ import base64
 import httplib, urllib
 import logging
 import simplejson as json
+import socket
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
@@ -135,7 +136,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             came_from=self.came_from,
             controller_options_json=options_json,
             oauth_enabled=self.oauth_host is not None,
-            oauth_link_text=_(u'Sign in with Globus')
+            oauth_link_text=self.request.registry.settings.get('oauth.login.button.label', 'oauth login')
         )
 
     def show_https_warning(self):
@@ -154,10 +155,6 @@ class LoginView(BaseView, PermissionCheckMixin):
         state = self.request.params.get('state')
         if state and state.find('oauth-') == 0:
             # ok, it's oauth, validate and get token
-            csrf_token = state.split('-')[2]
-            if not self.is_csrf_valid(csrf_token):
-                self.login_form_errors.append("OAuth authentication failed")
-                return self.render_dict
             auth_code = self.request.params.get('code')
             # post to token service
             oauth_console_host = self.request.registry.settings.get('oauth.console.hostname', None)
@@ -201,33 +198,28 @@ class LoginView(BaseView, PermissionCheckMixin):
     def handle_web_identity_login(self, token):
         session = self.request.session
 
-        # TODO: what to use for these values? Extract from token?
-        account = '' #self.request.params.get('account')
-        username = '' #self.request.params.get('username')
-        password = '' #self.request.params.get('password')
-        euca_region = 'euca' #self.request.params.get('euca-region')
         try:
             state = role_session_name=token['state']
-            (oauth, account_id, csrf_token) = state.split('-')
-            # TODO: need to test/set dns enablement!
-            #region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self._get_ufs_host_setting_())
-            region = RegionInfo(name='eucalyptus', endpoint=self._get_ufs_host_setting_())
-            port = self._get_ufs_port_setting_()
-            conn = STSConnection(
-                port=port,
-                path='/services/Tokens',
-                region=region,
-                https_connection_factory=(HttpsConnectionFactory(port).https_connection_factory, ())
-            )
-            if self.duration > 3600:  # this call won't allow than 1 hour duration
-                self.duration = 3600
-            result = conn.assume_role_with_web_identity(
-                role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_id),
-                role_session_name=token['state'],
-                web_identity_token=token['id_token'],
-                duration_seconds=self.duration
-            )
-            creds = result.credentials
+            # try authentication with default of dns_enabled = True. Set to False if we fail
+            (oauth, account_id, euca_region) = state.split('-', 2)
+            # and if that also fails, let that error raise up
+            self.dns_enabled = True
+            try:
+                creds = self._authenticate_oauth_(token, account_id, self.dns_enabled)
+            except socket.error as err:
+                # handle case where dns attempt was good, but user unauthorized
+                error_msg = getattr(err, 'msg', None)
+                if error_msg and error_msg == 'Unauthorized' or error_msg == 'Forbidden':
+                    raise err
+                elif getattr(err, 'reason', '').find('SSL') > -1:
+                    raise err
+                self.dns_enabled = False
+                creds = self._authenticate_oauth_(token, account_id, self.dns_enabled)
+            # now that we authenticated, extract info from token
+            jwt_body = token['id_token'].split('.')[1]
+            jwt_info = json.loads(base64.urlsafe_b64decode(jwt_body + '=='))
+            account = 'oauth'
+            username = jwt_info['preferred_username']
             logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
                 acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
             # TODO: refactory below to get as much reuse with handle_euca_login() as possible
@@ -235,6 +227,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             user_account = u'{user}@{account}'.format(user=username, account=account)
             session.invalidate()  # Refresh session
             session['cloud_type'] = 'euca'
+            session['auth_type'] = 'oauth'
             session['account'] = account
             session['username'] = username
             session['session_token'] = creds.session_token
@@ -242,7 +235,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             session['secret_key'] = creds.secret_key
             session['region'] = euca_region if euca_region != '' else default_region
             session['username_label'] = user_account
-            session['dns_enabled'] = False # this *must* be prior to line below
+            session['dns_enabled'] = self.dns_enabled # this *must* be prior to line below
             session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
             session['default_vpc'] = self.get_account_attributes(['default-vpc'])
 
@@ -271,6 +264,29 @@ class LoginView(BaseView, PermissionCheckMixin):
             self.login_form_errors.append(msg)
         return self.render_dict
 
+
+    def _authenticate_oauth_(self, token, account_id, dns_enabled):
+        if dns_enabled:
+            region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self._get_ufs_host_setting_())
+        else:
+            region = RegionInfo(name='eucalyptus', endpoint=self._get_ufs_host_setting_())
+        port = self._get_ufs_port_setting_()
+        conn = STSConnection(
+            port=port,
+            path='/services/Tokens',
+            region=region,
+            https_connection_factory=(HttpsConnectionFactory(port).https_connection_factory, ())
+        )
+        if self.duration > 3600:  # this call won't allow than 1 hour duration
+            self.duration = 3600
+        result = conn.assume_role_with_web_identity(
+            role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_id),
+            role_session_name=token['state'],
+            web_identity_token=token['id_token'],
+            duration_seconds=self.duration
+        )
+        return result.credentials
+
     def handle_euca_login(self):
         new_passwd = None
         auth = self.get_euca_authenticator()
@@ -292,6 +308,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 user_account = u'{user}@{account}'.format(user=username, account=account)
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
+                session['auth_type'] = 'password'
                 session['account'] = account
                 session['username'] = username
                 session['session_token'] = creds.session_token
@@ -346,6 +363,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'aws'
+                session['auth_type'] = 'keys'
                 session['session_token'] = creds.session_token
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key
