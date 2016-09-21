@@ -74,8 +74,11 @@ CORS_XML_RELAXNG_SCHEMA = """
         </zeroOrMore>
         <optional>
           <element name="MaxAgeSeconds">
-            <data type="integer" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"/>
+            <data type="nonNegativeInteger" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"/>
           </element>
+        </optional>
+        <optional>
+          <element name="ID"><text /></element>
         </optional>
       </interleave>
     </element>

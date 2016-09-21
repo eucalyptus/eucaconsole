@@ -363,7 +363,23 @@ class CorsSchemaValidationTestCase(BaseTestCase):
         </CORSConfiguration>
         """
         valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
-        expected_error = u"Type integer doesn't allow value 'foobar', line 5"
+        expected_error = u"Type nonNegativeInteger doesn't allow value 'foobar', line 5"
+        self.assertEqual(valid, False)
+        self.assertEqual(error.message, expected_error)
+
+    def test_cors_xml_with_negative_integer_max_age_value(self):
+        """CORS configuration requires the MaxAgeSeconds value to be a non-negative integer"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>-3000</MaxAgeSeconds>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        expected_error = u"Type nonNegativeInteger doesn't allow value '-3000', line 5"
         self.assertEqual(valid, False)
         self.assertEqual(error.message, expected_error)
 
