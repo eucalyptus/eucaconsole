@@ -335,6 +335,28 @@ class CorsSchemaValidationTestCase(BaseTestCase):
         self.assertEqual(valid, True)
         self.assertEqual(error, None)
 
+    def test_cors_xml_with_optional_id_element(self):
+        """CORS configuration should allow an optional ID element per CORS rule"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <ID>my-first-rule</ID>
+                <AllowedOrigin>http://example1.com</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+            </CORSRule>
+            <CORSRule>
+                <ID>my-second-rule</ID>
+                <AllowedOrigin>http://example2.com</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
     def test_cors_xml_with_missing_allowed_origin_element(self):
         """CORS configuration requires an AllowedOrigin element"""
         test_xml = """
