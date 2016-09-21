@@ -88,6 +88,11 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
+                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns">
                                     <button type="submit" class="submit button" id="euca-login-button" i18n:translate="">
                                         Log in to Eucalyptus
                                     </button>
@@ -96,13 +101,9 @@
                                     <span i18n:translate="">Logging in</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="small-12 columns">
-                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
-                                </div>
-                            </div>
                             <div class="row" tal:condition="oauth_enabled">
                                 <div class="small-12 columns">
+                                <!-- blue with white text -->
                                     <button type="submit" class="submit button" ng-click="handleOAuthLogin($event)" id="globus-login-button" i18n:translate="">
                                         ${oauth_link_text}
                                     </button>
