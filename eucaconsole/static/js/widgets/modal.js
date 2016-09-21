@@ -44,8 +44,7 @@ angular.module('ModalModule', [])
 
     function registerModal (name, element) {
         if(name in _modals) {
-            console.error('Modal with name ', name, ' already registered.');
-            return;
+            throw new Error('Modal with name ' + name + ' already registered.');
         }
         _modals[name] = element;
     }
@@ -69,9 +68,19 @@ angular.module('ModalModule', [])
         $rootScope.$broadcast('modal:close', name);
     }
 
+    function getModals () {
+        return _modals;
+    }
+
+    function clearModals () {
+        _modals = {};
+    }
+
     return {
         openModal: openModal,
         closeModal: closeModal,
-        registerModal: registerModal
+        registerModal: registerModal,
+        getModals: getModals,
+        clearModals: clearModals
     };
 }]);

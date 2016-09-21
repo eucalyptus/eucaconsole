@@ -1,4 +1,7 @@
-angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorModule'])
+angular.module('ELBWizard', [
+    'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule',
+    'ELBSecurityPolicyEditorModule'
+])
 .factory('ELBWizardService', function () {
     var svc = {};
     return svc;
@@ -80,7 +83,7 @@ angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorMod
         };
     };
 })
-.controller('GeneralController', ['$scope', '$routeParams', '$location', function ($scope, $routeParams, $location) {
+.controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', function ($scope, $route, $routeParams, $location) {
     this.listeners = [{
         'fromPort': 80,
         'toPort': 80,
@@ -106,7 +109,16 @@ angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorMod
         .when('/elbs/wizard/', {
             templateUrl: '/_template/elbs/wizard/general',
             controller: 'GeneralController',
-            controllerAs: 'general'
+            controllerAs: 'general',
+            resolve: {
+                policies: function ($q) {
+                    return $q.when('foo');
+                },
+                certificates: function () {
+                    return 'bar';
+                }
+            },
+            resolveAs: 'myfuckingresolve'
         })
         .when('/elbs/wizard/network', {
             templateUrl: '/_template/elbs/wizard/network',

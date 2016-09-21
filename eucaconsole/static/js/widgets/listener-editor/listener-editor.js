@@ -1,4 +1,4 @@
-angular.module('ELBListenerEditorModule', [])
+angular.module('ELBListenerEditorModule', ['ModalModule'])
 .directive('listenerEditor', function () {
     return {
         restrict: 'E',
@@ -6,7 +6,7 @@ angular.module('ELBListenerEditorModule', [])
             listeners: '=ngModel'
         },
         templateUrl: '/_template/elbs/listener-editor/listener-editor',
-        controller: ['$scope', function ($scope) {
+        controller: ['$scope', 'ModalService', function ($scope, ModalService) {
             var vm = this;
             vm.from = {};
             vm.to = {};
@@ -41,6 +41,10 @@ angular.module('ELBListenerEditorModule', [])
 
                 vm.from = {};
                 vm.to = {};
+            };
+
+            this.openPolicyModal = function () {
+                ModalService.openModal('securityPolicyEditor');
             };
         }],
         controllerAs: 'ctrl'

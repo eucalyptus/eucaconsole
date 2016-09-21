@@ -1,0 +1,38 @@
+<div>
+    <h3 i18n:translate="">Select security policy</h3>
+    <p i18n:translate="">
+        A security policy configures SSL negotiation settings when you use a secure
+        protocol like HTTPS or SSL.
+    </p>
+    <form method="post">
+        <div>
+            <input type="radio" name="policy_type_radio"
+                   value="existing" ng-model="policyRadioButton" />
+            <label for="policy-type-predefined" i18n:translate="">
+                Choose a predefined security policy
+            </label>
+        </div>
+        <div ng-show="policyRadioButton === 'existing'">
+        </div>
+        <div>
+            <input type="radio" name="policy_type_radio"
+                   value="new" ng-model="policyRadioButton" />
+            <label for="policy-type-new" i18n:translate="">Create a custom security policy</label>
+        </div>
+        <div ng-show="policyRadioButton === 'new'">
+            <h6 i18n:translate="">SSL Options</h6>
+        </div>
+    </form>
+    <hr />
+    <div>
+        <div class="row">
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate=""
+                    ng-click="setSecurityPolicy()"
+                    ng-disabled="policyRadioButton === 'new' &amp;&amp; (!sslProtocols.length || !sslCiphers.length)">
+                    Use This Policy
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

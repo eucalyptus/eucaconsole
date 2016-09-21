@@ -59,7 +59,7 @@
         <div class="security-row">
             <label class="inline" i18n:translate="">Policy</label>
             <span>{{ selectedSecurityPolicy }}</span>
-            <a ng-click="openSecurityPolicyModal()" title="Change policy" i18n:translate="">
+            <a ng-click="ctrl.openPolicyModal()" title="Change policy" i18n:translate="">
                 Change
             </a>
         </div>
@@ -98,4 +98,7 @@
         <a href="#" id="button-cancel-listener" class="cancel-link" i18n:translate=""
            ng-click="ctrl.cancelListener($event)">Cancel</a>
     </div>
+</div>
+<div class="modal xlarge" modal="securityPolicyEditor">
+    <security-policy-editor></security-policy-editor>
 </div>
