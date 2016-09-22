@@ -88,11 +88,11 @@ describe("BucketDetailsPage", function() {
 });
 
 
-xdescribe("CORS Configuration Modal Directive", function() {
+describe("CORS Configuration Modal Directive", function() {
 
     beforeEach(angular.mock.module('BucketDetailsPage'));
 
-    var $compile, $rootScope, $templateCache, element, scope;
+    var $compile, $rootScope, $templateCache, $httpBackend, element, scope;
     var template = window.__html__['templates/dialogs/bucket_cors_configuration_dialog.pt'];
 
     beforeEach(angular.mock.inject(function (_$compile_, _$rootScope_, _$templateCache_) {
@@ -103,24 +103,33 @@ xdescribe("CORS Configuration Modal Directive", function() {
         $templateCache.put('mock.template.html', template);
     }));
 
+    beforeEach(angular.mock.inject(function ($injector) {
+        $httpBackend = $injector.get('$httpBackend');
+        $httpBackend.when('GET', '/static/json/routes.json').respond(200, '')
+    }));
+
     beforeEach(function () {
         var directiveHtml = [
             '<div cors-config-modal=""',
             'template="mock.template.html"',
             'has-cors-config="false"',
             'cors-config-xml=""',
-            'sample-cors-config=""',
+            'sample-cors-config="<CORSConfiguration><CORSRule></CORSRule></CORSConfiguration>"',
             '></div>'
         ].join('');
         element = $compile(directiveHtml)($rootScope);
         $rootScope.$digest();
+        $httpBackend.flush();
         scope = element.isolateScope();
-        scope.hasCorsConfig = false;
     });
 
-    describe('CORS Configuration Modal Tests', function () {
-        it('should default hasCorsConfig to false', function () {
-            expect(scope.hasCorsConfig).toBe(false);
-        });
+    it('should default hasCorsConfig to false', function () {
+        expect(scope.hasCorsConfig).toBe(false);
     });
+
+    it('should display Add CORS Configuration in modal dialog when no existing CORS config', function () {
+        expect(element.find('h3 span').text()).toEqual('Add CORS Configuration');
+    });
+
+
 });
