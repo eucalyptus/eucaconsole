@@ -136,7 +136,7 @@
         <!--! Modal dialog for confirming deletion of S3 bucket CORS configuration -->
         <div id="cors-delete-confirmation-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Delete CORS Configuration</h3>
-            <div>&nbsp</div>
+            <div>&nbsp;</div>
             <form id="cors-deletion-form" method="post"
                   ng-submit="deleteCorsConfig($event)">
                 ${structure:cors_deletion_form['csrf_token']}
