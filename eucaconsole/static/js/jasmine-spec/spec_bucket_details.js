@@ -45,15 +45,15 @@ describe("BucketDetailsPage", function() {
         });
 
         it("Initial value of hasCorsConfig is false", function() {
-            expect(scope.hasCorsConfig).not.toBeTruthy();
+            expect(scope.hasCorsConfig).toBe(false);
         });
 
         it("Initial value of savingCorsConfig is false", function() {
-            expect(scope.savingCorsConfig).not.toBeTruthy();
+            expect(scope.savingCorsConfig).toBe(false);
         });
 
         it("Initial value of deletingCorsConfig is false", function() {
-            expect(scope.deletingCorsConfig).not.toBeTruthy();
+            expect(scope.deletingCorsConfig).toBe(false);
         });
 
     });
@@ -68,7 +68,7 @@ describe("BucketDetailsPage", function() {
 
         it("Should set hasCorsConfig boolean when controller is initialized", function() {
             scope.initController(optionsJson);
-            expect(scope.hasCorsConfig).toEqual(false);
+            expect(scope.hasCorsConfig).toBe(false);
         });
 
         it("Should call handleUnsavedChanges() when initController() is called", function() {
@@ -81,7 +81,7 @@ describe("BucketDetailsPage", function() {
     describe("CORS Config save event Test", function() {
         it("Should set hasCorsConfig to after CORS config is saved", function() {
             scope.$broadcast('s3:corsConfigSaved');
-            expect(scope.hasCorsConfig).toBeTruthy();
+            expect(scope.hasCorsConfig).toBe(true);
         });
 
     });
