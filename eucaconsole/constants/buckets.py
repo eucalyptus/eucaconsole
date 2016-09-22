@@ -34,7 +34,7 @@ SAMPLE_CORS_CONFIGURATION = """
     <CORSRule>
         <AllowedOrigin>*</AllowedOrigin>
         <AllowedMethod>GET</AllowedMethod>
-        <MaxAgeSeconds>3000</MaxAgeSeconds>
+        <MaxAgeSeconds>3600</MaxAgeSeconds>
         <AllowedHeader>Authorization</AllowedHeader>
     </CORSRule>
 </CORSConfiguration>
