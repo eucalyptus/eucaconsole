@@ -64,23 +64,54 @@
                               action="${request.route_path('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <input type="hidden" id="euca-region" name="euca-region" value="" />
-                            <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
+                            <div class="row controls-wrapper controls_account">
                                 <div class="small-12 columns field">
-                                    <label for="${field.id}" class="left stack-label">${field.label.text}<span class="req">*</span></label>
-                                    <!--! Note: Don't remove non-bindable attr in this form -->
-                                    <div tal:condition="field.name == 'password'">
-                                        <div tal:condition="layout.browser_password_save == 'false'" ng-non-bindable="">
-                                            ${structure:field(autocomplete="off")}
+                                    <label class="left stack-label" for="account">
+                                        <span i18n:translate="">Account Name</span>
+                                        <span class="req">*</span>
+                                    </label>
+                                    <div ng-non-bindable="">
+                                        <input id="account" type="text" value="" name="account">
+                                    </div>
+                                    <div tal:condition="euca_login_form['account'].errors" class="server-validation">
+                                        <span class="error" tal:repeat="error euca_login_form['account'].errors" ng-non-bindable="">
+                                            ${error}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row controls-wrapper controls_username">
+                                <div class="small-12 columns field">
+                                    <label class="left stack-label" for="username">
+                                        <span i18n:translate="">Username</span>
+                                        <span class="req">*</span>
+                                    </label>
+                                    <div ng-non-bindable="">
+                                        <input id="username" type="text" value="" name="username">
+                                    </div>
+                                    <div tal:condition="euca_login_form['username'].errors" class="server-validation">
+                                        <span class="error" tal:repeat="error euca_login_form['username'].errors" ng-non-bindable="">
+                                            ${error}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row controls-wrapper controls_password">
+                                <div class="small-12 columns field">
+                                    <label class="left stack-label" for="password">
+                                        <span i18n:translate="">Password</span>
+                                        <span class="req">*</span>
+                                    </label>
+                                    <div ng-non-bindable="">
+                                        <div tal:condition="layout.browser_password_save == 'false'">
+                                            <input id="password" type="password" value="" name="password" autocomplete="off">
                                         </div>
-                                        <div tal:condition="layout.browser_password_save != 'false'" ng-non-bindable="">
-                                            ${structure:field}
+                                        <div tal:condition="layout.browser_password_save != 'false'">
+                                            <input id="password" type="password" value="" name="password">
                                         </div>
                                     </div>
-                                    <div tal:condition="field.name != 'password'" ng-non-bindable="">
-                                        ${structure:field}
-                                    </div>
-                                    <div tal:condition="field.errors" class="server-validation">
-                                        <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
+                                    <div tal:condition="euca_login_form['password'].errors" class="server-validation">
+                                        <span class="error" tal:repeat="error euca_login_form['password'].errors" ng-non-bindable="">
                                             ${error}
                                         </span>
                                     </div>
@@ -88,17 +119,17 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="">
+                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="" ng-disabled="eucaLoginNotValid()">
                                         Log in to Eucalyptus
                                     </button>
                                 </div>
                                 <div class="small-12 columns" ng-show="isLoggingIn">
                                     <span i18n:translate="">Logging in</span>&nbsp;<i class="busy"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="small-12 columns">
-                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
                                 </div>
                             </div>
                         </form>

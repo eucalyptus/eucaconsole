@@ -10,6 +10,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
     .controller('LoginPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.showHttpsWarning = false;
         $scope.isLoggingIn = false;
+        $scope.eucaNotValid = true;
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
             $scope.prefillForms(options.account, options.username);
@@ -112,6 +113,20 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();
             });
+        };
+        $scope.eucaCheckValid = function() {
+            $scope.eucaNotValid = eucaLoginNotValid();
+        };
+        $scope.eucaLoginNotValid = function () {
+            var account = $('#account').val();
+            var username = $('#username').val();
+            var password = $('#password').val();
+            if (account === undefined || account === '' ||
+                username === undefined || username === '' ||
+                password === undefined || password === '') {
+                return true;
+            }
+            return false;
         };
     })
 ;
