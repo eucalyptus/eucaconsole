@@ -124,7 +124,7 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="" ng-disabled="eucaLoginNotValid()">
+                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="" ng-disabled="eucaNotValid">
                                         Log in to Eucalyptus
                                     </button>
                                 </div>

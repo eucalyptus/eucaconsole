@@ -36,6 +36,9 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || '';
             $("#euca-region").val(storedRegion);
+            $timeout(function() {
+                $scope.eucaCheckValid();
+            }, 250);
         };
         $scope.setFocus = function () {
             var inputs = [];
@@ -113,9 +116,14 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();
             });
+            $("#account").on('keyup', $scope.eucaCheckValid);
+            $("#username").on('keyup', $scope.eucaCheckValid);
+            $("#password").on('keyup', $scope.eucaCheckValid);
         };
         $scope.eucaCheckValid = function() {
-            $scope.eucaNotValid = eucaLoginNotValid();
+            $timeout(function() {
+                $scope.eucaNotValid = $scope.eucaLoginNotValid();
+            });
         };
         $scope.eucaLoginNotValid = function () {
             var account = $('#account').val();
