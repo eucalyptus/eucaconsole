@@ -730,8 +730,7 @@ class BucketDetailsView(BaseView, BucketMixin):
                 sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 controller_options_json=self.get_controller_options_json(),
-                delete_cors_config_url=self.request.route_path(
-                    'bucket_delete_cors_configuration', name=self.bucket.name),
+                delete_cors_config_url=self.request.route_path('bucket_cors_configuration', name=self.bucket.name),
             )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
@@ -752,7 +751,7 @@ class BucketDetailsView(BaseView, BucketMixin):
             self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
 
-    @view_config(route_name='bucket_set_cors_configuration', renderer='json', request_method='PUT', xhr=True)
+    @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='PUT', xhr=True)
     def bucket_set_cors_configuration(self):
         params = json.loads(self.request.body)
         csrf_token = params.get('csrf_token')
@@ -771,7 +770,7 @@ class BucketDetailsView(BaseView, BucketMixin):
             else:
                 return JSONResponse(status=400, message=error.message)
 
-    @view_config(route_name='bucket_delete_cors_configuration', renderer=VIEW_TEMPLATE, request_method='DELETE')
+    @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='DELETE', xhr=True)
     def bucket_delete_cors_configuration(self):
         csrf_token = self.request.params.get('csrf_token')
         if not self.is_csrf_valid(token=csrf_token):

@@ -11,7 +11,7 @@ angular.module('CorsServiceModule', ['EucaRoutes'])
 
     return {
         setCorsConfig: function (bucketName, csrfToken, corsConfigXml) {
-            return eucaRoutes.getRouteDeferred('bucket_set_cors_configuration', { name: bucketName })
+            return eucaRoutes.getRouteDeferred('bucket_cors_configuration', { name: bucketName })
                 .then(function (path) {
                     return $http({
                         method: 'PUT',
@@ -25,7 +25,7 @@ angular.module('CorsServiceModule', ['EucaRoutes'])
         },
 
         deleteCorsConfig: function (bucketName, csrfToken) {
-            return eucaRoutes.getRouteDeferred('bucket_delete_cors_configuration', { name: bucketName })
+            return eucaRoutes.getRouteDeferred('bucket_cors_configuration', { name: bucketName })
                 .then(function (path) {
                     return $http({
                         method: 'DELETE',
