@@ -25,7 +25,9 @@ describe('Modal Module', function () {
         });
 
         it('should call registerModal on compile', function () {
-            expect(ModalService.registerModal).toHaveBeenCalledWith('foo', element);
+            expect(ModalService.registerModal).toHaveBeenCalledWith('foo', jasmine.objectContaining({
+                0: jasmine.any(Object)
+            }));
         });
 
         describe('the controller', function () {
