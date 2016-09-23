@@ -105,7 +105,7 @@ describe("CORS Configuration Modal Directive", function() {
 
     beforeEach(angular.mock.inject(function ($injector) {
         $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.when('GET', '/static/json/routes.json').respond(200, '')
+        $httpBackend.when('GET', '/static/json/routes.json').respond(200, '');
     }));
 
     beforeEach(function () {
