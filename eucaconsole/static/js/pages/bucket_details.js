@@ -8,7 +8,7 @@
 
 /* Bucket details page includes the S3 Sharing Panel */
 angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'ModalModule'])
-    .controller('BucketDetailsPageCtrl', function ($scope, $http, eucaHandleErrorS3,
+    .controller('BucketDetailsPageCtrl', function ($scope, $rootScope, $http, eucaHandleErrorS3,
                                                    eucaUnescapeJson, CorsService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
@@ -25,7 +25,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
             $scope.bucketName = options.bucket_name;
             $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
             $scope.corsConfigXml = options.cors_config_xml;
-            $scope.hasCorsConfig = options.has_cors_config;
+            $scope.hasCorsConfig = !!$scope.corsConfigXml;
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
@@ -97,8 +97,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
             $scope.deleteError = '';
             $scope.deletingCorsConfig = true;
             var deleteDialog = $('#cors-delete-confirmation-modal');
-            var corsForm = $('#cors-deletion-form');
-            var csrfToken = corsForm.find('#csrf_token').val();
+            var csrfToken = angular.element('#csrf_token').val();
             CorsService.deleteCorsConfig($scope.bucketName, csrfToken)
                 .then(function success (response) {
                     deleteDialog.foundation('reveal', 'close');
@@ -110,7 +109,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                     $scope.deletingCorsConfig = false;
                 });
         };
-        $scope.$on('s3:corsConfigSaved', function () {
+        $rootScope.$on('s3:corsConfigSaved', function () {
             $scope.hasCorsConfig = true;
         });
         // Receive postMessage from file upload window, refreshing list when file upload completes
@@ -133,9 +132,8 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
             templateUrl: function (element, attributes) {
                 return attributes.template;
             },
-            controller: ['$scope', 'CorsService', 'ModalService',
-                function($scope, CorsService, ModalService) {
-                    var pageScope = angular.element('#contentwrap').scope();
+            controller: ['$scope', '$rootScope', 'CorsService', 'ModalService',
+                function($scope, $rootScope, CorsService, ModalService) {
                     if (!$scope.hasCorsConfig) {
                         $scope.corsConfigXml = $scope.sampleCorsConfig;
                     }
@@ -143,11 +141,11 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                         $event.preventDefault();
                         $scope.savingCorsConfig = true;
                         $scope.corsError = '';
-                        var csrfToken = $('#csrf_token').val();
+                        var csrfToken = angular.element('#csrf_token').val();
                         CorsService.setCorsConfig($scope.bucketName, csrfToken, $scope.codeEditor.getValue())
                             .then(function success (response) {
                                 $scope.savingCorsConfig = false;
-                                pageScope.$broadcast('s3:corsConfigSaved');
+                                $rootScope.$broadcast('s3:corsConfigSaved');
                                 ModalService.closeModal('corsConfigModal');
                                 Notify.success(response.data.message);
                             }, function error (errData) {
