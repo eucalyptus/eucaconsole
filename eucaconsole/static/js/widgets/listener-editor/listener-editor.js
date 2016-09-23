@@ -46,6 +46,10 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             this.openPolicyModal = function () {
                 ModalService.openModal('securityPolicyEditor');
             };
+
+            this.openCertificateModal = function () {
+                ModalService.openModal('certificateEditor');
+            };
         }],
         controllerAs: 'ctrl'
     };

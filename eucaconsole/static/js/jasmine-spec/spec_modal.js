@@ -55,13 +55,13 @@ describe('Modal Module', function () {
         describe('#registerModal', function () {
 
             beforeEach(function () {
-                ModalService.clearModals();
+                ModalService._clearModals();
             });
 
             it('should add the new modal to the modal collection', function () {
                 ModalService.registerModal('foo', element);
 
-                var modalsKeys = Object.keys(ModalService.getModals());
+                var modalsKeys = Object.keys(ModalService._getModals());
                 expect(modalsKeys.length).toEqual(1);
             });
 
@@ -70,7 +70,7 @@ describe('Modal Module', function () {
                 ModalService.registerModal('bar', element);
                 ModalService.registerModal('baz', element);
 
-                var modalsKeys = Object.keys(ModalService.getModals());
+                var modalsKeys = Object.keys(ModalService._getModals());
                 expect(modalsKeys.length).toEqual(3);
             });
 
@@ -89,7 +89,7 @@ describe('Modal Module', function () {
         describe('#openModal', function () {
 
             beforeEach(function () {
-                ModalService.clearModals();
+                ModalService._clearModals();
                 ModalService.registerModal('foo', element);
             });
 
@@ -112,7 +112,7 @@ describe('Modal Module', function () {
         describe('#closeModal', function () {
 
             beforeEach(function () {
-                ModalService.clearModals();
+                ModalService._clearModals();
                 ModalService.registerModal('foo', element);
                 ModalService.openModal('foo');
 
@@ -135,29 +135,29 @@ describe('Modal Module', function () {
             });
         });
 
-        describe('#getModals', function () {
+        describe('#_getModals', function () {
             beforeEach(function () {
-                ModalService.clearModals();
+                ModalService._clearModals();
                 ModalService.registerModal('foo', element);
             });
 
             it('should return an object containing all modal elements', function () {
-                var modals = ModalService.getModals();
+                var modals = ModalService._getModals();
                 expect(Object.keys(modals).length).toEqual(1);
                 expect('foo' in modals).toBe(true);
             });
         });
 
-        describe('#clearModals', function () {
+        describe('#_clearModals', function () {
             beforeEach(function () {
-                ModalService.clearModals();
+                ModalService._clearModals();
                 ModalService.registerModal('foo', element);
             });
 
             it('should clear all modals from the service', function () {
-                ModalService.clearModals();
+                ModalService._clearModals();
 
-                var modals = ModalService.getModals();
+                var modals = ModalService._getModals();
                 expect(Object.keys(modals).length).toEqual(0);
                 expect('foo' in modals).toBe(false);
             });

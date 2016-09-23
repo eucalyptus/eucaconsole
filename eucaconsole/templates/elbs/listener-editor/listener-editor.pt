@@ -102,3 +102,6 @@
 <div class="modal xlarge" modal="securityPolicyEditor">
     <security-policy-editor></security-policy-editor>
 </div>
+<div class="modal xlarge" modal="certificateEditor">
+    <security-policy-editor></security-policy-editor>
+</div>

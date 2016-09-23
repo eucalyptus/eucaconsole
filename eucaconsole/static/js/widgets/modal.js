@@ -68,11 +68,11 @@ angular.module('ModalModule', [])
         $rootScope.$broadcast('modal:close', name);
     }
 
-    function getModals () {
+    function _getModals () {
         return _modals;
     }
 
-    function clearModals () {
+    function _clearModals () {
         _modals = {};
     }
 
@@ -80,7 +80,7 @@ angular.module('ModalModule', [])
         openModal: openModal,
         closeModal: closeModal,
         registerModal: registerModal,
-        getModals: getModals,
-        clearModals: clearModals
+        _getModals: _getModals,
+        _clearModals: _clearModals
     };
 }]);
