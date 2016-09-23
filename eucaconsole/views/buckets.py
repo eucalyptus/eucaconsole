@@ -751,41 +751,6 @@ class BucketDetailsView(BaseView, BucketMixin):
             self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
 
-    @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='PUT', xhr=True)
-    def bucket_set_cors_configuration(self):
-        params = json.loads(self.request.body)
-        csrf_token = params.get('csrf_token')
-        if not self.is_csrf_valid(token=csrf_token):
-            return JSONResponse(status=400, message=_('Missing CSRF token'))
-        cors_xml = params.get('cors_configuration_xml')
-        if self.bucket and cors_xml:
-            cors_xml = utils.remove_namespace(cors_xml)
-            valid, error = utils.validate_xml(cors_xml, CORS_XML_RELAXNG_SCHEMA)
-            if valid:
-                self.log_request(u"Setting CORS configuration for bucket {0}".format(self.bucket.name))
-                with boto_error_handler(self.request):
-                    self.bucket.set_cors_xml(cors_xml)
-                msg = u'{0} {1}'.format(_(u'Successfully set CORS configuration for bucket'), self.bucket.name)
-                return JSONResponse(status=200, message=msg)
-            else:
-                return JSONResponse(status=400, message=error.message)
-
-    @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='DELETE', xhr=True)
-    def bucket_delete_cors_configuration(self):
-        csrf_token = self.request.params.get('csrf_token')
-        if not self.is_csrf_valid(token=csrf_token):
-            return JSONResponse(status=400, message=_('Missing CSRF token'))
-        if self.bucket:
-            with boto_error_handler(self.request):
-                self.log_request(u"Deleting CORS configuration for bucket {0}".format(self.bucket.name))
-                self.bucket.delete_cors()
-                msg = '{0} {1}'.format(_(u'Successfully deleted CORS configuration for bucket'), self.bucket.name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return JSONResponse(status=200, message=msg)
-        else:
-            error = '{0} {1}'.format(_('Unable to delete CORS configuration for bucket'), self.bucket.name)
-            return JSONResponse(status=400, message=error)
-
     @view_config(route_name='bucket_update_versioning', request_method='POST')
     def bucket_update_versioning(self):
         if self.bucket and self.versioning_form.validate():
@@ -922,6 +887,52 @@ class BucketDetailsView(BaseView, BucketMixin):
         """Returns 'enable' if status is Disabled or Suspended, otherwise returns 'disable'"""
         if versioning_status:
             return 'enable' if versioning_status in ['Disabled', 'Suspended'] else 'disable'
+
+
+class BucketCorsConfigurationView(BaseView, BucketMixin):
+    """XHR Views for Bucket CORS Configuration"""
+
+    def __init__(self, request, **kwargs):
+        super(BucketCorsConfigurationView, self).__init__(request, **kwargs)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(request):
+            if self.s3_conn:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+
+    @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='PUT', xhr=True)
+    def bucket_set_cors_configuration(self):
+        params = json.loads(self.request.body)
+        csrf_token = params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        cors_xml = params.get('cors_configuration_xml')
+        if self.bucket and cors_xml:
+            cors_xml = utils.remove_namespace(cors_xml)
+            valid, error = utils.validate_xml(cors_xml, CORS_XML_RELAXNG_SCHEMA)
+            if valid:
+                self.log_request(u"Setting CORS configuration for bucket {0}".format(self.bucket.name))
+                with boto_error_handler(self.request):
+                    self.bucket.set_cors_xml(cors_xml)
+                msg = u'{0} {1}'.format(_(u'Successfully set CORS configuration for bucket'), self.bucket.name)
+                return JSONResponse(status=200, message=msg)
+            else:
+                return JSONResponse(status=400, message=error.message)
+
+    @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='DELETE', xhr=True)
+    def bucket_delete_cors_configuration(self):
+        csrf_token = self.request.params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        if self.bucket:
+            with boto_error_handler(self.request):
+                self.log_request(u"Deleting CORS configuration for bucket {0}".format(self.bucket.name))
+                self.bucket.delete_cors()
+                msg = '{0} {1}'.format(_(u'Successfully deleted CORS configuration for bucket'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return JSONResponse(status=200, message=msg)
+        else:
+            error = '{0} {1}'.format(_('Unable to delete CORS configuration for bucket'), self.bucket.name)
+            return JSONResponse(status=400, message=error)
 
 
 class BucketItemDetailsView(BaseView, BucketMixin):
