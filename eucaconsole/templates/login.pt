@@ -64,7 +64,7 @@
                               action="${request.route_path('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <input type="hidden" id="euca-region" name="euca-region" value="" />
-                            <div class="row controls-wrapper controls_account">
+                            <div class="row controls-wrapper controls_euca">
                                 <div class="small-12 columns field">
                                     <label class="left stack-label" for="account">
                                         <span i18n:translate="">Account Name</span>

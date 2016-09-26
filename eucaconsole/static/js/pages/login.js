@@ -36,7 +36,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || '';
             $("#euca-region").val(storedRegion);
-            $timeout(function() {
+            $timeout(function() {  // this being delayed to allow browser to populate login form completely
                 $scope.eucaCheckValid();
             }, 250);
         };
@@ -116,12 +116,12 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();
             });
-            $("#account").on('keyup', $scope.eucaCheckValid);
-            $("#username").on('keyup', $scope.eucaCheckValid);
-            $("#password").on('keyup', $scope.eucaCheckValid);
+            $("#account").on('keydown', $scope.eucaCheckValid);
+            $("#username").on('keydown', $scope.eucaCheckValid);
+            $("#password").on('keydown', $scope.eucaCheckValid);
         };
         $scope.eucaCheckValid = function() {
-            $timeout(function() {
+            $timeout(function() {  // this causes an additional digest cycle after current thread completes
                 $scope.eucaNotValid = $scope.eucaLoginNotValid();
             });
         };
@@ -129,9 +129,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             var account = $('#account').val();
             var username = $('#username').val();
             var password = $('#password').val();
-            if (account === undefined || account === '' ||
-                username === undefined || username === '' ||
-                password === undefined || password === '') {
+            if (!account || !username || !password) {
                 return true;
             }
             return false;
