@@ -38,6 +38,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             $("#euca-region").val(storedRegion);
             $timeout(function() {  // this being delayed to allow browser to populate login form completely
                 $scope.eucaCheckValid();
+                $scope.awsCheckValid();
             }, 250);
         };
         $scope.setFocus = function () {
@@ -87,6 +88,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             });
             // set up listener to capture and save values if remember checked
             $('#euca-login-form').on('submit', function () {
+                isLogginIn = true;
                 $.cookie('account', $('#account').val(), {expires: 180});
                 $.cookie('username', $('#username').val(), {expires: 180});
                 $.cookie('login-form', 'eucalyptus', {expires: 180});
@@ -119,17 +121,32 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             $("#account").on('keydown', $scope.eucaCheckValid);
             $("#username").on('keydown', $scope.eucaCheckValid);
             $("#password").on('keydown', $scope.eucaCheckValid);
+            $("#access_key").on('keydown', $scope.awsCheckValid);
+            $("#secret_key").on('keydown', $scope.awsCheckValid);
         };
         $scope.eucaCheckValid = function() {
             $timeout(function() {  // this causes an additional digest cycle after current thread completes
                 $scope.eucaNotValid = $scope.eucaLoginNotValid();
-            });
+            }, 100);
         };
         $scope.eucaLoginNotValid = function () {
             var account = $('#account').val();
             var username = $('#username').val();
             var password = $('#password').val();
             if (!account || !username || !password) {
+                return true;
+            }
+            return false;
+        };
+        $scope.awsCheckValid = function() {
+            $timeout(function() {  // this causes an additional digest cycle after current thread completes
+                $scope.awsNotValid = $scope.awsLoginNotValid();
+            }, 100);
+        };
+        $scope.awsLoginNotValid = function () {
+            var access_key = $('#access_key').val();
+            var secret_key = $('#secret_key').val();
+            if (!access_key || !secret_key) {
                 return true;
             }
             return false;
