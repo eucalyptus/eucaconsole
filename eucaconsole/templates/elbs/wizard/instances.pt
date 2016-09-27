@@ -1,2 +1,3 @@
 <form ng-submit="instances.submit()" i18n:domain="eucaconsole">
+    instances
 </form>

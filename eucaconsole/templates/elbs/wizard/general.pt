@@ -10,7 +10,7 @@
         <hr/>
 
         <div>
-            <listener-editor ng-model="general.listeners"></listener-editor>
+            <!--listener-editor ng-model="general.listeners"></listener-editor-->
         </div>
 
         <hr/>

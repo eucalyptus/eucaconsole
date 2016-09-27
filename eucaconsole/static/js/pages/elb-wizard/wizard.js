@@ -73,12 +73,6 @@ angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorMod
     };
 })
 .controller('MainController', function () {
-    this.status = function (step) {
-        return {
-            active: step.active,
-            complete: step.complete
-        };
-    };
 })
 .controller('GeneralController', ['$scope', '$routeParams', '$location', function ($scope, $routeParams, $location) {
     this.listeners = [{
