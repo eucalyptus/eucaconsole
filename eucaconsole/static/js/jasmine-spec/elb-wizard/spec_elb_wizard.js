@@ -2,7 +2,7 @@
  * @fileOverview Jasmine Unit test for ELBWizard module.
  */
 
-fdescribe('ELB Wizard Module', function () {
+describe('ELB Wizard Module', function () {
     
     beforeEach(angular.mock.module('ELBWizard'));
 
