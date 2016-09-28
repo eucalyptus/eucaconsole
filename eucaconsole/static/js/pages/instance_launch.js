@@ -25,8 +25,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.subnetVPC = 'None';
         $scope.vpcSubnetList = {};
         $scope.vpcSubnetChoices = {};
-        $scope.keyPair = '';
-        $scope.keyPairChoices = {};
+        $scope.keyPair = undefined;
+        $scope.keyPairChoices = [];
         $scope.newKeyPairName = '';
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.isLoadingKeyPair = false;
@@ -45,7 +45,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.isSecurityGroupsInitialValuesSet = false;
-        $scope.role = '';
+        $scope.role = undefined;
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -61,9 +61,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.keyPairChoices = options.keypair_choices;
+            console.log("keypairs = " + JSON.stringify($scope.keyPairChoices));
             $scope.securityGroupChoices = options.securitygroups_choices;
             $scope.vpcSubnetList = options.vpc_subnet_choices;
             $scope.roleList = options.role_choices;
+            console.log("roles = " + JSON.stringify($scope.roleList));
             $scope.instanceVPC = options.default_vpc_network;
             $scope.securityGroupVPC = options.default_vpc_network;
             $scope.securityGroupJsonEndpoint = options.securitygroups_json_endpoint;
@@ -108,10 +110,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.securityGroupVPC = lastVPC;
             }
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_inst');
-            if (lastKeyPair !== null && $scope.keyPairChoices[lastKeyPair] !== undefined) {
-                $('#keypair').val(lastKeyPair);
+            if (lastKeyPair !== null) {
+                var foundKeyPair = $scope.keyPairChoices.find(function(choice) { return choice.id == lastKeyPair; });
+                if (foundKeyPair !== undefined) {
+                   $scope.keyPair = foundKeyPair;
+                }
             }
-            $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.imageID = $scope.urlParams.image_id || '';
             if( $scope.imageID === '' ){
                 $scope.currentStepIndex = 1;
@@ -132,8 +136,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if (lastSecGroup !== null) {
                 var lastSecGroupArray = lastSecGroup.split(",");
                 angular.forEach(lastSecGroupArray, function (sgroup) {
-                    if ($scope.securityGroupChoices[sgroup] !== undefined) {
-                        $scope.securityGroups.push(sgroup);
+                    var foundGroup = $scope.securityGroupChoices.find(function(choice) { return choice.id == sgroup; });
+                    if (foundGroup !== undefined) {
+                        $scope.securityGroups.push(foundGroup);
                         $scope.isSecurityGroupsInitialValuesSet = true;
                     }
                 });
@@ -142,7 +147,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.saveOptions = function() {
             if (Modernizr.localstorage) {
                 localStorage.setItem('lastvpc_inst', $scope.instanceVPC);
-                localStorage.setItem('lastkeypair_inst', $('#keypair').find(':selected').val());
+                localStorage.setItem('lastkeypair_inst', $scope.keyPair);
+                //localStorage.setItem('lastkeypair_inst', $('#keypair').find(':selected').val());
                 localStorage.setItem('lastsecgroup_inst', $scope.securityGroups);
             }
         };
@@ -242,11 +248,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
             });
 
-            $scope.$watch('securityGroupCollection', function () {
+            $scope.$watch('securityGroupCollection', function (newVal, oldVal) {
+                if (newVal === oldVal) return;
                 $scope.updateSecurityGroupChoices();
             });
 
-            $scope.$watch('instanceVPC', function () {
+            $scope.$watch('instanceVPC', function (newVal, oldVal) {
+                if (newVal === oldVal) return;
                 $scope.getInstanceVPCName($scope.instanceVPC);
                 $scope.getAllSecurityGroups($scope.instanceVPC);
                 $scope.updateVPCSubnetChoices();
@@ -560,7 +568,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.updateSecurityGroupChoices = function () {
-            $scope.securityGroupChoices = {};
+            $scope.securityGroupChoices = [];
             $scope.securityGroupChoicesFullName = {};
             if ($.isEmptyObject($scope.securityGroupCollection)) {
                 return;
