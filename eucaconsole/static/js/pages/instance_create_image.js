@@ -7,7 +7,7 @@
  */
 
 // Create Image page includes the Tag Editor 
-angular.module('InstanceCreateImage', ['EucaConsoleUtils', 'TagEditor', 'CreateBucketDialog'])
+angular.module('InstanceCreateImage', ['EucaConsoleUtils', 'TagEditorModule', 'CreateBucketDialog'])
     .controller('InstanceCreateImageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
         $scope.form = $('#create-image-form');
         $scope.expanded = false;
