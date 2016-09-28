@@ -1445,7 +1445,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         return self.render_dict
 
 
-class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
+class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView, TaggedItemView):
     """Create image from an instance view"""
     TEMPLATE = '../templates/instances/instance_create_image.pt'
 
@@ -1577,7 +1577,8 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     image_id = self.ec2_conn.create_image(
                         instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
                     tags = json.loads(tags_json)
-                    self.ec2_conn.create_tags(image_id, tags)
+                    tags_dict = self._normalize_tags(tags)
+                    self.ec2_conn.create_tags(image_id, tags_dict)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.invalidate_images_cache()
                     self.request.session.flash(msg, queue=Notification.SUCCESS)

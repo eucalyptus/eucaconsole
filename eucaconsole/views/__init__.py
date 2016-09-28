@@ -535,7 +535,8 @@ class TaggedItemView(BaseView):
                     tag_value = self.unescape_braces(value)
                     self.tagged_obj.add_tag('Name', tag_value)
 
-    def _normalize_tags(self, tags):
+    @staticmethod
+    def _normalize_tags(tags):
         if type(tags) is dict:
             return tags
 
