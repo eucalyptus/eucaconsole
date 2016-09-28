@@ -30,7 +30,6 @@
             <div class="panel ${'has-actions' if security_group else ''}"
                     tal:define="sgroup_rules security_group.rules if security_group else [];
                                 sgroup_rules_egress security_group.rules_egress if security_group else [];
-                                sgroup_tags security_group.tags if security_group else {};
                                 readonly True if security_group else False;">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="security_group">
                     <metal:actions metal:fill-slot="actions">
