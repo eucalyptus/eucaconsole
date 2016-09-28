@@ -127,7 +127,7 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             fakeimage.root_device_name = '/dev/sda'
             fakeimage.block_device_mapping = {}
             tags = json.loads(metadata['tags'])
-            tags_dict = TaggedItemView._normalize_tags(tags)
+            tags_dict = TaggedItemView.normalize_tags(tags)
             fakeimage.tags = tags_dict
             return fakeimage
 

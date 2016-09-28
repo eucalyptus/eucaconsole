@@ -1577,7 +1577,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView, Tagg
                     image_id = self.ec2_conn.create_image(
                         instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
                     tags = json.loads(tags_json)
-                    tags_dict = self._normalize_tags(tags)
+                    tags_dict = self.normalize_tags(tags)
                     self.ec2_conn.create_tags(image_id, tags_dict)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.invalidate_images_cache()

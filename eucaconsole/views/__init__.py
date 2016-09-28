@@ -504,7 +504,7 @@ class TaggedItemView(BaseView):
     def add_tags(self):
         if self.conn:
             tags_json = self.request.params.get('tags', '{}')
-            tags_dict = self._normalize_tags(json.loads(tags_json))
+            tags_dict = self.normalize_tags(json.loads(tags_json))
             tags = {}
             for key, value in tags_dict.items():
                 key = self.unescape_braces(key.strip())
@@ -536,7 +536,7 @@ class TaggedItemView(BaseView):
                     self.tagged_obj.add_tag('Name', tag_value)
 
     @staticmethod
-    def _normalize_tags(tags):
+    def normalize_tags(tags):
         if type(tags) is dict:
             return tags
 
