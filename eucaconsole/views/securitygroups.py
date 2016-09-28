@@ -254,6 +254,7 @@ class SecurityGroupView(TaggedItemView):
             security_group_names=self.get_security_group_names(),
             controller_options_json=controller_options_json,
             is_vpc_supported=self.is_vpc_supported,
+            tags=self.serialize_tags(self.security_group.tags) if self.security_group else [],
         )
 
     def get_default_vpc_network(self):

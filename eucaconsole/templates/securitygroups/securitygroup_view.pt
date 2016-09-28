@@ -1,13 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
-    <style type="text/css">
-        [data-abide] .ipaddress.error small.error {
-            background-color: transparent;
-            color: darkred;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/securitygroup.css')}" />
 </head>
 
@@ -74,7 +68,8 @@
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, rules_egress=sgroup_rules_egress)}
                     <hr />
-                    ${panel('tag_editor', tags=sgroup_tags, leftcol_width=3, rightcol_width=9)}
+                    <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
+                                ng-model="tags" tal:content="tags | structure"></tag-editor>
                     <hr />
                     <div tal:condition="not security_group">
                         <label>
@@ -159,6 +154,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/securitygroup.js')}"></script>
 </div>
 
