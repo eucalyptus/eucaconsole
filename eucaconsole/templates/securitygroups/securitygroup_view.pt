@@ -67,8 +67,10 @@
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, rules_egress=sgroup_rules_egress)}
                     <hr />
-                    <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                ng-model="tags" tal:content="tags | structure"></tag-editor>
+                    <div ng-cloak="">
+                        <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
+                                    ng-model="tags" tal:content="tags | structure"></tag-editor>
+                    </div>
                     <hr />
                     <div tal:condition="not security_group">
                         <label>
