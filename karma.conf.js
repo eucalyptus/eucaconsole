@@ -20,6 +20,7 @@ module.exports = function(config) {
       'templates/accounts/*.pt',
       'templates/buckets/*.pt',
       'templates/dialogs/*.pt',
+      'templates/elbs/**/*.pt',
       'templates/dashboard.pt',
       'templates/groups/*.pt',
       'templates/images/*.pt',
@@ -41,6 +42,7 @@ module.exports = function(config) {
       'static/js/thirdparty/angular/angular-sanitize.min.js',
       'static/js/thirdparty/angular/angular-mocks.js',
       'static/js/thirdparty/angular/angular-smart-table.js',
+      'static/js/thirdparty/angular/angular-route.min.js',
       'static/js/thirdparty/jquery/jquery.generateFile.js',
       'static/js/thirdparty/jquery/jquery.base64.js',
       'static/js/thirdparty/jquery/jquery.cookie.js',
@@ -128,6 +130,7 @@ module.exports = function(config) {
       'static/js/pages/volume.js',
       'static/js/pages/volumes.js',
       'static/js/pages/volume_snapshots.js',
+      'static/js/pages/elb-wizard/wizard.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_autoscale_tag_editor.js',
       'static/js/jasmine-spec/spec_bdmapping_editor.js',
@@ -195,8 +198,9 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_volume.js',
       'static/js/jasmine-spec/spec_volumes.js',
       'static/js/jasmine-spec/spec_volume_snapshots.js',
-      'static/js/jasmine-spec/tag-editor/spec_tag_editor.js',
       'static/js/jasmine-spec/listener-editor/spec_listener_editor.js'
+      'static/js/jasmine-spec/elb-wizard/spec_elb_wizard.js',
+      'static/js/jasmine-spec/tag-editor/spec_tag_editor.js'
     ],
 
 

@@ -76,12 +76,6 @@ angular.module('ELBWizard', [
     };
 })
 .controller('MainController', function () {
-    this.status = function (step) {
-        return {
-            active: step.active,
-            complete: step.complete
-        };
-    };
 })
 .controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', function ($scope, $route, $routeParams, $location) {
     this.listeners = [{
