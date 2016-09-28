@@ -148,8 +148,12 @@
     <div tal:define="isEBS instance.root_device_type == 'ebs'" tal:omit-tag="">
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
-        <script tal:condition="isEBS" src="${request.static_path('eucaconsole:static/js/pages/instance_create_ebs_image.js')}"></script>
-        <script tal:condition="not:isEBS" src="${request.static_path('eucaconsole:static/js/pages/instance_create_image.js')}"></script>
+        <div tal:condition="isEBS" tal:omit-tag="">
+            <script src="${request.static_path('eucaconsole:static/js/pages/instance_create_ebs_image.js')}"></script>
+        </div>
+        <div tal:condition="not:isEBS" tal:omit-tag="">
+            <script src="${request.static_path('eucaconsole:static/js/pages/instance_create_image.js')}"></script>
+        </div>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/create_bucket_dialog.js')}"></script>
 </div>
