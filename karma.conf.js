@@ -77,6 +77,7 @@ module.exports = function(config) {
       'static/js/widgets/user_editor.js',
       'static/js/widgets/tag-editor/tag-editor.js',
       'static/js/widgets/listener-editor/listener-editor.js',
+      'static/js/widgets/listener-editor/security-policy-editor.js',
       'static/js/widgets/expando.js',
       'static/js/pages/landingpage.js',
       'static/js/pages/account.js',
