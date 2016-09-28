@@ -198,7 +198,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_volume.js',
       'static/js/jasmine-spec/spec_volumes.js',
       'static/js/jasmine-spec/spec_volume_snapshots.js',
-      'static/js/jasmine-spec/listener-editor/spec_listener_editor.js'
+      'static/js/jasmine-spec/listener-editor/spec_listener_editor.js',
       'static/js/jasmine-spec/elb-wizard/spec_elb_wizard.js',
       'static/js/jasmine-spec/tag-editor/spec_tag_editor.js'
     ],
