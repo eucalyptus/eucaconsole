@@ -311,7 +311,7 @@ class SecurityGroupView(TaggedItemView):
                     self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
-                    tags_dict = self._normalize_tags(tags)
+                    tags_dict = self.normalize_tags(tags)
                     for tagname, tagvalue in tags_dict.items():
                         new_security_group.add_tag(tagname, tagvalue)
                 prefix = _(u'Successfully created security group')
