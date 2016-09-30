@@ -58,11 +58,14 @@ describe("LoginPage", function() {
         });
 
         it("should have value of eucaNotValid is false", function() {
+            spyOn(scope, 'eucaLoginNotValid');
+            console.log("account before = "+$("#account").val());
             $("#account").val("blah");
             $("#username").val("blah");
             $("#password").val("blah");
-            console.log("account = "+$("#account").val());
+            console.log("account after = "+$("#account").val());
             timeout.flush();
+            expect(scope.eucaLoginNotValid).toHaveBeenCalled();
             expect(scope.eucaNotValid).toBe(false);
         });
 
@@ -71,9 +74,11 @@ describe("LoginPage", function() {
         });
 
         it("should have value of awsNotValid is false", function() {
+            spyOn(scope, 'awsLoginNotValid');
             $("#access_key").val("blah");
             $("#secret_key").val("blah");
             timeout.flush();
+            expect(scope.awsLoginNotValid).toHaveBeenCalled();
             expect(scope.awsNotValid).toBe(false);
         });
 
