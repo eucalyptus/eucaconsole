@@ -11,6 +11,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         $scope.showHttpsWarning = false;
         $scope.isLoggingIn = false;
         $scope.eucaNotValid = true;
+        $scope.awsNotValid = true;
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
             $scope.prefillForms(options.account, options.username);
