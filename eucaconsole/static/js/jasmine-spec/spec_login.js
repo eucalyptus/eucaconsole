@@ -10,16 +10,17 @@ describe("LoginPage", function() {
 
     beforeEach(angular.mock.module('LoginPage'));
 
-    var scope, ctrl;
+    var scope, ctrl, timeout;
     // inject the $controller and $rootScope services
     // in the beforeEach block
-    beforeEach(angular.mock.inject(function($controller, $rootScope) {
+    beforeEach(angular.mock.inject(function($controller, $rootScope, $timeout) {
         // Create a new scope that's a child of the $rootScope
         scope = $rootScope.$new();
         // Create the controller
         ctrl = $controller('LoginPageCtrl', {
             $scope: scope
         });
+        timeout = $timeout;
     }));
 
     beforeEach(function() {
@@ -53,24 +54,27 @@ describe("LoginPage", function() {
     describe("Button enablement logic Test", function() {
 
         it("should have value of eucaNotValid is true", function() {
-            expect(scope.eucaNotValid).toBeTruthy();
+            expect(scope.eucaNotValid).toBe(true);
         });
 
         it("should have value of eucaNotValid is false", function() {
             $("#account").val("blah");
             $("#username").val("blah");
             $("#password").val("blah");
-            expect(scope.eucaNotValid).not.toBeTruthy();
+            console.log("account = "+$("#account").val());
+            timeout.flush();
+            expect(scope.eucaNotValid).toBe(false);
         });
 
         it("should have value of awsNotValid is true", function() {
-            expect(scope.awsNotValid).toBeTruthy();
+            expect(scope.awsNotValid).toBe(true);
         });
 
         it("should have value of awsNotValid is false", function() {
             $("#access_key").val("blah");
             $("#secret_key").val("blah");
-            expect(scope.awsNotValid).not.toBeTruthy();
+            timeout.flush();
+            expect(scope.awsNotValid).toBe(false);
         });
 
     });
