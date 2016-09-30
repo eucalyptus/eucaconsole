@@ -32,11 +32,11 @@ describe("LoginPage", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of showHttpsWarning is false", function() {
+        it("should have value of showHttpsWarning is false", function() {
             expect(scope.showHttpsWarning).not.toBeTruthy();
         });
 
-        it("Initial value of isLoggingIn is false", function() {
+        it("should have value of isLoggingIn is false", function() {
             expect(scope.isLoggingIn).not.toBeTruthy();
         });
     });
@@ -52,26 +52,24 @@ describe("LoginPage", function() {
 
     describe("Button enablement logic Test", function() {
 
-        it("Initial value of eucaNotValid is true", function() {
+        it("should have value of eucaNotValid is true", function() {
             expect(scope.eucaNotValid).toBeTruthy();
         });
 
-        $("#account").val("blah");
-        $("#username").val("blah");
-        $("#password").val("blah");
-
-        it("Final value of eucaNotValid is false", function() {
+        it("should have value of eucaNotValid is false", function() {
+            $("#account").val("blah");
+            $("#username").val("blah");
+            $("#password").val("blah");
             expect(scope.eucaNotValid).not.toBeTruthy();
         });
 
-        it("Initial value of awsNotValid is true", function() {
+        it("should have value of awsNotValid is true", function() {
             expect(scope.awsNotValid).toBeTruthy();
         });
 
-        $("#access_key").val("blah");
-        $("#secret_key").val("blah");
-
-        it("Final value of awsNotValid is false", function() {
+        it("should have value of awsNotValid is false", function() {
+            $("#access_key").val("blah");
+            $("#secret_key").val("blah");
             expect(scope.awsNotValid).not.toBeTruthy();
         });
 
