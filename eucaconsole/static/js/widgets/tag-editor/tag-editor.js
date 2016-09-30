@@ -84,7 +84,7 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
                         !current.name.match(/^euca:.*/);
                 });
 
-                attrs.showNameTag = !attrs.showNameTag; // default to true
+                attrs.showNameTag = attrs.showNameTag !== 'false';
                 attrs.autoscale = !!attrs.autoscale;    // default to false
 
                 scope.updateViewValue = function () {
