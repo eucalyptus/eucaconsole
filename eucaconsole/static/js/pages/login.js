@@ -8,6 +8,11 @@
 
 angular.module('LoginPage', ['EucaConsoleUtils'])
     .controller('LoginPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+        var accountField = $("#account");
+        var usernameField = $("#username");
+        var passwordField = $("#password");
+        var accessKeyField = $("#access_key");
+        var secretKeyField = $("#secret_key");
         $scope.showHttpsWarning = false;
         $scope.isLoggingIn = false;
         $scope.eucaNotValid = true;
@@ -70,8 +75,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 }
                 last_login = 'euca';
             }
-            if (account !== undefined) $('#account').val(account);
-            if (username !== undefined) $('#username').val(username);
+            if (account !== undefined) accountField.val(account);
+            if (username !== undefined) usernameField.val(username);
 
             if (last_login == 'aws') {  // select that tab
                 // all this mimics what happens in the tab code itself... no other way I found worked.
@@ -90,7 +95,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             // set up listener to capture and save values if remember checked
             $('#euca-login-form').on('submit', function () {
                 isLogginIn = true;
-                $.cookie('account', $('#account').val(), {expires: 180});
+                $.cookie('account', accountField.val(), {expires: 180});
                 $.cookie('username', $('#username').val(), {expires: 180});
                 $.cookie('login-form', 'eucalyptus', {expires: 180});
             });
@@ -119,11 +124,11 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();
             });
-            $("#account").on('keydown', $scope.eucaCheckValid);
-            $("#username").on('keydown', $scope.eucaCheckValid);
-            $("#password").on('keydown', $scope.eucaCheckValid);
-            $("#access_key").on('keydown', $scope.awsCheckValid);
-            $("#secret_key").on('keydown', $scope.awsCheckValid);
+            accountField.on('keydown', $scope.eucaCheckValid);
+            usernameField.on('keydown', $scope.eucaCheckValid);
+            passwordField.on('keydown', $scope.eucaCheckValid);
+            accessKeyField.on('keydown', $scope.awsCheckValid);
+            secretKeyField.on('keydown', $scope.awsCheckValid);
         };
         $scope.eucaCheckValid = function() {
             $timeout(function() {  // this causes an additional digest cycle after current thread completes
@@ -131,9 +136,9 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }, 100);
         };
         $scope.eucaLoginNotValid = function () {
-            var account = $('#account').val();
-            var username = $('#username').val();
-            var password = $('#password').val();
+            var account = accountField.val();
+            var username = usernameField.val();
+            var password = passwordField.val();
             if (!account || !username || !password) {
                 return true;
             }
@@ -145,8 +150,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }, 100);
         };
         $scope.awsLoginNotValid = function () {
-            var access_key = $('#access_key').val();
-            var secret_key = $('#secret_key').val();
+            var access_key = accessKeyField.val();
+            var secret_key = secretKeyField.val();
             if (!access_key || !secret_key) {
                 return true;
             }

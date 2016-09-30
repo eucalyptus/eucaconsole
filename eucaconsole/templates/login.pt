@@ -88,7 +88,7 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
+                                    <a target="euca-support" rel="noopener noreferrer" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
                                 </div>
                             </div>
                             <div class="row">
@@ -145,7 +145,7 @@
                                 <div class="small-12 columns">
                                     <span i18n:translate="">Need to access an IAM account?</span><br />
                                     <span i18n:translate="">Contact your</span>
-                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">cloud administrator</a>
+                                    <a target="euca-support" rel="noopener noreferrer" href="${layout.support_url}" i18n:translate="">cloud administrator</a>
                                 </div>
                             </div>
                         </form>
