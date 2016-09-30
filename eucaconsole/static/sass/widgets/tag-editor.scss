@@ -17,6 +17,10 @@
       display: inline-block;
       margin: 5px 8px 0 0;
 
+      &.item--hidden {
+        display: none;
+      }
+
       .propagates {
         color: #777;
       }
