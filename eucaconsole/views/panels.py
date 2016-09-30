@@ -72,7 +72,7 @@ def top_nav(context, request, off_canvas=False):
 def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8,
                    leftcol_width_large=2, rightcol_width_large=10,
                    inline=True, stack_label=False, ng_attrs=None, **kwargs):
-    """ Widget for a singe form field row.
+    """ Widget for a single form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
         Pass any HTML attributes to this widget as keyword arguments.

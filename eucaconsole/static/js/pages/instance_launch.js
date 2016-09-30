@@ -61,11 +61,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.keyPairChoices = options.keypair_choices;
-            console.log("keypairs = " + JSON.stringify($scope.keyPairChoices));
+            $scope.keyPair = $scope.keyPairChoices[0];
             $scope.securityGroupChoices = options.securitygroups_choices;
             $scope.vpcSubnetList = options.vpc_subnet_choices;
             $scope.roleList = options.role_choices;
-            console.log("roles = " + JSON.stringify($scope.roleList));
+            $scope.role = $scope.roleList[0];
             $scope.instanceVPC = options.default_vpc_network;
             $scope.securityGroupVPC = options.default_vpc_network;
             $scope.securityGroupJsonEndpoint = options.securitygroups_json_endpoint;
@@ -113,7 +113,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if (lastKeyPair !== null) {
                 var foundKeyPair = $scope.keyPairChoices.find(function(choice) { return choice.id == lastKeyPair; });
                 if (foundKeyPair !== undefined) {
-                   $scope.keyPair = foundKeyPair;
+                    $scope.keyPair = foundKeyPair;
                 }
             }
             $scope.imageID = $scope.urlParams.image_id || '';
@@ -127,6 +127,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     document.getElementById('tabStep2').click();
                 });
             }
+            $scope.restoreSecurityGroupsInitialValues(); 
+            // Timeout is needed for chosen to react after Angular updates the options
+            $timeout(function(){
+                $('#securitygroup').trigger('chosen:updated');
+            }, 500);
         };
         $scope.restoreSecurityGroupsInitialValues = function () {
             if ($scope.isSecurityGroupsInitialValuesSet === true) {
@@ -147,9 +152,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.saveOptions = function() {
             if (Modernizr.localstorage) {
                 localStorage.setItem('lastvpc_inst', $scope.instanceVPC);
-                localStorage.setItem('lastkeypair_inst', $scope.keyPair);
-                //localStorage.setItem('lastkeypair_inst', $('#keypair').find(':selected').val());
-                localStorage.setItem('lastsecgroup_inst', $scope.securityGroups);
+                localStorage.setItem('lastkeypair_inst', $scope.keyPair.id);
+                localStorage.setItem('lastsecgroup_inst', $scope.securityGroups.map(function(val, idx) {
+                        return val.id;
+                    }, []));
             }
         };
         $scope.updateTagsPreview = function () {
