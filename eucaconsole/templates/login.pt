@@ -104,7 +104,7 @@
                             <div class="row" tal:condition="oauth_enabled">
                                 <div class="small-12 columns">
                                 <!-- blue with white text -->
-                                    <button type="submit" class="submit button" ng-click="handleOAuthLogin($event)" id="globus-login-button" i18n:translate="">
+                                    <button type="submit" class="submit oauth button" ng-click="handleOAuthLogin($event)" id="globus-login-button" i18n:translate="">
                                         ${oauth_link_text}
                                     </button>
                                 </div>

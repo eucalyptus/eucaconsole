@@ -50,6 +50,14 @@
         margin-top: 12px;
         margin-bottom: 12px;
     }
+    .oauth {
+        background-color: $oauth-blue !important;
+        color: white !important;
+        border: 0 !important;
+        &:hover {
+            outline: 2px solid $oauth-blue;
+        }
+    }
 }
 
 #password, #secret_key {
