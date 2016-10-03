@@ -42,7 +42,7 @@ describe("LaunchInstance", function() {
         });
 
         it("Initial value of keyPair is empty", function() {
-            expect(scope.keyPair).toEqual('');
+            expect(scope.keyPair).toEqual(undefined);
         });
 
         it("Initial value of securityGroupVPC is None", function() {
@@ -200,6 +200,8 @@ describe("LaunchInstance", function() {
             spyOn(scope, 'getInstanceVPCName');
             scope.securityGroupJsonEndpoint = "securitygroup_json";
             scope.setWatcher();
+            scope.instanceVPC = '';
+            scope.$apply();
             scope.instanceVPC = vpc;
             scope.$apply();
             expect(scope.getInstanceVPCName).toHaveBeenCalled();
@@ -209,6 +211,8 @@ describe("LaunchInstance", function() {
             spyOn(scope, 'getAllSecurityGroups');
             scope.securityGroupJsonEndpoint = "securitygroup_json";
             scope.setWatcher();
+            scope.instanceVPC = '';
+            scope.$apply();
             scope.instanceVPC = vpc;
             scope.$apply();
             expect(scope.getAllSecurityGroups).toHaveBeenCalled();
@@ -227,6 +231,8 @@ describe("LaunchInstance", function() {
             spyOn(scope, 'updateSecurityGroupVPC');
             scope.securityGroupJsonEndpoint = "securitygroup_json";
             scope.setWatcher();
+            scope.instanceVPC = '';
+            scope.$apply();
             scope.instanceVPC = vpc;
             scope.$apply();
             expect(scope.updateSecurityGroupVPC).toHaveBeenCalled();
