@@ -8,16 +8,28 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         templateUrl: '/_template/elbs/listener-editor/listener-editor',
         controller: ['$scope', 'ModalService', function ($scope, ModalService) {
             var vm = this;
-            vm.from = {};
-            vm.to = {};
 
-            this.clientSideValid = function () {
-                return !!(vm.from.port && vm.from.protocol);
+            this.from = {};
+            this.to = {};
+
+            this.protocols = [
+                {name: 'Select...', value: 'None', port: ''},
+                {name: 'HTTP', value: 'HTTP', port: 80},
+                {name: 'HTTPS', value: 'HTTPS', port: 443},
+                {name: 'TCP', value: 'TCP', port: 80},
+                {name: 'SSL', value: 'SSL', port: 443}
+            ];
+
+            this.targetValid = function (target) {
+                return !!(target.port && target.protocol !== 'None');
             };
 
             this.portsValid = function () {
-                var fromValid = !!(vm.from.port && vm.from.protocol);
-                var toValid = !!(vm.to.port && vm.to.protocol);
+                var fromValid = this.targetValid(vm.from);
+                var toValid = this.targetValid(vm.to);
+
+                // Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
+                // Selected port is already in use by another listener. Please select an unused port.
 
                 return fromValid && toValid;
             };
@@ -39,9 +51,14 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                 };
                 $scope.listeners.push(listener);
 
-                vm.from = {};
-                vm.to = {};
+                vm.reset();
             };
+
+            this.reset = function () {
+                vm.from = vm.protocols[0];
+                vm.to = vm.protocols[0];
+            };
+            this.cancel = this.reset;
 
             this.openPolicyModal = function () {
                 ModalService.openModal('securityPolicyEditor');
@@ -55,19 +72,18 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
     };
 })
 .directive('protocolPort', function () {
-    var protocols = [
-        {'name': 'HTTP', 'value': 'HTTP', 'port': 80},
-        {'name': 'HTTPS', 'value': 'HTTPS', 'port': 443},
-        {'name': 'TCP', 'value': 'TCP', 'port': 80},
-        {'name': 'SSL', 'value': 'SSL', 'port': 443}
-    ];
+
+    var validPorts = [25, 80, 443, 465, 587],
+        validPortMin = 1024,
+        validPortMax = 65535;
 
     return {
         restrict: 'E',
         require: 'ngModel',
         scope: {
             target: '=ngModel',
-            label: '@'
+            label: '@',
+            protocols: '='
         },
         templateUrl: '/_template/elbs/listener-editor/protocol-port',
         link: function (scope, element, attrs, ctrl) {
@@ -93,8 +109,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             };
         },
         controller: ['$scope', function ($scope) {
-            this.protocols = protocols;
-
             this.onUpdate = function (protocol) {
                 $scope.port = protocol.port;
             };
@@ -112,6 +126,20 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                 }
                 return true;
             };
+        }
+    };
+})
+.filter('policy', function () {
+    return function (input) {
+        if(!input) {
+            return 'N/A';
+        }
+    };
+})
+.filter('certificates', function () {
+    return function (input) {
+        if(!input) {
+            return 'N/A';
         }
     };
 });

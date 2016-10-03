@@ -26,8 +26,8 @@
                 <td>{{ listener.fromPort }}</td>
                 <td>{{ listener.toProtocol }}</td>
                 <td>{{ listener.toPort }}</td>
-                <td></td>
-                <td></td>
+                <td>{{ listener.policy | policy }}</td>
+                <td>{{ listener.certificates | certificates }}</td>
                 <td>
                     <a class="circle remove" ng-click="ctrl.removeListener($index)" title="RemoveListener">
                         <i class="fi-minus-circle"></i>
@@ -36,7 +36,7 @@
             </tr>
         </tbody>
     </table>
-    <div class="error" ng-show="!listeners.length" i18n:translate="">
+    <div ng-show="!listeners.length" i18n:translate="">
         You must define at least one listener.
     </div>
 
@@ -49,10 +49,8 @@
         </div>
     </div>
 
-    <protocol-port label="Client side" name="from"
-        ng-model="ctrl.from" valid-listener=""></protocol-port>
-    <protocol-port label="Instance side" name="to" ng-model="ctrl.to"
-        valid-listener="" ng-show="ctrl.clientSideValid()"></protocol-port>
+    <protocol-port label="Client side" name="from" protocols="ctrl.protocols" ng-model="ctrl.from" ></protocol-port>
+    <protocol-port label="Instance side" name="to" protocols="ctrl.protocols" ng-model="ctrl.to" ng-show="ctrl.targetValid(ctrl.from)"></protocol-port>
 
     <div class="security-section" ng-show="ctrl.portsValid()">
         <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>
@@ -91,12 +89,10 @@
     </div>
 
     <div id="add-listener-button-div">
-        <span id="button-add-listener" class="button round tiny" i18n:translate=""
-            ng-class="addListenerButtonClass" ng-click="ctrl.addListener($event)">
+        <span class="button round tiny" i18n:translate="" ng-click="ctrl.addListener($event)" ng-disabled="!ctrl.portsValid()">
             Add Listener
         </span>
-        <a href="#" id="button-cancel-listener" class="cancel-link" i18n:translate=""
-           ng-click="ctrl.cancelListener($event)">Cancel</a>
+        <a class="cancel-link" i18n:translate="" ng-click="ctrl.cancel()">Cancel</a>
     </div>
 </div>
 <div class="modal xlarge" modal="securityPolicyEditor">

@@ -86,6 +86,9 @@ angular.module('ELBWizard', [
     }];
 
     this.submit = function () {
+        if($scope.generalForm.$invalid) {
+            return;
+        }
         $location.path('/elbs/wizard/instances');
     };
 }])

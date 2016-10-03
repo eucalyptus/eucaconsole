@@ -2,13 +2,18 @@
     <div class="subsection-label" i18n:translate="">{{ label }}</div>
     <div class="controls-wrapper">
         <label i18n:translate="" class="inline">Protocol</label>
-        <select ng-options="protocol.name for protocol in ctrl.protocols track by protocol.name"
-            ng-model="protocol" ng-change="ctrl.onUpdate(protocol)"
-            placeholder="select..." class="ip-protocol">
+        <select ng-options="protocol.name for protocol in protocols track by protocol.value"
+            ng-model="protocol" ng-change="ctrl.onUpdate(protocol)" ng-init="protocol = protocols[0]" class="ip-protocol">
         </select>
     </div>
     <div class="controls-wrapper">
         <label i18n:translate="" class="inline">Port</label>
         <input type="number" ng-model="port"></input>
+    </div>
+    <div i18n:translate="">
+        Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
+    </div>
+    <div i18n:translate="">
+        Selected port is already in use by another listener. Please select an unused port.
     </div>
 </div>
