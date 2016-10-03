@@ -588,7 +588,8 @@ class VolumeSnapshotsView(BaseVolumeView):
                     snapshot.add_tag('Name', name)
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         snapshot.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
