@@ -514,6 +514,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }).success(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 // Add new security group to choices and set it as selected
+                var newSecurityGroup;
                 var newSecurityGroupID = '';
                 if (oData.id) {
                     newSecurityGroupID = oData.id;
@@ -523,8 +524,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (securityGroupName.length > 45) {
                     securityGroupName = securityGroupName.substr(0, 45) + "...";
                 }
-                //$scope.securityGroupChoices[newSecurityGroupID] = securityGroupName;
-                $scope.securityGroups.push(newSecurityGroupID);
+                newSecurityGroup = {
+                    'id': newSecurityGroupID,
+                    'label': securityGroupName
+                };
+                $scope.securityGroupChoices.push(newSecurityGroup);
+                $scope.securityGroups.push(newSecurityGroup);
                 var groupRulesObject = JSON.parse($('#rules').val());
                 var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
                 var groupRulesObjectCombined = groupRulesObject.concat(groupRulesEgressObject); 
@@ -591,8 +596,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (sGroup.name.length > 45) {
                     securityGroupName = sGroup.name.substr(0, 45) + "...";
                 }
-                $scope.securityGroupChoices[sGroup.id] = securityGroupName;
-            }); 
+                $scope.securityGroupChoices.push({
+                    'id': sGroup.id,
+                    'label': securityGroupName
+                });
+            });
             $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options
             $timeout(function(){

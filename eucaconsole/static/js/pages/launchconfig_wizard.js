@@ -495,20 +495,25 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             }).success(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 // Add new security group to choices and set it as selected
+                var newSecurityGroup;
                 var newSecurityGroupID = '';
                 if (oData.id) {
                     newSecurityGroupID = oData.id;
                 }
-                var newlyCreatedSecurityGroupName = $scope.newSecurityGroupName;
-                $scope.securityGroupChoicesFullName[newSecurityGroupID] = newlyCreatedSecurityGroupName;
-                if (newlyCreatedSecurityGroupName.length > 30) {
-                    newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName.substr(0, 30) + "...";
+                var securityGroupName = $scope.newSecurityGroupName;
+                $scope.securityGroupChoicesFullName[newSecurityGroupID] = securityGroupName;
+                if (securityGroupName.length > 45) {
+                    securityGroupName = securityGroupName.substr(0, 45) + "...";
                 }
                 if ($scope.securityGroupVPC && $scope.securityGroupVPC != 'None') {
-                    newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName + " (" + $scope.securityGroupVPC + ")";
+                    securityGroupName = securityGroupName + " (" + $scope.securityGroupVPC + ")";
                 }
-                $scope.securityGroupChoices[newSecurityGroupID] = newlyCreatedSecurityGroupName;
-                $scope.securityGroups.push(newSecurityGroupID);
+                newSecurityGroup = {
+                    'id': newSecurityGroupID,
+                    'label': securityGroupName
+                };
+                $scope.securityGroupChoices.push(newSecurityGroup);
+                $scope.securityGroups.push(newSecurityGroup);
                 var groupRulesObject = JSON.parse($('#rules').val());
                 var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
                 var groupRulesObjectCombined = groupRulesObject.concat(groupRulesEgressObject); 
