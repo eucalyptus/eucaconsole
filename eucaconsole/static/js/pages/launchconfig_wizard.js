@@ -453,10 +453,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 url: createUrl,
                 data: formData
             }).success(function (oData) {
+                var newKeyPair;
                 $scope.isLoadingKeyPair = false;
                 // Add new key pair to choices and set it as selected
-                $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
-                $scope.keyPair = $scope.newKeyPairName;
+                newKeyPair = {
+                    'id': $scope.newKeyPairName,
+                    'label': $scope.newKeyPairName
+                };
+                $scope.keyPairChoices.push(newKeyPair);
+                $scope.keyPair = newKeyPair;
                 Notify.success(oData.message);
                 // Download key pair file
                 $.generateFile({
