@@ -44,8 +44,11 @@ describe("LoginPage", function() {
 
     describe("Function initController() Test", function() {
 
-        it("Should call prefillForms() when initController() is called", function() {
+        beforeEach(function() {
             spyOn(scope, 'prefillForms');
+        });
+
+        it("Should call prefillForms() when initController() is called", function() {
             scope.initController('{"account": "acct", "username": "user"}');
             expect(scope.prefillForms).toHaveBeenCalled();
         });
@@ -53,12 +56,16 @@ describe("LoginPage", function() {
 
     describe("Button enablement logic Test", function() {
 
+        beforeEach(function() {
+            spyOn(scope, 'eucaLoginNotValid');
+            spyOn(scope, 'awsLoginNotValid');
+        });
+
         it("should have value of eucaNotValid is true", function() {
             expect(scope.eucaNotValid).toBe(true);
         });
 
         it("should have value of eucaNotValid is true", function() {
-            spyOn(scope, 'eucaLoginNotValid');
             scope.eucaCheckValid();
             timeout.flush();
             expect(scope.eucaLoginNotValid).toHaveBeenCalled();
@@ -69,7 +76,6 @@ describe("LoginPage", function() {
         });
 
         it("should have value of awsNotValid is true", function() {
-            spyOn(scope, 'awsLoginNotValid');
             scope.awsCheckValid();
             timeout.flush();
             expect(scope.awsLoginNotValid).toHaveBeenCalled();
