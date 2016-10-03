@@ -304,17 +304,17 @@
                 <div class="section step3 hide">
                     <div class="row">
                         <label i18n:translate="">Key pair</label>
-                        <div class="columns value breakword">{{ keyPair }}</div>
+                        <div class="columns value breakword" ng-show="keyPair.id">{{ keyPair.label }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Security group</label>
-                        <div class="columns value" ng-repeat="sgroup in securityGroups">
-                            {{ securityGroupChoices[sgroup] }}
+                        <div class="columns value breakword" ng-repeat="sgroup in securityGroups">
+                            {{ sgroup.label }}
                         </div>
                     </div>
                     <div class="row" ng-show="role">
                         <label i18n:translate="">Role</label>
-                        <div class="columns value">{{ role }}</div>
+                        <div class="columns value" ng-show="role.id">{{ role.label }}</div>
                     </div>
                 </div>
                 <div class="section step4 hide">
