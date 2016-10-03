@@ -36,7 +36,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || 'euca';
             $("#euca-region").val(storedRegion);
-            $scope.oauthUrl = $scope.oauthLoginLink + "&state=oauth-000248303150-" + storedRegion;
+            $scope.oauthUrl = $scope.oauthLoginLink + "&state=oauth-000257694698-" + storedRegion;
             console.log("oauth login link: "+$scope.oauthUrl);
         };
         $scope.setFocus = function () {
