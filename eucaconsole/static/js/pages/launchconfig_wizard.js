@@ -55,8 +55,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.keyPairChoices = options.keypair_choices;
+            $scope.keyPair = $scope.keyPairChoices[0];
             $scope.securityGroupChoices = options.securitygroups_choices;
             $scope.roleList = options.role_choices;
+            $scope.role = $scope.roleList[0];
             $scope.securityGroupJsonEndpoint = options.securitygroups_json_endpoint;
             $scope.securityGroupsRulesJsonEndpoint = options.securitygroups_rules_json_endpoint;
             $scope.imageJsonURL = options.image_json_endpoint;
