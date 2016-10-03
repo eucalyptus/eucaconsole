@@ -8,8 +8,15 @@
 
 angular.module('LoginPage', ['EucaConsoleUtils'])
     .controller('LoginPageCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+        var accountField = $("#account");
+        var usernameField = $("#username");
+        var passwordField = $("#password");
+        var accessKeyField = $("#access_key");
+        var secretKeyField = $("#secret_key");
         $scope.showHttpsWarning = false;
         $scope.isLoggingIn = false;
+        $scope.eucaNotValid = true;
+        $scope.awsNotValid = true;
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
             $scope.prefillForms(options.account, options.username);
@@ -38,6 +45,10 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             $("#euca-region").val(storedRegion);
             $scope.oauthUrl = $scope.oauthLoginLink + "&state=oauth-000257694698-" + storedRegion;
             console.log("oauth login link: "+$scope.oauthUrl);
+            $timeout(function() {  // this being delayed to allow browser to populate login form completely
+                $scope.eucaCheckValid();
+                $scope.awsCheckValid();
+            }, 250);
         };
         $scope.setFocus = function () {
             var inputs = [];
@@ -67,8 +78,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 }
                 last_login = 'euca';
             }
-            if (account !== undefined) $('#account').val(account);
-            if (username !== undefined) $('#username').val(username);
+            if (account !== undefined) accountField.val(account);
+            if (username !== undefined) usernameField.val(username);
 
             if (last_login == 'aws') {  // select that tab
                 // all this mimics what happens in the tab code itself... no other way I found worked.
@@ -86,7 +97,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             });
             // set up listener to capture and save values if remember checked
             $('#euca-login-form').on('submit', function () {
-                $.cookie('account', $('#account').val(), {expires: 180});
+                isLogginIn = true;
+                $.cookie('account', accountField.val(), {expires: 180});
                 $.cookie('username', $('#username').val(), {expires: 180});
                 $.cookie('login-form', 'eucalyptus', {expires: 180});
             });
@@ -114,6 +126,38 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();
             });
+            accountField.on('keydown', $scope.eucaCheckValid);
+            usernameField.on('keydown', $scope.eucaCheckValid);
+            passwordField.on('keydown', $scope.eucaCheckValid);
+            accessKeyField.on('keydown', $scope.awsCheckValid);
+            secretKeyField.on('keydown', $scope.awsCheckValid);
+        };
+        $scope.eucaCheckValid = function() {
+            $timeout(function() {  // this causes an additional digest cycle after current thread completes
+                $scope.eucaNotValid = $scope.eucaLoginNotValid();
+            }, 100);
+        };
+        $scope.eucaLoginNotValid = function () {
+            var account = accountField.val();
+            var username = usernameField.val();
+            var password = passwordField.val();
+            if (!account || !username || !password) {
+                return true;
+            }
+            return false;
+        };
+        $scope.awsCheckValid = function() {
+            $timeout(function() {  // this causes an additional digest cycle after current thread completes
+                $scope.awsNotValid = $scope.awsLoginNotValid();
+            }, 100);
+        };
+        $scope.awsLoginNotValid = function () {
+            var access_key = accessKeyField.val();
+            var secret_key = secretKeyField.val();
+            if (!access_key || !secret_key) {
+                return true;
+            }
+            return false;
         };
         $scope.handleOAuthLogin = function($event) {
             $event.preventDefault();

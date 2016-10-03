@@ -60,7 +60,7 @@
                 </dl>
                 <div class="tabs-content">
                     <div class="content active" id="eucalyptus">
-                        <form class="custom" id="euca-login-form" method="post" name="euca_login_form" ng-submit="isLoggingIn=true"
+                        <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
                               action="${request.route_path('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <input type="hidden" id="euca-region" name="euca-region" value="" />
@@ -88,12 +88,12 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
+                                    <a target="euca-support" rel="noopener noreferrer" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="">
+                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="" ng-disabled="eucaNotValid">
                                         Log in to Eucalyptus
                                     </button>
                                 </div>
@@ -141,7 +141,7 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <button type="submit" class="submit button" id="aws-login-button" i18n:translate="">
+                                    <button type="submit" class="submit button" id="aws-login-button" i18n:translate="" ng-disabled="awsNotValid">
                                         Log in to AWS
                                     </button>
                                 </div>
@@ -153,7 +153,7 @@
                                 <div class="small-12 columns">
                                     <span i18n:translate="">Need to access an IAM account?</span><br />
                                     <span i18n:translate="">Contact your</span>
-                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">cloud administrator</a>
+                                    <a target="euca-support" rel="noopener noreferrer" href="${layout.support_url}" i18n:translate="">cloud administrator</a>
                                 </div>
                             </div>
                         </form>
