@@ -24,8 +24,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.securityGroupsRulesJsonEndpoint = '';
         $scope.securityGroupCollection = {};
         $scope.securityGroupsRules = {};
-        $scope.keyPairChoices = {};
-        $scope.keyPair = '';
+        $scope.keyPair = undefined;
+        $scope.keyPairChoices = [];
         $scope.newKeyPairName = '';
         $scope.keyPairSelected = '';
         $scope.keyPairModal = $('#create-keypair-modal');
@@ -33,14 +33,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
-        $scope.securityGroupChoices = {};
+        $scope.securityGroupChoices = [];
         $scope.securityGroupChoicesFullName = {};
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.isCreateSGChecked = true;
-        $scope.role = '';
+        $scope.role = undefined;
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -61,7 +61,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.securityGroupsRulesJsonEndpoint = options.securitygroups_rules_json_endpoint;
             $scope.imageJsonURL = options.image_json_endpoint;
             $scope.securityGroupVPC = options.default_vpc_network;
-            $scope.getAllSecurityGroups(); 
+            $scope.getAllSecurityGroups();
             $scope.getAllSecurityGroupsRules();
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
@@ -148,13 +148,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.imageID = $scope.urlParams.image_id || '';
             $scope.keyPairSelected = $scope.urlParams.keypair || '';
-            if( $scope.instanceTypeSelected !== '' )
+            if ($scope.instanceTypeSelected !== '') {
                 $scope.instanceType = $scope.instanceTypeSelected;
-            if( $scope.keyPairSelected !== '' )
+            }
+            if ($scope.keyPairSelected !== '') {
                 $scope.keyPair = $scope.keyPairSelected;
-            if( $scope.imageID === '' ){
+            }
+            if ($scope.imageID === '') {
                 $scope.currentStepIndex = 1;
-            }else{
+            } else {
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
                 $scope.loadImageInfo($scope.imageID);

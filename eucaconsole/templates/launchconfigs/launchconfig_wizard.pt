@@ -123,7 +123,8 @@
                                 ${panel('form_field', field=create_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9)}
                             </div>
                             <div tal:condition="not preset">
-                                ${panel('form_field', field=create_form['keypair'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                                ${panel('form_field', field=create_form['keypair'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9,
+                                        ng_attrs={'model': 'keyPair', 'options': 'item as item.label for item in keyPairChoices track by item.id'})}
                                 <div class="row">
                                     <div class="large-9 small-8 columns right" id="create-keypair-link">
                                         <span class="or" i18n:translate="">Or: </span>
@@ -139,7 +140,8 @@
                                 </div>
                             </div>
                             <div tal:condition="not preset">
-                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
+                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9,
+                                        ng_attrs={'model': 'securityGroups', 'options': 'item as item.label for item in securityGroupChoices track by item.id'}, **security_group_attrs)}
                                 <div class="row">
                                     <div class="large-9 small-8 columns right" id="create-securitygroup-link">
                                         <span class="or" i18n:translate="">Or: </span>
@@ -168,7 +170,8 @@
                                     <label class="right" i18n:translate="">Role</label>
                                 </div>
                                 <div class="large-9 small-8 columns field">
-                                    <select id="role" ng-options="k as v for (k, v) in roleList" ng-model="role" name="role"></select>
+                                    <select id="role" ng-model="role" name="role"
+                                            ng-options="item as item.label for item in roleList track by item.id"></select>
                                 </div>
                             </div>
                             <hr />
