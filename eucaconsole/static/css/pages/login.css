@@ -24,8 +24,9 @@
 #login-wrapper .tabs-content { padding: 1rem; background-color: white; }
 #login-wrapper .tabs-content .content { width: 95%; margin: 0 auto; }
 #login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; }
-#login-wrapper .oauth { background-color: #3560A0 !important; color: white !important; border: 0 !important; }
-#login-wrapper .oauth:hover { outline: 2px solid #3560A0; }
+
+.button.oauth { background-color: #3560A0 !important; color: white !important; width: 100%; border: 0 !important; }
+.button.oauth:hover { outline: 2px solid #3560A0; }
 
 #password, #secret_key { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
 

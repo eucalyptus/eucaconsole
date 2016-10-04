@@ -103,8 +103,7 @@
                             </div>
                             <div class="row" tal:condition="oauth_enabled">
                                 <div class="small-12 columns">
-                                <!-- blue with white text -->
-                                    <button type="submit" class="submit oauth button" ng-click="handleOAuthLogin($event)" id="globus-login-button" i18n:translate="">
+                                    <button type="submit" class="submit oauth button" ng-click="openOAuthModal($event)" id="globus-login-button">
                                         ${oauth_link_text}
                                     </button>
                                 </div>
@@ -184,6 +183,30 @@
                     The browser you are using lacks support for reading files from your local filesystem
                     and you will not be able to use features in this application that require this.
                 </p>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
+        <div>
+            <div id="oauth-account-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Enter account name</h3>
+                <div class="row controls-wrapper">
+                    <div class="small-12 columns field">
+                        <label for="account-name" class="left stack-label">
+                            <span i18n:translate="">Account Name</span>
+                            <span class="req">*</span>
+                        </label>
+                        <div ng-non-bindable="">
+                            <input id="account-name" type="text" value="" name="account-name"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 columns">
+                        <button type="submit" class="submit oauth button" ng-disabled="oauthNotValid" ng-click="handleOAuthLogin($event)" id="globus-login-button">
+                            ${oauth_link_text}
+                        </button>
+                    </div>
+                </div>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
         </div>

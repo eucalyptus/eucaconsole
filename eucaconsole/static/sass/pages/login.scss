@@ -50,13 +50,15 @@
         margin-top: 12px;
         margin-bottom: 12px;
     }
-    .oauth {
-        background-color: $oauth-blue !important;
-        color: white !important;
-        border: 0 !important;
-        &:hover {
-            outline: 2px solid $oauth-blue;
-        }
+}
+
+.button.oauth {
+    background-color: $oauth-blue !important;
+    color: white !important;
+    width: 100%;
+    border: 0 !important;
+    &:hover {
+        outline: 2px solid $oauth-blue;
     }
 }
 

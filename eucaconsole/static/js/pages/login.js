@@ -13,10 +13,12 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         var passwordField = $("#password");
         var accessKeyField = $("#access_key");
         var secretKeyField = $("#secret_key");
+        var accountNameField = $("#account-name");
         $scope.showHttpsWarning = false;
         $scope.isLoggingIn = false;
         $scope.eucaNotValid = true;
         $scope.awsNotValid = true;
+        $scope.oauthNotValid = true;
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
             $scope.prefillForms(options.account, options.username);
@@ -43,8 +45,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || 'euca';
             $("#euca-region").val(storedRegion);
-            $scope.oauthUrl = $scope.oauthLoginLink + "&state=oauth-000257694698-" + storedRegion;
-            console.log("oauth login link: "+$scope.oauthUrl);
+            $scope.oauthUrl = $scope.oauthLoginLink + "&state=oauth-" + $.base64.encode(storedRegion);
             $timeout(function() {  // this being delayed to allow browser to populate login form completely
                 $scope.eucaCheckValid();
                 $scope.awsCheckValid();
@@ -89,6 +90,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 var target = $('#aws');
                 target.siblings().removeClass('active').end().addClass('active');
             }
+            var accountName = $.cookie('accountName');
+            if (accountName !== undefined) accountNameField.val(accountName);
             $scope.setFocus();
         };
         $scope.addListeners = function () {
@@ -131,6 +134,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             passwordField.on('keydown', $scope.eucaCheckValid);
             accessKeyField.on('keydown', $scope.awsCheckValid);
             secretKeyField.on('keydown', $scope.awsCheckValid);
+            accountNameField.on('keydown', $scope.oauthCheckValid);
         };
         $scope.eucaCheckValid = function() {
             $timeout(function() {  // this causes an additional digest cycle after current thread completes
@@ -159,9 +163,29 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             return false;
         };
+        $scope.oauthCheckValid = function() {
+            $timeout(function() {  // this causes an additional digest cycle after current thread completes
+                $scope.oauthNotValid = $scope.oauthLoginNotValid();
+            }, 100);
+        };
+        $scope.oauthLoginNotValid = function () {
+            var account_name = accountNameField.val();
+            if (!account_name) {
+                return true;
+            }
+            return false;
+        };
+        $scope.openOAuthModal = function($event) {
+            $event.preventDefault();
+            $("#oauth-account-modal").foundation('reveal', 'open');
+            $timeout(function() {
+                accountNameField.focus();
+            }, 250);
+        };
         $scope.handleOAuthLogin = function($event) {
             $event.preventDefault();
-            window.location.href = $scope.oauthUrl;
+            $.cookie('accountName', accountNameField.val(), {expires: 180});
+            window.location.href = $scope.oauthUrl + "-" + $('#account-name').val();
         };
     })
 ;

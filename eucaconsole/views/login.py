@@ -47,6 +47,7 @@ from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..i18n import _
+from ..models import Notification
 from ..models.auth import AWSAuthenticator, ConnectionManager, HttpsConnectionFactory
 from ..views import BaseView
 from ..views import JSONResponse
@@ -154,32 +155,39 @@ class LoginView(BaseView, PermissionCheckMixin):
             return JSONResponse(status=status, message=message)
         state = self.request.params.get('state')
         if state and state.find('oauth-') == 0:
-            # ok, it's oauth, validate and get token
-            auth_code = self.request.params.get('code')
-            # post to token service
-            oauth_console_host = self.request.registry.settings.get('oauth.console.hostname', None)
-            data = {
-                'grant_type': 'authorization_code',
-                'code': auth_code,
-                'redirect_uri': 'https://%s/login' % oauth_console_host
-            }
-            conn = httplib.HTTPSConnection(self.oauth_host, 443, timeout=300)
-            oauth_client_id = self.request.registry.settings.get('oauth.client.id', None)
-            oauth_client_secret = self.request.registry.settings.get('oauth.client.secret', None)
-            auth_string = base64.b64encode(('%s:%s' % (oauth_client_id, oauth_client_secret)).encode('latin1')).strip()
-            headers = {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/vnd.api+json',
-                'Authorization': 'Basic ' + auth_string
-            }
-            conn.request('POST', '/v2/oauth2/token', urllib.urlencode(data), headers)
-            response = conn.getresponse()
-            if response.status == 401:
-                self.login_form_errors.append("OAuth authentication failed")
-            body = response.read()
-            logging.info("got oauth response: "+body)
-            token = json.loads(body)
-            return self.handle_web_identity_login(token)
+            try:
+                # ok, it's oauth, validate and get token
+                auth_code = self.request.params.get('code')
+                # post to token service
+                oauth_console_host = self.request.registry.settings.get('oauth.console.hostname', None)
+                data = {
+                    'grant_type': 'authorization_code',
+                    'code': auth_code,
+                    'redirect_uri': 'https://%s/login' % oauth_console_host
+                }
+                conn = httplib.HTTPSConnection(self.oauth_host, 443, timeout=300)
+                oauth_client_id = self.request.registry.settings.get('oauth.client.id', None)
+                oauth_client_secret = self.request.registry.settings.get('oauth.client.secret', None)
+                auth_string = base64.b64encode(('%s:%s' % (oauth_client_id, oauth_client_secret)).encode('latin1')).strip()
+                headers = {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/vnd.api+json',
+                    'Authorization': 'Basic ' + auth_string
+                }
+                conn.request('POST', '/v2/oauth2/token', urllib.urlencode(data), headers)
+                response = conn.getresponse()
+                if response.status == 401:
+                    self.login_form_errors.append("OAuth authentication failed")
+                body = response.read()
+                token = json.loads(body)
+                return self.handle_web_identity_login(token)
+            except BotoServerError as err:
+                if err.message.find('Invalid role ARN') > -1:
+                    msg = _(u'Unable to login, check that you have the correct account name')
+                else:
+                    msg = _(u'Unable to login, ') + err.message
+                self.request.session.flash(msg, queue=Notification.ERROR)
+                
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
@@ -201,11 +209,12 @@ class LoginView(BaseView, PermissionCheckMixin):
         try:
             state = role_session_name=token['state']
             # try authentication with default of dns_enabled = True. Set to False if we fail
-            (oauth, account_id, euca_region) = state.split('-', 2)
+            (oauth, euca_region, account_name) = state.split('-', 2)
+            euca_region = base64.urlsafe_b64decode(euca_region)
             # and if that also fails, let that error raise up
             self.dns_enabled = True
             try:
-                creds = self._authenticate_oauth_(token, account_id, self.dns_enabled)
+                creds = self._authenticate_oauth_(token, account_name, self.dns_enabled)
             except socket.error as err:
                 # handle case where dns attempt was good, but user unauthorized
                 error_msg = getattr(err, 'msg', None)
@@ -214,7 +223,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 elif getattr(err, 'reason', '').find('SSL') > -1:
                     raise err
                 self.dns_enabled = False
-                creds = self._authenticate_oauth_(token, account_id, self.dns_enabled)
+                creds = self._authenticate_oauth_(token, account_name, self.dns_enabled)
             # now that we authenticated, extract info from token
             jwt_body = token['id_token'].split('.')[1]
             jwt_info = json.loads(base64.urlsafe_b64decode(jwt_body + '=='))
@@ -265,7 +274,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         return self.render_dict
 
 
-    def _authenticate_oauth_(self, token, account_id, dns_enabled):
+    def _authenticate_oauth_(self, token, account_name, dns_enabled):
         if dns_enabled:
             region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self._get_ufs_host_setting_())
         else:
@@ -280,7 +289,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         if self.duration > 3600:  # this call won't allow than 1 hour duration
             self.duration = 3600
         result = conn.assume_role_with_web_identity(
-            role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_id),
+            role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_name),
             role_session_name=token['state'],
             web_identity_token=token['id_token'],
             duration_seconds=self.duration
