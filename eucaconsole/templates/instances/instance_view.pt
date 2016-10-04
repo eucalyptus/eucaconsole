@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
 </head>
 
@@ -302,7 +303,10 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('tag_editor', tags=instance.tags, show_name_tag=False)}
+                    <div ng-cloak="">
+                        <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
+                                    ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
+                    </div>
                     <hr />
                     <div>
                         <button type="submit" class="button" id="save-changes-btn" ng-click="submitSaveChanges($event)" ng-disabled="isNotChanged">
@@ -349,6 +353,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance.js')}"></script>
 </div>
 

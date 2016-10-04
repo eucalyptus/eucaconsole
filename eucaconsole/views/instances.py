@@ -656,6 +656,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
             vpc_subnet_display=self.get_vpc_subnet_display(self.instance.subnet_id) if self.instance else None,
+            tags=self.serialize_tags(self.instance.tags) if self.instance else [],
             role=self.role,
             running_create=self.running_create,
             controller_options_json=self.get_controller_options_json(),
