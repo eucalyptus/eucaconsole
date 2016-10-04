@@ -145,10 +145,10 @@
                     <strong>${bucket_name}</strong><span i18n:translate="">?</span>
                 </p>
                 <p class="cors-error-wrapper">{{ deleteError }}</p>
-                <button class="expand" i18n:translate="" ng-if="!deletingCorsConfig">
+                <button class="button expand" i18n:translate="" ng-if="!deletingCorsConfig">
                     Yes, Delete CORS Configuration
                 </button>
-                <button class="expand" i18n:translate="" ng-if="deletingCorsConfig">
+                <button class="button expand" i18n:translate="" ng-if="deletingCorsConfig" disabled="disabled">
                     <span i18n:translate="">Deleting CORS Configuration</span>&nbsp;
                     <span class="busy"></span>
                 </button>
