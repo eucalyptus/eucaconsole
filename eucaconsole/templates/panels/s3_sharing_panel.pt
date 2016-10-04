@@ -67,7 +67,7 @@
         <div><strong i18n:translate="">CORS Configuration</strong></div>
         <p i18n:translate="">
             Using CORS (Cross-Origin Resource Sharing) you can selectively allow web applications running on other
-            domains to access content in your bucket.  Each CORS rule must contain the ste of origins/domains and
+            domains to access content in your bucket.  Each CORS rule must contain the site of origins/domains and
             HTTP methods you want to allow for those origins. Optionally, you can also specify the headers users can
             set in requests or access in responses and the duration the preflight responses should be cached.
         </p>
