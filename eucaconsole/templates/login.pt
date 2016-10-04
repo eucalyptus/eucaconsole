@@ -192,7 +192,7 @@
                 <div class="row controls-wrapper">
                     <div class="small-12 columns field">
                         <label for="account-name" class="left stack-label">
-                            <span i18n:translate="">Account Name</span>
+                            <span i18n:translate="">Account name</span>
                             <span class="req">*</span>
                         </label>
                         <div ng-non-bindable="">
