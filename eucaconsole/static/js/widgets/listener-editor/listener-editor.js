@@ -24,16 +24,22 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                 {name: 'SSL', value: 'SSL', port: 443}
             ];
 
-            this.targetValid = function (target) {
-                //return !!(target.port && (target.protocol !== 'None'));
-                var validPort = !(this.portInUse(target) && this.portOutOfRange(target));
-                var validProtocol = target.protocol !== 'None';
+            this.sourceValid = function (source) {
+                var validPort = !this.portInUse(source) && !this.portOutOfRange(source);
+                var validProtocol = source.protocol !== 'None';
 
                 return (validPort && validProtocol);
             };
 
+            this.targetValid = function (target) {
+                var port = Number(target.port);
+                var validPort = (port >= 1) && (port <= validPortMax);
+
+                return validPort && target.protocol !== 'None';
+            };
+
             this.portsValid = function () {
-                var fromValid = this.targetValid(vm.from);
+                var fromValid = this.sourceValid(vm.from);
                 var toValid = this.targetValid(vm.to);
 
                 return fromValid && toValid;

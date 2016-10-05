@@ -19,8 +19,10 @@ describe('ELB Listener Editor', function () {
 
         var element, scope;
         beforeEach(function () {
+            $rootScope.listeners = [];
+
             element = $compile(
-                '<listener-editor></listener-editor>'
+                '<listener-editor ng-model="listeners"></listener-editor>'
             )($rootScope);
             $rootScope.$digest();
             $httpBackend.flush();
@@ -44,16 +46,16 @@ describe('ELB Listener Editor', function () {
                 expect(controller.to).toEqual({});
             });
 
-            describe('#targetValid', function () {
+            describe('#sourceValid', function () {
 
                 it('should return false when client-side port and protocol are not set', function () {
-                    var res = controller.targetValid({
+                    var res = controller.sourceValid({
                     });
                     expect(res).toBe(false);
                 });
 
                 it('should return true when client-side port and protocol are valid', function () {
-                    var res = controller.targetValid({
+                    var res = controller.sourceValid({
                         port: 80,
                         protocol: 'HTTP'
                     });
@@ -61,6 +63,30 @@ describe('ELB Listener Editor', function () {
                 });
 
                 it('should return false when client-side port or protocol are invalid', function () {
+                    var res = controller.sourceValid({
+                        protocolo: 'HTTP'
+                    });
+                    expect(res).toBe(false);
+                });
+            });
+
+            describe('#targetValid', function () {
+
+                it('should return false when server-side port and protocol are not set', function () {
+                    var res = controller.targetValid({
+                    });
+                    expect(res).toBe(false);
+                });
+
+                it('should return true when server-side port and protocol are valid', function () {
+                    var res = controller.targetValid({
+                        port: 80,
+                        protocol: 'HTTP'
+                    });
+                    expect(res).toBe(true);
+                });
+
+                it('should return false when server-side port and protocol are invalid', function () {
                     var res = controller.targetValid({
                         protocolo: 'HTTP'
                     });
@@ -68,7 +94,7 @@ describe('ELB Listener Editor', function () {
                 });
             });
 
-            xdescribe('#portsValid', function () {
+            describe('#portsValid', function () {
 
                 it('should return false when both client and instance-side configurations are not set', function () {
                     var res = controller.portsValid();
@@ -92,7 +118,8 @@ describe('ELB Listener Editor', function () {
 
                 it('should return false when client or instance-side configurations are invalid', function () {
                     controller.from = {
-                        port: 80
+                        port: 80,
+                        protocol: 'None'
                     };
 
                     controller.to = {

@@ -59,7 +59,7 @@
         </div>
     </div>
     <div>
-        <protocol-port label="Instance side" name="to" protocols="ctrl.protocols" ng-model="ctrl.to" ng-show="ctrl.targetValid(ctrl.from)"></protocol-port>
+        <protocol-port label="Instance side" name="to" protocols="ctrl.protocols" ng-model="ctrl.to" ng-show="ctrl.sourceValid(ctrl.from)"></protocol-port>
     </div>
 
     <div class="security-section" ng-show="ctrl.portsValid()">
