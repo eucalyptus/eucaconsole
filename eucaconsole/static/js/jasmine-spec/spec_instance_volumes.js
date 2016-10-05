@@ -52,13 +52,13 @@ describe("InstanceVolumes", function() {
     describe("Function initController() Test", function() {
 
         it("Should set instanceId when initController() is called and instance_id JSON is set", function() {
-            scope.initController('{"instance_id": "i-12345678"}');
+            scope.initController('{"instance_id": "i-12345678", "instance_volumes_json_url": ""}');
             expect(scope.instanceId).toEqual('i-12345678');
         });
 
         it("Should call setWatch() when initController() is called", function() {
             spyOn(scope, 'setWatch');
-            scope.initController('{}');
+            scope.initController('{"instance_volumes_json_url": ""}');
             expect(scope.setWatch).toHaveBeenCalled();
         });
     });

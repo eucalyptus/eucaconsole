@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('VolumePage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('VolumePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.volumeStatusEndpoint = '';

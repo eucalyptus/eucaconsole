@@ -45,7 +45,7 @@ describe("InstancesPage", function() {
 
         it("Should call initChosenSelectors() when initController() is called", function() {
             spyOn(scope, 'initChosenSelectors');
-            scope.initController('{}');
+            scope.initController('{"addresses_json_items_endpoint": ""}');
             expect(scope.initChosenSelectors).toHaveBeenCalled();
         });
     });

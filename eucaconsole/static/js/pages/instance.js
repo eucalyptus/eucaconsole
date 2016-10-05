@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('InstancePage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';

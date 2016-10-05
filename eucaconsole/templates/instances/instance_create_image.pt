@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_create_image.css')}" />
 </head>
 
@@ -48,7 +49,8 @@
                         ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 's3_prefix'}, pattern='^[a-z0-9\-\.]+$')}
                     </div>
                     <hr/>
-                    ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
+                    <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
+                                ng-model="tags">[]</tag-editor>
                     <hr tal:condition="isEBS"/>
                     <div class="expando" id="advanced-section" ng-cloak="" tal:condition="isEBS">
                         <h6 class="title" >
@@ -145,10 +147,11 @@
 <div metal:fill-slot="tail_js">
     <div tal:define="isEBS instance.root_device_type == 'ebs'" tal:omit-tag="">
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-        <div tal:condition="isEBS">
+        <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+        <div tal:condition="isEBS" tal:omit-tag="">
             <script src="${request.static_path('eucaconsole:static/js/pages/instance_create_ebs_image.js')}"></script>
         </div>
-        <div tal:condition="not:isEBS">
+        <div tal:condition="not:isEBS" tal:omit-tag="">
             <script src="${request.static_path('eucaconsole:static/js/pages/instance_create_image.js')}"></script>
         </div>
     </div>

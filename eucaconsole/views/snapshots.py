@@ -288,6 +288,7 @@ class SnapshotView(TaggedItemView):
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
+            tags=self.serialize_tags(self.snapshot.tags) if self.snapshot else [],
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -351,7 +352,8 @@ class SnapshotView(TaggedItemView):
                     snapshot.add_tag('Name', name)
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         snapshot.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 queue = Notification.SUCCESS

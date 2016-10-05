@@ -433,9 +433,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.owner_choices = self.get_owner_choices()
 
         controller_options_json = BaseView.escape_json(json.dumps({
-            'securitygroups_choices': dict(self.create_form.securitygroup.choices),
-            'keypair_choices': dict(self.create_form.keypair.choices),
-            'role_choices': dict(self.create_form.role.choices),
+            'securitygroups_choices': self.list_options(self.create_form.securitygroup.choices),
+            'keypair_choices': self.list_options(self.create_form.keypair.choices),
+            'role_choices': self.list_options(self.create_form.role.choices),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
@@ -522,6 +522,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         else:
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
+
+    @staticmethod
+    def list_options(options):
+        return [dict(id=opt[0], label=opt[1]) for opt in options]
 
     def get_security_groups(self):
         if self.conn:

@@ -352,6 +352,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             delete_form=self.delete_form,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
+            tags=self.serialize_tags(self.volume.tags) if self.volume else [],
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -407,7 +408,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                     volume.add_tag('Name', name)
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         volume.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create volume request.  It may take a moment to create the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -586,7 +588,8 @@ class VolumeSnapshotsView(BaseVolumeView):
                     snapshot.add_tag('Name', name)
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         snapshot.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
