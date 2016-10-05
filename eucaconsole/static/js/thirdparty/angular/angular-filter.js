@@ -1,6 +1,6 @@
 /**
  * Bunch of useful filters for angularJS(with no external dependencies!)
- * @version v0.5.9 - 2016-07-15 * @link https://github.com/a8m/angular-filter
+ * @version v0.5.7 - 2015-10-04 * @link https://github.com/a8m/angular-filter
  * @author Ariel Mashraki <ariel@mashraki.co.il>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -504,7 +504,7 @@ function containsFilter($parse) {
       }
 
       return collection.some(function(elm) {
-        return ((isString(expression) && isObject(elm)) || isFunction(expression))
+        return (isObject(elm) || isFunction(expression))
           ? $parse(expression)(elm)
           : elm === expression;
       });
@@ -622,7 +622,7 @@ angular.module('a8m.every', [])
  */
 angular.module('a8m.filter-by', [])
   .filter('filterBy', ['$parse', function( $parse ) {
-    return function(collection, properties, search, strict) {
+    return function(collection, properties, search) {
       var comparator;
 
       search = (isString(search) || isNumber(search)) ?
@@ -646,19 +646,16 @@ angular.module('a8m.filter-by', [])
           if(!~prop.indexOf('+')) {
             comparator = $parse(prop)(elm)
           } else {
-            var propList = prop.replace(/\s+/g, '').split('+');
-            comparator = propList
-              .map(function(prop) { return $parse(prop)(elm); })
-              .join(' ');
+            var propList = prop.replace(new RegExp('\\s', 'g'), '').split('+');
+            comparator = propList.reduce(function(prev, cur, index) {
+              return (index === 1) ? $parse(prev)(elm) + ' ' + $parse(cur)(elm) :
+                prev + ' ' + $parse(cur)(elm);
+            });
           }
 
-          if (!isString(comparator) && !isNumber(comparator)) {
-            return false;
-          }
-
-          comparator = String(comparator).toLowerCase();
-
-          return strict ? comparator === search : comparator.contains(search);
+          return (isString(comparator) || isNumber(comparator))
+            ? String(comparator).toLowerCase().contains(search)
+            : false;
         });
       });
     }
@@ -1055,15 +1052,12 @@ angular.module('a8m.pick', [])
  */
 angular.module('a8m.range', [])
   .filter('range', function () {
-    return function (input, total, start, increment, cb) {
-      start = start || 0;
-      increment = increment || 1;
+    return function (input, total) {
       for (var i = 0; i < parseInt(total); i++) {
-        var j = start + i * increment;
-        input.push(isFunction(cb) ? cb(j) : j);
+        input.push(i);
       }
       return input;
-    };
+	  };
   });
 /**
  * @ngdoc filter
