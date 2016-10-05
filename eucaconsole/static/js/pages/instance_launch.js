@@ -25,8 +25,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.subnetVPC = 'None';
         $scope.vpcSubnetList = {};
         $scope.vpcSubnetChoices = {};
-        $scope.keyPair = '';
-        $scope.keyPairChoices = {};
+        $scope.keyPair = undefined;
+        $scope.keyPairChoices = [];
         $scope.newKeyPairName = '';
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.isLoadingKeyPair = false;
@@ -39,13 +39,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
-        $scope.securityGroupChoices = {};
+        $scope.securityGroupChoices = [];
         $scope.securityGroupChoicesFullName = {};
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.isSecurityGroupsInitialValuesSet = false;
-        $scope.role = '';
+        $scope.role = undefined;
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -61,9 +61,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.keyPairChoices = options.keypair_choices;
+            $scope.keyPair = $scope.keyPairChoices[0];
             $scope.securityGroupChoices = options.securitygroups_choices;
             $scope.vpcSubnetList = options.vpc_subnet_choices;
             $scope.roleList = options.role_choices;
+            $scope.role = $scope.roleList[0];
             $scope.instanceVPC = options.default_vpc_network;
             $scope.securityGroupVPC = options.default_vpc_network;
             $scope.securityGroupJsonEndpoint = options.securitygroups_json_endpoint;
@@ -108,10 +110,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.securityGroupVPC = lastVPC;
             }
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_inst');
-            if (lastKeyPair !== null && $scope.keyPairChoices[lastKeyPair] !== undefined) {
-                $('#keypair').val(lastKeyPair);
+            if (lastKeyPair !== null) {
+                var foundKeyPair = $scope.keyPairChoices.find(function(choice) { return choice.id == lastKeyPair; });
+                if (foundKeyPair !== undefined) {
+                    $scope.keyPair = foundKeyPair;
+                }
             }
-            $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.imageID = $scope.urlParams.image_id || '';
             if( $scope.imageID === '' ){
                 $scope.currentStepIndex = 1;
@@ -123,6 +127,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     document.getElementById('tabStep2').click();
                 });
             }
+            $scope.restoreSecurityGroupsInitialValues(); 
+            // Timeout is needed for chosen to react after Angular updates the options
+            $timeout(function(){
+                $('#securitygroup').trigger('chosen:updated');
+            }, 500);
         };
         $scope.restoreSecurityGroupsInitialValues = function () {
             if ($scope.isSecurityGroupsInitialValuesSet === true) {
@@ -132,8 +141,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if (lastSecGroup !== null) {
                 var lastSecGroupArray = lastSecGroup.split(",");
                 angular.forEach(lastSecGroupArray, function (sgroup) {
-                    if ($scope.securityGroupChoices[sgroup] !== undefined) {
-                        $scope.securityGroups.push(sgroup);
+                    var foundGroup = $scope.securityGroupChoices.find(function(choice) { return choice.id == sgroup; });
+                    if (foundGroup !== undefined) {
+                        $scope.securityGroups.push(foundGroup);
                         $scope.isSecurityGroupsInitialValuesSet = true;
                     }
                 });
@@ -142,8 +152,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.saveOptions = function() {
             if (Modernizr.localstorage) {
                 localStorage.setItem('lastvpc_inst', $scope.instanceVPC);
-                localStorage.setItem('lastkeypair_inst', $('#keypair').find(':selected').val());
-                localStorage.setItem('lastsecgroup_inst', $scope.securityGroups);
+                localStorage.setItem('lastkeypair_inst', $scope.keyPair.id);
+                localStorage.setItem('lastsecgroup_inst', $scope.securityGroups.map(function(val, idx) {
+                        return val.id;
+                    }, []));
             }
         };
         $scope.updateTagsPreview = function () {
@@ -241,10 +253,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
             });
-            $scope.$watch('securityGroupCollection', function () {
+
+            $scope.$watch('securityGroupCollection', function (newVal, oldVal) {
+                if (newVal === oldVal) return;
                 $scope.updateSecurityGroupChoices();
             });
-            $scope.$watch('instanceVPC', function () {
+
+            $scope.$watch('instanceVPC', function (newVal, oldVal) {
+                if (newVal === oldVal) return;
                 $scope.getInstanceVPCName($scope.instanceVPC);
                 $scope.getAllSecurityGroups($scope.instanceVPC);
                 $scope.updateVPCSubnetChoices();
@@ -456,10 +472,15 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 url: createUrl,
                 data: formData
             }).success(function (oData) {
+                var newKeyPair;
                 $scope.isLoadingKeyPair = false;
                 // Add new key pair to choices and set it as selected
-                $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
-                $scope.keyPair = $scope.newKeyPairName;
+                newKeyPair = {
+                    'id': $scope.newKeyPairName,
+                    'label': $scope.newKeyPairName
+                };
+                $scope.keyPairChoices.push(newKeyPair);
+                $scope.keyPair = newKeyPair;
                 Notify.success(oData.message);
                 // Download key pair file
                 $.generateFile({
@@ -493,6 +514,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }).success(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 // Add new security group to choices and set it as selected
+                var newSecurityGroup;
                 var newSecurityGroupID = '';
                 if (oData.id) {
                     newSecurityGroupID = oData.id;
@@ -502,8 +524,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (securityGroupName.length > 45) {
                     securityGroupName = securityGroupName.substr(0, 45) + "...";
                 }
-                $scope.securityGroupChoices[newSecurityGroupID] = securityGroupName;
-                $scope.securityGroups.push(newSecurityGroupID);
+                newSecurityGroup = {
+                    'id': newSecurityGroupID,
+                    'label': securityGroupName
+                };
+                $scope.securityGroupChoices.push(newSecurityGroup);
+                $scope.securityGroups.push(newSecurityGroup);
                 var groupRulesObject = JSON.parse($('#rules').val());
                 var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
                 var groupRulesObjectCombined = groupRulesObject.concat(groupRulesEgressObject); 
@@ -558,7 +584,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.updateSecurityGroupChoices = function () {
-            $scope.securityGroupChoices = {};
+            $scope.securityGroupChoices = [];
             $scope.securityGroupChoicesFullName = {};
             if ($.isEmptyObject($scope.securityGroupCollection)) {
                 return;
@@ -570,8 +596,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (sGroup.name.length > 45) {
                     securityGroupName = sGroup.name.substr(0, 45) + "...";
                 }
-                $scope.securityGroupChoices[sGroup.id] = securityGroupName;
-            }); 
+                $scope.securityGroupChoices.push({
+                    'id': sGroup.id,
+                    'label': securityGroupName
+                });
+            });
             $scope.restoreSecurityGroupsInitialValues(); 
             // Timeout is needed for chosen to react after Angular updates the options
             $timeout(function(){

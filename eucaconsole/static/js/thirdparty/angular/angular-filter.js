@@ -1,6 +1,6 @@
 /**
  * Bunch of useful filters for angularJS(with no external dependencies!)
- * @version v0.5.7 - 2015-10-04 * @link https://github.com/a8m/angular-filter
+ * @version v0.5.11 - 2016-08-16 * @link https://github.com/a8m/angular-filter
  * @author Ariel Mashraki <ariel@mashraki.co.il>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -67,15 +67,23 @@ function objectContains(partial, object) {
  * @returns {*}
  */
 function hasApproxPattern(word, pattern) {
-  if(pattern === '')
-    return word;
-
-  var index = word.indexOf(pattern.charAt(0));
-
-  if(index === -1)
-    return false;
-
-  return hasApproxPattern(word.substr(index+1), pattern.substr(1))
+  // cheaper version of indexOf; instead of creating each
+  // iteration new str.
+  function indexOf(word, p, c) {
+    var j = 0;
+    while ((p + j) <= word.length) {
+      if (word.charAt(p + j) == c) return j;
+      j++;
+    }
+    return -1;
+  }
+  var p = 0;
+  for (var i = 0; i <= pattern.length; i++) {
+    var index = indexOf(word, p, pattern.charAt(i));
+    if (index == -1) return false;
+    p += index + 1;
+  }
+  return true
 }
 
 /**
@@ -504,7 +512,7 @@ function containsFilter($parse) {
       }
 
       return collection.some(function(elm) {
-        return (isObject(elm) || isFunction(expression))
+        return ((isString(expression) && isObject(elm)) || isFunction(expression))
           ? $parse(expression)(elm)
           : elm === expression;
       });
@@ -622,7 +630,7 @@ angular.module('a8m.every', [])
  */
 angular.module('a8m.filter-by', [])
   .filter('filterBy', ['$parse', function( $parse ) {
-    return function(collection, properties, search) {
+    return function(collection, properties, search, strict) {
       var comparator;
 
       search = (isString(search) || isNumber(search)) ?
@@ -646,16 +654,19 @@ angular.module('a8m.filter-by', [])
           if(!~prop.indexOf('+')) {
             comparator = $parse(prop)(elm)
           } else {
-            var propList = prop.replace(new RegExp('\\s', 'g'), '').split('+');
-            comparator = propList.reduce(function(prev, cur, index) {
-              return (index === 1) ? $parse(prev)(elm) + ' ' + $parse(cur)(elm) :
-                prev + ' ' + $parse(cur)(elm);
-            });
+            var propList = prop.replace(/\s+/g, '').split('+');
+            comparator = propList
+              .map(function(prop) { return $parse(prop)(elm); })
+              .join(' ');
           }
 
-          return (isString(comparator) || isNumber(comparator))
-            ? String(comparator).toLowerCase().contains(search)
-            : false;
+          if (!isString(comparator) && !isNumber(comparator)) {
+            return false;
+          }
+
+          comparator = String(comparator).toLowerCase();
+
+          return strict ? comparator === search : comparator.contains(search);
         });
       });
     }
@@ -1052,12 +1063,15 @@ angular.module('a8m.pick', [])
  */
 angular.module('a8m.range', [])
   .filter('range', function () {
-    return function (input, total) {
+    return function (input, total, start, increment, cb) {
+      start = start || 0;
+      increment = increment || 1;
       for (var i = 0; i < parseInt(total); i++) {
-        input.push(i);
+        var j = start + i * increment;
+        input.push(isFunction(cb) ? cb(j) : j);
       }
       return input;
-	  };
+    };
   });
 /**
  * @ngdoc filter
