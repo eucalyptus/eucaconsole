@@ -814,14 +814,15 @@ class StackWizardView(BaseView, StackMixin):
                     if val:
                         params.append((name, val))
             tags_json = self.request.params.get('tags')
-            tags = None
+            tags_dict = None
             if tags_json:
                 tags = json.loads(tags_json)
+                tags_dict = TaggedItemView.normalize_tags(tags)
             with boto_error_handler(self.request, location):
                 self.log_request(u"Creating stack:{0}".format(stack_name))
                 result = self.cloudformation_conn.create_stack(
                     stack_name, template_url=template_url, capabilities=capabilities,
-                    parameters=params, tags=tags
+                    parameters=params, tags=tags_dict
                 )
                 stack_id = result[result.rfind('/') + 1:]
                 d = hashlib.md5()
