@@ -110,19 +110,19 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
-        self.oauth_host = self.request.registry.settings.get('oauth.hostname', None)
-        login_link = 'https://{oauth_host}/v2/oauth2/authorize?' \
+        self.oidc_host = self.request.registry.settings.get('oidc.hostname', None)
+        login_link = 'https://{oidc_host}/v2/oauth2/authorize?' \
             'scope=urn%3Aglobus%3Aauth%3Ascope%3Atransfer.api.globus.org%3Aall&' \
-            'redirect_uri=https%3A%2F%2F{oauth_console_host}%2Flogin&' \
+            'redirect_uri=https%3A%2F%2F{oidc_console_host}%2Flogin&' \
             'access_type=online&response_type=code&' \
-            'client_id={oauth_client_id}'
-        oauth_client_id = self.request.registry.settings.get('oauth.client.id', None)
-        oauth_console_host = self.request.registry.settings.get('oauth.console.hostname', None)
-        login_link = login_link.format(oauth_host=self.oauth_host, oauth_console_host=oauth_console_host, oauth_client_id=oauth_client_id)
+            'client_id={oidc_client_id}'
+        oidc_client_id = self.request.registry.settings.get('oidc.client.id', None)
+        oidc_console_host = self.request.registry.settings.get('oidc.console.hostname', None)
+        login_link = login_link.format(oidc_host=self.oidc_host, oidc_console_host=oidc_console_host, oidc_client_id=oidc_client_id)
         options_json = BaseView.escape_json(json.dumps(dict(
             account=request.params.get('account', default=''),
             username=request.params.get('username', default=''),
-            oauthLoginLink=login_link
+            oidcLoginLink=login_link
         )))
         self.render_dict = dict(
             https_required=self.show_https_warning(),
@@ -134,8 +134,8 @@ class LoginView(BaseView, PermissionCheckMixin):
             login_refresh=self.login_refresh,
             came_from=self.came_from,
             controller_options_json=options_json,
-            oauth_enabled=self.oauth_host is not None,
-            oauth_link_text=self.request.registry.settings.get('oauth.login.button.label', 'oauth login')
+            oidc_enabled=self.oidc_host is not None,
+            oidc_link_text=self.request.registry.settings.get('oidc.login.button.label', 'oidc login')
         )
 
     def show_https_warning(self):
@@ -152,21 +152,21 @@ class LoginView(BaseView, PermissionCheckMixin):
             status = int(status[:status.index(' ')]) or 403
             return JSONResponse(status=status, message=message)
         state = self.request.params.get('state')
-        if state and state.find('oauth-') == 0:
+        if state and state.find('oidc-') == 0:
             try:
-                # ok, it's oauth, validate and get token
+                # ok, it's oidc, validate and get token
                 auth_code = self.request.params.get('code')
                 # post to token service
-                oauth_console_host = self.request.registry.settings.get('oauth.console.hostname', None)
+                oidc_console_host = self.request.registry.settings.get('oidc.console.hostname', None)
                 data = {
                     'grant_type': 'authorization_code',
                     'code': auth_code,
-                    'redirect_uri': 'https://%s/login' % oauth_console_host
+                    'redirect_uri': 'https://%s/login' % oidc_console_host
                 }
-                conn = httplib.HTTPSConnection(self.oauth_host, 443, timeout=300)
-                oauth_client_id = self.request.registry.settings.get('oauth.client.id', None)
-                oauth_client_secret = self.request.registry.settings.get('oauth.client.secret', None)
-                auth_string = base64.b64encode(('%s:%s' % (oauth_client_id, oauth_client_secret)).encode('latin1')).strip()
+                conn = httplib.HTTPSConnection(self.oidc_host, 443, timeout=300)
+                oidc_client_id = self.request.registry.settings.get('oidc.client.id', None)
+                oidc_client_secret = self.request.registry.settings.get('oidc.client.secret', None)
+                auth_string = base64.b64encode(('%s:%s' % (oidc_client_id, oidc_client_secret)).encode('latin1')).strip()
                 headers = {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Accept': 'application/vnd.api+json',
@@ -210,14 +210,14 @@ class LoginView(BaseView, PermissionCheckMixin):
         try:
             state = role_session_name=token['state']
             # try authentication with default of dns_enabled = True. Set to False if we fail
-            (oauth, euca_region, account_name) = state.split('-', 2)
+            (oidc, euca_region, account_name) = state.split('-', 2)
             euca_region = base64.urlsafe_b64decode(euca_region)
             # and if that also fails, let that error raise up
             creds = auth.authenticate(token=token, account_name=account_name, timeout=8, duration=self.duration)
             # now that we authenticated, extract info from token
             jwt_body = token['id_token'].split('.')[1]
             jwt_info = json.loads(base64.urlsafe_b64decode(jwt_body + '=='))
-            account = 'oauth'
+            account = 'oidc'
             username = jwt_info['preferred_username']
             logging.info(u"Authenticated OIDC user: {user} from {ip}".format(
                     user=username, ip=BaseView.get_remote_addr(self.request)))
@@ -225,7 +225,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             user_account = u'{user}@{account}'.format(user=username, account=account)
             session.invalidate()  # Refresh session
             session['cloud_type'] = 'euca'
-            session['auth_type'] = 'oauth'
+            session['auth_type'] = 'oidc'
             session['account'] = account
             session['username'] = username
             self._assign_session_creds_(session, creds)

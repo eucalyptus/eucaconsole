@@ -52,13 +52,13 @@
     }
 }
 
-.button.oauth {
-    background-color: $oauth-blue !important;
+.button.oidc {
+    background-color: $oidc-blue !important;
     color: white !important;
     width: 100%;
     border: 0 !important;
     &:hover {
-        outline: 2px solid $oauth-blue;
+        outline: 2px solid $oidc-blue;
     }
 }
 

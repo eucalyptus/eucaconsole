@@ -501,7 +501,7 @@ class OIDCAuthenticator(object):
 
     def authenticate(self, token, account_name, duration=3600, timeout=20):
         try:
-            creds = self._authenticate_oauth_(token, account_name, self.dns_enabled, duration, timeout)
+            creds = self._authenticate_oidc_(token, account_name, self.dns_enabled, duration, timeout)
         except socket.error as err:
             # handle case where dns attempt was good, but user unauthorized
             error_msg = getattr(err, 'msg', None)
@@ -510,10 +510,10 @@ class OIDCAuthenticator(object):
             elif getattr(err, 'reason', '').find('SSL') > -1:
                 raise err
             self.dns_enabled = False
-            creds = self._authenticate_oauth_(token, account_name, self.dns_enabled, duration, timeout)
+            creds = self._authenticate_oidc_(token, account_name, self.dns_enabled, duration, timeout)
         return creds
 
-    def _authenticate_oauth_(self, token, account_name, dns_enabled, duration, timeout):
+    def _authenticate_oidc_(self, token, account_name, dns_enabled, duration, timeout):
         if dns_enabled:
             region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self.host)
             auth_path = '/'

@@ -18,11 +18,11 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         $scope.isLoggingIn = false;
         $scope.eucaNotValid = true;
         $scope.awsNotValid = true;
-        $scope.oauthNotValid = true;
+        $scope.oidcNotValid = true;
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
             $scope.prefillForms(options.account, options.username);
-            $scope.oauthLoginLink = options.oauthLoginLink;
+            $scope.oidcLoginLink = options.oidcLoginLink;
             $scope.addListeners();
             Modernizr.load([
                 {
@@ -45,7 +45,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || 'euca';
             $("#euca-region").val(storedRegion);
-            $scope.oauthUrl = $scope.oauthLoginLink + "&state=oauth-" + $.base64.encode(storedRegion);
+            $scope.oidcUrl = $scope.oidcLoginLink + "&state=oidc-" + $.base64.encode(storedRegion);
             $timeout(function() {  // this being delayed to allow browser to populate login form completely
                 $scope.eucaCheckValid();
                 $scope.awsCheckValid();
@@ -134,7 +134,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             passwordField.on('keydown', $scope.eucaCheckValid);
             accessKeyField.on('keydown', $scope.awsCheckValid);
             secretKeyField.on('change', $scope.awsCheckValid);
-            accountNameField.on('keydown', $scope.oauthCheckValid);
+            accountNameField.on('keydown', $scope.oidcCheckValid);
         };
         $scope.eucaCheckValid = function() {
             $timeout(function() {  // this causes an additional digest cycle after current thread completes
@@ -163,30 +163,30 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             return false;
         };
-        $scope.oauthCheckValid = function() {
+        $scope.oidcCheckValid = function() {
             $timeout(function() {  // this causes an additional digest cycle after current thread completes
-                $scope.oauthNotValid = $scope.oauthLoginNotValid();
+                $scope.oidcNotValid = $scope.oidcLoginNotValid();
             }, 100);
         };
-        $scope.oauthLoginNotValid = function () {
+        $scope.oidcLoginNotValid = function () {
             var account_name = accountNameField.val();
             if (!account_name) {
                 return true;
             }
             return false;
         };
-        $scope.openOAuthModal = function($event) {
+        $scope.openOIDCModal = function($event) {
             $event.preventDefault();
-            $("#oauth-account-modal").foundation('reveal', 'open');
+            $("#oidc-account-modal").foundation('reveal', 'open');
             $timeout(function() {
                 accountNameField.focus();
-                $scope.oauthCheckValid();
+                $scope.oidcCheckValid();
             }, 250);
         };
-        $scope.handleOAuthLogin = function($event) {
+        $scope.handleOIDCLogin = function($event) {
             $event.preventDefault();
             $.cookie('accountName', accountNameField.val(), {expires: 180});
-            window.location.href = $scope.oauthUrl + "-" + $('#account-name').val();
+            window.location.href = $scope.oidcUrl + "-" + $('#account-name').val();
         };
     })
 ;
