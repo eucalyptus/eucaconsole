@@ -37,8 +37,6 @@ from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
 from boto.exception import BotoServerError
-from boto.regioninfo import RegionInfo
-from boto.sts.connection import STSConnection
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
@@ -174,6 +172,8 @@ class LoginView(BaseView, PermissionCheckMixin):
                     'Accept': 'application/vnd.api+json',
                     'Authorization': 'Basic ' + auth_string
                 }
+                # Is it worth looking this url up via .well-known/openid-configuration?
+                # It's part of the API standard, so not likely to change
                 conn.request('POST', '/v2/oauth2/token', urllib.urlencode(data), headers)
                 response = conn.getresponse()
                 if response.status == 401:
@@ -204,6 +204,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         return self.render_dict
 
     def handle_web_identity_login(self, token):
+        auth = self.get_oidc_authenticator()
         session = self.request.session
 
         try:
@@ -212,26 +213,14 @@ class LoginView(BaseView, PermissionCheckMixin):
             (oauth, euca_region, account_name) = state.split('-', 2)
             euca_region = base64.urlsafe_b64decode(euca_region)
             # and if that also fails, let that error raise up
-            self.dns_enabled = True
-            try:
-                creds = self._authenticate_oauth_(token, account_name, self.dns_enabled)
-            except socket.error as err:
-                # handle case where dns attempt was good, but user unauthorized
-                error_msg = getattr(err, 'msg', None)
-                if error_msg and error_msg == 'Unauthorized' or error_msg == 'Forbidden':
-                    raise err
-                elif getattr(err, 'reason', '').find('SSL') > -1:
-                    raise err
-                self.dns_enabled = False
-                creds = self._authenticate_oauth_(token, account_name, self.dns_enabled)
+            creds = auth.authenticate(token=token, account_name=account_name, timeout=8, duration=self.duration)
             # now that we authenticated, extract info from token
             jwt_body = token['id_token'].split('.')[1]
             jwt_info = json.loads(base64.urlsafe_b64decode(jwt_body + '=='))
             account = 'oauth'
             username = jwt_info['preferred_username']
-            logging.info(u"Authenticated Eucalyptus user: {acct}/{user} from {ip}".format(
-                acct=account, user=username, ip=BaseView.get_remote_addr(self.request)))
-            # TODO: refactory below to get as much reuse with handle_euca_login() as possible
+            logging.info(u"Authenticated OIDC user: {user} from {ip}".format(
+                    user=username, ip=BaseView.get_remote_addr(self.request)))
             default_region = self.request.registry.settings.get('default.region', 'euca')
             user_account = u'{user}@{account}'.format(user=username, account=account)
             session.invalidate()  # Refresh session
@@ -239,12 +228,10 @@ class LoginView(BaseView, PermissionCheckMixin):
             session['auth_type'] = 'oauth'
             session['account'] = account
             session['username'] = username
-            session['session_token'] = creds.session_token
-            session['access_id'] = creds.access_key
-            session['secret_key'] = creds.secret_key
+            self._assign_session_creds_(session, creds)
             session['region'] = euca_region if euca_region != '' else default_region
             session['username_label'] = user_account
-            session['dns_enabled'] = self.dns_enabled # this *must* be prior to line below
+            session['dns_enabled'] = auth.dns_enabled # this *must* be prior to line below
             session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
             session['default_vpc'] = self.get_account_attributes(['default-vpc'])
 
@@ -274,28 +261,6 @@ class LoginView(BaseView, PermissionCheckMixin):
         return self.render_dict
 
 
-    def _authenticate_oauth_(self, token, account_name, dns_enabled):
-        if dns_enabled:
-            region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self._get_ufs_host_setting_())
-        else:
-            region = RegionInfo(name='eucalyptus', endpoint=self._get_ufs_host_setting_())
-        port = self._get_ufs_port_setting_()
-        conn = STSConnection(
-            port=port,
-            path='/services/Tokens',
-            region=region,
-            https_connection_factory=(HttpsConnectionFactory(port).https_connection_factory, ())
-        )
-        if self.duration > 3600:  # this call won't allow than 1 hour duration
-            self.duration = 3600
-        result = conn.assume_role_with_web_identity(
-            role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_name),
-            role_session_name=token['state'],
-            web_identity_token=token['id_token'],
-            duration_seconds=self.duration
-        )
-        return result.credentials
-
     def handle_euca_login(self):
         new_passwd = None
         auth = self.get_euca_authenticator()
@@ -320,9 +285,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['auth_type'] = 'password'
                 session['account'] = account
                 session['username'] = username
-                session['session_token'] = creds.session_token
-                session['access_id'] = creds.access_key
-                session['secret_key'] = creds.secret_key
+                self._assign_session_creds_(session, creds)
                 session['region'] = euca_region if euca_region != '' else default_region
                 session['username_label'] = user_account
                 session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
@@ -373,9 +336,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'aws'
                 session['auth_type'] = 'keys'
-                session['session_token'] = creds.session_token
-                session['access_id'] = creds.access_key
-                session['secret_key'] = creds.secret_key
+                self._assign_session_creds_(session, creds)
                 last_visited_aws_region = [reg for reg in AWS_REGIONS if reg.get('name') == aws_region]
                 session['region'] = aws_region if last_visited_aws_region else default_region
                 session['username_label'] = u'{user}...@AWS'.format(user=creds.access_key[:8])
@@ -401,6 +362,12 @@ class LoginView(BaseView, PermissionCheckMixin):
                     msg = _(u'No response from host')
                 self.login_form_errors.append(msg)
         return self.render_dict
+
+    @staticmethod
+    def _assign_session_creds_(session, creds):
+        session['session_token'] = creds.session_token
+        session['access_id'] = creds.access_key
+        session['secret_key'] = creds.secret_key
 
 
 class LogoutView(BaseView):

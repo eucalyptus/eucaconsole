@@ -133,7 +133,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             usernameField.on('keydown', $scope.eucaCheckValid);
             passwordField.on('keydown', $scope.eucaCheckValid);
             accessKeyField.on('keydown', $scope.awsCheckValid);
-            secretKeyField.on('keydown', $scope.awsCheckValid);
+            secretKeyField.on('change', $scope.awsCheckValid);
             accountNameField.on('keydown', $scope.oauthCheckValid);
         };
         $scope.eucaCheckValid = function() {
@@ -153,7 +153,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         $scope.awsCheckValid = function() {
             $timeout(function() {  // this causes an additional digest cycle after current thread completes
                 $scope.awsNotValid = $scope.awsLoginNotValid();
-            }, 100);
+            }, 200);
         };
         $scope.awsLoginNotValid = function () {
             var access_key = accessKeyField.val();
@@ -180,6 +180,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             $("#oauth-account-modal").foundation('reveal', 'open');
             $timeout(function() {
                 accountNameField.focus();
+                $scope.oauthCheckValid();
             }, 250);
         };
         $scope.handleOAuthLogin = function($event) {
