@@ -128,7 +128,7 @@ describe('ELB Wizard Module', function () {
 
     describe('General tab controller', function () {
 
-        var element;
+        var element, scope;
 
         beforeEach(inject(function ($templateCache) {
             var template = window.__html__['templates/elbs/wizard/general.pt'];
@@ -137,14 +137,14 @@ describe('ELB Wizard Module', function () {
 
         var $controller, $routeParams, $location, controller;
         beforeEach(inject(function (_$controller_, _$routeParams_, _$location_) {
-            var $scope = $rootScope.$new();
+            scope = $rootScope.$new();
 
             $controller = _$controller_;
             $routeParams = _$routeParams_;
             $location = _$location_;
 
             controller = $controller('GeneralController', {
-                $scope: $scope,
+                $scope: scope,
                 $routeParams: $routeParams,
                 $location: $location
             });
@@ -156,9 +156,25 @@ describe('ELB Wizard Module', function () {
 
         describe('#submit', function () {
 
-            it('should move to next step on submit', function () {
+            beforeEach(function () {
+                scope.generalForm = {};
+
+                $location.path('/elbs/wizard/');
+                $rootScope.$apply();
+            });
+
+            it('should move to next step on submit when valid', function () {
+                scope.generalForm.$invalid = false;
+
                 controller.submit();
                 expect($location.path()).toEqual('/elbs/wizard/instances');
+            });
+
+            it('should not move to next step on submit when invalid', function () {
+                scope.generalForm.$invalid = true;
+
+                controller.submit();
+                expect($location.path()).toEqual('/elbs/wizard/');
             });
         });
     });

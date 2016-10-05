@@ -12,6 +12,10 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             this.from = {};
             this.to = {};
 
+            var validPorts = [25, 80, 443, 465, 587],
+                validPortMin = 1024,
+                validPortMax = 65535;
+
             this.protocols = [
                 {name: 'Select...', value: 'None', port: ''},
                 {name: 'HTTP', value: 'HTTP', port: 80},
@@ -21,17 +25,41 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             ];
 
             this.targetValid = function (target) {
-                return !!(target.port && target.protocol !== 'None');
+                //return !!(target.port && (target.protocol !== 'None'));
+                var validPort = !(this.portInUse(target) && this.portOutOfRange(target));
+                var validProtocol = target.protocol !== 'None';
+
+                return (validPort && validProtocol);
             };
 
             this.portsValid = function () {
                 var fromValid = this.targetValid(vm.from);
                 var toValid = this.targetValid(vm.to);
 
-                // Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
-                // Selected port is already in use by another listener. Please select an unused port.
-
                 return fromValid && toValid;
+            };
+
+            this.portInUse = function (target) {
+                var usedPorts = $scope.listeners.map(function (item) {
+                    return item.fromPort;
+                });
+                return usedPorts.some(function (current) {
+                    return Number(target.port) === current;
+                });
+            };
+
+            this.portOutOfRange = function (target, allowEmpty) {
+                if(target.port === undefined && allowEmpty) {
+                    return false;
+                }
+
+                var port = Number(target.port);
+                var validReservedPort = validPorts.some(function (current) {
+                    return current === port;
+                });
+                var validUnreservedPort = (port >= validPortMin) && (port <= validPortMax);
+
+                return !(validReservedPort || validUnreservedPort);
             };
 
             this.removeListener = function (index) {
@@ -72,11 +100,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
     };
 })
 .directive('protocolPort', function () {
-
-    var validPorts = [25, 80, 443, 465, 587],
-        validPortMin = 1024,
-        validPortMax = 65535;
-
     return {
         restrict: 'E',
         require: 'ngModel',
@@ -87,6 +110,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         },
         templateUrl: '/_template/elbs/listener-editor/protocol-port',
         link: function (scope, element, attrs, ctrl) {
+            //  Custon form-field behavior. Let protocol-port act as a form field.
+
             var protocolField = element.find('select'),
                 portField = element.find('input');
 
@@ -101,6 +126,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                     protocol: protocol,
                     port: port
                 });
+
+                ctrl.$setTouched();
             }
 
             ctrl.$render = function () {
@@ -114,19 +141,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             };
         }],
         controllerAs: 'ctrl'
-    };
-})
-.directive('validListener', function () {
-    return {
-        require: 'ngModel',
-        link: function (scope, element, attrs, ctrl) {
-            ctrl.$validators.validListener = function (modelValue, viewValue) {
-                if(modelValue.protocol === undefined) {
-                    return false;
-                }
-                return true;
-            };
-        }
     };
 })
 .filter('policy', function () {

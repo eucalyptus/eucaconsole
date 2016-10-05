@@ -1,4 +1,4 @@
-<div class="elb-listener-editor">
+<div ng-form="listenerEditor" class="elb-listener-editor" ng-class="{'euca-invalid-port-in-use': ctrl.portInUse(ctrl.from), 'euca-invalid-port-out-of-range': ctrl.portOutOfRange(ctrl.from, true)}">
     <h6 i18n:translate="">Listeners</h6>
     <table class="table" ng-show="listeners.length">
         <thead>
@@ -49,8 +49,18 @@
         </div>
     </div>
 
-    <protocol-port label="Client side" name="from" protocols="ctrl.protocols" ng-model="ctrl.from" ></protocol-port>
-    <protocol-port label="Instance side" name="to" protocols="ctrl.protocols" ng-model="ctrl.to" ng-show="ctrl.targetValid(ctrl.from)"></protocol-port>
+    <div>
+        <protocol-port label="Client side" name="from" protocols="ctrl.protocols" ng-model="ctrl.from" ></protocol-port>
+        <div i18n:translate="" class="port-out-of-range">
+            Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
+        </div>
+        <div i18n:translate="" class="port-in-use">
+            Selected port is already in use by another listener. Please select an unused port.
+        </div>
+    </div>
+    <div>
+        <protocol-port label="Instance side" name="to" protocols="ctrl.protocols" ng-model="ctrl.to" ng-show="ctrl.targetValid(ctrl.from)"></protocol-port>
+    </div>
 
     <div class="security-section" ng-show="ctrl.portsValid()">
         <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>

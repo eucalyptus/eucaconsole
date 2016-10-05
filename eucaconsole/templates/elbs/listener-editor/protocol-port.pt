@@ -8,12 +8,6 @@
     </div>
     <div class="controls-wrapper">
         <label i18n:translate="" class="inline">Port</label>
-        <input type="number" ng-model="port"></input>
-    </div>
-    <div i18n:translate="">
-        Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
-    </div>
-    <div i18n:translate="">
-        Selected port is already in use by another listener. Please select an unused port.
+        <input class="port" type="number" ng-model="port"></input>
     </div>
 </div>

@@ -1,6 +1,6 @@
 angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule',
-    'ELBSecurityPolicyEditorModule'
+    'ELBSecurityPolicyEditorModule', 'ModalModule'
 ])
 .factory('ELBWizardService', function () {
     var svc = {};
@@ -77,21 +77,26 @@ angular.module('ELBWizard', [
 })
 .controller('MainController', function () {
 })
-.controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', function ($scope, $route, $routeParams, $location) {
-    this.listeners = [{
-        'fromPort': 80,
-        'toPort': 80,
-        'fromProtocol': 'HTTP',
-        'toProtocol': 'HTTP'
-    }];
+.controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', 'ModalService',
+    function ($scope, $route, $routeParams, $location, ModalService) {
+        this.listeners = [{
+            'fromPort': 80,
+            'toPort': 80,
+            'fromProtocol': 'HTTP',
+            'toProtocol': 'HTTP'
+        }];
 
-    this.submit = function () {
-        if($scope.generalForm.$invalid) {
-            return;
-        }
-        $location.path('/elbs/wizard/instances');
-    };
-}])
+        this.submit = function () {
+            if($scope.generalForm.$invalid) {
+                return;
+            }
+            $location.path('/elbs/wizard/instances');
+        };
+
+        $scope.$on('$destroy', function () {
+            ModalService.unregisterModals('securityPolicyEditor', 'certificateEditor');
+        });
+    }])
 .controller('NetworkController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     console.log('network');
 }])

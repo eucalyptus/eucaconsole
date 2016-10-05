@@ -49,6 +49,13 @@ angular.module('ModalModule', [])
         _modals[name] = element;
     }
 
+    function unregisterModals () {
+        for(var i = 0; i < arguments.length; i++ ) {
+            var name = arguments[i];
+            delete _modals[name];
+        }
+    }
+
     function openModal (name) {
         var modal = _modals[name];
         if(!modal) {
@@ -80,6 +87,7 @@ angular.module('ModalModule', [])
         openModal: openModal,
         closeModal: closeModal,
         registerModal: registerModal,
+        unregisterModals: unregisterModals,
         _getModals: _getModals,
         _clearModals: _clearModals
     };

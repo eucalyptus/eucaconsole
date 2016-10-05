@@ -35,39 +35,40 @@ describe('ELB Listener Editor', function () {
                 controller = element.controller('listenerEditor');
             });
 
+            it('should default list of available ports and protocols', function () {
+                expect(controller.protocols).toEqual(jasmine.any(Array));
+            });
+
             it('should default client and instance-side port configurations to empty', function () {
                 expect(controller.from).toEqual({});
                 expect(controller.to).toEqual({});
             });
 
-            describe('#clientSideValid', function () {
+            describe('#targetValid', function () {
 
                 it('should return false when client-side port and protocol are not set', function () {
-                    var res = controller.clientSideValid();
+                    var res = controller.targetValid({
+                    });
                     expect(res).toBe(false);
                 });
 
                 it('should return true when client-side port and protocol are valid', function () {
-                    controller.from = {
+                    var res = controller.targetValid({
                         port: 80,
                         protocol: 'HTTP'
-                    };
-
-                    var res = controller.clientSideValid();
+                    });
                     expect(res).toBe(true);
                 });
 
                 it('should return false when client-side port or protocol are invalid', function () {
-                    controller.from = {
-                        protocol: 'HTTP'
-                    };
-
-                    var res = controller.clientSideValid();
+                    var res = controller.targetValid({
+                        protocolo: 'HTTP'
+                    });
                     expect(res).toBe(false);
                 });
             });
 
-            describe('#portsValid', function () {
+            xdescribe('#portsValid', function () {
 
                 it('should return false when both client and instance-side configurations are not set', function () {
                     var res = controller.portsValid();
@@ -104,6 +105,70 @@ describe('ELB Listener Editor', function () {
                 });
             });
 
+            describe('#portInUse', function () {
+
+                beforeEach(function () {
+                    scope.listeners = [{
+                        'fromPort': 80,
+                        'toPort': 80,
+                        'fromProtocol': 'HTTP',
+                        'toProtocol': 'HTTP'
+                    }];
+                });
+
+                it('should return true if the target port is in use', function () {
+                    var res = controller.portInUse({
+                        port: '80'
+                    });
+
+                    expect(res).toBe(true);
+                });
+
+                it('should return false if the target port is not currently in use', function () {
+                    var res = controller.portInUse({
+                        port: '81'
+                    });
+
+                    expect(res).toBe(false);
+                });
+            });
+
+            describe('#portOutOfRange', function () {
+
+                it('should return true if reserved port is not in acceptable range', function () {
+                    var res = controller.portOutOfRange({
+                        port: '81'
+                    });
+                    expect(res).toBe(true);
+                });
+
+                it('should return false if reserved port is in acceptable range', function () {
+                    var res = controller.portOutOfRange({
+                        port: '80'
+                    });
+                    expect(res).toBe(false);
+                });
+
+                it('should return true if unreserved port is not in acceptable range', function () {
+                    var res = controller.portOutOfRange({
+                        port: '1023'
+                    });
+                    expect(res).toBe(true);
+                });
+
+                it('should return false if unreserved port is in acceptable range', function () {
+                    var res = controller.portOutOfRange({
+                        port: '1025'
+                    });
+                    expect(res).toBe(false);
+                });
+
+                it('should accept undefined as a value if allowEmpty is true', function () {
+                    var res = controller.portOutOfRange({}, true);
+                    expect(res).toBe(false);
+                });
+            });
+
             describe('#removeListener', function () {
 
                 beforeEach(function () {
@@ -129,6 +194,7 @@ describe('ELB Listener Editor', function () {
                         protocol: 'HTTP'
                     };
 
+                    spyOn(controller, 'reset');
                     scope.listeners = [];
                 });
 
@@ -145,8 +211,15 @@ describe('ELB Listener Editor', function () {
 
                 it('should reset directive from and to values', function () {
                     controller.addListener();
-                    expect(controller.from).toEqual({});
-                    expect(controller.to).toEqual({});
+                    expect(controller.reset).toHaveBeenCalled();
+                });
+            });
+
+            describe('#reset', function () {
+                it('should set "from" and "to" listener settings to defaults', function () {
+                    controller.reset();
+                    expect(controller.from).toEqual(controller.protocols[0]);
+                    expect(controller.to).toEqual(controller.protocols[0]);
                 });
             });
         });
@@ -192,10 +265,6 @@ describe('ELB Listener Editor', function () {
             var controller;
             beforeEach(function () {
                 controller = element.controller('protocolPort');
-            });
-
-            it('should default list of available ports and protocols', function () {
-                expect(controller.protocols).toEqual(jasmine.any(Array));
             });
 
             describe('#onUpdate', function () {
