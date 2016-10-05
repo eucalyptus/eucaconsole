@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('SnapshotPage', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('SnapshotPage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('SnapshotPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.snapshotStatusEndpoint = '';

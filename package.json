@@ -16,14 +16,15 @@
     "grunt-contrib-watch": "~0.6.1",
     "grunt-html": "~4.0.2",
     "grunt-karma": "^2.0.0",
-    "grunt-lib-phantomjs": "~0.3.1",
+    "grunt-lib-phantomjs": "^1.1.0",
     "grunt-text-replace": "~0.4.0",
+    "jasmine": "^2.5.1",
     "jshint-stylish": "~1.0.0",
-    "karma": "^1.0.0",
+    "karma": "^1.2.0",
     "karma-cli": "^1.0.1",
-    "karma-html2js-preprocessor": "~0.1.0",
-    "karma-jasmine": "~0.2.0",
-    "karma-phantomjs-launcher": "~0.1.4",
+    "karma-html2js-preprocessor": "^1.0.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.2",
     "phantomjs": "^2.1.7"
   }
 }

@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('VolumeSnapshots', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('VolumeSnapshotsCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.loading = false;
