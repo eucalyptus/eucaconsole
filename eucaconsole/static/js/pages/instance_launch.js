@@ -24,7 +24,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.instanceVPCName = '';
         $scope.subnetVPC = 'None';
         $scope.vpcSubnetList = {};
-        $scope.vpcSubnetChoices = {};
+        $scope.vpcSubnetChoices = [];
         $scope.keyPair = undefined;
         $scope.keyPairChoices = [];
         $scope.newKeyPairName = '';
@@ -608,31 +608,31 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }, 500);
         };
         $scope.updateVPCSubnetChoices = function () {
-            $scope.vpcSubnetChoices = {};
+            $scope.vpcSubnetChoices = [];
             $scope.subnetVPC = '';
+            var emptySubnetChoice;
             angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
+                var subnetChoice;
                 if (vpcSubnet.vpc_id === $scope.instanceVPC) {
-                    if ($scope.instanceZone === '') {
-                        $scope.vpcSubnetChoices[vpcSubnet.id] = 
-                            vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' + 
-                            vpcSubnet.availability_zone;
-                        if ($scope.subnetVPC === '') {
-                            $scope.subnetVPC = vpcSubnet.id;
-                        }
-                    } else if ($scope.instanceZone !== '' && 
-                               vpcSubnet.availability_zone === $scope.instanceZone) {
-                        $scope.vpcSubnetChoices[vpcSubnet.id] = 
-                            vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' + 
-                            vpcSubnet.availability_zone;
-                        if ($scope.subnetVPC === '') {
-                            $scope.subnetVPC = vpcSubnet.id;
-                        }
-                    } 
+                    if ($scope.instanceZone === '' || vpcSubnet.availability_zone === $scope.instanceZone) {
+                    }
+                    subnetChoice = {
+                        'id': vpcSubnet.id,
+                        'label': vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' + vpcSubnet.availability_zone
+                    };
+                    $scope.vpcSubnetChoices.push(subnetChoice);
+                    if ($scope.subnetVPC === '') {
+                        $scope.subnetVPC = subnetChoice;
+                    }
                 }
-            }); 
+            });
             if ($scope.subnetVPC === '') {
-                $scope.vpcSubnetChoices.None = $('#hidden_vpc_subnet_empty_option').text();
-                $scope.subnetVPC = 'None';
+                emptySubnetChoice = {
+                    'id': '',
+                    'label': $('#hidden_vpc_subnet_empty_option').text()
+                };
+                $scope.vpcSubnetChoices.push(emptySubnetChoice);
+                $scope.subnetVPC = emptySubnetChoice;
             }
         };
         $scope.updateSecurityGroupVPC = function () {
