@@ -98,8 +98,7 @@
                             </div>
                             <hr/>
                             <div ng-cloak="">
-                                <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                            ng-model="tags">[]</tag-editor>
+                                <tag-editor ng-model="tags">[]</tag-editor>
                             </div>
                             <hr/>
                             <div>

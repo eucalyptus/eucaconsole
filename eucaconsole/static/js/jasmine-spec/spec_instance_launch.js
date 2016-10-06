@@ -227,7 +227,7 @@ describe("LaunchInstance", function() {
             expect(scope.updateVPCSubnetChoices).toHaveBeenCalled();
         });
 
-        it("Should call updateSecurityGroupVPC when instanceVPC is updated", function() {
+        it("should call updateSecurityGroupVPC when instanceVPC is updated", function() {
             spyOn(scope, 'updateSecurityGroupVPC');
             scope.securityGroupJsonEndpoint = "securitygroup_json";
             scope.setWatcher();

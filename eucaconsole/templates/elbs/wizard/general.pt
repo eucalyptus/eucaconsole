@@ -15,7 +15,7 @@
 
         <hr/>
 
-        <div>
+        <div ng-cloak="">
             <tag-editor ng-model="general.tags">[]</tag-editor>
         </div>
 

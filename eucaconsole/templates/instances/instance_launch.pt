@@ -81,8 +81,7 @@
                             ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'instanceZone'})}
                             <hr />
                             <div ng-cloak="">
-                                <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                            ng-model="tags">[]</tag-editor>
+                                <tag-editor ng-model="tags">[]</tag-editor>
                             </div>
                             <hr />
                             <div class="row controls-wrapper readonly">
