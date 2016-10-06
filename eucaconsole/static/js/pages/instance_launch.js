@@ -614,8 +614,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
                 var subnetChoice;
                 if (vpcSubnet.vpc_id === $scope.instanceVPC) {
-                    if ($scope.instanceZone === '' || vpcSubnet.availability_zone === $scope.instanceZone) {
-                    }
                     subnetChoice = {
                         'id': vpcSubnet.id,
                         'label': vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' + vpcSubnet.availability_zone
