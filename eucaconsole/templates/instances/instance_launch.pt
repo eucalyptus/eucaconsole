@@ -129,7 +129,7 @@
                             <div tal:condition="is_vpc_supported">
                                 ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8, leftcol_width_large=4, rightcol_width_large=8)}
                                 <div ng-show="instanceVPC != 'None'">
-                                    ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                    ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'subnetVPC', 'options': 'item as item.label for item in vpcSubnetChoices track by item.id'})}
                                     <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                     ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width_large=4, rightcol_width_large=8)}
                                 </div>
