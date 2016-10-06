@@ -28,8 +28,6 @@
 
 #bucket-section-title { position: relative; top: -1rem; }
 
-#sample-link-wrapper { text-align: right; }
-
 #existing-cors-config-wrapper .icon { margin-right: 0.5rem; position: relative; top: 2px; }
 #existing-cors-config-wrapper .icon.edit { font-size: 1.1rem; }
 #existing-cors-config-wrapper .icon.remove { top: 3px; }

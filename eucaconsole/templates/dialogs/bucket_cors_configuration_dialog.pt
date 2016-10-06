@@ -6,10 +6,6 @@
     </h3>
     <form id="cors-configuration-form" method="post"
           ng-submit="setCorsConfiguration($event)">
-        <div id="sample-link-wrapper">
-            <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html#how-do-i-enable-cors"
-                target="sample-cors-configs" rel="noopener noreferrer" i18n:translate="">Sample CORS Configurations</a>
-        </div>
         <textarea id="cors-textarea" name="cors_configuration_xml"  ng-model="corsConfigXml"
                   title="Set CORS Configuration" i18n:attributes="title">{{ corsConfigXml }}</textarea>
         <p class="cors-error-wrapper">{{corsError}}</p>
