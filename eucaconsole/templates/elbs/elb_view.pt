@@ -82,12 +82,8 @@
                         </div>
                     </div>
                     <hr />
-                    <div>
-                        <tag-editor
-                                ng-model="tags"
-                                template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                tal:content="tags | structure">
-                        </tag-editor>
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" tal:content="tags | structure"></tag-editor>
                     </div>
                     <hr />
                     <h6 class="section-label" i18n:translate="">Access logs</h6>

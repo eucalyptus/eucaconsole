@@ -49,8 +49,9 @@
                         ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 's3_prefix'}, pattern='^[a-z0-9\-\.]+$')}
                     </div>
                     <hr/>
-                    <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                ng-model="tags">[]</tag-editor>
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags">[]</tag-editor>
+                    </div>
                     <hr tal:condition="isEBS"/>
                     <div class="expando" id="advanced-section" ng-cloak="" tal:condition="isEBS">
                         <h6 class="title" >
