@@ -7,11 +7,11 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
+angular.module('LaunchInstance', [
+    'TagEditorModule', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
-        $scope.tagsObject = {};
         $scope.imageID = '';
         $scope.imageName = '';
         $scope.imagePlatform = '';
@@ -75,7 +75,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.getAllSecurityGroupsRules();
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
-            $scope.watchTags();
             $scope.watchBdMapping();
             $scope.focusEnterImageID();
             $scope.setWatcher();
@@ -157,24 +156,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                         return val.id;
                     }, []));
             }
-        };
-        $scope.updateTagsPreview = function () {
-            // Need timeout to give the tags time to capture in hidden textarea
-            $timeout(function() {
-                var tagsTextarea = $('textarea#tags'),
-                    tagsJson = tagsTextarea.val(),
-                    removeButtons = $('.circle.remove');
-                removeButtons.on('click', function () {
-                    $scope.updateTagsPreview();
-                });
-                $scope.tagsObject = JSON.parse(tagsJson);
-                $scope.tagsLength = Object.keys($scope.tagsObject).length;
-            }, 300);
-        };
-        $scope.watchTags = function () {
-            $scope.$on('tagUpdate', function () {
-                $scope.updateTagsPreview();
-            });
         };
         $scope.watchBdMapping = function () {
             $scope.$on('bdMappingChange', function (evt, args) {

@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_launch.css')}" />
 </head>
 
@@ -79,7 +80,10 @@
                             ${panel('form_field', field=launch_form['instance_type'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'instanceZone'})}
                             <hr />
-                            ${panel('tag_editor', show_name_tag=False, leftcol_width=3, rightcol_width=9)}
+                            <div ng-cloak="">
+                                <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
+                                            ng-model="tags">[]</tag-editor>
+                            </div>
                             <hr />
                             <div class="row controls-wrapper readonly">
                                 <div class="columns">
@@ -276,10 +280,10 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row" ng-show="tagsLength &gt; 0">
+                    <div class="row" ng-show="tags.length">
                         <label i18n:translate="">Tags</label>
                         <div class="columns value" id="tag-preview">
-                            <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                            <div ng-repeat="tag in tags">{{ tag.name }}={{ tag.value }}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -341,6 +345,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance_launch.js')}"></script>
 </div>
 

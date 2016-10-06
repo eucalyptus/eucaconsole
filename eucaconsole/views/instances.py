@@ -1269,7 +1269,8 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
                         instance.add_tag('Name', name)
                     if tags_json:
                         tags = json.loads(tags_json)
-                        for tagname, tagvalue in tags.items():
+                        tags_dict = TaggedItemView.normalize_tags(tags)
+                        for tagname, tagvalue in tags_dict.items():
                             instance.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
