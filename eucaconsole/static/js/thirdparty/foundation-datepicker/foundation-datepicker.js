@@ -1301,9 +1301,9 @@
         },
         headTemplate: '<thead>' +
             '<tr>' +
-            '<th class="prev"><i class="fa fa-chevron-left"/></th>' +
+            '<th class="prev"><i class="fa fa-chevron-left fi-arrow-left"/></th>' +
             '<th colspan="5" class="date-switch"></th>' +
-            '<th class="next"><i class="fa fa-chevron-right"/></th>' +
+            '<th class="next"><i class="fa fa-chevron-right fi-arrow-right"/></th>' +
             '</tr>' +
             '</thead>',
         contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>',
