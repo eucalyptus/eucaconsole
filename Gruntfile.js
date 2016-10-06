@@ -16,6 +16,7 @@ module.exports = function(grunt) {
               files: {
                 'angular.js': 'angular/angular.js',
                 'angular.min.js': 'angular/angular.min.js',
+                'angular-route.min.js': 'angular-route/angular-route.min.js',
                 'angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
                 'angular-mocks.js': 'angular-mocks/angular-mocks.js',
               }

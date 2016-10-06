@@ -2,16 +2,13 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
     .directive('tagEditor', ['eucaUnescapeJson', function (eucaUnescapeJson) {
         return {
             scope: {
-                template: '@',
                 showNameTag: '@',
                 autoscale: '@'
             },
             transclude: true,
             restrict: 'E',
             require: 'ngModel',
-            templateUrl: function (element, attributes) {
-                return attributes.template;
-            },
+            templateUrl: '/_template/tag-editor/tag-editor',
             controller: ['$scope', '$window', function ($scope, $window) {
                 $scope.newTagKey = '';
                 $scope.newTagValue = '';

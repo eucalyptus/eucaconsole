@@ -67,11 +67,7 @@
                             </div>
                             <hr />
                             <div>
-                                <tag-editor
-                                        ng-model="tags"
-                                        template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                        tal:content="tags | structure">
-                                </tag-editor>
+                                <tag-editor ng-model="tags" tal:content="tags | structure"></tag-editor>
                             </div>
                             <hr />
                             <div>
