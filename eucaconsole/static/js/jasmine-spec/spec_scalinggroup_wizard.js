@@ -24,7 +24,7 @@ describe("ScalingGroupWizard", function() {
 
     describe("Initial Values Test", function() {
 
-        it("should set nitial value of isNotValid to true", function() {
+        it("should set initial value of isNotValid to true", function() {
             expect(scope.isNotValid).toBe(true);
         });
 
@@ -108,4 +108,13 @@ describe("ScalingGroupWizard", function() {
             expect(scope.isNotValid).toBe(true);
         });
     });
+
+    describe("#setInitialValues", function () {
+        it("should call cleanLaunchConfigOptions when setInitialValues is called", function () {
+            spyOn(scope, 'cleanLaunchConfigOptions');
+            scope.setInitialValues();
+            expect(scope.cleanLaunchConfigOptions).toHaveBeenCalled();
+        });
+    });
+
 });
