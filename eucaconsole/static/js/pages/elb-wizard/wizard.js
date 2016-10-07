@@ -120,7 +120,7 @@ angular.module('ELBWizard', [
                     return 'bar';
                 }
             },
-            resolveAs: 'myfuckingresolve'
+            resolveAs: 'foo'
         })
         .when('/elbs/wizard/network', {
             templateUrl: '/_template/elbs/wizard/network',
