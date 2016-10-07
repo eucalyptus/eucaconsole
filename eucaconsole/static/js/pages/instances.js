@@ -11,7 +11,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.ipAddresses = [];
-        $scope.ipAddressList = {};
+        $scope.ipAddressList = [];
         $scope.associateIPModal = $('#associate-ip-to-instance-modal');
         $scope.addressesEndpoint = '';
         $scope.multipleItemsSelected = false;
@@ -59,7 +59,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
             $scope.ipAddress = instance.ip_address;
             if (action === 'associate-ip-to') {
                 $scope.adjustIPAddressOptions(instance);
-                // timeout is needed for ipAddressList to be updated
+                // timeout is needed for IP Address list to be updated
                 $timeout(function () {
                     $('#ip_address').trigger('chosen:updated');
                 });
@@ -187,12 +187,15 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
             });
         };
         $scope.adjustIPAddressOptions = function (instance) {
-            $scope.ipAddressList = {};
+            $scope.ipAddressList = [];
             if (instance.vpc_name === '') {
                 angular.forEach($scope.ipAddresses, function(ip){
                     if (ip.domain === 'standard') {
                         if (ip.instance_id === '' || ip.instance_id === null) {
-                            $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                            $scope.ipAddressList.push({
+                                'id': ip.public_ip,
+                                'label': ip.public_ip
+                            });
                         }
                     }
                 }); 
@@ -200,7 +203,10 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
                 angular.forEach($scope.ipAddresses, function(ip){
                     if (ip.domain === 'vpc') {
                         if (ip.instance_id === '' || ip.instance_id === null) {
-                            $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                            $scope.ipAddressList.push({
+                                'id': ip.public_ip,
+                                'label': ip.public_ip
+                            });
                         }
                     }
                 }); 
