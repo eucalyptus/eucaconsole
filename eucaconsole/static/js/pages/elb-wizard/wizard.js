@@ -1,4 +1,7 @@
-angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorModule'])
+angular.module('ELBWizard', [
+    'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule',
+    'ELBSecurityPolicyEditorModule', 'ModalModule'
+])
 .factory('ELBWizardService', function () {
     var svc = {};
     return svc;
@@ -74,18 +77,26 @@ angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorMod
 })
 .controller('MainController', function () {
 })
-.controller('GeneralController', ['$scope', '$routeParams', '$location', function ($scope, $routeParams, $location) {
-    this.listeners = [{
-        'fromPort': 80,
-        'toPort': 80,
-        'fromProtocol': 'HTTP',
-        'toProtocol': 'HTTP'
-    }];
+.controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', 'ModalService',
+    function ($scope, $route, $routeParams, $location, ModalService) {
+        this.listeners = [{
+            'fromPort': 80,
+            'toPort': 80,
+            'fromProtocol': 'HTTP',
+            'toProtocol': 'HTTP'
+        }];
 
-    this.submit = function () {
-        $location.path('/elbs/wizard/instances');
-    };
-}])
+        this.submit = function () {
+            if($scope.generalForm.$invalid) {
+                return;
+            }
+            $location.path('/elbs/wizard/instances');
+        };
+
+        $scope.$on('$destroy', function () {
+            ModalService.unregisterModals('securityPolicyEditor', 'certificateEditor');
+        });
+    }])
 .controller('NetworkController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     console.log('network');
 }])
@@ -100,7 +111,16 @@ angular.module('ELBWizard', ['ngRoute', 'TagEditorModule', 'ELBListenerEditorMod
         .when('/elbs/wizard/', {
             templateUrl: '/_template/elbs/wizard/general',
             controller: 'GeneralController',
-            controllerAs: 'general'
+            controllerAs: 'general',
+            resolve: {
+                policies: function ($q) {
+                    return $q.when('foo');
+                },
+                certificates: function () {
+                    return 'bar';
+                }
+            },
+            resolveAs: 'foo'
         })
         .when('/elbs/wizard/network', {
             templateUrl: '/_template/elbs/wizard/network',
