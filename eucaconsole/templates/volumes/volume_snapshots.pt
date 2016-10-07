@@ -105,8 +105,7 @@
                     ${panel('form_field', field=create_form.description, stack_label=True)}
                     <hr />
                     <div ng-cloak="">
-                        <tag-editor template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                    ng-model="tags" show-name-tag="false">[]</tag-editor>
+                        <tag-editor ng-model="tags" show-name-tag="false">[]</tag-editor>
                     </div>
                     <hr />
                     <div>

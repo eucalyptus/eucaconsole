@@ -7,11 +7,11 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
+angular.module('LaunchInstance', [
+    'TagEditorModule', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules', 'EucaConsoleUtils'])
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, eucaHandleError, eucaUnescapeJson) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
-        $scope.tagsObject = {};
         $scope.imageID = '';
         $scope.imageName = '';
         $scope.imagePlatform = '';
@@ -24,7 +24,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.instanceVPCName = '';
         $scope.subnetVPC = 'None';
         $scope.vpcSubnetList = {};
-        $scope.vpcSubnetChoices = {};
+        $scope.vpcSubnetChoices = [];
         $scope.keyPair = undefined;
         $scope.keyPairChoices = [];
         $scope.newKeyPairName = '';
@@ -75,7 +75,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.getAllSecurityGroupsRules();
             $scope.preventFormSubmitOnEnter();
             $scope.initChosenSelectors();
-            $scope.watchTags();
             $scope.watchBdMapping();
             $scope.focusEnterImageID();
             $scope.setWatcher();
@@ -157,24 +156,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                         return val.id;
                     }, []));
             }
-        };
-        $scope.updateTagsPreview = function () {
-            // Need timeout to give the tags time to capture in hidden textarea
-            $timeout(function() {
-                var tagsTextarea = $('textarea#tags'),
-                    tagsJson = tagsTextarea.val(),
-                    removeButtons = $('.circle.remove');
-                removeButtons.on('click', function () {
-                    $scope.updateTagsPreview();
-                });
-                $scope.tagsObject = JSON.parse(tagsJson);
-                $scope.tagsLength = Object.keys($scope.tagsObject).length;
-            }, 300);
-        };
-        $scope.watchTags = function () {
-            $scope.$on('tagUpdate', function () {
-                $scope.updateTagsPreview();
-            });
         };
         $scope.watchBdMapping = function () {
             $scope.$on('bdMappingChange', function (evt, args) {
@@ -608,31 +589,29 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }, 500);
         };
         $scope.updateVPCSubnetChoices = function () {
-            $scope.vpcSubnetChoices = {};
+            $scope.vpcSubnetChoices = [];
             $scope.subnetVPC = '';
+            var emptySubnetChoice;
             angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
+                var subnetChoice;
                 if (vpcSubnet.vpc_id === $scope.instanceVPC) {
-                    if ($scope.instanceZone === '') {
-                        $scope.vpcSubnetChoices[vpcSubnet.id] = 
-                            vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' + 
-                            vpcSubnet.availability_zone;
-                        if ($scope.subnetVPC === '') {
-                            $scope.subnetVPC = vpcSubnet.id;
-                        }
-                    } else if ($scope.instanceZone !== '' && 
-                               vpcSubnet.availability_zone === $scope.instanceZone) {
-                        $scope.vpcSubnetChoices[vpcSubnet.id] = 
-                            vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' + 
-                            vpcSubnet.availability_zone;
-                        if ($scope.subnetVPC === '') {
-                            $scope.subnetVPC = vpcSubnet.id;
-                        }
-                    } 
+                    subnetChoice = {
+                        'id': vpcSubnet.id,
+                        'label': vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' + vpcSubnet.availability_zone
+                    };
+                    $scope.vpcSubnetChoices.push(subnetChoice);
+                    if ($scope.subnetVPC === '') {
+                        $scope.subnetVPC = subnetChoice;
+                    }
                 }
-            }); 
+            });
             if ($scope.subnetVPC === '') {
-                $scope.vpcSubnetChoices.None = $('#hidden_vpc_subnet_empty_option').text();
-                $scope.subnetVPC = 'None';
+                emptySubnetChoice = {
+                    'id': '',
+                    'label': $('#hidden_vpc_subnet_empty_option').text()
+                };
+                $scope.vpcSubnetChoices.push(emptySubnetChoice);
+                $scope.subnetVPC = emptySubnetChoice;
             }
         };
         $scope.updateSecurityGroupVPC = function () {
