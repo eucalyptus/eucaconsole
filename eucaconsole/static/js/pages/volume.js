@@ -136,6 +136,7 @@ angular.module('VolumePage', ['TagEditorModule', 'EucaConsoleUtils'])
                 if (this.getAttribute('ng-click')) {
                     return;
                 }
+                event.preventDefault();
                 // the ID of the action link needs to match the modal name
                 var modalID = this.getAttribute('id').replace("-action", "-modal");
                 // If there exists unsaved changes, open the wanring modal instead
