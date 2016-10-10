@@ -110,8 +110,11 @@ describe("ScalingGroupWizard", function() {
     });
 
     describe("#setInitialValues", function () {
-        it("should call cleanLaunchConfigOptions when setInitialValues is called", function () {
+        beforeEach(function () {
             spyOn(scope, 'cleanLaunchConfigOptions');
+        });
+
+        it("should call cleanLaunchConfigOptions when setInitialValues is called", function () {
             scope.setInitialValues();
             expect(scope.cleanLaunchConfigOptions).toHaveBeenCalled();
         });

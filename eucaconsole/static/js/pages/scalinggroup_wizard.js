@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('ScalingGroupWizard', ['TagEditorModule','EucaConsoleUtils', 'TagEditorModule'])
+angular.module('ScalingGroupWizard', ['EucaConsoleUtils', 'TagEditorModule'])
     .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaNumbersOnly) {
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.scalingGroupName = '';
