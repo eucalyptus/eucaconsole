@@ -55,4 +55,12 @@
     display: block;
     @include validation-error-mixin;
   }
+
+  #propagate-wrapper {
+    white-space: nowrap;
+    .helptext-icon {
+      position: relative;
+      left: -10px;
+    }
+  }
 }

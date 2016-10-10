@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup_wizard.css')}" />
 </head>
 
@@ -75,7 +76,9 @@
                                 ${panel('form_field', field=create_form['termination_policies'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'terminationPolicies'}, **term_policies_html_attrs)}
                             </div>
                             <hr />
-                            ${panel('autoscale_tag_editor', tags=[])}
+                            <div ng-cloak="">
+                                <tag-editor ng-model="tags" autoscale="1">[]</tag-editor>
+                            </div>
                             <hr />
                             <div>
                                 <label>
