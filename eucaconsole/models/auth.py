@@ -534,11 +534,14 @@ class OIDCAuthenticator(object):
         )
         conn.http_connection_kwargs['timeout'] = timeout
         duration = min(int(duration), 3600)  # this call won't allow than 1 hour duration
-        result = conn.assume_role_with_web_identity(
-            role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_name),
-            role_session_name=token['state'],
-            web_identity_token=token['id_token'],
-            duration_seconds=duration
-        )
+        try:
+            result = conn.assume_role_with_web_identity(
+                role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_name),
+                role_session_name=token['state'],
+                web_identity_token=token['id_token'],
+                duration_seconds=duration
+            )
+        except socket.error as err:
+            raise urllib2.URLError(err.message)
         return result.credentials
 
