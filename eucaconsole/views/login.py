@@ -228,7 +228,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             session['auth_type'] = 'oidc'
             session['account'] = account
             session['username'] = username
-            self._assign_session_creds_(session, creds)
+            self._assign_session_creds(session, creds)
             session['region'] = euca_region if euca_region != '' else default_region
             session['username_label'] = user_account
             session['dns_enabled'] = auth.dns_enabled # this *must* be prior to line below
@@ -239,7 +239,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             self.check_iam_perms(session, creds)
             headers = remember(self.request, user_account)
             return HTTPFound(location=self.came_from, headers=headers)
-        except HTTPError, err:
+        except HTTPError as err:
             logging.info("http error " + str(vars(err)))
             if err.code == 403:  # password expired
                 changepwd_url = self.request.route_path('managecredentials')
@@ -249,7 +249,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             elif err.msg == u'Unauthorized':
                 msg = _(u'Invalid user/account name and/or password.')
                 self.login_form_errors.append(msg)
-        except URLError, err:
+        except URLError as err:
             logging.info("url error " + str(vars(err)))
             # if str(err.reason) == 'timed out':
             # opened this up since some other errors should be reported as well.
@@ -285,7 +285,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['auth_type'] = 'password'
                 session['account'] = account
                 session['username'] = username
-                self._assign_session_creds_(session, creds)
+                self._assign_session_creds(session, creds)
                 session['region'] = euca_region if euca_region != '' else default_region
                 session['username_label'] = user_account
                 session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
@@ -296,7 +296,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 self.check_iam_perms(session, creds)
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
-            except HTTPError, err:
+            except HTTPError as err:
                 logging.info("http error " + str(vars(err)))
                 if err.code == 403:  # password expired
                     changepwd_url = self.request.route_path('managecredentials')
@@ -306,7 +306,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)
-            except URLError, err:
+            except URLError as err:
                 logging.info("url error " + str(vars(err)))
                 # if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
@@ -336,7 +336,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'aws'
                 session['auth_type'] = 'keys'
-                self._assign_session_creds_(session, creds)
+                self._assign_session_creds(session, creds)
                 last_visited_aws_region = [reg for reg in AWS_REGIONS if reg.get('name') == aws_region]
                 session['region'] = aws_region if last_visited_aws_region else default_region
                 session['username_label'] = u'{user}...@AWS'.format(user=creds.access_key[:8])
@@ -351,11 +351,11 @@ class LoginView(BaseView, PermissionCheckMixin):
                         session.get('supported_platforms').remove('VPC')
                 headers = remember(self.request, creds.access_key[:8])
                 return HTTPFound(location=self.came_from, headers=headers)
-            except HTTPError, err:
+            except HTTPError as err:
                 if err.msg == 'Forbidden':
                     msg = _(u'Invalid access key and/or secret key.')
                     self.login_form_errors.append(msg)
-            except URLError, err:
+            except URLError as err:
                 if err.reason.find('ssl') > -1:
                     msg = INVALID_SSL_CERT_MSG
                 else:
@@ -364,7 +364,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         return self.render_dict
 
     @staticmethod
-    def _assign_session_creds_(session, creds):
+    def _assign_session_creds(session, creds):
         session['session_token'] = creds.session_token
         session['access_id'] = creds.access_key
         session['secret_key'] = creds.secret_key
