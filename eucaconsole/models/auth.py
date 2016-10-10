@@ -515,7 +515,7 @@ class OIDCAuthenticator(object):
 
     def _authenticate_oidc_(self, token, account_name, dns_enabled, duration, timeout):
         if dns_enabled:
-            region = RegionInfo(name='eucalyptus', endpoint='tokens.'+self.host)
+            region = RegionInfo(name='eucalyptus', endpoint='tokens.' + self.host)
             auth_path = '/'
         else:
             region = RegionInfo(name='eucalyptus', endpoint=self.host)
@@ -533,8 +533,7 @@ class OIDCAuthenticator(object):
             https_connection_factory=(conn_factory, ())
         )
         conn.http_connection_kwargs['timeout'] = timeout
-        if duration > 3600:  # this call won't allow than 1 hour duration
-            duration = 3600
+        duration = min(int(duration), 3600)  # this call won't allow than 1 hour duration
         result = conn.assume_role_with_web_identity(
             role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_name),
             role_session_name=token['state'],

@@ -53,10 +53,10 @@
 }
 
 .button.oidc {
-    background-color: $oidc-blue !important;
-    color: white !important;
+    background-color: $oidc-blue;
+    color: white;
     width: 100%;
-    border: 0 !important;
+    border: 0;
     &:hover {
         outline: 2px solid $oidc-blue;
     }
