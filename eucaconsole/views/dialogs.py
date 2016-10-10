@@ -34,6 +34,7 @@ from ..i18n import _
 
 from pyramid_layout.panel import panel_config
 
+from ..constants.buckets import SAMPLE_CORS_CONFIGURATION
 from ..views import BaseView
 from ..views.buckets import BucketDetailsView, FOLDER_NAME_PATTERN
 
@@ -355,7 +356,6 @@ def elb_bucket_access_log_dialog(context, request):
     """ Modal confirmation when enabling access logs for an ELB"""
     return dict()
 
-
 @panel_config('elb_security_group_warning_dialog', renderer='../templates/dialogs/elb_security_group_warning_dialog.pt')
 def elb_security_group_warning_dialog(context, request, create=False):
     """ Modal confirmation when the security group rules for an ELB don't cover the listener and health check ports"""
@@ -379,3 +379,4 @@ def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_c
 def ufshost_warn_dialog(context, request):
     """ Modal warning when trying to create a stack, but ufshost set to localhost"""
     return dict()
+

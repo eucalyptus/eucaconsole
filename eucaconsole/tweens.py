@@ -70,7 +70,8 @@ def usage_log_tween_factory(handler, registry):
             if 'HTTP_X_REQUESTED_WITH' not in request.environ:
                 # assume this is a page root
                 logging.info('user-nav: {0} {1}'.format(remote_addr, path))
-        if method == 'POST' and (path.find('json') == -1 or content_type == 'application/x-www-form-urlencoded'):
+        if method in ['POST', 'PUT', 'DELETE'] \
+                and (path.find('json') == -1 or content_type == 'application/x-www-form-urlencoded'):
             logging.info('user-action: {0} {1}'.format(remote_addr, path))
         response = handler(request)
         return response
