@@ -38,7 +38,7 @@ angular.module('ELBWizard', [
     $scope.vpcSubnetList = [];
     $scope.securityGroups = [];  // Selected security group ids (e.g. ["sg-123456", ...])
     $scope.securityGroupNames = [];  // Selected security group names (e.g. ["sgroup-one", ...])
-    $scope.securityGroupChoices = {};  // id/name mapping of security group choices (e.g. {"sg-123": 'foo', ...})
+    $scope.securityGroupChoices = [];
     $scope.securityGroupCollection = [];  // Security group object choices
     $scope.selectedSecurityGroups = [];  // Selected security group objects
     $scope.loadBalancerInboundPorts = [];
@@ -601,7 +601,7 @@ angular.module('ELBWizard', [
         });
     };
     $scope.updateSecurityGroupChoices = function () {
-        $scope.securityGroupChoices = {};
+        $scope.securityGroupChoices = [];
         if ($.isEmptyObject($scope.securityGroupCollection)) {
             return;
         }
@@ -611,9 +611,13 @@ angular.module('ELBWizard', [
             if (sGroup.name.length > 45) {
                 securityGroupName = sGroup.name.substr(0, 45) + "...";
             }
-            $scope.securityGroupChoices[sGroup.id] = securityGroupName;
+            $scope.securityGroupChoices.push({
+                'id': sGroup.id,
+                'label': securityGroupName
+            });
             if (securityGroupName === 'default') {
-                $scope.securityGroups = [sGroup.id];  // Pre-populate default security group for VPC clouds
+                // Pre-populate default security group for VPC clouds
+                $scope.securityGroups = [{'id': sGroup.id, 'label': securityGroupName}];
             }
         });
         // Timeout is needed for chosen to react after Angular updates the options
@@ -687,7 +691,7 @@ angular.module('ELBWizard', [
     $scope.updateSecurityGroupNames = function () {
         $scope.securityGroupNames = [];
         angular.forEach($scope.securityGroups, function (sGroup) {
-            $scope.securityGroupNames.push($scope.securityGroupChoices[sGroup]);
+            $scope.securityGroupNames.push($scope.securityGroupCollection[sGroup]);
         });
     };
     $scope.updateVPCSubnetNames = function () {
