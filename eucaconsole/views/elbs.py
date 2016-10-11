@@ -1251,7 +1251,7 @@ class CreateELBView(BaseELBView):
             vpc_subnet = self.create_form.vpc_subnet.data or None
             if vpc_subnet == 'None':
                 vpc_subnet = None
-            securitygroup = self.request.params.getall('securitygroup') or None
+            securitygroup = self.create_form.securitygroup.data or None
             zone = self.create_form.zone.data or None
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None

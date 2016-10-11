@@ -354,7 +354,7 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
     vpc_subnet = AngularCompatibleSelectMultipleField(
         label=_(u'VPC subnets'),
     )
-    securitygroup = wtforms.SelectMultipleField(
+    securitygroup = AngularCompatibleSelectMultipleField(
         label=_(u'Security groups')
     )
     securitygroup_help_text = _(u'If you do not select a security group, the default group will be used.')
