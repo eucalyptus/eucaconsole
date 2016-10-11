@@ -32,26 +32,25 @@ Angular 1.4/1.5 Compatible WTForm Classes
 from wtforms import SelectField, SelectMultipleField
 
 
+def clean_value(v):
+    """Return value with Angular 1.4/1.5 prefix (e.g. 'string:') removed if str/unicode"""
+    if isinstance(v, str) or isinstance(v, unicode):
+        return v.replace('string:', '').strip()
+    return v
+
+
 class AngularCompatibleSelectField(SelectField):
-    def pre_validate(self, form):
-        for v, _ in self.choices:
-            d = self.data
-            # Angular 1.4/1.5 compatibility
-            if isinstance(d, str) or isinstance(d, unicode):
-                d = d.replace('string:', '').strip()
-            if d == v:
-                break
-        else:
-            raise ValueError(self.gettext('Not a valid choice'))
+    def process_formdata(self, valuelist):
+        if valuelist:
+            try:
+                self.data = self.coerce(clean_value(valuelist[0]))
+            except ValueError:
+                raise ValueError(self.gettext('Invalid Choice: could not coerce'))
 
 
 class AngularCompatibleSelectMultipleField(SelectMultipleField):
-    def pre_validate(self, form):
-        if self.data:
-            values = list(c[0] for c in self.choices)
-            for d in self.data:
-                # Angular 1.4/1.5 compatibility
-                if isinstance(d, str) or isinstance(d, unicode):
-                    d = d.replace('string:', '').strip()
-                if d not in values:
-                    raise ValueError(self.gettext("'%(value)s' is not a valid choice for this field") % dict(value=d))
+    def process_formdata(self, valuelist):
+        try:
+            self.data = list(self.coerce(clean_value(x)) for x in valuelist)
+        except ValueError:
+            raise ValueError(self.gettext('Invalid choice(s): one or more data inputs could not be coerced'))

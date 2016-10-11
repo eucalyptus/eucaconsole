@@ -149,9 +149,9 @@ angular.module('ELBWizard', [
         $scope.pingPort = 80;
         $scope.pingPath = '/';
         $scope.responseTimeout = 5;
-        $scope.timeBetweenPings = 30;
-        $scope.failuresUntilUnhealthy = 2;
-        $scope.passesUntilHealthy = 2;
+        $scope.timeBetweenPings = '30';
+        $scope.failuresUntilUnhealthy = '2';
+        $scope.passesUntilHealthy = '2';
         $scope.showsCertificateTabDiv = false;
         $scope.certificateTab = 'SSL';
         $scope.certificateRadioButton = 'existing';

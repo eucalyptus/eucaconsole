@@ -1248,11 +1248,11 @@ class CreateELBView(BaseELBView):
         if self.create_form.validate():
             name = self.request.params.get('name')
             listeners_args = self.get_listeners_args()
-            vpc_subnet = self.request.params.getall('vpc_subnet') or None
+            vpc_subnet = self.create_form.vpc_subnet.data or None
             if vpc_subnet == 'None':
                 vpc_subnet = None
             securitygroup = self.request.params.getall('securitygroup') or None
-            zone = self.request.params.getall('zone') or None
+            zone = self.create_form.zone.data or None
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
             backend_certificates = self.request.params.get('backend_certificates') or None
