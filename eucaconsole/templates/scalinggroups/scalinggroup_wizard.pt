@@ -57,7 +57,7 @@
                             <div tal:condition="is_vpc_supported">
                                 ${panel('form_field', field=create_form['vpc_network'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
                                 <div ng-show="vpcNetwork != '' &amp;&amp; vpcNetwork != 'None'">
-                                    ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnet_html_attrs)}
+                                    ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcSubnets', 'options': 'item as item.label for item in vpcSubnetChoices track by item.id'}, **vpc_subnet_html_attrs)}
                                     <span id="vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                 </div>
                             </div>
@@ -160,10 +160,10 @@
                         <label i18n:translate="">VPC network:</label>
                         <div class="columns value">{{ vpcNetworkName }}</div>
                     </div>
-                    <div tal:condition="is_vpc_supported" class="row" ng-show="vpcSubnetNames.length">
+                    <div tal:condition="is_vpc_supported" class="row" ng-show="vpcSubnets.length">
                         <label i18n:translate="">VPC subnet:</label>
                         <div class="columns value">
-                            <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>
+                            <div ng-repeat="subnet in vpcSubnets">{{ subnet.label }}</div>
                         </div>
                     </div>
                     <div class="row">

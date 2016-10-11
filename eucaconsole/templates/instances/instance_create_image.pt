@@ -37,7 +37,7 @@
                         <p i18n:translate="">
                             Specify where your image should be stored in the cloud.
                         </p>
-                        ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'bucketName', 'options': 'k as v for (k, v) in bucketNameChoices'})}
+                        ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'bucketName', 'options': 'k as v for (k, v) in bucketNameChoices track by v'})}
                         <div class="row">
                             <div class="large-10 small-9 columns right">
                                 <div id="create-bucket-link">
