@@ -95,7 +95,7 @@
                             </div>
                             <div>&nbsp;</div>
                             <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
-                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'securityGroups', 'options': 'item as item.label for item in securityGroupChoices track by item.id'}, **security_group_attrs)}
+                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             </div>
                             <hr />
                             <div>
