@@ -90,6 +90,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     vm.duration = '3600';  // Default duration value is one hour
     vm.largeChartStatistic = "Sum";
     vm.largeChartDuration = 3600;
+    vm.largeChartGranularity = undefined;
     vm._largeChartStartTime = new Date();
     vm._largeChartStartTime.setSeconds(-vm.largeChartDuration);
     vm._largeChartEndTime = new Date();
@@ -231,20 +232,20 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         }).map(function(choice) {
             return {value: choice[0], label: choice[1]};
         });
-        if (vm.largeChartGranularity < vm.granularityChoices[0].value) {
+        if (vm.largeChartGranularity.value < vm.granularityChoices[0].value) {
             // set to lowest if old value below lowest
-            vm.largeChartGranularity = vm.granularityChoices[0].value;
+            vm.largeChartGranularity = vm.granularityChoices[0];
         }
         var last = vm.granularityChoices.length;
-        if (vm.largeChartGranularity > vm.granularityChoices[last-1].value) {
+        if (vm.largeChartGranularity.value > vm.granularityChoices[last-1].value) {
             // set to highest if old value above highest
-            vm.largeChartGranularity = vm.granularityChoices[last-1].value;
+            vm.largeChartGranularity = vm.granularityChoices[last-1];
         }
         vm.refreshLargeChart();
     };
     $scope.$on("cloudwatch:updateLargeGraphParams", function($event, stat, period, duration, startTime, endTime) {
         vm.largeChartStatistic = stat;
-        vm.largeChartGranularity = period;
+        vm.largeChartGranularity = $scope.granularityChoices.find(function(choice) { return choice.value == period; });
         if (duration !== undefined) {
             vm.timeRange = "relative";
             vm.largeChartDuration = duration;
