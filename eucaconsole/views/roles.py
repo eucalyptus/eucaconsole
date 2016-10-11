@@ -216,6 +216,11 @@ class RoleView(BaseView):
             if isinstance(svc, list):
                 svc = svc[0]
             return _(u'Service ') + svc
+        elif 'Federated' in principal.keys():
+            fed = principal['Federated']
+            if isinstance(fed, list):
+                fed = fed[0]
+            return _(u'Federated ') + fed
         return ''
 
     @view_config(route_name='role_view', renderer=TEMPLATE)
