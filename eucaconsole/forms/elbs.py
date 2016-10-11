@@ -35,6 +35,7 @@ from wtforms import validators
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE, BLANK_CHOICE
+from .angularcompat import AngularCompatibleSelectField, AngularCompatibleSelectMultipleField
 from ..constants.elbs import SSL_CIPHERS
 from ..views import BaseView
 
@@ -80,7 +81,7 @@ class ELBAccessLogsFormMixin(object):
     logging_enabled = wtforms.BooleanField(label=_(u'Enable logging'))
     bucket_name_error_msg = _(u'Bucket name is required')
     bucket_name_help_text = _(u'Choose from your existing buckets, or create a new bucket.')
-    bucket_name = wtforms.SelectField(
+    bucket_name = AngularCompatibleSelectField(
         label=_(u'Bucket name'),
         validators=[BucketInfoRequired(message=bucket_name_error_msg)],
     )
@@ -350,14 +351,14 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         label=_(u'VPC network'),
         validators=[validators.InputRequired(message=vpc_network_error_msg)],
     )
-    vpc_subnet = wtforms.SelectMultipleField(
+    vpc_subnet = AngularCompatibleSelectMultipleField(
         label=_(u'VPC subnets'),
     )
     securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security groups')
     )
     securitygroup_help_text = _(u'If you do not select a security group, the default group will be used.')
-    zone = wtforms.SelectMultipleField(
+    zone = AngularCompatibleSelectMultipleField(
         label=_(u'Availability zones')
     )
     cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
