@@ -1186,7 +1186,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
 
     @view_config(route_name='instance_launch', renderer=TEMPLATE, request_method='POST')
     def instance_launch(self):
-        """Handles the POST from the Launch instanced wizard"""
+        """Handles the POST from the Launch instance wizard"""
         if self.launch_form.validate():
             tags_json = self.request.params.get('tags')
             image_id = self.image.id
