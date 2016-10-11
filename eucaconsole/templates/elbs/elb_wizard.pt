@@ -148,7 +148,7 @@
                                         <span class="helptext-icon" data-tooltip="" title="${create_form.add_vpc_subnets_help_text}"></span>
                                     </label>
                                 </div>
-                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnets_attrs)}
+                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=0, rightcol_width=12, leftcol_width_large=0, rightcol_width_large=12, ng_attrs={'model': 'vpcSubnets', 'options': 'item as item.label for item in vpcSubnetChoices track by item.id'}, **vpc_subnets_attrs)}
                                  <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                             </div>
                             <div>&nbsp;</div>

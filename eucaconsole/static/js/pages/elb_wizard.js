@@ -34,7 +34,7 @@ angular.module('ELBWizard', [
     $scope.vpcNetworkName = '';
     $scope.vpcSubnets = [];
     $scope.vpcSubnetNames = [];
-    $scope.vpcSubnetChoices = {};
+    $scope.vpcSubnetChoices = [];
     $scope.vpcSubnetList = [];
     $scope.securityGroups = [];  // Selected security group ids (e.g. ["sg-123456", ...])
     $scope.securityGroupNames = [];  // Selected security group names (e.g. ["sgroup-one", ...])
@@ -642,24 +642,32 @@ angular.module('ELBWizard', [
         });
     };
     $scope.updateVPCSubnetChoices = function () {
-        $scope.vpcSubnetChoices = {};
-        angular.forEach($scope.vpcSubnetList, function(subnet){
-            if (subnet.vpc_id === $scope.vpcNetwork) {
+        $scope.vpcSubnetChoices = [];
+        var emptySubnetChoice;
+        angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
+            if (vpcSubnet.vpc_id === $scope.vpcNetwork) {
+                var subnetChoice;
                 var instanceCount = 0;
                 angular.forEach($scope.instanceList, function(instance) {
-                    if (instance.subnet_id === subnet.id) {
+                    if (instance.subnet_id === vpcSubnet.id) {
                         instanceCount += 1;
                     } 
                 });
-                $scope.vpcSubnetChoices[subnet.id] = 
-                    subnet.cidr_block + ' (' + subnet.id + ') | ' + 
-                    subnet.availability_zone + ": " + instanceCount + " instances";
+                subnetChoice = {
+                    'id': vpcSubnet.id,
+                    'label': vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' +
+                             vpcSubnet.availability_zone + ": " + instanceCount + " instances"
+                };
+                $scope.vpcSubnetChoices.push(subnetChoice);
             }
         });
         if ($scope.vpcSubnetChoices.length === 0) {
-            $scope.vpcSubnetChoices.None = $('#hidden_vpc_subnet_empty_option').text();
-            $scope.vpcSubnets = [];
-            $scope.vpcSubnets.push('None');
+            emptySubnetChoice = {
+                'id': 'None',
+                'label': $('#hidden_vpc_subnet_empty_option').text()
+            };
+            $scope.vpcSubnetChoices.push(emptySubnetChoice);
+            $scope.vpcSubnets = [emptySubnetChoice];
         }
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
