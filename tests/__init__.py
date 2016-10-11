@@ -139,7 +139,7 @@ class BaseFormTestCase(unittest.TestCase):
     default_term.configure(
         memory_cache,
         expiration_time=300,
-        arguments= {
+        arguments={
             'url': [memory_cache_url],
             'binary': True,
             'min_compress_len': 1024,
