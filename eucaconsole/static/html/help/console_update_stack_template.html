@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Update a Stack - Template"/>
+<meta name="abstract" content="This page allows you to update the template and parameters of a CloudFormation stack."/>
+<meta name="description" content="This page allows you to update the template and parameters of a CloudFormation stack."/>
+<meta name="prodname" content="Eucalyptus"/>
+<meta name="version" content="4.3.0"/>
+<meta name="copyright" content="© 2015-2016 Hewlett Packard Enterprise Development LP 2016" type="primary"/>
+<meta name="DC.Rights.Owner" content="© 2015-2016 Hewlett Packard Enterprise Development LP 2016" type="primary"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="update_stack_ui_help_context"/>
+<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
+<title>Update a Stack - Template</title>
+</head>
+<body id="update_stack_ui_help_context">
+
+
+    <h1 class="title topictitle1">Update a Stack - Template</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> This page allows you to update the template and parameters of a CloudFormation stack. 
+    </p>
+</div>
+
+    <div class="topic task nested1" id="create_stack_ui_help_steps_template">
+        <h2 class="title topictitle2">Template</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This page allows you to edit the currently applied template, upload a new one, 
+            or choose another one from a URL.</p>
+
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">Choose among the available options for editing a template:</span>
+                    <ul class="ul choices">
+                        <li class="li choice">Select <span class="ph uicontrol">Use current template</span> and click the pencil icon to 
+                            edit the currently applied template. Another window opens to allow you to edit the 
+                            contents of the template. When you are done editing, click the <span class="ph uicontrol">SAVE TEMPLATE</span> button.</li>
+
+                        <li class="li choice">Select <span class="ph uicontrol">Upload template</span> to browse and apply a different template from 
+                            your local hard drive.
+                            <div class="note note"><span class="notetitle">Note:</span> Acceptable file formats are JSON files (max size: 16 KB).  
+                                For more information, go to <a class="xref" href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html" target="_blank">Template Anatomy</a> in the <em class="ph i">AWS CloudFormation User Guide</em>.</div>
+
+                        </li>
+
+                        <li class="li choice">Select <span class="ph uicontrol">Use template from URL</span> to choose a different template from a web address.
+                            <div class="note note"><span class="notetitle">Note:</span> The URL must point to a template (max size: 460,800 bytes) anywhere publically available that you have read 
+                                permissions to, located in the same region as the stack. The maximum length of the URL itself is 1024 characters long.</div>
+
+                        </li>
+
+                    </ul>
+
+                    <div class="itemgroup stepresult">A Warning dialog opens if you are trying to use a template that was not originally designed for this cloud (for example, 
+                        using an AWS template on a Eucalyptus cloud). Based on the information provided on the Warning dialog, you can either:
+                        <ul class="ul">
+                            <li class="li">Expand <span class="ph uicontrol">Details</span> to convert unsupported parameters</li>
+
+                            <li class="li">Click the <span class="ph uicontrol">I Understand, Use This Template</span> button and all the unsupported 
+                                parameters will convert automatically</li>
+
+                            <li class="li">Click <span class="ph uicontrol">Go back, I want to select a different
+                                template</span> to discard the current template
+                                selection and repeat the above steps to choose another
+                                template</li>
+
+                        </ul>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">If you are trying to use an AWS template that contains services and resources that 
+                        Eucalyptus does not yet support, a Warning dialog box opens.</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click to expand <span class="ph uicontrol">Details</span> to view the unsupported items.</span>
+                            <div class="itemgroup stepresult">Any remaining unsupported items will be automatically removed.</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Once the chosen template is free of incompatible items, click <span class="ph uicontrol">I Understand, Use This Template</span> 
+                                to proceed.</span>
+                        </li>
+
+                    </ol>
+
+                </li>
+<li class="li step stepexpand">
+                    <span class="ph cmd">If you edit a template and it passes validation, the next tab automatically opens. 
+                        Otherwise, click the <span class="ph uicontrol">Next</span> button to advance to the Parameters tab.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

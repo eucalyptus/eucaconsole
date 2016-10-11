@@ -1,0 +1,33 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+@keyframes slidedown { from { opacity: 0; top: -1000px; }
+  to { opacity: 1; top: -40px; } }
+.modal { display: none; z-index: 10000; }
+.modal.tiny .modal-content { width: 30%; }
+.modal.small .modal-content { width: 40%; }
+.modal.medium .modal-content { width: 60%; }
+.modal.large .modal-content { width: 70%; }
+.modal.xlarge .modal-content { width: 95%; }
+.modal.open { display: block; }
+.modal.open .modal-content { animation-name: slidedown; animation-duration: 0.3s; }
+.modal .modal-content { top: -40px; opacity: 1; background-color: #FFF; z-index: 100000; position: absolute; width: 60%; max-width: 65rem; margin: 0 auto; left: 0; right: 0; border-radius: 3px; padding: 1.875rem; border: solid 1px #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
+.modal .modal-content .close-modal { font-size: 2.5rem; line-height: 1; position: absolute; top: 0.635rem; right: 1.375rem; color: #AAA; font-weight: bold; cursor: pointer; }
+.modal .modal-content .close-modal:hover { color: #01a982; }
+.modal .modal-content button { margin: 0; }
+.modal .modal-content input[type="number"] { width: 100%; }
+.modal .modal-bg { z-index: 99999; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
+
+.wizard .error { font-size: small; display: none; }
+.wizard input[type="number"].port { width: 80px; }
+.wizard input.ng-invalid.ng-touched ~ .error { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }
+.wizard .ng-invalid input[type="submit"] { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; }
+.wizard .ng-invalid input[type="submit"]:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
+.wizard .port-in-use, .wizard .port-out-of-range { display: none; }
+.wizard .euca-invalid-port-in-use .port-in-use { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }
+.wizard .euca-invalid-port-out-of-range .port-out-of-range { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }

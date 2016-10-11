@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Volume Snapshots page JS
  * @requires AngularJS
  *
  */
 
-angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('VolumeSnapshots', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('VolumeSnapshotsCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.loading = false;

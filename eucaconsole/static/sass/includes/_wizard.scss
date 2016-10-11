@@ -41,7 +41,7 @@
             top: 0; left: 0; right: 0;
             line-height: 2.5rem;
             padding-left: 12px;
-            background-color: $hp-accessible-blue;
+            background-color: $hpe-green;
             color: white;
             @include ellipsis-overflow;
         }
@@ -65,10 +65,10 @@
         .content {
             width: 100%;
             .description {
-                color: $hp-gray-65;
+                color: $hpe-gray;
             }
             .rule-description-label {
-                color: $hp-gray-65;
+                color: $hpe-gray;
             }
         }
     }
@@ -81,18 +81,21 @@
         .chosen-choices {
             li.search-field {
                 input.default {
-                    color: #333;
-                    font-size: 14px;
+                    color: $hpe-lightgray;
+                    font-size: $euca-font-size;
                     font-family: $euca-text-font-family;
                     margin-left: 3px;
                 }
             }
         }
     }
+
+    select {
+        font-family: inherit;
+    }
 }
 
 .summary {
-    border: 1px solid $hp-gray-20;
     background-color: white;
     position: relative;
     top: 2px;
@@ -102,14 +105,14 @@
     label {
         position: relative;
         right: -1rem;
-        color: $euca-grey;
-        font-weight: bold;
+        color: $hpe-gray;
         margin-top: 4px;
         cursor: default;
     }
     .value {
         word-break: break-all;
         line-height: 1rem;
+        color: $hpe-black;
         &.breakword {
             word-break: normal;
             word-wrap: break-word;
@@ -120,13 +123,14 @@
     }
     .title {
         font-weight: bold;
-        border-bottom: 1px solid $hp-gray-65;
+        color: $hpe-gray;
+        border-bottom: 1px solid $hpe-lightgray;
         margin-top: 7px;
         margin-bottom: 0.25rem;
     }
     .section {
         padding: 0.5rem 0;
-        border-bottom: 1px solid $euca-lightgrey;
+        border-bottom: 1px solid $hpe-lightgray;
         &:last-child {
             border-bottom: none;
         }

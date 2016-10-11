@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -112,7 +112,7 @@ class Quotas(object):
                 'PolicyName': self.EUCA_DEFAULT_POLICY,
                 'PolicyDocument': json.dumps(policy)
             }
-            if as_account is not None:
+            if as_account is not None and as_account != '':
                 params['DelegateAccount'] = as_account
             if user is not None:
                 view.log_request(_(u"Creating policy for user {0}").format(user))

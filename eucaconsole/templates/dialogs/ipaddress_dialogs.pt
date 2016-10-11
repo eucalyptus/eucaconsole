@@ -24,7 +24,9 @@
                 </label>
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" id="associate_ip_submit_button" class="button expand" i18n:translate="">Associate Address with Instance</button>
+                <button type="submit" id="associate_ip_submit_button" class="button expand" i18n:translate="">
+                    Associate Address with Instance
+                </button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -37,7 +39,8 @@
                      detailpage_action request.route_path('ipaddress_disassociate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;
                      instance_name eip.instance_name if eip else '';">
-        <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>
+        <h3 i18n:translate="" ng-if="!multipleItemsSelected">Disassociate elastic IP address from instance</h3>
+        <h3 i18n:translate="" ng-if="multipleItemsSelected">Disassociate elastic IP addresses from instances</h3>
         <p i18n:translate="">If you disassociate an elastic IP address from an instance,
             you will no longer be able to connect to that instance using that IP address.</p>
         <p>
@@ -51,9 +54,13 @@
             ${structure:disassociate_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
+                <input type="hidden" name="instance_id" value="{{ instanceID }}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" id="disassociate_ip_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
+                <button type="submit" id="disassociate_ip_submit_button" class="button expand">
+                    <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Disassociate Address from Instance</span>
+                    <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Disassociate Addresses from Instances</span>
+                </button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -62,7 +69,8 @@
         <a href="#" id="disassociate_ip_close_link" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="release-ip-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">Release IP address to cloud</h3>
+        <h3 i18n:translate="" ng-if="!multipleItemsSelected">Release IP address to cloud</h3>
+        <h3 i18n:translate="" ng-if="multipleItemsSelected">Release IP addresses to cloud</h3>
         <p i18n:translate="">If you release an elastic IP address to the cloud, you can no longer associate
             that IP address with any of your instances.
             If the elastic IP address is currently associated with an instance when you release it to the cloud,
@@ -78,7 +86,10 @@
             <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             <input type="hidden" name="allocation_id" value="{{ allocationID }}" />
             <div class="dialog-submit-button">
-                <button type="submit" id="release_ip_submit_button" class="button expand" i18n:translate="">Yes, Release Address to Cloud</button>
+                <button type="submit" id="release_ip_submit_button" class="button expand">
+                    <span i18n:translate="" ng-if="!multipleItemsSelected">Yes, Release Address to Cloud</span>
+                    <span i18n:translate="" ng-if="multipleItemsSelected">Yes, Release Addresses to Cloud</span>
+                </button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>

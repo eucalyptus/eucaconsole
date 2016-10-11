@@ -1,9 +1,11 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Tag Editor JS
  * @requires AngularJS
  *
  */
-angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
+angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils', 'FormComponents'])
     .filter('ellipsis', function () {
         return function (line, num) {
             if (!line) return line;
@@ -178,6 +180,8 @@ angular.module('TagEditor', ['ngSanitize', 'EucaConsoleUtils'])
                 $scope.isTagNotComplete = true;
             } else if ($('#tag-name-input-div').hasClass('error') ||
                 $('#tag-value-input-div').hasClass('error')) {
+                $scope.isTagNotComplete = true;
+            } else if ($scope.tagEditorForm.$invalid) {
                 $scope.isTagNotComplete = true;
             } else {
                 $scope.isTagNotComplete = false;

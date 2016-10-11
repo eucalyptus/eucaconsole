@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -47,18 +47,22 @@ class SecurityGroupsView(LandingPageView):
 
     def __init__(self, request):
         super(SecurityGroupsView, self).__init__(request)
+        self.title_parts = [_(u'Security Groups')]
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.location = self.get_redirect_location('securitygroups')
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
         self.json_items_endpoint = self.get_json_endpoint('securitygroups_json')
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
-        self.filters_form = SecurityGroupsFiltersForm(
-            self.request, vpc_conn=self.vpc_conn, cloud_type=self.cloud_type,
-            formdata=self.request.params or None)
+        with boto_error_handler(self.request, self.location):
+            self.filters_form = SecurityGroupsFiltersForm(
+                self.request, vpc_conn=self.vpc_conn, cloud_type=self.cloud_type,
+                formdata=self.request.params or None)
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         if not self.is_vpc_supported:
             del self.filters_form.vpc_id
+        self.enable_smart_table = True
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
@@ -88,17 +92,24 @@ class SecurityGroupsView(LandingPageView):
 
     @view_config(route_name='securitygroups_delete', request_method='POST')
     def securitygroups_delete(self):
-        securitygroup_id = self.request.params.get('securitygroup_id')
-        security_group = self.get_security_group(securitygroup_id)
+        securitygroup_id_param = self.request.params.get('securitygroup_id')
+        securitygroup_ids = [sgroup_id.strip() for sgroup_id in securitygroup_id_param.split(',')]
+        securitygroup_names = []
         location = self.get_redirect_location('securitygroups')
-        if security_group and self.delete_form.validate():
-            name = security_group.name
-            with boto_error_handler(self.request, location):
-                self.log_request(_(u"Deleting security group {0}").format(name))
-                security_group.delete()
-                prefix = _(u'Successfully deleted security group')
-                msg = u'{0} {1}'.format(prefix, name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+        if self.delete_form.validate():
+            for securitygroup_id in securitygroup_ids:
+                security_group = self.get_security_group(securitygroup_id)
+                name = security_group.name
+                securitygroup_names.append(name)
+                with boto_error_handler(self.request, location):
+                    self.log_request(_(u"Deleting security group {0}").format(name))
+                    security_group.delete()
+            prefix = _(u'Successfully deleted security group')
+            if len(securitygroup_ids) == 1:
+                msg = prefix
+            else:
+                msg = u'{0} {1}'.format(prefix, ', '.join(securitygroup_names))
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to delete security group')
@@ -161,6 +172,16 @@ class SecurityGroupsJsonView(LandingPageView):
                     rules_egress=SecurityGroupsView.get_rules(securitygroup.rules_egress, rule_type='outbound'),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
                 ))
+        incl_elb_groups = self.request.params.get('incl_elb_groups')
+        if incl_elb_groups is not None:
+            elb_conn = self.get_connection(conn_type='elb')
+            elbs = elb_conn.get_all_load_balancers()
+            for elb in elbs:
+                securitygroups.append(dict(
+                    id='',
+                    name=elb.source_security_group.name,
+                    owner_id=elb.source_security_group.owner_alias
+                ))
         return dict(results=securitygroups)
 
     @view_config(route_name='securitygroups_rules_json', renderer='json', request_method='POST')
@@ -205,9 +226,11 @@ class SecurityGroupView(TaggedItemView):
 
     def __init__(self, request):
         super(SecurityGroupView, self).__init__(request)
+        self.title_parts = [_(u'Security Group')]
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.security_group = self.get_security_group()
+        self.title_parts.append(self.security_group.name if self.security_group else _(u'Create'))
         self.security_group_vpc = ''
         if self.security_group and self.security_group.vpc_id:
             self.vpc = self.vpc_conn.get_all_vpcs(vpc_ids=self.security_group.vpc_id)[0]
@@ -231,6 +254,7 @@ class SecurityGroupView(TaggedItemView):
             security_group_names=self.get_security_group_names(),
             controller_options_json=controller_options_json,
             is_vpc_supported=self.is_vpc_supported,
+            tags=self.serialize_tags(self.security_group.tags) if self.security_group else [],
         )
 
     def get_default_vpc_network(self):
@@ -287,7 +311,8 @@ class SecurityGroupView(TaggedItemView):
                     self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = self.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         new_security_group.add_tag(tagname, tagvalue)
                 prefix = _(u'Successfully created security group')
                 msg = u'{0} {1}'.format(prefix, name)

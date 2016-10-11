@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for SecurityGroup JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -30,39 +32,39 @@ describe("SecurityGroupPage", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of isNotValid is true", function() {
-            expect(scope.isNotValid).toBeTruthy();
+        it("should set initial value of isNotValid to true", function() {
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Initial value of isNotChanged is true", function() {
-            expect(scope.isNotChanged).toBeTruthy();
+        it("should set initial value of isNotChanged to true", function() {
+            expect(scope.isNotChanged).toBe(true);
         });
 
-        it("Initial value of isSubmitted is false", function() {
-            expect(scope.isSubmitted).not.toBeTruthy();
+        it("should set initial value of isSubmitted to false", function() {
+            expect(scope.isSubmitted).toBe(false);
         });
 
-        it("Initial value of securityGroupName is undefined", function() {
+        it("should set initial value of securityGroupName to undefined", function() {
             expect(scope.securityGroupName).toEqual(undefined);
         });
 
-        it("Initial value of securityGroupDescription is undefined", function() {
+        it("should set initial value of securityGroupDescription to undefined", function() {
             expect(scope.securityGroupDescription).toEqual(undefined);
         });
 
-        it("Initial value of securityGroupVPC is undefined", function() {
+        it("should set initial value of securityGroupVPC to undefined", function() {
             expect(scope.securityGroupVPC).toEqual(undefined);
         });
     });
 
-    describe("Function initController() Test", function() {
+    describe("#initController", function() {
 
-        it("Should set securityGroupVPC when initController() is called and default_vpc_network JSON is set", function() {
+        it("should set securityGroupVPC when initController() is called and default_vpc_network JSON is set", function() {
             scope.initController('{"default_vpc_network": "vpc-12345678"}');
             expect(scope.securityGroupVPC).toEqual('vpc-12345678');
         });
 
-        it("Should call setWatch() when initController() is called", function() {
+        it("should call setWatch() when initController() is called", function() {
             spyOn(scope, 'setWatch');
             scope.initController('{"default_vpc_network": "vpc-12345678"}');
             expect(scope.setWatch).toHaveBeenCalled();

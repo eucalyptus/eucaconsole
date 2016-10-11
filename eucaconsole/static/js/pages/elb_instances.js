@@ -1,11 +1,13 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview ELB Instances Page JS
  * @requires AngularJS
  *
  */
 
 angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
-    .controller('ELBInstancesPageCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges) {
+    .controller('ELBInstancesPageCtrl', function ($scope, $rootScope, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges) {
         $scope.availabilityZones = [];
         $scope.selectedZoneList = [];
         $scope.unselectedZoneList = [];
@@ -54,10 +56,6 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
             $scope.allInstanceList = options.all_instances;
             $scope.ELBInstanceHealthList = options.elb_instance_health;
             $scope.instanceList = options.instances;
-            // Timeout is needed for the instance selector to be initizalized
-            $timeout(function () {
-                $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
-            }, 2000);
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
@@ -297,6 +295,9 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
                     $scope.unselectedVPCSubnetList.push(subnet);
                 }
             });
+        };
+        $scope.refreshInstances = function () {
+            $rootScope.$broadcast('refreshELBInstances');
         };
     })
 ;

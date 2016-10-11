@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -51,7 +51,7 @@ class KeyPairsViewTests(BaseViewTestCase):
         self.assertEqual(lpview.get('initial_sort_key'), 'name')
         filter_keys = lpview.get('filter_keys')
         self.assertTrue('name' in filter_keys)
-        self.assertTrue('fingerprint' in filter_keys)
+        self.assertTrue('key_fingerprint' in filter_keys)
 
 
 class KeyPairViewTests(BaseViewTestCase):

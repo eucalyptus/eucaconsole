@@ -1,7 +1,7 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <!--! Image Picker widget (Used in Launch Instance wizard) -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
     <div id="image-picker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
          ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${controller_options_json}')">
         <!--! Image picker widget -->
@@ -31,7 +31,7 @@
                             <span i18n:translate="">No images were found matching the criteria.</span>
                         </td>
                     </tr>
-                    <tr ng-show="!itemsLoading" ng-repeat="item in items"
+                    <tr ng-show="!itemsLoading" ng-repeat="item in items" class="rowitem-image"
                         ng-class="{'selected': item.id == selectedImageParam || item.id == imageID}">
                         <td class="icon">
                             <span class="image {{ item.platform_key }}"></span>

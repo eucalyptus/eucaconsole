@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Volume Snapshots JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -30,51 +32,57 @@ describe("VolumeSnapshots", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of loading is false", function() {
-            expect(scope.loading).not.toBeTruthy();
+        it("should set initial value of loading to false", function() {
+            expect(scope.loading).toBe(false);
         });
 
-        it("Initial value of jsonEndpoint is empty", function() {
+        it("should set initial value of jsonEndpoint to empty string", function() {
             expect(scope.jsonEndpoint).toEqual('');
         });
 
-        it("Initial value of initialLoading is true", function() {
-            expect(scope.initialLoading).toBeTruthy();
+        it("should set initial value of initialLoading to true", function() {
+            expect(scope.initialLoading).toBe(true);
         });
 
-        it("Initial value of snapshotID is empty", function() {
+        it("should set initial value of snapshotID to empty string", function() {
             expect(scope.snapshotID).toEqual('');
         });
 
-        it("Initial value of snapshotName is empty", function() {
+        it("should set initial value of snapshotName to empty string", function() {
             expect(scope.snapshotName).toEqual('');
         });
 
-        it("Initial value of imagesURL is empty", function() {
+        it("should set initial value of imagesURL to empty string", function() {
             expect(scope.imagesURL).toEqual('');
         });
 
-        it("Initial value of images is undefined", function() {
+        it("should set initial value of images to undefined", function() {
             expect(scope.images).toEqual(undefined);
         });
     });
 
-    describe("Function initController() Test", function() {
+    describe("#initController", function() {
 
-        it("Should set jsonEndpoint when initController() is called", function() {
+        it("should set jsonEndpoint when initController() is called", function() {
             scope.initController('a', 'b');
             expect(scope.jsonEndpoint).toEqual('a');
         });
 
-        it("Should set imagesURL when initController() is called", function() {
+        it("should set imagesURL when initController() is called", function() {
             scope.initController('a', 'b');
             expect(scope.imagesURL).toEqual('b');
         });
 
-        it("Should call getVolumeSnapshots() when initController() is called", function() {
+        it("should call getVolumeSnapshots() when initController() is called", function() {
             spyOn(scope, 'getVolumeSnapshots');
             scope.initController('a', 'b');
             expect(scope.getVolumeSnapshots).toHaveBeenCalled();
+        });
+
+        it("should call setFocus() when initController() is called", function() {
+            spyOn(scope, 'setFocus');
+            scope.initController('a', 'b');
+            expect(scope.setFocus).toHaveBeenCalled();
         });
     });
 });

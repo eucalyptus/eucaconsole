@@ -70,6 +70,7 @@ class NgNonBindableOptionSelect(Select):
 class BaseSecureForm(SecureForm):
     def __init__(self, request, **kwargs):
         self.request = request
+        self.region = request.session.get('region')
         super(BaseSecureForm, self).__init__(**kwargs)
         if hasattr(request, 'session'):
             self.cloud_type = request.session.get('cloud_type', 'euca')
@@ -123,36 +124,39 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if not zones:
-            zones.extend(self.get_availability_zones(region))
+            zones.extend(self.get_availability_zones(self.conn.host))
         for zone in zones:
             choices.append((zone.name, zone.name))
         return sorted(choices)
 
-    def get_availability_zones(self, region):
+    def get_availability_zones(self, ufshost):
         @extra_long_term.cache_on_arguments(namespace='availability_zones')
-        def _get_zones_cache_(self, region):
-            return _get_zones_(self, region)
+        def _get_zones_cache_(self, ufshost):
+            return _get_zones_(self, ufshost)
 
-        def _get_zones_(self, region):
+        def _get_zones_(self, ufshost):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
+            for zone in zones:
+                del zone.connection
+                del zone.region
             return zones
         try:
-            return _get_zones_cache_(self, region)
+            return _get_zones_cache_(self, ufshost)
         except pylibmc.Error:
-            return _get_zones_(self, region)
+            return _get_zones_(self, ufshost)
 
-    def instances(self, instances=None, states=None, escapebraces=True):
+    def instances(self, instances=None, states=None, escapebraces=True, add_blank=True, id_first=False):
         from ..views import TaggedItemView
-        choices = [('', _(u'Select instance...'))]
+        choices = [('', _(u'Select instance...'))] if add_blank else []
         instances = instances or []
         if not instances and self.conn is not None:
             instances = self.conn.get_only_instances()
             if self.conn:
                 for instance in instances:
                     value = instance.id
-                    label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces)
+                    label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces, id_first=id_first)
                     if states is None:
                         choices.append((value, label))
                     else:
@@ -183,6 +187,9 @@ class ChoicesManager(object):
                 types = []
                 if self.conn is not None:
                     types = self.conn.get_all_instance_types()
+                for inst_type in types:
+                    del inst_type.connection
+                    del inst_type.region
                 return types
             try:
                 types.extend(_get_instance_types_cache_(self))
@@ -201,16 +208,18 @@ class ChoicesManager(object):
             else:
                 return [(name, name) for name, description in AWS_INSTANCE_TYPE_CHOICES]
 
-    def volumes(self, volumes=None, escapebraces=True):
+    def volumes(self, volumes=None, escapebraces=True, add_blank=True, id_first=False):
         from ..views import TaggedItemView
-        choices = [('', _(u'Select volume...'))]
+        choices = []
+        if add_blank:
+            choices.append(('', _(u'Select volume...')))
         volumes = volumes or []
         if not volumes and self.conn is not None:
             volumes = self.conn.get_all_volumes()
             if self.conn:
                 for volume in volumes:
                     value = volume.id
-                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces)
+                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces, id_first=id_first)
                     choices.append((value, label))
         return choices
 
@@ -438,7 +447,7 @@ class ChoicesManager(object):
 
     # VPC connection type choices
 
-    def vpc_networks(self, vpc_networks=None, add_blank=True,  escapebraces=True):
+    def vpc_networks(self, vpc_networks=None, add_blank=True, escapebraces=True):
         from ..views import TaggedItemView
         choices = []
         if add_blank:
@@ -499,7 +508,7 @@ class CFSampleTemplateManager(object):
                     name = file_item[:file_item.find('.')]
                 euca_templates.append((name, file_item))
             if len(euca_templates) > 0:
-                templates.append((dir_name, dir_name[dir_name.rindex('/')+1:], euca_templates))
+                templates.append((dir_name, dir_name[dir_name.rindex('/') + 1:], euca_templates))
         if self.s3_bucket is not None:
             admin_templates = []
             bucket_items = self.s3_bucket.list()

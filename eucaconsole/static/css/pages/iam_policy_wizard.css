@@ -2,17 +2,19 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.tabs { max-height: 2.6rem !important; }
-.tabs dd { position: relative; top: 1px; z-index: 999; }
-.tabs dd a { padding: 10px 32px 6px 24px; color: #5a5a5a; background-color: transparent; font-weight: bold; }
-.tabs dd a:hover { color: #007dba; background-color: transparent; }
-.tabs dd.active a { color: #007dba; background-color: white; border: 1px solid #cccccc; border-bottom-color: white; padding: 9px 31px 5px 23px; }
+.tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }
+.tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
+.tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+.tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
+.tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
+.tabs.switcher { display: inline-block; }
+.tabs.switcher dd:last-child { padding-right: 0; }
 
 .tabs-content { background-color: white; }
 .tabs-content p { line-height: 1.3rem; }
 .tabs-content .small-10.columns { padding-left: 0; }
 .tabs-content .content { margin-top: 8px; }
-.tabs-content .content .choice { border-bottom: 1px solid #ccc; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
+.tabs-content .content .choice { border-bottom: 1px solid #cccccc; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
 .tabs-content .content .choice:last-child { border-bottom: none; }
 .tabs-content .content .choice .expando i { margin-right: 8px; }
 .tabs-content .content .choice .expando i.fi-minus { margin-right: 7px; }
@@ -21,15 +23,14 @@
 .tabs-content .content .choice .fileupload { margin-left: 2rem; }
 .tabs-content .content .choice input[type=file] { display: inline-block; width: 90%; margin-left: 8px; }
 
-#policy-preview { background-color: white; border: 1px solid #cccccc; padding: 1rem; margin-top: 40px; }
+#policy-preview { background-color: white; padding: 1rem; margin-top: 40px; }
 #policy-preview input[type=text], #policy-preview textarea { background-color: white; }
-#policy-preview h6.title { font-weight: bold; color: #5a5a5a; margin-bottom: 1rem; }
 
-#policy-generator { border-color: #ccc; border-left: none; border-right: none; width: 100%; }
-#policy-generator tr.namespace { border-top: 1px solid #ccc; background-color: white; }
+#policy-generator { border-color: #cccccc; border-left: none; border-right: none; width: 100%; }
+#policy-generator tr.namespace { border-top: 1px solid #cccccc; background-color: white; }
 #policy-generator tr.namespace td { font-size: 1rem; }
-#policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; width: 40px; }
-#policy-generator td { font-size: 0.9rem; line-height: 1rem; }
+#policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; font-size: 18px; width: 40px; }
+#policy-generator td { font-size: 16px; line-height: 1rem; }
 #policy-generator td.allow, #policy-generator td.deny { text-align: center; }
 #policy-generator td h6 { margin-bottom: 4px; }
 #policy-generator td .resource-wrapper { vertical-align: top; margin-bottom: 1rem; }
@@ -48,12 +49,12 @@
 #policy-generator td .advanced .chosen-container.chosen-container-single .chosen-choices { line-height: 1rem; }
 #policy-generator td .advanced .chosen-search input[type=text] { width: 100%; }
 #policy-generator td label { margin-bottom: 2px; margin-top: 6px; }
-#policy-generator td i.tick { color: #ccc; font-size: 1.2rem; }
-#policy-generator td i.tick.fi-check.selected { color: #007dba; }
+#policy-generator td i.tick { color: #cccccc; font-size: 1.2rem; }
+#policy-generator td i.tick.fi-check.selected { color: #425563; }
 #policy-generator td i.tick.fi-x.selected { color: darkred; }
 
 #create-iam-policy-btn { margin-top: 1rem; }
 
 #hand-edited-warning { color: darkred; margin-top: -0.5rem; }
 
-.CodeMirror { border: 1px solid #ccc; min-height: 24rem; }
+.CodeMirror { border: 1px solid #cccccc; min-height: 24rem; }

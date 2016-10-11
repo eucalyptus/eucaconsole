@@ -87,6 +87,11 @@
                                       or click the Share button to create a shareable private link"
                                ></i>
                             <a href="${item_link}" class="breakword" target="_blank">${item_link}</a>
+                            <small tal:condition="ufshost_error" style="display:block" class="error">
+                                <i class="fi-alert"></i>
+                                <span i18n:translate="">This link will not work because it includes localhost. Please ask your administrator to change the ufshost setting to the fully qualified domain name or the IP address of the machine running User Facing Services.
+                                </span>
+                            </small>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="not item_is_public">

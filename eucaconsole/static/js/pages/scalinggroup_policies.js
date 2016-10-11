@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Scaling Group Policies page JS
  * @requires AngularJS
  *
  */
 
-angular.module('ScalingGroupPolicies', [])
+angular.module('ScalingGroupPolicies', ['CustomFilters'])
     .controller('ScalingGroupPoliciesCtrl', function ($scope) {
         $scope.policyName = '';
         $scope.deleteModal = $('#delete-policy-modal');

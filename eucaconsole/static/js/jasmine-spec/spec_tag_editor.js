@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Tag Editor JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -6,7 +8,9 @@
 
 describe("TagEditor", function() {
 
-    beforeEach(angular.mock.module('TagEditor'));
+    beforeEach(function () {
+        angular.mock.module('TagEditor');
+    });
 
     var scope, ctrl;
     // inject the $controller and $rootScope services
@@ -18,6 +22,10 @@ describe("TagEditor", function() {
         ctrl = $controller('TagEditorCtrl', {
             $scope: scope
         });
+        // Mock form controller
+        scope.tagEditorForm = {
+            '$invalid': false
+        };
     }));
 
     beforeEach(function() {

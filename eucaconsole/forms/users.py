@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -25,13 +25,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for Users 
+Forms for Users
 
 """
-import simplejson as json
-
-from boto.exception import BotoServerError
-
 import wtforms
 from wtforms import validators
 from wtforms import widgets
@@ -46,8 +42,8 @@ class UserForm(BaseSecureForm):
        Only need to initialize as a secure form to generate CSRF token
     """
     # these fields used for new user form
-    random_password = wtforms.BooleanField(label=_(u"Create and download random password"))
-    access_keys = wtforms.BooleanField(label=_(u"Create and download access keys"))
+    random_password = wtforms.BooleanField(label=_(u"Create and download random password"), default="checked")
+    access_keys = wtforms.BooleanField(label=_(u"Create and download access keys"), default="checked")
     allow_all = wtforms.BooleanField(label=_(u"Allow read/write access to all resource except users and groups"))
 
     path = TextEscapedField(label=_(u"Path"), default="/")
@@ -91,13 +87,16 @@ class UserForm(BaseSecureForm):
                         if val1 == account:
                             self.as_account.choices[idx] = ('', account)
 
+
 class DisableUserForm(BaseSecureForm):
     """CSRF-protected form to disable a user"""
     pass
 
+
 class EnableUserForm(BaseSecureForm):
     """CSRF-protected form to enable a user"""
     random_password = wtforms.BooleanField(label=_(u"Create and download random password"))
+
 
 class ChangePasswordForm(BaseSecureForm):
     """CSRF-protected form to change a password """
@@ -109,6 +108,7 @@ class ChangePasswordForm(BaseSecureForm):
         ],
         widget=widgets.PasswordInput())
 
+
 class GeneratePasswordForm(BaseSecureForm):
     """CSRF-protected form to generate a random password"""
     password = wtforms.PasswordField(
@@ -119,15 +119,18 @@ class GeneratePasswordForm(BaseSecureForm):
         ],
         widget=widgets.PasswordInput())
 
+
 class DeleteUserForm(BaseSecureForm):
     """CSRF-protected form to delete a user"""
     pass
+
 
 class AddToGroupForm(BaseSecureForm):
     group_error_msg = _(u'Group is required')
     group_name = wtforms.SelectField(
         validators=[validators.InputRequired(message=group_error_msg)],
     )
+
     def __init__(self, request, groups=None, **kwargs):
         super(AddToGroupForm, self).__init__(request, **kwargs)
         if groups is not None:
@@ -135,4 +138,3 @@ class AddToGroupForm(BaseSecureForm):
             self.group_name.choices = choices
         else:
             self.group_name.choices = [('', '')]
-

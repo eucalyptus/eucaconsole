@@ -1,4 +1,4 @@
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -98,14 +98,6 @@ def instance_dialogs(context, request, instance=None, instance_name=None, landin
     )
 
 
-@panel_config('terminate_instances_dialog', renderer='../templates/dialogs/terminate_instances_dialog.pt')
-def terminate_instances_dialog(context, request, batch_terminate_form=None):
-    """Batch-terminate instances dialog"""
-    return dict(
-        batch_terminate_form=batch_terminate_form,
-    )
-
-
 @panel_config('volume_dialogs', renderer='../templates/dialogs/volume_dialogs.pt')
 def volume_dialogs(context, request, volume=None, volume_name=None, instance_name=None, landingpage=False,
                    attach_form=None, detach_form=None, delete_form=None):
@@ -180,12 +172,21 @@ def create_alarm_dialog(context, request, alarm_form=None, alarm_choices=None, r
     )
 
 
+@panel_config('delete_alarm_dialog', renderer='../templates/dialogs/delete_alarm_dialog.pt')
+def delete_alarm_dialog(context, request, modal_size='medium', detail_page=False):
+    """Delete alarm confirmation dialog"""
+    return dict(
+        modal_size=modal_size,
+        detail_page=detail_page,
+    )
+
+
 @panel_config('keypair_dialogs', renderer='../templates/dialogs/keypair_dialogs.pt')
 def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_form=None):
     """ Modal dialogs for Keypair landing and detail page."""
     return dict(
         keypair=keypair,
-        keypair_name=BaseView.escape_braces(keypair.name) if keypair else '',
+        keypair_name=BaseView.escape_braces(keypair['KeyName']) if keypair else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )
@@ -355,6 +356,14 @@ def elb_bucket_access_log_dialog(context, request):
     return dict()
 
 
+@panel_config('elb_security_group_warning_dialog', renderer='../templates/dialogs/elb_security_group_warning_dialog.pt')
+def elb_security_group_warning_dialog(context, request, create=False):
+    """ Modal confirmation when the security group rules for an ELB don't cover the listener and health check ports"""
+    return dict(
+        create=create
+    )
+
+
 @panel_config('cloudwatch_chart_dialog', renderer='../templates/dialogs/cloudwatch_chart_dialog.pt')
 def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_choices=None):
     """ Modal dialog for large CloudWatch chart"""
@@ -364,3 +373,9 @@ def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_c
         duration_choices=duration_choices,
         statistic_choices=statistic_choices,
     )
+
+
+@panel_config('ufshost_warn_dialog', renderer='../templates/dialogs/ufshost_warn_dialog.pt')
+def ufshost_warn_dialog(context, request):
+    """ Modal warning when trying to create a stack, but ufshost set to localhost"""
+    return dict()

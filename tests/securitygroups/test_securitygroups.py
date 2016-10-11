@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -40,7 +40,7 @@ from eucaconsole.views import TaggedItemView
 from eucaconsole.views.panels import form_field_row
 from eucaconsole.views.securitygroups import SecurityGroupsView, SecurityGroupView, SecurityGroupsFiltersForm
 
-from tests import BaseViewTestCase, BaseFormTestCase
+from tests import BaseTestCase, BaseViewTestCase, BaseFormTestCase
 
 
 class SecurityGroupsViewTests(BaseViewTestCase):
@@ -173,3 +173,16 @@ class SecurityGroupsFiltersFormTestCaseOnAWS(BaseFormTestCase):
     def test_security_groups_filters_form_vpc_id_choices_on_aws(self):
         self.assertTrue(('None', _(u'No VPC')) in self.form.vpc_id.choices)
 
+
+class SecurityGroupTaggedItemViewTestCase(BaseTestCase):
+
+    def test_security_group_tags_list(self):
+        tags_list = [
+            {'name': 'foo', 'value': 'bar'},
+            {'name': 'baz', 'value': 'bat'},
+        ]
+        expected_tags_dict = {
+            'foo': 'bar',
+            'baz': 'bat'
+        }
+        self.assertEqual(TaggedItemView.normalize_tags(tags_list), expected_tags_dict)

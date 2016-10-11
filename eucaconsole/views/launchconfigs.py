@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and AWS launch configurations
 import simplejson as json
 from urllib import quote, urlencode
 
+from boto.exception import BotoServerError
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 
 from pyramid.httpexceptions import HTTPFound
@@ -54,7 +55,7 @@ from . import guess_mimetype_from_buffer
 class LaunchConfigsView(LandingPageView):
     def __init__(self, request):
         super(LaunchConfigsView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Launch Configs')]
         self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.iam_conn = self.get_connection(conn_type="iam")
@@ -130,6 +131,7 @@ class LaunchConfigsJsonView(LandingPageView):
         with boto_error_handler(request):
             self.items = self.get_items()
             self.securitygroups = self.get_all_security_groups()
+            self.scaling_groups = self.autoscale_conn.get_all_groups()
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='POST')
     def launchconfigs_json(self):
@@ -139,24 +141,34 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_array = []
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
+            launchconfig_sg_mapping = self.get_launchconfigs_sg_mapping()
             for launchconfig in self.filter_items(self.items):
                 security_groups = self.get_security_groups(launchconfig.security_groups)
                 security_groups_array = sorted({
                     'name': group.name,
                     'id': group.id,
                     'rules_count': self.get_security_group_rules_count_by_id(group.id)
-                    } for group in security_groups)
+                } for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
+                image_name = ''
+                root_device_type = ''
+                image = launchconfigs_image_mapping.get(image_id)
+                if image:
+                    image_name = image.get('name')
+                    root_device_type = image.get('root_device_type')
                 launchconfigs_array.append(dict(
                     created_time=self.dt_isoformat(launchconfig.created_time),
                     image_id=image_id,
-                    image_name=launchconfigs_image_mapping.get(image_id),
+                    image_name=image_name,
+                    instance_type=launchconfig.instance_type,
                     instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
                     security_groups=security_groups_array,
+                    root_device_type=root_device_type,
                     in_use=name in scalinggroup_launchconfig_names,
+                    scaling_group=launchconfig_sg_mapping.get(name)
                 ))
             return dict(results=launchconfigs_array)
 
@@ -166,16 +178,26 @@ class LaunchConfigsJsonView(LandingPageView):
     def get_launchconfigs_image_mapping(self):
         launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.items]
         launchconfigs_image_ids = list(set(launchconfigs_image_ids))
-        launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
+        try:
+            launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
+        except BotoServerError:
+            return dict()
         launchconfigs_image_mapping = dict()
         for image in launchconfigs_images:
-            launchconfigs_image_mapping[image.id] = image.name or image.id
+            launchconfigs_image_mapping[image.id] = dict(
+                name=image.name or image.id,
+                root_device_type=image.root_device_type
+            )
         return launchconfigs_image_mapping
 
     def get_scalinggroups_launchconfig_names(self):
-        if self.autoscale_conn:
-            return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
-        return []
+        return [group.launch_config_name for group in self.scaling_groups]
+
+    def get_launchconfigs_sg_mapping(self):
+        ret = dict()
+        for sg in self.scaling_groups:
+            ret[sg.launch_config_name] = sg.name
+        return ret
 
     def get_all_security_groups(self):
         if self.ec2_conn:
@@ -227,6 +249,7 @@ class LaunchConfigView(BaseView):
 
     def __init__(self, request):
         super(LaunchConfigView, self).__init__(request)
+        self.title_parts = [_(u'Launch Config'), request.matchdict.get('id')]
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type="iam")
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
@@ -240,7 +263,7 @@ class LaunchConfigView(BaseView):
         if self.launch_config and self.launch_config.instance_profile_name:
             arn = self.launch_config.instance_profile_name
             try:
-                profile_name = arn[(arn.rindex('/')+1):]
+                profile_name = arn[(arn.rindex('/') + 1):]
             except ValueError:
                 profile_name = arn
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
@@ -308,7 +331,10 @@ class LaunchConfigView(BaseView):
 
     def get_image(self):
         if self.ec2_conn:
-            images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
+            try:
+                images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
+            except BotoServerError:
+                return None
             image = images[0] if images else None
             if image is None:
                 return None
@@ -388,7 +414,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
 
     def __init__(self, request):
         super(CreateLaunchConfigView, self).__init__(request)
-        self.request = request
+        self.title_parts = [_(u'Launch Config'), _(u'Create')]
         self.image = self.get_image()
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
@@ -407,9 +433,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.owner_choices = self.get_owner_choices()
 
         controller_options_json = BaseView.escape_json(json.dumps({
-            'securitygroups_choices': dict(self.create_form.securitygroup.choices),
-            'keypair_choices': dict(self.create_form.keypair.choices),
-            'role_choices': dict(self.create_form.role.choices),
+            'securitygroups_choices': self.list_options(self.create_form.securitygroup.choices),
+            'keypair_choices': self.list_options(self.create_form.keypair.choices),
+            'role_choices': self.list_options(self.create_form.role.choices),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
@@ -497,6 +523,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
+    @staticmethod
+    def list_options(options):
+        return [dict(id=opt[0], label=opt[1]) for opt in options]
+
     def get_security_groups(self):
         if self.conn:
             return self.conn.get_all_security_groups()
@@ -545,9 +575,10 @@ class CreateMoreLaunchConfigView(BlockDeviceMappingItemView):
         with boto_error_handler(request):
             lc = autoscale_conn.get_all_launch_configurations(names=[name])
             launch_config = lc[0]
-            images = self.get_connection().get_all_images(image_ids=[launch_config.image_id])
+            images = self.get_connection().get_all_images(filters={'image_id': launch_config.image_id})
             self.image = images[0] if images else None
-            self.image.platform_name = ImageView.get_platform(self.image)[2]
+            if self.image:
+                self.image.platform_name = ImageView.get_platform(self.image)[2]
 
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,

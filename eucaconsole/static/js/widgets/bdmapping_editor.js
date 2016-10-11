@@ -1,12 +1,18 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Block Device Mapping Editor JS
  * @requires AngularJS
  *
  */
 angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
     .controller('BlockDeviceMappingEditorCtrl', function ($scope, $http, $timeout, eucaUnescapeJson) {
-        $scope.bdmTextarea = $('#bdmapping');
-        $scope.bdMapping = undefined;
+        var bdmTextarea = $('#bdmapping');
+        var additionalStorageConfigured = function (mapping) {
+            return $scope.bdMapping && !angular.equals(mapping, $scope.originalBdMapping);
+        };
+
+        $scope.bdMapping = {};
         $scope.ephemeralCount = 0;
         $scope.isNotValid = true;
         $scope.snapshotJsonURL = '';
@@ -41,8 +47,24 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                     Notify.failure(errorMsg);
                   });
             });
+
             $scope.$watch('newSize', function () {
                 $scope.checkValidInput();
+            });
+
+            $scope.$watch('bdMapping', function (newMapping) {
+                $scope.$emit('bdMappingChange', additionalStorageConfigured(newMapping));
+            });
+
+            var devicesMappings = Object.keys($scope.bdMapping || {});
+            $http.get("/instances/new/nextdevice/json", {
+                params: {
+                    currentMappings: devicesMappings
+                }
+            }).then(function (oData) {
+                if(oData.data && oData.data.results) {
+                    $scope.newMappingPath = oData.data.results;
+                }
             });
         };
         $scope.checkValidInput = function () {
@@ -73,7 +95,7 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
         $scope.initBlockDeviceMappingEditor = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bdMapping = options.bd_mapping;
-            $scope.bdmTextarea.val(JSON.stringify($scope.bdMapping));
+            bdmTextarea.val(JSON.stringify($scope.bdMapping));
             $scope.disableDOT = options.disable_dot;
             $scope.snapshotJsonURL = options.snapshot_size_json_endpoint;
             if ($.isEmptyObject($scope.bdMapping)) {
@@ -89,7 +111,8 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
             } else {
                 $scope.bdMapping = bdm;
             }
-            $scope.bdmTextarea.val(JSON.stringify(bdm));
+            $scope.originalBdMapping = angular.copy(bdm);
+            bdmTextarea.val(JSON.stringify(bdm));
             $scope.setInitialNewValues();
             $scope.initChosenSelector();
         });
@@ -131,21 +154,22 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                 'size': $scope.newSize,
                 'delete_on_termination': $scope.newDOT
             };
-            $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+            bdmTextarea.val(JSON.stringify(bdMapping));
+
             $scope.setInitialNewValues();  // Reset values
             $scope.initChosenSelector();
             newMappingEntry.focus();
         };
         $scope.removeDevice = function (key) {
-            var bdMapping = $scope.bdMapping;
-            delete bdMapping[key];
-            $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+            delete $scope.bdMapping[key];
+            bdmTextarea.val(JSON.stringify($scope.bdMapping));
+            $scope.$emit('bdMappingChange', additionalStorageConfigured($scope.bdMapping));
         };
         $scope.isEphemeral = function(val) {
             return !!(val.virtual_name && val.virtual_name.indexOf('ephemeral') === 0);
         };
         $scope.updateRootDeviceSize = function ($event, key, is_root) {
-            var bdMappingText = $scope.bdmTextarea.val();
+            var bdMappingText = bdmTextarea.val();
             if (bdMappingText && is_root) {
                 var bdMapping = JSON.parse(bdMappingText);
                 var rootDevice = bdMapping[key] || '';
@@ -153,18 +177,18 @@ angular.module('BlockDeviceMappingEditor', ['EucaConsoleUtils'])
                     var size = parseInt($($event.target).val(), 10);
                     bdMapping[key].size = size;
                     $scope.bdMapping[key].size = size;
-                    $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+                    bdmTextarea.val(JSON.stringify(bdMapping));
                 }
             }
         };
         $scope.updateRootDeviceDelete = function ($event, key, is_root) {
-            var bdMappingText = $scope.bdmTextarea.val();
+            var bdMappingText = bdmTextarea.val();
             if (bdMappingText && is_root) {
                 var bdMapping = JSON.parse(bdMappingText);
                 var rootDevice = bdMapping[key] || '';
                 if (rootDevice) {
                     bdMapping[key].delete_on_termination = ($($event.target).val().toLowerCase() === 'true');
-                    $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+                    bdmTextarea.val(JSON.stringify(bdMapping));
                 }
             }
         };

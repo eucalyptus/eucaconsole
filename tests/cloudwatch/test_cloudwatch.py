@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -44,13 +44,13 @@ class CloudWatchAPITestCase(BaseTestCase):
             (3 * hour, 300),
             (6 * hour, 600),
             (9 * hour, 600),
-            (12 * hour, 600),
+            (12 * hour, 1200),
             (1 * day, 1 * hour),
             (3 * day, 3 * hour),
             (7 * day, 6 * hour),
             (14 * day, 6 * hour),
         ]
-        adjust_granularity = CloudWatchAPIMixin.adjust_granularity
+        adjust_granularity = CloudWatchAPIMixin.modify_granularity
         for duration, expected_granularity in test_durations:
             granularity = adjust_granularity(duration)
             self.assertEqual(granularity, expected_granularity)

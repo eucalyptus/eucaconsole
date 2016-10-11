@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="StacksPage" ng-controller="StacksPageCtrl"
-    ng-init="initController('${delete_stack_url}')">
+    ng-init="initController('${delete_stack_url}', '${update_stack_url}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('stacks', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -18,13 +18,22 @@
         <h3 id="pagetitle"><strong i18n:translate="">Stacks</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="" id="create-stack-btn"
+                <a tal:condition="not: ufshost_error" class="button" i18n:translate="" id="create-stack-btn"
                    href="${request.route_path('stack_new')}">Create Stack</a>
+                <a tal:condition="ufshost_error" class="button" data-reveal-id="ufshost-warn-dialog" i18n:translate="">Create Stack</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                    <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
+                        <a ng-href="{{ update_stack_url | stringular: (item.name | escapeURL) }}"
+                           i18n:translate="">Update stack</a>
+                    </li>
+                    <li ng-show="stackStatus === 'Update-in-progress'">
+                        <a id="cancel-update-stack-action" ng-click="showCancelUpdateModal(item)"
+                           i18n:translate="">Cancel update</a>
+                    </li>
                     <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
                     </li>
@@ -37,7 +46,7 @@
                 </div>
                 <div>
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
-                    {{ item.description }}
+                    <span title="{{ item.description }}">{{ item.description | ellipsis:125 }}</span>
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
@@ -50,7 +59,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
                 <td class="status">
-                    <span class="label radius status {{ item.status }}">{{ item.status.replace('-', ' ').replace('-', ' ') }}</span>
+                    <span class="label radius status {{ item.status.toLowerCase() }}">{{ displayStatus(item.status) }}</span>
                     <span class="busy" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td class="breakword">{{ item.description }}</td>
@@ -61,6 +70,14 @@
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                             <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
+                                <a ng-href="{{ update_stack_url | stringular: (item.name | escapeURL) }}"
+                                   i18n:translate="">Update stack</a>
+                            </li>
+                            <li ng-show="stackStatus === 'Update-in-progress'">
+                                <a id="cancel-update-stack-action" ng-click="showCancelUpdateModal(item)"
+                                   i18n:translate="">Cancel update</a>
+                            </li>
+                            <li ng-show="item.status !== 'delete-complete' &amp;&amp; !item.transitional">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete stack</a>
                             </li>
                         </ul>
@@ -70,12 +87,19 @@
         </div>
         <!--! Modal dialogs -->
         ${panel('stack_dialogs', delete_form=delete_form, landingpage=True)}
+        ${panel('ufshost_warn_dialog')}
+        <stack-cancel-update-dialog template="${request.route_path('render_template', subpath='stacks/stack_cancel_update_dialog')}" stack-name="stackName">
+        </stack-cancel-update-dialog>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-filter.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/stack_cancel_update_dialog.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stacks.js')}"></script>
 </div>
 

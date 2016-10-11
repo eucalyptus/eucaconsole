@@ -2,8 +2,9 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -81,8 +82,8 @@
                         </div>
                     </div>
                     <hr />
-                    <div>
-                        ${panel('tag_editor',tags=elb_tags, show_name_tag=True)}
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" tal:content="tags | structure"></tag-editor>
                     </div>
                     <hr />
                     <h6 class="section-label" i18n:translate="">Access logs</h6>
@@ -96,7 +97,7 @@
                             <span i18n:translate="">OR:</span>
                             <a i18n:translate="" data-reveal-id="create-bucket-modal">Create bucket</a>
                         </div>
-                        ${panel('form_field', field=elb_form['bucket_prefix'], stack_label=True)}
+                        ${panel('form_field', field=elb_form['bucket_prefix'], pattern=elb_form.PREFIX_PATTERN, stack_label=True)}
                         ${panel('form_field', field=elb_form['collection_interval'], stack_label=True)}
                         <div tal:condition="logs_url">
                             <a href="${logs_url}" i18n:translate="" target="_blank">View latest logs</a>
@@ -118,7 +119,7 @@
                     <hr />
                     <div class="save-changes-button">
                         <button type="submit" class="button" id="save-changes-btn-general"
-                            ng-click="submitSaveChanges($event, 'general-tab')"
+                            ng-click="updateELB($event)"
                             ng-disabled="isNotChanged || listenerArray.length === 0">
                             <span i18n:translate="">Save Changes</span>
                         </button>
@@ -143,11 +144,13 @@
         ${panel('elb_security_policy_dialog', security_policy_form=security_policy_form, latest_predefined_policy=latest_predefined_policy)}
         ${panel('create_bucket_dialog', create_bucket_form=create_bucket_form)}
         ${panel('elb_bucket_access_log_dialog')}
+        ${panel('elb_security_group_warning_dialog', create=False)}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elb_view.js')}"></script>
 </div>
 

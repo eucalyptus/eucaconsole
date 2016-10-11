@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview SecurityGroup Detail Page JS
  * @requires AngularJS
  *
  */
 
-angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules','EucaConsoleUtils'])
+angular.module('SecurityGroupPage', ['TagEditorModule', 'SecurityGroupRules','EucaConsoleUtils'])
     .controller('SecurityGroupPageCtrl', function ($scope, eucaUnescapeJson) {
         $scope.isNotValid = true;
         $scope.isNotChanged = true;

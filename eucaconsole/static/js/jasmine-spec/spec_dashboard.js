@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Dashboard JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -60,7 +62,7 @@ describe("Dashboard", function() {
 
         it("Should call setInitialZone() when initController() is called", function() {
             spyOn(scope, 'setInitialZone');
-            scope.initController('{}');
+            scope.initController('{"json_items_url": ""}');
             expect(scope.setInitialZone).toHaveBeenCalled();
         });
     });

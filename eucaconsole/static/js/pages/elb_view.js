@@ -1,15 +1,25 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview ELB Detail Page JS (General tab)
  * @requires AngularJS
  *
  */
 
-angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurityPolicyEditor', 'TagEditor', 'CreateBucketDialog'])
+angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurityPolicyEditor', 'TagEditorModule',
+                           'CreateBucketDialog', 'ELBSecurityGroupRulesWarning'])
     .controller('ELBPageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleUnsavedChanges,
-                                         eucaHandleError, eucaFixHiddenTooltips) {
+                                         eucaHandleError, eucaFixHiddenTooltips, eucaCheckELBSecurityGroupRules) {
         $scope.elbForm = undefined;
         $scope.listenerArray = [];
-        $scope.securityGroups = [];
+        $scope.securityGroups = [];  // Selected security group ids (e.g. ["sg-123456", ...])
+        $scope.securityGroupNames = [];  // Selected security group names (e.g. ["sgroup-one", ...])
+        $scope.securityGroupChoices = {};  // id/name mapping of security group choices (e.g. {"sg-123": 'foo', ...})
+        $scope.securityGroupCollection = [];  // Security group object choices
+        $scope.selectedSecurityGroups = [];  // Selected security group objects
+        $scope.loadBalancerInboundPorts = [];
+        $scope.loadBalancerOutboundPorts = [];
+        $scope.pingPort = '';
         $scope.certificateARN = '';
         $scope.certificateName = '';
         $scope.newCertificateName = '';
@@ -52,6 +62,8 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
             if (elbForm.length > 0) {
                 $scope.elbForm = elbForm;
             }
+            $scope.securityGroupJsonEndpoint = options.securitygroups_json_endpoint;
+            $scope.pingPort = options.ping_port;
             $scope.bucketName = $scope.bucketNameField.val();
             $scope.bucketNameChoices = options.bucket_choices;
             $scope.loggingEnabled = options.logging_enabled;
@@ -91,6 +103,25 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
         $scope.initChosenSelectors = function () {
             $('#securitygroup').chosen({'width': '70%', search_contains: true});
         };
+        $scope.getAllSecurityGroups = function (vpc) {
+            if (!vpc || vpc === 'None') {
+                return;
+            }
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token + "&vpc_id=" + vpc;
+            $http({
+                method:'POST', url:$scope.securityGroupJsonEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupCollection = results;
+                results.forEach(function (sGroup){
+                    $scope.securityGroupChoices[sGroup.id] = sGroup.name;
+                });
+            }).error(function (oData) {
+                eucaHandleError(oData, status);
+            });
+        };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);
             eucaFixHiddenTooltips();
@@ -103,6 +134,14 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                 $scope.$apply();
             });
             $scope.$watch('loggingEnabled', function (newVal, oldVal) {
+               // The Access Logs bucket name field is required only if logging is enabled
+                var bucketNameField = $('#bucket_name');
+                if (newVal) {
+                    bucketNameField.attr('required', 'required');
+                } else {
+                    bucketNameField.removeAttr('required');
+                }
+                // Open Access Logs confirmation dialog when appropriate
                 if (newVal !== oldVal) {
                     $scope.isNotChanged = false;
                     if (newVal) {
@@ -128,6 +167,9 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
                     $scope.isNotChanged = false;
                 }
             }, true);
+            $scope.$watch('vpcNetwork', function () {
+                $scope.getAllSecurityGroups($scope.vpcNetwork);
+            });
             $scope.$on('eventUpdateListenerArray', function ($event, listenerArray) {
                 if ($scope.isInitComplete === true) {
                     $scope.isNotChanged = false;
@@ -424,6 +466,36 @@ angular.module('ELBPage', ['EucaConsoleUtils', 'ELBListenerEditor', 'ELBSecurity
             }
             $scope.accessLoggingConfirmed = true;
             $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
+        };
+        $scope.updateELB = function ($event, confirmed) {
+            confirmed = confirmed || false;
+            $event.preventDefault();
+            if ($scope.checkRequiredInput() && $scope.checkSecurityGroupRules(confirmed)) {
+                $scope.elbForm.submit();
+            }
+        };
+        $scope.checkRequiredInput = function () {
+            // Handle the unsaved listener issue
+            if ($('#from-port-input').val() !== '') {
+                $('#unsaved-listener-warn-modal').foundation('reveal', 'open');
+                $scope.isNotValid = true;
+                return false;
+            }
+            return true;
+        };
+        $scope.checkSecurityGroupRules = function (confirmed) {
+            var modal = $('#elb-security-group-rules-warning-modal');
+            var inboundOutboundPortChecksPass;
+            if ($scope.vpcNetwork === 'None') {  // Bypass rules check on non-VPC clouds
+                return true;
+            }
+            inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
+            if (!confirmed && !inboundOutboundPortChecksPass) {
+                modal.foundation('reveal', 'open');
+                return false;
+            } else {
+                return true;
+            }
         };
     })
 ;

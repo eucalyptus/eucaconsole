@@ -1,4 +1,6 @@
-/*
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview user view page JS
  * @requires AngularJS
  *
@@ -49,6 +51,7 @@ angular.module('UserView', ['PolicyList', 'Quotas', 'EucaConsoleUtils'])
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
              });
+             $scope.isHelpExpanded = false;
         };
         $scope.clickTab = function ($event, tab){
             $event.preventDefault();

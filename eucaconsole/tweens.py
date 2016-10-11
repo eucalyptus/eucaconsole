@@ -1,4 +1,4 @@
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -82,15 +82,15 @@ class CTHeadersTweenFactory(object):
 
     header_map = {
         'application/json': {
-            'CACHE-CONTROL': 'NO-CACHE',
-            'PRAGMA': 'NO-CACHE',
+            'Cache-Control': 'NO-CACHE',
+            'Pragma': 'NO-CACHE',
         },
         'text/html': {
-            'X-FRAME-OPTIONS': 'SAMEORIGIN',
-            'CACHE-CONTROL': 'NO-CACHE',
-            'PRAGMA': 'NO-CACHE',
-            'CONTENT-SECURITY-POLICY': "script-src 'self'; form-action 'self';",
-            'X-CONTENT-SECURITY-POLICY': "script-src 'self'; form-action 'self';",
+            'X-Frame-Options': 'SAMEORIGIN',
+            'Cache-Control': 'NO-CACHE',
+            'Pragma': 'NO-CACHE',
+            'Content-Security-Policy': "script-src 'self'; form-action 'self';",
+            'X-Content-Security-Policy': "script-src 'self'; form-action 'self';",
         },
     }
 

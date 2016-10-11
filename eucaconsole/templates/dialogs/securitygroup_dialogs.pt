@@ -4,11 +4,15 @@
          tal:define="landingpage_action request.route_path('securitygroups_delete') + layout.querystring;
                      detailpage_action request.route_path('securitygroup_delete', id=security_group.id) if security_group else '';
                      action landingpage_action if landingpage else detailpage_action;">
-        <h3 i18n:translate="">Delete security group</h3>
-        <p><span i18n:translate="">Are you sure you want to delete security group</span>
-           <span tal:condition="security_group"><b>${security_group_name}</b></span>
-           <span tal:condition="not security_group"><b>{{ securitygroupName }}</b></span>
-           ?</p>
+        <h3>
+            <span i18n:translate="" ng-if="!multipleItemsSelected">Delete security group</span>
+            <span i18n:translate="" ng-if="multipleItemsSelected">Delete security groups</span>
+        </h3>
+        <p>
+            <span i18n:translate="">Are you sure you want to delete security group</span>
+            <span tal:condition="security_group"><b>${security_group_name}?</b></span>
+            <span tal:condition="not security_group"><b>{{ securitygroupName }}?</b></span>
+        </p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">

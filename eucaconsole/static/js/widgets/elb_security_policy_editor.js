@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Elastic Load Balander Security Policy Editor JS
  * @requires AngularJS
  *
@@ -23,6 +25,22 @@ angular.module('ELBSecurityPolicyEditor', ['EucaConsoleUtils'])
             $('#ssl_protocols').chosen({width: '100%'});
             $('#ssl_ciphers').chosen({width: '100%', search_contains: true});
         };
+        $scope.policyModal.on('opened.fndtn.reveal', function () {
+            // TODO: Find a better workaround here
+            // Although this isn't ideal, we're re-jiggering the field values when the ELB security policy
+            //   modal is subsequently opened in the Create ELB wizard to display the selected policy settings
+            if ($scope.policyRadioButton === 'existing') {  // Predefined security policy
+                $scope.policyModal.find('#policy-type-predefined').prop('checked', true);
+                if ($scope.predefinedPolicy) {
+                    $scope.policyModal.find('#predefined_policy').val($scope.predefinedPolicy);
+                }
+            } else {  // Custom security policy
+                $scope.policyModal.find('#policy-type-new').prop('checked', true);
+                $scope.policyModal.find('#ssl_protocols').val($scope.sslProtocols).trigger('chosen:updated');
+                $scope.policyModal.find('#ssl_ciphers').val($scope.sslCiphers).trigger('chosen:updated');
+                $scope.policyModal.find('#server_order_preference').prop('checked', $scope.sslServerOrderPref);
+            }
+        });
         $scope.setSecurityPolicy = function () {
             // TODO: Perform validation checks
             var elbForm = $('#elb-form'),

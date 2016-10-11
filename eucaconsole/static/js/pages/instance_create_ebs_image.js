@@ -1,11 +1,13 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Create image from instance page JS
  * @requires AngularJS
  *
  */
 
 // Create Image page includes the Tag Editor and the Block Device Mapping editor
-angular.module('InstanceCreateImage', ['TagEditor', 'BlockDeviceMappingEditor'])
+angular.module('InstanceCreateImage', ['TagEditorModule', 'BlockDeviceMappingEditor'])
     .controller('InstanceCreateImageCtrl', function ($scope, $timeout) {
         $scope.form = $('#create-image-form');
         $scope.expanded = false;

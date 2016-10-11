@@ -3,21 +3,21 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.status.running { background-color: #468400; }
+.status.running { background-color: #425563; }
 
-.status.pending { background-color: #822980; }
+.status.pending { background-color: #6d899e; }
 
-.status.stopped { background-color: #990000; }
+.status.stopped, .status.Error { background-color: darkred; }
 
 .status.stopping { background-color: #ff6666; }
 
-.status.terminated { background-color: #444; }
+.status.terminated { background-color: #666666; }
 
-.status.shutting-down { background-color: lightgrey; }
+.status.shutting-down { background-color: #cccccc; }
 
-.status.InService { background-color: #468400; }
+.status.InService { background-color: #425563; }
 
-.status.OutOfService { background-color: #990000; }
+.status.OutOfService { background-color: darkred; }
 
 #instance-selector table.table { width: 100%; }
 

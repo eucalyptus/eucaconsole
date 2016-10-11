@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Instance page JS
  * @requires AngularJS
  *
  */
 
-angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('InstancePage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
@@ -126,6 +128,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
                 } else if (this.getAttribute('href') !== '#') {
                     return;
                 }
+                event.preventDefault();
                 // the ID of the action link needs to match the modal name
                 var modalID = this.getAttribute('id').replace("-action", "-modal");
                 // If there exists unsaved changes, open the wanring modal instead

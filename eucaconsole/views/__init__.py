@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -33,6 +33,7 @@ import hashlib
 import hmac
 import logging
 import pylibmc
+import socket
 import simplejson as json
 import string
 import textwrap
@@ -55,6 +56,8 @@ except ImportError:
 from boto.connection import AWSAuthConnection
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
+import botocore.session
+from botocore.exceptions import ClientError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
 from pyramid.i18n import TranslationString
@@ -70,13 +73,13 @@ from ..forms.login import EucaLogoutForm
 from ..models.auth import EucaAuthenticator
 from ..i18n import _
 from ..models import Notification
-from ..models.auth import ConnectionManager
+from ..models.auth import ConnectionManager, RegionCache
 
 
 def escape_braces(event):
     """Escape double curly braces in template variables to prevent AngularJS expression injections"""
     for k, v in event.rendering_val.items():
-        if not k.endswith('_json'):
+        if not k.endswith('_json') and event.get('renderer_name') != 'json':
             if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
                 event.rendering_val[k] = BaseView.escape_braces(v)
 
@@ -114,6 +117,30 @@ class BaseView(object):
         self.security_token = request.session.get('session_token')
         self.euca_logout_form = EucaLogoutForm(self.request)
 
+    def get_connection3(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
+                       secret_key=None, security_token=None):
+        # For this spike, rely on existing model/auth.py code to do the hard stuff.
+        # later, we'd convert all that from the ground up
+        conn2 = self.get_connection(conn_type, cloud_type, region, access_key, secret_key, security_token)
+        if conn2 is None:
+            # return because of unit tests..
+            return None
+
+        # convert the boto2 connection to a botocore client
+        endpoint_url='{protocol}://{host}:{port}{path}'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port, path=conn2.path)
+        session = botocore.session.get_session()
+        conn3 = session.create_client(
+            conn_type, conn2.region.name,
+            aws_access_key_id=conn2.aws_access_key_id,
+            aws_secret_access_key=conn2.aws_secret_access_key,
+            aws_session_token=conn2.provider.security_token,
+            api_version=conn2.APIVersion,
+            use_ssl=conn2.is_secure,
+            endpoint_url=endpoint_url,
+            verify=False
+        )
+        return conn3
+
     def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
                        secret_key=None, security_token=None):
         conn = None
@@ -133,17 +160,25 @@ class BaseView(object):
         if self.request.registry.settings:  # do this to pass tests
             validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
             certs_file = self.request.registry.settings.get('connection.ssl.certfile', None)
-        if cloud_type == 'aws':
-            conn = ConnectionManager.aws_connection(
-                region, access_key, secret_key, security_token, conn_type, validate_certs)
-        elif cloud_type == 'euca':
-            host = self._get_ufs_host_setting_()
-            port = self._get_ufs_port_setting_()
-            dns_enabled = self.request.session.get('dns_enabled', True)
-            conn = ConnectionManager.euca_connection(
-                host, port, access_key, secret_key, security_token,
-                conn_type, dns_enabled, validate_certs, certs_file
-            )
+        try:
+            if cloud_type == 'aws':
+                conn = ConnectionManager.aws_connection(
+                    region, access_key, secret_key, security_token, conn_type, validate_certs)
+            elif cloud_type == 'euca':
+                host = self._get_ufs_host_setting_()
+                port = self._get_ufs_port_setting_()
+                dns_enabled = self.request.session.get('dns_enabled', True)
+                regions = RegionCache(None).regions()
+                if len(regions) > 0:
+                    for region in regions:
+                        if region['endpoints']['ec2'].find(host) > -1:
+                            self.default_region = region['name']
+                conn = ConnectionManager.euca_connection(
+                    host, port, region, access_key, secret_key, security_token,
+                    conn_type, dns_enabled, validate_certs, certs_file
+                )
+        except socket.error as err:
+            BaseView.handle_error(err=BotoServerError(504, str(err)), request=self.request)
 
         return conn
 
@@ -152,8 +187,14 @@ class BaseView(object):
             return self.request.session.get('account')
         return self.request.session.get('access_id')  # AWS
 
-    def is_csrf_valid(self):
-        return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
+    @staticmethod
+    def is_csrf_valid_static(request, token=None):
+        if token is None:
+            token = request.params.get('csrf_token')
+        return request.session.get_csrf_token() == token
+
+    def is_csrf_valid(self, token=None):
+        return self.is_csrf_valid_static(self.request, token)
 
     def _store_file_(self, filename, mime_type, contents):
         # disable using memcache for file storage
@@ -238,7 +279,10 @@ class BaseView(object):
             acct = ''
         ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
         try:
-            return self._get_images_cached_(owners, executors, ec2_region, acct, ufshost)
+            if self.cloud_type == 'euca' and asbool(self.request.registry.settings.get('cache.images.disable', True)):
+                return self._get_images_(owners, executors, ec2_region)
+            else:
+                return self._get_images_cached_(owners, executors, ec2_region, acct, ufshost)
         except pylibmc.Error:
             logging.warn('memcached not responding')
             return self._get_images_(owners, executors, ec2_region)
@@ -248,9 +292,10 @@ class BaseView(object):
         acct = self.request.session.get('account', '')
         if acct == '':
             acct = self.request.session.get('access_id', '')
-        invalidate_cache(long_term, 'images', None, [], [], region, acct)
-        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
-        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
+        ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
+        invalidate_cache(long_term, 'images', None, [], [], region, acct, ufshost)
+        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct, ufshost)
+        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct, ufshost)
 
     def get_euca_authenticator(self):
         """
@@ -263,8 +308,7 @@ class BaseView(object):
         ca_certs_file = conn.ca_certificates_file
         conn = None
         ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-        dns_enabled = self.request.session.get('dns_enabled', True)
-        auth = EucaAuthenticator(host, port, dns_enabled, validate_certs=validate_certs, ca_certs=ca_certs_file)
+        auth = EucaAuthenticator(host, port, True, validate_certs=validate_certs, ca_certs=ca_certs_file)
         return auth
 
     def get_account_attributes(self, attribute_names=None):
@@ -360,11 +404,11 @@ class BaseView(object):
                          u'operation. Please retry the operation, and contact your cloud '
                          u'administrator to request an updated access policy if the problem persists.')
         if request.is_xhr:
-            if 'AccessDenied' == err.code:
+            if err.code in ['AccessDenied', 'UnauthorizedOperation']:
                 message = perms_notice
             raise JSONError(message=message, status=status or 403)
         if status == 403 or 'token has expired' in message:  # S3 token expiration responses return a 400 status
-            if 'Access Denied' in message and location is not None:
+            if err.code in ['AccessDenied', 'UnauthorizedOperation'] and location is not None:
                 request.session.flash(perms_notice, queue=Notification.ERROR)
                 raise HTTPFound(location=location)
 
@@ -373,10 +417,14 @@ class BaseView(object):
                        u'Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             raise HTTPFound(location=request.route_path('login'))
-        request.session.flash(message, queue=Notification.ERROR)
         if location is None:
             location = request.current_route_url()
-        raise HTTPFound(location)
+        if status == 504:
+            request.session.flash(_(u'No response from host'), queue=Notification.ERROR)
+            raise HTTPFound(request.route_path('login'))
+        else:
+            request.session.flash(message, queue=Notification.ERROR)
+            raise HTTPFound(location)
 
     @staticmethod
     def escape_json(json_string):
@@ -455,8 +503,8 @@ class TaggedItemView(BaseView):
 
     def add_tags(self):
         if self.conn:
-            tags_json = self.request.params.get('tags')
-            tags_dict = json.loads(tags_json) if tags_json else {}
+            tags_json = self.request.params.get('tags', '{}')
+            tags_dict = self.normalize_tags(json.loads(tags_json))
             tags = {}
             for key, value in tags_dict.items():
                 key = self.unescape_braces(key.strip())
@@ -488,14 +536,42 @@ class TaggedItemView(BaseView):
                     self.tagged_obj.add_tag('Name', tag_value)
 
     @staticmethod
-    def get_display_name(resource, escapebraces=True):
+    def normalize_tags(tags):
+        if type(tags) is dict:
+            return tags
+
+        new_tags = {}
+        for tag in tags:
+            name, value = tag['name'], tag['value']
+            new_tags[name] = value
+        return new_tags
+
+    @staticmethod
+    def serialize_tags(tags):
+        if tags is not None:
+            serialized_tags = [{
+                'name': key,
+                'value': value
+            } for key, value in tags.iteritems()]
+        else:
+            serialized_tags = []
+        return BaseView.escape_json(json.dumps(serialized_tags))
+
+    @staticmethod
+    def get_display_name(resource, escapebraces=True, id_first=False):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
-            name = u"{0}{1}".format(
-                name_tag if name_tag else resource.id,
-                u" ({0})".format(resource.id) if name_tag else ''
-            )
+            if id_first:
+                name = u"{0}{1}".format(
+                    resource.id,
+                    u" ({0})".format(name_tag) if name_tag else '',
+                )
+            else:
+                name = u"{0}{1}".format(
+                    name_tag if name_tag else resource.id,
+                    u" ({0})".format(resource.id) if name_tag else '',
+                )
         if escapebraces:
             name = BaseView.escape_braces(name)
         return name
@@ -660,11 +736,7 @@ class LandingPageView(BaseView):
         return False
 
     def get_json_endpoint(self, route, path=False):
-        encoded_params = self.encode_unicode_dict(self.request.params)
-        return u'{0}{1}'.format(
-            self.request.route_path(route) if path is False else route,
-            u'?{0}'.format(urlencode(encoded_params)) if self.request.params else ''
-        )
+        return self.request.route_path(route) if path is False else route
 
     def get_redirect_location(self, route):
         location = u'{0}'.format(self.request.route_path(route))
@@ -677,6 +749,7 @@ class LandingPageView(BaseView):
 @notfound_view_config(renderer='../templates/notfound.pt')
 def notfound_view(request):
     """404 Not Found view"""
+    request.response.status = 404
     return dict()
 
 
@@ -694,12 +767,24 @@ def conn_error(exc, request):
 def boto_error_handler(request, location=None, template="{0}"):
     try:
         yield
+    except ClientError as err:
+        old_err = BotoServerError(
+            status=err.response.get('ResponseMetadata').get('HTTPStatusCode'),
+            reason=err.response.get('Error').get('Code')
+        )
+        old_err.message = err.response.get('Error').get('Message')
+        old_err.error_code = err.response.get('Error').get('Code')
+        BaseView.handle_error(err=old_err, request=request, location=location, template=template)
     except BotoServerError as err:
         BaseView.handle_error(err=err, request=request, location=location, template=template)
+    except socket.error as err:
+        BaseView.handle_error(err=BotoServerError(504, str(err)), request=request, location=location, template=template)
 
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
+    if not(BaseView.is_csrf_valid_static(request)):
+        return JSONResponse(status=400, message="missing CSRF token")
     session = request.session
     if session.get('file_cache'):
         (filename, mime_type, contents) = session['file_cache']
@@ -708,6 +793,8 @@ def file_download(request):
         response = Response(content_type=mime_type)
         response.body = str(contents)
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        response.cache_control = 'no-store'
+        response.pragma = 'no-cache'
         return response
     # no file found ...
     # this isn't handled on on client anyway, so we can return pretty much anything

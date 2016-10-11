@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Volume page JS
  * @requires AngularJS
  *
  */
 
-angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('VolumePage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('VolumePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.volumeStatusEndpoint = '';
@@ -67,6 +69,12 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
             $('#attach-volume-modal').on('open.fndtn.reveal', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
+            // Open attach modal based on URL params
+            if ($scope.urlParams.attachmodal) {
+                $timeout(function() {
+                    $scope.openModalById('attach-volume-modal');
+                }, 300 );
+            }
         };
         $scope.initAvailZoneChoice = function () {
             var availZoneParam = $scope.urlParams.avail_zone;
@@ -128,6 +136,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
                 if (this.getAttribute('ng-click')) {
                     return;
                 }
+                event.preventDefault();
                 // the ID of the action link needs to match the modal name
                 var modalID = this.getAttribute('id').replace("-action", "-modal");
                 // If there exists unsaved changes, open the wanring modal instead
@@ -225,25 +234,19 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
                }
             });
         };
-        $scope.detachModal = function (device_name, url) {
+        $scope.detachModal = function (isRootVolume) {
             var warnModalID = 'detach-volume-warn-modal',
                 detachModalID = 'detach-volume-modal';
-
-            $http.get(url).success(function(oData) {
-                var results = oData ? oData.results : '';
-                if (results) {
-                    if (results.root_device_name === device_name) {
-                        $scope.pendingModalID = warnModalID;
-                    } else {
-                        $scope.pendingModalID = detachModalID;
-                    }
-                    if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
-                        $scope.openModalById('unsaved-changes-warning-modal');
-                        return;
-                    } 
-                    $scope.openModalById($scope.pendingModalID);
-                }
-            });
+            if (isRootVolume === 'True') {
+                $scope.pendingModalID = warnModalID;
+            } else {
+                $scope.pendingModalID = detachModalID;
+            }
+            if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                $scope.openModalById('unsaved-changes-warning-modal');
+                return;
+            }
+            $scope.openModalById($scope.pendingModalID);
         };
     })
 ;

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -72,7 +72,7 @@ def top_nav(context, request, off_canvas=False):
 def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8,
                    leftcol_width_large=2, rightcol_width_large=10,
                    inline=True, stack_label=False, ng_attrs=None, **kwargs):
-    """ Widget for a singe form field row.
+    """ Widget for a single form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
         Pass any HTML attributes to this widget as keyword arguments.
@@ -146,11 +146,11 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
 
 
 @panel_config('user_editor', renderer='../templates/panels/user_editor.pt')
-def user_editor(context, request, leftcol_width=4, rightcol_width=8):
+def user_editor(context, request, leftcol_width=4, rightcol_width=8, help_text=None, show_admin=False):
     """ User editor panel.
         Usage example (in Chameleon template): ${panel('user_editor')}
     """
-    return dict(leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+    return dict(leftcol_width=leftcol_width, rightcol_width=rightcol_width, help_text=help_text, show_admin=show_admin)
 
 
 @panel_config('policy_list', renderer='../templates/panels/policy_list.pt')
@@ -224,7 +224,7 @@ def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol
     controller_options_json = BaseView.escape_json(json.dumps({
         'rules_array': rules_sorted,
         'rules_egress_array': rules_egress_sorted,
-        'json_endpoint': request.route_path('securitygroups_json'),
+        'json_endpoint': request.route_path('securitygroups_json') + "?incl_elb_groups=",
         'protocols_json_endpoint': request.route_path('internet_protocols_json'),
     }))
     remote_addr = BaseView.get_remote_addr(request)
@@ -254,7 +254,7 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
 def bdmapping_editor(context, request, image=None, instance=None, volumes=None,
-                     launch_config=None, snapshot_choices=None, read_only=False, disable_dot=False):
+                     launch_config=None, snapshot_choices=None, read_only=False, disable_dot=False, add_hr=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
@@ -308,6 +308,7 @@ def bdmapping_editor(context, request, image=None, instance=None, volumes=None,
         controller_options_json=controller_options_json,
         read_only=read_only,
         disable_dot=disable_dot,
+        add_hr=add_hr
     )
 
 
@@ -414,7 +415,7 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None, sh
         sharing_form=sharing_form,
         show_caution=show_caution,
         grantee_choices=grantee_choices,
-        account_placeholder_text=_(u'Select or type to enter account/user'),
+        account_placeholder_text=_(u'Select account or type to enter account ID'),
         controller_options_json=controller_options_json,
     )
 

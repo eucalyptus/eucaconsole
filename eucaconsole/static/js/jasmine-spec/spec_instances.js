@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Instances JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -30,20 +32,24 @@ describe("InstancesPage", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of instanceID is empty", function() {
+        it("should set initial value of instanceID to empty string", function() {
             expect(scope.instanceID).toEqual('');
         });
 
-        it("Initial value of fileName is empty", function() {
+        it("should set initial value of fileName to empty string", function() {
             expect(scope.fileName).toEqual('');
+        });
+
+        it("should set initial value of ipAddressList to empty array", function() {
+            expect(scope.ipAddressList).toEqual([]);
         });
     });
 
-    describe("Function initController() Test", function() {
+    describe("#initController", function() {
 
-        it("Should call initChosenSelectors() when initController() is called", function() {
+        it("should call initChosenSelectors() when initController() is called", function() {
             spyOn(scope, 'initChosenSelectors');
-            scope.initController('{}');
+            scope.initController('{"addresses_json_items_endpoint": ""}');
             expect(scope.initChosenSelectors).toHaveBeenCalled();
         });
     });

@@ -35,7 +35,6 @@ Prerequisites
 -------------
 Prior to installing Pyramid and its dependencies, you may need to install the following libraries...
 
-* libevent-dev (required by gevent)
 * openssl (required by M2Crypto)
 * gcc, python development headers, swig (required to install Python libraries)
 
@@ -115,8 +114,13 @@ Run the server with
 
 `launcher.sh` is provided as an alias for `pserve console.ini --reload`
 
-On OSX, you may encounter an M2Crypto error when running `launcher.sh`.  There is a known bug in the M2Crypto bindings
-and swig versions greater than 3.0.4.  Using Homebrew you may install swig 3.0.4...
+
+Compilation Issues on OS X
+--------------------------
+On OS X (Yosemite and El Capitan), you may encounter issues installing M2Crypto
+
+There is a known bug in the M2Crypto bindings and swig versions greater than 3.0.4.
+Using Homebrew you may install swig 3.0.4...
 
 ::
 
@@ -125,9 +129,13 @@ and swig versions greater than 3.0.4.  Using Homebrew you may install swig 3.0.4
     python setup.py develop
     ./launcher.sh
 
+If there are issues with M2Crypto locating the OpenSSL libraries (which could happen after an XCode update),
+reinstall the XCode Command Line Tools  via `xcode-select --install`
+
+
 Running the server in development/debug mode
 --------------------------------------------
-The launcher.sh script runs the application with gunicorn and gevent,
+The launcher.sh script runs the application with gunicorn and eventlet,
 closely matching the production deployment setup.
 
 To have Pyramid automatically detect modifications to templates and views,
@@ -235,7 +243,7 @@ Secondary Components
 
 
 Guitester - selenium testing framework for eucaconsole
-===============================
+======================================================
 * Location: tests/selenium/guiops
 * Requirements: python selenium module, an instance of selenium webdriver
 * Setup and intro: https://github.com/eucalyptus/eucaconsole/wiki/Guitester 
@@ -265,7 +273,7 @@ to install npm packages listed in the file `package.json`
 to allow grunt cli to run
 
 Grunt Task File
-------------------------
+---------------
 ::
 
     Gruntfile.js

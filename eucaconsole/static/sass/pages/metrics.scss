@@ -1,0 +1,131 @@
+/* @fileOverview CloudWatch Metrics landing page CSS */
+@import "../includes/eucavariables";
+@import "../includes/landingpage";
+@import "../widgets/alarm-actions";
+@import "../widgets/create-alarm-dialog";
+
+
+table.expando td:nth-of-type(1) {
+    width: 1rem;
+}
+
+table td input[type="checkbox"] {
+    margin: 0 0 0;
+}
+
+#graph-area {
+    padding-top: 0.0rem;
+}
+
+.chart-wrapper {
+    background: #ffffff;
+    border: 1px solid $hp-gray-40;
+    h6 {
+        border: 0 none;
+    }
+    svg {
+        border: 0 none;
+    }
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .actions {
+        .f-dropdown {
+            margin-left: -120px;
+            &:before {
+                margin-left: 120px;
+            }
+            &:after {
+                margin-left: 120px;
+            }
+        }
+    }
+}
+
+.split-top {
+    height: 250px;
+    overflow: auto;
+}
+
+.split-bar {
+    height: 0.9rem;
+    width: 100%;
+    color: grey;
+    background: #ffffff;
+    cursor: row-resize;
+    overflow-y: hidden;
+    hr {
+        margin: 7px 4px 0px 4px;
+    }
+    .split-grab {
+        position: relative;
+        top: -12px;
+        margin-left: 49%;
+        color: $hpe-lightgray;
+        background: #ffffff;
+        transform: scale(2, 1);
+    }
+}
+
+.split-bottom {
+    position: relative;
+    padding-top: 1.0rem;
+}
+
+.tile {
+    .dropdown.button.tiny {
+        top: 5px !important;
+        right: 2px !important;
+    }
+}
+
+#primary-buttons .button.more-actions {
+    margin-left: 0 !important;
+}
+
+th.metric-action {
+    text-align: right !important;
+}
+
+.metrics-selected {
+    padding-top: 1.5rem;
+    padding-left: 0.25rem;
+}
+
+magic-search .f-dropdown {
+    min-width: 15rem;
+}
+
+div.absolute-grouping {
+}
+
+.toprow {
+    select {
+        margin-bottom: 1px;
+    }
+}
+
+.chart-wrapper {
+    .graph-close {
+        float: right;
+        padding: 0.35rem 0.5rem 0 0.5rem;
+        color: $hp-gray-65;
+        font-size: rem-calc(35);
+        line-height: 0.5rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .metric-chart-menu {
+        float: right;
+        padding: 0 0.5rem 0 0.5rem;
+        color: $hp-gray-65;
+        cursor: pointer;
+    }
+    svg {
+        height: 300px !important;
+    }
+}
+
+.metrics-url-field {
+    width: 100%;
+}

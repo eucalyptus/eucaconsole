@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Landing Page JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -58,10 +60,10 @@ describe("LandingPage", function() {
             expect(scope.pageResource).toEqual('instances');
         });
 
-        it("Should call storeAWSRegion() when initController() is called", function() {
-            spyOn(scope, 'storeAWSRegion');
+        it("Should call storeRegion() when initController() is called", function() {
+            spyOn(scope, 'storeRegion');
             scope.initController('instances', '[]', 'a');
-            expect(scope.storeAWSRegion).toHaveBeenCalled();
+            expect(scope.storeRegion).toHaveBeenCalled();
         });
     });
 });

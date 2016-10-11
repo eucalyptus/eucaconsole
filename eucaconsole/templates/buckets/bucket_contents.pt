@@ -32,12 +32,12 @@
            tal:condition="len(request.subpath) == 0" i18n:translate="">View details</a>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a id="upload-file-btn" class="button split"
+                <a id="upload-file-btn" class="button split" tal:condition="layout.file_uploads_enabled"
                     href="${request.route_path('bucket_upload', name=bucket_name, subpath=request.subpath)}">
                     <span i18n:translate="" tal:omit-tag="">Upload Object(s)</span>
                     <span class="euca-split" data-dropdown="create-drop"></span>
                 </a>
-                <ul id="create-drop" class="f-dropdown" data-dropdown-content="" tal:condition="layout.file_uploads_enabled">
+                <ul id="create-drop" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a id="create-folder-btn" i18n:translate="" data-reveal-id="create-folder-modal">
                             Create Folder
@@ -112,10 +112,10 @@
                         <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste folder</a>
                     </li>
                     <li ng-show="item.is_folder">
-                        <a i18n:translate="" ng-click="revealModal('delete-folder', item)">Delete</a>
+                        <a class="delete-folder" i18n:translate="" ng-click="revealModal('delete-folder', item)">Delete</a>
                     </li>
                     <li ng-show="!item.is_folder">
-                        <a i18n:translate="" ng-click="revealModal('delete-object', item)">Delete</a>
+                        <a class="delete-object" i18n:translate="" ng-click="revealModal('delete-object', item)">Delete</a>
                     </li>
                 </ul>
             </div>
@@ -170,10 +170,10 @@
                                 <a i18n:translate="" ng-click="doPaste('${bucket_name}', item)">Paste folder</a>
                             </li>
                             <li ng-show="item.is_folder">
-                                <a i18n:translate="" ng-click="revealModal('delete-folder', item)">Delete</a>
+                                <a class="delete-folder" i18n:translate="" ng-click="revealModal('delete-folder', item)">Delete</a>
                             </li>
                             <li ng-show="!item.is_folder">
-                                <a i18n:translate="" ng-click="revealModal('delete-object', item)">Delete</a>
+                                <a class="delete-object" i18n:translate="" ng-click="revealModal('delete-object', item)">Delete</a>
                             </li>
                         </ul>
                     </span>
@@ -189,7 +189,7 @@
                 <p>
                     <span i18n:translate="">Are you sure you want to delete all</span>&nbsp;{{ total }}&nbsp;<span i18n:translate=""> objects in </span>&nbsp;<b>${display_path}</b><span>?</span>
                 </p>
-                <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
+                <a class="button expand" id="delete-all-dialog-btn" i18n:translate="" ng-click="deleteAll()">
                     Yes, Delete Everything
                 </a>
             </div>
@@ -244,6 +244,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/bucket_contents.js')}"></script>
 </div>

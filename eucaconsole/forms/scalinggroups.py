@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -98,6 +98,14 @@ class BaseScalingGroupForm(BaseSecureForm):
             validators.InputRequired(message=health_check_period_error_msg),
         ],
     )
+    termination_policies_error_msg = _(u'At least one termination policy is required')
+    termination_policies_help_text = _(u'Add termination policies in the order they should be executed.')
+    termination_policies = wtforms.SelectMultipleField(
+        label=_(u'Termination policies'),
+        validators=[
+            validators.InputRequired(message=termination_policies_error_msg),
+        ],
+    )
 
     def __init__(self, request, scaling_group=None, launch_configs=None,
                  autoscale_conn=None, ec2_conn=None, vpc_conn=None, elb_conn=None, **kwargs):
@@ -113,7 +121,6 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
-        region = request.session.get('region')
         cloud_type = request.session.get('cloud_type', 'euca')
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.launch_config.choices = self.get_launch_config_choices()
@@ -122,8 +129,9 @@ class BaseScalingGroupForm(BaseSecureForm):
         else:
             self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
         self.vpc_subnet.choices = self.get_vpc_subnet_choices()
-        self.availability_zones.choices = self.get_availability_zone_choices(region)
+        self.availability_zones.choices = self.get_availability_zone_choices()
         self.load_balancers.choices = self.get_load_balancer_choices()
+        self.termination_policies.choices = self.get_termination_policy_choices()
 
         # Set error messages
         self.launch_config.error_msg = self.launch_config_error_msg
@@ -133,9 +141,11 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.max_size.error_msg = self.max_size_error_msg
         self.min_size.error_msg = self.min_size_error_msg
         self.health_check_period.error_msg = self.health_check_period_error_msg
+        self.termination_policies.error_msg = self.termination_policies_error_msg
 
         # Set help text
         self.vpc_network.help_text = self.vpc_network_helptext
+        self.termination_policies.help_text = self.termination_policies_help_text
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name
@@ -169,8 +179,8 @@ class BaseScalingGroupForm(BaseSecureForm):
             choices.append((sg_lc_name, sg_lc_name))
         return sorted(set(choices))
 
-    def get_availability_zone_choices(self, region):
-        return self.ec2_choices_manager.availability_zones(region, add_blank=False)
+    def get_availability_zone_choices(self):
+        return self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
 
     def get_load_balancer_choices(self):
         choices = []
@@ -227,6 +237,7 @@ class ScalingGroupCreateForm(BaseScalingGroupForm):
 
         # Set initial data
         self.availability_zones.data = [value for value, label in self.availability_zones.choices]
+        self.termination_policies.data = ['Default']
 
 
 class ScalingGroupEditForm(BaseScalingGroupForm):
@@ -240,14 +251,6 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
             validators.InputRequired(message=default_cooldown_error_msg),
         ],
     )
-    termination_policies_error_msg = _(u'At least one termination policy is required')
-    termination_policies_help_text = _(u'Add termination policies in the order they should be executed.')
-    termination_policies = wtforms.SelectMultipleField(
-        label=_(u'Termination policies'),
-        validators=[
-            validators.InputRequired(message=termination_policies_error_msg),
-        ],
-    )
 
     def __init__(self, request, scaling_group=None,
                  autoscale_conn=None, ec2_conn=None, vpc_conn=None, launch_configs=None, **kwargs):
@@ -255,17 +258,12 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
             request, scaling_group=scaling_group, autoscale_conn=autoscale_conn,
             ec2_conn=ec2_conn, vpc_conn=vpc_conn, launch_configs=launch_configs, **kwargs)
 
-        # Set choices
-        self.termination_policies.choices = self.get_termination_policy_choices()
-
         # Set error messages
         self.default_cooldown.error_msg = self.default_cooldown_error_msg
-        self.termination_policies.error_msg = self.termination_policies_error_msg
 
         # Set help text
         self.default_cooldown.help_text = self.default_cooldown_help_text
         self.health_check_period.help_text = self.health_check_period_help_text
-        self.termination_policies.help_text = self.termination_policies_help_text
 
         if scaling_group is not None:
             self.default_cooldown.data = scaling_group.default_cooldown
@@ -299,7 +297,7 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
         ],
     )
     adjustment_amount_error_msg = _(u'Amount is required')
-    adjustment_amount = wtforms.IntegerField(
+    adjustment_amount = wtforms.TextField(
         label=_(u'Amount'),
         validators=[
             validators.InputRequired(message=adjustment_amount_error_msg),
@@ -394,6 +392,11 @@ class ScalingGroupInstancesTerminateForm(BaseSecureForm):
     decrement_capacity = wtforms.BooleanField(label=_(u'Also decrement desired capacity of scaling group'))
 
 
+class ScalingGroupMonitoringForm(BaseSecureForm):
+    """CSRF-protected form to enable/disable metrics collection for a scaling group"""
+    pass
+
+
 class ScalingGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))
@@ -412,8 +415,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.launch_config_name.choices = self.autoscale_choices_manager.launch_configs(add_blank=False)
-        region = request.session.get('region')
-        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
+        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
         self.vpc_zone_identifier.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
         self.cloud_type = request.session.get('cloud_type', 'euca')
         if self.cloud_type == 'aws':
@@ -422,7 +424,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         self.facets = [
             {'name': 'launch_config_name', 'label': self.launch_config_name.label.text,
                 'options': self.get_options_from_choices(self.launch_config_name.choices)},
-            {'name': 'availability_zone', 'label': self.availability_zones.label.text,
+            {'name': 'availability_zones', 'label': self.availability_zones.label.text,
                 'options': self.get_options_from_choices(self.availability_zones.choices)},
         ]
         if BaseView.is_vpc_supported(request):

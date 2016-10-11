@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for IAM Policy Wizard JS 
  * @requires Jasmine, AngularJS mock
  *

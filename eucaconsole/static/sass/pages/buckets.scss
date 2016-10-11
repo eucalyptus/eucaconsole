@@ -15,11 +15,20 @@
     }
     .tile .header a {
         &.has-bucket-icon {
-            padding-left: 20px;
+            padding-left: 26px;
+            background-size: 11px;
+            background-position: 8px 9px;
         }
         &.has-shared-icon {
             padding-left: 20px;
         }
+    }
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+     /* IE10/11 specific styles */
+    .gridwrapper .tile .header a.has-bucket-icon {
+        background-size: 90px;  // Avoid tiny bucket icon in tile view header
     }
 }
 
@@ -52,7 +61,7 @@
         width: 100%;
         text-align: center;
         margin-top: 5px;
-        margin-bottom: 0px;
+        margin-bottom: 0;
         font-size: 1.0rem;
         font-weight: bold;
     }

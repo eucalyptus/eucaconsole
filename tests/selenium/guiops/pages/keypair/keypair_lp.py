@@ -1,18 +1,22 @@
+import time
+
 from pages.landingpage import LandingPage
+
 
 class KeypairLanding(LandingPage):
 
     def __init__(self, tester):
         self.tester = tester
+        self.print_test_context()
         self.verify_keypair_view_page_loaded()
 
     _keypair_view_page_title = "Key Pairs"
     _create_keypair_btn_id = "create-keypair-btn"
-    _split_button_css =".euca-split"
+    _split_button_css = ".euca-split"
     _import_keypair_btn_id = "import-keypair-btn"
-    _keypair_link_css = 'td>a[href="/keypairs/{0}"]'
+    _keypair_link_css = 'td > a[href="/keypairs/{0}"]'
     _keypair_actions_menu_id = "table-item-dropdown_{0}"
-    _delete_keypair_actions_menuitem_css ="#item-dropdown_{0}>li>a"
+    _delete_keypair_actions_menuitem_css = "#item-dropdown_{0} > li > a"
 
     def verify_keypair_view_page_loaded(self):
         """
@@ -23,19 +27,25 @@ class KeypairLanding(LandingPage):
         self.tester.wait_for_visible_by_id(self._create_keypair_btn_id)
 
     def click_create_keypair_button_on_view_page(self):
+        self.tester.hover_by_id('user-dropdown-section')
+        time.sleep(1)
         self.tester.click_element_by_id(self._create_keypair_btn_id)
 
     def click_import_keypair_button(self):
+        time.sleep(1)
         self.tester.click_element_by_css(self._split_button_css)
         self.tester.click_element_by_id(self._import_keypair_btn_id)
 
     def click_keypair_link_on_view_page(self, keypair_name):
+        self.tester.hover_by_id('user-dropdown-section')
         self.tester.click_element_by_css(self._keypair_link_css.format(keypair_name))
 
     def verify_keypair_present_on_view_page(self, keypair_name):
+        self.tester.hover_by_id('user-dropdown-section')
         self.tester.wait_for_element_present_by_css(self._keypair_link_css.format(keypair_name))
 
     def verify_keypair_not_present_on_view_page(self, keypair_name):
+        self.tester.hover_by_id('user-dropdown-section')
         self.tester.wait_for_element_not_present_by_css(self._keypair_link_css.format(keypair_name))
 
     def click_action_delete_keypair_on_view_page(self, keypair_name):

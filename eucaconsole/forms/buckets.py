@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -197,6 +197,7 @@ class MetadataForm(BaseSecureForm):
 
 class CreateBucketForm(BaseSecureForm):
     """S3 Create Bucket form"""
+    BUCKET_NAME_PATTERN = '^[a-z0-9-\.]+$'
     bucket_name_error_msg = _(
         'Name is required and may only contain lowercase letters, numbers, hyphens, and/or dots')
     bucket_name = TextEscapedField(

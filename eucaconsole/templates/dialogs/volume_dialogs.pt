@@ -18,8 +18,8 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
-            ${panel('form_field', field=attach_form.device)}
+            ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, stack_label=True, **html_attrs)}
+            ${panel('form_field', field=attach_form.device, stack_label=True)}
             <div>
                 <label>
                     <span class="req">*</span>
@@ -46,25 +46,64 @@
          tal:define="landingpage_action request.route_path('volumes_detach') + layout.querystring;
                      detailpage_action request.route_path('volume_detach', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;">
-        <h3 i18n:translate="">Detach volume</h3>
-        <p>
+        <h3>
+            <span i18n:translate="" ng-if="!multipleItemsSelected">Detach volume</span>
+            <span i18n:translate="" ng-if="multipleItemsSelected">Detach volumes</span>
+        </h3>
+        <div ng-if="rootVolumes.length" tal:condition="landingpage">
+            <p i18n:translate="">
+                The volume(s) below are the root volume of an EBS-backed instance and cannot be detached.
+                To delete the volume(s), terminate the respective instance.
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th i18n:translate="">Volume</th>
+                        <th i18n:translate="">Instance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="vol in rootVolumes">
+                        <td><strong>{{ vol.volume }}</strong></td>
+                        <td><strong>{{ vol.instance }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+        </div>
+        <!-- The ng-if here and elsewhere is to handle multi-select detach operations where some of the volumes
+             are root volumes for EBS-backed instances.  The first condition handles the landing page case,
+             while the remainder is for the detail page !-->
+        <p ng-if="volumeName || volumeAttachStatus &amp;&amp; volumeAttachStatus === 'attached'">
             <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.</span>
         </p>
-        <p>
+        <p ng-if="volumeName || volumeAttachStatus &amp;&amp; volumeAttachStatus === 'attached'">
             <span i18n:translate="">Are you sure you want to detach volume</span>
-            <span tal:condition="volume"><b>${volume_name}</b></span>
-            <span tal:condition="not volume"><b>{{ volumeID }}</b></span>
-            <span i18n:translate="">from instance</span>
-            <strong tal:condition="not landingpage">${instance_name}</strong>
-            <strong tal:condition="landingpage">{{ instanceName }}</strong>?
+            <span ng-if="!multipleItemsSelected">
+                <span tal:condition="volume"><b>${volume_name}</b></span>
+                <span tal:condition="not volume"><b>{{ volumeName }}</b></span>
+                <span i18n:translate="">from instance</span>
+                <strong tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="landingpage">{{ instanceName }}</strong>?
+            </span>
+            <span ng-if="multipleItemsSelected">
+                <span ng-repeat="vol in volumeName.split(', ')">
+                    <strong>{{ vol }}</strong>
+                    <span i18n:translate="">from instance</span>
+                    <strong>{{ instanceName.split(', ')[$index] }}</strong><span ng-hide="$last">, </span><span i18n:translate="" ng-show="$last">?</span>
+                </span>
+            </span>
         </p>
-        <form method="post" id="detach-form" data-abide="" action="${action}">
+        <form method="post" id="detach-form" data-abide="" action="${action}"
+              ng-if="volumeName || volumeAttachStatus &amp;&amp; volumeAttachStatus === 'attached'">
             ${structure:detach_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" id="detach_volume_submit_button" class="button expand" i18n:translate="">Yes, Detach Volume</button>
+                <button type="submit" id="detach_volume_submit_button" class="button expand">
+                    <span i18n:translate="">Yes, Detach</span>
+                </button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
@@ -88,11 +127,14 @@
          tal:define="landingpage_action request.route_path('volumes_delete') + layout.querystring;
                      detailpage_action request.route_path('volume_delete', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;">
-        <h3 i18n:translate="">Delete volume</h3>
+        <h3>
+            <span i18n:translate="" ng-if="!multipleItemsSelected">Delete volume</span>
+            <span i18n:translate="" ng-if="multipleItemsSelected">Delete volumes</span>
+        </h3>
         <p><span i18n:translate="">All data on the volumes will be destroyed.</span></p>
         <p><span i18n:translate="">Are you sure you want to delete volume</span>
            <span tal:condition="volume"><b>${volume_name}</b></span>
-           <span tal:condition="not volume"><b>{{ volumeID }}</b></span> 
+           <span tal:condition="not volume"><b>{{ volumeName }}</b></span>
            ?</p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}

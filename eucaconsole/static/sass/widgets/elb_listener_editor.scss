@@ -3,7 +3,8 @@
 @import "../includes/eucavariables";
 
 
-#elb-listener-editor {
+#elb-listener-editor,
+.elb-listener-editor {
     .controls-wrapper {
         display: inline-block;
         margin-right: 1.5rem;
@@ -12,6 +13,7 @@
         }
         input, select {
             display: inline-block;
+            width: 80px;
         }
         select.ip-protocol {
             width: 8rem;
@@ -50,6 +52,10 @@
         width: 100%;
         tr.top-header {
             border-bottom: 0;
+            th {
+                border-bottom: none;
+                padding: 0 0 0 6px;
+            }
         }
         th {
             white-space: nowrap;

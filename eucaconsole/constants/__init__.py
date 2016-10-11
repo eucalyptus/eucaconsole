@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -85,6 +85,7 @@ AWS_REGIONS = (
 # List of all landing page route names (used to limit redirect handling for AWS region selection)
 LANDINGPAGE_ROUTE_NAMES = [
     'buckets', 'groups', 'images', 'instances', 'ipaddresses', 'keypairs', 'launchconfigs',
-    'scalinggroups', 'securitygroups', 'snapshots', 'users', 'volumes',
+    'scalinggroups', 'securitygroups', 'snapshots', 'users', 'volumes', 'elbs', 'stacks',
+    'cloudwatch_alarms', 'cloudwatch_metrics', 'queues'
 ]
 

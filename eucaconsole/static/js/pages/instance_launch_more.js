@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Launch more like this instance page JS
  * @requires AngularJS
  *
@@ -15,14 +17,19 @@ angular.module('LaunchMoreInstances', ['BlockDeviceMappingEditor'])
         };
         $scope.setInitialValues = function () {
             $('#number').val($scope.instanceNumber);
+            if ($("#userdata").val().length > 0) {
+                $scope.inputtype = "text";
+            }
         };
         $scope.initController = function () {
             $scope.setInitialValues();
-            $scope.$watch('inputtype', function() {
-                if ($scope.inputtype == 'text') {
-                    $timeout(function() {
-                        $('#userdata').focus();
-                    });
+            $scope.$watch('inputtype', function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    if ($scope.inputtype == 'text') {
+                        $timeout(function() {
+                            $('#userdata').focus();
+                        });
+                    }
                 }
             });
         };

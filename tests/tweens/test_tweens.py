@@ -1,4 +1,4 @@
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -93,10 +93,10 @@ class TestCTHeaders(unittest.TestCase):
         """Determine if CSP headers are properly set"""
         from eucaconsole.tweens import CTHeadersTweenFactory as CTFactory
         headers = CTFactory.header_map['text/html']
-        self.assertTrue('CONTENT-SECURITY-POLICY' in headers.keys())
-        self.assertTrue('X-CONTENT-SECURITY-POLICY' in headers.keys())  # IE requires header prefix
-        self.assertEquals(headers.get('CONTENT-SECURITY-POLICY'), "script-src 'self'; form-action 'self';")
-        self.assertEquals(headers.get('X-CONTENT-SECURITY-POLICY'), "script-src 'self'; form-action 'self';")
+        self.assertTrue('Content-Security-Policy' in headers.keys())
+        self.assertTrue('X-Content-Security-Policy' in headers.keys())  # IE requires header prefix
+        self.assertEquals(headers.get('Content-Security-Policy'), "script-src 'self'; form-action 'self';")
+        self.assertEquals(headers.get('X-Content-Security-Policy'), "script-src 'self'; form-action 'self';")
 
 
 class TestHTTPSTween(unittest.TestCase):

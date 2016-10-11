@@ -14,7 +14,8 @@
         <tbody>
             <tr ng-repeat="instance in instanceList track by instance.id">
                 <td>
-                    <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}" />
+                    <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}"
+                           ng-disabled="isDetailPage &amp;&amp; elbScalingGroupNames.indexOf(instance.scaling_group) !== -1" />
                 </td>
                 <td>
                     <span id="instance-name-{{ instance.id }}" class="id breakword">
@@ -23,10 +24,10 @@
                 </td>
                 <td class="breakall">{{ instance.tags }}</td>
                 <td>
-                    <i ng-show="!isVPCSupported &amp;&amp; selectedZones.indexOf(instance.placement) === -1"
+                    <i ng-show="!isVPCSupported &amp;&amp; selectedZones.indexOf(instance.availability_zone) === -1"
                        class="fi-alert" data-tooltip="" i18n:attributes="title"
                        title="Instances will not receive any traffic until you enable this zone"></i>
-                    {{ instance.placement }}
+                    {{ instance.availability_zone }}
                 </td>
                 <td ng-if="isVPCSupported">
                     <i ng-show="selectedSubnets.indexOf(instance.subnet_id) === -1"
@@ -37,11 +38,9 @@
                     </span>
                 </td>
                 <td class="status">
-                    <span class="label radius status {{ instanceHealthMapping[instance.id].state || instance.status }}"
-                          data-tooltip="">
+                    <span class="label radius status {{ instanceHealthMapping[instance.id].state || instance.status }}">
                         {{ healthStatusNames[instanceHealthMapping[instance.id].state] || instance.status }}
                     </span>
-                    <span class="busy" ng-show="instance.transitional">&nbsp;</span>
                 </td>
                 <td>
                     {{ instanceHealthMapping[instance.id].description }}
@@ -49,7 +48,7 @@
             </tr>
             <tr ng-show="instanceList.length === 0">
                 <td></td>
-                <td colspan="5">
+                <td colspan="6">
                     <span ng-show="instancesLoading" class="busy"></span>
                     <span ng-show="!instancesLoading">{{ tableText.no_matching_instance_error_msg }}</span>
                 </td>

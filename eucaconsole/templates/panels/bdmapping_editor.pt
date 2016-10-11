@@ -30,7 +30,7 @@
                     </td>
                     <td>{{ key }}</td>
                     <td>{{ val.snapshot_id }}</td>
-                    <td tal:condition="not read_only">
+                    <td tal:condition="not read_only" class="count">
                         <span ng-if="!isEphemeral(val)">
                             <input class="number" value="{{ val.size }}" size="4" required="required" pattern="integer"
                                    ng-keyup="updateRootDeviceSize($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
@@ -45,7 +45,7 @@
                                    ng-disabled="disableDOT"/>
                         </span>
                     </td>
-                    <td tal:condition="read_only">
+                    <td class="delete-on-terminate" tal:condition="read_only">
                         <span ng-if="!isEphemeral(val)"> {{ val.delete_on_termination }} </span>
                     </td>
                     <td tal:condition="not read_only">
@@ -89,8 +89,8 @@
                 <input class="number" id="new-size" ng-model="newSize" />
             </div>
             <div class="medium-3 columns" ng-show="newVolumeType !== 'ephemeral'">
-                <label class="left" i18n:translate="">Delete on terminate</label>
-                <input style="margin-top:35px;margin-left:-70px;" type="checkbox" name="delete_on_termination"
+                <label i18n:translate="">Delete on terminate</label>
+                <input type="checkbox" name="delete_on_termination"
                     checked="checked" ng-model="newDOT" ng-disabled="disableDOT"/>
             </div>
         </div>
@@ -107,6 +107,7 @@
             </div>
         </div>
         <textarea id="bdmapping" name="block_device_mapping" class="hidden"></textarea>
+        <hr tal:condition="add_hr"/>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/bdmapping_editor.js')}"></script>
 </div>

@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview IAM Account Detaile Page JS
  * @requires AngularJS
  *
@@ -84,6 +86,7 @@ angular.module('AccountPage', ['PolicyList', 'Quotas'])
                     $scope.currentTab = id; // Update the currentTab value for the help display
                     $scope.$broadcast('updatedTab', $scope.currentTab);
                 }
+                $scope.isHelpExpanded = false;
              });
         };
         $scope.clickTab = function ($event, tab){

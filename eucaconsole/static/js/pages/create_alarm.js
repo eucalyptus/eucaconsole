@@ -1,6 +1,10 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Create Alarm JS
  * @requires AngularJS and jQuery
+ *
+ * NOTE: This has been replaced by js/widgets/create-alarm-modal/create-alarm.js
  *
  */
 angular.module('CreateAlarm', ['EucaConsoleUtils'])
@@ -66,19 +70,15 @@ angular.module('CreateAlarm', ['EucaConsoleUtils'])
                 return false;
             }
             $scope.isCreatingAlarm = true;
-            $http({
+            var promise = $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
                 url: postUrl,
                 data: formData
             }).success(function (oData) {
-                // Add new alarm to choices and set it as selected
-                var newAlarm = oData.new_alarm;
-                $rootScope.alarmChoices[newAlarm] = newAlarm;
-                $rootScope.alarm = newAlarm;
-                $scope.isCreatingAlarm = false;
                 var modal = $scope.alarmDialog;
                 modal.foundation('reveal', 'close');
+                $scope.isCreatingAlarm = false;
             }).error(function (oData) {
                 if (oData.message) {
                     Notify.failure(oData.message);
@@ -86,6 +86,7 @@ angular.module('CreateAlarm', ['EucaConsoleUtils'])
                 }
             });
 
+            $rootScope.$broadcast('alarm_created', promise);
         };
     })
 ;

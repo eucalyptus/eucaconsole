@@ -1,4 +1,4 @@
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -38,10 +38,12 @@ from boto.ec2.elb.attributes import LbAttributes, CrossZoneLoadBalancingAttribut
 from moto import mock_elb, mock_cloudwatch
 
 
+from eucaconsole.i18n import _
 from eucaconsole.constants.elbs import ELB_EMPTY_DATA_MESSAGE
+from eucaconsole.forms.elbs import ELBForm, ELBHealthChecksForm
 from eucaconsole.views.elbs import ELBsJsonView, ELBView, ELBMonitoringView, ELBInstancesView, ELBHealthChecksView
 
-from tests import BaseViewTestCase, Mock
+from tests import BaseViewTestCase, BaseFormTestCase, Mock
 
 
 class MockELBMixin(object):
@@ -60,20 +62,6 @@ class MockELBMixin(object):
     @mock_cloudwatch
     def make_cw_conn():
         return boto.connect_cloudwatch()
-
-
-class ELBLandingPageJsonViewTests(BaseViewTestCase, MockELBMixin):
-    @mock_elb
-    def test_elb_landing_page_json_view(self):
-        elb_conn, elb = self.make_elb()
-        cw_conn = self.make_cw_conn()
-        request = self.create_request()
-        view = ELBsJsonView(request, elb_conn=elb_conn, cw_conn=cw_conn, elb=elb).elbs_json()
-        results = view.get('results')
-        elb = results[0]
-        self.assertEqual(len(results), 1)
-        self.assertEqual(elb.get('healthy_hosts'), 0)
-        self.assertEqual(elb.get('unhealthy_hosts'), 0)
 
 
 class ELBViewTests(BaseViewTestCase, MockELBMixin):
@@ -96,25 +84,29 @@ class ELBMonitoringViewTests(BaseViewTestCase, MockELBMixin):
         request = self.create_request()
         view = ELBMonitoringView(request, elb=elb).elb_monitoring()
         options_json = json.loads(view.get('controller_options_json'))
+        chart_help = _(
+            'The total number of completed requests that were received and routed to the registered instances. '
+            'Defaults to the sum statistic for the best output results.')
         chart_item = {
-            "metric": "RequestCount", "unit": "Count", "statistic": "Sum", "empty_msg": ELB_EMPTY_DATA_MESSAGE
+            "metric": "RequestCount", "unit": "Count", "statistic": "Sum", "empty_msg": ELB_EMPTY_DATA_MESSAGE,
+            "help": chart_help
         }
         self.assertEqual(view.get('elb_name'), 'test_elb')
         self.assert_(chart_item in options_json.get('charts_list'))
 
 
-class ELBInstancesViewTests(BaseViewTestCase, MockELBMixin):
-    """ELB detail page view - Instances tab"""
-    def test_elb_instances_tab_view(self):
-        elb_conn, elb = self.make_elb()
-        request = self.create_request()
-        elb_attrs = LbAttributes(connection=elb_conn)
-        elb_attrs.cross_zone_load_balancing = CrossZoneLoadBalancingAttribute(connection=elb_conn)
-        elb_attrs.cross_zone_load_balancing.enabled = True
-        view = ELBInstancesView(request, elb=elb, elb_attrs=elb_attrs).elb_instances()
-        options_json = json.loads(view.get('controller_options_json'))
-        self.assertEqual(view.get('elb_name'), 'test_elb')
-        self.assertEqual(options_json.get('cross_zone_enabled'), True)
+# class ELBInstancesViewTests(BaseViewTestCase, MockELBMixin):
+#     """ELB detail page view - Instances tab"""
+#     def test_elb_instances_tab_view(self):
+#         elb_conn, elb = self.make_elb()
+#         request = self.create_request()
+#         elb_attrs = LbAttributes(connection=elb_conn)
+#         elb_attrs.cross_zone_load_balancing = CrossZoneLoadBalancingAttribute(connection=elb_conn)
+#         elb_attrs.cross_zone_load_balancing.enabled = True
+#         view = ELBInstancesView(request, elb=elb, elb_attrs=elb_attrs).elb_instances()
+#         options_json = json.loads(view.get('controller_options_json'))
+#         self.assertEqual(view.get('elb_name'), 'test_elb')
+#         self.assertEqual(options_json.get('cross_zone_enabled'), True)
 
 
 class ELBHealthChecksViewTests(BaseViewTestCase, MockELBMixin):
@@ -130,6 +122,55 @@ class ELBHealthChecksViewTests(BaseViewTestCase, MockELBMixin):
         self.assertEqual(view.get('elb_name'), 'test_elb')
         self.assertEqual(form.ping_protocol.data, 'HTTP')
         self.assertEqual(form.ping_port.data, 80)
-        self.assertEqual(form.ping_path.data, 'index.html')
+        self.assertEqual(form.ping_path.data, '/index.html')
         self.assertEqual(form.passes_until_healthy.data, '3')
         self.assertEqual(form.failures_until_unhealthy.data, '5')
+
+    def test_elb_health_check_data_with_slash_ping_path(self):
+        elb_conn, elb = self.make_elb()
+        health_check = Mock(
+            target='HTTPS:443/', interval=300, timeout=15, healthy_threshold=3, unhealthy_threshold=5)
+        elb.health_check = health_check
+        request = self.create_request()
+        view = ELBHealthChecksView(request, elb=elb).elb_healthchecks()
+        form = view.get('elb_form')
+        self.assertEqual(form.ping_protocol.data, 'HTTPS')
+        self.assertEqual(form.ping_port.data, 443)
+        self.assertEqual(form.ping_path.data, '/')
+
+
+class ELBDetailPageFormTests(BaseFormTestCase, BaseViewTestCase, MockELBMixin):
+    @mock_elb
+    def test_elb_detail_page_form(self):
+        request = self.create_request()
+        elb_conn, elb = self.make_elb()
+        elb.idle_timeout = 30
+        form = ELBForm(request, elb_conn=elb_conn, elb=elb)
+        self.assertEqual(form.get_idle_timeout(elb), 30)
+        self.assertEqual(form.idle_timeout.data, 30)
+        self.assertEqual(form.logging_enabled.data, False)
+        self.assertEqual(form.bucket_name.data, None)
+        self.assertEqual(form.bucket_prefix.data, None)
+        self.assertEqual(form.collection_interval.data, '60')
+
+
+class ELBHealthChecksFormTests(BaseFormTestCase, BaseViewTestCase, MockELBMixin):
+    @mock_elb
+    def test_elb_health_checks_form(self):
+        request = self.create_request()
+        elb_conn, elb = self.make_elb()
+        elb.health_check = Mock(
+            interval=30,
+            timeout=30,
+            healthy_threshold=3,
+            unhealthy_threshold=2,
+            target='HTTP:80/index.html',
+        )
+        form = ELBHealthChecksForm(request, elb_conn=elb_conn, elb=elb)
+        self.assertEqual(form.ping_protocol.data, 'HTTP')
+        self.assertEqual(form.ping_port.data, 80)
+        self.assertEqual(form.ping_path.data, '/index.html')
+        self.assertEqual(form.time_between_pings.data, '30')
+        self.assertEqual(form.response_timeout.data, 30)
+        self.assertEqual(form.failures_until_unhealthy.data, '2')
+        self.assertEqual(form.passes_until_healthy.data, '3')

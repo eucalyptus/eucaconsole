@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content" ng-app="ImagesPage" ng-controller="ImagesCtrl"
      ng-init="initController('${controller_options_json}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
-         ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}')">
+         ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}', '${layout.cloud_type}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">Images</a></li>
@@ -15,17 +15,45 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
-        <!--! Notification to select image for Launch Instance wizard, (step 1).  Append ?launch=1 to url to display -->
-        <div id="notifications" tal:condition="request.params.get('launch')">
-            <div data-alert="alert" class="alert-box">
-                <span i18n:translate="">Select the image to launch your instance from below</span>
-                <a href="#" class="close">&times;</a>
-            </div>
-        </div>
         <h3 id="pagetitle"><strong i18n:translate="">Images</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
-            <div metal:fill-slot="new_button">&nbsp;</div>
+            <div metal:fill-slot="new_button">
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-details"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}">
+                                View details
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true} | pendingOnly).length !== 1}">
+                            <a i18n:translate="" class="more-actions-cancelcreate"
+                               ng-click="cancelCreate($event, (items | filter: {selected: true } | pendingOnly)[0])">
+                                Cancel image creation
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-launchinstance"
+                               ng-href="instances/new?image_id={{ (items | filter: {selected: true})[0].id }}">
+                                Launch instance
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-launchconfig"
+                               ng-href="launchconfigs/new?image_id={{ (items | filter: {selected: true})[0].id }}">
+                                Create launch configuration
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true, can_remove: true}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-deregister"
+                               ng-click="revealMultiSelectDeregisterModal((items | filter:{selected: true, can_remove: true}))">
+                                Remove from cloud
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
+            </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
@@ -51,11 +79,12 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
                 <span ng-show="!item.fake_id">
-                    <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a>
+                    <a ng-href="${prefix}/{{ item.id }}" class="has-checkbox">{{ item.tagged_name || item.id }}</a>
                 </span>
                 <span ng-show="item.fake_id">
-                    <a ng-href="${prefix}/{{ item.fake_id }}">{{ item.id }}</a>
+                    <a ng-href="${prefix}/{{ item.fake_id }}" class="has-checkbox">{{ item.id }}</a>
                 </span>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
@@ -102,15 +131,18 @@
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Name (ID)</th>
-                <th i18n:translate="">Status</th>
-                <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span i18n:translate="">Name</span></th>
-                <th i18n:translate="">Description</th>
-                <th i18n:translate="">Root Device</th>
-                <th i18n:translate="">Platform</th>
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="id">Name (ID)</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="state">Status</th>
+                <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span
+                        i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">Name</span></th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="description">Description</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="root_device_type">Root Device</th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="platform_name">Platform</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td class="id breakword" ng-show="!item.fake_id">
                     <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a>
                 </td>
@@ -159,6 +191,9 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('image_dialogs', deregister_form=deregister_form, landingpage=True)}
+        <form>
+            <input type="hidden" id="account_id" name="account_id" value="${account_id}"/>
+        </form>
     </div>
 </div>
 
@@ -171,7 +206,9 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/images.js')}"></script>
 </div>
 

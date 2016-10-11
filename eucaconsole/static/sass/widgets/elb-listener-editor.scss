@@ -1,0 +1,41 @@
+@import "../includes/eucavariables";
+@import "../widgets/modal";
+
+.wizard {
+    .error {
+        font-size: small;
+        display: none;
+    }
+
+    input[type="number"].port {
+        width: 80px;
+    }
+
+    input.ng-invalid.ng-touched ~ .error {
+        display: block;
+        @include validation-error-mixin;
+    }
+
+    .ng-invalid {
+        input[type="submit"] {
+            @include disabled-button-mixin;
+        }
+    }
+
+    .port-in-use,
+    .port-out-of-range {
+        display: none;
+    }
+    .euca-invalid-port-in-use {
+        .port-in-use {
+            display: block;
+            @include validation-error-mixin;
+        }
+    }
+    .euca-invalid-port-out-of-range {
+        .port-out-of-range {
+            display: block;
+            @include validation-error-mixin;
+        }
+    }
+}

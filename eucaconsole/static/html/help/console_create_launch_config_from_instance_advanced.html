@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Create Launch Configuration from Instance</title>
+</head>
+<body id="console_create_launch_configuration">
+
+
+    <h1 class="title topictitle1">Create Launch Configuration from Instance</h1>
+
+    <div class="topic task nested2" id="create_launch_configuration_from_instance_ui_advanced_steps">
+        <h3 class="title topictitle3">Specify Advanced Options</h3>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This panel allows you to optionally specify advanced options for the new launch
+            configuration. You can override the kernel and RAM disk IDs, enable monitoring, and adding 
+            additional storage, if applicable.</p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd"> You can override the kernel ID in the selected image with the
+                            <span class="ph uicontrol">Kernel ID</span> drop-down list box. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> You can override the RAM disk ID in the selected image with the
+                            <span class="ph uicontrol">RAM disk ID (RAMFS)</span> drop-down list box. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Enable monitoring</span> check box to specify
+                        that detailed CloudWatch metric gathering should be enabled for your new
+                        launch configuration(s).</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">For EBS-backed instances, you can configure the root volume or additional
+                        storage for your instance in the Storage section:</span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Change the size of the root volume by entering the size of the attached 
+                                storage in gigabytes into the <span class="ph uicontrol">Size (GB)</span> text box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Select the <span class="ph uicontrol">Delete on terminate</span> check box if
+                                you want the attached storage deleted when the instance is
+                                terminated.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> You can configure additional storage for your instance by
+                                selecting a volume type from the <span class="ph uicontrol">Volume</span>
+                                drop-down list box. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Type the desired mapping for the storage into the
+                                <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
+                                    /dev/sdb</samp>).</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">If you want to create the storage from an existing snapshot,
+                                specify it in the <span class="ph uicontrol">Create from snapshot</span>
+                                drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
+                                <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on terminate</span> check box if
+                                you would like the attached storage to be deleted when the instance
+                                is terminated. </span>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Add Device</span> button to add this
+                                storage.</span>
+                            <div class="itemgroup stepresult">Added storage displays as a row in the table under the
+                                Storage area. </div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">You can delete existing storage by clicking the minus button on the
+                                right side of the storage list item.</span>
+                        </li>
+
+                    </ol>
+
+                </li>
+<li class="li step">
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Create Launch Configuration</span> button or click 
+                        <span class="ph uicontrol">Cancel</span> to abandon your changes.
+                    </span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
