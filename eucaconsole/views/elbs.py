@@ -322,7 +322,7 @@ class BaseELBView(TaggedItemView):
         req_params = self.request.params
         params_logging_enabled = req_params.get('logging_enabled') == 'y'
         params_bucket_name = req_params.get('bucket_name')
-        if params_bucket_name.startswith('string:'):
+        if params_bucket_name and params_bucket_name.startswith('string:'):
             params_bucket_name = clean_value(params_bucket_name)
         params_bucket_prefix = req_params.get('bucket_prefix', '')
         params_collection_interval = int(req_params.get('collection_interval', 60))
