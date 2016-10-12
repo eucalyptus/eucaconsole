@@ -56,6 +56,7 @@ from ..constants.elbs import (
     ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,
     AWS_ELB_ACCOUNT_IDS)
 from ..forms import ChoicesManager
+from ..forms.angularcompat import clean_value
 from ..forms.buckets import CreateBucketForm
 from ..forms.elbs import (
     ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
@@ -321,6 +322,8 @@ class BaseELBView(TaggedItemView):
         req_params = self.request.params
         params_logging_enabled = req_params.get('logging_enabled') == 'y'
         params_bucket_name = req_params.get('bucket_name')
+        if params_bucket_name.startswith('string:'):
+            params_bucket_name = clean_value(params_bucket_name)
         params_bucket_prefix = req_params.get('bucket_prefix', '')
         params_collection_interval = int(req_params.get('collection_interval', 60))
         if elb is not None:
