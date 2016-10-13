@@ -52,9 +52,17 @@ from tests import BaseViewTestCase, BaseFormTestCase, Mock
 
 class MockInstanceMixin(object):
     @staticmethod
-    @mock_ec2
+    def setup_session(request):
+        request.session['region'] = 'us-east-1'
+        request.session['access_id'] = 'moto'
+        request.session['secret_key'] = 'moto'
+        request.session['session_token'] = 'moto'
+        request.session['cloud_type'] = 'aws'
+        request.id = 'abcd1234'
+
+    @staticmethod
     def make_instance(image_id=None, **kwargs):
-        ec2_conn = boto.connect_ec2('us-east')
+        ec2_conn = boto.connect_ec2()
         if image_id is None:
             image_id = 'ami-1234abcd'
         reservation = ec2_conn.run_instances(image_id, **kwargs)
@@ -319,29 +327,37 @@ class InstanceCreateImageFormTestCase(BaseFormTestCase, BaseViewTestCase):
 
 class InstanceMonitoringViewTestCase(BaseViewTestCase, MockInstanceMixin):
 
+    @mock_ec2
     def test_instance_monitoring_view_duration_choices(self):
         request = testing.DummyRequest()
+        self.setup_session(request)
         instance = self.make_instance()
-        view = InstanceMonitoringView(request, instance=instance).instance_monitoring()
+        request.matchdict['id'] = instance.id
+        request.is_xhr = True;
+        view = InstanceMonitoringView(request).instance_monitoring()
         duration_choices = dict(view.get('duration_choices'))
         for choice in [3600, 10800, 21600, 43200, 86400, 259200, 604800, 1209600]:
             assert choice in duration_choices
 
+    @mock_ec2
     def test_instance_monitoring_state_on_aws(self):
-        session = {'cloud_type': 'aws'}
-        request = self.create_request(session=session)
+        request = self.create_request()
+        self.setup_session(request)
         instance = self.make_instance()
-        view = InstanceView(request, instance=instance).instance_view()
+        request.matchdict['id'] = instance.id
+        view = InstanceView(request).instance_view()
         monitoring_state = view.get('instance_monitoring_state')
-        self.assertEqual(monitoring_state, u'Detailed')
+        self.assertEqual(monitoring_state, u'Basic')
 
+    @mock_ec2
     def test_instance_monitoring_tab_title_on_aws(self):
-        session = {'cloud_type': 'aws'}
-        request = self.create_request(session=session)
+        request = self.create_request()
+        self.setup_session(request)
         instance = self.make_instance()
-        view = InstanceMonitoringView(request, instance=instance).instance_monitoring()
+        request.matchdict['id'] = instance.id
+        view = InstanceMonitoringView(request).instance_monitoring()
         monitoring_tab_title = view.get('monitoring_tab_title')
-        self.assertEqual(monitoring_tab_title, u'Detailed Monitoring')
+        self.assertEqual(monitoring_tab_title, u'Basic Monitoring')
 
 
 class InstanceTypeChoicesTestCase(BaseViewTestCase):
