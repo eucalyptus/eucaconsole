@@ -36,7 +36,7 @@ angular.module('StackAWSDialogs', ['EucaConsoleUtils'])
                     // skip file param since we're relying on template already being in S3
                     $scope.loading = true;
                     $scope.parameters = undefined;
-                    $http.post('/stacks/templateconvert'), fd, {
+                    $http.post('/stacks/templateconvert', fd, {
                             headers: {'Content-Type': undefined},
                             transformRequest: angular.identity
                     }).
