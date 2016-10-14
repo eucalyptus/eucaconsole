@@ -29,8 +29,10 @@ Pyramid views for Login/Logout
 
 """
 import base64
+import httplib, urllib
 import logging
 import simplejson as json
+import socket
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
@@ -43,7 +45,8 @@ from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..i18n import _
-from ..models.auth import AWSAuthenticator, ConnectionManager
+from ..models import Notification
+from ..models.auth import AWSAuthenticator, ConnectionManager, HttpsConnectionFactory
 from ..views import BaseView
 from ..views import JSONResponse
 from ..constants import AWS_REGIONS
@@ -107,9 +110,19 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
+        self.oidc_host = self.request.registry.settings.get('oidc.hostname', None)
+        login_link = 'https://{oidc_host}/v2/oauth2/authorize?' \
+            'scope=urn%3Aglobus%3Aauth%3Ascope%3Atransfer.api.globus.org%3Aall&' \
+            'redirect_uri=https%3A%2F%2F{oidc_console_host}%2Flogin&' \
+            'access_type=online&response_type=code&' \
+            'client_id={oidc_client_id}'
+        oidc_client_id = self.request.registry.settings.get('oidc.client.id', None)
+        oidc_console_host = self.request.registry.settings.get('oidc.console.hostname', None)
+        login_link = login_link.format(oidc_host=self.oidc_host, oidc_console_host=oidc_console_host, oidc_client_id=oidc_client_id)
         options_json = BaseView.escape_json(json.dumps(dict(
             account=request.params.get('account', default=''),
             username=request.params.get('username', default=''),
+            oidcLoginLink=login_link
         )))
         self.render_dict = dict(
             https_required=self.show_https_warning(),
@@ -121,6 +134,8 @@ class LoginView(BaseView, PermissionCheckMixin):
             login_refresh=self.login_refresh,
             came_from=self.came_from,
             controller_options_json=options_json,
+            oidc_enabled=self.oidc_host is not None,
+            oidc_link_text=self.request.registry.settings.get('oidc.login.button.label', 'oidc login')
         )
 
     def show_https_warning(self):
@@ -136,6 +151,43 @@ class LoginView(BaseView, PermissionCheckMixin):
             status = getattr(self.request.exception, 'status', "403 Forbidden")
             status = int(status[:status.index(' ')]) or 403
             return JSONResponse(status=status, message=message)
+        state = self.request.params.get('state')
+        if state and state.find('oidc-') == 0:
+            try:
+                # ok, it's oidc, validate and get token
+                auth_code = self.request.params.get('code')
+                # post to token service
+                oidc_console_host = self.request.registry.settings.get('oidc.console.hostname', None)
+                data = {
+                    'grant_type': 'authorization_code',
+                    'code': auth_code,
+                    'redirect_uri': 'https://%s/login' % oidc_console_host
+                }
+                conn = httplib.HTTPSConnection(self.oidc_host, 443, timeout=300)
+                oidc_client_id = self.request.registry.settings.get('oidc.client.id', None)
+                oidc_client_secret = self.request.registry.settings.get('oidc.client.secret', None)
+                auth_string = base64.b64encode(('%s:%s' % (oidc_client_id, oidc_client_secret)).encode('latin1')).strip()
+                headers = {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/vnd.api+json',
+                    'Authorization': 'Basic ' + auth_string
+                }
+                # Is it worth looking this url up via .well-known/openid-configuration?
+                # It's part of the API standard, so not likely to change
+                conn.request('POST', '/v2/oauth2/token', urllib.urlencode(data), headers)
+                response = conn.getresponse()
+                if response.status == 401:
+                    self.login_form_errors.append("OAuth authentication failed")
+                body = response.read()
+                token = json.loads(body)
+                return self.handle_web_identity_login(token)
+            except BotoServerError as err:
+                if err.message.find('Invalid role ARN') > -1:
+                    msg = _(u'Unable to login, check that you have the correct account name')
+                else:
+                    msg = _(u'Unable to login, ') + err.message
+                self.request.session.flash(msg, queue=Notification.ERROR)
+                
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
@@ -150,6 +202,64 @@ class LoginView(BaseView, PermissionCheckMixin):
             return self.handle_aws_login()
 
         return self.render_dict
+
+    def handle_web_identity_login(self, token):
+        auth = self.get_oidc_authenticator()
+        session = self.request.session
+
+        try:
+            state = role_session_name=token['state']
+            # try authentication with default of dns_enabled = True. Set to False if we fail
+            (oidc, euca_region, account_name) = state.split('-', 2)
+            euca_region = base64.urlsafe_b64decode(euca_region)
+            # and if that also fails, let that error raise up
+            creds = auth.authenticate(token=token, account_name=account_name, timeout=8, duration=self.duration)
+            # now that we authenticated, extract info from token
+            jwt_body = token['id_token'].split('.')[1]
+            jwt_info = json.loads(base64.urlsafe_b64decode(jwt_body + '=='))
+            account = 'oidc'
+            username = jwt_info['preferred_username']
+            logging.info(u"Authenticated OIDC user: {user} from {ip}".format(
+                    user=username, ip=BaseView.get_remote_addr(self.request)))
+            default_region = self.request.registry.settings.get('default.region', 'euca')
+            user_account = u'{user}@{account}'.format(user=username, account=account)
+            session.invalidate()  # Refresh session
+            session['cloud_type'] = 'euca'
+            session['auth_type'] = 'oidc'
+            session['account'] = account
+            session['username'] = username
+            self._assign_session_creds(session, creds)
+            session['region'] = euca_region if euca_region != '' else default_region
+            session['username_label'] = user_account
+            session['dns_enabled'] = auth.dns_enabled # this *must* be prior to line below
+            session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
+            session['default_vpc'] = self.get_account_attributes(['default-vpc'])
+
+            # handle checks for IAM perms
+            self.check_iam_perms(session, creds)
+            headers = remember(self.request, user_account)
+            return HTTPFound(location=self.came_from, headers=headers)
+        except HTTPError as err:
+            logging.info("http error " + str(vars(err)))
+            if err.code == 403:  # password expired
+                changepwd_url = self.request.route_path('managecredentials')
+                return HTTPFound(
+                    changepwd_url + ("?came_from=&expired=true&account=%s&username=%s" % (account, username))
+                )
+            elif err.msg == u'Unauthorized':
+                msg = _(u'Invalid user/account name and/or password.')
+                self.login_form_errors.append(msg)
+        except URLError as err:
+            logging.info("url error " + str(vars(err)))
+            # if str(err.reason) == 'timed out':
+            # opened this up since some other errors should be reported as well.
+            if err.reason.find('ssl') > -1:
+                msg = INVALID_SSL_CERT_MSG
+            else:
+                msg = _(u'No response from host')
+            self.login_form_errors.append(msg)
+        return self.render_dict
+
 
     def handle_euca_login(self):
         new_passwd = None
@@ -172,11 +282,10 @@ class LoginView(BaseView, PermissionCheckMixin):
                 user_account = u'{user}@{account}'.format(user=username, account=account)
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
+                session['auth_type'] = 'password'
                 session['account'] = account
                 session['username'] = username
-                session['session_token'] = creds.session_token
-                session['access_id'] = creds.access_key
-                session['secret_key'] = creds.secret_key
+                self._assign_session_creds(session, creds)
                 session['region'] = euca_region if euca_region != '' else default_region
                 session['username_label'] = user_account
                 session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
@@ -187,7 +296,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 self.check_iam_perms(session, creds)
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
-            except HTTPError, err:
+            except HTTPError as err:
                 logging.info("http error " + str(vars(err)))
                 if err.code == 403:  # password expired
                     changepwd_url = self.request.route_path('managecredentials')
@@ -197,7 +306,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)
-            except URLError, err:
+            except URLError as err:
                 logging.info("url error " + str(vars(err)))
                 # if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
@@ -226,9 +335,8 @@ class LoginView(BaseView, PermissionCheckMixin):
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'aws'
-                session['session_token'] = creds.session_token
-                session['access_id'] = creds.access_key
-                session['secret_key'] = creds.secret_key
+                session['auth_type'] = 'keys'
+                self._assign_session_creds(session, creds)
                 last_visited_aws_region = [reg for reg in AWS_REGIONS if reg.get('name') == aws_region]
                 session['region'] = aws_region if last_visited_aws_region else default_region
                 session['username_label'] = u'{user}...@AWS'.format(user=creds.access_key[:8])
@@ -243,17 +351,23 @@ class LoginView(BaseView, PermissionCheckMixin):
                         session.get('supported_platforms').remove('VPC')
                 headers = remember(self.request, creds.access_key[:8])
                 return HTTPFound(location=self.came_from, headers=headers)
-            except HTTPError, err:
+            except HTTPError as err:
                 if err.msg == 'Forbidden':
                     msg = _(u'Invalid access key and/or secret key.')
                     self.login_form_errors.append(msg)
-            except URLError, err:
+            except URLError as err:
                 if err.reason.find('ssl') > -1:
                     msg = INVALID_SSL_CERT_MSG
                 else:
                     msg = _(u'No response from host')
                 self.login_form_errors.append(msg)
         return self.render_dict
+
+    @staticmethod
+    def _assign_session_creds(session, creds):
+        session['session_token'] = creds.session_token
+        session['access_id'] = creds.access_key
+        session['secret_key'] = creds.secret_key
 
 
 class LogoutView(BaseView):
