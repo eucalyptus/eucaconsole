@@ -308,6 +308,35 @@ S3_ACTIONS = [
     'PutObjectVersionAcl',
 ]
 
+# Policy Generator Actions for CloudFormation
+CLOUDFORMATION_ACTIONS = [
+    'CancelUpdateStack',
+    'ContinueUpdateRollback',
+    'CreateChangeSet',
+    'CreateStack',
+    'CreateUploadBucket',
+    'DeleteStack',
+    'DescribeAccountLimits',
+    'DescribeChangeSet',
+    'DescribeStackEvents',
+    'DescribeStackResource',
+    'DescribeStackResources',
+    'DescribeStacks',
+    # 'EstimateTemplateCost',
+    'ExecuteChangeSet',
+    'GetStackPolicy',
+    'GetTemplate',
+    'GetTemplateSummary',
+    'ListChangeSets',
+    'ListStackResources',
+    'ListStacks',
+    'PreviewStackUpdate',
+    'SetStackPolicy',
+    'SignalResource',
+    'UpdateStack',
+    'ValidateTemplate',
+]
+
 
 # Policy Generator Actions for IAM
 IAM_ACTIONS = [
@@ -416,6 +445,11 @@ POLICY_ACTIONS = [
         'name': 's3',
         'label': _(u'All S3/Walrus actions'),
         'actions': S3_ACTIONS,
+    },
+    {
+        'name': 'cloudformation',
+        'label': _(u'All CloudFormation actions'),
+        'actions': CLOUDFORMATION_ACTIONS,
     },
     {
         'name': 'iam',
