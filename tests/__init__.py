@@ -102,6 +102,15 @@ class BaseViewTestCase(unittest.TestCase):
             request.session.update(session)
         return request
 
+    @staticmethod
+    def setup_session(request):
+        request.session['region'] = 'us-east-1'
+        request.session['access_id'] = 'moto'
+        request.session['secret_key'] = 'moto'
+        request.session['session_token'] = 'moto'
+        request.session['cloud_type'] = 'aws'
+        request.id = 'abcd1234'
+
 
 class BaseTestCase(unittest.TestCase):
     """Use this as a base when you need to run test with no routes automatically configured.

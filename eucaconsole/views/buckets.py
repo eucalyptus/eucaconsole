@@ -322,11 +322,11 @@ class BucketContentsView(LandingPageView, BucketMixin):
     """Views for actions on single bucket"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_contents.pt'
 
-    def __init__(self, request, bucket_name=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketContentsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name')]
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket_name = bucket_name or self.get_bucket_name(request)
+        self.bucket_name = self.get_bucket_name(request)
         request.subpath = self.get_subpath(self.bucket_name)
         self.prefix = '/buckets'
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
@@ -597,12 +597,11 @@ class BucketContentsView(LandingPageView, BucketMixin):
 
 
 class BucketContentsJsonView(BaseView, BucketMixin):
-    def __init__(self, request, bucket=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketContentsJsonView, self).__init__(request, **kwargs)
-        self.bucket = bucket
         with boto_error_handler(request):
             self.s3_conn = self.get_connection(conn_type='s3')
-            if self.s3_conn and self.bucket is None:
+            if self.s3_conn:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
         request.subpath = self.get_subpath(self.bucket_name)
@@ -683,19 +682,15 @@ class BucketDetailsView(BaseView, BucketMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
-    def __init__(self, request, bucket=None, bucket_acl=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketDetailsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name'), _(u'Details')]
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = bucket
-        self.bucket_acl = bucket_acl
         self.cors_configuration_xml = None
         with boto_error_handler(request):
-            if self.s3_conn and self.bucket is None:
-                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             request.subpath = self.get_subpath(self.bucket.name) if self.bucket else ''
-            if self.bucket and self.bucket_acl is None:
-                self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+            self.bucket_acl = self.bucket.get_acl() if self.bucket else None
             if self.bucket:
                 self.cors_configuration_xml = self.get_cors_configuration(self.bucket, xml=True)
                 if self.cors_configuration_xml:
@@ -938,20 +933,18 @@ class BucketItemDetailsView(BaseView, BucketMixin):
     """Views for Bucket item (folder/object) details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
 
-    def __init__(self, request, bucket=None, bucket_item_acl=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketItemDetailsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name')]
-        self.bucket = bucket
-        self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')
         with boto_error_handler(request):
-            if self.s3_conn and self.bucket is None:
+            if self.s3_conn:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
                 self.s3_conn.suppress_consec_slashes = False
             request.subpath = self.get_subpath(self.bucket.name)
             self.bucket_name = self.bucket.name
             self.bucket_item = self.get_bucket_item()
-            if self.s3_conn and self.bucket_item_acl is None:
+            if self.s3_conn:
                 self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         if self.bucket_item is None:
             raise HTTPNotFound()

@@ -1063,11 +1063,11 @@ class ELBHealthChecksView(BaseELBView):
     """ELB detail page - Health Checks tab"""
     TEMPLATE = '../templates/elbs/elb_healthchecks.pt'
 
-    def __init__(self, request, elb=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(ELBHealthChecksView, self).__init__(request, **kwargs)
         self.title_parts.append(_(u'Health Checks'))
         with boto_error_handler(request):
-            self.elb = elb or self.get_elb()
+            self.elb = self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
             self.elb_form = ELBHealthChecksForm(
@@ -1106,11 +1106,11 @@ class ELBMonitoringView(BaseELBView):
     """ELB detail page - Monitoring tab"""
     TEMPLATE = '../templates/elbs/elb_monitoring.pt'
 
-    def __init__(self, request, elb=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(ELBMonitoringView, self).__init__(request, **kwargs)
         self.title_parts.append(_(u'Monitoring'))
         with boto_error_handler(request):
-            self.elb = elb or self.get_elb()
+            self.elb = self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
             self.availability_zones = [zone.get('id') for zone in self.get_availability_zones()]

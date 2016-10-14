@@ -311,13 +311,13 @@ class VolumesJsonView(LandingPageView):
 class VolumeView(TaggedItemView, BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_view.pt'
 
-    def __init__(self, request, ec2_conn=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(VolumeView, self).__init__(request, **kwargs)
         name = request.matchdict.get('id')
         if name == 'new':
             name = _(u'Create')
         self.title_parts = [_(u'Volume'), name, _(u'General')]
-        self.conn = ec2_conn or self.get_connection()
+        self.conn = self.get_connection()
         self.location = request.route_path('volume_view', id=request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
@@ -490,10 +490,10 @@ class VolumeView(TaggedItemView, BaseVolumeView):
 
 
 class VolumeStateView(BaseVolumeView):
-    def __init__(self, request, ec2_conn=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(VolumeStateView, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = ec2_conn or self.get_connection()
+        self.conn = self.get_connection()
         self.volume = self.get_volume()
 
     @view_config(route_name='volume_state_json', renderer='json', request_method='GET')
@@ -520,13 +520,13 @@ class VolumeStateView(BaseVolumeView):
 class VolumeSnapshotsView(BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_snapshots.pt'
 
-    def __init__(self, request, ec2_conn=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(VolumeSnapshotsView, self).__init__(request, **kwargs)
         name = request.matchdict.get('id')
         if name == 'new':
             name = _(u'Create')
         self.title_parts = [_(u'Volume'), name, _(u'Snapshots')]
-        self.conn = ec2_conn or self.get_connection()
+        self.conn = self.get_connection()
         self.location = self.request.route_path('volume_snapshots', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
