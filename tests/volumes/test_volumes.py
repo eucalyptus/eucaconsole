@@ -29,6 +29,8 @@ Volumes tests
 See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
+import unittest
+
 from boto.ec2 import connect_to_region
 from moto import mock_ec2
 
@@ -202,13 +204,13 @@ class MockVolumeViewTestCase(BaseViewTestCase, MockVolumeMixin):
         self.assertEqual(view.get('volume').id, volume.id)
         self.assertEqual(view.get('volume_name'), volume.id)
 
-# commented out because moto connection does not have "host" attribute that this VolumeView requires
-#    @mock_ec2
-#    def test_volume_detail_view_with_new_volume(self):
-#        volume = self.make_volume()
-#        request = self.create_request(matchdict=dict(id='new'))
-#        view = VolumeView(request).volume_view()
-#        self.assertEqual(view.get('volume'), None)
+    @mock_ec2
+    @unittest.skip('because moto connection does not have "host" attribute that this VolumeView requires')
+    def test_volume_detail_view_with_new_volume(self):
+        volume = self.make_volume()
+        request = self.create_request(matchdict=dict(id='new'))
+        view = VolumeView(request).volume_view()
+        self.assertEqual(view.get('volume'), None)
 
 
 class MockVolumeStateViewTestCase(BaseViewTestCase, MockVolumeMixin):

@@ -30,6 +30,7 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 import json
+import unittest
 
 import boto
 
@@ -71,27 +72,27 @@ class ELBViewTests(BaseViewTestCase, MockELBMixin):
             self.assertEqual(normalized_listener, listener.get('output'))
 
 
-# commented out because moto doesn't support DescribeLoadBalancerPolicies, which the BaseELBView needs.
-#class ELBMonitoringViewTests(BaseViewTestCase, MockELBMixin):
-#    """ELB detail page view - Monitoring tab"""
-#    @mock_elb
-#    @mock_ec2
-#    def test_elb_monitoring_tab_view(self):
-#        request = self.create_request()
-#        self.setup_session(request)
-#        elb = self.make_elb()
-#        request.matchdict['id'] = elb.name
-#        view = ELBMonitoringView(request).elb_monitoring()
-#        options_json = json.loads(view.get('controller_options_json'))
-#        chart_help = _(
-#            'The total number of completed requests that were received and routed to the registered instances. '
-#            'Defaults to the sum statistic for the best output results.')
-#        chart_item = {
-#            "metric": "RequestCount", "unit": "Count", "statistic": "Sum", "empty_msg": ELB_EMPTY_DATA_MESSAGE,
-#            "help": chart_help
-#        }
-#        self.assertEqual(view.get('elb_name'), 'test_elb')
-#        self.assert_(chart_item in options_json.get('charts_list'))
+class ELBMonitoringViewTests(BaseViewTestCase, MockELBMixin):
+    """ELB detail page view - Monitoring tab"""
+    @mock_elb
+    @mock_ec2
+    @unittest.skip("because moto doesn't support DescribeLoadBalancerPolicies, which the BaseELBView needs.")
+    def test_elb_monitoring_tab_view(self):
+        request = self.create_request()
+        self.setup_session(request)
+        elb = self.make_elb()
+        request.matchdict['id'] = elb.name
+        view = ELBMonitoringView(request).elb_monitoring()
+        options_json = json.loads(view.get('controller_options_json'))
+        chart_help = _(
+            'The total number of completed requests that were received and routed to the registered instances. '
+            'Defaults to the sum statistic for the best output results.')
+        chart_item = {
+            "metric": "RequestCount", "unit": "Count", "statistic": "Sum", "empty_msg": ELB_EMPTY_DATA_MESSAGE,
+            "help": chart_help
+        }
+        self.assertEqual(view.get('elb_name'), 'test_elb')
+        self.assert_(chart_item in options_json.get('charts_list'))
 
 
 # class ELBInstancesViewTests(BaseViewTestCase, MockELBMixin):
@@ -108,43 +109,44 @@ class ELBViewTests(BaseViewTestCase, MockELBMixin):
 #         self.assertEqual(options_json.get('cross_zone_enabled'), True)
 
 
-# commented out because moto doesn't support DescribeLoadBalancerPolicies, which the BaseELBView needs.
-#class ELBHealthChecksViewTests(BaseViewTestCase, MockELBMixin):
-#    """ELB detail page view - Health Checks tab"""
-#    @mock_elb
-#    @mock_ec2
-#    def test_elb_health_checks_tab_view(self):
-#        elb = self.make_elb()
-#        health_check = Mock(
-#            target='HTTP:80/index.html', interval=300, timeout=15, healthy_threshold=3, unhealthy_threshold=5)
-#        elb.health_check = health_check
-#        request = self.create_request()
-#        self.setup_session(request)
-#        request.matchdict['id'] = elb.name
-#        view = ELBHealthChecksView(request).elb_healthchecks()
-#        form = view.get('elb_form')
-#        self.assertEqual(view.get('elb_name'), 'test_elb')
-#        self.assertEqual(form.ping_protocol.data, 'HTTP')
-#        self.assertEqual(form.ping_port.data, 80)
-#        self.assertEqual(form.ping_path.data, '/index.html')
-#        self.assertEqual(form.passes_until_healthy.data, '3')
-#        self.assertEqual(form.failures_until_unhealthy.data, '5')
-#
-#    @mock_elb
-#    @mock_ec2
-#    def test_elb_health_check_data_with_slash_ping_path(self):
-#        elb = self.make_elb()
-#        health_check = Mock(
-#            target='HTTPS:443/', interval=300, timeout=15, healthy_threshold=3, unhealthy_threshold=5)
-#        elb.health_check = health_check
-#        request = self.create_request()
-#        self.setup_session(request)
-#        request.matchdict['id'] = elb.name
-#        view = ELBHealthChecksView(request).elb_healthchecks()
-#        form = view.get('elb_form')
-#        self.assertEqual(form.ping_protocol.data, 'HTTPS')
-#        self.assertEqual(form.ping_port.data, 443)
-#        self.assertEqual(form.ping_path.data, '/')
+class ELBHealthChecksViewTests(BaseViewTestCase, MockELBMixin):
+    """ELB detail page view - Health Checks tab"""
+    @mock_elb
+    @mock_ec2
+    @unittest.skip('because moto doesn\'t support DescribeLoadBalancerPolicies, which the BaseELBView needs.')
+    def test_elb_health_checks_tab_view(self):
+        elb = self.make_elb()
+        health_check = Mock(
+            target='HTTP:80/index.html', interval=300, timeout=15, healthy_threshold=3, unhealthy_threshold=5)
+        elb.health_check = health_check
+        request = self.create_request()
+        self.setup_session(request)
+        request.matchdict['id'] = elb.name
+        view = ELBHealthChecksView(request).elb_healthchecks()
+        form = view.get('elb_form')
+        self.assertEqual(view.get('elb_name'), 'test_elb')
+        self.assertEqual(form.ping_protocol.data, 'HTTP')
+        self.assertEqual(form.ping_port.data, 80)
+        self.assertEqual(form.ping_path.data, '/index.html')
+        self.assertEqual(form.passes_until_healthy.data, '3')
+        self.assertEqual(form.failures_until_unhealthy.data, '5')
+
+    @mock_elb
+    @mock_ec2
+    @unittest.skip('because moto doesn\'t support DescribeLoadBalancerPolicies, which the BaseELBView needs.')
+    def test_elb_health_check_data_with_slash_ping_path(self):
+        elb = self.make_elb()
+        health_check = Mock(
+            target='HTTPS:443/', interval=300, timeout=15, healthy_threshold=3, unhealthy_threshold=5)
+        elb.health_check = health_check
+        request = self.create_request()
+        self.setup_session(request)
+        request.matchdict['id'] = elb.name
+        view = ELBHealthChecksView(request).elb_healthchecks()
+        form = view.get('elb_form')
+        self.assertEqual(form.ping_protocol.data, 'HTTPS')
+        self.assertEqual(form.ping_port.data, 443)
+        self.assertEqual(form.ping_path.data, '/')
 
 
 class ELBDetailPageFormTests(BaseFormTestCase, BaseViewTestCase, MockELBMixin):
