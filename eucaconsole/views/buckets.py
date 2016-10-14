@@ -33,21 +33,24 @@ import mimetypes
 import simplejson as json
 import urllib
 
-from boto.exception import StorageCreateError
+from boto.exception import StorageCreateError, S3ResponseError
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
 from boto.s3.prefix import Prefix
 from boto.exception import BotoServerError
 
+from lxml import etree
+
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from pyramid.settings import asbool
 from pyramid.view import view_config
 
+from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA, SAMPLE_CORS_CONFIGURATION
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
-    BucketItemSharedURLForm)
+    BucketItemSharedURLForm, CorsConfigurationForm, CorsDeletionForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -683,15 +686,22 @@ class BucketDetailsView(BaseView, BucketMixin):
         super(BucketDetailsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name'), _(u'Details')]
         self.s3_conn = self.get_connection(conn_type='s3')
+        self.cors_configuration_xml = None
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             request.subpath = self.get_subpath(self.bucket.name) if self.bucket else ''
             self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+            if self.bucket:
+                self.cors_configuration_xml = self.get_cors_configuration(self.bucket, xml=True)
+                if self.cors_configuration_xml:
+                    self.cors_configuration_xml = self.pretty_print_xml(self.cors_configuration_xml)
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
+        self.cors_configuration_form = CorsConfigurationForm(request, formdata=self.request.params or None)
+        self.cors_deletion_form = CorsDeletionForm(request, formdata=self.request.params or None)
         self.versioning_status = self.get_versioning_status(self.bucket)
         if self.bucket is None:
             self.render_dict = dict()
@@ -709,9 +719,13 @@ class BucketDetailsView(BaseView, BucketMixin):
                 versioning_status=self.versioning_status,
                 update_versioning_action=self.get_versioning_update_action(self.versioning_status),
                 logging_status=self.get_logging_status(),
+                cors_configuration_form=self.cors_configuration_form,
+                cors_deletion_form=self.cors_deletion_form,
+                cors_configuration_xml=self.cors_configuration_xml,
+                sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
-                bucket_objects_count_url=self.request.route_path(
-                    'bucket_objects_count_versioning_json', name=self.bucket.name)
+                controller_options_json=self.get_controller_options_json(),
+                delete_cors_config_url=self.request.route_path('bucket_cors_configuration', name=self.bucket.name),
             )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
@@ -751,6 +765,14 @@ class BucketDetailsView(BaseView, BucketMixin):
             self.request.error_messages = self.versioning_form.get_errors_list()
         return self.render_dict
 
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'bucket_name': self.bucket.name,
+            'cors_config_xml': self.cors_configuration_xml,
+            'bucket_objects_count_url': self.request.route_path(
+                'bucket_objects_count_versioning_json', name=self.bucket.name),
+        }))
+
     def get_logging_status(self):
         """Returns the logging status as a dict, with the logs URL included for templates"""
         if self.cloud_type == 'euca':  # TODO: Remove this block when Euca supports bucket logging
@@ -767,6 +789,27 @@ class BucketDetailsView(BaseView, BucketMixin):
                 logs_prefix=logging_prefix,
                 logs_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=logging_subpath)
             )
+
+    @staticmethod
+    def get_cors_configuration(bucket, xml=True):
+        try:
+            if xml:
+                cors = bucket.get_cors_xml()
+                if cors:
+                    cors = utils.remove_namespace(cors)
+            else:
+                cors = bucket.get_cors()
+            return cors or None
+        except S3ResponseError as err:
+            if err.error_code == 'NoSuchCORSConfiguration':
+                return None  # CORS config is empty
+            else:
+                raise  # Re-raise exception to handle session timeouts
+
+    @staticmethod
+    def pretty_print_xml(xml_string=''):
+        xml = etree.fromstring(xml_string)
+        return etree.tostring(xml, pretty_print=True)
 
     @staticmethod
     def update_acl(request, bucket_object=None):
@@ -838,6 +881,52 @@ class BucketDetailsView(BaseView, BucketMixin):
         """Returns 'enable' if status is Disabled or Suspended, otherwise returns 'disable'"""
         if versioning_status:
             return 'enable' if versioning_status in ['Disabled', 'Suspended'] else 'disable'
+
+
+class BucketCorsConfigurationView(BaseView, BucketMixin):
+    """XHR Views for Bucket CORS Configuration"""
+
+    def __init__(self, request, **kwargs):
+        super(BucketCorsConfigurationView, self).__init__(request, **kwargs)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(request):
+            if self.s3_conn:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+
+    @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='PUT', xhr=True)
+    def bucket_set_cors_configuration(self):
+        params = json.loads(self.request.body)
+        csrf_token = params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        cors_xml = params.get('cors_configuration_xml')
+        if self.bucket and cors_xml:
+            cors_xml = utils.remove_namespace(cors_xml)
+            valid, error = utils.validate_xml(cors_xml, CORS_XML_RELAXNG_SCHEMA)
+            if valid:
+                self.log_request(u"Setting CORS configuration for bucket {0}".format(self.bucket.name))
+                with boto_error_handler(self.request):
+                    self.bucket.set_cors_xml(cors_xml)
+                msg = u'{0} {1}'.format(_(u'Successfully set CORS configuration for bucket'), self.bucket.name)
+                return JSONResponse(status=200, message=msg)
+            else:
+                return JSONResponse(status=400, message=error.message)
+
+    @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='DELETE', xhr=True)
+    def bucket_delete_cors_configuration(self):
+        csrf_token = self.request.params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        if self.bucket:
+            with boto_error_handler(self.request):
+                self.log_request(u"Deleting CORS configuration for bucket {0}".format(self.bucket.name))
+                self.bucket.delete_cors()
+                msg = '{0} {1}'.format(_(u'Successfully deleted CORS configuration for bucket'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return JSONResponse(status=200, message=msg)
+        else:
+            error = '{0} {1}'.format(_('Unable to delete CORS configuration for bucket'), self.bucket.name)
+            return JSONResponse(status=400, message=error)
 
 
 class BucketItemDetailsView(BaseView, BucketMixin):

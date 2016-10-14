@@ -128,6 +128,7 @@ requires = [
     # 'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead,
     # 'greenlet >= 0.3.1',
     'gunicorn >= 18.0',
+    'lxml >= 3.2.1',
     'M2Crypto >= 0.20.2',
     'markupsafe >= 0.9.2',
     'pycryptopp',

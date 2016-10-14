@@ -56,6 +56,7 @@ from ..constants.elbs import (
     ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,
     AWS_ELB_ACCOUNT_IDS)
 from ..forms import ChoicesManager
+from ..forms.angularcompat import clean_value
 from ..forms.buckets import CreateBucketForm
 from ..forms.elbs import (
     ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
@@ -321,6 +322,8 @@ class BaseELBView(TaggedItemView):
         req_params = self.request.params
         params_logging_enabled = req_params.get('logging_enabled') == 'y'
         params_bucket_name = req_params.get('bucket_name')
+        if params_bucket_name and params_bucket_name.startswith('string:'):
+            params_bucket_name = clean_value(params_bucket_name)
         params_bucket_prefix = req_params.get('bucket_prefix', '')
         params_collection_interval = int(req_params.get('collection_interval', 60))
         if elb is not None:
@@ -1248,11 +1251,11 @@ class CreateELBView(BaseELBView):
         if self.create_form.validate():
             name = self.request.params.get('name')
             listeners_args = self.get_listeners_args()
-            vpc_subnet = self.request.params.getall('vpc_subnet') or None
+            vpc_subnet = self.create_form.vpc_subnet.data or None
             if vpc_subnet == 'None':
                 vpc_subnet = None
-            securitygroup = self.request.params.getall('securitygroup') or None
-            zone = self.request.params.getall('zone') or None
+            securitygroup = self.create_form.securitygroup.data or None
+            zone = self.create_form.zone.data or None
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
             backend_certificates = self.request.params.get('backend_certificates') or None
