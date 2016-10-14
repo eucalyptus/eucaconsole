@@ -324,7 +324,7 @@ class InstanceMonitoringViewTestCase(BaseViewTestCase, MockInstanceMixin):
         self.setup_session(request)
         instance = self.make_instance()
         request.matchdict['id'] = instance.id
-        request.is_xhr = True;
+        request.is_xhr = True
         view = InstanceMonitoringView(request).instance_monitoring()
         duration_choices = dict(view.get('duration_choices'))
         for choice in [3600, 10800, 21600, 43200, 86400, 259200, 604800, 1209600]:

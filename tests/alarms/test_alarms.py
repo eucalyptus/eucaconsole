@@ -65,7 +65,7 @@ class ResourceAlarmsTestCase(unittest.TestCase, MockAlarmMixin):
     @mock_cloudwatch
     def test_fetch_alarms_for_instance(self):
         instance_id = 'i-123456'
-        alarm_created = self.create_alarm(dimensions={'InstanceId': [instance_id]})
+        self.create_alarm(dimensions={'InstanceId': [instance_id]})
         cw_conn = boto.connect_cloudwatch('us-east')
         instance_alarms = Alarm.get_alarms_for_resource(instance_id, dimension_key='InstanceId', cw_conn=cw_conn)
         self.assertEqual(len(instance_alarms), 1)
@@ -73,7 +73,7 @@ class ResourceAlarmsTestCase(unittest.TestCase, MockAlarmMixin):
     @mock_cloudwatch
     def test_fetch_alarms_for_unknown_instance(self):
         instance_id = 'i-123456'
-        alarm_created = self.create_alarm(dimensions={'InstanceId': [instance_id]})
+        self.create_alarm(dimensions={'InstanceId': [instance_id]})
         cw_conn = boto.connect_cloudwatch('us-east')
         instance_alarms = Alarm.get_alarms_for_resource('unlikely-id', dimension_key='InstanceId', cw_conn=cw_conn)
         self.assertEqual(len(instance_alarms), 0)
@@ -85,7 +85,7 @@ class ResourceAlarmsTestCase(unittest.TestCase, MockAlarmMixin):
             metric='RequestCount', namespace='AWS/ELB', statistic='Sum', unit=None,
             dimensions={'LoadBalancerName': elb_name},
         )
-        alarm_created = self.create_alarm(**alarm_kwargs)
+        self.create_alarm(**alarm_kwargs)
         cw_conn = boto.connect_cloudwatch('us-east')
         elb_alarms = Alarm.get_alarms_for_resource(elb_name, dimension_key='LoadBalancerName', cw_conn=cw_conn)
         self.assertEqual(len(elb_alarms), 1)
