@@ -1,6 +1,6 @@
 angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule',
-    'ELBSecurityPolicyEditorModule', 'ModalModule'
+    'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule'
 ])
 .factory('ELBWizardService', function () {
     var svc = {};
@@ -65,6 +65,17 @@ angular.module('ELBWizard', [
         controllerAs: 'nav'
     };
 })
+.directive('stepData', function () {
+    return {
+        restrict: 'A',
+        scope: {
+            stepData: '='
+        },
+        controller: ['$scope', function ($scope) {
+            angular.merge(this, $scope.stepData);
+        }]
+    };
+})
 .directive('focusOnLoad', function ($timeout) {
     return {
         restrict: 'A',
@@ -77,8 +88,13 @@ angular.module('ELBWizard', [
 })
 .controller('MainController', function () {
 })
-.controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', 'ModalService',
-    function ($scope, $route, $routeParams, $location, ModalService) {
+.controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', 'ModalService', 'certificates', 'policies',
+    function ($scope, $route, $routeParams, $location, ModalService, certificates, policies) {
+        this.stepData = {
+            certificates: certificates,
+            polices: policies
+        };
+
         this.listeners = [{
             'fromPort': 80,
             'toPort': 80,
@@ -116,11 +132,10 @@ angular.module('ELBWizard', [
                 policies: function ($q) {
                     return $q.when('foo');
                 },
-                certificates: function () {
-                    return 'bar';
-                }
-            },
-            resolveAs: 'foo'
+                certificates: ['CertificateService', function (CertificateService) {
+                    return CertificateService.getCertificates();
+                }]
+            }
         })
         .when('/elbs/wizard/network', {
             templateUrl: '/_template/elbs/wizard/network',

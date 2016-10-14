@@ -76,22 +76,16 @@
                 <span i18n:translate="">Certificates</span>
                 <span class="req">*</span>
             </label>
-            <span ng-show="pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+            <span ng-show="ctrl.certificates">
                 <span i18n:translate="">SSL cert</span>
-                {{ pruneCertificateLabel(serverCertificateARN || serverCertificateName) }}<span ng-show="backendCertificateArray.length">, </span>
+                {{ ctrl.certificates }}
             </span>
-            <span ng-show="backendCertificateArray.length" i18n:translate="">
-                Back-end certs
-            </span>
-            <span ng-repeat="bcert in backendCertificateArray">
-                {{ bcert.name }}<span ng-hide="$last">, </span>
-            </span>
-            <a ng-click="openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
+            <a ng-click="ctrl.openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                 title="Change certficate">
-                <span i18n:translate="" ng-show="!pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+                <span i18n:translate="" ng-show="!ctrl.certificates">
                     Select
                 </span>
-                <span i18n:translate="" ng-show="pruneCertificateLabel(serverCertificateARN || serverCertificateName)">
+                <span i18n:translate="" ng-show="ctrl.certificates">
                     Change
                 </span>
             </a>
@@ -106,8 +100,8 @@
     </div>
 </div>
 <div class="modal xlarge" modal="securityPolicyEditor">
-    <security-policy-editor></security-policy-editor>
+    <security-policy-editor ng-model="ctrl.policies"></security-policy-editor>
 </div>
 <div class="modal xlarge" modal="certificateEditor">
-    <security-policy-editor></security-policy-editor>
+    <certificate-editor ng-model="ctrl.certificates"></certificate-editor>
 </div>

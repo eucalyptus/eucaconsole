@@ -50,6 +50,7 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/wizard.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/listener-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/security-policy-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/certificate-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
 </div>

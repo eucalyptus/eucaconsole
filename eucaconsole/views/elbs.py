@@ -1151,6 +1151,41 @@ class ELBWizardView(BaseView):
         )
         return self.render_dict
 
+    @view_config(route_name='elb_certificate', request_method="GET", renderer='json')
+    def list_certs(self):
+        conn = self.get_connection(conn_type='iam')
+
+        try:
+            response = conn.get_all_server_certs().get('list_server_certificates_response', {})
+            result = response.get('list_server_certificates_result', {})
+
+            certificates = result.get('server_certificate_metadata_list', [])
+            return JSONResponse(status=200, message=certificates)
+        except BotoServerError as err:
+            return JSONResponse(status=200, message=err.message)
+
+    @view_config(route_name='elb_certificate', request_method="POST", renderer='json')
+    def publish_cert(self):
+        cert = json.loads(self.request.body)
+        conn = self.get_connection(conn_type='iam')
+
+        name = cert.get('name', None)
+        public_key = cert.get('publicKey', None)
+        private_key = cert.get('privateKey', None)
+        cert_chain = cert.get('certificateChain', None)
+
+        try:
+            certificate_result = conn.upload_server_cert(
+                name, public_key, private_key, cert_chain=cert_chain)
+
+            prefix = _(u'Successfully uploaded server certificate')
+            msg = u'{0} {1}'.format(prefix, name)
+            certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
+
+            return JSONResponse(status=200, message=msg, id=certificate_arn)
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message)  # Malformed certificate
+
 
 class CreateELBView(BaseELBView):
     """Create ELB wizard"""
