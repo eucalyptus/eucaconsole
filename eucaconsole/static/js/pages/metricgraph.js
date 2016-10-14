@@ -13,7 +13,7 @@ angular.module('MetricGraphPage', ['CloudWatchCharts'])
         var params = $.url().param();
         if (params.graph !== undefined) {
             // parse graph params
-            $scope.graph = purl("?"+$.base64.decode(params.graph)).param();
+            $scope.graph = purl("?"+atob(params.graph)).param();
             $scope.graph.dimensions = JSON.parse($scope.graph.dimensions);
             if ($scope.graph.stat !== undefined) {
                 if ($scope.graph.duration !== undefined) {
@@ -46,7 +46,7 @@ angular.module('MetricGraphPage', ['CloudWatchCharts'])
             if (url.indexOf("#") > -1) {
                 url = url.split("#")[0];
             }
-            $scope.graphURL = url+"?graph="+$.base64.encode(chartString);
+            $scope.graphURL = url+"?graph="+btoa(chartString);
             $("#metrics-copy-url-modal").foundation("reveal", "open");
             $timeout(function() {
                 $(".metrics-url-field").select();
