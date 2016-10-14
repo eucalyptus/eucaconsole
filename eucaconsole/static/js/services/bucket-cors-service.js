@@ -5,36 +5,30 @@
  * @requires AngularJS
  *
  */
-angular.module('CorsServiceModule', ['EucaRoutes'])
-.factory('CorsService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
+angular.module('CorsServiceModule', [])
+.factory('CorsService', ['$http', function ($http) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
     return {
         setCorsConfig: function (bucketName, csrfToken, corsConfigXml) {
-            return eucaRoutes.getRouteDeferred('bucket_cors_configuration', { name: bucketName })
-                .then(function (path) {
-                    return $http({
-                        method: 'PUT',
-                        url: path,
-                        data: {
-                            csrf_token: csrfToken,
-                            cors_configuration_xml: corsConfigXml
-                        }
-                    });
-                });
+            return $http({
+                method: 'PUT',
+                url: '/buckets/' + bucketName + '/cors_configuration',
+                data: {
+                    csrf_token: csrfToken,
+                    cors_configuration_xml: corsConfigXml
+                }
+            });
         },
 
         deleteCorsConfig: function (bucketName, csrfToken) {
-            return eucaRoutes.getRouteDeferred('bucket_cors_configuration', { name: bucketName })
-                .then(function (path) {
-                    return $http({
-                        method: 'DELETE',
-                        url: path,
-                        params: {
-                            csrf_token: csrfToken
-                        }
-                    });
-                });
+            return $http({
+                method: 'DELETE',
+                url: '/buckets/' + bucketName + '/cors_configuration',
+                params: {
+                    csrf_token: csrfToken
+                }
+            });
         }
    };
 }]);
