@@ -48,15 +48,6 @@ from tests import BaseViewTestCase, BaseFormTestCase, Mock
 
 class MockELBMixin(object):
     @staticmethod
-    def setup_session(request):
-        request.session['region'] = 'us-east-1'
-        request.session['access_id'] = 'moto'
-        request.session['secret_key'] = 'moto'
-        request.session['session_token'] = 'moto'
-        request.session['cloud_type'] = 'aws'
-        request.id = 'abcd1234'
-
-    @staticmethod
     def make_elb():
         elb_conn = boto.connect_elb()
         name = 'test_elb'

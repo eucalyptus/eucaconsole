@@ -52,14 +52,6 @@ from tests import BaseFormTestCase, BaseViewTestCase, BaseTestCase
 
 class MockBucketMixin(object):
     @staticmethod
-    def setup_session(request):
-        request.session['region'] = 'us-east-1'
-        request.session['access_id'] = 'moto'
-        request.session['secret_key'] = 'moto'
-        request.session['session_token'] = 'moto'
-        request.session['cloud_type'] = 'aws'
-
-    @staticmethod
     def make_bucket(name='test_bucket', policy=None, owner_id=None):
         s3_conn = boto.connect_s3()
         policy = policy or Policy()

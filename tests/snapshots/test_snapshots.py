@@ -45,15 +45,6 @@ from tests import BaseViewTestCase, BaseFormTestCase
 
 class MockSnapshotMixin(object):
     @staticmethod
-    def setup_session(request):
-        request.session['region'] = 'us-east-1'
-        request.session['access_id'] = 'moto'
-        request.session['secret_key'] = 'moto'
-        request.session['session_token'] = 'moto'
-        request.session['cloud_type'] = 'aws'
-        request.id = 'abcd1234'
-
-    @staticmethod
     def make_snapshot(volume=None, description='test snapshot description'):
         ec2_conn = connect_to_region('us-east-1')
         volume = volume or ec2_conn.create_volume(1, 'us-east-1a')
