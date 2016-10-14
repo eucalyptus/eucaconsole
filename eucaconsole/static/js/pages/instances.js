@@ -124,7 +124,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
                 if (evt.target.readyState === FileReader.DONE) {
                     var key_contents = evt.target.result;
                     var url = $scope.password_url.replace("_id_", $scope.instanceID);
-                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $.base64.encode(key_contents);
+                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + btoa(key_contents);
                     $http({method:'POST', url:url, data:data,
                            headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                       success(function(oData) {
@@ -150,7 +150,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.consoleOutput = $.base64.decode(results);
+                    $scope.consoleOutput = atob(results);
                     $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {

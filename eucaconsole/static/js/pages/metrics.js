@@ -128,7 +128,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             params = $.url().param();
             if (params.graph !== undefined) {
                 // parse graph params
-                var graph = purl("?"+$.base64.decode(params.graph)).param();
+                var graph = purl("?"+atob(params.graph)).param();
                 graph.dimensions = JSON.parse(graph.dimensions);
                 items.forEach(function(metric, idx) {
                     if (metric.heading === true) return;
@@ -286,7 +286,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
             if (url.indexOf("#") > -1) {
                 url = url.split("#")[0];
             }
-            vm.graphURL = url+"?graph="+$.base64.encode(chartString);
+            vm.graphURL = url+"?graph="+btoa(chartString);
             $("#metrics-copy-url-modal").foundation("reveal", "open");
             $timeout(function() {
                 $(".metrics-url-field").select();
@@ -327,7 +327,7 @@ angular.module('MetricsPage', ['LandingPage', 'CloudWatchCharts', 'EucaConsoleUt
         vm.showGraphForItem = function(url, item) {
             var chartString = "metric="+item.metric_name+"&dimensions="+JSON.stringify(vm.chartDimensions([item]))+graphParams;
             chartString = chartString+"&namespace="+item.namespace+"&unit="+item.unit;
-            window.location = url+"?graph="+$.base64.encode(chartString);
+            window.location = url+"?graph="+btoa(chartString);
         };
     })
 ;
