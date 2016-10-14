@@ -17,6 +17,7 @@ bin/
 lib/
 include/
 .idea/
+.vscode/
 distribute-*.tar.gz
 bookenv/
 jyenv/

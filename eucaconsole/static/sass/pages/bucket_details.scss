@@ -1,9 +1,43 @@
 /* @fileOverview Bucket details page CSS */
 
 @import "../includes/eucavariables";
+@import "../widgets/modal";
+
 
 #bucket-section-title {
     position: relative;
     top: -1rem;
 }
 
+#existing-cors-config-wrapper{
+    .icon {
+        margin-right: 0.5rem;
+        position: relative;
+        top: 2px;
+        &.edit {
+            font-size: 1.1rem;
+        }
+        &.remove {
+            top: 3px;
+        }
+    }
+}
+
+// CORS Configuration modal dialog
+.cors-config-modal {
+    textarea {
+        height: 10rem;
+    }
+    .CodeMirror {
+        border: 1px solid #999;
+        font-size: 0.9rem;
+        line-height: 1.1rem;
+    }
+}
+.cors-error-wrapper {
+    color: darkred;
+}
+
+
+// Overrides for CORS config modal positioning
+@include modal-position(50px, fixed);
