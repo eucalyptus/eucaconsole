@@ -75,7 +75,7 @@ angular.module('AlarmServiceModule', [])
         getAlarmsForResource: function (id, type) {
             return $http({
                 method: 'GET',
-                url: '/alarms/resource/' + id + '/json',
+                url: $interpolate('/alarms/resource/{{id}}/json').({id: id})
                 params: {
                     'resource-type': type
                 }
