@@ -47,6 +47,7 @@ from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
 from boto.sqs.connection import SQSConnection
 from boto.sns.connection import SNSConnection
+from boto.sts.connection import STSConnection
 # uncomment to enable boto request logger. Use only for development (see ref in euca_connection)
 # from boto.requestlog import RequestLogger
 import boto
@@ -277,6 +278,9 @@ class ConnectionManager(object):
         elif conn_type == 'iam':
             path = 'Euare'
             conn_class = boto.iam.IAMConnection
+        elif conn_type == 'sts':
+            path = 'Tokens'
+            conn_class = boto.sts.STSConnection
         elif conn_type == 's3':
             path = 'objectstorage'
             conn_class = S3Connection
@@ -290,7 +294,7 @@ class ConnectionManager(object):
             path = '/services/{0}/'.format(path)
         region = RegionInfo(name='eucalyptus', endpoint=ufshost)
         # IAM and S3 connections need host instead of region info
-        if conn_type in ['iam', 's3']:
+        if conn_type in ['iam', 'sts', 's3']:
             conn = conn_class(
                 access_id,
                 secret_key,
@@ -478,3 +482,74 @@ class AWSAuthenticator(object):
                 raise urllib2.URLError(err[1])
         except socket.error as err:
             raise urllib2.URLError(err.message)
+
+
+class OIDCAuthenticator(object):
+    NON_DNS_QUERY_PATH = '/services/Tokens'
+
+    def __init__(self, host, port, dns_enabled=True, validate_certs=False, **validate_kwargs):
+        """
+        Configure connection to Eucalyptus STS service to authenticate with the CLC (cloud controller)
+
+        :type host: string
+        :param host: IP address or FQDN of CLC host
+
+        :type port: integer
+        :param port: port number to use when making the connection
+
+        :type dns_enabled: boolean
+        :param dns_enabled: if true, prefix host with tokens., otherwise use request path method
+
+        """
+        self.dns_enabled = dns_enabled
+        self.host = host
+        self.port = port
+        self.validate_certs = validate_certs
+        self.kwargs = validate_kwargs
+
+    def authenticate(self, token, account_name, duration=3600, timeout=20):
+        try:
+            creds = self._authenticate_oidc_(token, account_name, self.dns_enabled, duration, timeout)
+        except socket.error as err:
+            # handle case where dns attempt was good, but user unauthorized
+            error_msg = getattr(err, 'msg', None)
+            if error_msg and error_msg == 'Unauthorized' or error_msg == 'Forbidden':
+                raise err
+            elif getattr(err, 'reason', '').find('SSL') > -1:
+                raise err
+            self.dns_enabled = False
+            creds = self._authenticate_oidc_(token, account_name, self.dns_enabled, duration, timeout)
+        return creds
+
+    def _authenticate_oidc_(self, token, account_name, dns_enabled, duration, timeout):
+        if dns_enabled:
+            region = RegionInfo(name='eucalyptus', endpoint='tokens.' + self.host)
+            auth_path = '/'
+        else:
+            region = RegionInfo(name='eucalyptus', endpoint=self.host)
+            auth_path = self.NON_DNS_QUERY_PATH
+
+        if self.validate_certs:
+            conn_factory = CertValidatingHTTPSConnection
+        else:
+            conn_factory = HttpsConnectionFactory(self.port).https_connection_factory
+
+        conn = STSConnection(
+            port=self.port,
+            path=auth_path,
+            region=region,
+            https_connection_factory=(conn_factory, ())
+        )
+        conn.http_connection_kwargs['timeout'] = timeout
+        duration = min(int(duration), 3600)  # this call won't allow than 1 hour duration
+        try:
+            result = conn.assume_role_with_web_identity(
+                role_arn="arn:aws:iam::{acct}:role/assume-role".format(acct=account_name),
+                role_session_name=token['state'],
+                web_identity_token=token['id_token'],
+                duration_seconds=duration
+            )
+        except socket.error as err:
+            raise urllib2.URLError(err.message)
+        return result.credentials
+

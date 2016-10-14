@@ -36,12 +36,15 @@ from boto.s3.acl import ACL, Policy
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
 from boto.s3.user import User
+from lxml import etree
 from moto import mock_s3
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 
+from eucaconsole.constants.buckets import SAMPLE_CORS_CONFIGURATION, CORS_XML_RELAXNG_SCHEMA
 from eucaconsole.forms.buckets import SharingPanelForm
+from eucaconsole.utils import remove_namespace, validate_xml
 from eucaconsole.views.buckets import (
     BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketItemDetailsView, BucketXHRView,
     FOLDER_NAME_PATTERN
@@ -147,6 +150,15 @@ class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
         self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
         self.assertEqual(view.get('versioning_status'), 'Enabled')
         self.assertEqual(view.get('update_versioning_action'), 'disable')
+
+    @mock_s3
+    def test_bucket_with_empty_cors_configuration_object(self):
+        request = self.create_request()
+        bucket, bucket_acl = self.make_bucket()
+        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl)
+        # Note: moto hasn't implemented CORS handling (yet), so we can only check the empty config object case
+        bucket_cors = view.get_cors_configuration(bucket, xml=False)
+        self.assertEqual(bucket_cors, None)
 
 
 class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
@@ -260,3 +272,202 @@ class CreateS3FolderTestCase(BaseTestCase):
         )
         for pattern, valid in matches:
             self.assertEqual(bool(re.match(valid_pattern, pattern)), valid)
+
+
+class CorsSchemaValidationTestCase(BaseTestCase):
+
+    def test_sample_cors_xml_with_relaxng_schema(self):
+        """The sample CORS configuration provided to the UI should be valid"""
+        valid, error = validate_xml(SAMPLE_CORS_CONFIGURATION, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_cors_xml_with_random_element_order(self):
+        """CORS configuration should allow elements in rule in no particular order"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedHeader>Authorization</AllowedHeader>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedOrigin>*</AllowedOrigin>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_cors_xml_with_multiple_allowed_method_elements(self):
+        """CORS configuration should allow multiple AllowedMethod elements in a rule"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <AllowedMethod>POST</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_cors_xml_with_multiple_rules(self):
+        """CORS configuration should allow multiple CORSRule elements"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedOrigin>http://example1.com</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+            </CORSRule>
+            <CORSRule>
+                <AllowedOrigin>http://example2.com</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_cors_xml_with_optional_id_element(self):
+        """CORS configuration should allow an optional ID element per CORS rule"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <ID>my-first-rule</ID>
+                <AllowedOrigin>http://example1.com</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+            </CORSRule>
+            <CORSRule>
+                <ID>my-second-rule</ID>
+                <AllowedOrigin>http://example2.com</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_cors_xml_with_missing_allowed_origin_element(self):
+        """CORS configuration requires an AllowedOrigin element"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        expected_error = u'Expecting an element AllowedOrigin, got nothing, line 2'
+        self.assertEqual(valid, False)
+        self.assertEqual(error.message, expected_error)
+
+    def test_cors_xml_with_non_integer_max_age_value(self):
+        """CORS configuration requires the MaxAgeSeconds value to be an integer"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>foobar</MaxAgeSeconds>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        expected_error = u"Type nonNegativeInteger doesn't allow value 'foobar', line 5"
+        self.assertEqual(valid, False)
+        self.assertEqual(error.message, expected_error)
+
+    def test_cors_xml_with_negative_integer_max_age_value(self):
+        """CORS configuration requires the MaxAgeSeconds value to be a non-negative integer"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>-3000</MaxAgeSeconds>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        expected_error = u"Type nonNegativeInteger doesn't allow value '-3000', line 5"
+        self.assertEqual(valid, False)
+        self.assertEqual(error.message, expected_error)
+
+    def test_cors_xml_with_multiple_max_age_elements(self):
+        """CORS configuration should not contain multiple MaxAgeSeconds elements per rule"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <MaxAgeSeconds>6000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        expected_error = u'Extra element MaxAgeSeconds in interleave'
+        self.assertEqual(error.message, expected_error)
+
+    def test_cors_xml_with_namespace(self):
+        test_xml = """
+        <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        test_xml = remove_namespace(test_xml)
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_cors_xml_with_version_and_encoding_stanza(self):
+        test_xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration>
+        """
+        test_xml = remove_namespace(test_xml)
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, True)
+        self.assertEqual(error, None)
+
+    def test_malformed_cors_xml(self):
+        """CORS configuration validation should surface malformed XML errors"""
+        test_xml = """
+        <CORSConfiguration>
+            <CORSRule>
+                <AllowedOrigin>*</AllowedOrigin>
+                <AllowedMethod>GET</AllowedMethod>
+                <MaxAgeSeconds>3000</MaxAgeSeconds>
+                <AllowedHeader>Authorization</AllowedHeader>
+            </CORSRule>
+        </CORSConfiguration
+        """
+        test_xml = remove_namespace(test_xml)
+        valid, error = validate_xml(test_xml, CORS_XML_RELAXNG_SCHEMA)
+        self.assertEqual(valid, False)
+        self.assertEqual(isinstance(error, etree.XMLSyntaxError), True)

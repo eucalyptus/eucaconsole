@@ -101,6 +101,13 @@
                                     <span i18n:translate="">Logging in</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
+                            <div class="row" tal:condition="oidc_enabled">
+                                <div class="small-12 columns">
+                                    <button type="submit" class="submit oidc button" ng-click="openOIDCModal($event)" id="globus-login-button">
+                                        ${oidc_link_text}
+                                    </button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="content"
@@ -176,6 +183,30 @@
                     The browser you are using lacks support for reading files from your local filesystem
                     and you will not be able to use features in this application that require this.
                 </p>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
+        <div>
+            <div id="oidc-account-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Enter account name</h3>
+                <div class="row controls-wrapper">
+                    <div class="small-12 columns field">
+                        <label for="account-name" class="left stack-label">
+                            <span i18n:translate="">Account name</span>
+                            <span class="req">*</span>
+                        </label>
+                        <div ng-non-bindable="">
+                            <input id="account-name" type="text" value="" name="account-name"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 columns">
+                        <button type="submit" class="submit oidc button" ng-disabled="oidcNotValid" ng-click="handleOIDCLogin($event)" id="globus-login-button">
+                            ${oidc_link_text}
+                        </button>
+                    </div>
+                </div>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
         </div>
