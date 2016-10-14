@@ -231,7 +231,6 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_aws_dialogs.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_update.js')}"></script>
 </div>

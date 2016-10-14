@@ -5,26 +5,23 @@
  * @requires AngularJS, jQuery
  *
  */
-angular.module('MetricServiceModule', ['EucaRoutes'])
-.factory('MetricService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
+angular.module('MetricServiceModule', [])
+.factory('MetricService', ['$http', function ($http) {
     return {
         getMetrics: function (namespace, dimensions) {
-            return eucaRoutes.getRouteDeferred('metrics_available_for_dimensions')
-                .then(function (path) {
-                    return $http({
-                        method: 'GET',
-                        url: path,
-                        params: {namespace: namespace, dimensions: JSON.stringify(dimensions)}
-                    }).then(function (result) {
-                        var metrics = [],
-                            namespaces = [];
-                        if(result && result.data) {
-                            metrics = result.data.metrics || [];
-                            namespaces = result.data.namespaces || [];
-                        }
-                        return {metrics: metrics, namespaces: namespaces};
-                    });
-                });
+            return $http({
+                method: 'GET',
+                url: '/metrics/available/json',
+                params: {namespace: namespace, dimensions: JSON.stringify(dimensions)}
+            }).then(function (result) {
+                var metrics = [],
+                    namespaces = [];
+                if(result && result.data) {
+                    metrics = result.data.metrics || [];
+                    namespaces = result.data.namespaces || [];
+                }
+                return {metrics: metrics, namespaces: namespaces};
+            });
         }
     };
 }]);
