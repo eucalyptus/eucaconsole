@@ -217,7 +217,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             # now that we authenticated, extract info from token
             jwt_body = token['id_token'].split('.')[1]
             jwt_info = json.loads(base64.urlsafe_b64decode(jwt_body + '=='))
-            account = 'oidc'
+            account = account_name
             username = jwt_info['preferred_username']
             logging.info(u"Authenticated OIDC user: {user} from {ip}".format(
                     user=username, ip=BaseView.get_remote_addr(self.request)))
