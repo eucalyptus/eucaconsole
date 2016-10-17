@@ -91,7 +91,6 @@ module.exports = function(config) {
       'static/js/pages/bucket_upload.js',
       'static/js/pages/create_alarm.js',
       'static/js/pages/dashboard.js',
-      'static/js/pages/eucaroutes.js',
       'static/js/pages/group.js',
       'static/js/pages/groups.js',
       'static/js/pages/iam_policy_wizard.js',

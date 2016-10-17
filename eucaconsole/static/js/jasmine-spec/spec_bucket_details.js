@@ -120,7 +120,6 @@ describe("CORS Configuration Modal Directive", function() {
         ].join('');
         element = $compile(directiveHtml)($rootScope);
         $rootScope.$digest();
-        $httpBackend.flush();
         scope = element.isolateScope();
     });
 
