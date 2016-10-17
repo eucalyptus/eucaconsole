@@ -6,7 +6,7 @@
  *
  */
 angular.module('AlarmServiceModule', [])
-.factory('AlarmService', ['$http', function ($http) {
+.factory('AlarmService', ['$http', '$interpolate', function ($http, $interpolate) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
     return {
@@ -75,7 +75,7 @@ angular.module('AlarmServiceModule', [])
         getAlarmsForResource: function (id, type) {
             return $http({
                 method: 'GET',
-                url: $interpolate('/alarms/resource/{{id}}/json').({id: id})
+                url: $interpolate('/alarms/resource/{{id}}/json')({id: id}),
                 params: {
                     'resource-type': type
                 }
