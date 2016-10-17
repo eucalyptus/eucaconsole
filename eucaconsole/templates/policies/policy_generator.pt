@@ -280,9 +280,9 @@
                                                     <option value="cloudformation:ResourceTypes" i18n:translate="">
                                                         Resource Types
                                                     </option>
-                                                    <option value="cloudformation:ChangeSetName" i18n:translate="">
+                                                    <!-- <option value="cloudformation:ChangeSetName" i18n:translate="">
                                                         Change Set Name
-                                                    </option>
+                                                    </option> -->
                                                     <option value="cloudformation:RoleArn" i18n:translate="">
                                                         Role ARN
                                                     </option>

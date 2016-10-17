@@ -457,7 +457,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
                 'cloudformation:TemplateUrl',
                 'cloudformation:StackPolicyUrl',
                 'cloudformation:ResourceTypes',
-                'cloudformation:ChangeSetName',
+                // 'cloudformation:ChangeSetName',
                 'cloudformation:RoleArn'
             ];
 
