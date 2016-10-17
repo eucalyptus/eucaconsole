@@ -6,7 +6,7 @@
  *
  */
 angular.module('ScalingGroupsServiceModule', [])
-.factory('ScalingGroupsService', ['$http', '$q', function ($http, $q) {
+.factory('ScalingGroupsService', ['$http', '$q', '$interpolate', function ($http, $q, $interpolate) {
     return {
         getScalingGroups: function () {
             return $http({
@@ -28,7 +28,7 @@ angular.module('ScalingGroupsServiceModule', [])
             }
             return $http({
                 method: 'GET',
-                url: '/scalinggroup/' + id + '/policies/json'
+                url: $interpolate('/scalinggroup/{{id}}/policies/json')({id: id}),
             }).then(function success (response) {
                 var data = response.data || {
                     policies: {}
