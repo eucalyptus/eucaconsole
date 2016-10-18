@@ -23,64 +23,73 @@
         </p>
         <form name="sslCertForm" ng-submit="ctrl.submitSsl()" novalidate="">
             <div>
-                <input type="radio" name="certificate-type" value="existing"/>
+                <input type="radio" name="certificate-type" value="existing" ng-model="ctrl.certType"/>
                 <label>Choose an existing SSL certificate</label>
             </div>
-            <div class="columns">
-                <select ng-model="foo"
-                    ng-options="item.server_certificate_name for item in certificates track by item.arn">
-                </select>
-            </div>
+            <fieldset ng-show="ctrl.certType === 'existing'">
+                <div class="large-2 small-3 columns">
+                    <label class="right">Certificate
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-10 small-9 columns field">
+                    <select ng-model="foo"
+                        ng-options="item.server_certificate_name for item in certificates track by item.arn">
+                    </select>
+                </div>
+            </fieldset>
+            
             <div>
-                <input type="radio" name="certificate-type" value="new"/>
+                <input type="radio" name="certificate-type" value="new" ng-model="ctrl.certType"/>
                 <label>Upload a new SSL certificate</label>
-            <div>
-
-            <div class="columns">
-                <label class="left stack-label">Certificate name
-                    <span class="req">*</span>
-                </label>
             </div>
-            <div class="columns large-12 small-12 field">
-                <input type="text" ng-model="ctrl.name" required="required"
-                    pattern="^[a-zA-Z0-9\-]{1,255}$"/>
-                <div class="error">
-                    Name must be between 1 and 255 characters long, and must not contain spaces
+            <fieldset ng-show="ctrl.certType === 'new'">
+                <div class="columns">
+                    <label class="left stack-label">Certificate name
+                        <span class="req">*</span>
+                    </label>
                 </div>
-            </div>
-
-            <div class="columns">
-                <label class="left stack-label">Private Key
-                    <span class="req">*</span>
-                </label>
-            </div>
-            <div class="columns large-12 small-12 field">
-                <textarea ng-model="ctrl.privateKey" required="required"></textarea>
-                <div class="error">
-                    Private key is required
+                <div class="columns large-12 small-12 field">
+                    <input type="text" ng-model="ctrl.name" required="required"
+                        pattern="^[a-zA-Z0-9\-]{1,255}$"/>
+                    <div class="error">
+                        Name must be between 1 and 255 characters long, and must not contain spaces
+                    </div>
                 </div>
-            </div>
 
-            <div class="columns">
-                <label class="left stack-label">Public key certificate
-                    <span class="req">*</span>
-                </label>
-            </div>
-            <div class="columns large-12 small-12 field">
-                <textarea ng-model="ctrl.publicKey" required="required"></textarea>
-                <div class="error">
-                    Public key certificate is required
+                <div class="columns">
+                    <label class="left stack-label">Private Key
+                        <span class="req">*</span>
+                    </label>
                 </div>
-            </div>
+                <div class="columns large-12 small-12 field">
+                    <textarea ng-model="ctrl.privateKey" required="required"></textarea>
+                    <div class="error">
+                        Private key is required
+                    </div>
+                </div>
 
-            <div class="columns">
-                <label class="left stack-label">Certificate chain
-                    <span class="req">*</span>
-                </label>
-            </div>
-            <div class="columns large-12 small-12 field">
-                <textarea ng-model="ctrl.certificateChain"></textarea>
-            </div>
+                <div class="columns">
+                    <label class="left stack-label">Public key certificate
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="columns large-12 small-12 field">
+                    <textarea ng-model="ctrl.publicKey" required="required"></textarea>
+                    <div class="error">
+                        Public key certificate is required
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <label class="left stack-label">Certificate chain
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="columns large-12 small-12 field">
+                    <textarea ng-model="ctrl.certificateChain"></textarea>
+                </div>
+            </fieldset>
 
             <hr/>
 

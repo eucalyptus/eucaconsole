@@ -18,6 +18,7 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
         },
         controller: ['$scope', 'CertificateService', 'ModalService', function ($scope, CertificateService, ModalService) {
             this.activeTab = 'SSL';
+            this.certType = 'existing';
 
             this.showTab = function (tab) {
                 this.activeTab = tab;
