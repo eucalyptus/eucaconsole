@@ -227,7 +227,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 user=username, ip=BaseView.get_remote_addr(self.request)
             ))
             default_region = self.request.registry.settings.get('default.region', 'euca')
-            user_account = u'{user} - {account}'.format(user=username, account=account)
+            user_account = u'{user} : {account}'.format(user=username, account=account)
             session.invalidate()  # Refresh session
             session['cloud_type'] = 'euca'
             session['auth_type'] = 'oidc'
