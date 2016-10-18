@@ -14,7 +14,7 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
         $scope.loading = false;
         $scope.volumes = [];
         $scope.allVolumes = [];
-        $scope.availableVolumes = {};
+        $scope.availableVolumes = [];
         $scope.availableVolumeCount = 0;
         $scope.instanceId = '';
         $scope.jsonEndpoint = '';
@@ -61,16 +61,19 @@ angular.module('InstanceVolumes', ['EucaConsoleUtils'])
             $http.get($scope.jsonEndpoint).success(function(oData) {
                 var transitionalCount = 0;
                 $scope.volumes = [];
-                $scope.availableVolumes = {};
+                $scope.availableVolumes = [];
                 $scope.availableVolumeCount = 0;
                 $scope.allVolumes = oData ? oData.results : [];
                 $scope.initialLoading = false;
                 // Detect if any volume states are transitional
                 $scope.allVolumes.forEach(function(volume) {
-                    if (volume.attach_instance_id == $scope.instanceId) {
+                    if (volume.attach_instance_id === $scope.instanceId) {
                         $scope.volumes.push(volume);
-                    } else if (volume.status == 'available') {
-                        $scope.availableVolumes[volume.id] = volume.name;
+                    } else if (volume.status === 'available') {
+                        $scope.availableVolumes.push({
+                            'id': volume.id,
+                            'label': volume.name
+                        });
                         $scope.availableVolumeCount += 1;
                     }
                     if (volume.transitional) {

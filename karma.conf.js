@@ -132,6 +132,7 @@ module.exports = function(config) {
       'static/js/pages/volumes.js',
       'static/js/pages/volume_snapshots.js',
       'static/js/pages/elb-wizard/wizard.js',
+      'static/js/services/bucket-cors-service.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_autoscale_tag_editor.js',
       'static/js/jasmine-spec/spec_bdmapping_editor.js',

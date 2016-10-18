@@ -6,8 +6,7 @@
  *
  */
 
-// Scaling Group wizard includes the AutoScale Tag Editor
-angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils', 'TagEditorModule'])
+angular.module('ScalingGroupWizard', ['EucaConsoleUtils', 'TagEditorModule'])
     .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, eucaUnescapeJson, eucaNumbersOnly) {
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.scalingGroupName = '';
@@ -21,9 +20,8 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils', '
         $scope.vpcNetwork = '';
         $scope.vpcNetworkName = '';
         $scope.vpcSubnets = [];
-        $scope.vpcSubnetNames = '';
         $scope.vpcSubnetList = {};
-        $scope.vpcSubnetChoices = {};
+        $scope.vpcSubnetChoices = [];
         $scope.vpcSubnetZonesMap = {};
         $scope.availZones = '';
         $scope.loadBalancers = '';
@@ -127,11 +125,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils', '
                 $scope.checkRequiredInput();
             });
             $scope.$watch('vpcSubnets', function (newVal) {
-                if (typeof newVal === 'undefined') {
-                    $scope.subnets = [];
-                }
                 $scope.disableVPCSubnetOptions();
-                $scope.updateSelectedVPCSubnetNames();
                 $scope.checkRequiredInput();
             }, true);
         };
@@ -161,21 +155,30 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils', '
         };
         $scope.updateVPCSubnetChoices = function () {
             var foundVPCSubnets = false;
-            $scope.vpcSubnetChoices = {};
+            $scope.vpcSubnetChoices = [];
             $scope.vpcSubnets = [];
-            angular.forEach($scope.vpcSubnetList, function (subnet) {
-                if (subnet.vpc_id === $scope.vpcNetwork) {
-                    $scope.vpcSubnetChoices[subnet.id] = 
-                        subnet.cidr_block + ' (' + subnet.id + ') | ' + subnet.availability_zone;
+            var emptySubnetChoice;
+            angular.forEach($scope.vpcSubnetList, function (vpcSubnet) {
+                var subnetChoice;
+                if (vpcSubnet.vpc_id === $scope.vpcNetwork) {
+                    subnetChoice = {
+                        'id': vpcSubnet.id,
+                        'label': vpcSubnet.cidr_block + ' (' + vpcSubnet.id + ') | ' + vpcSubnet.availability_zone
+                    };
+                    $scope.vpcSubnetChoices.push(subnetChoice);
                     foundVPCSubnets = true;
                 }
                 // Create vpc subnet zone map to use later for disabling options
-                $scope.vpcSubnetZonesMap[subnet.id] = subnet.availability_zone;
+                $scope.vpcSubnetZonesMap[vpcSubnet.id] = vpcSubnet.availability_zone;
             }); 
             if (!foundVPCSubnets) {
                 // Case of No VPC or no existing subnets, set the default to 'None'
-                $scope.vpcSubnetChoices.None = $('#vpc_subnet_empty_option').text();
-                $scope.vpcSubnets.push('None');
+                emptySubnetChoice = {
+                    'id': 'None',
+                    'label': $('#vpc_subnet_empty_option').text()
+                };
+                $scope.vpcSubnetChoices.push(emptySubnetChoice);
+                $scope.vpcSubnets.push(emptySubnetChoice);
             }
             // Timeout is need for the chosen widget to react after Angular has updated the option list
             $timeout(function() {
@@ -218,17 +221,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor','EucaConsoleUtils', '
                 } 
             });
         };
-        $scope.updateSelectedVPCSubnetNames = function () {
-            var foundVPCSubnets = false;
-            $scope.vpcSubnetNames = [];
-            angular.forEach($scope.vpcSubnets, function (subnetID) {
-                angular.forEach($scope.vpcSubnetList, function (subnet) {
-                    if (subnetID === subnet.id) {
-                       $scope.vpcSubnetNames.push(subnet.cidr_block);
-                    }
-                });
-            });
-        }; 
         $scope.setWizardFocus = function (stepIdx) {
             var modal = $('div').filter("#step" + stepIdx);
             var inputElement = modal.find('input[type!=hidden]').get(0);

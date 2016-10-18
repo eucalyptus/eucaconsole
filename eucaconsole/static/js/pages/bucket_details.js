@@ -7,15 +7,25 @@
  */
 
 /* Bucket details page includes the S3 Sharing Panel */
-angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
-    .controller('BucketDetailsPageCtrl', function ($scope, $http, eucaHandleErrorS3) {
+angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'ModalModule'])
+    .controller('BucketDetailsPageCtrl', function ($scope, $rootScope, $http, eucaHandleErrorS3,
+                                                   eucaUnescapeJson, CorsService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.bucketName = '';
         $scope.bucketDetailsForm = $('#bucket-details-form');
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectsCountLoading = true;
-        $scope.initController = function (bucketObjectsCountUrl) {
-            $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
+        $scope.savingCorsConfig = false;
+        $scope.deletingCorsConfig = false;
+        $scope.corsConfigXml = '';
+        $scope.hasCorsConfig = false;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.bucketName = options.bucket_name;
+            $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
+            $scope.corsConfigXml = options.cors_config_xml;
+            $scope.hasCorsConfig = !!$scope.corsConfigXml;
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
@@ -82,12 +92,90 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                 }
             });
         };
+        $scope.deleteCorsConfig = function ($event) {
+            $event.preventDefault();
+            $scope.deleteError = '';
+            $scope.deletingCorsConfig = true;
+            var deleteDialog = $('#cors-delete-confirmation-modal');
+            var csrfToken = angular.element('#csrf_token').val();
+            CorsService.deleteCorsConfig($scope.bucketName, csrfToken)
+                .then(function success (response) {
+                    deleteDialog.foundation('reveal', 'close');
+                    $scope.deletingCorsConfig = false;
+                    $scope.hasCorsConfig = false;
+                    Notify.success(response.data.message);
+                }, function error (errData) {
+                    $scope.deleteError = errData.data.message;
+                    $scope.deletingCorsConfig = false;
+                });
+        };
+        $rootScope.$on('s3:corsConfigSaved', function () {
+            $scope.hasCorsConfig = true;
+        });
         // Receive postMessage from file upload window, refreshing list when file upload completes
         window.addEventListener('message', function (event) {
             if (event.data === 's3:fileUploaded') {
                 $scope.getBucketObjectsCount();
             }
         }, false);
+    })
+    .directive('corsConfigModal', function() {
+        return {
+            restrict: 'A',
+            scope: {
+                template: '@',
+                bucketName: '@',
+                hasCorsConfig: '=',
+                corsConfigXml: '@',
+                sampleCorsConfig: '@'
+            },
+            templateUrl: function (element, attributes) {
+                return attributes.template;
+            },
+            controller: ['$scope', '$rootScope', 'CorsService', 'ModalService',
+                function($scope, $rootScope, CorsService, ModalService) {
+                    if (!$scope.hasCorsConfig) {
+                        $scope.corsConfigXml = $scope.sampleCorsConfig;
+                    }
+                    $scope.setCorsConfiguration = function ($event) {
+                        $event.preventDefault();
+                        $scope.savingCorsConfig = true;
+                        $scope.corsError = '';
+                        var csrfToken = angular.element('#csrf_token').val();
+                        CorsService.setCorsConfig($scope.bucketName, csrfToken, $scope.codeEditor.getValue())
+                            .then(function success (response) {
+                                $scope.savingCorsConfig = false;
+                                $rootScope.$broadcast('s3:corsConfigSaved');
+                                ModalService.closeModal('corsConfigModal');
+                                Notify.success(response.data.message);
+                            }, function error (errData) {
+                                $scope.corsError = errData.data.message;
+                                $scope.savingCorsConfig = false;
+                            });
+                    };
+                    $scope.$on('modal:open', function ($event, modalName) {
+                        if (modalName === 'corsConfigModal') {
+                            // Initialize CodeMirror for CORS XML textarea
+                            var corsTextarea = document.getElementById('cors-textarea');
+                            $('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
+                            if (corsTextarea !== null) {
+                                $scope.codeEditor = CodeMirror.fromTextArea(corsTextarea, {
+                                    mode: "xml",
+                                    lineWrapping: true,
+                                    styleActiveLine: true,
+                                    autoCloseTags: true,
+                                    lineNumbers: true
+                                });
+                            }
+                            // Reset to sample CORS config when re-adding post-deletion
+                            if (!$scope.hasCorsConfig && !!$scope.codeEditor) {
+                                 $scope.codeEditor.setValue($scope.sampleCorsConfig);
+                            }
+                        }
+                    });
+                }
+            ]
+        };
     })
 ;
 

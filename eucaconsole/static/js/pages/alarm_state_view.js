@@ -5,7 +5,7 @@
  * @requires AngularJS, jQuery
  *
  */
-angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServiceModule', 'AlarmsComponents'])
+angular.module('AlarmStateView', ['EucaConsoleUtils', 'AlarmServiceModule', 'AlarmsComponents'])
     .directive('alarmStateView', function() {
         return {
             scope: {
@@ -19,8 +19,8 @@ angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServic
             templateUrl: function (element, attributes) {
                 return attributes.template;
             },
-            controller: ['$scope', '$timeout', 'eucaHandleError', 'eucaRoutes', 'AlarmService',
-            function($scope, $timeout, eucaHandleError, eucaRoutes, AlarmService) {
+            controller: ['$scope', '$timeout', 'eucaHandleError', 'AlarmService',
+            function($scope, $timeout, eucaHandleError, AlarmService) {
                 $scope.alarms = undefined;  // default to undefined helps avoid errant display of 0 alarms before fetch starts
                 $scope.toggleContent = function() {
                     $scope.expanded = !$scope.expanded;
@@ -46,7 +46,7 @@ angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServic
                 });
 
                 $scope.alarmDetailPath = function (alarmName) {
-                    return eucaRoutes.getRoute('cloudwatch_alarm_view', { alarm_id: btoa(alarmName) });
+                    return '/alarms/' + btoa(alarmName);
                 };
 
                 $scope.showDeleteModal = function(alarm) {
