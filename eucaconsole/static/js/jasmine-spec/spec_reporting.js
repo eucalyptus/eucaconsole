@@ -30,7 +30,7 @@ describe("Reporting", function() {
         controller = element.controller('navigation');
     });
 
-    describe("initial tab test", function() {
+    describe("#initialTabTest", function() {
         it("should set preferences path", function() {
             expect($location.path() == '/reporting/preferences').toBe(false);
             controller.setInitialTab('false');
@@ -38,19 +38,28 @@ describe("Reporting", function() {
         });
     });
 
-    describe("active tab test", function() {
-        it("should set active tab state", function() {
+    describe("#activeTabTest", function() {
+        it("should activate default tab", function() {
             expect(controller.isTabActive('/dashboard') == 'active').toBe(true);
             expect(controller.isTabActive('/reports') == 'active').toBe(false);
             expect(controller.isTabActive('/preferences') == 'active').toBe(false);
+        });
+
+        it("should activate reports tab", function() {
             $location.path('/reporting/reports');
             expect(controller.isTabActive('/dashboard') == 'active').toBe(false);
             expect(controller.isTabActive('/reports') == 'active').toBe(true);
             expect(controller.isTabActive('/preferences') == 'active').toBe(false);
+        });
+
+        it("should activate preferences tab", function() {
             $location.path('/reporting/preferences');
             expect(controller.isTabActive('/dashboard') == 'active').toBe(false);
             expect(controller.isTabActive('/reports') == 'active').toBe(false);
             expect(controller.isTabActive('/preferences') == 'active').toBe(true);
+        });
+
+        it("should activate default tab with bad path spec", function() {
             $location.path('/reporting/blah');
             expect(controller.isTabActive('/dashboard') == 'active').toBe(true);
             expect(controller.isTabActive('/reports') == 'active').toBe(false);
