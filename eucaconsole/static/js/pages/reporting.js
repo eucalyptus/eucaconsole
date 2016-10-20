@@ -17,7 +17,7 @@ angular.module('ReportingPage', ['ngRoute'])
             scope.tabs = {'dashboard': false, 'reports': false, 'preferences': true};
             scope.isTabActive = function(name) {
                 return (name.indexOf($location.path()) > -1)?'active':'';
-            }
+            };
             if (scope.reportingConfigured !== 'true') {
                 $location.path('/reporting/preferences');
             }
