@@ -15,7 +15,8 @@ angular.module('ReportingPage', ['ngRoute'])
         },
         controller: ['$scope', '$location', function ($scope, $location) {
             this.isTabActive = function(name) {
-                return (name.indexOf($location.path()) > -1)?'active':'';
+                var path = $location.path();
+                return (name.indexOf(path) > -1)?'active':'';
             };
             if ($scope.reportingConfigured !== 'true') {
                 $location.path('/reporting/preferences');
