@@ -10,17 +10,24 @@ angular.module('ReportingPage', ['ngRoute'])
 .directive('navigation', function () {
     return {
         restrict: 'A',
-        link: function (scope, element, attrs) {
-            scope.reportingConfigured = attrs.reportingConfigured;
+        link: function (scope, element, attrs, ctrl) {
+             ctrl.setInitialTab(attrs.reportingConfigured);
         },
         controller: ['$scope', '$location', function ($scope, $location) {
             this.isTabActive = function(name) {
                 var path = $location.path();
-                return (name.indexOf(path) > -1)?'active':'';
+                if (path.indexOf(name) > -1)
+                    return 'active';
+                if (name === 'dashboard' &&
+                    ['reports', 'preferences'].every(function(val) { return path.indexOf(val) === -1; }) )
+                    return 'active';
+                return '';
             };
-            if ($scope.reportingConfigured !== 'true') {
-                $location.path('/reporting/preferences');
-            }
+            this.setInitialTab = function(reportingConfigured) {
+                if (reportingConfigured !== 'true') {
+                    $location.path('/reporting/preferences');
+                }
+            };
         }],
         controllerAs: 'nav'
     };
