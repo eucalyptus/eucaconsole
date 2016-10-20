@@ -7,11 +7,11 @@
  */
 
 angular.module('ReportingPage', ['ngRoute'])
-.directive('navigation', function ($location) {
+.directive('navigation', function () {
     return {
         restrict: 'A',
-        scope: {
-            reportingConfigured: '@reportingConfigured'
+        link: function (scope, element, attrs) {
+            scope.reportingConfigured = attrs.reportingConfigured;
         },
         controller: ['$scope', '$location', function ($scope, $location) {
             this.isTabActive = function(name) {
