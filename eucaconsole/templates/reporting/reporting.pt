@@ -14,13 +14,13 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-12 columns">
             <dl navigation="" reporting-configured="${reporting_configured}" class="tabs">
-                <dd ng-class="nav.isTabActive('dashboard')">
+                <dd ng-class="nav.isTabActive('/dashboard')">
                     <a href="${request.route_path('reporting', subpath='/dashboard')}" i18n:translate="">Dashboard</a>
                 </dd>
-                <dd ng-class="nav.isTabActive('reports')">
+                <dd ng-class="nav.isTabActive('/reports')">
                     <a href="${request.route_path('reporting', subpath='/reports')}" i18n:translate="">Reports</a>
                 </dd>
-                <dd ng-class="nav.isTabActive('preferences')">
+                <dd ng-class="nav.isTabActive('/preferences')">
                     <a href="${request.route_path('reporting', subpath='/preferences')}" i18n:translate="">Preferences</a>
                 </dd>
             </dl>

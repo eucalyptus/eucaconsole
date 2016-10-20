@@ -41,6 +41,7 @@ class ReportingView(BaseView):
         self.title_parts = [_(u'Reporting')]
 
     def is_reporting_configured(self):
+        # replace this with logic that checks actual reporting configuration status
         return False
 
     @view_config(route_name='reporting', renderer='../templates/reporting/reporting.pt')

@@ -18,8 +18,10 @@ angular.module('ReportingPage', ['ngRoute'])
                 var path = $location.path();
                 if (path.indexOf(name) > -1)
                     return 'active';
-                if (name === 'dashboard' &&
-                    ['reports', 'preferences'].every(function(val) { return path.indexOf(val) === -1; }) )
+                // this handles case where url path contains something other than reports or prefs, but
+                // falls back to dashboard tab due to router .otherwise clause
+                if (name === '/dashboard' &&
+                    ['/reports', '/preferences'].every(function(val) { return path.indexOf(val) === -1; }) )
                     return 'active';
                 return '';
             };
@@ -34,12 +36,15 @@ angular.module('ReportingPage', ['ngRoute'])
 })
 .controller('DashboardController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     console.log('dashboard');
+    // would be nice to keep this controller function in a separate file to avoid this getting bloated
 }])
 .controller('ReportsController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     console.log('reports');
+    // would be nice to keep this controller function in a separate file to avoid this getting bloated
 }])
 .controller('PreferencesController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     console.log('preferences');
+    // would be nice to keep this controller function in a separate file to avoid this getting bloated
 }])
 .config(function ($routeProvider, $locationProvider) {
     $routeProvider
