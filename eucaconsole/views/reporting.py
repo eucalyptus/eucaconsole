@@ -39,11 +39,13 @@ class ReportingView(BaseView):
     def __init__(self, request):
         super(ReportingView, self).__init__(request)
         self.title_parts = [_(u'Reporting')]
-        self.prefix = '/reporting'
 
-    @view_config(route_name='reporting_dashboard', renderer='../templates/reporting/reporting_dashboard.pt')
+    def is_reporting_configured(self):
+        return True
+
+    @view_config(route_name='reporting', renderer='../templates/reporting/reporting.pt')
     def queues_landing(self):
         return dict(
-            prefix=self.prefix
+            reporting_configured='true' if self.is_reporting_configured() else 'false'
         )
 

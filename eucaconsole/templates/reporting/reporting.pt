@@ -1,0 +1,45 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ReportingPage"> 
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Usage Reporting</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div class="large-12 columns">
+            <dl navigation="" reporting-configured="${reporting_configured}" class="tabs">
+                <dd ng-class="{active: tabs.dashboard}">
+                    <a href="${request.route_path('reporting', subpath='dashboard')}" i18n:translate="">Dashboard</a>
+                    {{ tabs.dashboard }}
+                </dd>
+                <dd ng-class="{active: tabs.reports}">
+                    <a href="${request.route_path('reporting', subpath='reports')}" i18n:translate="">Reports</a>
+                    {{ tabs.reports }}
+                </dd>
+                <dd ng-class="{active: tabs.preferences}">
+                    <a href="${request.route_path('reporting', subpath='preferences')}" i18n:translate="">Preferences</a>
+                    {{ tabs.preferences }}
+                </dd>
+            </dl>
+            <div class="tabs-content">
+                <div class="content active">
+                    <div ng-view=""/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-route.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/reporting.js')}"></script>
+</div>
+
+</metal:block>
+

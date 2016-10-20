@@ -26,7 +26,7 @@
     <metal:block metal:define-slot="head_css" />
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
@@ -61,7 +61,7 @@
                     <li tal:condition="layout.auth_type == 'password'">
                         <a href="${request.route_path('managecredentials')}" i18n:translate="">Manage credentials</a>
                     </li>
-                    <li><a href="${request.route_path('reporting_dashboard')}" i18n:translate="">Usage Reporting</a></li>
+                    <li><a href="${request.route_path('reporting', subpath='')}" i18n:translate="">Usage Reporting</a></li>
                     <li>
                         <a i18n:translate="" data-reveal-id="about-modal">About your cloud</a>
                     </li>
