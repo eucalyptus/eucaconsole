@@ -397,5 +397,5 @@ urls = [
     Route(name='topics', pattern='/topics'),
 
     # Reporting
-    Route(name='reporting', pattern='/reporting/*subpath'),
+    Route(name='reporting', pattern='/reporting*subpath'),
 ]
