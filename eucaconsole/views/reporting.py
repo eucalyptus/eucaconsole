@@ -41,7 +41,7 @@ class ReportingView(BaseView):
         self.title_parts = [_(u'Reporting')]
 
     def is_reporting_configured(self):
-        return True
+        return False
 
     @view_config(route_name='reporting', renderer='../templates/reporting/reporting.pt')
     def queues_landing(self):

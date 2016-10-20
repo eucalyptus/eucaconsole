@@ -13,15 +13,15 @@ angular.module('ReportingPage', ['ngRoute'])
         scope: {
             reportingConfigured: '@reportingConfigured'
         },
-        link: function (scope, elems, attrs) {
-            scope.tabs = {'dashboard': false, 'reports': false, 'preferences': true};
-            scope.isTabActive = function(name) {
+        controller: ['$scope', '$location', function ($scope, $location) {
+            this.isTabActive = function(name) {
                 return (name.indexOf($location.path()) > -1)?'active':'';
             };
-            if (scope.reportingConfigured !== 'true') {
+            if ($scope.reportingConfigured !== 'true') {
                 $location.path('/reporting/preferences');
             }
-        }
+        }],
+        controllerAs: 'nav'
     };
 })
 .controller('DashboardController', ['$scope', '$routeParams', function ($scope, $routeParams) {
