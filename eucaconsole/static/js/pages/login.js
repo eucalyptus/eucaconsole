@@ -45,7 +45,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || 'euca';
             $("#euca-region").val(storedRegion);
-            $scope.oidcUrl = $scope.oidcLoginLink + "&state=oidc-" + $.base64.encode(storedRegion);
+            $scope.oidcUrl = $scope.oidcLoginLink + "&state=oidc-" + btoa(storedRegion);
             $timeout(function() {  // this being delayed to allow browser to populate login form completely
                 $scope.eucaCheckValid();
                 $scope.awsCheckValid();

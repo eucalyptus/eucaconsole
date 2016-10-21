@@ -29,10 +29,10 @@ Pyramid views for Login/Logout
 
 """
 import base64
-import httplib, urllib
+import httplib
+import urllib
 import logging
 import simplejson as json
-import socket
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 from boto.connection import AWSAuthConnection
@@ -46,7 +46,7 @@ from pyramid.view import view_config, forbidden_view_config
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..i18n import _
 from ..models import Notification
-from ..models.auth import AWSAuthenticator, ConnectionManager, HttpsConnectionFactory
+from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
 from ..views import JSONResponse
 from ..constants import AWS_REGIONS
@@ -118,7 +118,9 @@ class LoginView(BaseView, PermissionCheckMixin):
             'client_id={oidc_client_id}'
         oidc_client_id = self.request.registry.settings.get('oidc.client.id', None)
         oidc_console_host = self.request.registry.settings.get('oidc.console.hostname', None)
-        login_link = login_link.format(oidc_host=self.oidc_host, oidc_console_host=oidc_console_host, oidc_client_id=oidc_client_id)
+        login_link = login_link.format(
+            oidc_host=self.oidc_host, oidc_console_host=oidc_console_host, oidc_client_id=oidc_client_id
+        )
         options_json = BaseView.escape_json(json.dumps(dict(
             account=request.params.get('account', default=''),
             username=request.params.get('username', default=''),
@@ -166,7 +168,9 @@ class LoginView(BaseView, PermissionCheckMixin):
                 conn = httplib.HTTPSConnection(self.oidc_host, 443, timeout=300)
                 oidc_client_id = self.request.registry.settings.get('oidc.client.id', None)
                 oidc_client_secret = self.request.registry.settings.get('oidc.client.secret', None)
-                auth_string = base64.b64encode(('%s:%s' % (oidc_client_id, oidc_client_secret)).encode('latin1')).strip()
+                auth_string = base64.b64encode(
+                    ('%s:%s' % (oidc_client_id, oidc_client_secret)).encode('latin1')
+                ).strip()
                 headers = {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Accept': 'application/vnd.api+json',
@@ -208,7 +212,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         session = self.request.session
 
         try:
-            state = role_session_name=token['state']
+            state = token['state']
             # try authentication with default of dns_enabled = True. Set to False if we fail
             (oidc, euca_region, account_name) = state.split('-', 2)
             euca_region = base64.urlsafe_b64decode(euca_region)
@@ -217,12 +221,13 @@ class LoginView(BaseView, PermissionCheckMixin):
             # now that we authenticated, extract info from token
             jwt_body = token['id_token'].split('.')[1]
             jwt_info = json.loads(base64.urlsafe_b64decode(jwt_body + '=='))
-            account = 'oidc'
+            account = account_name
             username = jwt_info['preferred_username']
             logging.info(u"Authenticated OIDC user: {user} from {ip}".format(
-                    user=username, ip=BaseView.get_remote_addr(self.request)))
+                user=username, ip=BaseView.get_remote_addr(self.request)
+            ))
             default_region = self.request.registry.settings.get('default.region', 'euca')
-            user_account = u'{user}@{account}'.format(user=username, account=account)
+            user_account = u'{user} : {account}'.format(user=username, account=account)
             session.invalidate()  # Refresh session
             session['cloud_type'] = 'euca'
             session['auth_type'] = 'oidc'
@@ -231,7 +236,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             self._assign_session_creds(session, creds)
             session['region'] = euca_region if euca_region != '' else default_region
             session['username_label'] = user_account
-            session['dns_enabled'] = auth.dns_enabled # this *must* be prior to line below
+            session['dns_enabled'] = auth.dns_enabled  # this *must* be prior to line below
             session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
             session['default_vpc'] = self.get_account_attributes(['default-vpc'])
 
@@ -259,7 +264,6 @@ class LoginView(BaseView, PermissionCheckMixin):
                 msg = _(u'No response from host')
             self.login_form_errors.append(msg)
         return self.render_dict
-
 
     def handle_euca_login(self):
         new_passwd = None

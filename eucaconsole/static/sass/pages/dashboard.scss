@@ -126,6 +126,7 @@ $tile-row-height: 24px;
             border: none;
             &:hover {
                 color: $hpe-green;
+                outline: none;
             }
             &::before, &::after {
                 border: none;
