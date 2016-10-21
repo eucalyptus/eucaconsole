@@ -387,7 +387,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             if (!conditionKey || !conditionOperator) {
                 return false;
             }
-            conditionValueField = actionRow.find('.condition-value');
+            conditionValueField = actionRow.find('.condition-value').filter(':visible');
             conditionValue = conditionValueField.val();
             // Handle Boolen/Null conditions
             if (conditionOperator === 'Bool' || conditionOperator === 'Null') {
@@ -453,6 +453,13 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             var EC2_NUMERIC_KEYS = ['ec2:VolumeIops', 'ec2:VolumeSize'];
 
             var S3_KEYS = ['s3:x-amz-acl', 's3:VersionId', 's3:LocationConstraint', 's3:prefix', 's3:delimiter'];
+            var CLOUDFORMATION_KEYS = [
+                'cloudformation:TemplateUrl',
+                'cloudformation:StackPolicyUrl',
+                'cloudformation:ResourceTypes',
+                // 'cloudformation:ChangeSetName',
+                'cloudformation:RoleArn'
+            ];
 
             // AWS conditions
             if (conditionKey.indexOf('Arn') !== -1) { return 'ARN'; }
@@ -469,6 +476,9 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
 
             // S3-specific conditions
             if (S3_KEYS.indexOf(conditionKey) !== -1) { return 'STRING'; }
+
+            // CloudFormation-specific conditions
+            if (CLOUDFORMATION_KEYS.indexOf(conditionKey) !== -1) { return 'STRING'; }
 
             return '';
         };
