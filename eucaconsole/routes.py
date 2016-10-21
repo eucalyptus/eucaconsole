@@ -395,4 +395,7 @@ urls = [
     Route(name='queues_json', pattern='/queues/json'),
     Route(name='queue_view', pattern='/queue/{id}'),
     Route(name='topics', pattern='/topics'),
+
+    # Reporting
+    Route(name='reporting', pattern='/reporting*subpath'),
 ]
