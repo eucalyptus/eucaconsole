@@ -269,6 +269,24 @@
                                                         Delimiter (s3:delimiter)
                                                     </option>
                                                 </optgroup>
+                                                <!--! CloudFormation-specific condition keys -->
+                                                <optgroup label="CloudFormation Conditions" tal:condition="namespace == 'cloudformation'" tal:omit-tag="">
+                                                    <option value="cloudformation:TemplateUrl" i18n:translate="">
+                                                        Template URL
+                                                    </option>
+                                                    <option value="cloudformation:StackPolicyUrl" i18n:translate="">
+                                                        Stack Policy URL
+                                                    </option>
+                                                    <option value="cloudformation:ResourceTypes" i18n:translate="">
+                                                        Resource Types
+                                                    </option>
+                                                    <!-- <option value="cloudformation:ChangeSetName" i18n:translate="">
+                                                        Change Set Name
+                                                    </option> -->
+                                                    <option value="cloudformation:RoleArn" i18n:translate="">
+                                                        Role ARN
+                                                    </option>
+                                                </optgroup>
                                                 <!--! Generic AWS condition keys -->
                                                 <optgroup label="AWS Conditions" tal:omit-tag="">
                                                     <option value="aws:CurrentTime" i18n:translate="">Current time</option>
@@ -447,6 +465,9 @@
                                         <input type="text" class="condition-value"
                                                ng-show="conditionOperators.${cond_operator} &amp;&amp; conditionKeys.${cond_key}.indexOf('s3:') !== -1
                                                         &amp;&amp; ['s3:x-amz-acl', 's3:LocationConstraint'].indexOf(conditionKeys.${cond_key}) === -1" />
+                                        <!--! Input field for CloudFormation non-select string values -->
+                                        <input type="text" class="condition-value"
+                                               ng-show="conditionOperators.${cond_operator} &amp;&amp; conditionKeys.${cond_key}.indexOf('cloudformation:') !== -1" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">

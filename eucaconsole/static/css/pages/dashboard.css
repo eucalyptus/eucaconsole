@@ -27,7 +27,7 @@
 .panel .tile .footer .button { display: inline-block; }
 .panel .tile .footer .button:hover { text-decoration: none; }
 .panel .tile .dropdown.button.tiny { z-index: 99998; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #666666; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
-.panel .tile .dropdown.button.tiny:hover { color: #01a982; }
+.panel .tile .dropdown.button.tiny:hover { color: #01a982; outline: none; }
 .panel .tile .dropdown.button.tiny::before, .panel .tile .dropdown.button.tiny::after { border: none; }
 .panel .tile .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
 .panel .tile .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
