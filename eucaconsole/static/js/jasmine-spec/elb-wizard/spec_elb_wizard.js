@@ -135,9 +135,18 @@ describe('ELB Wizard Module', function () {
             $templateCache.put('/_template/elbs/wizard/general', template);
         }));
 
+        beforeEach(angular.mock.inject(function ($injector) {
+            $httpBackend = $injector.get('$httpBackend');
+            $httpBackend.when('GET', '/certificate').respond(
+                    200, '[]');
+        }));
+
         var $controller, $routeParams, $location, controller;
         beforeEach(inject(function (_$controller_, _$routeParams_, _$location_) {
             scope = $rootScope.$new();
+            scope.stepData = {
+                certificates: []
+            };
 
             $controller = _$controller_;
             $routeParams = _$routeParams_;
@@ -146,7 +155,9 @@ describe('ELB Wizard Module', function () {
             controller = $controller('GeneralController', {
                 $scope: scope,
                 $routeParams: $routeParams,
-                $location: $location
+                $location: $location,
+                certificates: [],
+                policies: []
             });
         }));
 

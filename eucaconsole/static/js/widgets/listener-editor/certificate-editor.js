@@ -24,7 +24,10 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
                 this.activeTab = tab;
             };
 
-            this.submitSsl = function () {
+            this.chooseSSL = function () {
+            };
+
+            this.uploadSSl = function () {
                 CertificateService.createCertificate({
                     name: this.name,
                     privateKey: this.privateKey,
@@ -58,9 +61,7 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
                 method: 'POST',
                 url: '/certificate',
                 data: cert
-            })//.then(function () {
-            //});
-            ;
+            });
         }
     };
 
