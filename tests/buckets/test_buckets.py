@@ -29,6 +29,7 @@ Tests for S3 buckets, objects, and related forms
 
 """
 import re
+import unittest
 
 import boto
 
