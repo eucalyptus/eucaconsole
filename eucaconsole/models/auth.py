@@ -417,7 +417,6 @@ class EucaAuthenticator(object):
                 raise urllib2.HTTPError(url='', code=response.status, msg=response.reason, hdrs=None, fp=None)
             body = response.read()
 
-            import logging; logging.info("auth response = "+body)
             # parse AccessKeyId, SecretAccessKey and SessionToken
             creds = Credentials()
             h = BotoXmlHandler(creds, None)
