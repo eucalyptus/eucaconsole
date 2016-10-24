@@ -33,12 +33,12 @@ import mimetypes
 import simplejson as json
 import urllib
 
-from boto.exception import StorageCreateError, S3ResponseError
+from boto.exception import BotoServerError, StorageCreateError, S3ResponseError
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
 from boto.s3.prefix import Prefix
-from boto.exception import BotoServerError
+from boto.s3.tagging import Tag, Tags, TagSet
 
 from lxml import etree
 
@@ -52,8 +52,8 @@ from ..forms.buckets import (
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
     BucketItemSharedURLForm, CorsConfigurationForm, CorsDeletionForm)
 from ..i18n import _
+from ..views import BaseView, LandingPageView, JSONResponse, TaggedItemView
 from ..models import Notification
-from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 from .. import utils
 
@@ -678,7 +678,7 @@ class BucketContentsJsonView(BaseView, BucketMixin):
         return False
 
 
-class BucketDetailsView(BaseView, BucketMixin):
+class BucketDetailsView(TaggedItemView, BucketMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
@@ -689,6 +689,7 @@ class BucketDetailsView(BaseView, BucketMixin):
         self.cors_configuration_xml = None
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.tagged_obj = self.bucket
             request.subpath = self.get_subpath(self.bucket.name) if self.bucket else ''
             self.bucket_acl = self.bucket.get_acl() if self.bucket else None
             if self.bucket:
@@ -706,6 +707,11 @@ class BucketDetailsView(BaseView, BucketMixin):
         if self.bucket is None:
             self.render_dict = dict()
         else:
+            # wrapped because boto generates an error in the case of no tags
+            try:
+                tags = self.serialize_tags(self.bucket.get_tags())
+            except S3ResponseError:
+                tags = '[]'
             self.render_dict = dict(
                 details_form=self.details_form,
                 sharing_form=self.sharing_form,
@@ -726,6 +732,7 @@ class BucketDetailsView(BaseView, BucketMixin):
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 controller_options_json=self.get_controller_options_json(),
                 delete_cors_config_url=self.request.route_path('bucket_cors_configuration', name=self.bucket.name),
+                tags=tags
             )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
@@ -736,8 +743,9 @@ class BucketDetailsView(BaseView, BucketMixin):
     def bucket_update(self):
         if self.bucket and self.details_form.validate():
             location = self.request.route_path('bucket_details', name=self.bucket.name)
+            self.log_request(u"Modifying bucket {0} acl".format(self.bucket.name))
+            self.update_tags()
             with boto_error_handler(self.request, location):
-                self.log_request(u"Modifying bucket {0} acl".format(self.bucket.name))
                 self.update_acl(self.request, bucket_object=self.bucket)
                 msg = u'{0} {1}'.format(_(u'Successfully modified bucket'), self.bucket.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -789,6 +797,43 @@ class BucketDetailsView(BaseView, BucketMixin):
                 logs_prefix=logging_prefix,
                 logs_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=logging_subpath)
             )
+
+    # override these from TaggedItemView since bucket tags are handled differently
+    def add_tags(self):
+        if self.bucket:
+            tags_json = self.request.params.get('tags', '{}')
+            tags_dict = self.normalize_tags(json.loads(tags_json))
+            tags = TagSet()
+            for key, value in tags_dict.items():
+                key = self.unescape_braces(key.strip())
+                if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                    tags.append(Tag(key, self.unescape_braces(value.strip())))
+            if tags:
+                alltags = Tags()
+                alltags.add_tag_set(tags)
+                # wrapping this because euca returns 200, not 204 as it should (EUCA-12867, unwrap once fixed)
+                try:
+                    self.bucket.set_tags(alltags)
+                except S3ResponseError as err:
+                    if err.status != 200:
+                        raise err
+
+    def remove_tags(self):
+        if self.bucket:
+            self.bucket.delete_tags()
+
+    def serialize_tags(self, tags):
+        serialized_tags = []
+        if tags is not None:
+            while len(tags) > 0:
+                tagset = tags.pop()
+                while len(tagset) > 0:
+                    tag = tagset.pop()
+                    serialized_tags.append({
+                        'name': tag.key,
+                        'value': tag.value
+                    })
+        return BaseView.escape_json(json.dumps(serialized_tags))
 
     @staticmethod
     def get_cors_configuration(bucket, xml=True):

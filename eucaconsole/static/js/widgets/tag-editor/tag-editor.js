@@ -75,7 +75,7 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             }],
             link: function (scope, element, attrs, ctrl, transcludeContents) {
                 var content = transcludeContents();
-                var tags = JSON.parse(content.text() || '{}');
+                var tags = JSON.parse(content.text() || '[]');
                 scope.tags = tags.filter(function (current) {
                     return !current.name.match(/^aws:.*/) &&
                         !current.name.match(/^euca:.*/);
