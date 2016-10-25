@@ -598,14 +598,14 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
 class InstanceView(TaggedItemView, BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
 
-    def __init__(self, request, instance=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(InstanceView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'General')]
         self.conn = self.get_connection()
         self.iam_conn = None
         if BaseView.has_role_access(request):
             self.iam_conn = self.get_connection(conn_type="iam")
-        self.instance = instance or self.get_instance()
+        self.instance = self.get_instance()
         self.image = self.get_image(self.instance)
         self.scaling_group = self.get_scaling_group()
         self.instance_form = InstanceForm(
@@ -1057,7 +1057,7 @@ class InstanceVolumesView(BaseInstanceView):
 class InstanceMonitoringView(BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_monitoring.pt'
 
-    def __init__(self, request, instance=None):
+    def __init__(self, request):
         super(InstanceMonitoringView, self).__init__(request)
         self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'Monitoring')]
         self.cw_conn = self.get_connection(conn_type='cloudwatch')
@@ -1067,7 +1067,7 @@ class InstanceMonitoringView(BaseInstanceView):
             # Note: We're fetching reservations here since calling self.get_instance() in the context manager
             # will return a 500 error instead of invoking the session timeout handler
             reservations = self.conn.get_all_reservations(instance_ids=[self.instance_id]) if self.conn else []
-        self.instance = instance or self.get_instance(instance_id=self.instance_id, reservations=reservations)
+        self.instance = self.get_instance(instance_id=self.instance_id, reservations=reservations)
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.monitoring_form = InstanceMonitoringForm(self.request, formdata=self.request.params or None)
         self.monitoring_enabled = self.instance.monitoring_state == 'enabled' if self.instance else False
@@ -1186,7 +1186,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
 
     @view_config(route_name='instance_launch', renderer=TEMPLATE, request_method='POST')
     def instance_launch(self):
-        """Handles the POST from the Launch instanced wizard"""
+        """Handles the POST from the Launch instance wizard"""
         if self.launch_form.validate():
             tags_json = self.request.params.get('tags')
             image_id = self.image.id

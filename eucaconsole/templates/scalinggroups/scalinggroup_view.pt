@@ -100,12 +100,9 @@
                     ${panel('form_field', field=edit_form['default_cooldown'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     ${panel('form_field', field=edit_form['health_check_period'], step='30', leftcol_width_large=3, rightcol_width_large=9)}
                     <hr />
-                    <tag-editor
-                            ng-model="tags"
-                            autoscale="1"
-                            template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                            tal:content="tags | structure">
-                    </tag-editor>
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" autoscale="1" tal:content="tags | structure"></tag-editor>
+                    </div>
                     <hr />
                     <div>
                         <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged || isInvalid()">

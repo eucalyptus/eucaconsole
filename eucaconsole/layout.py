@@ -65,6 +65,7 @@ class MasterLayout(object):
         self.browser_password_save = 'true' if asbool(
             request.registry.settings.get('browser.password.save')) else 'false'
         self.cloud_type = request.session.get('cloud_type')
+        self.auth_type = request.session.get('auth_type')
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
         self.access_id = self.request.session.get('access_id')

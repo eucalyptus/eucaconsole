@@ -295,11 +295,11 @@
                 <div class="section step3 hide">
                     <div class="row" ng-show="instanceVPC != ''">
                         <label i18n:translate="">Network</label>
-                        <div class="columns value">{{ instanceVPCName }}</div>
+                        <div class="columns value">{{ instanceVPC }}</div>
                     </div>
                     <div class="row" ng-show="instanceVPC != ''">
                         <label i18n:translate="">Subnet</label>
-                        <div class="columns value">{{ vpcSubnetChoices[subnetVPC] }}</div>
+                        <div class="columns value">{{ subnetVPC.label }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Key</label>

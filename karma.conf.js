@@ -132,6 +132,8 @@ module.exports = function(config) {
       'static/js/pages/volumes.js',
       'static/js/pages/volume_snapshots.js',
       'static/js/pages/elb-wizard/wizard.js',
+      'static/js/pages/reporting.js',
+      'static/js/services/bucket-cors-service.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_autoscale_tag_editor.js',
       'static/js/jasmine-spec/spec_bdmapping_editor.js',
@@ -201,7 +203,8 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_volume_snapshots.js',
       'static/js/jasmine-spec/listener-editor/spec_listener_editor.js',
       'static/js/jasmine-spec/elb-wizard/spec_elb_wizard.js',
-      'static/js/jasmine-spec/tag-editor/spec_tag_editor.js'
+      'static/js/jasmine-spec/tag-editor/spec_tag_editor.js',
+      'static/js/jasmine-spec/spec_reporting.js'
     ],
 
 

@@ -283,7 +283,6 @@ class BaseScalingGroupView(BaseView):
         tags_list = json.loads(tags_json) if tags_json else []
         tags = []
         for tag in tags_list:
-
             value = tag.get('value')
             if value is not None:
                 value = self.unescape_braces(value.strip())

@@ -59,6 +59,7 @@ describe("LoginPage", function() {
         beforeEach(function() {
             spyOn(scope, 'eucaLoginNotValid');
             spyOn(scope, 'awsLoginNotValid');
+            spyOn(scope, 'oidcLoginNotValid');
         });
 
         it("should have value of eucaNotValid is true", function() {
@@ -79,6 +80,16 @@ describe("LoginPage", function() {
             scope.awsCheckValid();
             timeout.flush();
             expect(scope.awsLoginNotValid).toHaveBeenCalled();
+        });
+
+        it("should have value of oidcNotValid is true", function() {
+            expect(scope.oidcNotValid).toBe(true);
+        });
+
+        it("should have value of oidcNotValid is true", function() {
+            scope.oidcCheckValid();
+            timeout.flush();
+            expect(scope.oidcLoginNotValid).toHaveBeenCalled();
         });
 
     });

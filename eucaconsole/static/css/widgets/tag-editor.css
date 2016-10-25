@@ -14,3 +14,5 @@
 .tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { border: 2px solid #CCEEE6; }
 .tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { box-shadow: none; }
 .tag-editor input.ng-invalid.ng-touched ~ .error { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }
+.tag-editor #propagate-wrapper { white-space: nowrap; }
+.tag-editor #propagate-wrapper .helptext-icon { position: relative; left: -10px; }

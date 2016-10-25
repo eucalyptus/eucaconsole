@@ -36,21 +36,23 @@ Prerequisites
 Prior to installing Pyramid and its dependencies, you may need to install the following libraries...
 
 * openssl (required by M2Crypto)
+* libxml2, libxslt (required by lxml)
 * gcc, python development headers, swig (required to install Python libraries)
 
 Ubuntu:
 
-    `apt-get install openssl build-essential python-dev swig memcached libmemcached6`
+    `apt-get install openssl build-essential python-dev swig memcached libmemcached-dev libxml2-dev libxslt-dev`
 
 Fedora:
 
-    `yum install openssl-devel python-devel swig memcached libmemcached; yum groupinstall 'Development tools'`
+    `dnf install openssl-devel python-devel swig memcached libmemcached-devel libxml2-devel libxslt-devel;`
+    `dnf groupinstall 'Development tools'`
 
 OS X:
 
 Install homebrew, then run
 
-    `brew install libevent openssl swig libmagic memcached libmemcached`
+    `brew install libevent openssl swig libmagic memcached libmemcached libxml2 libxslt`
 
 Pyramid Setup
 -------------

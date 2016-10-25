@@ -13,13 +13,16 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         var passwordField = $("#password");
         var accessKeyField = $("#access_key");
         var secretKeyField = $("#secret_key");
+        var accountNameField = $("#account-name");
         $scope.showHttpsWarning = false;
         $scope.isLoggingIn = false;
         $scope.eucaNotValid = true;
         $scope.awsNotValid = true;
+        $scope.oidcNotValid = true;
         $scope.initController = function (json_options) {
             var options = JSON.parse(eucaUnescapeJson(json_options));
             $scope.prefillForms(options.account, options.username);
+            $scope.oidcLoginLink = options.oidcLoginLink;
             $scope.addListeners();
             Modernizr.load([
                 {
@@ -40,8 +43,9 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             if (Modernizr.sessionstorage) {
                 sessionStorage.removeItem('copy-object-buffer');
             }
-            var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || '';
+            var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || 'euca';
             $("#euca-region").val(storedRegion);
+            $scope.oidcUrl = $scope.oidcLoginLink + "&state=oidc-" + btoa(storedRegion);
             $timeout(function() {  // this being delayed to allow browser to populate login form completely
                 $scope.eucaCheckValid();
                 $scope.awsCheckValid();
@@ -86,6 +90,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 var target = $('#aws');
                 target.siblings().removeClass('active').end().addClass('active');
             }
+            var accountName = $.cookie('accountName');
+            if (accountName !== undefined) accountNameField.val(accountName);
             $scope.setFocus();
         };
         $scope.addListeners = function () {
@@ -109,7 +115,6 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 params = params + "&SignatureMethod=HmacSHA256";
                 params = params + "&SignatureVersion=2";
                 params = params + "&Timestamp=" + encodeURIComponent(new Date().toISOString().substring(0, 19) + "Z");
-                //params = params+"&Timestamp="+"2014-01-16T19%3A36%3A32Z";
                 params = params + "&Version=2011-06-15";
                 // sign request
                 var string_to_sign = "POST\nsts.amazonaws.com\n/\n" + params;
@@ -119,7 +124,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 var storedRegion = Modernizr.localstorage && localStorage.getItem('aws-region') || '';
                 params = params + "&Signature=" + encoded;
                 $('#aws_csrf_token').val($('#csrf_token').val());
-                $('#package').val($.base64.encode(params));
+                $('#package').val(btoa(params));
                 $('#aws-region').val(storedRegion);
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();
@@ -128,7 +133,8 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             usernameField.on('keydown', $scope.eucaCheckValid);
             passwordField.on('keydown', $scope.eucaCheckValid);
             accessKeyField.on('keydown', $scope.awsCheckValid);
-            secretKeyField.on('keydown', $scope.awsCheckValid);
+            secretKeyField.on('change', $scope.awsCheckValid);
+            accountNameField.on('keydown', $scope.oidcCheckValid);
         };
         $scope.eucaCheckValid = function() {
             $timeout(function() {  // this causes an additional digest cycle after current thread completes
@@ -147,7 +153,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
         $scope.awsCheckValid = function() {
             $timeout(function() {  // this causes an additional digest cycle after current thread completes
                 $scope.awsNotValid = $scope.awsLoginNotValid();
-            }, 100);
+            }, 200);
         };
         $scope.awsLoginNotValid = function () {
             var access_key = accessKeyField.val();
@@ -156,6 +162,31 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 return true;
             }
             return false;
+        };
+        $scope.oidcCheckValid = function() {
+            $timeout(function() {  // this causes an additional digest cycle after current thread completes
+                $scope.oidcNotValid = $scope.oidcLoginNotValid();
+            }, 100);
+        };
+        $scope.oidcLoginNotValid = function () {
+            var account_name = accountNameField.val();
+            if (!account_name) {
+                return true;
+            }
+            return false;
+        };
+        $scope.openOIDCModal = function($event) {
+            $event.preventDefault();
+            $("#oidc-account-modal").foundation('reveal', 'open');
+            $timeout(function() {
+                accountNameField.focus();
+                $scope.oidcCheckValid();
+            }, 250);
+        };
+        $scope.handleOIDCLogin = function($event) {
+            $event.preventDefault();
+            $.cookie('accountName', accountNameField.val(), {expires: 180});
+            window.location.href = $scope.oidcUrl + "-" + $('#account-name').val();
         };
     })
 ;

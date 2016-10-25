@@ -129,12 +129,6 @@ def get_configurator(settings, enable_auth=True):
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
 
-    route_dir = '/var/run/eucaconsole'
-    if not os.path.exists(route_dir):
-        route_dir = os.path.join(os.getcwd(), 'run')
-    write_routes_json(route_dir)
-    config.add_static_view(name='static/json', path=route_dir, cache_max_age=cache_duration)
-
     locale_dir = os.path.join(os.getcwd(), 'locale')
     # use local locale directory over system one
     if not os.path.exists(locale_dir) and os.path.exists('/usr/share/locale'):

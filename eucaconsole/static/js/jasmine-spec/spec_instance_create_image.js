@@ -75,19 +75,19 @@ describe("InstanceCreateImage", function() {
             expect(scope.validateS3PrefixInput).toHaveBeenCalled();
         });
 
-        it("should set isNotvalie to true if name is empty", function() {
+        it("should set isNotValid to true if name is empty", function() {
             scope.name = '';
             scope.checkRequiredInput();
             expect(scope.isNotValid).toBe(true);
         });
 
-        it("should set isNotvalid to true if bucketName is empty", function() {
+        it("should set isNotValid to true if bucketName is empty", function() {
             scope.bucketName = '';
             scope.checkRequiredInput();
             expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should set isNotvalid to true if s3_prefix is empty", function() {
+        it("Should set isNotValid to true if s3_prefix is empty", function() {
             scope.s3_prefix = '';
             scope.checkRequiredInput();
             expect(scope.isNotValid).toBe(true);

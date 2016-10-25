@@ -39,6 +39,7 @@ import string
 import textwrap
 import time
 from datetime import datetime, timedelta
+from collections import namedtuple
 import threading
 
 from cgi import FieldStorage
@@ -70,7 +71,7 @@ from ..caches import long_term
 from ..caches import invalidate_cache
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
-from ..models.auth import EucaAuthenticator
+from ..models.auth import EucaAuthenticator, OIDCAuthenticator
 from ..i18n import _
 from ..models import Notification
 from ..models.auth import ConnectionManager, RegionCache
@@ -303,13 +304,36 @@ class BaseView(object):
         """
         host = self._get_ufs_host_setting_()
         port = self._get_ufs_port_setting_()
+        cert_info = self.get_cert_verification_info()
+        auth = EucaAuthenticator(
+            host, port, True,
+            validate_certs=cert_info.validate_certs,
+            ca_certs=cert_info.ca_certs_file
+        )
+        return auth
+
+    def get_oidc_authenticator(self):
+        """
+        This method centralizes configuration of the OIDCAuthenticator.
+        """
+        host = self._get_ufs_host_setting_()
+        port = self._get_ufs_port_setting_()
+        cert_info = self.get_cert_verification_info()
+        auth = OIDCAuthenticator(
+            host, port, True,
+            validate_certs=cert_info.validate_certs,
+            ca_certs=cert_info.ca_certs_file
+        )
+        return auth
+
+    def get_cert_verification_info(self):
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
         conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
         ca_certs_file = conn.ca_certificates_file
         conn = None
         ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-        auth = EucaAuthenticator(host, port, True, validate_certs=validate_certs, ca_certs=ca_certs_file)
-        return auth
+        ret = namedtuple('ret', 'validate_certs ca_certs_file')
+        return ret(validate_certs=validate_certs, ca_certs_file=ca_certs_file)
 
     def get_account_attributes(self, attribute_names=None):
         self.__init__(self.request)
