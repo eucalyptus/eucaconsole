@@ -1,4 +1,4 @@
-describe('ELB Certificate Editor', function () {
+fdescribe('ELB Certificate Editor', function () {
 
     beforeEach(angular.mock.module('ELBCertificateEditorModule'));
 
@@ -72,6 +72,28 @@ describe('ELB Certificate Editor', function () {
                 });
 
                 it('should update model on success', function () {
+                });
+            });
+
+            describe('#submitSSL', function () {
+
+                beforeEach(function () {
+                    spyOn(controller, 'uploadSSL');
+                    spyOn(controller, 'chooseSSL');
+
+                    scope.sslCertForm.$invalid = false;
+                });
+
+                it('should use an existing certificate when "existing" is active', function () {
+                    controller.certType = 'existing';
+                    controller.submitSSL();
+                    expect(controller.chooseSSL).toHaveBeenCalled();
+                });
+
+                it('should upload a new certificate when "new" is active', function () {
+                    controller.certType = 'new';
+                    controller.submitSSL();
+                    expect(controller.uploadSSL).toHaveBeenCalled();
                 });
             });
         });

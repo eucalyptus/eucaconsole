@@ -25,9 +25,10 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
             };
 
             this.chooseSSL = function () {
+                console.log('choose');
             };
 
-            this.uploadSSl = function () {
+            this.uploadSSL = function () {
                 CertificateService.createCertificate({
                     name: this.name,
                     privateKey: this.privateKey,
@@ -39,10 +40,49 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
                 });
             };
 
+            this.submitSSL = function () {
+                if($scope.sslCertForm.$invalid) {
+                    return;
+                }
+
+                if(this.certType === 'existing') {
+                    this.chooseSSL();
+                } else {
+                    this.uploadSSL();
+                }
+            };
+
             this.submitBackend = function () {
             };
         }],
         controllerAs: 'ctrl'
+    };
+})
+.directive('ifActive', function () {
+    return {
+        restrict: 'A',
+        require: {
+            certificateEditor: '^^certificateEditor',
+            ngModel: 'ngModel'
+        },
+        link: function (scope, element, attrs, ctrls) {
+            var certType = attrs.ifActive;
+            var required = ctrls.ngModel.$validators.required;
+
+            scope.$watch(function () {
+                return ctrls.certificateEditor.certType;
+            }, function () {
+                ctrls.ngModel.$validate();
+            });
+
+            ctrls.ngModel.$validators.required = function (modelValue, viewValue) {
+                if(ctrls.certificateEditor.certType !== certType) {
+                    return true;
+                }
+
+                return required(modelValue, viewValue);
+            };
+        }
     };
 })
 .factory('CertificateService', ['$http', function ($http) {
