@@ -106,6 +106,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.came_from = self.sanitize_url(self.request.params.get('came_from', referrer))
         self.login_form_errors = []
         self.duration = str(int(self.request.registry.settings.get('session.cookie_expires')) + 60)
+        self.admin_duration = str(int(self.request.registry.settings.get('session.max_admin_expires', 3600)) + 60)
         self.login_refresh = str(int(self.request.registry.settings.get('session.timeout')) - 60)
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
@@ -276,6 +277,8 @@ class LoginView(BaseView, PermissionCheckMixin):
             password = self.request.params.get('password')
             euca_region = self.request.params.get('euca-region')
             try:
+                if username == 'admin':
+                    self.duration = min(self.duration, self.admin_duration)
                 # TODO: also return dns enablement
                 creds = auth.authenticate(
                     account=account, user=username, passwd=password,
