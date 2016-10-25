@@ -30,7 +30,7 @@
                             data-reveal-id="download-object-modal">Download Object</a>
                     </li>
                     <li>
-                        <a id="upload-object-btn" i18n:translate="" target="_blank"
+                        <a id="upload-object-btn" i18n:translate="" target="_blank" rel="noopener noreferrer"
                             href="${request.route_path('bucket_upload', name='__shared__', subpath='')}">Upload Object(s)</a>
                     </li>
                 </ul>
