@@ -288,7 +288,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         multiplier = 1
         divider = 1
         unit = self.unit
-        period = int(self.request.params.get('period', 300))
+        period = int(self.request.params.get('period', '300'))
         if period % 60 != 0:
             raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
 

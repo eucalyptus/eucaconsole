@@ -218,7 +218,7 @@
                                         <select name="large_chart_monitoring_granularity" id="large-chart-monitoring-granularity" class="period-input"
                                                 ng-model="chartsCtrl.largeChartGranularity" ng-change="chartsCtrl.refreshLargeChart()"
                                                 ng-init="chartsCtrl.largeChartGranularity=chartsCtrl.granularityChoices[0]"
-                                                ng-options="opt.label for opt in chartsCtrl.granularityChoices track by opt.value">
+                                                ng-options="opt as opt.label for opt in chartsCtrl.granularityChoices track by opt.value">
                                         </select>
                                     </div>
                                 </div>

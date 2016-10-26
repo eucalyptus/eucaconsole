@@ -52,7 +52,7 @@ module.exports = function(grunt) {
           },
           font_awesome: {
               files: {
-                'eucaconsole/static/fonts/font-awesome': 'components-font-awesome/fonts/*',
+                'eucaconsole/static/fonts/': 'components-font-awesome/fonts/*',
                 'eucaconsole/static/css/thirdparty': 'components-font-awesome/css/*.css',
                 'eucaconsole/static/sass/font-awesome':'components-font-awesome/scss/*.scss'
               }

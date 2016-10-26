@@ -430,7 +430,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         if self.image is not None:
             tags = self.serialize_tags(self.image.tags)
         else:
-            tags = '{}'
+            tags = '[]'
         # tags = BaseView.escape_json(json.dumps(tags))
 
         self.render_dict = dict(

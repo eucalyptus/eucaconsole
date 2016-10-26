@@ -7,7 +7,7 @@
  */
 
 /* Bucket details page includes the S3 Sharing Panel */
-angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'ModalModule'])
+angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'TagEditorModule', 'ModalModule'])
     .controller('BucketDetailsPageCtrl', function ($scope, $rootScope, $http, eucaHandleErrorS3,
                                                    eucaUnescapeJson, CorsService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -44,6 +44,16 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                 eucaHandleErrorS3(oData, status);
             });
         };
+        // True if there exists an unsaved key or value in the tag editor field
+        $scope.existsUnsavedTag = function () {
+            var hasUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if ($(this).val() !== '') {
+                    hasUnsavedTag = true;
+                }
+            });
+            return hasUnsavedTag;
+        };
         $scope.revealModal = function (action) {
             var modal = $('#' + action + '-modal');
             modal.foundation('reveal', 'open');
@@ -68,6 +78,9 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                 if ($(this).is(':checked')) {
                     $scope.hasChangesToBeSaved = true;
                 }
+            });
+            $scope.$on('tagUpdate', function($event) {
+                $scope.hasChangesToBeSaved = true;
             });
             // Turn "isSubmitted" flag to true when a form (except the logout form) is submitted
             $('form[id!="euca-logout-form"]').on('submit', function () {

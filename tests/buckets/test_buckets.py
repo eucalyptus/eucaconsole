@@ -29,6 +29,7 @@ Tests for S3 buckets, objects, and related forms
 
 """
 import re
+import unittest
 
 import boto
 
@@ -45,6 +46,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 from eucaconsole.constants.buckets import SAMPLE_CORS_CONFIGURATION, CORS_XML_RELAXNG_SCHEMA
 from eucaconsole.forms.buckets import SharingPanelForm
 from eucaconsole.utils import remove_namespace, validate_xml
+from eucaconsole.views import TaggedItemView
 from eucaconsole.views.buckets import (
     BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketItemDetailsView, BucketXHRView,
     FOLDER_NAME_PATTERN
@@ -129,6 +131,17 @@ class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
 
     @mock_s3
     @mock_ec2
+    def test_is_tagged_view(self):
+        """Bucket details view should inherit from TaggedItemView"""
+        request = self.create_request()
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
+        self.make_bucket()
+        view = BucketDetailsView(request)
+        self.assertTrue(isinstance(view, TaggedItemView))
+
+    @mock_s3
+    @mock_ec2
     def test_bucket_details_view_without_versioning(self):
         request = self.create_request()
         self.setup_session(request)
@@ -165,6 +178,22 @@ class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
         # Note: moto hasn't implemented CORS handling (yet), so we can only check the empty config object case
         bucket_cors = view.get_cors_configuration(view.bucket, xml=False)
         self.assertEqual(bucket_cors, None)
+
+    @mock_s3
+    @mock_ec2
+    @unittest.skip("because moto doesn't support bucket tags.")
+    def test_update_tags(self):
+        tag_string = '[{"name":"tag4","value":"value4"},{"name":"tag3","value":"value3"}]'
+        """Bucket details view should inherit from TaggedItemView"""
+        request = self.create_request()
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
+        request.params['tags'] = tag_string
+        self.make_bucket()
+        view = BucketDetailsView(request)
+        view.update_tags()
+        tag_serialized = view.serialize_tags(view.bucket.get_tags())
+        self.assertEqual(tag_string, tag_serialized)
 
 
 class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
