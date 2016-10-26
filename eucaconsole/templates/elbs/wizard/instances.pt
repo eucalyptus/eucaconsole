@@ -2,19 +2,43 @@
     <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
         <div class="section-label-with-helptext-icon">
             <label class="left stack-label">
-                <span i18n:translate="">
-                    Add availability zones
-                </span>
+                <span i18n:translate="">Add availability zones</span>
                 <span class="req">*</span>
                 <span class="helptext-icon" data-tooltip="" i18n:attributes="title" title="Enable this load balancer to route traffic to instances in the selected zones"></span>
             </label>
         </div>
         <div id="controls_zone" class="row inline controls-wrapper">
-            <select id="zone" multiple="" chosen="true"
-                ng-model="availabilityZones"
-                ng-options="zone as zone.label for zone in availabilityZoneChoices track by zone.id"
-                data-placeholder="Select availability zones" i18n:attributes="data-placeholder">
-            </select>
+            <div class="large-12 small-12 columns field">
+                <select id="zone" multiple="" chosen="true" search-contains="true" width="100"
+                    ng-model="availabilityZones" focus-on-load="true"
+                    ng-options="zone as zone.label for zone in availabilityZoneChoices track by zone.id"
+                    data-placeholder="Select availability zones" i18n:attributes="data-placeholder">
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="checkbox-with-helptext-icon" ng-show="vpcNetwork === 'None'">
+        <input id="cross_zone_enabled" type="checkbox" ng-model="crossZoneEnabled"/>
+        <label for="cross_zone_enabled" i18n:translate="">Enable cross-zone load balancing</label>
+        <span class="helptext-icon" data-tooltip="" i18n:attributes="title" title="Distribute traffic evenly across all instances in all availability zones"></span>
+    </div>
+    <div class="" ng-show="vpcNetwork !== 'None'">
+        <div class="section-label-with-helptext-icon">
+            <label class="left stack-label">
+                <span>Add VPC subnets</span>
+                <span class="req">*</span>
+                <span class="helptext-icon" data-tooltip="" i18n:attributes="title" title="Enable this load balancer to route traffic to instances in the selected subnets"></span>
+            </label>
+        </div>
+        <div id="controls_vpc_subnet" class="row inline controls-wrapper">
+            <div class="large-12 small-12 columns field">
+                <select id="vpc_subnet" multiple="" chosen="true" search-containers="true" width="100"
+                    ng-model="vpcSubnets" focus-on-load="true"
+                    ng-options="subnet as subnet.label for subnet in vpcSubnetChoices track by subnet.id"
+                    data-placeholder="Select VPC subnets" i18n:attributes="data-placeholder">
+                </select>
+            </div>
+            <span id="hidden_vpc_subnet_empty_option" class="hide">No subnets found</span>
         </div>
     </div>
 </form>

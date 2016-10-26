@@ -15,15 +15,15 @@ angular.module('ELBWizard', [
             complete: false
         },
         {
-            label: 'Instances',
-            href: '/elbs/wizard/instances',
-            vpcOnly: false,
-            complete: false
-        },
-        {
             label: 'Network',
             href: '/elbs/wizard/network',
             vpcOnly: true,
+            complete: false
+        },
+        {
+            label: 'Instances',
+            href: '/elbs/wizard/instances',
+            vpcOnly: false,
             complete: false
         },
         {
