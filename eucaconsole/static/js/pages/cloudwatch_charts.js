@@ -99,7 +99,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     vm.emptyMessages = {};
     vm.chartsList = [];
     vm.granularityChoices = [];
-    vm.originalDurationGranularitiesMapping = {};
     vm.durationGranularitiesMapping = {};
     vm.largeChartMetric = '';
     vm.largeChartLoading = false;
@@ -146,9 +145,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.metricTitleMapping = options.metric_title_mapping;
         vm.chartsList = options.charts_list;
         vm.availabilityZones = options.availability_zones || [];
-        vm.originalDurationGranularitiesMapping = options.duration_granularities_mapping;
         vm.durationGranularitiesMapping = setDurationGranularitiesOptions(options.duration_granularities_mapping);
         vm.granularityChoices = vm.durationGranularitiesMapping[vm.largeChartDuration];
+        vm.largeChartGranularity = vm.granularityChoices[0];
         vm.fullGranularityChoices = options.granularity_choices;
         emptyLargeChartDialogOnOpen();
     }
@@ -166,7 +165,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.granularityChoices = vm.durationGranularitiesMapping[vm.largeChartDuration];
         if (!vm.granularityChoices[vm.largeChartDuration]) {
             // Avoid empty granularity choice when duration is modified
-            vm.largeChartGranularity = vm.originalDurationGranularitiesMapping[vm.largeChartDuration][0][0];
+            vm.largeChartGranularity = vm.durationGranularitiesMapping[vm.largeChartDuration][0];
         }
         // update absolute to match
         vm._largeChartStartTime = new Date();
