@@ -110,7 +110,7 @@
                          dimensions="{{ graph.dimensions }}"
                          namespace="{{ graph.namespace }}"
                          metric="{{ graph.metric }}"
-                         period="{{ chartsCtrl.largeChartGranularity }}"
+                         period="{{ chartsCtrl.largeChartGranularity.value }}"
                          duration="{{ chartsCtrl.largeChartDuration }}"
                          start-time="{{ chartsCtrl._largeChartStartTime.toISOString() }}"
                          end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
