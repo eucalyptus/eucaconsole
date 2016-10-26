@@ -104,6 +104,7 @@
                     <div ng-cloak="">
                         <tag-editor ng-model="tags" tal:content="tags | structure"></tag-editor>
                     </div>
+                    <hr />
                     <div>
                         <button type="submit" id="save_changes_bucket_details_button" class="button"
                                 ng-disabled="!hasChangesToBeSaved">

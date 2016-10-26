@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
 from datetime import datetime
+from itertools import chain
 import mimetypes
 import simplejson as json
 import urllib
@@ -822,17 +823,15 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
         if self.bucket:
             self.bucket.delete_tags()
 
-    def serialize_tags(self, tags):
+    @staticmethod
+    def serialize_tags(tags):
         serialized_tags = []
         if tags is not None:
-            while len(tags) > 0:
-                tagset = tags.pop()
-                while len(tagset) > 0:
-                    tag = tagset.pop()
-                    serialized_tags.append({
-                        'name': tag.key,
-                        'value': tag.value
-                    })
+            for tag in chain.from_iterable(tags):
+                serialized_tags.append({
+                    'name': tag.key,
+                    'value': tag.value
+                })
         return BaseView.escape_json(json.dumps(serialized_tags))
 
     @staticmethod
