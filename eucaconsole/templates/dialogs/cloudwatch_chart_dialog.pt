@@ -24,7 +24,7 @@
                 <div>
                     <select name="large_chart_monitoring_granularity" id="large-chart-monitoring-granularity" class="period-input"
                             ng-model="chartsCtrl.largeChartGranularity" ng-change="chartsCtrl.refreshLargeChart()"
-                            ng-options="opt.value as opt.label for opt in chartsCtrl.granularityChoices track by opt.value">
+                            ng-options="opt as opt.label for opt in chartsCtrl.granularityChoices track by opt.value">
                     </select>
                 </div>
             </div>
@@ -76,7 +76,7 @@
         <svg id="large-chart" no-x-labels="true" large="true"
              cloudwatch-chart="" class="cwchart"
              ids="{{ chartsCtrl.largeChartIds }}" idtype="{{ chartsCtrl.largeChartIdType }}" metric="{{ chartsCtrl.largeChartMetric }}" title="{{ chartsCtrl.selectedChartTitle }}"
-             duration="{{ chartsCtrl.largeChartDuration }}" period="{{ chartsCtrl.largeChartGranularity }}"
+             duration="{{ chartsCtrl.largeChartDuration }}" period="{{ chartsCtrl.largeChartGranularity.value }}"
              unit="{{ chartsCtrl.largeChartUnit }}"
              start-time="{{ chartsCtrl._largeChartStartTime.toISOString() }}"
              end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
