@@ -39,7 +39,6 @@ from . import BaseSecureForm, TextEscapedField
 
 class ImageForm(BaseSecureForm):
     """Image form
-       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
        Only need to initialize as a secure form to generate CSRF token
     """
     desc_error_msg = _(u'Description is required')

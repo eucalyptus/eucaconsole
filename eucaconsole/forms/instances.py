@@ -40,7 +40,6 @@ from . import BaseSecureForm, ChoicesManager, TextEscapedField
 class InstanceForm(BaseSecureForm):
     """Instance form (to update an existing instance)
        Form to launch an instance is in LaunchInstanceForm
-       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     name_error_msg = _(u'Not a valid name')
     name = TextEscapedField(label=_(u'Name'))
@@ -84,8 +83,7 @@ class InstanceForm(BaseSecureForm):
 
 class LaunchInstanceForm(BaseSecureForm):
     """Launch instance form
-       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
-             The block device mappings are also pulled in via a panel
+       Note: The block device mappings are pulled in via a panel
     """
     image_id = wtforms.HiddenField(label=_(u'Image'))
     number_error_msg = _(u'Number of instances must be a whole number between 1-10')

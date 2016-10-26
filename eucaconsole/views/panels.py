@@ -127,24 +127,6 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
     )
 
 
-@panel_config('tag_editor', renderer='../templates/panels/tag_editor.pt')
-def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, show_name_tag=True):
-    """ Tag editor panel.
-        Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
-    """
-    tags = tags or {}
-    controller_options_json = BaseView.escape_json(json.dumps({
-        'tags': tags,
-        'show_name_tag': show_name_tag,
-    }))
-    return dict(
-        controller_options_json=controller_options_json,
-        show_name_tag=show_name_tag,
-        leftcol_width=leftcol_width,
-        rightcol_width=rightcol_width,
-    )
-
-
 @panel_config('user_editor', renderer='../templates/panels/user_editor.pt')
 def user_editor(context, request, leftcol_width=4, rightcol_width=8, help_text=None, show_admin=False):
     """ User editor panel.
@@ -160,29 +142,6 @@ def policy_list(context, request, policies_url=None, policy_url=None, remove_url
     """
     return dict(policies_url=policies_url, policy_url=policy_url,
                 remove_url=remove_url, update_url=update_url, add_url=add_url)
-
-
-@panel_config('autoscale_tag_editor', renderer='../templates/panels/autoscale_tag_editor.pt')
-def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_width=10):
-    """ Tag editor panel for Scaling Groups.
-        Usage example (in Chameleon template): ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
-    """
-    tags = tags or []
-    tags_list = []
-    for tag in tags:
-        tags_list.append(dict(
-            name=tag.key,
-            value=tag.value,
-            propagate_at_launch=tag.propagate_at_launch,
-        ))
-    controller_options_json = BaseView.escape_json(json.dumps({
-        'tags_list': tags_list,
-    }))
-    return dict(
-        controller_options_json=controller_options_json,
-        leftcol_width=leftcol_width,
-        rightcol_width=rightcol_width,
-    )
 
 
 @panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')
