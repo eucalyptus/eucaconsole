@@ -1,3 +1,20 @@
 <form ng-submit="instances.submit()" i18n:domain="eucaconsole">
-    instances
+    <div ng-cloak="true" ng-show="vpcNetwork === 'None'">
+        <div class="section-label-with-helptext-icon">
+            <label class="left stack-label">
+                <span i18n:translate="">
+                    Add availability zones
+                </span>
+                <span class="req">*</span>
+                <span class="helptext-icon" data-tooltip="" i18n:attributes="title" title="Enable this load balancer to route traffic to instances in the selected zones"></span>
+            </label>
+        </div>
+        <div id="controls_zone" class="row inline controls-wrapper">
+            <select id="zone" multiple="" chosen="true"
+                ng-model="availabilityZones"
+                ng-options="zone as zone.label for zone in availabilityZoneChoices track by zone.id"
+                data-placeholder="Select availability zones" i18n:attributes="data-placeholder">
+            </select>
+        </div>
+    </div>
 </form>
