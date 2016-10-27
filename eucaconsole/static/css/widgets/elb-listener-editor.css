@@ -27,7 +27,7 @@
 
 .wizard .error { font-size: small; display: none; }
 .wizard input[type="number"].port { width: 80px; }
-.wizard input.ng-invalid.ng-touched ~ .error { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }
+.wizard input.ng-invalid.ng-touched ~ .error, .wizard textarea.ng-invalid.ng-touched ~ .error { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }
 .wizard .ng-invalid input[type="submit"] { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; }
 .wizard .ng-invalid input[type="submit"]:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
 .wizard .port-in-use, .wizard .port-out-of-range { display: none; }

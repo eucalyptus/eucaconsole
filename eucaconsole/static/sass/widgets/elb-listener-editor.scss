@@ -11,9 +11,11 @@
         width: 80px;
     }
 
-    input.ng-invalid.ng-touched ~ .error {
-        display: block;
-        @include validation-error-mixin;
+    input, textarea {
+        &.ng-invalid.ng-touched ~ .error {
+            display: block;
+            @include validation-error-mixin;
+        }
     }
 
     .ng-invalid {

@@ -169,8 +169,10 @@ urls = [
     Route(name='elb_healthchecks', pattern='/elbs/{id}/healthchecks'),
     Route(name='elb_healthchecks_update', pattern='/elbs/{id}/healthchecks/update'),
     Route(name='elb_monitoring', pattern='/elbs/{id}/monitoring'),
+
     # Certificate modal
     Route(name='certificate_create', pattern='/certificate/create'),
+    Route(name='elb_certificate', pattern='/certificate'),
 
     # Volumes #####
     # Landing page

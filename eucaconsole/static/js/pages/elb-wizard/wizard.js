@@ -1,68 +1,21 @@
 angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
-    'ELBSecurityPolicyEditorModule', 'ModalModule', 'InstancesSelectorModule', 'EucaConsoleUtils'
+    'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
+    'InstancesSelectorModule', 'EucaConsoleUtils'
 ])
 .factory('ELBWizardService', function () {
     var svc = {};
     return svc;
 })
-.directive('wizardNav', function () {
-    var steps = [
-        {
-            label: 'General',
-            href: '/elbs/wizard/',
-            vpcOnly: false,
-            complete: false
-        },
-        {
-            label: 'Network',
-            href: '/elbs/wizard/network',
-            vpcOnly: true,
-            complete: false
-        },
-        {
-            label: 'Instances',
-            href: '/elbs/wizard/instances',
-            vpcOnly: false,
-            complete: false
-        },
-        {
-            label: 'Health Check & Advanced',
-            href: '/elbs/wizard/advanced',
-            vpcOnly: false,
-            complete: false
-        }
-    ];
-
+.directive('stepData', function () {
     return {
-        restrict: 'E',
+        restrict: 'A',
         scope: {
-            cloudType: '@cloudType',
-            vpcEnabled: '@vpcEnabled'
+            stepData: '='
         },
-        templateUrl: '/_template/elbs/wizard/navigation',
-        controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
-            this.steps = steps;
-
-            this.validSteps = function () {
-                return this.steps.filter(function (current) {
-                    if($scope.cloudType === 'aws' || $scope.vpcEnabled) {
-                        return true;
-                    } else {
-                        return !current.vpcOnly;
-                    }
-                });
-            };
-
-            this.status = function (step) {
-                var path = $location.path();
-                return {
-                    active: (path == step.href),
-                    complete: step.complete
-                };
-            };
-        }],
-        controllerAs: 'nav'
+        controller: ['$scope', function ($scope) {
+            angular.merge(this, $scope.stepData);
+        }]
     };
 })
 .directive('focusOnLoad', function ($timeout) {
@@ -75,35 +28,9 @@ angular.module('ELBWizard', [
         }
     };
 })
-.controller('MainController', function () {
-})
-.controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', 'ModalService',
-    function ($scope, $route, $routeParams, $location, ModalService) {
-        this.listeners = [{
-            'fromPort': 80,
-            'toPort': 80,
-            'fromProtocol': 'HTTP',
-            'toProtocol': 'HTTP'
-        }];
-
-        this.submit = function () {
-            if($scope.generalForm.$invalid) {
-                return;
-            }
-            $location.path('/elbs/wizard/instances');
-        };
-
-        $scope.$on('$destroy', function () {
-            ModalService.unregisterModals('securityPolicyEditor', 'certificateEditor');
-        });
-    }])
-.controller('NetworkController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    console.log('network');
-}])
-.controller('AdvancedController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    console.log('advanced');
-}])
 .config(function ($routeProvider, $locationProvider) {
+    var certificatePromise;
+
     $routeProvider
         .when('/elbs/wizard/', {
             templateUrl: '/_template/elbs/wizard/general',
@@ -113,11 +40,13 @@ angular.module('ELBWizard', [
                 policies: function ($q) {
                     return $q.when('foo');
                 },
-                certificates: function () {
-                    return 'bar';
-                }
-            },
-            resolveAs: 'foo'
+                certificates: ['CertificateService', function (CertificateService) {
+                    if(!certificatePromise) {
+                        certificatePromise = CertificateService.getCertificates();
+                    }
+                    return certificatePromise;
+                }]
+            }
         })
         .when('/elbs/wizard/network', {
             templateUrl: '/_template/elbs/wizard/network',
