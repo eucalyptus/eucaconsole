@@ -25,7 +25,7 @@
     <div class="" ng-if="vpcNetwork !== 'None'">
         <div class="section-label-with-helptext-icon">
             <label class="left stack-label">
-                <span>Add VPC subnets</span>
+                <span i18n:translate="">Add VPC subnets</span>
                 <span class="req">*</span>
                 <span class="helptext-icon" data-tooltip="" i18n:attributes="title" title="Enable this load balancer to route traffic to instances in the selected subnets"></span>
             </label>
@@ -38,10 +38,11 @@
                     data-placeholder="Select VPC subnets" i18n:attributes="data-placeholder">
                 </select>
             </div>
-            <span id="hidden_vpc_subnet_empty_option" class="hide">No subnets found</span>
+            <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
         </div>
     </div>
-
+    <instance-selector>
+    </instance-selector>
     <hr/>
 
     <div>
