@@ -1,5 +1,5 @@
 angular.module('ELBWizard', [
-    'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule',
+    'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule'
 ])
 .factory('ELBWizardService', function () {
@@ -15,15 +15,15 @@ angular.module('ELBWizard', [
             complete: false
         },
         {
-            label: 'Instances',
-            href: '/elbs/wizard/instances',
-            vpcOnly: false,
-            complete: false
-        },
-        {
             label: 'Network',
             href: '/elbs/wizard/network',
             vpcOnly: true,
+            complete: false
+        },
+        {
+            label: 'Instances',
+            href: '/elbs/wizard/instances',
+            vpcOnly: false,
             complete: false
         },
         {
@@ -115,9 +115,6 @@ angular.module('ELBWizard', [
     }])
 .controller('NetworkController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     console.log('network');
-}])
-.controller('InstancesController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    console.log('instances');
 }])
 .controller('AdvancedController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     console.log('advanced');

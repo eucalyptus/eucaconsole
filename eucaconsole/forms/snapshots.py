@@ -35,9 +35,6 @@ from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class SnapshotForm(BaseSecureForm):
-    """Snapshot form
-       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
-    """
     name_error_msg = _(u'Not a valid name')
     name = TextEscapedField(label=_(u'Name'))
     volume_error_msg = _(u'Volume is required')

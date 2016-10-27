@@ -1,4 +1,4 @@
-fdescribe('ELB Certificate Editor', function () {
+describe('ELB Certificate Editor', function () {
 
     beforeEach(angular.mock.module('ELBCertificateEditorModule'));
 
