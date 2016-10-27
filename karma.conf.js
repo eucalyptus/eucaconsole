@@ -131,8 +131,8 @@ module.exports = function(config) {
       'static/js/pages/volume.js',
       'static/js/pages/volumes.js',
       'static/js/pages/volume_snapshots.js',
-      'static/js/pages/elb-wizard/wizard.js',
-      'static/js/pages/elb-wizard/instances.js',
+      'static/js/pages/elb-wizard/wizard.js',   // Ensuring this file is loaded first, the * below picks up the rest
+      'static/js/pages/elb-wizard/*.js',
       'static/js/pages/reporting.js',
       'static/js/services/bucket-cors-service.js',
       'static/js/jasmine-spec/SpecHelper.js',

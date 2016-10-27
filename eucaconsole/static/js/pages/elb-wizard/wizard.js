@@ -6,65 +6,6 @@ angular.module('ELBWizard', [
     var svc = {};
     return svc;
 })
-.directive('wizardNav', function () {
-    var steps = [
-        {
-            label: 'General',
-            href: '/elbs/wizard/',
-            vpcOnly: false,
-            complete: false
-        },
-        {
-            label: 'Network',
-            href: '/elbs/wizard/network',
-            vpcOnly: true,
-            complete: false
-        },
-        {
-            label: 'Instances',
-            href: '/elbs/wizard/instances',
-            vpcOnly: false,
-            complete: false
-        },
-        {
-            label: 'Health Check & Advanced',
-            href: '/elbs/wizard/advanced',
-            vpcOnly: false,
-            complete: false
-        }
-    ];
-
-    return {
-        restrict: 'E',
-        scope: {
-            cloudType: '@cloudType',
-            vpcEnabled: '@vpcEnabled'
-        },
-        templateUrl: '/_template/elbs/wizard/navigation',
-        controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
-            this.steps = steps;
-
-            this.validSteps = function () {
-                return this.steps.filter(function (current) {
-                    if($scope.cloudType === 'aws' || $scope.vpcEnabled) {
-                        return true;
-                    } else {
-                        return !current.vpcOnly;
-                    }
-                });
-            };
-
-            this.status = function (step) {
-                var path = $location.path();
-                return {
-                    active: (path == step.href),
-                    complete: step.complete
-                };
-            };
-        }],
-        controllerAs: 'nav'
-    };
-})
 .directive('stepData', function () {
     return {
         restrict: 'A',
@@ -86,40 +27,9 @@ angular.module('ELBWizard', [
         }
     };
 })
-.controller('MainController', function () {
-})
-.controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', 'ModalService', 'certificates', 'policies',
-    function ($scope, $route, $routeParams, $location, ModalService, certificates, policies) {
-        this.stepData = {
-            certsAvailable: certificates,
-            polices: policies
-        };
-
-        this.listeners = [{
-            'fromPort': 80,
-            'toPort': 80,
-            'fromProtocol': 'HTTP',
-            'toProtocol': 'HTTP'
-        }];
-
-        this.submit = function () {
-            if($scope.generalForm.$invalid) {
-                return;
-            }
-            $location.path('/elbs/wizard/instances');
-        };
-
-        $scope.$on('$destroy', function () {
-            ModalService.unregisterModals('securityPolicyEditor', 'certificateEditor');
-        });
-    }])
-.controller('NetworkController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    console.log('network');
-}])
-.controller('AdvancedController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    console.log('advanced');
-}])
 .config(function ($routeProvider, $locationProvider) {
+    var certificatePromise;
+
     $routeProvider
         .when('/elbs/wizard/', {
             templateUrl: '/_template/elbs/wizard/general',
@@ -130,7 +40,10 @@ angular.module('ELBWizard', [
                     return $q.when('foo');
                 },
                 certificates: ['CertificateService', function (CertificateService) {
-                    return CertificateService.getCertificates();
+                    if(!certificatePromise) {
+                        certificatePromise = CertificateService.getCertificates();
+                    }
+                    return certificatePromise;
                 }]
             }
         })
