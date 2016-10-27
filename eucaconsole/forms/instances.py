@@ -125,6 +125,7 @@ class LaunchInstanceForm(BaseSecureForm):
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
+    termination_protection = wtforms.BooleanField(label=_(u'Enable instance termination protection'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
     def __init__(self, request, image=None, securitygroups=None, conn=None, vpc_conn=None, iam_conn=None, **kwargs):
@@ -166,6 +167,9 @@ class LaunchInstanceForm(BaseSecureForm):
         self.vpc_network.help_text = self.vpc_network_helptext
         self.associate_public_ip_address.help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
+        self.termination_protection.help_text = _(
+            'Instance termination protection prevents termination via the console, CLI, or other tools when enabled.'
+        )
 
     def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
