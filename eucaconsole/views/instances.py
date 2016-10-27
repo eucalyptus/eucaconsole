@@ -165,6 +165,13 @@ class BaseInstanceView(BaseView):
         if self.cloud_type == 'aws':
             return _(u'Detailed') if instance.monitoring_state == 'enabled' else _(u'Basic')
 
+    def get_termination_protection_state(self, instance=None):
+        if not instance:
+            return False
+        termination_protection_attr = self.conn.get_instance_attribute(instance.id, 'disableApiTermination')
+        termination_protection_state = termination_protection_attr.get('disableApiTermination', False)
+        return _('Enabled') if termination_protection_state else _('Disabled')
+
     def get_monitoring_tab_title(self, instance=None):
         if self.cloud_type == 'euca':
             return _(u'Monitoring')
@@ -643,6 +650,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             instance_security_groups=self.security_group_list_string,
             instance_keypair=self.instance_keypair,
             instance_monitoring_state=self.get_monitoring_state(self.instance),
+            termination_protection_state=self.get_termination_protection_state(self.instance),
             monitoring_tab_title=self.get_monitoring_tab_title(self.instance),
             security_group_list=self.security_group_list,
             image=self.image,
