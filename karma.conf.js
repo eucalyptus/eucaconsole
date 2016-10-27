@@ -77,6 +77,7 @@ module.exports = function(config) {
       'static/js/widgets/tag-editor/tag-editor.js',
       'static/js/widgets/listener-editor/listener-editor.js',
       'static/js/widgets/listener-editor/security-policy-editor.js',
+      'static/js/widgets/listener-editor/certificate-editor.js',
       'static/js/widgets/expando.js',
       'static/js/pages/landingpage.js',
       'static/js/pages/account.js',
@@ -200,6 +201,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/spec_volumes.js',
       'static/js/jasmine-spec/spec_volume_snapshots.js',
       'static/js/jasmine-spec/listener-editor/spec_listener_editor.js',
+      'static/js/jasmine-spec/listener-editor/spec_certificate_editor.js',
       'static/js/jasmine-spec/elb-wizard/spec_elb_wizard.js',
       'static/js/jasmine-spec/tag-editor/spec_tag_editor.js',
       'static/js/jasmine-spec/spec_reporting.js'
