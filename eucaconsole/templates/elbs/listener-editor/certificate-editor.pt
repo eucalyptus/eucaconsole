@@ -33,8 +33,8 @@
                     </label>
                 </div>
                 <div class="large-10 small-9 columns field">
-                    <select ng-model="foo" required=""
-                        ng-options="item.server_certificate_name for item in certificates track by item.arn">
+                    <select ng-model="ctrl.selectedCertificate" required=""
+                        ng-options="item.server_certificate_name for item in certsAvailable track by item.arn">
                     </select>
                 </div>
             </fieldset>

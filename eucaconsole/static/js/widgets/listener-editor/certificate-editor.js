@@ -6,14 +6,13 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
             stepData: '?^^stepData'
         },
         scope: {
-            certificate: '=ngModel',
-            certsAvailable: '='
+            certificate: '=ngModel'
         },
         templateUrl: '/_template/elbs/listener-editor/certificate-editor',
         link: function (scope, element, attrs, ctrls) {
             var stepData = ctrls.stepData || {};
 
-            scope.certificates = stepData.certificates;
+            scope.certsAvailable = stepData.certsAvailable;
             scope.policies = stepData.policies;
         },
         controller: ['$scope', 'CertificateService', 'ModalService', function ($scope, CertificateService, ModalService) {
@@ -25,7 +24,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
             };
 
             this.chooseSSL = function () {
-                console.log('choose');
+                $scope.certificate = this.selectedCertificate;
+                ModalService.closeModal('certificateEditor');
             };
 
             this.uploadSSL = function () {
@@ -35,7 +35,7 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
                     publicKey: this.publicKey,
                     certificateChain: this.certificateChain
                 }).then(function success () {
-                    ModalService.closeModal('certificateModal');
+                    ModalService.closeModal('certificateEditor');
                 }, function error () {
                 });
             };

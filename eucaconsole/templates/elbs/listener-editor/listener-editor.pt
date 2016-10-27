@@ -78,7 +78,7 @@
             </label>
             <span ng-show="ctrl.certificates">
                 <span i18n:translate="">SSL cert</span>
-                {{ ctrl.certificates }}
+                {{ ctrl.certificates.server_certificate_name }}
             </span>
             <a ng-click="ctrl.openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                 title="Change certficate">

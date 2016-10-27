@@ -91,7 +91,7 @@ angular.module('ELBWizard', [
 .controller('GeneralController', ['$scope', '$route', '$routeParams', '$location', 'ModalService', 'certificates', 'policies',
     function ($scope, $route, $routeParams, $location, ModalService, certificates, policies) {
         this.stepData = {
-            certificates: certificates,
+            certsAvailable: certificates,
             polices: policies
         };
 
