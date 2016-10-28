@@ -833,10 +833,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_set_termination_protection(self):
         if self.termination_protection_form.validate():
             with boto_error_handler(self.request, self.location):
-                termination_protection_is_enabled = self.get_termination_protection_state(self.instance)
-                new_value = not termination_protection_is_enabled
+                protection_is_enabled, label = self.get_termination_protection_state(self.instance)
+                new_value = not protection_is_enabled
                 self.conn.modify_instance_attribute(self.instance.id, 'disableApiTermination', new_value)
-                if termination_protection_is_enabled:
+                if protection_is_enabled:
                     msg = _('Successfully disabled instance termination protection.')
                 else:
                     msg = _('Successfully enabled instance termination protection.')

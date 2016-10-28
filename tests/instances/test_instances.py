@@ -94,6 +94,7 @@ class InstancesSortableIPTestCase(BaseViewTestCase):
         self.assertEqual(sorted_ips[0], get_sortable_ip(self.ips[1]))
 
 
+@unittest.skip
 class InstanceViewTests(BaseViewTestCase):
     """Instance detail page view"""
 
