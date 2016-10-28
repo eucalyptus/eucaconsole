@@ -131,6 +131,10 @@
                         <div class="large-2 small-4 columns"><label i18n:translate="">Termination Protection</label></div>
                         <div class="large-10 small-8 columns value">
                             ${termination_protection_label}
+                            <i class="fi-alert" tal:condition="termination_protection_on and scaling_group"
+                               i18n:attributes="title" data-tooltip=""
+                               title="Enabling termination protection for an instance in a scaling group does not
+                                      prevent a scaling policy from terminating the instance"></i>
                             <a id="set-termination-control" href="#" data-reveal-id="termination-protection-modal">
                                 <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">
                                     Disable termination protection
@@ -389,7 +393,7 @@
                   action="${request.route_path('instance_set_termination_protection', id=instance.id)}">
                 ${structure:termination_protection_form['csrf_token']}
                 <button type="submit" class="button expand">
-                    <span i18n:translate="" tal:omit-tag="">Yes</span>
+                    <span i18n:translate="" tal:omit-tag="">Yes,</span>
                     <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">disable</span>
                     <span i18n:translate="" tal:omit-tag="" tal:condition="not: termination_protection_on">enable</span>
                     <span i18n:translate="">instance termination protection</span>
