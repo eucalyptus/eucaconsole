@@ -55,7 +55,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
+    InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm, InstanceTerminationProtectionForm,
     AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import ChoicesManager, GenerateFileForm
 from ..forms.keypairs import KeyPairForm
@@ -628,6 +628,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.termination_protection_form = InstanceTerminationProtectionForm(
+            self.request, formdata=self.request.params or None)
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, instance=self.instance, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
@@ -660,6 +662,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             instance_monitoring_state=self.get_monitoring_state(self.instance),
             termination_protection_on=termination_protection_on,
             termination_protection_label=termination_protection_label,
+            termination_protection_form=self.termination_protection_form,
             monitoring_tab_title=self.get_monitoring_tab_title(self.instance),
             security_group_list=self.security_group_list,
             image=self.image,
@@ -822,6 +825,21 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 else:
                     self.conn.disassociate_address(elastic_ip.public_ip)
                 msg = _(u'Successfully disassociated the IP from the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
+
+    @view_config(route_name='instance_set_termination_protection', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_set_termination_protection(self):
+        if self.termination_protection_form.validate():
+            with boto_error_handler(self.request, self.location):
+                termination_protection_is_enabled = self.get_termination_protection_state(self.instance)
+                new_value = not termination_protection_is_enabled
+                self.conn.modify_instance_attribute(self.instance.id, 'disableApiTermination', new_value)
+                if termination_protection_is_enabled:
+                    msg = _('Successfully disabled instance termination protection.')
+                else:
+                    msg = _('Successfully enabled instance termination protection.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict

@@ -521,6 +521,11 @@ class InstanceMonitoringForm(BaseSecureForm):
     pass
 
 
+class InstanceTerminationProtectionForm(BaseSecureForm):
+    """CSRF-protected form to enable/disable termination protection for an instance"""
+    pass
+
+
 class InstanceCreateImageForm(BaseSecureForm):
     """CSRF-protected form to create an image from an instance"""
     name_error_msg = _(
