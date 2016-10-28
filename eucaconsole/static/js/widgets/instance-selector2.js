@@ -57,6 +57,9 @@ angular.module('InstancesSelectorModule', ['InstancesServiceModule', 'EucaConsol
                 }
                 $scope.selectedInstances = checkedIems;
             };
+            $scope.$watch('selectedInstances', function(newVal, oldVal) {
+                // TODO: look for external updates to this list
+            });
         }]
     };
 }]);

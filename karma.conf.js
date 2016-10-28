@@ -79,6 +79,7 @@ module.exports = function(config) {
       'static/js/widgets/listener-editor/security-policy-editor.js',
       'static/js/widgets/listener-editor/certificate-editor.js',
       'static/js/widgets/expando.js',
+      'static/js/widgets/instance-selector2.js',
       'static/js/pages/landingpage.js',
       'static/js/pages/account.js',
       'static/js/pages/account_new.js',
@@ -134,7 +135,7 @@ module.exports = function(config) {
       'static/js/pages/elb-wizard/wizard.js',   // Ensuring this file is loaded first, the * below picks up the rest
       'static/js/pages/elb-wizard/*.js',
       'static/js/pages/reporting.js',
-      'static/js/services/bucket-cors-service.js',
+      'static/js/services/**/*.js',
       'static/js/jasmine-spec/SpecHelper.js',
       'static/js/jasmine-spec/spec_bdmapping_editor.js',
       'static/js/jasmine-spec/spec_image_picker.js',
