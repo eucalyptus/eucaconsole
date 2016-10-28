@@ -126,7 +126,10 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Termination Protection</label></div>
-                        <div class="large-10 small-8 columns value">${termination_protection_state}</div>
+                        <div class="large-10 small-8 columns value">
+                            ${termination_protection_label}
+                            <div></div>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Platform</label></div>
@@ -348,6 +351,36 @@
                     </div>
                 </div>
             </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="termination-protection-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="" tal:condition="termination_protection_on">
+                Disable instance termination protection
+            </h3>
+            <h3 i18n:translate="" tal:condition="not: termination_protection_on">
+                Enable instance termination protection
+            </h3>
+            <p i18n:translate="" tal:condition="termination_protection_on">
+                Disabling instance termination protection will allow termination of the instance via the console,
+                command-line tools, and client libraries.
+            </p>
+            <p i18n:translate="" tal:condition="not: termination_protection_on">
+                Enabling instance termination protection will prevent termination of the instance via the console,
+                command-line tools, and client libraries.
+            </p>
+            <p>
+                <span i18n:translate="" tal:omit-tag="">Are you sure you want to</span>
+                <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">disable</span>
+                <span i18n:translate="" tal:omit-tag="" tal:condition="not: termination_protection_on">enable</span>
+                <span i18n:translate="" tal:omit-tag="">termination protection for instance</span>
+                <strong>${instance_name}</strong><span i18n:translate="">?</span>
+            </p>
+            <button class="button expand">
+                <span i18n:translate="" tal:omit-tag="">Yes</span>
+                <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">disable</span>
+                <span i18n:translate="" tal:omit-tag="" tal:condition="not: termination_protection_on">enable</span>
+                <span i18n:translate="">instance termination protection</span>
+            </button>
             <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>

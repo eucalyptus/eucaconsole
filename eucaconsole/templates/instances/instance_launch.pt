@@ -332,6 +332,11 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="columns value" ng-show="terminationProtection">
+                            <i class="fi-check"></i> <span i18n:translate="">Termination protection enabled</span>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="columns value" ng-show="privateAddressing">
                             <i class="fi-check"></i> <span i18n:translate="">Uses private addressing</span>
                         </div>
