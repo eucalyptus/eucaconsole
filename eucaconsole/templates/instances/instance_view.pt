@@ -382,6 +382,10 @@
                 Enabling instance termination protection will prevent termination of the instance via the console,
                 command-line tools, and client libraries.
             </p>
+            <p i18n:translate="" tal:condition="not: termination_protection_on and scaling_group">
+                NOTE: An instance with termination protection enabled in a scaling group will not prevent the instance
+                from being terminated by a scaling policy.
+            </p>
             <p>
                 <span i18n:translate="" tal:omit-tag="">Are you sure you want to</span>
                 <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">disable</span>
