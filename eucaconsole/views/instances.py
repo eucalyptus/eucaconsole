@@ -1394,6 +1394,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
+            termination_protection = self.request.params.get('termination_protection') == 'y'
             private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
             if vpc_network is not None and self.cloud_type == 'euca':
@@ -1421,6 +1422,10 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     block_device_map=block_device_map,
                     instance_profile_arn=instance_profile_arn,
                 )
+                if termination_protection:
+                    params.update(dict(
+                        disable_api_termination=True
+                    ))
                 if vpc_network is not None:
                     network_interface = NetworkInterfaceSpecification(
                         subnet_id=vpc_subnet,
