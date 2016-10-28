@@ -2,7 +2,7 @@
     <div class="section-label-with-helptext-icon">
         <label class="stack-label">
             <span i18n:translate="">Add instances</span>
-            <span class="helptext-icon" data-tooltip="" data-selector="tooltip-iusqcl7p6" aria-describedby="tooltip-iusqcl7p6" title=""></span>
+            <span class="helptext-icon" data-tooltip="" i18n:attributes="title" title="Balance traffic between the selected instances"></span>
         </label>
     </div>
     <!--magic-search
@@ -15,7 +15,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th><input type="checkbox" id="instance-all-checkbox" value="_all" /></th>
+                    <th><input type="checkbox" id="instance-all-checkbox" ng-model="state.allSelected" ng-click="setAllState()"/></th>
                     <th i18n:translate="">Name (ID)</th>
                     <th i18n:translate="">Tags</th>
                     <th i18n:translate="">Availability Zone</th>
@@ -27,7 +27,7 @@
             <tbody>
                 <tr ng-repeat="instance in instanceList track by instance.id">
                     <td>
-                        <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}"
+                        <input type="checkbox" class="item-checkbox" ng-model="instance.selected" ng-change="handleItemSelection()"
                                ng-disabled="isDetailPage &amp;&amp; elbScalingGroupNames.indexOf(instance.scaling_group) !== -1" />
                     </td>
                     <td>
