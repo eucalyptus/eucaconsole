@@ -41,8 +41,7 @@
             <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
         </div>
     </div>
-    <instance-selector>
-    </instance-selector>
+    <instance-selector selected-instances="selectedInstances"></instance-selector>
     <hr/>
 
     <div>

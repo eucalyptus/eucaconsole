@@ -12,4 +12,5 @@ angular.module('ELBWizard')
     $scope.availabilityZones = [];
     $scope.availabilityZoneChoices = [{id:'one', label:'one'}];
     $scope.vpcSubnetChoices = [{id:'default', label:'default'}];
+    $scope.selectedInstances = [];
 }]);

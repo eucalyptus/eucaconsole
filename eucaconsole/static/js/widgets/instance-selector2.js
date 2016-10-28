@@ -11,6 +11,7 @@ angular.module('InstancesSelectorModule', ['InstancesServiceModule', 'EucaConsol
     return {
         restrict: 'E',
         scope: {
+            selectedInstances: '='
         },
         templateUrl: '/_template/elbs/instance-selector',
         controller: ['$scope', '$timeout', 'InstancesService', 'eucaHandleError', function ($scope, $timeout, InstancesService, eucaHandleError) {
@@ -31,6 +32,11 @@ angular.module('InstancesSelectorModule', ['InstancesServiceModule', 'EucaConsol
                     angular.forEach($scope.instanceList, function(item) {
                         item.selected = $scope.state.allSelected;
                     });
+                    if ($scope.state.allSelected) {
+                        $scope.selectedInstances = $scope.instanceList;
+                    } else {
+                        $scope.selectedInstances = [];
+                    }
                 });
             };
             $scope.handleItemSelection = function() {
@@ -49,7 +55,7 @@ angular.module('InstancesSelectorModule', ['InstancesServiceModule', 'EucaConsol
                 if (!$scope.state.allSelected && checkedIems.length === $scope.instanceList.length) {
                     $scope.state.allSelected = true;
                 }
-                $scope.selectedItems = checkedIems;
+                $scope.selectedInstances = checkedIems;
             };
         }]
     };
