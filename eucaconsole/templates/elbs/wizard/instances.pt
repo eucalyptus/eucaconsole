@@ -10,8 +10,8 @@
         <div id="controls_zone" class="row inline controls-wrapper">
             <div class="large-12 small-12 columns field">
                 <select id="zone" multiple="" chosen="true" search-contains="true" width="100"
-                    ng-model="availabilityZones" focus-on-load="true" required=""
-                    ng-options="zone as zone.label for zone in availabilityZoneChoices track by zone.id"
+                    ng-model="instances.availabilityZones" focus-on-load="true" required=""
+                    ng-options="zone as zone.label for zone in instances.availabilityZoneChoices track by zone.id"
                     data-placeholder="Select availability zones" i18n:attributes="data-placeholder">
                 </select>
             </div>
@@ -41,7 +41,7 @@
             <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
         </div>
     </div>
-    <instance-selector instance-list="instances" instances-loading="instancesLoading"></instance-selector>
+    <instance-selector instance-list="instances.instances" instances-loading="instances.instancesLoading"></instance-selector>
 
     <div>
         <label>

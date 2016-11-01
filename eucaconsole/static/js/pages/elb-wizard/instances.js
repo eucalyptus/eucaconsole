@@ -7,26 +7,22 @@
  */
 
 angular.module('ELBWizard')
-.controller('InstancesController', ['$scope', '$routeParams', 'InstancesService', 'eucaHandleError', function ($scope, $routeParams, InstancesService, eucaHandleError) {
-    $scope.vpcNetwork = 'None';
-    $scope.availabilityZones = [];
-    $scope.availabilityZoneChoices = [{id:'one', label:'one'}];
-    $scope.vpcSubnetChoices = [{id:'default', label:'default'}];
-    $scope.instances = [];
-    $scope.$watch('instances', function(newval, oldval) {
-        console.log('instances = '+newval);
-        if (newval == oldval) {
-            $scope.instances = [];
-        }
-    });
-    InstancesService.getInstances($('#csrf_token').val()).then(
-        function success(result) {
-            $scope.instances.forEach(function() { $scope.instances.pop(); });
-            result.forEach(function(val) { $scope.instances.push(val); });
-            $scope.instancesLoading = false;
-        },
-        function error(errData) {
-            eucaHandleError(errData.data.message, errData.status);
-            $scope.instancesLoading = false;
-        });
-}]);
+.controller('InstancesController', ['$scope', '$routeParams', 'InstancesService', 'eucaHandleError',
+    function ($scope, $routeParams, InstancesService, eucaHandleError) {
+        var vm = this;
+        vm.vpcNetwork = 'None';
+        vm.availabilityZones = [];
+        vm.availabilityZoneChoices = [{id:'one', label:'one'}];
+        vm.vpcSubnetChoices = [{id:'default', label:'default'}];
+        vm.instances = [];
+        InstancesService.getInstances($('#csrf_token').val()).then(
+            function success(result) {
+                result.forEach(function(val) { vm.instances.push(val); });
+                vm.instancesLoading = false;
+            },
+            function error(errData) {
+                eucaHandleError(errData.data.message, errData.status);
+                vm.instancesLoading = false;
+            });
+    }
+]);
