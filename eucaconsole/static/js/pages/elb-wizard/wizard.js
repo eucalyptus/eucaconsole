@@ -3,7 +3,13 @@ angular.module('ELBWizard', [
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule'
 ])
 .factory('ELBWizardService', function () {
-    var svc = {};
+    var svc = {
+        certsAvailable: [],
+        policies: [],
+
+        create: function () {
+        }
+    };
     return svc;
 })
 .directive('stepData', function () {

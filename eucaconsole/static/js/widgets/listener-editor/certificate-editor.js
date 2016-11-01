@@ -91,8 +91,10 @@ angular.module('ELBCertificateEditorModule', ['ModalModule'])
             return $http({
                 method: 'GET',
                 url: '/certificate'
-            }).then(function (result) {
+            }).then(function success (result) {
                 return result.data && result.data.message;
+            }, function error () {
+                return [];
             });
         },
 

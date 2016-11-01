@@ -1,11 +1,13 @@
 angular.module('ELBWizard')
 .controller('GeneralController', ['$scope', '$route', '$routeParams', 
-        '$location', 'ModalService', 'certificates', 'policies',
-    function ($scope, $route, $routeParams, $location, ModalService, certificates, policies) {
+        '$location', 'ModalService', 'ELBWizardService', 'certificates', 'policies',
+    function ($scope, $route, $routeParams, $location, ModalService, ELBWizardService, certificates, policies) {
         this.stepData = {
             certsAvailable: certificates,
             polices: policies
         };
+        ELBWizardService.certsAvailable = certificates;
+        ELBWizardService.policies = policies;
 
         this.listeners = [{
             'fromPort': 80,

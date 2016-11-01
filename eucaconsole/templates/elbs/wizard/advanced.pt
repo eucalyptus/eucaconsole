@@ -1,0 +1,47 @@
+<form>
+    <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
+    <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
+
+    <h6 class="section-label">Ping settings</h6>
+
+    <div class="row inline stacked controls-wrapper">
+        <div class="columns">
+            <label class="left stack-label">
+                Protocol&nbsp;<span class="req">*</span>
+            </label>
+        </div>
+        <div class="large-12 small-12 columns field">
+            <select class="ip-protocol" name="protocol" ng-model="advanced.protocol" required="required">
+                <option value="HTTP">HTTP</option>
+                <option value="HTTPS">HTTPS</option>
+                <option value="TCP">TCP</option>
+                <option value="SSL">SSL</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row inline stacked controls-wrapper">
+        <div class="columns">
+            <label class="left stack-label">
+                Port&nbsp;<span class="req">*</span>
+            </label>
+        </div>
+        <div class="large-12 small-12 columns field">
+            <input max="65535" maxlength="5" min="1" name="port"
+                ng-model="port" pattern="^[1-9]\d*$" required="required" type="number">
+        </div>
+    </div>
+
+    <div ng-show="advanced.protocol === 'HTTP' || advanced.protocol === 'HTTPS'">
+        <div class="row inline stacked controls-wrapper">
+        <div class="columns">
+            <label class="left stack-label">
+                Path&nbsp;<span class="req">*</span>
+            </label>
+        </div>
+        <div class="large-12 small-12 columns field">
+            <input class="text-input" name="path" ng-model="path" required="required" type="text">
+            <div class="error">Ping path is required and must start with a /</div>
+        </div>
+    </div>
+</form>

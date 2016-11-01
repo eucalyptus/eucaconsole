@@ -51,6 +51,7 @@ angular.module('ELBWizard')
                 var path = $location.path();
                 return {
                     active: (path == step.href),
+                    disabled: (path != step.href) && !step.complete,
                     complete: step.complete
                 };
             };
