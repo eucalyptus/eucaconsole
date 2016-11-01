@@ -6,26 +6,17 @@
  *
  */
 
-angular.module('InstancesSelectorModule', ['InstancesServiceModule', 'EucaConsoleUtils'])
+angular.module('InstancesSelectorModule', ['MagicSearch'])
 .directive('instanceSelector', [function() {
     return {
         restrict: 'E',
         scope: {
-            selectedInstances: '='
+            instanceList: '=',
+            instancesLoading: '@'
         },
         templateUrl: '/_template/elbs/instance-selector',
-        controller: ['$scope', '$timeout', 'InstancesService', 'eucaHandleError', function ($scope, $timeout, InstancesService, eucaHandleError) {
-            InstancesService.getInstances($('#csrf_token').val()).then(
-                function success(result) {
-                    $scope.instanceList = result;
-                    $scope.instancesLoading = false;
-                },
-                function error(errData) {
-                    eucaHandleError(errData.data.message, errData.status);
-                    $scope.instancesLoading = false;
-                });
-            $scope.instanceList = [];
-            $scope.instancesLoading = true;
+        controller: ['$scope', '$timeout', function ($scope, $timeout) {
+            //$scope.instancesLoading = true;
             $scope.state = {'allSelected': false};
             $scope.setAllState = function() {
                 $timeout(function() {
@@ -57,9 +48,53 @@ angular.module('InstancesSelectorModule', ['InstancesServiceModule', 'EucaConsol
                 }
                 $scope.selectedInstances = checkedIems;
             };
-            $scope.$watch('selectedInstances', function(newVal, oldVal) {
-                // TODO: look for external updates to this list
+            $scope.$on('searchUpdated', function ($event, query) {
+                $scope.searchQueryURL = '';
+                if (query.length > 0) {
+                   $scope.searchQueryURL = query;
+                }
             });
+            $scope.$on('textSearch', function ($event, text, filterKeys) {
+                $scope.searchFilter = text;
+                $timeout(function () {
+                    $scope.searchFilterItems(filterKeys);
+                });
+            });
+            /*  Filter items client side based on search criteria.
+             *  @param {array} filterProps Array of properties to filter items on
+             */
+            $scope.searchFilterItems = function(filterProps) {
+                var filterText = ($scope.searchFilter || '').toLowerCase();
+                if (filterProps !== '' && filterProps !== undefined){
+                    // Store the filterProps input for later use as well
+                    $scope.filterKeys = filterProps;
+                }
+                if (filterText === '') {
+                    // If the search filter is empty, skip the filtering
+                    $scope.filteredInstances = $scope.instanceList;
+                    return;
+                }
+                // Leverage Array.prototype.filter (ECMAScript 5)
+                var filteredItems = $scope.instanceList.filter(function(item) {
+                    for (var i=0; i < $scope.filterKeys.length; i++) {  // Can't use $.each or Array.prototype.forEach here
+                        var propName = $scope.filterKeys[i];
+                        var itemProp = item.hasOwnProperty(propName) && item[propName];
+                        if (itemProp && typeof itemProp === "string" && 
+                            itemProp.toLowerCase().indexOf(filterText) !== -1) {
+                                return item;
+                        } else if (itemProp && typeof itemProp === "object") {
+                            // In case of mutiple values, create a flat string and perform search
+                            var flatString = $scope.getItemNamesInFlatString(itemProp);
+                            if (flatString.toLowerCase().indexOf(filterText) !== -1) {
+                                return item;
+                            }
+                        }
+                    }
+                });
+                // Update the items[] with the filtered items
+                $scope.filteredInstances = filteredItems;
+            };
+            $scope.filteredInstances = $scope.instanceList;
         }]
     };
 }]);

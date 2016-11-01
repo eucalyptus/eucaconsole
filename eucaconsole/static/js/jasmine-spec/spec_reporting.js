@@ -1,7 +1,7 @@
 /**
  * Copyright 2016 Hewlett Packard Enterprise Development LP
  *
- * @fileOverview Jasmine Unittest for Tag Editor JS 
+ * @fileOverview Jasmine Unittest for reporting page
  * @requires Jasmine, AngularJS mock
  *
  */

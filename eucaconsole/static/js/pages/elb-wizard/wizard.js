@@ -1,7 +1,7 @@
 angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
-    'InstancesSelectorModule', 'EucaConsoleUtils'
+    'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule'
 ])
 .factory('ELBWizardService', function () {
     var svc = {};

@@ -205,6 +205,7 @@ module.exports = function(config) {
       'static/js/jasmine-spec/listener-editor/spec_certificate_editor.js',
       'static/js/jasmine-spec/elb-wizard/spec_elb_wizard.js',
       'static/js/jasmine-spec/tag-editor/spec_tag_editor.js',
+      'static/js/jasmine-spec/instance-selector/spec_instance_selector.js',
       'static/js/jasmine-spec/spec_reporting.js'
     ],
 
