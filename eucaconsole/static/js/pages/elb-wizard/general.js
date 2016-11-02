@@ -20,7 +20,7 @@ angular.module('ELBWizard')
             if($scope.generalForm.$invalid) {
                 return;
             }
-            $location.path('/elbs/wizard/instances');
+            ELBWizardService.next({});
         };
 
         $scope.$on('$destroy', function () {

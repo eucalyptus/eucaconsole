@@ -7,9 +7,16 @@
  */
 
 angular.module('ELBWizard')
-.controller('InstancesController', ['$scope', '$routeParams', function ($scope, $routeParams) {
+.controller('InstancesController', ['$scope', '$routeParams', 'ELBWizardService', function ($scope, $routeParams, ELBWizardService) {
     $scope.vpcNetwork = 'None';
     $scope.availabilityZones = [];
     $scope.availabilityZoneChoices = [{id:'one', label:'one'}];
     $scope.vpcSubnetChoices = [{id:'default', label:'default'}];
+
+    this.submit = function () {
+        if($scope.instanceForm.$invalid) {
+            return;
+        }
+        ELBWizardService.next({});
+    };
 }]);
