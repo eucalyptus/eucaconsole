@@ -47,6 +47,7 @@ angular.module('ELBWizard', [
     var svc = {
         certsAvailable: [],
         policies: [],
+        values: {},
 
         validSteps: function (cloudType, vpcEnabled) {
             var validSteps = steps.filter(function (current) {
@@ -60,7 +61,9 @@ angular.module('ELBWizard', [
             return this.nav;
         },
 
-        next: function () {
+        next: function (params) {
+            angular.merge(this.values, params);
+
             this.nav.current.complete = true;
             var next = this.nav.next();
             $location.path(next.href);

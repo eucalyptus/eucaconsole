@@ -20,7 +20,12 @@ angular.module('ELBWizard')
             if($scope.generalForm.$invalid) {
                 return;
             }
-            ELBWizardService.next({});
+
+            ELBWizardService.next({
+                name: this.elbName,
+                listeners: this.listeners,
+                tags: this.tags
+            });
         };
 
         $scope.$on('$destroy', function () {

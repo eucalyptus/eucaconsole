@@ -50,15 +50,44 @@ describe('ELB Wizard Module', function () {
             });
 
             it('should return the appropriate number of steps for aws clouds', function () {
-                var nav = ELBWizardService.validSteps('aws', false);
+                var nav = ELBWizardService.validSteps('aws');
                 expect(nav.steps.length).toEqual(4);
             });
         });
 
         describe('#next', function () {
+
+            var nav, current;
+
+            beforeEach(function () {
+                nav = ELBWizardService.validSteps('euca', true);
+                spyOn(nav, 'next').and.callThrough();
+
+                current = nav.current;  // Save a reference to the original "current" for testing later
+                ELBWizardService.next({
+                    name: 'foo'
+                });
+            });
+
+            it('should update wizard state with current step values', function () {
+                expect(ELBWizardService.values).toEqual(jasmine.objectContaining({
+                    name: 'foo'
+                }));
+            });
+
+            it('should set current step to complete', function () {
+                expect(current.complete).toBe(true);
+            });
+
+            it('should advance to the next step', function () {
+                expect(nav.next).toHaveBeenCalled();
+            });
         });
 
         describe('#submit', function () {
+
+            it('should call a backend service to create the ELB', function () {
+            });
         });
     });
 
@@ -69,87 +98,53 @@ describe('ELB Wizard Module', function () {
             $templateCache.put('/_template/elbs/wizard/navigation', template);
         }));
 
-        describe('with cloud-type == "euca"', function () {
+        var element, scope, controller;
+        beforeEach(function () {
+            element = $compile(
+                '<wizard-nav cloud-type="euca"></wizard-nav>'
+            )($rootScope);
+            $rootScope.$digest();
 
-            var element, scope, controller;
-            beforeEach(function () {
-                element = $compile(
-                    '<wizard-nav cloud-type="euca"></wizard-nav>'
-                )($rootScope);
-                $rootScope.$digest();
+            scope = element.isolateScope();
 
-                scope = element.isolateScope();
+            $location.path('/elbs/wizard/');
+            $rootScope.$apply();
 
-                $location.path('/elbs/wizard/');
-                $rootScope.$apply();
-
-                controller = element.controller('wizardNav');
-            });
-
-            it('should have the appropriate number of tabs', function () {
-                var tabItems = element.find('dd');
-                expect(tabItems.length).toEqual(3);
-            });
-
-            it('should default to the first tab', function () {
-                var tab = angular.element(element.find('dd')[0]);
-                expect(tab.hasClass('active')).toBe(true);
-            });
-
-            it('should activate the appropriate tab to active based upon path', function () {
-                $location.path('/elbs/wizard/instances');
-                $rootScope.$apply();
-
-                var current = controller.status({
-                    href: '/elbs/wizard/instances'
-                });
-
-                expect(current).toEqual(jasmine.objectContaining({
-                    active: true
-                }));
-            });
-
-            it('should navigate to the appropriate url when a tab is clicked');
-
-            it('should not allow navigation to disabled tabs');
-
-            it('should allow navigation to enabled tabs');
+            controller = element.controller('wizardNav');
         });
 
-        describe('with cloud-type == "euca" and vpc enabled', function () {
-
-            var element, scope;
-            beforeEach(function () {
-                element = $compile(
-                    '<wizard-nav cloud-type="euca" vpc-enabled="1"></wizard-nav>'
-                )($rootScope);
-                $rootScope.$digest();
-
-                scope = element.isolateScope();
-            });
-
-            it('should have the appropriate number of tabs', function () {
-                var tabItems = element.find('dd');
-                expect(tabItems.length).toEqual(4);
-            });
+        it('should default to the first tab', function () {
+            var tab = angular.element(element.find('dd')[0]);
+            expect(tab.hasClass('active')).toBe(true);
         });
 
-        describe('with cloud-type == "aws"', function () {
+        it('should activate the appropriate tab to active based upon path', function () {
+            $location.path('/elbs/wizard/instances');
+            $rootScope.$apply();
 
-            var element, scope;
-            beforeEach(function () {
-                element = $compile(
-                    '<wizard-nav cloud-type="aws" vpc-enabled=""></wizard-nav>'
-                )($rootScope);
-                $rootScope.$digest();
-
-                scope = element.isolateScope();
+            var current = controller.status({
+                href: '/elbs/wizard/instances'
             });
 
-            it('should have the appropriate number of tabs', function () {
-                var tabItems = element.find('dd');
-                expect(tabItems.length).toEqual(4);
+            expect(current).toEqual(jasmine.objectContaining({
+                active: true
+            }));
+        });
+
+        it('should not allow navigation to disabled tabs', function () {
+            var href = controller.visit({
+                complete: false,
+                href: '/foo/bar/baz'
             });
+            expect(href).toEqual('');
+        });
+
+        it('should allow navigation to enabled tabs', function () {
+            var href = controller.visit({
+                complete: true,
+                href: '/foo/bar/baz'
+            });
+            expect(href).toEqual('/foo/bar/baz');
         });
     });
 
@@ -309,6 +304,16 @@ describe('ELB Wizard Module', function () {
             });
         }));
 
-        it('should certainly do something');
+        it('should default the protocol value', function () {
+            expect(controller.protocol).toEqual('HTTP');
+        });
+
+        it('should default the port value', function () {
+            expect(controller.port).toEqual(80);
+        });
+
+        it('should default the path value', function () {
+            expect(controller.path).toEqual('/');
+        });
     });
 });
