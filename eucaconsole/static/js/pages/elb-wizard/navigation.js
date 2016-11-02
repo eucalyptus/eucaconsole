@@ -14,6 +14,13 @@ angular.module('ELBWizard')
                 return navigation.steps;
             };
 
+            this.visit = function (step) {
+                if(step.complete) {
+                    return step.href;
+                }
+                return '';
+            };
+
             this.status = function (step) {
                 var path = $location.path();
                 return {

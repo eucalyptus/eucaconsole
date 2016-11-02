@@ -18,6 +18,50 @@ describe('ELB Wizard Module', function () {
         }
     ));
 
+    describe('ELBWizardService', function () {
+
+        var ELBWizardService;
+
+        beforeEach(angular.mock.inject(function (_ELBWizardService_) {
+            ELBWizardService = _ELBWizardService_;
+        }));
+
+        describe('the service', function () {
+
+            it('should default certsAvailable', function () {
+                expect(ELBWizardService.certsAvailable).toEqual([]);
+            });
+
+            it('should default policies', function () {
+                expect(ELBWizardService.policies).toEqual([]);
+            });
+        });
+
+        describe('#validSteps', function () {
+
+            it('should return the appropriate number of steps for euca, non-vpc clouds', function () {
+                var nav = ELBWizardService.validSteps('euca', false);
+                expect(nav.steps.length).toEqual(3);
+            });
+
+            it('should return the appropriate number of steps for euca, vpc clouds', function () {
+                var nav = ELBWizardService.validSteps('euca', true);
+                expect(nav.steps.length).toEqual(4);
+            });
+
+            it('should return the appropriate number of steps for aws clouds', function () {
+                var nav = ELBWizardService.validSteps('aws', false);
+                expect(nav.steps.length).toEqual(4);
+            });
+        });
+
+        describe('#next', function () {
+        });
+
+        describe('#submit', function () {
+        });
+    });
+
     describe('wizardNav directive', function () {
 
         beforeEach(inject(function ($templateCache) {
@@ -101,6 +145,11 @@ describe('ELB Wizard Module', function () {
 
                 scope = element.isolateScope();
             });
+
+            it('should have the appropriate number of tabs', function () {
+                var tabItems = element.find('dd');
+                expect(tabItems.length).toEqual(4);
+            });
         });
     });
 
@@ -128,7 +177,7 @@ describe('ELB Wizard Module', function () {
 
     describe('General tab controller', function () {
 
-        var element, scope;
+        var element, scope, ModalService, ELBWizardService;
 
         beforeEach(inject(function ($templateCache) {
             var template = window.__html__['templates/elbs/wizard/general.pt'];
@@ -142,7 +191,7 @@ describe('ELB Wizard Module', function () {
         }));
 
         var $controller, $routeParams, $location, controller;
-        beforeEach(inject(function (_$controller_, _$routeParams_, _$location_) {
+        beforeEach(inject(function (_$controller_, _$routeParams_, _$location_, _ModalService_, _ELBWizardService_) {
             scope = $rootScope.$new();
             scope.stepData = {
                 certificates: []
@@ -152,10 +201,17 @@ describe('ELB Wizard Module', function () {
             $routeParams = _$routeParams_;
             $location = _$location_;
 
+            ModalService = _ModalService_;
+            ELBWizardService = _ELBWizardService_;
+
+            spyOn(ELBWizardService, 'next');
+
             controller = $controller('GeneralController', {
                 $scope: scope,
                 $routeParams: $routeParams,
                 $location: $location,
+                ModalService: ModalService,
+                ELBWizardService: ELBWizardService,
                 certificates: [],
                 policies: []
             });
@@ -169,23 +225,20 @@ describe('ELB Wizard Module', function () {
 
             beforeEach(function () {
                 scope.generalForm = {};
-
-                $location.path('/elbs/wizard/');
-                $rootScope.$apply();
             });
 
             it('should move to next step on submit when valid', function () {
                 scope.generalForm.$invalid = false;
 
                 controller.submit();
-                expect($location.path()).toEqual('/elbs/wizard/instances');
+                expect(ELBWizardService.next).toHaveBeenCalled();
             });
 
             it('should not move to next step on submit when invalid', function () {
                 scope.generalForm.$invalid = true;
 
                 controller.submit();
-                expect($location.path()).toEqual('/elbs/wizard/');
+                expect(ELBWizardService.next).not.toHaveBeenCalled();
             });
         });
     });
