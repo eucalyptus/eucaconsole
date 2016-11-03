@@ -415,6 +415,7 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         return self.choices_manager.availability_zones(self.region, add_blank=False)
 
 
+# TODO: see if this matches the instances landing page and re-use
 class ELBInstancesFiltersForm(BaseSecureForm):
     """Form class for filters on create ELB wizard"""
     state = wtforms.SelectMultipleField(label=_(u'Status'))

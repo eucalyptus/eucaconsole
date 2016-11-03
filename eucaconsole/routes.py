@@ -174,6 +174,9 @@ urls = [
     Route(name='certificate_create', pattern='/certificate/create'),
     Route(name='elb_certificate', pattern='/certificate'),
 
+    # Facets for instances
+    Route(name='elb_instances_filters', pattern='/elbs/instances/filters'),
+
     # Volumes #####
     # Landing page
     Route(name='volumes', pattern='/volumes'),

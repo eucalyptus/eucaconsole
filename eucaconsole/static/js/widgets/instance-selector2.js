@@ -7,6 +7,22 @@
  */
 
 angular.module('InstancesSelectorModule', ['MagicSearch'])
+.factory('InstancesFiltersService', ['$http', function ($http) {
+    $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    return {
+        getInstancesFilters: function () {
+            return $http({
+                method: 'GET',
+                url: '/elbs/instances/filters'
+            }).then(function success (response) {
+                var data = response.data || {
+                    results: []
+                };
+                return data.results;
+            });
+        }
+    };
+}])
 .directive('instanceSelector', [function() {
     return {
         restrict: 'E',
@@ -15,8 +31,9 @@ angular.module('InstancesSelectorModule', ['MagicSearch'])
             instancesLoading: '@'
         },
         templateUrl: '/_template/elbs/instance-selector',
-        controller: ['$scope', '$timeout', function ($scope, $timeout) {
-            //$scope.instancesLoading = true;
+        controller: ['$scope', '$timeout', 'InstancesFiltersService', function ($scope, $timeout, InstancesFiltersService) {
+            //$scope.facets = [{"name": "status", "label": "Status", "options": [{"key":"running", "label":"Running"}, {"key":"stopped", "label":"Stopped"}]}];
+            $scope.facets = InstancesFiltersService.getInstancesFilters();
             $scope.state = {'allSelected': false};
             $scope.setAllState = function() {
                 $timeout(function() {
