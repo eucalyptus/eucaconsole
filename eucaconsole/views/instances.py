@@ -166,18 +166,8 @@ class BaseInstanceView(BaseView):
             return _(u'Detailed') if instance.monitoring_state == 'enabled' else _(u'Basic')
 
     def get_termination_protection_state(self, instance=None):
-        """
-        Get termination protection state as a tuple of state (bool) and label
-        :param instance: Boto EC2 instance object
-        :return: tuple of is_enabled (True or False) and label ('Enabled' or 'Disabled')
-        :rtype: tuple
-        """
-        if not instance:
-            return False
         termination_protection_attr = self.conn.get_instance_attribute(instance.id, 'disableApiTermination')
-        is_enabled = termination_protection_attr.get('disableApiTermination', False)
-        state_label = _('Enabled') if is_enabled else _('Disabled')
-        return is_enabled, state_label
+        return termination_protection_attr.get('disableApiTermination', False)
 
     def get_monitoring_tab_title(self, instance=None):
         if self.cloud_type == 'euca':
@@ -652,7 +642,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.running_create = False
         if self.instance:
             self.running_create = True if self.instance.tags.get('ec_bundling') else False
-        termination_protection_on, termination_protection_label = self.get_termination_protection_state(self.instance)
+        protection_is_enabled = self.get_termination_protection_state(self.instance)
+        termination_protection_label = _('Enabled') if protection_is_enabled else _('Disabled')
 
         self.render_dict = dict(
             instance=self.instance,
@@ -660,7 +651,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             instance_security_groups=self.security_group_list_string,
             instance_keypair=self.instance_keypair,
             instance_monitoring_state=self.get_monitoring_state(self.instance),
-            termination_protection_on=termination_protection_on,
+            termination_protection_on=protection_is_enabled,
             termination_protection_label=termination_protection_label,
             termination_protection_form=self.termination_protection_form,
             monitoring_tab_title=self.get_monitoring_tab_title(self.instance),
@@ -833,7 +824,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_set_termination_protection(self):
         if self.termination_protection_form.validate():
             with boto_error_handler(self.request, self.location):
-                protection_is_enabled, label = self.get_termination_protection_state(self.instance)
+                protection_is_enabled = self.get_termination_protection_state(self.instance)
                 new_value = not protection_is_enabled
                 self.conn.modify_instance_attribute(self.instance.id, 'disableApiTermination', new_value)
                 if protection_is_enabled:
