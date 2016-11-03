@@ -1144,6 +1144,7 @@ class ELBWizardView(BaseView):
     def __init__(self, request):
         super(ELBWizardView, self).__init__(request)
         self.base_href = '/elb/wizard'
+        self.connection = self.get_connection(conn_type='iam')
 
     @view_config(route_name='elb_wizard', renderer=TEMPLATE)
     def elb_wizard(self):
@@ -1156,21 +1157,22 @@ class ELBWizardView(BaseView):
 
     @view_config(route_name='elb_certificate', request_method="GET", renderer='json')
     def list_certs(self):
-        conn = self.get_connection(conn_type='iam')
 
         try:
-            response = conn.get_all_server_certs().get('list_server_certificates_response', {})
+            response = self.connection.get_all_server_certs().get(
+                'list_server_certificates_response', {})
             result = response.get('list_server_certificates_result', {})
 
             certificates = result.get('server_certificate_metadata_list', [])
             return JSONResponse(status=200, message=certificates)
         except BotoServerError as err:
             return JSONResponse(status=200, message=err.message)
+        except AttributeError as err:
+            return JSONResponse(status=403, message='Forbidden')
 
     @view_config(route_name='elb_certificate', request_method="POST", renderer='json')
     def publish_cert(self):
         cert = json.loads(self.request.body)
-        conn = self.get_connection(conn_type='iam')
 
         name = cert.get('name', None)
         public_key = cert.get('publicKey', None)
@@ -1178,7 +1180,7 @@ class ELBWizardView(BaseView):
         cert_chain = cert.get('certificateChain', None)
 
         try:
-            certificate_result = conn.upload_server_cert(
+            certificate_result = self.connection.upload_server_cert(
                 name, public_key, private_key, cert_chain=cert_chain)
 
             prefix = _(u'Successfully uploaded server certificate')

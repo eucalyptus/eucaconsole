@@ -2,10 +2,78 @@ angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule'
 ])
-.factory('ELBWizardService', function () {
-    var svc = {};
+.factory('ELBWizardService', ['$location', function ($location) {
+    var steps = [
+        {
+            label: 'General',
+            href: '/elbs/wizard/',
+            vpcOnly: false,
+            complete: false
+        },
+        {
+            label: 'Network',
+            href: '/elbs/wizard/network',
+            vpcOnly: true,
+            complete: false
+        },
+        {
+            label: 'Instances',
+            href: '/elbs/wizard/instances',
+            vpcOnly: false,
+            complete: false
+        },
+        {
+            label: 'Health Check & Advanced',
+            href: '/elbs/wizard/advanced',
+            vpcOnly: false,
+            complete: false
+        }
+    ];
+
+    function Navigation (steps) {
+        steps = steps || [];
+        this.steps = steps.map(function (current, index, ary) {
+            current._next = ary[index + 1];
+            return current;
+        });
+        this.current = this.steps[0];
+    }
+
+    Navigation.prototype.next = function () {
+        this.current = this.current._next;
+        return this.current;
+    };
+
+    var svc = {
+        certsAvailable: [],
+        policies: [],
+        values: {},
+
+        validSteps: function (cloudType, vpcEnabled) {
+            var validSteps = steps.filter(function (current) {
+                if(cloudType === 'aws' || vpcEnabled) {
+                    return true;
+                } else {
+                    return !current.vpcOnly;
+                }
+            });
+            this.nav = new Navigation(validSteps);
+            return this.nav;
+        },
+
+        next: function (params) {
+            angular.merge(this.values, params);
+
+            this.nav.current.complete = true;
+            var next = this.nav.next();
+            $location.path(next.href);
+        },
+
+        submit: function () {
+        }
+    };
     return svc;
-})
+}])
 .directive('stepData', function () {
     return {
         restrict: 'A',
