@@ -385,7 +385,7 @@
             <div tal:condition="scaling_group" tal:omit-tag="">
                 <p i18n:translate="" tal:condition="not: termination_protection_on">
                     NOTE: An instance with termination protection enabled in a scaling group will not prevent the instance
-                    from being terminated by a scaling policy.
+                    from being terminated by a scaling policy or a health check.
                 </p>
             </div>
             <p>
