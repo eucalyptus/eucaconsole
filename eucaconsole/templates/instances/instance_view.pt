@@ -128,24 +128,6 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-3 small-4 columns"><label i18n:translate="">Termination Protection</label></div>
-                        <div class="large-9 small-8 columns value">
-                            ${termination_protection_label}
-                            <i class="fi-alert" tal:condition="termination_protection_on and scaling_group"
-                               i18n:attributes="title" data-tooltip=""
-                               title="Enabling termination protection for an instance in a scaling group does not
-                                      prevent a scaling policy or a health check from terminating the instance"></i>
-                            <a id="set-termination-control" href="#" data-reveal-id="termination-protection-modal">
-                                <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">
-                                    Disable termination protection
-                                </span>
-                                <span i18n:translate="" tal:omit-tag="" tal:condition="not: termination_protection_on">
-                                    Enable termination protection
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Platform</label></div>
                         <div class="large-9 small-8 columns value">${instance.platform}</div>
                     </div>
@@ -165,6 +147,24 @@
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Availability zone</label></div>
                         <div class="large-9 small-8 columns value">${instance.placement}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Termination Protection</label></div>
+                        <div class="large-9 small-8 columns value">
+                            ${termination_protection_label}
+                            <i class="fi-alert" tal:condition="termination_protection_on and scaling_group"
+                               i18n:attributes="title" data-tooltip=""
+                               title="Enabling termination protection for an instance in a scaling group does not
+                                      prevent a scaling policy or a health check from terminating the instance"></i>
+                            <a id="set-termination-control" href="#" data-reveal-id="termination-protection-modal">
+                                <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">
+                                    Disable termination protection
+                                </span>
+                                <span i18n:translate="" tal:omit-tag="" tal:condition="not: termination_protection_on">
+                                    Enable termination protection
+                                </span>
+                            </a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Monitoring</label></div>
