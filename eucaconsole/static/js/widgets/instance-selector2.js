@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('InstancesSelectorModule', ['MagicSearch'])
+angular.module('InstancesSelectorModule', ['MagicSearch', 'MagicSearchFilterModule'])
 .factory('InstancesFiltersService', ['$http', function ($http) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     return {
@@ -31,9 +31,17 @@ angular.module('InstancesSelectorModule', ['MagicSearch'])
             instancesLoading: '@'
         },
         templateUrl: '/_template/elbs/instance-selector',
-        controller: ['$scope', '$timeout', 'InstancesFiltersService', function ($scope, $timeout, InstancesFiltersService) {
-            //$scope.facets = [{"name": "status", "label": "Status", "options": [{"key":"running", "label":"Running"}, {"key":"stopped", "label":"Stopped"}]}];
-            $scope.facets = InstancesFiltersService.getInstancesFilters();
+        controller: ['$scope', '$timeout', 'InstancesFiltersService', 'MagicSearchFilterService',
+        function ($scope, $timeout, InstancesFiltersService, MagicSearchFilterService) {
+            InstancesFiltersService.getInstancesFilters().then(
+                function success(result) {
+                    $scope.facets = result;
+                },
+                function error(errData) {
+                    eucaHandleError(errData.data.message, errData.status);
+                    vm.instancesLoading = false;
+                });
+            $scope.facets = '[]';
             $scope.state = {'allSelected': false};
             $scope.setAllState = function() {
                 $timeout(function() {
@@ -66,10 +74,7 @@ angular.module('InstancesSelectorModule', ['MagicSearch'])
                 $scope.selectedInstances = checkedIems;
             };
             $scope.$on('searchUpdated', function ($event, query) {
-                $scope.searchQueryURL = '';
-                if (query.length > 0) {
-                   $scope.searchQueryURL = query;
-                }
+                $scope.facetFilterItems(query);
             });
             $scope.$on('textSearch', function ($event, text, filterKeys) {
                 $scope.searchFilter = text;
@@ -77,41 +82,16 @@ angular.module('InstancesSelectorModule', ['MagicSearch'])
                     $scope.searchFilterItems(filterKeys);
                 });
             });
-            /*  Filter items client side based on search criteria.
-             *  @param {array} filterProps Array of properties to filter items on
-             */
-            $scope.searchFilterItems = function(filterProps) {
-                var filterText = ($scope.searchFilter || '').toLowerCase();
-                if (filterProps !== '' && filterProps !== undefined){
-                    // Store the filterProps input for later use as well
-                    $scope.filterKeys = filterProps;
-                }
-                if (filterText === '') {
-                    // If the search filter is empty, skip the filtering
-                    $scope.filteredInstances = $scope.instanceList;
-                    return;
-                }
-                // Leverage Array.prototype.filter (ECMAScript 5)
-                var filteredItems = $scope.instanceList.filter(function(item) {
-                    for (var i=0; i < $scope.filterKeys.length; i++) {  // Can't use $.each or Array.prototype.forEach here
-                        var propName = $scope.filterKeys[i];
-                        var itemProp = item.hasOwnProperty(propName) && item[propName];
-                        if (itemProp && typeof itemProp === "string" && 
-                            itemProp.toLowerCase().indexOf(filterText) !== -1) {
-                                return item;
-                        } else if (itemProp && typeof itemProp === "object") {
-                            // In case of mutiple values, create a flat string and perform search
-                            var flatString = $scope.getItemNamesInFlatString(itemProp);
-                            if (flatString.toLowerCase().indexOf(filterText) !== -1) {
-                                return item;
-                            }
-                        }
-                    }
-                });
-                // Update the items[] with the filtered items
-                $scope.filteredInstances = filteredItems;
+            $scope.facetFilterItems = function(query) {
+                $scope.facetInstances = MagicSearchFilterService.facetFilterItems(query, $scope.instanceList);
+                $scope.searchFilterItems();
             };
-            $scope.filteredInstances = $scope.instanceList;
+            /*  Filter items client side based on search criteria.
+             */
+            $scope.searchFilterItems = function(filterKeys) {
+                $scope.filteredInstances = MagicSearchFilterService.searchFilterItems($scope.searchFilter, filterKeys, $scope.facetInstances);
+            };
+            $scope.filteredInstances = $scope.facetInstances = $scope.instanceList;
         }]
     };
 }]);

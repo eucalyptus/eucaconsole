@@ -1,5 +1,7 @@
 angular.module('ELBWizard')
 .controller('AdvancedController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    console.log('advanced');
+    this.protocol = 'HTTP';
+    this.port = 80;
+    this.path = '/';
 }]);
 

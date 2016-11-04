@@ -8,7 +8,8 @@
 
 angular.module('ELBWizard')
 .controller('InstancesController', ['$scope', '$routeParams', 'InstancesService', 'eucaHandleError',
-    function ($scope, $routeParams, InstancesService, eucaHandleError) {
+            'ELBWizardService',
+    function ($scope, $routeParams, InstancesService, eucaHandleError, ELBWizardService) {
         var vm = this;
         vm.vpcNetwork = 'None';
         vm.availabilityZones = [];
@@ -24,5 +25,11 @@ angular.module('ELBWizard')
                 eucaHandleError(errData.data.message, errData.status);
                 vm.instancesLoading = false;
             });
+        vm.submit = function () {
+            if(vm.instanceForm.$invalid) {
+                return;
+            }
+            ELBWizardService.next({});
+        };
     }
 ]);

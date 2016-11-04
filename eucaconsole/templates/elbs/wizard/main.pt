@@ -60,6 +60,7 @@
     <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/listener-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/security-policy-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/instance-selector2.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/certificate-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
