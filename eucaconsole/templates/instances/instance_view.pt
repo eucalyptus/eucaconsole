@@ -134,7 +134,7 @@
                             <i class="fi-alert" tal:condition="termination_protection_on and scaling_group"
                                i18n:attributes="title" data-tooltip=""
                                title="Enabling termination protection for an instance in a scaling group does not
-                                      prevent a scaling policy from terminating the instance"></i>
+                                      prevent a scaling policy or a health check from terminating the instance"></i>
                             <a id="set-termination-control" href="#" data-reveal-id="termination-protection-modal">
                                 <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">
                                     Disable termination protection
