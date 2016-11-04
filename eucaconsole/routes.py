@@ -107,6 +107,7 @@ urls = [
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
     Route(name='instance_monitoring', pattern='/instances/{id}/monitoring'),
     Route(name='instance_monitoring_update', pattern='/instances/{id}/monitoring/update'),
+    Route(name='instance_set_termination_protection', pattern='/instances/{id}/set-termination-protection'),
 
     # Instance Types page
     Route(name='instance_types', pattern='/instance-types'),

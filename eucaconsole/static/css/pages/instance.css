@@ -186,6 +186,8 @@ form .row.controls-wrapper { margin-bottom: 0; }
 
 #current-status { position: relative; top: 2px; }
 
+#set-termination-control { display: inline-block; margin-left: 1rem; }
+
 .connect-center { text-align: center; }
 
 .fi-alert { color: darkred; }

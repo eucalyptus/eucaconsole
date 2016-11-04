@@ -198,6 +198,15 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class="row inline controls-wrapper" id="controls_termination_protection">
+                                <div class="large-9 small-8 columns right">
+                                    ${structure:launch_form.termination_protection(**{'ng-model': 'terminationProtection'})}
+                                    ${launch_form['termination_protection'].label}
+                                    <span data-tooltip="" title="${launch_form.termination_protection.help_text}">
+                                        <i class="helptext-icon"></i>
+                                    </span>
+                                </div>
+                            </div>
                             <div class="row inline controls-wrapper" id="controls_private_addressing">
                                 <div class="large-9 small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
                                     ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
@@ -320,6 +329,11 @@
                     <div class="row">
                         <div class="columns value" ng-show="monitoringEnabled">
                             <i class="fi-check"></i> <span i18n:translate="">Monitoring enabled</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="terminationProtection">
+                            <i class="fi-check"></i> <span i18n:translate="">Termination protection enabled</span>
                         </div>
                     </div>
                     <div class="row">
