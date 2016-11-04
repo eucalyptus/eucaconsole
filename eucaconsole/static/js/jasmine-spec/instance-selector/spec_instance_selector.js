@@ -25,37 +25,21 @@ describe("InstanceSelector", function() {
     beforeEach(inject(function ($templateCache) {
         var template = window.__html__['templates/elbs/instance-selector.pt'];
         $templateCache.put('/_template/elbs/instance-selector', template);
-    
-        var instance_json = '{"results": [' +
-            '{"id": "i-1111111", "status": "running", "availability_zone": "one", "vpc_name": ""},' +
-            '{"id": "i-2222222", "status": "running", "availability_zone": "two", "vpc_name": ""}' +
-            ']}';
-        $httpBackend.when('POST', '/instances/json').respond(200, instance_json);
+        var template2 = window.__html__['static/js/thirdparty/magic-search/magic_search.html'];
+        $templateCache.put('/static/js/thirdparty/magic-search/magic_search.html', template2);
     }));
 
     var element, scope;
     beforeEach(inject(function ($templateCache) {
-        var template = '<instance-selector instance-list="[]" availability-zones="[]"></instance-selector>'
+        var template = '<instance-selector instance-list="[]"></instance-selector>'
         element = $compile(template)($rootScope);
         $rootScope.$digest();
         $httpBackend.flush();
         scope = element.isolateScope();
     }));
 
-    describe('Instance Selector Zone Interaction', function () {
+    describe('scope of directive reduced', function () {
 
-        it('should have none selected initially', function() {
-            expect(scope.instanceList.length == 2).toBe(true);
-            expect(scope.instanceList.reduce(function(sum, curr) {
-                    return sum + (curr.selected?1:0);
-                }, 0) == 0).toBe(true);
-        });
-
-        it('should have one instance in zone one', function() {
-            scope.availabilityZones = ['one'];
-            expect(scope.instanceList.reduce(function(sum, curr) {
-                    return sum + (curr.selected?1:0);
-                }, 0) == 1).toBe(true);
-        });
+        it('should do something');
     });
 });
