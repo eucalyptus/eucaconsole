@@ -1,4 +1,4 @@
-<div>
+<div i18n:domain="eucaconsole">
     <div class="section-label-with-helptext-icon">
         <label class="stack-label">
             <span i18n:translate="">Add instances</span>
