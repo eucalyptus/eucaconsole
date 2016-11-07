@@ -7,16 +7,29 @@
  */
 
 angular.module('ELBWizard')
-.controller('InstancesController', ['$scope', '$routeParams', 'ELBWizardService', function ($scope, $routeParams, ELBWizardService) {
-    $scope.vpcNetwork = 'None';
-    $scope.availabilityZones = [];
-    $scope.availabilityZoneChoices = [{id:'one', label:'one'}];
-    $scope.vpcSubnetChoices = [{id:'default', label:'default'}];
-
-    this.submit = function () {
-        if($scope.instanceForm.$invalid) {
-            return;
-        }
-        ELBWizardService.next({});
-    };
-}]);
+.controller('InstancesController', ['$scope', '$routeParams', 'InstancesService', 'eucaHandleError',
+            'ELBWizardService',
+    function ($scope, $routeParams, InstancesService, eucaHandleError, ELBWizardService) {
+        var vm = this;
+        vm.vpcNetwork = 'None';
+        vm.availabilityZones = [];
+        vm.availabilityZoneChoices = [{id:'one', label:'one'}];
+        vm.vpcSubnetChoices = [{id:'default', label:'default'}];
+        vm.instances = [];
+        InstancesService.getInstances($('#csrf_token').val()).then(
+            function success(result) {
+                result.forEach(function(val) { vm.instances.push(val); });
+                vm.instancesLoading = false;
+            },
+            function error(errData) {
+                eucaHandleError(errData.data.message, errData.status);
+                vm.instancesLoading = false;
+            });
+        vm.submit = function () {
+            if(vm.instanceForm.$invalid) {
+                return;
+            }
+            ELBWizardService.next({});
+        };
+    }
+]);

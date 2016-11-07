@@ -415,6 +415,7 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         return self.choices_manager.availability_zones(self.region, add_blank=False)
 
 
+# TODO: see if this matches the instances landing page and re-use
 class ELBInstancesFiltersForm(BaseSecureForm):
     """Form class for filters on create ELB wizard"""
     state = wtforms.SelectMultipleField(label=_(u'Status'))
@@ -451,7 +452,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
     def set_search_facets(self):
         if self.cloud_type == 'aws':
             self.facets = [
-                {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+                {'name': 'status', 'label': self.state.label.text, 'options': self.get_status_choices()},
                 {'name': 'availability_zone', 'label': self.availability_zone.label.text,
                     'options': self.get_availability_zone_choices(self.region)},
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
@@ -461,7 +462,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
             vpc_choices.append(('None', _(u'No VPC')))
         else:
             self.facets = [
-                {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+                {'name': 'status', 'label': self.state.label.text, 'options': self.get_status_choices()},
             ]
             if self.is_vpc_supported:
                 self.facets.append(

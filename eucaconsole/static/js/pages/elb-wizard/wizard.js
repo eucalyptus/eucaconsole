@@ -1,6 +1,7 @@
 angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
-    'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule'
+    'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
+    'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule'
 ])
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [
