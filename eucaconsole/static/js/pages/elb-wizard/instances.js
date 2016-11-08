@@ -7,24 +7,21 @@
  */
 
 angular.module('ELBWizard')
-.controller('InstancesController', ['$scope', '$routeParams', 'InstancesService', 'eucaHandleError',
+.controller('InstancesController', ['$scope', '$routeParams', 'eucaHandleError',
             'ELBWizardService',
-    function ($scope, $routeParams, InstancesService, eucaHandleError, ELBWizardService) {
+    function ($scope, $routeParams, eucaHandleError, ELBWizardService) {
         var vm = this;
-        vm.vpcNetwork = 'None';
-        vm.availabilityZones = [];
-        vm.availabilityZoneChoices = [{id:'one', label:'one'}];
-        vm.vpcSubnetChoices = [{id:'default', label:'default'}];
-        vm.instances = [];
-        InstancesService.getInstances($('#csrf_token').val()).then(
-            function success(result) {
-                result.forEach(function(val) { vm.instances.push(val); });
-                vm.instancesLoading = false;
-            },
-            function error(errData) {
-                eucaHandleError(errData.data.message, errData.status);
-                vm.instancesLoading = false;
-            });
+        vm.vpcNetwork = ELBWizardService.values.vpcNetwork;
+        vm.availabilityZones = ELBWizardService.values.availabilityZones;
+        vm.availabilityZoneChoices = ELBWizardService.values.availabilityZoneChoices;
+        vm.vpcSubnets = ELBWizardService.values.vpcSubnets;
+        vm.vpcSubnetChoices = ELBWizardService.values.vpcSubnetChoices;
+        vm.instances = ELBWizardService.values.instances;
+        vm.instancesLoading = (ELBWizardService.values.instances === undefined);
+        vm.handleZoneChange = function() {
+        };
+        vm.handleSubnetChange = function() {
+        };
         vm.submit = function () {
             if(vm.instanceForm.$invalid) {
                 return;
