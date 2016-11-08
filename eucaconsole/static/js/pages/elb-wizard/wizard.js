@@ -50,7 +50,7 @@ angular.module('ELBWizard', [
         certsAvailable: [],
         policies: [],
         values: {
-            vpcNetwork: 'vpc-d318f491', //'None',
+            vpcNetwork: 'None',
             vpcNetworkChoices: [],
             vpcSubnets: [],
             vpcSubnetChoices: [],
