@@ -126,7 +126,6 @@ angular.module('ELBWizard', [
                         result.forEach(function(val) {
                             ELBWizardService.values.vpcSubnetChoices.push(val); 
                         });
-                        ELBWizardService.values.vpcSubnets.push(ELBWizardService.values.vpcSubnetChoices[0]);
                     },
                     function error(errData) {
                         eucaHandleError(errData.data.message, errData.status);
