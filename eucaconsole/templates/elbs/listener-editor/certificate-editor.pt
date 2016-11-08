@@ -1,0 +1,111 @@
+<div>
+    <h3 i18n:translate="">Select certificate(s)</h3>
+    <ul class="btn-group">
+        <li>
+            <a ng-click="ctrl.showTab('SSL')" ng-class="{active: (ctrl.activeTab === 'SSL')}"
+                i18n:translate="">SSL</a>
+            <a ng-click="ctrl.showTab('BACKEND')" ng-class="{active: (ctrl.activeTab === 'BACKEND')}"
+                i18n:translate="">Back end</a>
+        </li>
+    </ul>
+
+    <div ng-show="ctrl.activeTab == 'SSL'">
+        <p>
+            <span i18n:translate="">
+                SSL certificates are required for secure (HTTPS or SSL) listeners.
+            </span>
+            <span i18n:translate="" ng-if="can_list_certificates">
+                Choose or upload a pem-encoded certificate below.
+            </span>
+            <span i18n:translate="" ng-if="!can_list_certificates">
+                Upload a pem-encoded certificate below.
+            </span>
+        </p>
+        <form name="sslCertForm" ng-submit="ctrl.submitSSL()" novalidate="">
+            <div>
+                <input type="radio" name="certificate-type" value="existing" ng-model="ctrl.certType"/>
+                <label>Choose an existing SSL certificate</label>
+            </div>
+            <fieldset ng-show="ctrl.certType === 'existing'">
+                <div class="large-2 small-3 columns">
+                    <label class="right">Certificate
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-10 small-9 columns field">
+                    <select ng-model="ctrl.selectedCertificate" required=""
+                        ng-options="item.server_certificate_name for item in certsAvailable track by item.arn">
+                    </select>
+                </div>
+            </fieldset>
+            
+            <div>
+                <input type="radio" name="certificate-type" value="new" ng-model="ctrl.certType"/>
+                <label>Upload a new SSL certificate</label>
+            </div>
+            <fieldset ng-show="ctrl.certType === 'new'">
+                <div class="columns">
+                    <label class="left stack-label">Certificate name
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="columns large-12 small-12 field">
+                    <input type="text" ng-model="ctrl.name" required="" if-active="new"
+                        pattern="^[a-zA-Z0-9\-]{1,255}$"/>
+                    <div class="error">
+                        Name must be between 1 and 255 characters long, and must not contain spaces
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <label class="left stack-label">Private Key
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="columns large-12 small-12 field">
+                    <textarea ng-model="ctrl.privateKey" required="" if-active="new"></textarea>
+                    <div class="error">
+                        Private key is required
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <label class="left stack-label">Public key certificate
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="columns large-12 small-12 field">
+                    <textarea ng-model="ctrl.publicKey" required="" if-active="new"></textarea>
+                    <div class="error">
+                        Public key certificate is required
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <label class="left stack-label">Certificate chain</label>
+                </div>
+                <div class="columns large-12 small-12 field">
+                    <textarea ng-model="ctrl.certificateChain"></textarea>
+                </div>
+            </fieldset>
+
+            <hr/>
+
+            <div>
+                <button type="submit" class="button expand">
+                    Use This Certificate
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div ng-show="ctrl.activeTab == 'BACKEND'">
+        <p i18n:translate="">
+            Including back-end certificates ensures that your instances accept
+            only encrypted communication from trusted sources.  Back-end
+            certificates are optional.
+        </p>
+        <form name="backendCertForm" ng-submit="ctrl.submitBackend()">
+        </form>
+    </div>
+</div>

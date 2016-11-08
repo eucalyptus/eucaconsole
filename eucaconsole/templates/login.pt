@@ -215,7 +215,6 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/hmac-sha256.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/enc-base64.js')}"></script>

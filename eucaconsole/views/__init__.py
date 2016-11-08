@@ -57,6 +57,8 @@ except ImportError:
 from boto.connection import AWSAuthConnection
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
+import botocore.session
+from botocore.exceptions import ClientError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
 from pyramid.i18n import TranslationString
@@ -115,6 +117,30 @@ class BaseView(object):
         self.cloud_type = request.session.get('cloud_type')
         self.security_token = request.session.get('session_token')
         self.euca_logout_form = EucaLogoutForm(self.request)
+
+    def get_connection3(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
+                       secret_key=None, security_token=None):
+        # For this spike, rely on existing model/auth.py code to do the hard stuff.
+        # later, we'd convert all that from the ground up
+        conn2 = self.get_connection(conn_type, cloud_type, region, access_key, secret_key, security_token)
+        if conn2 is None:
+            # return because of unit tests..
+            return None
+
+        # convert the boto2 connection to a botocore client
+        endpoint_url='{protocol}://{host}:{port}{path}'.format(protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port, path=conn2.path)
+        session = botocore.session.get_session()
+        conn3 = session.create_client(
+            conn_type, conn2.region.name,
+            aws_access_key_id=conn2.aws_access_key_id,
+            aws_secret_access_key=conn2.aws_secret_access_key,
+            aws_session_token=conn2.provider.security_token,
+            api_version=conn2.APIVersion,
+            use_ssl=conn2.is_secure,
+            endpoint_url=endpoint_url,
+            verify=False
+        )
+        return conn3
 
     def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
                        secret_key=None, security_token=None):
@@ -502,7 +528,7 @@ class TaggedItemView(BaseView):
     def add_tags(self):
         if self.conn:
             tags_json = self.request.params.get('tags', '{}')
-            tags_dict = self._normalize_tags(json.loads(tags_json))
+            tags_dict = self.normalize_tags(json.loads(tags_json))
             tags = {}
             for key, value in tags_dict.items():
                 key = self.unescape_braces(key.strip())
@@ -533,7 +559,8 @@ class TaggedItemView(BaseView):
                     tag_value = self.unescape_braces(value)
                     self.tagged_obj.add_tag('Name', tag_value)
 
-    def _normalize_tags(self, tags):
+    @staticmethod
+    def normalize_tags(tags):
         if type(tags) is dict:
             return tags
 
@@ -764,6 +791,14 @@ def conn_error(exc, request):
 def boto_error_handler(request, location=None, template="{0}"):
     try:
         yield
+    except ClientError as err:
+        old_err = BotoServerError(
+            status=err.response.get('ResponseMetadata').get('HTTPStatusCode'),
+            reason=err.response.get('Error').get('Code')
+        )
+        old_err.message = err.response.get('Error').get('Message')
+        old_err.error_code = err.response.get('Error').get('Code')
+        BaseView.handle_error(err=old_err, request=request, location=location, template=template)
     except BotoServerError as err:
         BaseView.handle_error(err=err, request=request, location=location, template=template)
     except socket.error as err:

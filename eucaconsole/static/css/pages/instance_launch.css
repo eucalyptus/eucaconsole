@@ -18,6 +18,8 @@
 .wizard .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
 .wizard .tabs dd.active .cir { background-color: #333333; }
 .wizard .tabs dd.disabled { color: #cccccc; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; padding: 8px 1rem; }
+.wizard .tabs dd.disabled a { color: #cccccc; margin-top: -8px; }
+.wizard .tabs dd.disabled a:hover { border-bottom: none; cursor: default; }
 .wizard .tabs dd.disabled .cir { margin-right: 8px; background-color: #cccccc; }
 .wizard .tabs dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #cccccc; color: white; margin-right: 4px; }
 .wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; }
@@ -53,7 +55,7 @@
 #launch-instance-form #image-id-input { width: 10rem; display: inline; }
 #launch-instance-form #controls_userdata_file { position: relative; top: -0.5rem; }
 #launch-instance-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
-#launch-instance-form #controls_monitoring_enabled .helptext-icon { position: relative; left: -1rem; color: #666666; }
+#launch-instance-form #controls_monitoring_enabled .helptext-icon, #launch-instance-form #controls_termination_protection .helptext-icon { position: relative; left: -1rem; color: #666666; }
 #launch-instance-form #create-keypair-link, #launch-instance-form #create-securitygroup-link { position: relative; top: -6px; margin-bottom: 10px; }
 #launch-instance-form #create-securitygroup-link { top: -2px; }
 #launch-instance-form .rules-display { margin-left: 0.7rem; }

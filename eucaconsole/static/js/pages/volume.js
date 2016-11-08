@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('VolumePage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('VolumePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.volumeStatusEndpoint = '';
@@ -136,6 +136,7 @@ angular.module('VolumePage', ['TagEditor', 'EucaConsoleUtils'])
                 if (this.getAttribute('ng-click')) {
                     return;
                 }
+                event.preventDefault();
                 // the ID of the action link needs to match the modal name
                 var modalID = this.getAttribute('id').replace("-action", "-modal");
                 // If there exists unsaved changes, open the wanring modal instead

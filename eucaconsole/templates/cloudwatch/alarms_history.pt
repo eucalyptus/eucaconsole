@@ -81,7 +81,6 @@
     <div metal:fill-slot="tail_js">
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
-        <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_history.js')}"></script>
     </div>

@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_details.css')}" />
 </head>
 
@@ -100,6 +101,10 @@
                     <hr />
                     ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, cors_configuration_xml=cors_configuration_xml)}
                     <hr />
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" tal:content="tags | structure"></tag-editor>
+                    </div>
+                    <hr />
                     <div>
                         <button type="submit" id="save_changes_bucket_details_button" class="button"
                                 ng-disabled="!hasChangesToBeSaved">
@@ -165,8 +170,8 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/closetag.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/xml-fold.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/bucket-cors-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/bucket_details.js')}"></script>
 </div>

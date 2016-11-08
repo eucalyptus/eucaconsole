@@ -29,16 +29,17 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
 from datetime import datetime
+from itertools import chain
 import mimetypes
 import simplejson as json
 import urllib
 
-from boto.exception import StorageCreateError, S3ResponseError
+from boto.exception import BotoServerError, StorageCreateError, S3ResponseError
 from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.bucket import Bucket
 from boto.s3.key import Key
 from boto.s3.prefix import Prefix
-from boto.exception import BotoServerError
+from boto.s3.tagging import Tag, Tags, TagSet
 
 from lxml import etree
 
@@ -52,8 +53,8 @@ from ..forms.buckets import (
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
     BucketItemSharedURLForm, CorsConfigurationForm, CorsDeletionForm)
 from ..i18n import _
+from ..views import BaseView, LandingPageView, JSONResponse, TaggedItemView
 from ..models import Notification
-from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 from .. import utils
 
@@ -322,11 +323,11 @@ class BucketContentsView(LandingPageView, BucketMixin):
     """Views for actions on single bucket"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_contents.pt'
 
-    def __init__(self, request, bucket_name=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketContentsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name')]
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket_name = bucket_name or self.get_bucket_name(request)
+        self.bucket_name = self.get_bucket_name(request)
         request.subpath = self.get_subpath(self.bucket_name)
         self.prefix = '/buckets'
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
@@ -597,12 +598,11 @@ class BucketContentsView(LandingPageView, BucketMixin):
 
 
 class BucketContentsJsonView(BaseView, BucketMixin):
-    def __init__(self, request, bucket=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketContentsJsonView, self).__init__(request, **kwargs)
-        self.bucket = bucket
         with boto_error_handler(request):
             self.s3_conn = self.get_connection(conn_type='s3')
-            if self.s3_conn and self.bucket is None:
+            if self.s3_conn:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_name = self.bucket.name
         request.subpath = self.get_subpath(self.bucket_name)
@@ -679,23 +679,20 @@ class BucketContentsJsonView(BaseView, BucketMixin):
         return False
 
 
-class BucketDetailsView(BaseView, BucketMixin):
+class BucketDetailsView(TaggedItemView, BucketMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
-    def __init__(self, request, bucket=None, bucket_acl=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketDetailsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name'), _(u'Details')]
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = bucket
-        self.bucket_acl = bucket_acl
         self.cors_configuration_xml = None
         with boto_error_handler(request):
-            if self.s3_conn and self.bucket is None:
-                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.tagged_obj = self.bucket
             request.subpath = self.get_subpath(self.bucket.name) if self.bucket else ''
-            if self.bucket and self.bucket_acl is None:
-                self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+            self.bucket_acl = self.bucket.get_acl() if self.bucket else None
             if self.bucket:
                 self.cors_configuration_xml = self.get_cors_configuration(self.bucket, xml=True)
                 if self.cors_configuration_xml:
@@ -711,6 +708,11 @@ class BucketDetailsView(BaseView, BucketMixin):
         if self.bucket is None:
             self.render_dict = dict()
         else:
+            # wrapped because boto generates an error in the case of no tags
+            try:
+                tags = self.serialize_tags(self.bucket.get_tags())
+            except S3ResponseError:
+                tags = '[]'
             self.render_dict = dict(
                 details_form=self.details_form,
                 sharing_form=self.sharing_form,
@@ -731,6 +733,7 @@ class BucketDetailsView(BaseView, BucketMixin):
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 controller_options_json=self.get_controller_options_json(),
                 delete_cors_config_url=self.request.route_path('bucket_cors_configuration', name=self.bucket.name),
+                tags=tags
             )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
@@ -741,8 +744,9 @@ class BucketDetailsView(BaseView, BucketMixin):
     def bucket_update(self):
         if self.bucket and self.details_form.validate():
             location = self.request.route_path('bucket_details', name=self.bucket.name)
+            self.log_request(u"Modifying bucket {0} acl".format(self.bucket.name))
+            self.update_tags()
             with boto_error_handler(self.request, location):
-                self.log_request(u"Modifying bucket {0} acl".format(self.bucket.name))
                 self.update_acl(self.request, bucket_object=self.bucket)
                 msg = u'{0} {1}'.format(_(u'Successfully modified bucket'), self.bucket.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -794,6 +798,41 @@ class BucketDetailsView(BaseView, BucketMixin):
                 logs_prefix=logging_prefix,
                 logs_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=logging_subpath)
             )
+
+    # override these from TaggedItemView since bucket tags are handled differently
+    def add_tags(self):
+        if self.bucket:
+            tags_json = self.request.params.get('tags', '{}')
+            tags_dict = self.normalize_tags(json.loads(tags_json))
+            tags = TagSet()
+            for key, value in tags_dict.items():
+                key = self.unescape_braces(key.strip())
+                if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                    tags.append(Tag(key, self.unescape_braces(value.strip())))
+            if tags:
+                alltags = Tags()
+                alltags.add_tag_set(tags)
+                # wrapping this because euca returns 200, not 204 as it should (EUCA-12867, unwrap once fixed)
+                try:
+                    self.bucket.set_tags(alltags)
+                except S3ResponseError as err:
+                    if err.status != 200:
+                        raise err
+
+    def remove_tags(self):
+        if self.bucket:
+            self.bucket.delete_tags()
+
+    @staticmethod
+    def serialize_tags(tags):
+        serialized_tags = []
+        if tags is not None:
+            for tag in chain.from_iterable(tags):
+                serialized_tags.append({
+                    'name': tag.key,
+                    'value': tag.value
+                })
+        return BaseView.escape_json(json.dumps(serialized_tags))
 
     @staticmethod
     def get_cors_configuration(bucket, xml=True):
@@ -938,20 +977,18 @@ class BucketItemDetailsView(BaseView, BucketMixin):
     """Views for Bucket item (folder/object) details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
 
-    def __init__(self, request, bucket=None, bucket_item_acl=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(BucketItemDetailsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name')]
-        self.bucket = bucket
-        self.bucket_item_acl = bucket_item_acl
         self.s3_conn = self.get_connection(conn_type='s3')
         with boto_error_handler(request):
-            if self.s3_conn and self.bucket is None:
+            if self.s3_conn:
                 self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
                 self.s3_conn.suppress_consec_slashes = False
             request.subpath = self.get_subpath(self.bucket.name)
             self.bucket_name = self.bucket.name
             self.bucket_item = self.get_bucket_item()
-            if self.s3_conn and self.bucket_item_acl is None:
+            if self.s3_conn:
                 self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         if self.bucket_item is None:
             raise HTTPNotFound()

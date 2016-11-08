@@ -2025,6 +2025,10 @@ ul.resources-nav li i.icon.dashboard { background-image: url(../img/nav/Dashboar
 ul.resources-nav li i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
 ul.resources-nav li i.icon.images { background-image: url(../img/nav/Images.svg); }
 ul.resources-nav li i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
+ul.resources-nav li i.icon.queues { background-image: url(../img/nav/Queues.svg); }
+ul.resources-nav li i.icon.queues.active { background-image: url(../img/nav/Queues_Active.svg); }
+ul.resources-nav li i.icon.topics { background-image: url(../img/nav/Topics.svg); }
+ul.resources-nav li i.icon.topics.active { background-image: url(../img/nav/Topics_Active.svg); }
 ul.resources-nav li i.icon.instances { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav li i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
 ul.resources-nav li.active { background-color: #01a982 !important; color: white !important; }

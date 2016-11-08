@@ -45,6 +45,8 @@ from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
+from boto.sqs.connection import SQSConnection
+from boto.sns.connection import SNSConnection
 from boto.sts.connection import STSConnection
 # uncomment to enable boto request logger. Use only for development (see ref in euca_connection)
 # from boto.requestlog import RequestLogger
@@ -192,6 +194,12 @@ class ConnectionManager(object):
         elif conn_type == 'elb':
             conn = ec2.elb.connect_to_region(
                 region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'sqs':
+            conn = boto.sqs.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        elif conn_type == 'sns':
+            conn = boto.sns.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
         elif conn_type == 'vpc':
             conn = vpc.connect_to_region(
                 region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
@@ -234,7 +242,7 @@ class ConnectionManager(object):
         """
         path = 'compute'
         conn_class = EC2Connection
-        api_version = '2012-12-01'
+        api_version = '2015-10-01'
         if region != 'euca':
             # look up region endpoint
             conn = ConnectionManager.euca_connection(
@@ -374,9 +382,6 @@ class EucaAuthenticator(object):
             return self._authenticate_(account, user, passwd, new_passwd, timeout, duration)
 
     def _authenticate_(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
-        if user == 'admin' and duration > 3600:  # admin cannot have more than 1 hour duration
-            duration = 3600
-        # because of the variability, we need to keep this here, not in __init__
         auth_path = self.TEMPLATE.format(dur=duration)
         if not self.dns_enabled:
             auth_path = self.NON_DNS_QUERY_PATH + auth_path

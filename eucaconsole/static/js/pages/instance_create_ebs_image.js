@@ -7,7 +7,7 @@
  */
 
 // Create Image page includes the Tag Editor and the Block Device Mapping editor
-angular.module('InstanceCreateImage', ['TagEditor', 'BlockDeviceMappingEditor'])
+angular.module('InstanceCreateImage', ['TagEditorModule', 'BlockDeviceMappingEditor'])
     .controller('InstanceCreateImageCtrl', function ($scope, $timeout) {
         $scope.form = $('#create-image-form');
         $scope.expanded = false;

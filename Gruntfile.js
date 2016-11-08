@@ -16,6 +16,7 @@ module.exports = function(grunt) {
               files: {
                 'angular.js': 'angular/angular.js',
                 'angular.min.js': 'angular/angular.min.js',
+                'angular-route.min.js': 'angular-route/angular-route.min.js',
                 'angular-sanitize.min.js': 'angular-sanitize/angular-sanitize.min.js',
                 'angular-mocks.js': 'angular-mocks/angular-mocks.js',
               }
@@ -51,7 +52,7 @@ module.exports = function(grunt) {
           },
           font_awesome: {
               files: {
-                'eucaconsole/static/fonts/font-awesome': 'components-font-awesome/fonts/*',
+                'eucaconsole/static/fonts/': 'components-font-awesome/fonts/*',
                 'eucaconsole/static/css/thirdparty': 'components-font-awesome/css/*.css',
                 'eucaconsole/static/sass/font-awesome':'components-font-awesome/scss/*.scss'
               }

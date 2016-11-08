@@ -30,7 +30,7 @@
                             data-reveal-id="download-object-modal">Download Object</a>
                     </li>
                     <li>
-                        <a id="upload-object-btn" i18n:translate="" target="_blank"
+                        <a id="upload-object-btn" i18n:translate="" target="_blank" rel="noopener noreferrer"
                             href="${request.route_path('bucket_upload', name='__shared__', subpath='')}">Upload Object(s)</a>
                     </li>
                 </ul>
@@ -237,6 +237,7 @@
 
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/buckets.js')}"></script>

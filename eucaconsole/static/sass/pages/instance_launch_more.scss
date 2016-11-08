@@ -19,7 +19,8 @@ form input.name {
     }
 }
 
-#controls_monitoring_enabled {
+#controls_monitoring_enabled,
+#controls_termination_protection {
     @include helptext-icon-position-mixin;
 }
 

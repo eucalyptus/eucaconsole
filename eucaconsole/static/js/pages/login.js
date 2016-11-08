@@ -45,7 +45,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
             }
             var storedRegion = (Modernizr.localstorage && localStorage.getItem('euca-region')) || 'euca';
             $("#euca-region").val(storedRegion);
-            $scope.oidcUrl = $scope.oidcLoginLink + "&state=oidc-" + $.base64.encode(storedRegion);
+            $scope.oidcUrl = $scope.oidcLoginLink + "&state=oidc-" + btoa(storedRegion);
             $timeout(function() {  // this being delayed to allow browser to populate login form completely
                 $scope.eucaCheckValid();
                 $scope.awsCheckValid();
@@ -124,7 +124,7 @@ angular.module('LoginPage', ['EucaConsoleUtils'])
                 var storedRegion = Modernizr.localstorage && localStorage.getItem('aws-region') || '';
                 params = params + "&Signature=" + encoded;
                 $('#aws_csrf_token').val($('#csrf_token').val());
-                $('#package').val($.base64.encode(params));
+                $('#package').val(btoa(params));
                 $('#aws-region').val(storedRegion);
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();

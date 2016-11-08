@@ -107,6 +107,7 @@ urls = [
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
     Route(name='instance_monitoring', pattern='/instances/{id}/monitoring'),
     Route(name='instance_monitoring_update', pattern='/instances/{id}/monitoring/update'),
+    Route(name='instance_set_termination_protection', pattern='/instances/{id}/set-termination-protection'),
 
     # Instance Types page
     Route(name='instance_types', pattern='/instance-types'),
@@ -158,6 +159,7 @@ urls = [
     Route(name='elbs_json', pattern='/elbs/json'),
     Route(name='elbs_delete', pattern='/elbs/delete'),
     # Detail page
+    Route(name='elb_wizard', pattern='/elbs/wizard*step'),
     Route(name='elb_new', pattern='/elbs/new'),
     Route(name='elb_create', pattern='/elbs/create'),
     Route(name='elb_delete', pattern='/elbs/{id}/delete'),
@@ -168,8 +170,13 @@ urls = [
     Route(name='elb_healthchecks', pattern='/elbs/{id}/healthchecks'),
     Route(name='elb_healthchecks_update', pattern='/elbs/{id}/healthchecks/update'),
     Route(name='elb_monitoring', pattern='/elbs/{id}/monitoring'),
+
     # Certificate modal
     Route(name='certificate_create', pattern='/certificate/create'),
+    Route(name='elb_certificate', pattern='/certificate'),
+
+    # Facets for instances
+    Route(name='elb_instances_filters', pattern='/elbs/instances/filters'),
 
     # Volumes #####
     # Landing page
@@ -389,4 +396,12 @@ urls = [
     # Update
     Route(name='stack_update', pattern='/stacks/{name}/update'),
     Route(name='stack_cancel_update', pattern='/stacks/{name}/cancelupdate'),
+
+    Route(name='queues', pattern='/queues'),
+    Route(name='queues_json', pattern='/queues/json'),
+    Route(name='queue_view', pattern='/queue/{id}'),
+    Route(name='topics', pattern='/topics'),
+
+    # Reporting
+    Route(name='reporting', pattern='/reporting*subpath'),
 ]

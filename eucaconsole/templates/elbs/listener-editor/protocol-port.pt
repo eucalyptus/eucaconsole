@@ -1,0 +1,13 @@
+<div class="protocol-port">
+    <div class="subsection-label" i18n:translate="">{{ label }}</div>
+    <div class="controls-wrapper">
+        <label i18n:translate="" class="inline">Protocol</label>
+        <select ng-options="protocol.name for protocol in protocols track by protocol.value"
+            ng-model="protocol" ng-change="ctrl.onUpdate(protocol)" ng-init="protocol = protocols[0]" class="ip-protocol">
+        </select>
+    </div>
+    <div class="controls-wrapper">
+        <label i18n:translate="" class="inline">Port</label>
+        <input class="port" type="number" ng-model="port"></input>
+    </div>
+</div>

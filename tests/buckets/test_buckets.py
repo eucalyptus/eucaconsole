@@ -29,6 +29,7 @@ Tests for S3 buckets, objects, and related forms
 
 """
 import re
+import unittest
 
 import boto
 
@@ -37,7 +38,7 @@ from boto.s3.bucket import Bucket
 from boto.s3.key import Key
 from boto.s3.user import User
 from lxml import etree
-from moto import mock_s3
+from moto import mock_s3, mock_ec2
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
@@ -45,6 +46,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
 from eucaconsole.constants.buckets import SAMPLE_CORS_CONFIGURATION, CORS_XML_RELAXNG_SCHEMA
 from eucaconsole.forms.buckets import SharingPanelForm
 from eucaconsole.utils import remove_namespace, validate_xml
+from eucaconsole.views import TaggedItemView
 from eucaconsole.views.buckets import (
     BucketContentsView, BucketContentsJsonView, BucketDetailsView, BucketItemDetailsView, BucketXHRView,
     FOLDER_NAME_PATTERN
@@ -55,7 +57,6 @@ from tests import BaseFormTestCase, BaseViewTestCase, BaseTestCase
 
 class MockBucketMixin(object):
     @staticmethod
-    @mock_s3
     def make_bucket(name='test_bucket', policy=None, owner_id=None):
         s3_conn = boto.connect_s3()
         policy = policy or Policy()
@@ -65,7 +66,7 @@ class MockBucketMixin(object):
         acl.grants = []
         policy.acl = acl
         bucket = s3_conn.create_bucket(name)
-        bucket.policy = policy
+        bucket.set_acl(policy)
         return bucket, policy
 
 
@@ -121,54 +122,91 @@ class BucketContentsViewTestCase(BaseViewTestCase):
 class BucketDetailsViewTestCase(BaseViewTestCase):
 
     def test_versioning_update_action(self):
-        request = testing.DummyRequest()
-        view = BucketDetailsView(request)
-        self.assertEqual(view.get_versioning_update_action('Disabled'), 'enable')
-        self.assertEqual(view.get_versioning_update_action('Suspended'), 'enable')
-        self.assertEqual(view.get_versioning_update_action('Enabled'), 'disable')
+        self.assertEqual(BucketDetailsView.get_versioning_update_action('Disabled'), 'enable')
+        self.assertEqual(BucketDetailsView.get_versioning_update_action('Suspended'), 'enable')
+        self.assertEqual(BucketDetailsView.get_versioning_update_action('Enabled'), 'disable')
 
 
 class MockBucketDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
 
     @mock_s3
+    @mock_ec2
+    def test_is_tagged_view(self):
+        """Bucket details view should inherit from TaggedItemView"""
+        request = self.create_request()
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
+        self.make_bucket()
+        view = BucketDetailsView(request)
+        self.assertTrue(isinstance(view, TaggedItemView))
+
+    @mock_s3
+    @mock_ec2
     def test_bucket_details_view_without_versioning(self):
         request = self.create_request()
-        bucket, bucket_acl = self.make_bucket()
-        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl).bucket_details()
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
+        self.make_bucket()
+        view = BucketDetailsView(request).bucket_details()
         self.assertEqual(view.get('bucket_name'), 'test_bucket')
         self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
         self.assertEqual(view.get('versioning_status'), 'Disabled')
         self.assertEqual(view.get('update_versioning_action'), 'enable')
 
     @mock_s3
+    @mock_ec2
     def test_bucket_details_view_with_versioning(self):
         request = self.create_request()
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
         bucket, bucket_acl = self.make_bucket()
         bucket.configure_versioning(True)
-        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl).bucket_details()
+        view = BucketDetailsView(request).bucket_details()
         self.assertEqual(view.get('bucket_name'), 'test_bucket')
         self.assertEqual(view.get('bucket_contents_url'), '/buckets/test_bucket/contents/')
         self.assertEqual(view.get('versioning_status'), 'Enabled')
         self.assertEqual(view.get('update_versioning_action'), 'disable')
 
     @mock_s3
+    @mock_ec2
     def test_bucket_with_empty_cors_configuration_object(self):
         request = self.create_request()
-        bucket, bucket_acl = self.make_bucket()
-        view = BucketDetailsView(request, bucket=bucket, bucket_acl=bucket_acl)
+        self.setup_session(request)
+        self.make_bucket()
+        request.matchdict['name'] = 'test_bucket'
+        view = BucketDetailsView(request)
         # Note: moto hasn't implemented CORS handling (yet), so we can only check the empty config object case
-        bucket_cors = view.get_cors_configuration(bucket, xml=False)
+        bucket_cors = view.get_cors_configuration(view.bucket, xml=False)
         self.assertEqual(bucket_cors, None)
+
+    @mock_s3
+    @mock_ec2
+    @unittest.skip("because moto doesn't support bucket tags.")
+    def test_update_tags(self):
+        tag_string = '[{"name":"tag4","value":"value4"},{"name":"tag3","value":"value3"}]'
+        """Bucket details view should inherit from TaggedItemView"""
+        request = self.create_request()
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
+        request.params['tags'] = tag_string
+        self.make_bucket()
+        view = BucketDetailsView(request)
+        view.update_tags()
+        tag_serialized = view.serialize_tags(view.bucket.get_tags())
+        self.assertEqual(tag_string, tag_serialized)
 
 
 class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
 
     @mock_s3
+    @mock_ec2
     def test_bucket_contents_json_view_with_file(self):
         bucket, bucket_acl = self.make_bucket()
         bucket.new_key("/file-one").set_contents_from_string('file content')
         request = self.create_request(matchdict=dict(name=bucket.name))
-        view = BucketContentsJsonView(request, bucket=bucket)
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
+        view = BucketContentsJsonView(request)
         bucket_contents_json_view = view.bucket_contents_json()
         results = bucket_contents_json_view.get('results')
         self.assertEqual(len(results), 1)
@@ -178,11 +216,14 @@ class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
         self.assertEqual(item.get('is_folder'), False)
 
     @mock_s3
+    @mock_ec2
     def test_bucket_contents_json_view_with_folder(self):
         bucket, bucket_acl = self.make_bucket()
         bucket.new_key("/folder-one/").set_contents_from_string('')
         request = self.create_request(matchdict=dict(name=bucket.name))
-        view = BucketContentsJsonView(request, bucket=bucket)
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
+        view = BucketContentsJsonView(request)
         bucket_contents_json_view = view.bucket_contents_json()
         results = bucket_contents_json_view.get('results')
         self.assertEqual(len(results), 1)
@@ -198,28 +239,35 @@ class MockBucketContentsJsonViewTestCase(BaseViewTestCase, MockBucketMixin):
 class MockBucketContentsViewTestCase(BaseViewTestCase, MockBucketMixin):
 
     @mock_s3
+    @mock_ec2
     def test_bucket_contents_view_with_bucket(self):
         bucket, bucket_acl = self.make_bucket()
         request = self.create_request(matchdict=dict(name=bucket.name))
-        view = BucketContentsView(request, bucket_name=bucket.name).bucket_contents()
+        self.setup_session(request)
+        view = BucketContentsView(request).bucket_contents()
         self.assertEqual(view.get('display_path'), 'test_bucket')
 
     @mock_s3
+    @mock_ec2
     def test_bucket_contents_view_with_folder(self):
         bucket, bucket_acl = self.make_bucket()
         bucket.new_key("/folder-one/").set_contents_from_string('')
         request = self.create_request(matchdict=dict(name=bucket.name))
+        self.setup_session(request)
+        request.matchdict['name'] = 'test_bucket'
         request.environ = {'PATH_INFO': u'test_bucket/folder-one'}
         request.subpath = ('folder-one', )
-        view = BucketContentsView(request, bucket=bucket).bucket_contents()
+        view = BucketContentsView(request).bucket_contents()
         self.assertEqual(view.get('display_path'), 'folder-one')
 
 
 class MockObjectDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
 
     @mock_s3
+    @mock_ec2
     def test_object_details_view(self):
         request = self.create_request()
+        self.setup_session(request)
         path = '/buckets/test_bucket/itemdetails/'
         file_name = 'file-two'
         file_content = 'file two content'
@@ -227,8 +275,9 @@ class MockObjectDetailsViewTestCase(BaseViewTestCase, MockBucketMixin):
         request.subpath = (file_name, )
         request.environ = {'PATH_INFO': u'{0}/{1}'.format(path, file_name)}
         bucket, bucket_acl = self.make_bucket()
+        request.matchdict['name'] = 'test_bucket'
         bucket.new_key(u'/{0}'.format(file_name)).set_contents_from_string(file_content)
-        view = BucketItemDetailsView(request, bucket=bucket, bucket_item_acl=bucket_acl).bucket_item_details()
+        view = BucketItemDetailsView(request).bucket_item_details()
         item = view.get('bucket_item')
         self.assertEqual(item.bucket.name, 'test_bucket')
         self.assertEqual(int(item.content_length), len(file_content))

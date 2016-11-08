@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('InstancePage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
@@ -69,7 +69,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.consoleOutput = $.base64.decode(results);
+                    $scope.consoleOutput = atob(results);
                     $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
@@ -128,6 +128,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
                 } else if (this.getAttribute('href') !== '#') {
                     return;
                 }
+                event.preventDefault();
                 // the ID of the action link needs to match the modal name
                 var modalID = this.getAttribute('id').replace("-action", "-modal");
                 // If there exists unsaved changes, open the wanring modal instead
@@ -273,7 +274,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
                 if (evt.target.readyState == FileReader.DONE) {
                     var key_contents = evt.target.result;
                     var url = $scope.password_url.replace("_id_", $scope.instanceID);
-                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $.base64.encode(key_contents);
+                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + btoa(key_contents);
                     $http({method:'POST', url:url, data:data,
                            headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                       success(function(oData) {
