@@ -55,7 +55,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
-    InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm,
+    InstancesFiltersForm, InstanceTypeForm, InstanceMonitoringForm, InstanceTerminationProtectionForm,
     AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import ChoicesManager, GenerateFileForm
 from ..forms.keypairs import KeyPairForm
@@ -164,6 +164,10 @@ class BaseInstanceView(BaseView):
             return instance.monitoring_state.capitalize()
         if self.cloud_type == 'aws':
             return _(u'Detailed') if instance.monitoring_state == 'enabled' else _(u'Basic')
+
+    def get_termination_protection_state(self, instance=None):
+        termination_protection_attr = self.conn.get_instance_attribute(instance.id, 'disableApiTermination')
+        return termination_protection_attr.get('disableApiTermination', False)
 
     def get_monitoring_tab_title(self, instance=None):
         if self.cloud_type == 'euca':
@@ -614,6 +618,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.termination_protection_form = InstanceTerminationProtectionForm(
+            self.request, formdata=self.request.params or None)
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, instance=self.instance, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
@@ -636,6 +642,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.running_create = False
         if self.instance:
             self.running_create = True if self.instance.tags.get('ec_bundling') else False
+        protection_is_enabled = self.get_termination_protection_state(self.instance)
+        termination_protection_label = _('Enabled') if protection_is_enabled else _('Disabled')
 
         self.render_dict = dict(
             instance=self.instance,
@@ -643,6 +651,9 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             instance_security_groups=self.security_group_list_string,
             instance_keypair=self.instance_keypair,
             instance_monitoring_state=self.get_monitoring_state(self.instance),
+            termination_protection_on=protection_is_enabled,
+            termination_protection_label=termination_protection_label,
+            termination_protection_form=self.termination_protection_form,
             monitoring_tab_title=self.get_monitoring_tab_title(self.instance),
             security_group_list=self.security_group_list,
             image=self.image,
@@ -805,6 +816,21 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 else:
                     self.conn.disassociate_address(elastic_ip.public_ip)
                 msg = _(u'Successfully disassociated the IP from the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
+
+    @view_config(route_name='instance_set_termination_protection', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_set_termination_protection(self):
+        if self.termination_protection_form.validate():
+            with boto_error_handler(self.request, self.location):
+                protection_is_enabled = self.get_termination_protection_state(self.instance)
+                new_value = not protection_is_enabled
+                self.conn.modify_instance_attribute(self.instance.id, 'disableApiTermination', new_value)
+                if protection_is_enabled:
+                    msg = _('Successfully disabled instance termination protection.')
+                else:
+                    msg = _('Successfully enabled instance termination protection.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
@@ -1210,6 +1236,7 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
+            termination_protection = self.request.params.get('termination_protection') == 'y'
             private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
             if vpc_network is not None and self.cloud_type == 'euca':
@@ -1239,6 +1266,10 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
                     block_device_map=block_device_map,
                     instance_profile_arn=instance_profile.arn if instance_profile else None,
                 )
+                if termination_protection:
+                    params.update(dict(
+                        disable_api_termination=True
+                    ))
                 if vpc_network is not None:
                     network_interface = NetworkInterfaceSpecification(
                         subnet_id=vpc_subnet,
@@ -1381,6 +1412,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
+            termination_protection = self.request.params.get('termination_protection') == 'y'
             private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
             if vpc_network is not None and self.cloud_type == 'euca':
@@ -1408,6 +1440,10 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     block_device_map=block_device_map,
                     instance_profile_arn=instance_profile_arn,
                 )
+                if termination_protection:
+                    params.update(dict(
+                        disable_api_termination=True
+                    ))
                 if vpc_network is not None:
                     network_interface = NetworkInterfaceSpecification(
                         subnet_id=vpc_subnet,

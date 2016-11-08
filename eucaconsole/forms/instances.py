@@ -37,6 +37,11 @@ from ..views import BaseView, boto_error_handler
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
+TERMINATION_PROTECTION_FIELD_LABEL = _('Enable instance termination protection')
+TERMINATION_PROTECTION_HELP_TEXT = _(
+    'Instance termination protection prevents termination via the console, CLI, or other tools when enabled.'
+)
+
 class InstanceForm(BaseSecureForm):
     """Instance form (to update an existing instance)
        Form to launch an instance is in LaunchInstanceForm
@@ -125,6 +130,7 @@ class LaunchInstanceForm(BaseSecureForm):
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
+    termination_protection = wtforms.BooleanField(label=TERMINATION_PROTECTION_FIELD_LABEL)
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
     def __init__(self, request, image=None, securitygroups=None, conn=None, vpc_conn=None, iam_conn=None, **kwargs):
@@ -166,6 +172,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.vpc_network.help_text = self.vpc_network_helptext
         self.associate_public_ip_address.help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
+        self.termination_protection.help_text = TERMINATION_PROTECTION_HELP_TEXT
 
     def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
@@ -228,6 +235,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
+    termination_protection = wtforms.BooleanField(label=TERMINATION_PROTECTION_FIELD_LABEL)
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
     def __init__(self, request, image=None, instance=None, conn=None, **kwargs):
@@ -258,6 +266,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
 
     def set_help_text(self):
         self.userdata_file.help_text = self.userdata_file_helptext
+        self.termination_protection.help_text = TERMINATION_PROTECTION_HELP_TEXT
 
     def set_choices(self):
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
@@ -266,6 +275,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     def set_initial_data(self):
         self.monitoring_enabled.data = self.instance.monitored
         self.private_addressing.data = self.enable_private_addressing()
+        self.termination_protection.data = self.termination_protection_enabled()
         self.number.data = 1
         with boto_error_handler(self.request):
             userdata = self.conn.get_instance_attribute(self.instance.id, 'userData')
@@ -276,6 +286,10 @@ class LaunchMoreInstancesForm(BaseSecureForm):
         if self.instance.private_ip_address == self.instance.ip_address:
             return True
         return False
+
+    def termination_protection_enabled(self):
+        termination_protection_attr = self.conn.get_instance_attribute(self.instance.id, 'disableApiTermination')
+        return termination_protection_attr.get('disableApiTermination', False)
 
 
 class StopInstanceForm(BaseSecureForm):
@@ -504,6 +518,11 @@ class InstanceTypeForm(BaseSecureForm):
 
 class InstanceMonitoringForm(BaseSecureForm):
     """CSRF-protected form to enable/disable monitoring for an instance"""
+    pass
+
+
+class InstanceTerminationProtectionForm(BaseSecureForm):
+    """CSRF-protected form to enable/disable termination protection for an instance"""
     pass
 
 
