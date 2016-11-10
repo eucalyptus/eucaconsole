@@ -21,22 +21,22 @@ angular.module('ELBWizard')
         // using $watch instead of ng-change because...
         // https://github.com/leocaseiro/angular-chosen/issues/145
         $scope.$watch('instances.availabilityZones', function(newval, oldval) {
-            if (newval == oldval) return;  // leave unless there's a change
+            if (newval === oldval) return;  // leave unless there's a change
             var zoneDiff = oldval.filter(function(x) {
-                var idx = newval.findIndex(function(val) { return val === x; });
+                var idx = newval.findIndex(function(val) { return val.id === x.id; });
                 return idx === -1;
             });
             if (zoneDiff.length === 0) return;  // leave unless there were zone(s) removed
             vm.instances.forEach(function(instance) {
                 if (instance.selected !== true) return;  // get out fast if not selected
                 var instanceInZone = zoneDiff.some(function(zone) {
-                    return (zone === instance.availability_zone);
+                    return (zone.id === instance.availability_zone);
                 });
                 if (instanceInZone) instance.selected = false;
             });
         });
         $scope.$watch('instances.vpcSubnets', function(newval, oldval) {
-            if (newval == oldval) return;  // leave unless there's a change
+            if (newval === oldval) return;  // leave unless there's a change
             var subnetDiff = oldval.filter(function(x) {
                 var idx = newval.findIndex(function(val) { return val.id === x.id; });
                 return idx === -1;
@@ -50,6 +50,12 @@ angular.module('ELBWizard')
                 if (instanceInSubnet) instance.selected = false;
             });
         });
+        $scope.$watchCollection('instances.instances', function(newval, oldval) {
+            if (newval === oldval) return;  // leave unless there's a change
+            vm.availabilityZoneChoices.forEach(function (zone) {
+                zone.label = zone.id + " : " + instances.instances.length + " instances";
+            });
+        }, true);
         vm.submit = function () {
             if(vm.instanceForm.$invalid) {
                 return;

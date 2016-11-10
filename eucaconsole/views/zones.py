@@ -46,5 +46,5 @@ class ZonesJsonView(BaseView):
     def zones_json(self):
         with boto_error_handler(self.request):
             availability_zones = ChoicesManager(self.conn).get_availability_zones(self.conn.host)
-            return dict(results=[zone.name for zone in availability_zones])
+            return dict(results=[dict(id=zone.name, label=zone.name) for zone in availability_zones])
 

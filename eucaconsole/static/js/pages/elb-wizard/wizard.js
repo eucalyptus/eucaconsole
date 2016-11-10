@@ -109,7 +109,7 @@ angular.module('ELBWizard', [
     return {
         restrict: 'E',
         link: function(scope, elem, attrs) {
-            if (attrs.isVpc == 'True') {
+            if (attrs.isVpc == 'Trueblah') {
                 // load vpcs, subnets, groups
                 VPCService.getVPCNetworks().then(
                     function success(result) {
