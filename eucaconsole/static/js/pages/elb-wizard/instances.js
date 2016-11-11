@@ -50,22 +50,37 @@ angular.module('ELBWizard')
                 if (instanceInSubnet) instance.selected = false;
             });
         });
+        // may want to make this event-driven by having instance selector use callback upon selection change
         $scope.$watch('instances.instances', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
             if (vm.vpcNetwork == 'None') {
+                // update labels, accumulate zones for selection
+                var zonesToSelect = [];
                 vm.availabilityZoneChoices.forEach(function (zone) {
                     var count = vm.instances.filter(function(instance) {
                         return instance.selected && instance.availability_zone === zone.id;
                     }).length;
                     zone.label = zone.id + " : " + count + " instances";
+                    if (count > 0) {
+                        zonesToSelect.push(zone);
+                    }
                 });
+                // update selection
+                vm.availabilityZones = zonesToSelect;
             } else {
+                // update labels, accumulate subnets for selection
+                var subnetsToSelect = [];
                 vm.vpcSubnetChoices.forEach(function (subnet) {
                     var count = vm.instances.filter(function(instance) {
                         return instance.selected && instance.subnet_id === subnet.id;
                     }).length;
                     subnet.label = subnet.labelBak + " : " + count + " instances";
+                    if (count > 0) {
+                        subnetsToSelect.push(subnet);
+                    }
                 });
+                // update selection
+                vm.vpcSubnets = subnetsToSelect;
             }
         }, true);
         vm.submit = function () {
