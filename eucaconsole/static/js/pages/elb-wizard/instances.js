@@ -62,7 +62,7 @@ angular.module('ELBWizard')
             vm.handleInstanceSelectionChange(newval, oldval);
         }, true);
         vm.handleInstanceSelectionChange = function(newval, oldval) {
-            if (vm.vpcNetwork == 'None') {
+            if (vm.vpcNetwork === 'None') {
                 // update labels, accumulate zones for selection
                 var zonesToSelect = [];
                 vm.availabilityZoneChoices.forEach(function (zone) {
