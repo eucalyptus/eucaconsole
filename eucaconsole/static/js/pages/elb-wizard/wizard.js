@@ -50,7 +50,7 @@ angular.module('ELBWizard', [
         certsAvailable: [],
         policies: [],
         values: {
-            vpcNetwork: 'None',
+            vpcNetwork: 'vpc-d318f491', //'None',
             vpcNetworkChoices: [],
             vpcSubnets: [],
             vpcSubnetChoices: [],
@@ -109,7 +109,7 @@ angular.module('ELBWizard', [
     return {
         restrict: 'E',
         link: function(scope, elem, attrs) {
-            if (attrs.isVpc == 'Trueblah') {
+            if (attrs.isVpc == 'True') {
                 // load vpcs, subnets, groups
                 VPCService.getVPCNetworks().then(
                     function success(result) {
@@ -124,6 +124,7 @@ angular.module('ELBWizard', [
                 VPCService.getVPCSubnets().then(
                     function success(result) {
                         result.forEach(function(val) {
+                            val.labelBak = val.label;
                             ELBWizardService.values.vpcSubnetChoices.push(val); 
                         });
                     },

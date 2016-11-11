@@ -50,11 +50,23 @@ angular.module('ELBWizard')
                 if (instanceInSubnet) instance.selected = false;
             });
         });
-        $scope.$watchCollection('instances.instances', function(newval, oldval) {
+        $scope.$watch('instances.instances', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
-            vm.availabilityZoneChoices.forEach(function (zone) {
-                zone.label = zone.id + " : " + instances.instances.length + " instances";
-            });
+            if (vm.vpcNetwork == 'None') {
+                vm.availabilityZoneChoices.forEach(function (zone) {
+                    var count = vm.instances.filter(function(instance) {
+                        return instance.selected && instance.availability_zone === zone.id;
+                    }).length;
+                    zone.label = zone.id + " : " + count + " instances";
+                });
+            } else {
+                vm.vpcSubnetChoices.forEach(function (subnet) {
+                    var count = vm.instances.filter(function(instance) {
+                        return instance.selected && instance.subnet_id === subnet.id;
+                    }).length;
+                    subnet.label = subnet.labelBak + " : " + count + " instances";
+                });
+            }
         }, true);
         vm.submit = function () {
             if(vm.instanceForm.$invalid) {
