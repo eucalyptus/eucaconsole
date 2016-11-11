@@ -50,23 +50,6 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-route.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/services/instances-service.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/services/zones-service.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/services/vpc-service.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/wizard.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/navigation.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/main.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/general.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/instances.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/network.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/elb-wizard/advanced.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/listener-editor.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/security-policy-editor.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/instance-selector2.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/listener-editor/certificate-editor.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/dist/elb-wizard.js')}"></script>
 </div>
 </metal:block>
