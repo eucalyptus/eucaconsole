@@ -28,14 +28,12 @@
 Pyramid views for Eucalyptus and AWS Availability Zones
 
 """
-import simplejson as json
-
-from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
 from ..forms import ChoicesManager 
 from ..views import BaseView
 from . import boto_error_handler
+
 
 class ZonesJsonView(BaseView):
     def __init__(self, request):
