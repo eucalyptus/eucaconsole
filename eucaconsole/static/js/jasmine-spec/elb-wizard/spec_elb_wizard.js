@@ -281,7 +281,28 @@ describe('ELB Wizard Module', function () {
             });
         }));
 
-        it('should certainly do something');
+        beforeEach(function() {
+            controller.instances = [
+                {availability_zone: 'one', subnet_id: 'subnet-10000001', selected: false},
+                {availability_zone: 'one', subnet_id: 'subnet-10000001', selected: false},
+                {availability_zone: 'two', subnet_id: 'subnet-10000002', selected: false}
+            ];
+        });
+
+        it('should deselect instance', function() {
+            // select 1 from each zone
+            controller.instances[0].selected = true;
+            controller.instances[2].selected = true;
+            // set 2 zones in model
+            var zones = [
+                {id:'one', label:'one'},
+                {id:'two', label:'two'}
+            ];
+            controller.handleDeselectionDueToZones([zones[0]], zones);
+            expect(controller.instances[0].selected).toBe(true);
+            expect(controller.instances[1].selected).toBe(false);
+            expect(controller.instances[2].selected).toBe(false);
+        });
     });
 
     describe('Advanced tab controller', function () {

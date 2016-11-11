@@ -22,6 +22,9 @@ angular.module('ELBWizard')
         // https://github.com/leocaseiro/angular-chosen/issues/145
         $scope.$watch('instances.availabilityZones', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
+            vm.handleDeselectionDueToZones(newval, oldval);
+        });
+        vm.handleDeselectionDueToZones = function(newval, oldval) {
             var zoneDiff = oldval.filter(function(x) {
                 var idx = newval.findIndex(function(val) { return val.id === x.id; });
                 return idx === -1;
@@ -34,9 +37,12 @@ angular.module('ELBWizard')
                 });
                 if (instanceInZone) instance.selected = false;
             });
-        });
+        };
         $scope.$watch('instances.vpcSubnets', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
+            vm.handleDeselectionDueToSubnets(newval, oldval);
+        });
+        vm.handleDeselectionDueToSubnets = function(newval, oldval) {
             var subnetDiff = oldval.filter(function(x) {
                 var idx = newval.findIndex(function(val) { return val.id === x.id; });
                 return idx === -1;
@@ -49,10 +55,13 @@ angular.module('ELBWizard')
                 });
                 if (instanceInSubnet) instance.selected = false;
             });
-        });
+        };
         // may want to make this event-driven by having instance selector use callback upon selection change
         $scope.$watch('instances.instances', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
+            vm.handleInstanceSelectionChange(newval, oldval);
+        }, true);
+        vm.handleInstanceSelectionChange = function(newval, oldval) {
             if (vm.vpcNetwork == 'None') {
                 // update labels, accumulate zones for selection
                 var zonesToSelect = [];
@@ -82,7 +91,7 @@ angular.module('ELBWizard')
                 // update selection
                 vm.vpcSubnets = subnetsToSelect;
             }
-        }, true);
+        };
         vm.submit = function () {
             if(vm.instanceForm.$invalid) {
                 return;
