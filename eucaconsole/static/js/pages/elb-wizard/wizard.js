@@ -57,7 +57,7 @@ angular.module('ELBWizard', [
             vpcSecurityGroupChoices: [],
             instances: [],
             availabilityZones: [],
-            availabilityZoneChoices: [],
+            availabilityZoneChoices: []
         },
 
         validSteps: function (cloudType, vpcEnabled) {
