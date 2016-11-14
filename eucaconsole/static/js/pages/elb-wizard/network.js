@@ -5,7 +5,7 @@ angular.module('ELBWizard')
     vm.vpcNetwork = '';
     vm.securityGroups = [];
     vm.vpcNetworkChoices = ELBWizardService.values.vpcNetworkChoices;
-    vm.securityGroupChoices = ELBWizardService.values.vpcSecurityGroupChoices;
+    vm.vpcSecurityGroupChoices = ELBWizardService.values.vpcSecurityGroupChoices;
 
     // Set initial VPC network choice
     if (vm.vpcNetworkChoices.length) {
@@ -13,8 +13,8 @@ angular.module('ELBWizard')
     }
 
     // Set initial security groups choice to 'default' group
-    if (vm.securityGroupChoices.length) {
-        vm.securityGroups = vm.securityGroupChoices.filter(function (sgroup) {
+    if (vm.vpcSecurityGroupChoices.length) {
+        vm.securityGroups = vm.vpcSecurityGroupChoices.filter(function (sgroup) {
             return sgroup.id === 'default';
         });
     }

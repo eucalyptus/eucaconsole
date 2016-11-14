@@ -23,7 +23,7 @@
         <div class="columns">
             <select id="security_groups" ng-model="network.securityGroups" required=""
                     multiple="" chosen="true" search-contains="true"
-                    ng-options="sgroup as sgroup.label for sgroup in network.securityGroupChoices track by sgroup.id">
+                    ng-options="sgroup as sgroup.label for sgroup in network.vpcSecurityGroupChoices track by sgroup.id">
             </select>
         </div>
     </div>
