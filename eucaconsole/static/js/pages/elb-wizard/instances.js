@@ -22,42 +22,26 @@ angular.module('ELBWizard')
         // https://github.com/leocaseiro/angular-chosen/issues/145
         $scope.$watch('instances.availabilityZones', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
-            vm.handleDeselectionDueToZones(newval, oldval);
+            vm.handleDeselection(newval, oldval, 'availability_zone');
         });
-        vm.handleDeselectionDueToZones = function(newval, oldval) {
-            var zoneDiff = oldval.filter(function(x) {
-                var idx = newval.findIndex(function(val) {
-                    return val.id === x.id;
-                });
-                return idx === -1;
-            });
-            if (zoneDiff.length === 0) return;  // leave unless there were zone(s) removed
-            vm.instances.forEach(function(instance) {
-                if (instance.selected !== true) return;  // get out fast if not selected
-                var instanceInZone = zoneDiff.some(function(zone) {
-                    return (zone.id === instance.availability_zone);
-                });
-                if (instanceInZone) instance.selected = false;
-            });
-        };
         $scope.$watch('instances.vpcSubnets', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
-            vm.handleDeselectionDueToSubnets(newval, oldval);
+            vm.handleDeselection(newval, oldval, 'subnet_id');
         });
-        vm.handleDeselectionDueToSubnets = function(newval, oldval) {
-            var subnetDiff = oldval.filter(function(x) {
+        vm.handleDeselection = function(newval, oldval, field) {
+            var valDiff = oldval.filter(function(x) {
                 var idx = newval.findIndex(function(val) {
                     return val.id === x.id;
                 });
                 return idx === -1;
             });
-            if (subnetDiff.length === 0) return;  // leave unless there were subnet(s) removed
+            if (valDiff.length === 0) return;  // leave unless there were zone(s) removed
             vm.instances.forEach(function(instance) {
                 if (instance.selected !== true) return;  // get out fast if not selected
-                var instanceInSubnet = subnetDiff.some(function(subnet) {
-                    return (subnet.id === instance.subnet_id);
+                var instanceInDeselectedVal = valDiff.some(function(zone) {
+                    return (zone.id === instance[field]);
                 });
-                if (instanceInSubnet) instance.selected = false;
+                if (instanceInDeselectedVal) instance.selected = false;
             });
         };
         // may want to make this event-driven by having instance selector use callback upon selection change
@@ -68,33 +52,24 @@ angular.module('ELBWizard')
         vm.handleInstanceSelectionChange = function(newval, oldval) {
             if (vm.vpcNetwork === 'None') {
                 // update labels, accumulate zones for selection
-                var zonesToSelect = [];
-                vm.availabilityZoneChoices.forEach(function (zone) {
-                    var count = vm.instances.filter(function(instance) {
-                        return instance.selected && instance.availability_zone === zone.id;
-                    }).length;
-                    zone.label = zone.id + " : " + count + " instances";
-                    if (count > 0) {
-                        zonesToSelect.push(zone);
-                    }
-                });
-                // update selection
-                vm.availabilityZones = zonesToSelect;
+                vm.availabilityZones = changeSelection(vm.availabilityZoneChoices, 'availability_zone', 'id');
             } else {
                 // update labels, accumulate subnets for selection
-                var subnetsToSelect = [];
-                vm.vpcSubnetChoices.forEach(function (subnet) {
-                    var count = vm.instances.filter(function(instance) {
-                        return instance.selected && instance.subnet_id === subnet.id;
-                    }).length;
-                    subnet.label = subnet.labelBak + " : " + count + " instances";
-                    if (count > 0) {
-                        subnetsToSelect.push(subnet);
-                    }
-                });
-                // update selection
-                vm.vpcSubnets = subnetsToSelect;
+                vm.vpcSubnets = changeSelection(vm.vpcSubnetChoices, 'subnet_id', 'labelBak');
             }
+        };
+        var changeSelection = function(resourceList, instanceField, resourceLabelBase) {
+            var resourcesToSelect = [];
+            resourceList.forEach(function (resource) {
+                var count = vm.instances.filter(function(instance) {
+                    return instance.selected && instance[instanceField] === resource.id;
+                }).length;
+                resource.label = resource[resourceLabelBase] + " : " + count + " instances";
+                if (count > 0) {
+                    resourcesToSelect.push(resource);
+                }
+            });
+            return resourcesToSelect;
         };
         vm.submit = function () {
             if(vm.instanceForm.$invalid) {

@@ -299,7 +299,7 @@ describe('ELB Wizard Module', function () {
                 {id:'one', label:'one'},
                 {id:'two', label:'two'}
             ];
-            controller.handleDeselectionDueToZones([zones[0]], zones);
+            controller.handleDeselection([zones[0]], zones, 'availability_zone');
             expect(controller.instances[0].selected).toBe(true);
             expect(controller.instances[1].selected).toBe(false);
             expect(controller.instances[2].selected).toBe(false);
@@ -314,7 +314,7 @@ describe('ELB Wizard Module', function () {
                 {id:'subnet-10000001', label:'subnet1'},
                 {id:'subnet-10000002', label:'subnet2'}
             ];
-            controller.handleDeselectionDueToSubnets([subnets[0]], subnets);
+            controller.handleDeselection([subnets[0]], subnets, 'subnet_id');
             expect(controller.instances[0].selected).toBe(true);
             expect(controller.instances[1].selected).toBe(false);
             expect(controller.instances[2].selected).toBe(false);
