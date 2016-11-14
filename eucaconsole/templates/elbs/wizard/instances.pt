@@ -40,7 +40,6 @@
             </div>
             <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
         </div>
-        <div>&nbsp;</div>
     </div>
     <instance-selector instance-list="instances.instances" instances-loading="instances.instancesLoading"></instance-selector>
 

@@ -26,7 +26,9 @@ angular.module('ELBWizard')
         });
         vm.handleDeselectionDueToZones = function(newval, oldval) {
             var zoneDiff = oldval.filter(function(x) {
-                var idx = newval.findIndex(function(val) { return val.id === x.id; });
+                var idx = newval.findIndex(function(val) {
+                    return val.id === x.id;
+                });
                 return idx === -1;
             });
             if (zoneDiff.length === 0) return;  // leave unless there were zone(s) removed
@@ -44,7 +46,9 @@ angular.module('ELBWizard')
         });
         vm.handleDeselectionDueToSubnets = function(newval, oldval) {
             var subnetDiff = oldval.filter(function(x) {
-                var idx = newval.findIndex(function(val) { return val.id === x.id; });
+                var idx = newval.findIndex(function(val) {
+                    return val.id === x.id;
+                });
                 return idx === -1;
             });
             if (subnetDiff.length === 0) return;  // leave unless there were subnet(s) removed
