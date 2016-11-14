@@ -101,6 +101,11 @@ angular.module('MagicSearch')
                     }
                     return ret;
                 };
+                $scope.$watch('facets_param', function(newVal, oldVal) {
+                    if (newVal === oldVal) return;
+                    $scope.currentSearch = [];
+                    $scope.initSearch();
+                });
                 // removes a facet from the menu
                 $scope.deleteFacetSelection = function(facetParts) {
                     angular.forEach($scope.facetsObj.slice(), function(facet, idx) {

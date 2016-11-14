@@ -59,6 +59,9 @@ urls = [
     Route(name='file_download', pattern='/_getfile'),
     Route(name='render_template', pattern='/_template/*subpath'),
 
+    # AvailabilityZones #####
+    Route(name='zones_json', pattern='/zones/json'),
+
     # Images #####
     Route(name='images', pattern='/images'),
     Route(name='images_json', pattern='/images/json'),
@@ -175,6 +178,9 @@ urls = [
     Route(name='certificate_create', pattern='/certificate/create'),
     Route(name='elb_certificate', pattern='/certificate'),
 
+    # Facets for instances
+    Route(name='elb_instances_filters', pattern='/elbs/instances/filters'),
+
     # Volumes #####
     # Landing page
     Route(name='volumes', pattern='/volumes'),
@@ -242,7 +248,6 @@ urls = [
     Route(name='bucket_sign_req', pattern='/buckets/{name}/signreq/*subpath'),
     Route(name='bucket_item_url', pattern='/buckets/{name}/geturl/*subpath'),
 
-
     # Security Groups #####
     # Landing page
     Route(name='securitygroups', pattern='/securitygroups'),
@@ -255,6 +260,11 @@ urls = [
     Route(name='securitygroup_view', pattern='/securitygroups/{id}'),  # Pass id='new' to render Add SG page
     Route(name='securitygroup_update', pattern='/securitygroups/{id}/update'),
     Route(name='securitygroup_delete', pattern='/securitygroups/{id}/delete'),
+
+    # VPCs #####
+    Route(name='vpcnetworks_json', pattern='/vpcnetworks/json'),
+    Route(name='vpcsubnets_json', pattern='/vpcsubnets/json'),
+    Route(name='vpcsecuritygroups_json', pattern='/vpcsecuritygroups/json'),
 
     # Key pairs #####
     # Landing page

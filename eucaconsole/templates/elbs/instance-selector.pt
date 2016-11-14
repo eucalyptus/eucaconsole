@@ -1,0 +1,73 @@
+<div i18n:domain="eucaconsole">
+    <div class="section-label-with-helptext-icon">
+        <label class="stack-label">
+            <span i18n:translate="">Add instances</span>
+            <span class="helptext-icon" data-tooltip="" i18n:attributes="title" title="Balance traffic between the selected instances"></span>
+        </label>
+    </div>
+    <magic-search
+        template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+        facets="{{facets}}"
+        filter-keys="['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']">
+    </magic-search>
+    <div id="instance-selector" ng-cloak="">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="instance-all-checkbox" ng-model="state.allSelected" ng-click="setAllState()"/></th>
+                    <th i18n:translate="">Name (ID)</th>
+                    <th i18n:translate="">Tags</th>
+                    <th i18n:translate="">Availability Zone</th>
+                    <th ng-if="isVPCSupported" i18n:translate=""></th>
+                    <th i18n:translate="">Status</th>
+                    <th class="status-descr" i18n:translate="">Status Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="instance in filteredInstances track by instance.id">
+                    <td>
+                        <input type="checkbox" class="item-checkbox" ng-model="instance.selected" ng-change="handleItemSelection()"
+                               ng-disabled="isDetailPage &amp;&amp; elbScalingGroupNames.indexOf(instance.scaling_group) !== -1" />
+                    </td>
+                    <td>
+                        <span id="instance-name-{{ instance.id }}" class="id breakword">
+                            <a ng-href="/instances/{{ instance.id }}" target="_blank">{{ instance.name }}</a>
+                        </span>
+                    </td>
+                    <td class="breakall">{{ instance.tags }}</td>
+                    <td>
+                        <i ng-show="!isVPCSupported &amp;&amp; selectedZones.indexOf(instance.availability_zone) === -1"
+                           class="fi-alert" data-tooltip="" i18n:attributes="title"
+                           title="Instances will not receive any traffic until you enable this zone"></i>
+                        {{ instance.availability_zone }}
+                    </td>
+                    <td ng-if="isVPCSupported">
+                        <i ng-show="selectedSubnets.indexOf(instance.subnet_id) === -1"
+                           class="fi-alert" data-tooltip="" i18n:attributes="title"
+                           title="Instances will not receive any traffic until you enable this subnet"></i>
+                        <span ng-show="instance.vpc_name != ''">
+                            {{ instance.vpc_subnet_display }} | {{ instance.vpc_name }}
+                        </span>
+                    </td>
+                    <td class="status">
+                        <span class="label radius status {{ instanceHealthMapping[instance.id].state || instance.status }}">
+                            {{ healthStatusNames[instanceHealthMapping[instance.id].state] || instance.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ instanceHealthMapping[instance.id].description }}
+                    </td>
+                </tr>
+                <tr ng-show="instanceList.length === 0">
+                    <td></td>
+                    <td colspan="6">
+                        <span ng-show="instancesLoading" class="busy"></span>
+                        <span ng-show="!instancesLoading">{{ tableText.no_matching_instance_error_msg }}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

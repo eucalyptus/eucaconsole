@@ -1193,6 +1193,23 @@ class ELBWizardView(BaseView):
             return JSONResponse(status=400, message=err.message)  # Malformed certificate
 
 
+class ELBFilterView(BaseELBView):
+    """ """
+
+    def __init__(self, request, **kwargs):
+        super(ELBFilterView, self).__init__(request, **kwargs)
+
+    @view_config(route_name='elb_instances_filters', request_method='GET', renderer='json', xhr=True)
+    def elb_instances_filters(self):
+        filters_form = ELBInstancesFiltersForm(
+            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
+            iam_conn=None, vpc_conn=self.vpc_conn,
+            cloud_type=self.cloud_type)
+        search_facets = filters_form.facets
+        string_facets = BaseView.escape_json(json.dumps(search_facets))
+        return dict(results=string_facets)
+        
+
 class CreateELBView(BaseELBView):
     """Create ELB wizard"""
     TEMPLATE = '../templates/elbs/elb_wizard.pt'

@@ -129,7 +129,7 @@ class StacksView(LandingPageView):
         self.cloudformation_conn = self.get_connection(conn_type="cloudformation")
         self.initial_sort_key = 'name'
         self.prefix = '/stacks'
-        self.filter_keys = ['name', 'create-time']
+        self.filter_keys = ['name', 'create-time', 'description']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('stacks_json')
         self.delete_form = StacksDeleteForm(request, formdata=request.params or None)
