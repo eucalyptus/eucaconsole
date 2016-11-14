@@ -5,7 +5,7 @@ angular.module('ELBWizard')
     vm.vpcNetwork = '';
     vm.securityGroups = [];
     vm.vpcNetworkChoices = ELBWizardService.values.vpcNetworkChoices;
-    vm.securityGroupChoices = [{id:'default', label:'default'}];
+    vm.securityGroupChoices = ELBWizardService.values.vpcSecurityGroupChoices;
 
     // Set initial VPC network choice
     if (vm.vpcNetworkChoices.length) {
