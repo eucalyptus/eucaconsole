@@ -40,6 +40,11 @@ AWS_REGIONS = (
         endpoints=dict(ec2='ec2.us-east-1.amazonaws.com'),
     ),
     dict(
+        name='us-east-2',
+        label='US East (Ohio)',
+        endpoints=dict(ec2='ec2.us-east-2.amazonaws.com'),
+    ),
+    dict(
         name='us-west-1',
         label='US West (N. California)',
         endpoints=dict(ec2='ec2.us-west-1.amazonaws.com'),
@@ -60,6 +65,11 @@ AWS_REGIONS = (
         endpoints=dict(ec2='ec2.eu-central-1.amazonaws.com')
     ),
     dict(
+        name='ap-south-1',
+        label='Asia Pacific (Mumbai)',
+        endpoints=dict(ec2='ec2.ap-south-1.amazonaws.com')
+    ),
+    dict(
         name='ap-southeast-1',
         label='Asia Pacific (Singapore)',
         endpoints=dict(ec2='ec2.ap-southeast-1.amazonaws.com')
@@ -73,6 +83,11 @@ AWS_REGIONS = (
         name='ap-northeast-1',
         label='Asia Pacific (Tokyo)',
         endpoints=dict(ec2='ec2.ap-northeast-1.amazonaws.com')
+    ),
+    dict(
+        name='ap-northeast-2',
+        label='Asia Pacific (Seoul)',
+        endpoints=dict(ec2='ec2.ap-northeast-2.amazonaws.com')
     ),
     dict(
         name='sa-east-1',
