@@ -1,10 +1,10 @@
 angular.module('ELBWizard')
-.controller('NetworkController', ['$scope', function ($scope) {
+.controller('NetworkController', ['$scope', 'ELBWizardService', function ($scope, ELBWizardService) {
     var vm = this;
 
     vm.vpcNetwork = '';
     vm.securityGroups = [];
-    vm.vpcNetworkChoices = [{id:'vpc-123456', label:'vpc-123456'}];
+    vm.vpcNetworkChoices = ELBWizardService.values.vpcNetworkChoices;
     vm.securityGroupChoices = [{id:'default', label:'default'}];
 
     // Set initial VPC network choice
