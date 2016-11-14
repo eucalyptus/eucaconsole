@@ -6,7 +6,7 @@
         <div class="columns large-12 small-12 field">
             <label class="left stack-label">Name <span class="req">*</span></label>
             <input type="text" class="text-input" pattern="^[a-zA-Z0-9-]{1,32}$"
-                   focus-on-load="true" name="name" ng-model="general.elbName" required="required"/>
+                   focus-on-load="true" name="name" ng-model="general.values.elbName" required="required"/>
             <div class="error" ng-show="generalForm.name.$error.required" i18n:translate="">
                 Name is required.
             </div>

@@ -9,6 +9,7 @@ angular.module('ELBWizard')
         ELBWizardService.certsAvailable = certificates;
         ELBWizardService.policies = policies;
 
+        this.values = ELBWizardService.values;
         this.listeners = [{
             'fromPort': 80,
             'toPort': 80,

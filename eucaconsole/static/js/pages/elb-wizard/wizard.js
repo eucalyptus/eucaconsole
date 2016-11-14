@@ -50,6 +50,7 @@ angular.module('ELBWizard', [
         certsAvailable: [],
         policies: [],
         values: {
+            elbName: '',
             vpcNetwork: 'None',
             vpcNetworkChoices: [],
             vpcSubnets: [],
@@ -104,6 +105,16 @@ angular.module('ELBWizard', [
             });
         }
     };
+})
+.directive('summaryPane', function() {
+    return {
+        restrict: 'E',
+        templateUrl: '/_template/elbs/wizard/summary',
+        controller: ['ELBWizardService', function (ELBWizardService) {
+            this.values = ELBWizardService.values;
+        }],
+        controllerAs: 'summary'
+    }
 })
 .directive('fetchData', function(InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
     return {
