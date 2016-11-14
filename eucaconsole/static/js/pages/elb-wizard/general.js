@@ -10,12 +10,6 @@ angular.module('ELBWizard')
         ELBWizardService.policies = policies;
 
         this.values = ELBWizardService.values;
-        this.listeners = [{
-            'fromPort': 80,
-            'toPort': 80,
-            'fromProtocol': 'HTTP',
-            'toProtocol': 'HTTP'
-        }];
 
         this.submit = function () {
             if($scope.generalForm.$invalid) {

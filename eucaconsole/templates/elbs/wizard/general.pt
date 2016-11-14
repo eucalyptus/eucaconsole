@@ -20,7 +20,7 @@
 
     <div class="row controls-wrapper">
         <div class="columns">
-            <listener-editor ng-model="general.listeners"></listener-editor>
+            <listener-editor ng-model="general.values.listeners"></listener-editor>
         </div>
     </div>
 
@@ -28,7 +28,7 @@
 
     <div class="row controls-wrapper">
         <div class="columns" ng-cloak="">
-            <tag-editor ng-model="general.tags">[]</tag-editor>
+            <tag-editor ng-model="general.values.tags">[]</tag-editor>
         </div>
     </div>
 

@@ -1,6 +1,5 @@
 <div class="summary" ng-cloak="" i18n:domain="eucaconsole">
     <h5 i18n:translate="" class="title">Summary</h5>
-    <!--div class="section" ng-show="summary.summaryDisplays[0]"-->
     <div class="section">
         <div class="row">
             <label i18n:translate="">Name</label>
@@ -9,7 +8,7 @@
         <div class="row">
             <label i18n:translate="">Listeners</label>
             <div class="columns value">
-                <div class="multi-row" ng-repeat="listener in values.listenerArray">
+                <div class="multi-row" ng-repeat="listener in summary.values.listeners">
                     <div>
                         {{ listener.fromProtocol.toUpperCase() }} ({{ listener.fromPort }}) to 
                         {{ listener.toProtocol.toUpperCase() }} ({{ listener.toPort }})
@@ -20,61 +19,67 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="section" ng-show="summaryDisplays[1]">
-        <div class="row">
-            <label i18n:translate="">VPC network</label>
-            <div class="columns value">{{ values.vpcNetworkName }}</div>
-        </div>
-        <div class="row" ng-show="summaryDisplays[2] &amp;&amp; vpcNetwork === 'None'">
-            <label i18n:translate="">Availability zones</label>
-            <div class="columns value">
-                <div ng-repeat="zone in values.availabilityZones">{{ zone }}</div>
+        <div class="row" ng-show="summary.values.tags.length">
+            <label i18n:translate="">Tags</label>
+            <div class="columns value" id="tag-preview">
+                <div ng-repeat="tag in summary.values.tags">{{ tag.name }}={{ tag.value }}</div>
             </div>
         </div>
-        <div class="row" ng-show="summaryDisplays[2] &amp;&amp; values.vpcNetwork !== 'None'">
+    </div>
+    <div class="section" ng-show="summary.displaySummary(1)">
+        <div class="row">
+            <label i18n:translate="">VPC network</label>
+            <div class="columns value">{{ summary.values.vpcNetworkName }}</div>
+        </div>
+        <div class="row" ng-show="summary.displaySummary(2) &amp;&amp; vpcNetwork === 'None'">
+            <label i18n:translate="">Availability zones</label>
+            <div class="columns value">
+                <div ng-repeat="zone in summary.values.availabilityZones">{{ zone }}</div>
+            </div>
+        </div>
+        <div class="row" ng-show="summary.displaySummary(2) &amp;&amp; summary.values.vpcNetwork !== 'None'">
             <label i18n:translate="">VPC subnets</label>
             <div class="columns value">
-                <div ng-repeat="vpcSubnetName in values.vpcSubnetNames">{{ vpcSubnetName }}</div>
+                <div ng-repeat="vpcSubnetName in summary.values.vpcSubnetNames">{{ vpcSubnetName }}</div>
             </div>
         </div>
         <div class="row" ng-show="vpcNetwork !== 'None'">
             <label i18n:translate="">Security groups</label>
             <div class="columns value multi-row">
-                <div ng-repeat="securityGroupName in values.securityGroupNames">{{ securityGroupName }}</div>
+                <div ng-repeat="securityGroupName in summary.values.securityGroupNames">{{ securityGroupName }}</div>
             </div>
         </div>
     </div>
-    <div class="section" ng-show="summaryDisplays[2]">
-        <div class="row" ng-show="values.vpcNetwork === 'None'">
+    <div class="section" ng-show="summary.displaySummary(2)">
+        <div class="row" ng-show="summary.values.vpcNetwork === 'None'">
             <div class="columns value">
-                <div ng-repeat="zone in values.availabilityZones">
+                <div ng-repeat="zone in summary.values.availabilityZones">
                     {{ getInstanceCount('ZONE', zone) }} instances in zone {{ zone }}
                 </div>
             </div>
         </div>
-        <div class="row" ng-show="values.vpcNetwork !== 'None'">
+        <div class="row" ng-show="summary.values.vpcNetwork !== 'None'">
             <div class="columns value">
-                <div ng-repeat="vpcSubnet in values.vpcSubnets">
+                <div ng-repeat="vpcSubnet in summary.values.vpcSubnets">
                     {{ getInstanceCount('SUBNET', vpcSubnet) }} instances in {{ vpcSubnet }}
                 </div>
             </div>
         </div>
     </div>
-    <div class="section" ng-show="summaryDisplays[3]">
+    <div class="section" ng-show="summary.displaySummary(3)">
         <div class="row">
             <label i18n:translate="">Health check ping</label>
-            <div class="small-8 columns value">{{ values.pingProtocol }}</div>
+            <div class="small-8 columns value">{{ summary.values.pingProtocol }}</div>
         </div>
         <div class="row">
             <label i18n:translate="">Port</label>
-            <div class="small-8 columns value">{{ values.pingPort }}</div>
+            <div class="small-8 columns value">{{ summary.values.pingPort }}</div>
         </div>
         <div class="row" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
             <label i18n:translate="">Path</label>
-            <div class="small-8 columns value">{{ values.pingPath }}</div>
+            <div class="small-8 columns value">{{ summary.values.pingPath }}</div>
         </div>
-        <div class="row logging-summary" ng-show="values.loggingEnabled">
+        <div class="row logging-summary" ng-show="summary.values.loggingEnabled">
             <div class="small-8 columns value">
                 <i class="fi fi-check"></i>
                 <span i18n:translate="">Access logs enabled</span>
