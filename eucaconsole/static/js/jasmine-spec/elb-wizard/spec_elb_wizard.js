@@ -268,9 +268,9 @@ describe('ELB Wizard Module', function () {
             $templateCache.put('/_template/elbs/wizard/instances', template);
         }));
 
-        var $controller, $routeParams, controller;
+        var $controller, $scope, $routeParams, controller;
         beforeEach(inject(function (_$controller_, _$routeParams_) {
-            var $scope = $rootScope.$new();
+            $scope = $rootScope.$new();
 
             $controller = _$controller_;
             $routeParams = _$routeParams_;
@@ -281,7 +281,73 @@ describe('ELB Wizard Module', function () {
             });
         }));
 
-        it('should certainly do something');
+        beforeEach(function() {
+            controller.instances = [
+                {availability_zone: 'one', subnet_id: 'subnet-10000001', selected: false},
+                {availability_zone: 'one', subnet_id: 'subnet-10000001', selected: false},
+                {availability_zone: 'two', subnet_id: 'subnet-10000002', selected: false}
+            ];
+            controller.vpcNetwork = 'vpc-abcdefg';
+        });
+
+        it('should deselect instance when zone deselected', function() {
+            // select 1 from each zone
+            controller.instances[0].selected = true;
+            controller.instances[2].selected = true;
+            // set 2 zones in model
+            var zones = [
+                {id:'one', label:'one'},
+                {id:'two', label:'two'}
+            ];
+            controller.handleDeselection([zones[0]], zones, 'availability_zone');
+            expect(controller.instances[0].selected).toBe(true);
+            expect(controller.instances[1].selected).toBe(false);
+            expect(controller.instances[2].selected).toBe(false);
+        });
+
+        it('should deselect instance when subnet deselected', function() {
+            // select 1 from each zone
+            controller.instances[0].selected = true;
+            controller.instances[2].selected = true;
+            // set 2 subnets in model
+            var subnets = [
+                {id:'subnet-10000001', label:'subnet1'},
+                {id:'subnet-10000002', label:'subnet2'}
+            ];
+            controller.handleDeselection([subnets[0]], subnets, 'subnet_id');
+            expect(controller.instances[0].selected).toBe(true);
+            expect(controller.instances[1].selected).toBe(false);
+            expect(controller.instances[2].selected).toBe(false);
+        });
+
+        it('should select zone when instance selected', function() {
+            controller.vpcNetwork = 'None';
+            // set 2 zones in model
+            controller.availabilityZoneChoices = [
+                {id:'one', label:'one'},
+                {id:'two', label:'two'}
+            ];
+            controller.availabilityZones = [];
+            // select 1 instance
+            controller.instances[0].selected = true;
+            controller.handleInstanceSelectionChange(controller.instances, controller.instances);
+            expect(controller.availabilityZones.length).toEqual(1);
+            expect(controller.availabilityZones[0].label).toEqual('one : 1 instances');
+        });
+
+        it('should select subnet when instance selected', function() {
+            // set 2 subnets in model
+            controller.vpcSubnetChoices = [
+                {id:'subnet-10000001', label:'subnet1', labelBak:'subnet1'},
+                {id:'subnet-10000002', label:'subnet2', labelBak:'subnet2'}
+            ];
+            controller.vpcSubnets = [];
+            // select 1 instance
+            controller.instances[0].selected = true;
+            controller.handleInstanceSelectionChange(controller.instances, controller.instances);
+            expect(controller.vpcSubnets.length).toEqual(1);
+            expect(controller.vpcSubnets[0].label).toEqual('subnet1 : 1 instances');
+        });
     });
 
     describe('Advanced tab controller', function () {
@@ -317,3 +383,32 @@ describe('ELB Wizard Module', function () {
         });
     });
 });
+
+if (!Array.prototype.findIndex) {
+  Object.defineProperty(Array.prototype, 'findIndex', {
+    value: function(predicate) {
+      'use strict';
+      if (this == null) {
+        throw new TypeError('Array.prototype.findIndex called on null or undefined');
+      }
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+      var list = Object(this);
+      var length = list.length >>> 0;
+      var thisArg = arguments[1];
+      var value;
+
+      for (var i = 0; i < length; i++) {
+        value = list[i];
+        if (predicate.call(thisArg, value, i, list)) {
+          return i;
+        }
+      }
+      return -1;
+    },
+    enumerable: false,
+    configurable: false,
+    writable: false
+  });
+}

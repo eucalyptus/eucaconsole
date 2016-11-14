@@ -1,7 +1,8 @@
 angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
-    'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule'
+    'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
+    'ZonesServiceModule', 'VPCServiceModule'
 ])
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [
@@ -48,7 +49,15 @@ angular.module('ELBWizard', [
     var svc = {
         certsAvailable: [],
         policies: [],
-        values: {},
+        values: {
+            vpcNetwork: 'None',
+            vpcNetworkChoices: [],
+            vpcSubnets: [],
+            vpcSubnetChoices: [],
+            instances: [],
+            availabilityZones: [],
+            availabilityZoneChoices: []
+        },
 
         validSteps: function (cloudType, vpcEnabled) {
             var validSteps = steps.filter(function (current) {
@@ -93,6 +102,57 @@ angular.module('ELBWizard', [
             $timeout(function () {
                 elem[0].focus();
             });
+        }
+    };
+})
+.directive('fetchData', function(InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
+    return {
+        restrict: 'E',
+        link: function(scope, elem, attrs) {
+            if (attrs.isVpc == 'True') {
+                // load vpcs, subnets, groups
+                VPCService.getVPCNetworks().then(
+                    function success(result) {
+                        result.forEach(function(val) {
+                            ELBWizardService.values.vpcNetworkChoices.push(val); 
+                        });
+                        ELBWizardService.values.vpcNetwork = ELBWizardService.values.vpcNetworkChoices[0];
+                    },
+                    function error(errData) {
+                        eucaHandleError(errData.data.message, errData.status);
+                    });
+                VPCService.getVPCSubnets().then(
+                    function success(result) {
+                        result.forEach(function(val) {
+                            val.labelBak = val.label;
+                            ELBWizardService.values.vpcSubnetChoices.push(val); 
+                        });
+                    },
+                    function error(errData) {
+                        eucaHandleError(errData.data.message, errData.status);
+                    });
+            }
+            else {
+                // load zones
+                ZonesService.getZones().then(
+                    function success(result) {
+                        result.forEach(function(val) {
+                            ELBWizardService.values.availabilityZoneChoices.push(val); 
+                        });
+                    },
+                    function error(errData) {
+                        eucaHandleError(errData.data.message, errData.status);
+                    });
+            }
+            InstancesService.getInstances($('#csrf_token').val()).then(
+                function success(result) {
+                    result.forEach(function(val) {
+                        ELBWizardService.values.instances.push(val); 
+                    });
+                },
+                function error(errData) {
+                    eucaHandleError(errData.data.message, errData.status);
+                });
         }
     };
 })

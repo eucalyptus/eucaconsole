@@ -192,6 +192,8 @@ module.exports = function(grunt) {
             elbWizard: {
                 src: [
                    'eucaconsole/static/js/services/instances-service.js',
+                   'eucaconsole/static/js/services/zones-service.js',
+                   'eucaconsole/static/js/services/vpc-service.js',
                    'eucaconsole/static/js/pages/elb-wizard/wizard.js',
                    'eucaconsole/static/js/pages/elb-wizard/navigation.js',
                    'eucaconsole/static/js/pages/elb-wizard/main.js',
