@@ -54,6 +54,7 @@ angular.module('ELBWizard', [
             vpcNetworkChoices: [],
             vpcSubnets: [],
             vpcSubnetChoices: [],
+            securityGroups: [],
             vpcSecurityGroupChoices: [],
             instances: [],
             availabilityZones: [],

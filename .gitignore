@@ -12,7 +12,6 @@ nosetests.xml
 coverage.xml
 tutorial.db
 build/
-dist/
 bin/
 lib/
 include/

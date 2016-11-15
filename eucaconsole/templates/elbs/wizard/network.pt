@@ -1,4 +1,4 @@
-<form name="networkForm" class="" ng-submit="network.submit()" step-data="network.stepData"
+<form name="network.networkForm" class="" ng-submit="network.submit()" step-data="network.stepData"
     i18n:domain="eucaconsole" novalidate="">
     <div id="controls_vpc_network" class="row inline controls-wrapper">
         <div class="columns">

@@ -2,8 +2,8 @@ angular.module('ELBWizard')
 .controller('NetworkController', ['$scope', 'ELBWizardService', function ($scope, ELBWizardService) {
     var vm = this;
 
-    vm.vpcNetwork = '';
-    vm.securityGroups = [];
+    vm.vpcNetwork = ELBWizardService.values.vpcNetwork;
+    vm.securityGroups = ELBWizardService.values.securityGroups;
     vm.vpcNetworkChoices = ELBWizardService.values.vpcNetworkChoices;
     vm.vpcSecurityGroupChoices = ELBWizardService.values.vpcSecurityGroupChoices;
 
