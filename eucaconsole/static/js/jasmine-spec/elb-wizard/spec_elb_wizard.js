@@ -258,8 +258,8 @@ describe('ELB Wizard Module', function () {
             });
         }));
 
-        it('should set initial value of vpcNetwork to an empty string', function () {
-            expect(controller.vpcNetwork).toEqual('');
+        it('should set initial value of vpcNetwork to "None"', function () {
+            expect(controller.vpcNetwork).toEqual('None');
         });
 
         it('should set initial value of vpcSecurityGroupChoices to an empty array', function () {
