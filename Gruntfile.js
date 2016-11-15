@@ -325,6 +325,31 @@ module.exports = function(grunt) {
         }
     });
 
+    /*  Watch & concatenate packaged js files
+     *
+     *  Watch package files only, update package build when changed.
+     *  Must be configured after initial init so src files lists may be
+     *  interrogated.
+     */
+    grunt.config.merge({
+        watch: (function () {
+            var packages = grunt.config.get(['concat']),
+                out = {};
+
+            Object.keys(packages).forEach(function (current) {
+                if(current === 'options') return;
+
+                var p = packages[current];
+                out[current] = {
+                    files: p.src,
+                    tasks: ['concat:' + current]
+                };
+            });
+
+            return out;
+        })()
+    });
+
     // Load the plugins
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
