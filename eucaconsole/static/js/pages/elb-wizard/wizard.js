@@ -59,7 +59,12 @@ angular.module('ELBWizard', [
             availabilityZoneChoices: [],
             pingProtocol: 'HTTP',
             pingPort: 80,
-            pingPath: '/'
+            pingPath: '/',
+            responseTimeout: 5,
+            timeBetweenPings: '30',
+            failuresUntilUnhealthy: '2',
+            passesUntilHealthy: '2',
+            loggingEnabled: false
         },
 
         validSteps: function (cloudType, vpcEnabled) {

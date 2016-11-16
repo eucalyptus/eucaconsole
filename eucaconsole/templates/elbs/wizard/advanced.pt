@@ -52,7 +52,60 @@
                 <span i18n:translate="">Advanced</span>
             </a>
         </div>
-        <div class="section ng-hide" ng-show="expanded">
+        <div class="section" ng-show="expanded">
+            <h6 class="section-label">Health check timing settings</h6>
+            <div id="controls_response_timeout" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">Response timeout (secs)</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <input id="response_timeout" type="number" value="" required="required" pattern="^[1-9]\d*$" ng-model="advanced.values.responseTimeout" name="response_timeout" min="1">
+                </div>
+            </div>
+            <div id="controls_time_between_pings" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">Time between pings</span> 
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <select id="time_between_pings" class="ping-delay ng-pristine ng-valid ng-not-empty ng-valid-required ng-touched" required="required" ng-model="advanced.values.timeBetweenPings" name="time_between_pings" aria-invalid="false">
+                        <option value="30" i18n:translate="">30 seconds</option>
+                        <option value="60" i18n:translate="">1 minute</option>
+                        <option value="300" i18n:translate="">5 minutes</option>
+                    </select>
+                </div>
+            </div>
+            <h6 class="section-label">Health check instance thresholds</h6>
+            <div id="controls_failures_until_unhealthy" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">Failures until unhealthy</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <select id="failures_until_unhealthy" class="ping-threshold" required="required" ng-model="advanced.values.failuresUntilUnhealthy" name="failures_until_unhealthy" ng-options="y for y in ['2', '3', '4', '5', '6', '7', '8', '9', '10']">
+                    </select>
+                </div>
+            </div>
+            <div id="controls_passes_until_healthy" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">Passes until healthy</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <select id="passes_until_healthy" class="ping-threshold" required="required" ng-model="advanced.values.passesUntilHealthy" name="passes_until_healthy" ng-options="y for y in ['2', '3', '4', '5', '6', '7', '8', '9', '10']">
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
     <hr>
     <div>
