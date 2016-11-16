@@ -371,15 +371,15 @@ describe('ELB Wizard Module', function () {
         }));
 
         it('should default the protocol value', function () {
-            expect(controller.protocol).toEqual('HTTP');
+            expect(controller.values.pingProtocol).toEqual('HTTP');
         });
 
         it('should default the port value', function () {
-            expect(controller.port).toEqual(80);
+            expect(controller.values.pingPort).toEqual(80);
         });
 
         it('should default the path value', function () {
-            expect(controller.path).toEqual('/');
+            expect(controller.values.pingPath).toEqual('/');
         });
     });
 });
