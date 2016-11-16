@@ -99,9 +99,11 @@
         <a class="cancel-link" i18n:translate="" ng-click="ctrl.cancel()">Cancel</a>
     </div>
 </div>
-<div class="modal xlarge" modal="securityPolicyEditor">
+
+<!--div class="modal xlarge" modal="securityPolicyEditor">
     <security-policy-editor ng-model="ctrl.policies"></security-policy-editor>
-</div>
-<div class="modal xlarge" modal="certificateEditor">
+</div-->
+
+<!--div class="modal xlarge" modal="certificateEditor">
     <certificate-editor ng-model="ctrl.certificates"></certificate-editor>
-</div>
+</div-->
