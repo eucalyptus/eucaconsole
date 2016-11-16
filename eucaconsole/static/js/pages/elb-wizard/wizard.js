@@ -2,7 +2,7 @@ angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
-    'ZonesServiceModule', 'VPCServiceModule'
+    'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule'
 ])
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [
@@ -56,7 +56,10 @@ angular.module('ELBWizard', [
             vpcSubnetChoices: [],
             instances: [],
             availabilityZones: [],
-            availabilityZoneChoices: []
+            availabilityZoneChoices: [],
+            pingProtocol: 'HTTP',
+            pingPort: 80,
+            pingPath: '/'
         },
 
         validSteps: function (cloudType, vpcEnabled) {
