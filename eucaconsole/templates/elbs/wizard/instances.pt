@@ -1,4 +1,4 @@
-<form name="instances.instanceForm" novalidate="" ng-submit="instances.submit()" i18n:domain="eucaconsole">
+<form name="instanceForm" novalidate="" ng-submit="instances.submit()" i18n:domain="eucaconsole">
     <div ng-cloak="true" ng-if="instances.vpcNetwork === 'None'">
         <div class="section-label-with-helptext-icon">
             <label class="left stack-label">
