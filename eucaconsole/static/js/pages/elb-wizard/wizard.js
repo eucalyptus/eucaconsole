@@ -50,6 +50,14 @@ angular.module('ELBWizard', [
         certsAvailable: [],
         policies: [],
         values: {
+            elbName: '',
+            listeners: [{
+                'fromPort': 80,
+                'toPort': 80,
+                'fromProtocol': 'HTTP',
+                'toProtocol': 'HTTP'
+            }],
+            tags: [],
             vpcNetwork: 'None',
             vpcNetworkChoices: [],
             vpcSubnets: [],

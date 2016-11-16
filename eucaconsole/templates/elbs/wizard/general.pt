@@ -6,7 +6,7 @@
         <div class="columns large-12 small-12 field">
             <label class="left stack-label">Name <span class="req">*</span></label>
             <input type="text" class="text-input" pattern="^[a-zA-Z0-9-]{1,32}$"
-                   focus-on-load="true" name="name" ng-model="general.elbName" required="required"/>
+                   focus-on-load="true" name="name" ng-model="general.values.elbName" required="required"/>
             <div class="error" ng-show="generalForm.name.$error.required" i18n:translate="">
                 Name is required.
             </div>
@@ -20,7 +20,7 @@
 
     <div class="row controls-wrapper">
         <div class="columns">
-            <listener-editor ng-model="general.listeners"></listener-editor>
+            <listener-editor ng-model="general.values.listeners"></listener-editor>
         </div>
     </div>
 
@@ -28,7 +28,7 @@
 
     <div class="row controls-wrapper">
         <div class="columns" ng-cloak="">
-            <tag-editor ng-model="general.tags">[]</tag-editor>
+            <tag-editor ng-model="general.values.tags">[]</tag-editor>
         </div>
     </div>
 
