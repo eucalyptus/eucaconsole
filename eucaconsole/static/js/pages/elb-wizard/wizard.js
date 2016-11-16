@@ -54,7 +54,7 @@ angular.module('ELBWizard', [
             vpcNetworkChoices: [],
             vpcSubnets: [],
             vpcSubnetChoices: [],
-            securityGroups: [],
+            vpcSecurityGroups: [],
             vpcSecurityGroupChoices: [],
             instances: [],
             availabilityZones: [],
@@ -137,6 +137,9 @@ angular.module('ELBWizard', [
                     function success(result) {
                         result.forEach(function(val) {
                             ELBWizardService.values.vpcSecurityGroupChoices.push(val);
+                            if (val.id === 'default') {
+                                ELBWizardService.values.vpcSecurityGroups.push(val);
+                            }
                         });
                     },
                     function error(errData) {
