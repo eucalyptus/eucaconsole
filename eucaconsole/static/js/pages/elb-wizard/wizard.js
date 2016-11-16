@@ -54,6 +54,8 @@ angular.module('ELBWizard', [
             vpcNetworkChoices: [],
             vpcSubnets: [],
             vpcSubnetChoices: [],
+            vpcSecurityGroups: [],
+            vpcSecurityGroupChoices: [],
             instances: [],
             availabilityZones: [],
             availabilityZoneChoices: [],
@@ -117,7 +119,7 @@ angular.module('ELBWizard', [
     return {
         restrict: 'E',
         link: function(scope, elem, attrs) {
-            if (attrs.isVpc == 'True') {
+            if (attrs.isVpc === 'True') {
                 // load vpcs, subnets, groups
                 VPCService.getVPCNetworks().then(
                     function success(result) {
@@ -134,6 +136,18 @@ angular.module('ELBWizard', [
                         result.forEach(function(val) {
                             val.labelBak = val.label;
                             ELBWizardService.values.vpcSubnetChoices.push(val); 
+                        });
+                    },
+                    function error(errData) {
+                        eucaHandleError(errData.data.message, errData.status);
+                    });
+                VPCService.getVPCSecurityGroups().then(
+                    function success(result) {
+                        result.forEach(function(val) {
+                            ELBWizardService.values.vpcSecurityGroupChoices.push(val);
+                            if (val.id === 'default') {
+                                ELBWizardService.values.vpcSecurityGroups.push(val);
+                            }
                         });
                     },
                     function error(errData) {

@@ -258,7 +258,14 @@ describe('ELB Wizard Module', function () {
             });
         }));
 
-        it('should certainly do something');
+        it('should set initial value of vpcNetwork to "None"', function () {
+            expect(controller.vpcNetwork).toEqual('None');
+        });
+
+        it('should set initial value of vpcSecurityGroupChoices to an empty array', function () {
+            expect(controller.vpcSecurityGroupChoices).toEqual([]);
+        });
+
     });
 
     describe('Instances tab controller', function () {

@@ -72,7 +72,7 @@ angular.module('ELBWizard')
             return resourcesToSelect;
         };
         vm.submit = function () {
-            if(vm.instanceForm.$invalid) {
+            if($scope.instanceForm.$invalid) {
                 return;
             }
             ELBWizardService.next({});
