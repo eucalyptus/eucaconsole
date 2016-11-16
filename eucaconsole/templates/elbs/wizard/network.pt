@@ -1,0 +1,46 @@
+<form name="networkForm" class="" ng-submit="network.submit()" step-data="network.stepData"
+    i18n:domain="eucaconsole" novalidate="">
+    <div id="controls_vpc_network" class="row inline controls-wrapper">
+        <div class="columns">
+            <label for="vpc_network" class="left stack-label">
+                <span i18n:translate="">VPC Network</span>
+                <span class="req">*</span>
+            </label>
+        </div>
+        <div class="columns">
+            <select id="vpc_network" ng-model="network.vpcNetwork" required=""
+                    ng-options="vpc as vpc.label for vpc in network.vpcNetworkChoices track by vpc.id">
+            </select>
+        </div>
+    </div>
+    <div id="controls_security_groups" class="row inline controls-wrapper">
+        <div class="columns">
+            <label for="security_groups" class="left stack-label">
+                <span i18n:translate="">Security groups</span>
+                <span class="req">*</span>
+            </label>
+        </div>
+        <div class="columns">
+            <select id="security_groups" ng-model="network.vpcSecurityGroups" required=""
+                    multiple="" chosen="true" search-contains="true"
+                    ng-options="sgroup as sgroup.label for sgroup in network.vpcSecurityGroupChoices track by sgroup.id">
+            </select>
+        </div>
+    </div>
+    <hr />
+    <div>
+        <label>
+            <span class="req">*</span>
+            <span i18n:translate="">Required fields</span>
+        </label>
+    </div>
+    <div class="row">
+        <div class="small-3 columns">&nbsp;</div>
+        <div class="small-9 columns field inline">
+            <input type="submit" class="button small round" value="Next" />
+            <a href="${request.route_path('elbs')}"
+               class="cancel-link" i18n:translate="">Cancel</a>
+        </div>
+    </div>
+</form>
+
