@@ -13,7 +13,7 @@ angular.module('ELBServiceModule', [])
             var data = {
                 csrf_token: csrfToken,
                 name: values.elbName,
-                elb_listener: values.listeners.map(function(val) { return JSON.stringify(val); }),
+                elb_listener: JSON.stringify(values.listeners),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
                 securitygroup: values.vpcSecurityGroups.map(function(val) { return val.id; }),

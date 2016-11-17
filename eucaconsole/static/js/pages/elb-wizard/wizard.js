@@ -74,7 +74,10 @@ angular.module('ELBWizard', [
             timeBetweenPings: '30',
             failuresUntilUnhealthy: '2',
             passesUntilHealthy: '2',
-            loggingEnabled: false
+            loggingEnabled: false,
+            bucketName: '',
+            bucketPrefix: '',
+            collectionInterval: '5'
         },
 
         validSteps: function (cloudType, vpcEnabled) {
@@ -153,7 +156,7 @@ angular.module('ELBWizard', [
                     function success(result) {
                         result.forEach(function(val) {
                             ELBWizardService.values.vpcSecurityGroupChoices.push(val);
-                            if (val.id === 'default') {
+                            if (val.label === 'default') {
                                 ELBWizardService.values.vpcSecurityGroups.push(val);
                             }
                         });

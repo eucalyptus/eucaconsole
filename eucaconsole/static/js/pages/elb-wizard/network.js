@@ -11,6 +11,9 @@ angular.module('ELBWizard')
             return;
         }
 
-        ELBWizardService.next({});
+        ELBWizardService.next({
+            vpcNetwork: vm.vpcNetwork,
+            vpcSecurityGroups: vm.vpcSecurityGroups
+        });
     };
 }]);

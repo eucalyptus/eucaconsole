@@ -16,11 +16,7 @@ angular.module('ELBWizard')
                 return;
             }
 
-            ELBWizardService.next({
-                name: this.elbName,
-                listeners: this.listeners,
-                tags: this.tags
-            });
+            ELBWizardService.next({});
         };
 
         $scope.$on('$destroy', function () {

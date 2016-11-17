@@ -61,5 +61,5 @@ class VPCSecurityGroupsJsonView(BaseView):
     @view_config(route_name='vpcsecuritygroups_json', renderer='json', request_method='GET')
     def vpcsecuritygroups_json(self):
         with boto_error_handler(self.request):
-            vpc_securitygroups = ChoicesManager(self.conn).security_groups(add_blank=False)
+            vpc_securitygroups = ChoicesManager(self.conn).security_groups(add_blank=False, use_id=True)
             return dict(results=[dict(id=item[0], label=item[1]) for item in vpc_securitygroups])

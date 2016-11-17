@@ -113,7 +113,7 @@ angular.module('ELBServiceModule', [])
             var data = {
                 csrf_token: csrfToken,
                 name: values.elbName,
-                elb_listener: values.listeners.map(function(val) { return JSON.stringify(val); }),
+                elb_listener: JSON.stringify(values.listeners),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
                 securitygroup: values.vpcSecurityGroups.map(function(val) { return val.id; }),
@@ -222,7 +222,10 @@ angular.module('ELBWizard', [
             timeBetweenPings: '30',
             failuresUntilUnhealthy: '2',
             passesUntilHealthy: '2',
-            loggingEnabled: false
+            loggingEnabled: false,
+            bucketName: '',
+            bucketPrefix: '',
+            collectionInterval: '5'
         },
 
         validSteps: function (cloudType, vpcEnabled) {
@@ -301,7 +304,7 @@ angular.module('ELBWizard', [
                     function success(result) {
                         result.forEach(function(val) {
                             ELBWizardService.values.vpcSecurityGroupChoices.push(val);
-                            if (val.id === 'default') {
+                            if (val.label === 'default') {
                                 ELBWizardService.values.vpcSecurityGroups.push(val);
                             }
                         });
@@ -431,11 +434,7 @@ angular.module('ELBWizard')
                 return;
             }
 
-            ELBWizardService.next({
-                name: this.elbName,
-                listeners: this.listeners,
-                tags: this.tags
-            });
+            ELBWizardService.next({});
         };
 
         $scope.$on('$destroy', function () {
@@ -489,30 +488,29 @@ angular.module('ELBWizard')
         vm.handleInstanceSelectionChange = function(newval, oldval) {
             if (vm.vpcNetwork === 'None') {
                 // update labels, accumulate zones for selection
-                vm.availabilityZones = changeSelection(vm.availabilityZoneChoices, 'availability_zone', 'id');
+                changeSelection(vm.availabilityZoneChoices, 'availability_zone', 'id', vm.availabilityZones);
             } else {
                 // update labels, accumulate subnets for selection
-                vm.vpcSubnets = changeSelection(vm.vpcSubnetChoices, 'subnet_id', 'labelBak');
+                changeSelection(vm.vpcSubnetChoices, 'subnet_id', 'labelBak', vm.vpcSubnets);
             }
         };
-        var changeSelection = function(resourceList, instanceField, resourceLabelBase) {
-            var resourcesToSelect = [];
+        var changeSelection = function(resourceList, instanceField, resourceLabelBase, resultList) {
+            resultList.length = 0;
             resourceList.forEach(function (resource) {
                 var count = vm.instances.filter(function(instance) {
                     return instance.selected && instance[instanceField] === resource.id;
                 }).length;
                 resource.label = resource[resourceLabelBase] + " : " + count + " instances";
                 if (count > 0) {
-                    resourcesToSelect.push(resource);
+                    resultList.push(resource);
                 }
             });
-            return resourcesToSelect;
         };
         vm.submit = function () {
             if($scope.instanceForm.$invalid) {
                 return;
             }
-            ELBWizardService.next({});
+            ELBWizardService.next({vpcSubnets: vm.vpcSubnets});
         };
     }
 ]);
