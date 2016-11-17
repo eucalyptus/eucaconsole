@@ -16,7 +16,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row">
+    <div class="row" ng-app="ELBWizard" ng-controller="MainController as main">
 
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -32,16 +32,20 @@
         </h3>
 
         <div class="large-8 columns">
-            <div class="wizard" ng-app="ELBWizard" ng-controller="MainController as main">
+            <div class="wizard">
                 <fetch-data is-vpc="${is_vpc_supported}"></fetch-data>
                 <wizard-nav vpc-enabled="${ is_vpc_supported }" cloud-type="${ cloud_type }"></wizard-nav>
 
                 <div class="tabs-content">
                     <div class="content active">
-                        <div ng-view=""/>
+                        <div ng-view=""></div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
+            <summary-pane></summary-pane>
         </div>
     </div>
 </div>

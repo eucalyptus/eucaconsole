@@ -100,6 +100,10 @@ angular.module('ELBWizard', [
             $location.path(next.href);
         },
 
+        displaySummary: function(step) {
+            return this.nav.steps[step].complete || this.nav.steps[step] === this.nav.current;
+        },
+
         submit: function () {
         }
     };
@@ -125,6 +129,18 @@ angular.module('ELBWizard', [
             });
         }
     };
+})
+.directive('summaryPane', function() {
+    return {
+        restrict: 'E',
+        templateUrl: '/_template/elbs/wizard/summary',
+        controller: ['ELBWizardService', function (ELBWizardService) {
+            this.values = ELBWizardService.values;
+            this.nav = ELBWizardService.nav;
+            this.displaySummary = ELBWizardService.displaySummary;
+        }],
+        controllerAs: 'summary'
+    }
 })
 .directive('fetchData', function(InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
     return {
