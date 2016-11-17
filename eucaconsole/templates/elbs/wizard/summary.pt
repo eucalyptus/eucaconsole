@@ -29,24 +29,24 @@
     <div class="section" ng-show="summary.displaySummary(1)">
         <div class="row">
             <label i18n:translate="">VPC network</label>
-            <div class="columns value">{{ summary.values.vpcNetworkName }}</div>
+            <div class="columns value">{{ summary.values.vpcNetwork.label }}</div>
         </div>
         <div class="row" ng-show="summary.displaySummary(2) &amp;&amp; vpcNetwork === 'None'">
             <label i18n:translate="">Availability zones</label>
             <div class="columns value">
-                <div ng-repeat="zone in summary.values.availabilityZones">{{ zone }}</div>
+                <div ng-repeat="zone in summary.values.availabilityZones">{{ zone.id }}</div>
             </div>
         </div>
         <div class="row" ng-show="summary.displaySummary(2) &amp;&amp; summary.values.vpcNetwork !== 'None'">
             <label i18n:translate="">VPC subnets</label>
             <div class="columns value">
-                <div ng-repeat="vpcSubnetName in summary.values.vpcSubnetNames">{{ vpcSubnetName }}</div>
+                <div ng-repeat="vpcSubnet in summary.values.vpcSubnets">{{ vpcSubnet.label }}</div>
             </div>
         </div>
         <div class="row" ng-show="vpcNetwork !== 'None'">
             <label i18n:translate="">Security groups</label>
             <div class="columns value multi-row">
-                <div ng-repeat="securityGroupName in summary.values.securityGroupNames">{{ securityGroupName }}</div>
+                <div ng-repeat="securityGroup in summary.values.vpcSecurityGroups">{{ securityGroup.label }}</div>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
             <label i18n:translate="">Port</label>
             <div class="small-8 columns value">{{ summary.values.pingPort }}</div>
         </div>
-        <div class="row" ng-show="pingProtocol === 'HTTP' || pingProtocol === 'HTTPS'">
+        <div class="row" ng-show="summary.values.pingProtocol === 'HTTP' || summary.values.pingProtocol === 'HTTPS'">
             <label i18n:translate="">Path</label>
             <div class="small-8 columns value">{{ summary.values.pingPath }}</div>
         </div>
