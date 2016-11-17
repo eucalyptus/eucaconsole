@@ -213,7 +213,7 @@ describe('ELB Wizard Module', function () {
         }));
 
         it('should add one default listener', function () {
-            expect(controller.listeners.length).toEqual(1);
+            expect(controller.values.listeners.length).toEqual(1);
         });
 
         describe('#submit', function () {
