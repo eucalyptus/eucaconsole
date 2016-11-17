@@ -105,11 +105,52 @@ angular.module('VPCServiceModule', [])
     };
 }]);
 
+angular.module('ELBServiceModule', [])
+.factory('ELBService', ['$http', function ($http) {
+    $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    return {
+        createELB: function (csrfToken, values) {
+            var data = {
+                csrf_token: csrfToken,
+                name: values.elbName,
+                elb_listener: JSON.stringify(values.listeners),
+                vpc_network: values.vpcNetwork.id,
+                vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
+                securitygroup: values.vpcSecurityGroups.map(function(val) { return val.id; }),
+                zone: values.availabilityZones.map(function(val) { return val.id; }),
+                cross_zone_enabled: values.crossZoneEnabled,
+                ping_protocol: values.pingProtocol,
+                ping_port: values.pingPort,
+                ping_path: values.pingPath,
+                response_timeout: values.responseTimeout,
+                time_between_pings: values.timeBetweenPings,
+                failures_until_unhealthy: values.failuresUntilUnhealthy,
+                passes_until_healthy: values.passesUntilHealthy,
+                logging_enabled: values.loggingEnabled,
+                bucket_name: values.bucketName,
+                bucket_prefix: values.bucketPrefix,
+                collection_interval: values.collectionInterval
+            };
+            return $http({
+                method: 'POST',
+                url: '/elbs/create',
+                data: $.param(data, true),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function success (response) {
+                var data = response.data || {
+                    results: []
+                };
+                return data.results;
+            });
+        }
+    };
+}]);
+
 angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
-    'ZonesServiceModule', 'VPCServiceModule'
+    'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule'
 ])
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [
@@ -157,6 +198,14 @@ angular.module('ELBWizard', [
         certsAvailable: [],
         policies: [],
         values: {
+            elbName: '',
+            listeners: [{
+                'fromPort': 80,
+                'toPort': 80,
+                'fromProtocol': 'HTTP',
+                'toProtocol': 'HTTP'
+            }],
+            tags: [],
             vpcNetwork: 'None',
             vpcNetworkChoices: [],
             vpcSubnets: [],
@@ -165,7 +214,18 @@ angular.module('ELBWizard', [
             vpcSecurityGroupChoices: [],
             instances: [],
             availabilityZones: [],
-            availabilityZoneChoices: []
+            availabilityZoneChoices: [],
+            pingProtocol: 'HTTP',
+            pingPort: 80,
+            pingPath: '/',
+            responseTimeout: 5,
+            timeBetweenPings: '30',
+            failuresUntilUnhealthy: '2',
+            passesUntilHealthy: '2',
+            loggingEnabled: false,
+            bucketName: '',
+            bucketPrefix: '',
+            collectionInterval: '5'
         },
 
         validSteps: function (cloudType, vpcEnabled) {
@@ -244,7 +304,7 @@ angular.module('ELBWizard', [
                     function success(result) {
                         result.forEach(function(val) {
                             ELBWizardService.values.vpcSecurityGroupChoices.push(val);
-                            if (val.id === 'default') {
+                            if (val.label === 'default') {
                                 ELBWizardService.values.vpcSecurityGroups.push(val);
                             }
                         });
@@ -367,23 +427,14 @@ angular.module('ELBWizard')
         ELBWizardService.certsAvailable = certificates;
         ELBWizardService.policies = policies;
 
-        this.listeners = [{
-            'fromPort': 80,
-            'toPort': 80,
-            'fromProtocol': 'HTTP',
-            'toProtocol': 'HTTP'
-        }];
+        this.values = ELBWizardService.values;
 
         this.submit = function () {
             if($scope.generalForm.$invalid) {
                 return;
             }
 
-            ELBWizardService.next({
-                name: this.elbName,
-                listeners: this.listeners,
-                tags: this.tags
-            });
+            ELBWizardService.next({});
         };
 
         $scope.$on('$destroy', function () {
@@ -437,30 +488,29 @@ angular.module('ELBWizard')
         vm.handleInstanceSelectionChange = function(newval, oldval) {
             if (vm.vpcNetwork === 'None') {
                 // update labels, accumulate zones for selection
-                vm.availabilityZones = changeSelection(vm.availabilityZoneChoices, 'availability_zone', 'id');
+                changeSelection(vm.availabilityZoneChoices, 'availability_zone', 'id', vm.availabilityZones);
             } else {
                 // update labels, accumulate subnets for selection
-                vm.vpcSubnets = changeSelection(vm.vpcSubnetChoices, 'subnet_id', 'labelBak');
+                changeSelection(vm.vpcSubnetChoices, 'subnet_id', 'labelBak', vm.vpcSubnets);
             }
         };
-        var changeSelection = function(resourceList, instanceField, resourceLabelBase) {
-            var resourcesToSelect = [];
+        var changeSelection = function(resourceList, instanceField, resourceLabelBase, resultList) {
+            resultList.length = 0;
             resourceList.forEach(function (resource) {
                 var count = vm.instances.filter(function(instance) {
                     return instance.selected && instance[instanceField] === resource.id;
                 }).length;
                 resource.label = resource[resourceLabelBase] + " : " + count + " instances";
                 if (count > 0) {
-                    resourcesToSelect.push(resource);
+                    resultList.push(resource);
                 }
             });
-            return resourcesToSelect;
         };
         vm.submit = function () {
             if($scope.instanceForm.$invalid) {
                 return;
             }
-            ELBWizardService.next({});
+            ELBWizardService.next({vpcSubnets: vm.vpcSubnets});
         };
     }
 ]);
@@ -483,10 +533,19 @@ angular.module('ELBWizard')
 }]);
 
 angular.module('ELBWizard')
-.controller('AdvancedController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    this.protocol = 'HTTP';
-    this.port = 80;
-    this.path = '/';
+.controller('AdvancedController', ['$scope', '$routeParams', 'ELBWizardService', 'ELBService', function ($scope, $routeParams, ELBWizardService, ELBService) {
+    this.values = ELBWizardService.values;
+    this.createELB = function($event) {
+        $event.preventDefault();
+        ELBService.createELB($('#csrf_token').val(), this.values).then(
+            function success() {
+                console.log('created ELB!');
+            },
+            function failure() {
+                console.log('did not ELB!');
+            }
+        );
+    };
 }]);
 
 

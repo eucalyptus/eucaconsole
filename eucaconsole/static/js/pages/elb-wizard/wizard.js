@@ -2,7 +2,7 @@ angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
-    'ZonesServiceModule', 'VPCServiceModule'
+    'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule'
 ])
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [
@@ -50,6 +50,14 @@ angular.module('ELBWizard', [
         certsAvailable: [],
         policies: [],
         values: {
+            elbName: '',
+            listeners: [{
+                'fromPort': 80,
+                'toPort': 80,
+                'fromProtocol': 'HTTP',
+                'toProtocol': 'HTTP'
+            }],
+            tags: [],
             vpcNetwork: 'None',
             vpcNetworkChoices: [],
             vpcSubnets: [],
@@ -58,7 +66,18 @@ angular.module('ELBWizard', [
             vpcSecurityGroupChoices: [],
             instances: [],
             availabilityZones: [],
-            availabilityZoneChoices: []
+            availabilityZoneChoices: [],
+            pingProtocol: 'HTTP',
+            pingPort: 80,
+            pingPath: '/',
+            responseTimeout: 5,
+            timeBetweenPings: '30',
+            failuresUntilUnhealthy: '2',
+            passesUntilHealthy: '2',
+            loggingEnabled: false,
+            bucketName: '',
+            bucketPrefix: '',
+            collectionInterval: '5'
         },
 
         validSteps: function (cloudType, vpcEnabled) {
@@ -137,7 +156,7 @@ angular.module('ELBWizard', [
                     function success(result) {
                         result.forEach(function(val) {
                             ELBWizardService.values.vpcSecurityGroupChoices.push(val);
-                            if (val.id === 'default') {
+                            if (val.label === 'default') {
                                 ELBWizardService.values.vpcSecurityGroups.push(val);
                             }
                         });
