@@ -302,7 +302,6 @@ angular.module('ELBWizard', [
                             ELBWizardService.values.vpcNetworkChoices.push(val); 
                         });
                         ELBWizardService.values.vpcNetwork = ELBWizardService.values.vpcNetworkChoices[0];
-                        ELBWizardService.values.vpcNetworkName = ELBWizardService.values.vpcNetworkChoices[1];
                     },
                     function error(errData) {
                         eucaHandleError(errData.data.message, errData.status);
