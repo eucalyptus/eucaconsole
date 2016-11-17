@@ -70,3 +70,5 @@
 #access-logs-wrapper #controls_bucket_name.stacked.controls-wrapper small.error { margin-bottom: 0; padding-bottom: 0; }
 
 #controls_vpc_subnet { padding-bottom: 1.25rem; }
+
+#advanced-section { padding-top: 1.25rem; }

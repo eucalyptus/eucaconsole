@@ -9,23 +9,14 @@ angular.module('ELBWizard')
         ELBWizardService.certsAvailable = certificates;
         ELBWizardService.policies = policies;
 
-        this.listeners = [{
-            'fromPort': 80,
-            'toPort': 80,
-            'fromProtocol': 'HTTP',
-            'toProtocol': 'HTTP'
-        }];
+        this.values = ELBWizardService.values;
 
         this.submit = function () {
             if($scope.generalForm.$invalid) {
                 return;
             }
 
-            ELBWizardService.next({
-                name: this.elbName,
-                listeners: this.listeners,
-                tags: this.tags
-            });
+            ELBWizardService.next({});
         };
 
         $scope.$on('$destroy', function () {

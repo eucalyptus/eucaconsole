@@ -1,4 +1,4 @@
-<form>
+<form id="elb-form">
     <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
     <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
 
@@ -7,15 +7,15 @@
     <div class="row inline stacked controls-wrapper">
         <div class="columns">
             <label class="left stack-label">
-                Protocol&nbsp;<span class="req">*</span>
+                <span i18n:translate="">Protocol</span>&nbsp;<span class="req">*</span>
             </label>
         </div>
         <div class="large-12 small-12 columns field">
-            <select class="ip-protocol" name="protocol" ng-model="advanced.protocol" required="required">
-                <option value="HTTP">HTTP</option>
-                <option value="HTTPS">HTTPS</option>
-                <option value="TCP">TCP</option>
-                <option value="SSL">SSL</option>
+            <select class="ip-protocol" name="protocol" ng-model="advanced.values.pingProtocol" required="required">
+                <option value="HTTP" i18n:translate="">HTTP</option>
+                <option value="HTTPS" i18n:translate="">HTTPS</option>
+                <option value="TCP" i18n:translate="">TCP</option>
+                <option value="SSL" i18n:translate="">SSL</option>
             </select>
         </div>
     </div>
@@ -23,25 +23,104 @@
     <div class="row inline stacked controls-wrapper">
         <div class="columns">
             <label class="left stack-label">
-                Port&nbsp;<span class="req">*</span>
+                <span i18n:translate="">Port</span>&nbsp;<span class="req">*</span>
             </label>
         </div>
         <div class="large-12 small-12 columns field">
             <input max="65535" maxlength="5" min="1" name="port"
-                ng-model="port" pattern="^[1-9]\d*$" required="required" type="number">
+                ng-model="advanced.values.pingPort" pattern="^[1-9]\d*$" required="required" type="number">
         </div>
     </div>
 
-    <div ng-show="advanced.protocol === 'HTTP' || advanced.protocol === 'HTTPS'">
+    <div ng-show="advanced.values.pingProtocol === 'HTTP' || advanced.values.pingProtocol === 'HTTPS'">
         <div class="row inline stacked controls-wrapper">
         <div class="columns">
             <label class="left stack-label">
-                Path&nbsp;<span class="req">*</span>
+                <span i18n:translate="">Path</span>&nbsp;<span class="req">*</span>
             </label>
         </div>
         <div class="large-12 small-12 columns field">
-            <input class="text-input" name="path" ng-model="path" required="required" type="text">
-            <div class="error">Ping path is required and must start with a /</div>
+            <input class="text-input" name="path" ng-model="advanced.values.pingPath" required="required" type="text">
+            <div class="error" i18n:translate="">Ping path is required and must start with a /</div>
+        </div>
+    </div>
+    <div id="advanced-section" class="expando" ng-init="expanded = false">
+        <div class="title">
+            <a ng-click="expanded = !expanded">
+                <i class="fi-plus" ng-show="!expanded"></i>
+                <i class="fi-minus ng-hide" ng-show="expanded"></i>
+                <span i18n:translate="">Advanced</span>
+            </a>
+        </div>
+        <div class="section" ng-show="expanded">
+            <h6 class="section-label">Health check timing settings</h6>
+            <div id="controls_response_timeout" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">Response timeout (secs)</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <input id="response_timeout" type="number" value="" required="required" pattern="^[1-9]\d*$" ng-model="advanced.values.responseTimeout" name="response_timeout" min="1">
+                </div>
+            </div>
+            <div id="controls_time_between_pings" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">Time between pings</span> 
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <select id="time_between_pings" class="ping-delay ng-pristine ng-valid ng-not-empty ng-valid-required ng-touched" required="required" ng-model="advanced.values.timeBetweenPings" name="time_between_pings" aria-invalid="false">
+                        <option value="30" i18n:translate="">30 seconds</option>
+                        <option value="60" i18n:translate="">1 minute</option>
+                        <option value="300" i18n:translate="">5 minutes</option>
+                    </select>
+                </div>
+            </div>
+            <h6 class="section-label">Health check instance thresholds</h6>
+            <div id="controls_failures_until_unhealthy" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">Failures until unhealthy</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <select id="failures_until_unhealthy" class="ping-threshold" required="required" ng-model="advanced.values.failuresUntilUnhealthy" name="failures_until_unhealthy" ng-options="y for y in ['2', '3', '4', '5', '6', '7', '8', '9', '10']">
+                    </select>
+                </div>
+            </div>
+            <div id="controls_passes_until_healthy" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">Passes until healthy</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <select id="passes_until_healthy" class="ping-threshold" required="required" ng-model="advanced.values.passesUntilHealthy" name="passes_until_healthy" ng-options="y for y in ['2', '3', '4', '5', '6', '7', '8', '9', '10']">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div>
+        <label>
+            <span class="req">*</span>
+            <span i18n:translate="">Required fields</span>
+        </label>
+    </div>
+    <div class="row">
+        <div class="small-3 columns"> </div>
+        <div class="small-9 columns field inline">
+            <button id="create-elb-btn-step4" class="button" ng-disabled="isValidationError" ng-click="advanced.createELB($event)" type="submit">
+                <span i18n:translate="">Create Load Balancer</span>
+            </button>
+            <a class="cancel-link" href="/elbs" i18n:translate="">Cancel</a>
         </div>
     </div>
 </form>

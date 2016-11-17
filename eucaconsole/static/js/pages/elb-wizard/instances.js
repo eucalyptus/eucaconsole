@@ -52,30 +52,33 @@ angular.module('ELBWizard')
         vm.handleInstanceSelectionChange = function(newval, oldval) {
             if (vm.vpcNetwork === 'None') {
                 // update labels, accumulate zones for selection
-                vm.availabilityZones = changeSelection(vm.availabilityZoneChoices, 'availability_zone', 'id');
+                changeSelection(vm.availabilityZoneChoices, 'availability_zone', 'id', vm.availabilityZones);
             } else {
                 // update labels, accumulate subnets for selection
-                vm.vpcSubnets = changeSelection(vm.vpcSubnetChoices, 'subnet_id', 'labelBak');
+                changeSelection(vm.vpcSubnetChoices, 'subnet_id', 'labelBak', vm.vpcSubnets);
             }
         };
-        var changeSelection = function(resourceList, instanceField, resourceLabelBase) {
-            var resourcesToSelect = [];
+        var changeSelection = function(resourceList, instanceField, resourceLabelBase, resultList) {
+            resultList.length = 0;
             resourceList.forEach(function (resource) {
                 var count = vm.instances.filter(function(instance) {
                     return instance.selected && instance[instanceField] === resource.id;
                 }).length;
                 resource.label = resource[resourceLabelBase] + " : " + count + " instances";
                 if (count > 0) {
-                    resourcesToSelect.push(resource);
+                    resultList.push(resource);
                 }
             });
-            return resourcesToSelect;
         };
         vm.submit = function () {
             if($scope.instanceForm.$invalid) {
                 return;
             }
-            ELBWizardService.next({});
+            ELBWizardService.next({
+                vpcSubnets: vm.vpcSubnets,
+                availabilityZones: vm.availabilityZones,
+                instances: vm.instances
+            });
         };
     }
 ]);
