@@ -111,6 +111,56 @@ angular.module('ELBWizard', [
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
     'ZonesServiceModule', 'VPCServiceModule'
 ])
+.directive('elbWizard', function () {
+    return {
+        restrict: 'A',
+        scope: {
+            cloudType: '@',
+            vpcEnabled: '@',
+        },
+        controller: ['$scope', function ($scope) {
+            var steps = [
+                {
+                    label: 'General',
+                    href: '/elbs/wizard/',
+                    vpcOnly: false,
+                    complete: false
+                },
+                {
+                    label: 'Network',
+                    href: '/elbs/wizard/network',
+                    vpcOnly: true,
+                    complete: false
+                },
+                {
+                    label: 'Instances',
+                    href: '/elbs/wizard/instances',
+                    vpcOnly: false,
+                    complete: false
+                },
+                {
+                    label: 'Health Check & Advanced',
+                    href: '/elbs/wizard/advanced',
+                    vpcOnly: false,
+                    complete: false
+                }
+            ];
+
+            this.validSteps = function () {
+                var validSteps = steps.filter(function (current) {
+                    if(cloudType === 'aws' || vpcEnabled) {
+                        return true;
+                    } else {
+                        return !current.vpcOnly;
+                    }
+                });
+
+                return validSteps;
+            };
+        }],
+        controllerAs: 'wizard'
+    };
+})
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [
         {
@@ -321,12 +371,13 @@ angular.module('ELBWizard')
     return {
         restrict: 'E',
         scope: {
-            cloudType: '@cloudType',
-            vpcEnabled: '@vpcEnabled'
+            cloudType: '@',
+            vpcEnabled: '@',
+            steps: '@'
         },
         templateUrl: '/_template/elbs/wizard/navigation',
         controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
-            var navigation = ELBWizardService.validSteps($scope.cloudType, $scope.vpcEnabled);
+            var navigation = ELBWizardService.validSteps($scope.steps);
 
             this.validSteps = function () {
                 return navigation.steps;

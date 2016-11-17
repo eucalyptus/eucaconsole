@@ -3,12 +3,13 @@ angular.module('ELBWizard')
     return {
         restrict: 'E',
         scope: {
-            cloudType: '@cloudType',
-            vpcEnabled: '@vpcEnabled'
+            cloudType: '@',
+            vpcEnabled: '@',
+            steps: '@'
         },
         templateUrl: '/_template/elbs/wizard/navigation',
         controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
-            var navigation = ELBWizardService.validSteps($scope.cloudType, $scope.vpcEnabled);
+            var navigation = ELBWizardService.validSteps($scope.steps);
 
             this.validSteps = function () {
                 return navigation.steps;
