@@ -194,6 +194,7 @@ module.exports = function(grunt) {
                    'eucaconsole/static/js/services/instances-service.js',
                    'eucaconsole/static/js/services/zones-service.js',
                    'eucaconsole/static/js/services/vpc-service.js',
+                   'eucaconsole/static/js/services/elb-service.js',
                    'eucaconsole/static/js/pages/elb-wizard/wizard.js',
                    'eucaconsole/static/js/pages/elb-wizard/navigation.js',
                    'eucaconsole/static/js/pages/elb-wizard/main.js',
@@ -323,6 +324,31 @@ module.exports = function(grunt) {
                 'eucaconsole/templates/elbs/elb_wizard.pt'
             ]
         }
+    });
+
+    /*  Watch & concatenate packaged js files
+     *
+     *  Watch package files only, update package build when changed.
+     *  Must be configured after initial init so src files lists may be
+     *  interrogated.
+     */
+    grunt.config.merge({
+        watch: (function () {
+            var packages = grunt.config.get(['concat']),
+                out = {};
+
+            Object.keys(packages).forEach(function (current) {
+                if(current === 'options') return;
+
+                var p = packages[current];
+                out[current] = {
+                    files: p.src,
+                    tasks: ['concat:' + current]
+                };
+            });
+
+            return out;
+        })()
     });
 
     // Load the plugins

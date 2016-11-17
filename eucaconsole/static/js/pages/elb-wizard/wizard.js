@@ -2,7 +2,7 @@ angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
-    'ZonesServiceModule', 'VPCServiceModule'
+    'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule'
 ])
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [
@@ -62,9 +62,22 @@ angular.module('ELBWizard', [
             vpcNetworkChoices: [],
             vpcSubnets: [],
             vpcSubnetChoices: [],
+            vpcSecurityGroups: [],
+            vpcSecurityGroupChoices: [],
             instances: [],
             availabilityZones: [],
-            availabilityZoneChoices: []
+            availabilityZoneChoices: [],
+            pingProtocol: 'HTTP',
+            pingPort: 80,
+            pingPath: '/',
+            responseTimeout: 5,
+            timeBetweenPings: '30',
+            failuresUntilUnhealthy: '2',
+            passesUntilHealthy: '2',
+            loggingEnabled: false,
+            bucketName: '',
+            bucketPrefix: '',
+            collectionInterval: '5'
         },
 
         validSteps: function (cloudType, vpcEnabled) {
@@ -133,7 +146,7 @@ angular.module('ELBWizard', [
     return {
         restrict: 'E',
         link: function(scope, elem, attrs) {
-            if (attrs.isVpc == 'True') {
+            if (attrs.isVpc === 'True') {
                 // load vpcs, subnets, groups
                 VPCService.getVPCNetworks().then(
                     function success(result) {
@@ -151,6 +164,18 @@ angular.module('ELBWizard', [
                         result.forEach(function(val) {
                             val.labelBak = val.label;
                             ELBWizardService.values.vpcSubnetChoices.push(val); 
+                        });
+                    },
+                    function error(errData) {
+                        eucaHandleError(errData.data.message, errData.status);
+                    });
+                VPCService.getVPCSecurityGroups().then(
+                    function success(result) {
+                        result.forEach(function(val) {
+                            ELBWizardService.values.vpcSecurityGroupChoices.push(val);
+                            if (val.label === 'default') {
+                                ELBWizardService.values.vpcSecurityGroups.push(val);
+                            }
                         });
                     },
                     function error(errData) {

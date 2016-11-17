@@ -213,7 +213,7 @@ describe('ELB Wizard Module', function () {
         }));
 
         it('should add one default listener', function () {
-            expect(controller.listeners.length).toEqual(1);
+            expect(controller.values.listeners.length).toEqual(1);
         });
 
         describe('#submit', function () {
@@ -258,7 +258,14 @@ describe('ELB Wizard Module', function () {
             });
         }));
 
-        it('should certainly do something');
+        it('should set initial value of vpcNetwork to "None"', function () {
+            expect(controller.vpcNetwork).toEqual('None');
+        });
+
+        it('should set initial value of vpcSecurityGroupChoices to an empty array', function () {
+            expect(controller.vpcSecurityGroupChoices).toEqual([]);
+        });
+
     });
 
     describe('Instances tab controller', function () {
@@ -371,15 +378,35 @@ describe('ELB Wizard Module', function () {
         }));
 
         it('should default the protocol value', function () {
-            expect(controller.protocol).toEqual('HTTP');
+            expect(controller.values.pingProtocol).toEqual('HTTP');
         });
 
         it('should default the port value', function () {
-            expect(controller.port).toEqual(80);
+            expect(controller.values.pingPort).toEqual(80);
         });
 
         it('should default the path value', function () {
-            expect(controller.path).toEqual('/');
+            expect(controller.values.pingPath).toEqual('/');
+        });
+
+        it('should default the response timeout', function () {
+            expect(controller.values.responseTimeout).toEqual(5);
+        });
+
+        it('should default the time between pings', function () {
+            expect(controller.values.timeBetweenPings).toEqual('30');
+        });
+
+        it('should default the failures until unhealthy', function () {
+            expect(controller.values.failuresUntilUnhealthy).toEqual('2');
+        });
+
+        it('should default the passes until healthy', function () {
+            expect(controller.values.passesUntilHealthy).toEqual('2');
+        });
+
+        it('should default the logging enabled ', function () {
+            expect(controller.values.loggingEnabled).toEqual(false);
         });
     });
 });

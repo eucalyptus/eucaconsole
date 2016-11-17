@@ -44,7 +44,7 @@ class VPCsJsonView(BaseView):
     def vpcnetworks_json(self):
         with boto_error_handler(self.request):
             vpc_networks = ChoicesManager(self.conn).vpc_networks(add_blank=False)
-            return dict(results=[network for network in vpc_networks])
+            return dict(results=[dict(id=item[0], label=item[1]) for item in vpc_networks])
 
     @view_config(route_name='vpcsubnets_json', renderer='json', request_method='GET')
     def vpcsubnets_json(self):
@@ -52,3 +52,14 @@ class VPCsJsonView(BaseView):
             vpc_subnets = ChoicesManager(self.conn).vpc_subnets(show_zone=True, add_blank=False)
             return dict(results=[dict(id=subnet[0], label=subnet[1]) for subnet in vpc_subnets])
 
+
+class VPCSecurityGroupsJsonView(BaseView):
+    def __init__(self, request):
+        super(VPCSecurityGroupsJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+
+    @view_config(route_name='vpcsecuritygroups_json', renderer='json', request_method='GET')
+    def vpcsecuritygroups_json(self):
+        with boto_error_handler(self.request):
+            vpc_securitygroups = ChoicesManager(self.conn).security_groups(add_blank=False, use_id=True)
+            return dict(results=[dict(id=item[0], label=item[1]) for item in vpc_securitygroups])
