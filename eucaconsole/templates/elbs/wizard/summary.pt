@@ -54,14 +54,14 @@
         <div class="row" ng-show="summary.values.vpcNetwork === 'None'">
             <div class="columns value">
                 <div ng-repeat="zone in summary.values.availabilityZones">
-                    {{ getInstanceCount('ZONE', zone) }} instances in zone {{ zone }}
+                    {{ (summary.values.instances | filter:{'availability_zone': zone.id}).length }} instances in zone {{ zone.id }}
                 </div>
             </div>
         </div>
         <div class="row" ng-show="summary.values.vpcNetwork !== 'None'">
             <div class="columns value">
                 <div ng-repeat="vpcSubnet in summary.values.vpcSubnets">
-                    {{ getInstanceCount('SUBNET', vpcSubnet) }} instances in {{ vpcSubnet }}
+                    {{ (summary.values.instances | filter:{'subnet_id': vpcSubnet.id}).length }} instances in {{ vpcSubnet.labelBak }}
                 </div>
             </div>
         </div>
