@@ -388,6 +388,26 @@ describe('ELB Wizard Module', function () {
         it('should default the path value', function () {
             expect(controller.values.pingPath).toEqual('/');
         });
+
+        it('should default the response timeout', function () {
+            expect(controller.values.responseTimeout).toEqual(5);
+        });
+
+        it('should default the time between pings', function () {
+            expect(controller.values.timeBetweenPings).toEqual('30');
+        });
+
+        it('should default the failures until unhealthy', function () {
+            expect(controller.values.failuresUntilUnhealthy).toEqual('2');
+        });
+
+        it('should default the passes until healthy', function () {
+            expect(controller.values.passesUntilHealthy).toEqual('2');
+        });
+
+        it('should default the logging enabled ', function () {
+            expect(controller.values.loggingEnabled).toEqual(false);
+        });
     });
 });
 
