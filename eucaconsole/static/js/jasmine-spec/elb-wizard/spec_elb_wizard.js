@@ -205,9 +205,6 @@ describe('ELB Wizard Module', function () {
         var $controller, $routeParams, $location, controller;
         beforeEach(inject(function (_$controller_, _$routeParams_, _$location_, _ModalService_, _ELBWizardService_) {
             scope = $rootScope.$new();
-            scope.stepData = {
-                certificates: []
-            };
 
             $controller = _$controller_;
             $routeParams = _$routeParams_;

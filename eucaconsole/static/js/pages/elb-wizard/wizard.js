@@ -128,17 +128,6 @@ angular.module('ELBWizard', [
     };
     return svc;
 }])
-.directive('stepData', function () {
-    return {
-        restrict: 'A',
-        scope: {
-            stepData: '='
-        },
-        controller: ['$scope', function ($scope) {
-            angular.merge(this, $scope.stepData);
-        }]
-    };
-})
 .directive('focusOnLoad', function ($timeout) {
     return {
         restrict: 'A',

@@ -276,17 +276,6 @@ angular.module('ELBWizard', [
     };
     return svc;
 }])
-.directive('stepData', function () {
-    return {
-        restrict: 'A',
-        scope: {
-            stepData: '='
-        },
-        controller: ['$scope', function ($scope) {
-            angular.merge(this, $scope.stepData);
-        }]
-    };
-})
 .directive('focusOnLoad', function ($timeout) {
     return {
         restrict: 'A',
@@ -458,10 +447,7 @@ angular.module('ELBWizard')
 .controller('GeneralController', ['$scope', '$route', '$routeParams', 
         '$location', 'ModalService', 'ELBWizardService', 'certificates', 'policies',
     function ($scope, $route, $routeParams, $location, ModalService, ELBWizardService, certificates, policies) {
-        this.stepData = {
-            certsAvailable: certificates,
-            polices: policies
-        };
+
         ELBWizardService.certsAvailable = certificates;
         ELBWizardService.policies = policies;
 
@@ -1389,26 +1375,20 @@ angular.module('InstancesSelectorModule', ['MagicSearch', 'MagicSearchFilterModu
     };
 }]);
 
-angular.module('ELBCertificateEditorModule', ['ModalModule'])
+angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
 .directive('certificateEditor', function () {
     return {
         restrict: 'E',
-        require: {
-            stepData: '?^^stepData'
-        },
         scope: {
             certificate: '=ngModel'
         },
         templateUrl: '/_template/elbs/listener-editor/certificate-editor',
-        link: function (scope, element, attrs, ctrls) {
-            var stepData = ctrls.stepData || {};
-
-            scope.certsAvailable = stepData.certsAvailable;
-            scope.policies = stepData.policies;
-        },
-        controller: ['$scope', 'CertificateService', 'ModalService', function ($scope, CertificateService, ModalService) {
+        controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', function ($scope, CertificateService, ModalService, ELBWizardService) {
             this.activeTab = 'SSL';
             this.certType = 'existing';
+
+            $scope.certsAvailable = ELBWizardService.certsAvailable;
+            $scope.policies = ELBWizardService.policies;
 
             this.showTab = function (tab) {
                 this.activeTab = tab;
