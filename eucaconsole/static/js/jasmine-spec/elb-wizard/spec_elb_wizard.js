@@ -20,10 +20,36 @@ describe('ELB Wizard Module', function () {
 
     describe('ELBWizardService', function () {
 
-        var ELBWizardService;
+        var ELBWizardService, steps;
 
         beforeEach(angular.mock.inject(function (_ELBWizardService_) {
             ELBWizardService = _ELBWizardService_;
+            steps = [
+                {
+                    label: 'General',
+                    href: '/elbs/wizard/',
+                    vpcOnly: false,
+                    complete: false
+                },
+                {
+                    label: 'Network',
+                    href: '/elbs/wizard/network',
+                    vpcOnly: true,
+                    complete: false
+                },
+                {
+                    label: 'Instances',
+                    href: '/elbs/wizard/instances',
+                    vpcOnly: false,
+                    complete: false
+                },
+                {
+                    label: 'Health Check & Advanced',
+                    href: '/elbs/wizard/advanced',
+                    vpcOnly: false,
+                    complete: false
+                }
+            ];
         }));
 
         describe('the service', function () {
@@ -37,21 +63,11 @@ describe('ELB Wizard Module', function () {
             });
         });
 
-        describe('#validSteps', function () {
+        describe('#initNav', function () {
 
-            it('should return the appropriate number of steps for euca, non-vpc clouds', function () {
-                var nav = ELBWizardService.validSteps('euca', false);
-                expect(nav.steps.length).toEqual(3);
-            });
-
-            it('should return the appropriate number of steps for euca, vpc clouds', function () {
-                var nav = ELBWizardService.validSteps('euca', true);
-                expect(nav.steps.length).toEqual(4);
-            });
-
-            it('should return the appropriate number of steps for aws clouds', function () {
-                var nav = ELBWizardService.validSteps('aws');
-                expect(nav.steps.length).toEqual(4);
+            it('should return a navigation object with the correct number of steps', function () {
+                var nav = ELBWizardService.initNav(steps);
+                expect(nav.steps.length).toEqual(steps.length);
             });
         });
 
@@ -60,7 +76,7 @@ describe('ELB Wizard Module', function () {
             var nav, current;
 
             beforeEach(function () {
-                nav = ELBWizardService.validSteps('euca', true);
+                nav = ELBWizardService.initNav(steps);
                 spyOn(nav, 'next').and.callThrough();
 
                 current = nav.current;  // Save a reference to the original "current" for testing later
@@ -101,7 +117,7 @@ describe('ELB Wizard Module', function () {
         var element, scope, controller;
         beforeEach(function () {
             element = $compile(
-                '<wizard-nav cloud-type="euca"></wizard-nav>'
+                '<div elb-wizard="" cloud-type="euca"><wizard-nav></wizard-nav></div>'
             )($rootScope);
             $rootScope.$digest();
 
@@ -110,7 +126,8 @@ describe('ELB Wizard Module', function () {
             $location.path('/elbs/wizard/');
             $rootScope.$apply();
 
-            controller = element.controller('wizardNav');
+            var nav = element.find('wizard-nav');
+            controller = nav.controller('wizardNav');
         });
 
         it('should default to the first tab', function () {
@@ -415,7 +432,7 @@ if (!Array.prototype.findIndex) {
   Object.defineProperty(Array.prototype, 'findIndex', {
     value: function(predicate) {
       'use strict';
-      if (this == null) {
+      if (this === null) {
         throw new TypeError('Array.prototype.findIndex called on null or undefined');
       }
       if (typeof predicate !== 'function') {

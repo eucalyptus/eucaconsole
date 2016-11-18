@@ -34,7 +34,7 @@
         <div class="large-8 columns">
             <div class="wizard" ng-app="ELBWizard" elb-wizard="" vpc-enabled="${ is_vpc_supported }" cloud-type="${ cloud_type }">
                 <fetch-data is-vpc="${is_vpc_supported}"></fetch-data>
-                <wizard-nav vpc-enabled="${ is_vpc_supported }" cloud-type="${ cloud_type }"></wizard-nav>
+                <wizard-nav></wizard-nav>
 
                 <div class="tabs-content">
                     <div class="content active">

@@ -189,13 +189,12 @@ angular.module('ELBWizard', [
 
             this.validSteps = function () {
                 var validSteps = steps.filter(function (current) {
-                    if(cloudType === 'aws' || vpcEnabled) {
+                    if($scope.cloudType === 'aws' || $scope.vpcEnabled) {
                         return true;
                     } else {
                         return !current.vpcOnly;
                     }
                 });
-
                 return validSteps;
             };
         }],
@@ -203,32 +202,6 @@ angular.module('ELBWizard', [
     };
 })
 .factory('ELBWizardService', ['$location', function ($location) {
-    var steps = [
-        {
-            label: 'General',
-            href: '/elbs/wizard/',
-            vpcOnly: false,
-            complete: false
-        },
-        {
-            label: 'Network',
-            href: '/elbs/wizard/network',
-            vpcOnly: true,
-            complete: false
-        },
-        {
-            label: 'Instances',
-            href: '/elbs/wizard/instances',
-            vpcOnly: false,
-            complete: false
-        },
-        {
-            label: 'Health Check & Advanced',
-            href: '/elbs/wizard/advanced',
-            vpcOnly: false,
-            complete: false
-        }
-    ];
 
     function Navigation (steps) {
         steps = steps || [];
@@ -278,15 +251,8 @@ angular.module('ELBWizard', [
             collectionInterval: '5'
         },
 
-        validSteps: function (cloudType, vpcEnabled) {
-            var validSteps = steps.filter(function (current) {
-                if(cloudType === 'aws' || vpcEnabled) {
-                    return true;
-                } else {
-                    return !current.vpcOnly;
-                }
-            });
-            this.nav = new Navigation(validSteps);
+        initNav: function (steps) {
+            this.nav = new Navigation(steps);
             return this.nav;
         },
 
@@ -299,6 +265,9 @@ angular.module('ELBWizard', [
         },
 
         displaySummary: function(step) {
+            if(!this.nav) {
+                return;
+            }
             return this.nav.steps[step].complete || this.nav.steps[step] === this.nav.current;
         },
 
@@ -338,7 +307,7 @@ angular.module('ELBWizard', [
             this.displaySummary = ELBWizardService.displaySummary;
         }],
         controllerAs: 'summary'
-    }
+    };
 })
 .directive('fetchData', function(InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
     return {
@@ -446,17 +415,19 @@ angular.module('ELBWizard')
 .directive('wizardNav', function () {
     return {
         restrict: 'E',
-        scope: {
-            cloudType: '@',
-            vpcEnabled: '@',
-            steps: '@'
-        },
+        require: '?^elbWizard',
         templateUrl: '/_template/elbs/wizard/navigation',
+        link: function (scope, element, attributes, ctrl) {
+            var steps = ctrl.validSteps();
+            scope.setNav(steps);
+        },
         controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
-            var navigation = ELBWizardService.validSteps($scope.steps);
+            $scope.setNav = function (steps) {
+                $scope.navigation = ELBWizardService.initNav(steps);
+            };
 
             this.validSteps = function () {
-                return navigation.steps;
+                return $scope.navigation.steps;
             };
 
             this.visit = function (step) {
