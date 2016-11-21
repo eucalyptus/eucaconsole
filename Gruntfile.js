@@ -191,6 +191,7 @@ module.exports = function(grunt) {
             },
             elbWizard: {
                 src: [
+                   'eucaconsole/static/js/services/bucket-service.js',
                    'eucaconsole/static/js/services/instances-service.js',
                    'eucaconsole/static/js/services/zones-service.js',
                    'eucaconsole/static/js/services/vpc-service.js',
