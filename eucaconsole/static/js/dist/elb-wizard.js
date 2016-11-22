@@ -174,33 +174,56 @@ angular.module('ELBWizard', [
     'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule', 'BucketServiceModule',
     'ModalModule', 'CreateBucketModule',
 ])
+.directive('elbWizard', function () {
+    return {
+        restrict: 'A',
+        scope: {
+            cloudType: '@',
+            vpcEnabled: '@',
+        },
+        controller: ['$scope', function ($scope) {
+            var steps = [
+                {
+                    label: 'General',
+                    href: '/elbs/wizard/',
+                    vpcOnly: false,
+                    complete: false
+                },
+                {
+                    label: 'Network',
+                    href: '/elbs/wizard/network',
+                    vpcOnly: true,
+                    complete: false
+                },
+                {
+                    label: 'Instances',
+                    href: '/elbs/wizard/instances',
+                    vpcOnly: false,
+                    complete: false
+                },
+                {
+                    label: 'Health Check & Advanced',
+                    href: '/elbs/wizard/advanced',
+                    vpcOnly: false,
+                    complete: false
+                }
+            ];
+
+            this.validSteps = function () {
+                var validSteps = steps.filter(function (current) {
+                    if($scope.cloudType === 'aws' || $scope.vpcEnabled) {
+                        return true;
+                    } else {
+                        return !current.vpcOnly;
+                    }
+                });
+                return validSteps;
+            };
+        }],
+        controllerAs: 'wizard'
+    };
+})
 .factory('ELBWizardService', ['$location', function ($location) {
-    var steps = [
-        {
-            label: 'General',
-            href: '/elbs/wizard/',
-            vpcOnly: false,
-            complete: false
-        },
-        {
-            label: 'Network',
-            href: '/elbs/wizard/network',
-            vpcOnly: true,
-            complete: false
-        },
-        {
-            label: 'Instances',
-            href: '/elbs/wizard/instances',
-            vpcOnly: false,
-            complete: false
-        },
-        {
-            label: 'Health Check & Advanced',
-            href: '/elbs/wizard/advanced',
-            vpcOnly: false,
-            complete: false
-        }
-    ];
 
     function Navigation (steps) {
         steps = steps || [];
@@ -250,15 +273,8 @@ angular.module('ELBWizard', [
             collectionInterval: '5'
         },
 
-        validSteps: function (cloudType, vpcEnabled) {
-            var validSteps = steps.filter(function (current) {
-                if(cloudType === 'aws' || vpcEnabled) {
-                    return true;
-                } else {
-                    return !current.vpcOnly;
-                }
-            });
-            this.nav = new Navigation(validSteps);
+        initNav: function (steps) {
+            this.nav = new Navigation(steps);
             return this.nav;
         },
 
@@ -271,6 +287,9 @@ angular.module('ELBWizard', [
         },
 
         displaySummary: function(step) {
+            if(!this.nav) {
+                return false;
+            }
             return this.nav.steps[step].complete || this.nav.steps[step] === this.nav.current;
         },
 
@@ -279,17 +298,6 @@ angular.module('ELBWizard', [
     };
     return svc;
 }])
-.directive('stepData', function () {
-    return {
-        restrict: 'A',
-        scope: {
-            stepData: '='
-        },
-        controller: ['$scope', function ($scope) {
-            angular.merge(this, $scope.stepData);
-        }]
-    };
-})
 .directive('focusOnLoad', function ($timeout) {
     return {
         restrict: 'A',
@@ -310,7 +318,7 @@ angular.module('ELBWizard', [
             this.displaySummary = ELBWizardService.displaySummary;
         }],
         controllerAs: 'summary'
-    }
+    };
 })
 .directive('fetchData', function(InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
     return {
@@ -418,16 +426,19 @@ angular.module('ELBWizard')
 .directive('wizardNav', function () {
     return {
         restrict: 'E',
-        scope: {
-            cloudType: '@cloudType',
-            vpcEnabled: '@vpcEnabled'
-        },
+        require: '?^elbWizard',
         templateUrl: '/_template/elbs/wizard/navigation',
+        link: function (scope, element, attributes, ctrl) {
+            var steps = ctrl.validSteps();
+            scope.setNav(steps);
+        },
         controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
-            var navigation = ELBWizardService.validSteps($scope.cloudType, $scope.vpcEnabled);
+            $scope.setNav = function (steps) {
+                $scope.navigation = ELBWizardService.initNav(steps);
+            };
 
             this.validSteps = function () {
-                return navigation.steps;
+                return $scope.navigation.steps;
             };
 
             this.visit = function (step) {
@@ -458,10 +469,7 @@ angular.module('ELBWizard')
 .controller('GeneralController', ['$scope', '$route', '$routeParams', 
         '$location', 'ModalService', 'ELBWizardService', 'certificates', 'policies',
     function ($scope, $route, $routeParams, $location, ModalService, ELBWizardService, certificates, policies) {
-        this.stepData = {
-            certsAvailable: certificates,
-            polices: policies
-        };
+
         ELBWizardService.certsAvailable = certificates;
         ELBWizardService.policies = policies;
 
@@ -1483,26 +1491,20 @@ angular.module('InstancesSelectorModule', ['MagicSearch', 'MagicSearchFilterModu
     };
 }]);
 
-angular.module('ELBCertificateEditorModule', ['ModalModule'])
+angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
 .directive('certificateEditor', function () {
     return {
         restrict: 'E',
-        require: {
-            stepData: '?^^stepData'
-        },
         scope: {
             certificate: '=ngModel'
         },
         templateUrl: '/_template/elbs/listener-editor/certificate-editor',
-        link: function (scope, element, attrs, ctrls) {
-            var stepData = ctrls.stepData || {};
-
-            scope.certsAvailable = stepData.certsAvailable;
-            scope.policies = stepData.policies;
-        },
-        controller: ['$scope', 'CertificateService', 'ModalService', function ($scope, CertificateService, ModalService) {
+        controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', function ($scope, CertificateService, ModalService, ELBWizardService) {
             this.activeTab = 'SSL';
             this.certType = 'existing';
+
+            $scope.certsAvailable = ELBWizardService.certsAvailable;
+            $scope.policies = ELBWizardService.policies;
 
             this.showTab = function (tab) {
                 this.activeTab = tab;
