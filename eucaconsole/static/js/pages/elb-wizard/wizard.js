@@ -118,7 +118,7 @@ angular.module('ELBWizard', [
 
         displaySummary: function(step) {
             if(!this.nav) {
-                return;
+                return false;
             }
             return this.nav.steps[step].complete || this.nav.steps[step] === this.nav.current;
         },
