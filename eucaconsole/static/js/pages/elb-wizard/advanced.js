@@ -45,7 +45,6 @@ function ($scope, $routeParams, $location, ELBWizardService, ELBService, BucketS
 .directive('loggingConfirmDialog', function() {
     return {
         restrict: 'A',
-        require: ['^modal', 'loggingConfirmDialog'],
         templateUrl: '/_template/elbs/wizard/logging-confirm-dialog',
         controller: ['ModalService', function(ModalService) {
             var vm = this;

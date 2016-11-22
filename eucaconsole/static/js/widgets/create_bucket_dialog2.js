@@ -9,7 +9,6 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils', 'Bucket
 .directive('createBucketDialog', function() {
     return {
         restrict: 'A',
-        require: ['^modal', 'createBucketDialog', 'bucketName'],
         scope: {
             bucketName: '='
         },
