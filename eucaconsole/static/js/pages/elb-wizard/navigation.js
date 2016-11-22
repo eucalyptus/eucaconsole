@@ -2,16 +2,19 @@ angular.module('ELBWizard')
 .directive('wizardNav', function () {
     return {
         restrict: 'E',
-        scope: {
-            cloudType: '@cloudType',
-            vpcEnabled: '@vpcEnabled'
-        },
+        require: '?^elbWizard',
         templateUrl: '/_template/elbs/wizard/navigation',
+        link: function (scope, element, attributes, ctrl) {
+            var steps = ctrl.validSteps();
+            scope.setNav(steps);
+        },
         controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
-            var navigation = ELBWizardService.validSteps($scope.cloudType, $scope.vpcEnabled);
+            $scope.setNav = function (steps) {
+                $scope.navigation = ELBWizardService.initNav(steps);
+            };
 
             this.validSteps = function () {
-                return navigation.steps;
+                return $scope.navigation.steps;
             };
 
             this.visit = function (step) {

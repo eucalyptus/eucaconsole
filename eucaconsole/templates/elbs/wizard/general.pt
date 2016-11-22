@@ -1,5 +1,4 @@
-<form name="generalForm" class="" ng-submit="general.submit()" step-data="general.stepData"
-    i18n:domain="eucaconsole" novalidate="">
+<form name="generalForm" class="" ng-submit="general.submit()" i18n:domain="eucaconsole" novalidate="">
     <h6 i18n:translate="">General</h6>
 
     <div class="row inline stacked controls-wrapper">
