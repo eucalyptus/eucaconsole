@@ -171,7 +171,7 @@ angular.module('ELBWizard', [
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
     'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule', 'BucketServiceModule',
-    'ModalModule',
+    'ModalModule', 'CreateBucketModule',
 ])
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [
@@ -577,8 +577,8 @@ angular.module('ELBWizard')
 }]);
 
 angular.module('ELBWizard')
-.controller('AdvancedController', ['$scope', '$routeParams', 'ELBWizardService', 'ELBService', 'BucketService', 'eucaHandleError', 'ModalService',
-function ($scope, $routeParams, ELBWizardService, ELBService, BucketService, eucaHandleError, ModalService) {
+.controller('AdvancedController', ['$scope', '$routeParams', 'ELBWizardService', 'ELBService', 'BucketService', 'eucaHandleError', 'ModalService', 'createBucketDialog',
+function ($scope, $routeParams, ELBWizardService, ELBService, BucketService, eucaHandleError, ModalService, createBucketDialog ) {
     var vm = this;
     vm.values = ELBWizardService.values;
     vm.buckets = [];
@@ -596,20 +596,24 @@ function ($scope, $routeParams, ELBWizardService, ELBService, BucketService, euc
     vm.accessLogConfirmationDialogKey = 'doNotShowAccessLogConfirmationAgain';
     vm.handleLoggingChange = function() {
         if (vm.values.loggingEnabled) {
-            BucketService.getBuckets($('#csrf_token').val()).then(
-                function success(result) {
-                    result.forEach(function(val) {
-                        vm.buckets.push(val.bucket_name); 
+            if (vm.buckets.length === 0) {
+                BucketService.getBuckets($('#csrf_token').val()).then(
+                    function success(result) {
+                        result.forEach(function(val) {
+                            vm.buckets.push(val.bucket_name); 
+                        });
+                    },
+                    function error(errData) {
+                        eucaHandleError(errData.data.message, errData.status);
                     });
-                },
-                function error(errData) {
-                    eucaHandleError(errData.data.message, errData.status);
-                });
+            }
             if (Modernizr.localstorage && !localStorage.getItem(vm.accessLogConfirmationDialogKey)) {
                 ModalService.openModal('loggingConfirmDialog');
-                //$('#elb-bucket-access-log-dialog').foundation('reveal', 'open');
             }
         }
+    };
+    vm.showCreateBucket = function() {
+        ModalService.openModal('createBucketDialog');
     };
 }])
 .directive('loggingConfirmDialog', function() {
@@ -1336,6 +1340,48 @@ angular.module('MagicSearchFilterModule', [])
     };
 }]);
 
+
+angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils'])
+.directive('createBucketDialog', function() {
+    return {
+        restrict: 'A',
+        require: ['^modal', 'createBucketDialog', 'bucketName'],
+        templateUrl: '/_template/dialogs/create_bucket_dialog2',
+        scope: {
+            bucketName: '='
+        },
+        controller: ['$scope', '$http', 'eucaHandleError', function ($scope, $http, eucaHandleError) {
+            var vm = this;
+            $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            vm.existingBucketConflict = false;
+            vm.isCreatingBucket = false;
+            vm.handleCreateBucket = function ($event) {
+                $event.preventDefault();
+                if ($scope.create-bucket-form.$invalid) {
+                    return false;
+                }
+                var formData = {
+                    'csrf_token': $('#csrf_token').val(),
+                    'bucket_name': $scope.bucketName
+                };
+                vm.isCreatingBucket = true;
+                $http({
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    method: 'POST',
+                    url: '/buckets/create_xhr',
+                    data: $.param(formData)
+                }).success(function (oData) {
+                    vm.isCreatingBucket = false;
+                    //$scope.bucketDialog.foundation('reveal', 'close');
+                }).error(function (oData) {
+                    eucaHandleError(oData);
+                    vm.isCreatingBucket = false;
+                });
+            };
+        }],
+        controllerAs: createBucket
+    };
+});
 
 angular.module('InstancesSelectorModule', ['MagicSearch', 'MagicSearchFilterModule'])
 .factory('InstancesFiltersService', ['$http', function ($http) {

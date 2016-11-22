@@ -207,6 +207,7 @@ module.exports = function(grunt) {
                    'eucaconsole/static/js/widgets/listener-editor/security-policy-editor.js',
                    'eucaconsole/static/js/thirdparty/magic-search/magic_search.js',
                    'eucaconsole/static/js/services/magic-search-filter.js',
+                   'eucaconsole/static/js/widgets/create_bucket_dialog2.js',
                    'eucaconsole/static/js/widgets/instance-selector2.js',
                    'eucaconsole/static/js/widgets/listener-editor/certificate-editor.js',
                    'eucaconsole/static/js/widgets/modal.js',

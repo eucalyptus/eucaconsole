@@ -3,7 +3,7 @@ angular.module('ELBWizard', [
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
     'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule', 'BucketServiceModule',
-    'ModalModule',
+    'ModalModule', 'CreateBucketModule',
 ])
 .factory('ELBWizardService', ['$location', function ($location) {
     var steps = [

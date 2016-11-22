@@ -133,7 +133,7 @@
                 </div>
                 <div id="create-bucket-link">
                     <span i18n:translate="">OR:</span>
-                    <a data-reveal-id="create-bucket-modal" i18n:translate="">Create bucket</a>
+                    <a ng-click="advanced.showCreateBucket()" i18n:translate="">Create bucket</a>
                 </div>
                 <div id="controls_bucket_prefix" class="row inline stacked controls-wrapper">
                     <div class="columns">
@@ -181,5 +181,8 @@
     </div>
     <div class="modal medium" modal="loggingConfirmDialog">
         <div logging-confirm-dialog=""></div>
+    </div>
+    <div class="modal medium" modal="createBucketDialog">
+        <div create-bucket-dialog="" bucket-name="advanced.values.bucketName"></div>
     </div>
 </form>
