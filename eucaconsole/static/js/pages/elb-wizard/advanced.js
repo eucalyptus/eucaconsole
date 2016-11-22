@@ -1,7 +1,4 @@
 angular.module('ELBWizard')
-.config(function($locationProvider) {
-    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
-})
 .controller('AdvancedController', ['$scope', '$routeParams', '$location', 'ELBWizardService', 'ELBService', 'BucketService', 'eucaHandleError', 'ModalService',
 function ($scope, $routeParams, $location, ELBWizardService, ELBService, BucketService, eucaHandleError, ModalService) {
     var vm = this;

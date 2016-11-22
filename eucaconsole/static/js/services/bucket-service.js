@@ -21,6 +21,18 @@ angular.module('BucketServiceModule', [])
                 };
                 return data.results;
             });
+        },
+        createBucket: function (bucketName, csrfToken) {
+            formData = {
+                'csrf_token': csrfToken,
+                'bucket_name': bucketName
+            };
+            return $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'POST',
+                url: '/buckets/create_xhr',
+                data: $.param(formData)
+            });
         }
     };
 }]);

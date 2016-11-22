@@ -43,6 +43,18 @@ angular.module('BucketServiceModule', [])
                 };
                 return data.results;
             });
+        },
+        createBucket: function (bucketName, csrfToken) {
+            formData = {
+                'csrf_token': csrfToken,
+                'bucket_name': bucketName
+            };
+            return $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'POST',
+                url: '/buckets/create_xhr',
+                data: $.param(formData)
+            });
         }
     };
 }]);
@@ -419,7 +431,7 @@ angular.module('ELBWizard', [
             controllerAs: 'advanced'
         });
 
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
 });
 
 angular.module('ELBWizard')
@@ -586,9 +598,6 @@ angular.module('ELBWizard')
 }]);
 
 angular.module('ELBWizard')
-.config(function($locationProvider) {
-    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
-})
 .controller('AdvancedController', ['$scope', '$routeParams', '$location', 'ELBWizardService', 'ELBService', 'BucketService', 'eucaHandleError', 'ModalService',
 function ($scope, $routeParams, $location, ELBWizardService, ELBService, BucketService, eucaHandleError, ModalService) {
     var vm = this;
@@ -1357,7 +1366,7 @@ angular.module('MagicSearchFilterModule', [])
 }]);
 
 
-angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils'])
+angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils', 'BucketServiceModule'])
 .directive('createBucketDialog', function() {
     return {
         restrict: 'A',
@@ -1366,7 +1375,8 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils'])
             bucketName: '='
         },
         templateUrl: '/_template/dialogs/create_bucket_dialog2',
-        controller: ['$scope', '$http', 'eucaHandleError', 'ModalService', function ($scope, $http, eucaHandleError, ModalService) {
+        controller: ['$scope', '$http', 'eucaHandleError', 'ModalService', 'BucketService', 
+        function ($scope, $http, eucaHandleError, ModalService, BucketService) {
             var vm = this;
             $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             vm.existingBucketConflict = false;
@@ -1377,24 +1387,18 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils'])
                 if ($scope.createBucketForm.$invalid) {
                     return false;
                 }
-                var formData = {
-                    'csrf_token': $('#csrf_token').val(),
-                    'bucket_name': vm.bucketName
-                };
                 vm.isCreatingBucket = true;
-                $http({
-                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    method: 'POST',
-                    url: '/buckets/create_xhr',
-                    data: $.param(formData)
-                }).success(function (oData) {
-                    $scope.bucketName = vm.bucketName;
-                    vm.isCreatingBucket = false;
-                    ModalService.closeModal('createBucketDialog');
-                }).error(function (oData) {
-                    eucaHandleError(oData);
-                    vm.isCreatingBucket = false;
-                });
+                BucketService.createBucket(vm.bucketName, $('#csrf_token').val()).then(
+                    function success(oData) {
+                        $scope.bucketName = vm.bucketName;
+                        vm.isCreatingBucket = false;
+                        ModalService.closeModal('createBucketDialog');
+                    },
+                    function error(oData) {
+                        eucaHandleError(oData);
+                        vm.isCreatingBucket = false;
+                    }
+                );
             };
         }],
         controllerAs: 'createBucket'
