@@ -1,6 +1,6 @@
 angular.module('ELBWizard')
-.controller('AdvancedController', ['$scope', '$routeParams', 'ELBWizardService', 'ELBService', 'BucketService', 'eucaHandleError', 'ModalService', 'createBucketDialog',
-function ($scope, $routeParams, ELBWizardService, ELBService, BucketService, eucaHandleError, ModalService, createBucketDialog ) {
+.controller('AdvancedController', ['$scope', '$routeParams', 'ELBWizardService', 'ELBService', 'BucketService', 'eucaHandleError', 'ModalService',
+function ($scope, $routeParams, ELBWizardService, ELBService, BucketService, eucaHandleError, ModalService) {
     var vm = this;
     vm.values = ELBWizardService.values;
     vm.buckets = [];
@@ -37,6 +37,10 @@ function ($scope, $routeParams, ELBWizardService, ELBService, BucketService, euc
     vm.showCreateBucket = function() {
         ModalService.openModal('createBucketDialog');
     };
+    $scope.$watch('advanced.values.bucketName', function(newVal, oldVal) {
+        if (newVal === oldVal) return;
+        vm.buckets.push(newVal);
+    });
 }])
 .directive('loggingConfirmDialog', function() {
     return {

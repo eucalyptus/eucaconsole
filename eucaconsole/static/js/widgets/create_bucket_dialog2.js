@@ -14,19 +14,20 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils'])
             bucketName: '='
         },
         templateUrl: '/_template/dialogs/create_bucket_dialog2',
-        controller: ['$scope', '$http', 'eucaHandleError', function ($scope, $http, eucaHandleError) {
+        controller: ['$scope', '$http', 'eucaHandleError', 'ModalService', function ($scope, $http, eucaHandleError, ModalService) {
             var vm = this;
             $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             vm.existingBucketConflict = false;
             vm.isCreatingBucket = false;
+            vm.bucketName = '';
             vm.handleCreateBucket = function ($event) {
                 $event.preventDefault();
-                if ($scope.create-bucket-form.$invalid) {
+                if ($scope.createBucketForm.$invalid) {
                     return false;
                 }
                 var formData = {
                     'csrf_token': $('#csrf_token').val(),
-                    'bucket_name': $scope.bucketName
+                    'bucket_name': vm.bucketName
                 };
                 vm.isCreatingBucket = true;
                 $http({
@@ -35,14 +36,15 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils'])
                     url: '/buckets/create_xhr',
                     data: $.param(formData)
                 }).success(function (oData) {
+                    $scope.bucketName = vm.bucketName;
                     vm.isCreatingBucket = false;
-                    //$scope.bucketDialog.foundation('reveal', 'close');
+                    ModalService.closeModal('createBucketDialog');
                 }).error(function (oData) {
                     eucaHandleError(oData);
                     vm.isCreatingBucket = false;
                 });
             };
         }],
-        controllerAs: createBucket
+        controllerAs: 'createBucket'
     };
 });
