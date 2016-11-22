@@ -19,6 +19,7 @@ angular.module('ELBServiceModule', [])
                 securitygroup: values.vpcSecurityGroups.map(function(val) { return val.id; }),
                 zone: values.availabilityZones.map(function(val) { return val.id; }),
                 cross_zone_enabled: values.crossZoneEnabled,
+                instances: values.instances.map(function(val) { return val.id; }),
                 ping_protocol: values.pingProtocol,
                 ping_port: values.pingPort,
                 ping_path: values.pingPath,
