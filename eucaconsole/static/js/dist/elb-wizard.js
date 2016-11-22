@@ -590,7 +590,6 @@ function ($scope, $routeParams, $location, ELBWizardService, ELBService, BucketS
         $event.preventDefault();
         ELBService.createELB($('#csrf_token').val(), this.values).then(
             function success(result) {
-                console.log('created ELB!');
                 $location.path('/elbs');
             },
             function failure(errData) {
