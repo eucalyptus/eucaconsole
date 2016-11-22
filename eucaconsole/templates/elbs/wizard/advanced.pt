@@ -179,10 +179,10 @@
             <a class="cancel-link" href="/elbs" i18n:translate="">Cancel</a>
         </div>
     </div>
-    <div class="modal medium" modal="loggingConfirmDialog">
+    <div class="modal small" modal="loggingConfirmDialog">
         <div logging-confirm-dialog=""></div>
     </div>
-    <div class="modal medium" modal="createBucketDialog">
+    <div class="modal small" modal="createBucketDialog">
         <div create-bucket-dialog="" bucket-name="advanced.values.bucketName"></div>
     </div>
 </form>
