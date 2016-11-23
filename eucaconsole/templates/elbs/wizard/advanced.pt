@@ -172,11 +172,14 @@
     </div>
     <div class="row">
         <div class="small-3 columns"> </div>
-        <div class="small-9 columns field inline">
-            <button id="create-elb-btn-step4" class="button" ng-disabled="isValidationError" ng-click="advanced.createELB($event)" type="submit">
+        <div class="small-9 columns field inline" ng-if="!advanced.creatingELB">
+            <button id="create-elb-btn-step4" class="button" ng-click="advanced.createELB($event)" type="submit">
                 <span i18n:translate="">Create Load Balancer</span>
             </button>
             <a class="cancel-link" href="/elbs" i18n:translate="">Cancel</a>
+        </div>
+        <div class="small-9 columns field inline" ng-if="advanced.creatingELB">
+            <span i18n:translate="">Creating load balancer</span>&nbsp;<i class="busy"></i>
         </div>
     </div>
     <div class="modal small" modal="loggingConfirmDialog">

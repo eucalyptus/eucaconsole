@@ -14,12 +14,15 @@ angular.module('ELBServiceModule', [])
                 csrf_token: csrfToken,
                 name: values.elbName,
                 elb_listener: JSON.stringify(values.listeners),
+                tags: JSON.stringify(values.tags),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
                 securitygroup: values.vpcSecurityGroups.map(function(val) { return val.id; }),
                 zone: values.availabilityZones.map(function(val) { return val.id; }),
                 cross_zone_enabled: values.crossZoneEnabled,
-                instances: values.instances.map(function(val) { return val.id; }),
+                instances: values.instances
+                    .filter(function(val) { return val.selected; })
+                    .map(function(val) { return val.id; }),
                 ping_protocol: values.pingProtocol,
                 ping_port: values.pingPort,
                 ping_path: values.pingPath,

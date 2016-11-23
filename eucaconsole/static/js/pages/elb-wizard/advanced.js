@@ -1,17 +1,20 @@
 angular.module('ELBWizard')
-.controller('AdvancedController', ['$scope', '$routeParams', '$location', 'ELBWizardService', 'ELBService', 'BucketService', 'eucaHandleError', 'ModalService',
-function ($scope, $routeParams, $location, ELBWizardService, ELBService, BucketService, eucaHandleError, ModalService) {
+.controller('AdvancedController', ['$scope', '$routeParams', '$window', 'ELBWizardService', 'ELBService', 'BucketService', 'eucaHandleError', 'ModalService',
+function ($scope, $routeParams, $window, ELBWizardService, ELBService, BucketService, eucaHandleError, ModalService) {
     var vm = this;
     vm.values = ELBWizardService.values;
     vm.buckets = [];
+    vm.creatingELB = false;
     vm.createELB = function($event) {
         $event.preventDefault();
+        vm.creatingELB = true;
         ELBService.createELB($('#csrf_token').val(), this.values).then(
             function success(result) {
-                $location.path('/elbs');
+                $window.location = '/elbs';
             },
             function failure(errData) {
                 eucaHandleError(errData.data.message, errData.status);
+                vm.creatingELB = false;
             }
         );
     };
