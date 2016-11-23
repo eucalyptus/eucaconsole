@@ -1,4 +1,4 @@
-<form id="elb-form">
+<form id="elb-form" i18n:domain="eucaconsole">
     <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
     <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
 
@@ -73,7 +73,7 @@
                     </label>
                 </div>
                 <div class="large-12 small-12 columns field">
-                    <select id="time_between_pings" class="ping-delay ng-pristine ng-valid ng-not-empty ng-valid-required ng-touched" required="required" ng-model="advanced.values.timeBetweenPings" name="time_between_pings" aria-invalid="false">
+                    <select id="time_between_pings" class="ping-delay ng-pristine ng-valid ng-not-empty ng-valid-required ng-touched" required="required" ng-model="advanced.values.timeBetweenPings" name="time_between_pings">
                         <option value="30" i18n:translate="">30 seconds</option>
                         <option value="60" i18n:translate="">1 minute</option>
                         <option value="300" i18n:translate="">5 minutes</option>
@@ -105,6 +105,62 @@
                     </select>
                 </div>
             </div>
+            <h6 class="section-label">Access logs</h6>
+            <div id="controls_logging_enabled" class="row inline controls-wrapper">
+                <div class="columns field">
+                    <input id="logging_enabled" type="checkbox" value="y" ng-model="advanced.values.loggingEnabled" name="logging_enabled" ng-click="advanced.handleLoggingChange()">
+                    <label class="left-align" for="logging_enabled" i18n:translate="">Enable logging</label>
+                </div>
+            </div>
+            <div id="access-logs-wrapper" ng-show="advanced.values.loggingEnabled">
+                <p i18n:translate="">Specify where your logs should be stored in the cloud.</p>
+                <div id="controls_bucket_name" class="row inline stacked controls-wrapper">
+                    <div class="columns">
+                        <label class="left stack-label">
+                            <span i18n:translate="">Bucket name</span>
+                            <span class="req">*</span>
+                            <span class="" data-tooltip="" title="Choose from your existing buckets, or create a new bucket." i18n:attributes="title">
+                                <i class="helptext-icon"></i>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="large-12 small-12 columns field">
+                        <select id="bucket_name" required="required" ng-options="bucket for bucket in advanced.buckets" ng-model="advanced.values.bucketName" name="bucket_name">
+                            <option value="">Select...</option>
+                        </select>
+                        <small class="error" i18n:translate="">Bucket name is required</small>
+                    </div>
+                </div>
+                <div id="create-bucket-link">
+                    <span i18n:translate="">OR:</span>
+                    <a ng-click="advanced.showCreateBucket()" i18n:translate="">Create bucket</a>
+                </div>
+                <div id="controls_bucket_prefix" class="row inline stacked controls-wrapper">
+                    <div class="columns">
+                        <label class="left stack-label">
+                            <span i18n:translate="">Prefix</span> 
+                            <span data-tooltip="" title="The path where log files will be stored within the bucket. If not specified, logs will be created at the bucket's root level" i18n:attributes="title">
+                                <i class="helptext-icon"></i>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="large-12 small-12 columns field">
+                        <input id="bucket_prefix" type="text" value="" pattern="^[^A-Z]*$" name="bucket_prefix" ng-model="advanced.values.bucketPrefix">
+                        <small class="error" i18n:translate="">Prefix may not contain uppercase letters</small>
+                    </div>
+                </div>
+                <div id="controls_collection_interval" class="row inline stacked controls-wrapper">
+                    <div class="columns">
+                        <label class="left stack-label" i18n:translate="">Collection interval</label>
+                    </div>
+                    <div class="large-12 small-12 columns field">
+                        <select id="collection_interval" name="collection_interval" ng-model="advanced.values.collectionInterval">
+                            <option value="60" i18n:translate="">60 minutes</option>
+                            <option value="5" i18n:translate="">5 minutes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <hr>
@@ -116,11 +172,20 @@
     </div>
     <div class="row">
         <div class="small-3 columns"> </div>
-        <div class="small-9 columns field inline">
-            <button id="create-elb-btn-step4" class="button" ng-disabled="isValidationError" ng-click="advanced.createELB($event)" type="submit">
+        <div class="small-9 columns field inline" ng-if="!advanced.creatingELB">
+            <button id="create-elb-btn-step4" class="button" ng-click="advanced.createELB($event)" type="submit">
                 <span i18n:translate="">Create Load Balancer</span>
             </button>
             <a class="cancel-link" href="/elbs" i18n:translate="">Cancel</a>
         </div>
+        <div class="small-9 columns field inline" ng-if="advanced.creatingELB">
+            <span i18n:translate="">Creating load balancer</span>&nbsp;<i class="busy"></i>
+        </div>
+    </div>
+    <div class="modal small" modal="loggingConfirmDialog">
+        <div logging-confirm-dialog=""></div>
+    </div>
+    <div class="modal small" modal="createBucketDialog">
+        <div create-bucket-dialog="" bucket-name="advanced.values.bucketName"></div>
     </div>
 </form>

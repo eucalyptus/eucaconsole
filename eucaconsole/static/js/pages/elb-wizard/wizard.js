@@ -2,7 +2,8 @@ angular.module('ELBWizard', [
     'ngRoute', 'TagEditorModule', 'ELBListenerEditorModule', 'localytics.directives',
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
-    'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule'
+    'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule', 'BucketServiceModule',
+    'ModalModule', 'CreateBucketModule',
 ])
 .directive('elbWizard', function () {
     return {
@@ -249,5 +250,5 @@ angular.module('ELBWizard', [
             controllerAs: 'advanced'
         });
 
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
 });

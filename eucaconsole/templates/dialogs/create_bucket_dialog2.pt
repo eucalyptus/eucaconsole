@@ -1,0 +1,28 @@
+<!--! Create bucket dialog -->
+<div id="create-bucket-modal" i18n:domain="eucaconsole">
+    <h3 i18n:translate="">Create bucket</h3>
+    <form name="createBucketForm" ng-submit="createBucket.handleCreateBucket($event)" novalidate="">
+        <div id="controls_bucket_name" class="row inline stacked controls-wrapper">
+            <div class="columns">
+                <label class="left stack-label">
+                    <span i18n:translate="">Name</span>
+                    <span class="req">*</span>
+                </label>
+            </div>
+            <div class="large-12 small-12 columns field">
+                <input id="bucket_name" type="text" required="required" pattern="^[a-z0-9-\.]+$" ng-model="createBucket.bucketName" name="bucket_name" maxlength="63">
+                <small class="error">Name is required and may only contain lowercase letters, numbers, hyphens, and/or dots</small>
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="button expand" i18n:translate="" id="create-bucket-btn"
+                ng-show="!createBucket.isCreatingBucket" ng-disabled="createBucket.existingBucketConflict">
+                Create Bucket
+            </button>
+            <div ng-show="createBucket.isCreatingBucket">
+                <span i18n:translate="">Creating bucket...</span>
+                <span class="busy">&nbsp;</span>
+            </div>
+        </div>
+    </form>
+</div>

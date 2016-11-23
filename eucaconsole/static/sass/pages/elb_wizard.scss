@@ -4,6 +4,7 @@
 // Import common wizard styles
 @import "../includes/wizard";
 
+@import "../widgets/modal";
 
 /* @section Elastic Load Balancer Wizard styles */
 
@@ -81,3 +82,5 @@
 #advanced-section {
     padding-top: 1.25rem;
 }
+
+@include modal-position(50px, fixed);
