@@ -41,3 +41,10 @@ class CacheImagesSettingTestCase(BaseTestCase):
     def test_images_cache_is_disabled_by_default(self):
         cache_setting = SETTINGS.get('cache.images.disable')
         self.assertEqual(asbool(cache_setting), True)
+
+
+class GovCloudSettingTestCase(BaseTestCase):
+
+    def test_govcloud_setting_is_available_and_false_by_default(self):
+        govcloud_setting = SETTINGS.get('aws.govcloud.enabled')
+        self.assertEqual(asbool(govcloud_setting), False)
