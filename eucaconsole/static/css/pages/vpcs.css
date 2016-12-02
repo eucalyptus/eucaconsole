@@ -1,4 +1,4 @@
-/* @fileOverview ELBs landing page CSS */
+/* @fileOverview VPCs landing page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
@@ -156,8 +156,6 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-.alarm-status.alarm { background-color: darkred; }
+.state.available { background-color: #425563; }
 
-.alarm-status.insufficient_data { background-color: #5a5a5a; }
-
-.alarm-status.ok { background-color: #01a982; }
+.state.pending { background-color: #6d899e; }

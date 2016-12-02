@@ -1,0 +1,105 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/vpcs.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="VPCsPage" ng-controller="VPCsPageCtrl">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+         ng-init="initController('vpcs', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">VPCs</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="">Load balancers</strong></h3>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" i18n:translate="" id="create-vpc-btn"
+                   href="#">Create VPC</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_header" tal:omit-tag="">
+                <a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name }}</a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.vpc_id }}
+                </div>
+                <div>
+                    <span class="label" title="VPC CIDR" i18n:attributes="title" data-tooltip="">CI</span>
+                    {{ item.vpc_cidr }}
+                </div>
+                <div>
+                    <span class="label" title="Subnets" i18n:attributes="title" data-tooltip="">SN</span>
+                    {{ item.healthy_hosts }}
+                </div>
+                <div>
+                    <span class="label" title="Default VPC" i18n:attributes="title" data-tooltip="">DF</span>
+                    {{ item.default_vpc }}
+                </div>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="" st-sort="name" st-skip-natural="true" st-sort-default="true">Name</th>
+                <th i18n:translate="" st-sort="state" st-skip-natural="true">State</th>
+                <th i18n:translate="" st-sort="cidr_block" st-skip-natural="true">VPC CIDR</th>
+                <th i18n:translate="">SUBNET</th>
+                <th i18n:translate="">ROUTE TABLE</th>
+                <th i18n:translate="">INTERNET GATEWAY</th>
+                <th i18n:translate="">TAGS</th>
+                <th i18n:translate="">DEFAULT</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="breakword">
+                    <a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a>
+                </td>
+                <td>
+                    <span class="label radius state" ng-class="item.state">
+                        {{ item.state }}
+                    </span>
+                </td>
+                <td>{{ item.cidr_block }}</td>
+                <td>
+                    <div ng-repeat="subnet in item.subnets">
+                        {{ subnet.name }} - {{ subnet.cidr_block }} - {{ subnet.availability_zone }}
+                    </div>
+                </td>
+                <td><!--! Route tables here --></td>
+                <td><!--! IGWs here --></td>
+                <td><!--! Tags here --></td>
+                <td><!--! Default here --></td>
+                <td>
+                    <span class="actions">
+                        <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                        <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                        </ul>
+                    </span>
+                </td>
+            </metal:block>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/vpcs.js')}"></script>
+</div>
+
+</metal:block>
+

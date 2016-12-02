@@ -28,16 +28,109 @@
 Pyramid views for Eucalyptus and AWS VPCs
 
 """
+import simplejson as json
+
 from pyramid.view import view_config
 
-from ..forms import ChoicesManager 
-from ..views import BaseView
+from ..forms import ChoicesManager
+from ..forms.vpcs import VPCsFiltersForm
+from ..i18n import _
+from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+
+
+class VPCsView(LandingPageView):
+    TEMPLATE = '../templates/vpcs/vpcs.pt'
+
+    def __init__(self, request):
+        super(VPCsView, self).__init__(request)
+        self.title_parts = [_(u'VPCs')]
+        self.ec2_conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.location = self.get_redirect_location('vpcs')
+        self.initial_sort_key = 'name'
+        self.prefix = '/vpcs'
+        self.json_items_endpoint = self.get_json_endpoint('vpcs_json')
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.enable_smart_table = True
+        self.render_dict = dict(prefix=self.prefix)
+
+    @view_config(route_name='vpcs', renderer=TEMPLATE)
+    def vpcs_landing(self):
+        # filter_keys are passed to client-side filtering in search box
+        self.filter_keys = []
+        # sort_keys are passed to sorting drop-down
+        self.sort_keys = [
+            dict(key='name', name=_(u'Name: A to Z')),
+            dict(key='-name', name=_(u'Name: Z to A')),
+            dict(key='state', name=_(u'State')),
+        ]
+        filters_form = VPCsFiltersForm(self.request, ec2_conn=self.ec2_conn)
+        self.render_dict.update(dict(
+            filter_keys=self.filter_keys,
+            search_facets=BaseView.escape_json(json.dumps(filters_form.facets)),
+            sort_keys=self.sort_keys,
+            initial_sort_key=self.initial_sort_key,
+            json_items_endpoint=self.json_items_endpoint,
+        ))
+        return self.render_dict
 
 
 class VPCsJsonView(BaseView):
     def __init__(self, request):
         super(VPCsJsonView, self).__init__(request)
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+
+    @view_config(route_name='vpcs_json', renderer='json', request_method='POST')
+    def vpcs_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+
+        with boto_error_handler(self.request):
+            vpc_items = self.vpc_conn.get_all_vpcs() if self.vpc_conn else []
+            subnets = self.vpc_conn.get_all_subnets()
+
+        # Filter items based on MSB params
+        zone = self.request.params.get('availability_zone')
+        if zone:
+            vpc_items = self.filter_by_availability_zone(vpc_items, zone=zone)
+
+        vpc_list = []
+        for vpc in vpc_items:
+            vpc_subnets = self.filter_subnets_by_vpc(subnets, vpc.id)
+            availability_zones = [subnet.get('availability_zone') for subnet in vpc_subnets]
+            vpc_list.append(dict(
+                id=vpc.id,
+                name=TaggedItemView.get_display_name(vpc),
+                state=vpc.state,
+                cidr_block=vpc.cidr_block,
+                subnets=vpc_subnets,
+                availability_zones=availability_zones,
+                tags=vpc.tags,
+            ))
+        return dict(results=vpc_list)
+
+    @staticmethod
+    def filter_by_availability_zone(items, zone=None):
+        return [item for item in items if zone in item.availability_zones]
+
+    @staticmethod
+    def filter_subnets_by_vpc(subnets, vpc_id):
+        subnet_list = []
+        for subnet in subnets:
+            if subnet.vpc_id == vpc_id:
+                subnet_list.append(dict(
+                    id=subnet.id,
+                    name=TaggedItemView.get_display_name(subnet),
+                    cidr_block=subnet.cidr_block,
+                    availability_zone=subnet.availability_zone,
+                ))
+        return subnet_list
+
+
+class VPCNetworksJsonView(BaseView):
+    def __init__(self, request):
+        super(VPCNetworksJsonView, self).__init__(request)
         self.conn = self.get_connection(conn_type='vpc')
 
     @view_config(route_name='vpcnetworks_json', renderer='json', request_method='GET')

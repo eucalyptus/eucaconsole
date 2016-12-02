@@ -1,0 +1,7 @@
+/* @fileOverview VPCs landing page CSS */
+@import "../includes/landingpage";
+
+// VPC State colors
+.state.available { background-color: $hpe-slate; }
+.state.pending { background-color: lighten($hpe-slate, 20%); }
+
