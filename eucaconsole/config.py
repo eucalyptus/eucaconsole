@@ -61,33 +61,14 @@ except ImportError:
     __version__ = 'DEVELOPMENT'
 
 REQUIRED_CONFIG = {
-    # 'use': 'egg:eucaconsole',  # can't test for this since container strips it
     'pyramid.includes': ['pyramid_beaker', 'pyramid_chameleon', 'pyramid_layout'],
     'session.type': 'cookie',
-    'cache.memory': 'dogpile.cache.pylibmc'
+    'session.httponly': 'true',
+    'cache.memory': 'dogpile.cache.pylibmc',
 }
 
 
 def check_config(settings):
-    # check for required config first
-    for key in REQUIRED_CONFIG.keys():
-        value = REQUIRED_CONFIG[key]
-        list_failed = False
-        is_list = isinstance(value, list)
-        if is_list:
-            try:
-                for item in value:
-                    settings.get(key).index(item)
-            except ValueError:
-                list_failed = True
-        if list_failed or (not is_list and settings.get(key) != value):
-            if is_list:
-                value = '\n'.join(value)
-            logging.error("*****************************************************************")
-            logging.error(u" Required configuration value {0} = {1} not found in console.ini".format(key, value))
-            logging.error(" Please correct this and restart eucaconsole.")
-            logging.error("*****************************************************************")
-            sys.exit(1)
     if not settings.get('ufshost'):
         logging.warn(
             "'clchost' and 'clcport' are deprecated in Eucalyptus version 4.2.0 and "
@@ -110,6 +91,7 @@ def write_routes_json(path):
 
 
 def get_configurator(settings, enable_auth=True):
+    settings.update(REQUIRED_CONFIG)
     check_config(settings)
     connection_debug = asbool(settings.get('connection.debug'))
     boto.set_stream_logger('boto', level=(logging.DEBUG if connection_debug else logging.CRITICAL))
