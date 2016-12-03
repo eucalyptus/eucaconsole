@@ -14,7 +14,7 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle"><strong i18n:translate="">Load balancers</strong></h3>
+        <h3 id="pagetitle"><strong i18n:translate="">VPCs</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-vpc-btn"
@@ -33,15 +33,18 @@
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
-                    {{ item.vpc_id }}
+                    {{ item.id }}
                 </div>
                 <div>
-                    <span class="label" title="VPC CIDR" i18n:attributes="title" data-tooltip="">CI</span>
-                    {{ item.vpc_cidr }}
+                    <span class="label" title="CIDR block" i18n:attributes="title" data-tooltip="">CB</span>
+                    {{ item.cidr_block }}
                 </div>
                 <div>
                     <span class="label" title="Subnets" i18n:attributes="title" data-tooltip="">SN</span>
-                    {{ item.healthy_hosts }}
+                    <span ng-repeat="subnet in item.subnets">
+                        {{ subnet.name }}
+                        <br ng-if="!$last" />
+                    </span>
                 </div>
                 <div>
                     <span class="label" title="Default VPC" i18n:attributes="title" data-tooltip="">DF</span>
