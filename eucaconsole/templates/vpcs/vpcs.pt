@@ -50,7 +50,17 @@
                     <span class="label" title="Default VPC" i18n:attributes="title" data-tooltip="">DF</span>
                     {{ item.default_vpc }}
                 </div>
+                <div>
+                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
+                    {{ item.tags }}
+                </div>
             </div>
+            <metal:block metal:fill-slot="tile_footer">
+                <div ng-show="item.state"
+                     class="footer state {{ item.state }}">
+                    {{ item.state }}
+                </div>
+            </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="" st-sort="name" st-skip-natural="true" st-sort-default="true">Name</th>
                 <th i18n:translate="" st-sort="state" st-skip-natural="true">State</th>
@@ -79,8 +89,8 @@
                 </td>
                 <td><!--! Route tables here --></td>
                 <td><!--! IGWs here --></td>
-                <td><!--! Tags here --></td>
-                <td><!--! Default here --></td>
+                <td>{{ item.tags }}</td>
+                <td>{{ item.default_vpc }}</td>
                 <td>
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round"

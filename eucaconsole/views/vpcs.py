@@ -106,7 +106,8 @@ class VPCsJsonView(BaseView):
                 cidr_block=vpc.cidr_block,
                 subnets=vpc_subnets,
                 availability_zones=availability_zones,
-                tags=vpc.tags,
+                default_vpc=_('yes') if vpc.is_default else _('no'),
+                tags=TaggedItemView.get_tags_display(vpc.tags),
             ))
         return dict(results=vpc_list)
 
