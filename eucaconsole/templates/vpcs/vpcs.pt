@@ -42,13 +42,18 @@
                 <div>
                     <span class="label" title="Subnets" i18n:attributes="title" data-tooltip="">SN</span>
                     <span ng-repeat="subnet in item.subnets">
-                        {{ subnet.name }}
-                        <br ng-if="!$last" />
+                        {{ subnet.name }}<br ng-if="!$last" />
                     </span>
                 </div>
                 <div>
                     <span class="label" title="Default VPC" i18n:attributes="title" data-tooltip="">DF</span>
                     {{ item.default_vpc }}
+                </div>
+                <div>
+                    <span class="label" title="Route table" i18n:attributes="title" data-tooltip="">RT</span>
+                    <span ng-repeat="rtable in item.route_tables">
+                        {{ rtable.name }}<br ng-if="!$last" />
+                    </span>
                 </div>
                 <div>
                     <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
@@ -87,7 +92,11 @@
                         {{ subnet.name }} - {{ subnet.cidr_block }} - {{ subnet.availability_zone }}
                     </div>
                 </td>
-                <td><!--! Route tables here --></td>
+                <td>
+                    <div ng-repeat="rtable in item.route_tables">
+                        {{ rtable.name }}
+                    </div>
+                </td>
                 <td><!--! IGWs here --></td>
                 <td>{{ item.tags }}</td>
                 <td>{{ item.default_vpc }}</td>

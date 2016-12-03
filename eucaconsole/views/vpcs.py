@@ -89,6 +89,7 @@ class VPCsJsonView(BaseView):
         with boto_error_handler(self.request):
             vpc_items = self.vpc_conn.get_all_vpcs() if self.vpc_conn else []
             subnets = self.vpc_conn.get_all_subnets()
+            route_tables = self.vpc_conn.get_all_route_tables()
 
         # Filter items based on MSB params
         zone = self.request.params.get('availability_zone')
@@ -99,6 +100,7 @@ class VPCsJsonView(BaseView):
         for vpc in vpc_items:
             vpc_subnets = self.filter_subnets_by_vpc(subnets, vpc.id)
             availability_zones = [subnet.get('availability_zone') for subnet in vpc_subnets]
+            vpc_route_tables = self.filter_route_tables_by_vpc(route_tables, vpc.id)
             vpc_list.append(dict(
                 id=vpc.id,
                 name=TaggedItemView.get_display_name(vpc),
@@ -106,6 +108,7 @@ class VPCsJsonView(BaseView):
                 cidr_block=vpc.cidr_block,
                 subnets=vpc_subnets,
                 availability_zones=availability_zones,
+                route_tables=vpc_route_tables,
                 default_vpc=_('yes') if vpc.is_default else _('no'),
                 tags=TaggedItemView.get_tags_display(vpc.tags),
             ))
@@ -127,6 +130,16 @@ class VPCsJsonView(BaseView):
                     availability_zone=subnet.availability_zone,
                 ))
         return subnet_list
+
+    @staticmethod
+    def filter_route_tables_by_vpc(route_tables, vpc_id):
+        rtables_list = []
+        for rtable in route_tables:
+            if rtable.vpc_id == vpc_id:
+                rtables_list.append(dict(
+                    name=TaggedItemView.get_display_name(rtable),
+                ))
+        return rtables_list
 
 
 class VPCNetworksJsonView(BaseView):
