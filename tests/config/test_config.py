@@ -48,3 +48,22 @@ class GovCloudSettingTestCase(BaseTestCase):
     def test_govcloud_setting_is_available_and_false_by_default(self):
         govcloud_setting = SETTINGS.get('aws.govcloud.enabled')
         self.assertEqual(asbool(govcloud_setting), False)
+
+
+class NonConfigurableSettingsTestCase(BaseTestCase):
+
+    def test_pyramid_includes_setting_is_not_in_default_config(self):
+        setting = SETTINGS.get('pyramid.includes')
+        self.assertEqual(setting, None)
+
+    def test_session_type_setting_is_not_in_default_config(self):
+        setting = SETTINGS.get('session.type')
+        self.assertEqual(setting, None)
+
+    def test_session_httponly_setting_is_not_in_default_config(self):
+        setting = SETTINGS.get('session.httponly')
+        self.assertEqual(setting, None)
+
+    def test_cache_memory_setting_is_not_in_default_config(self):
+        setting = SETTINGS.get('cache.memory')
+        self.assertEqual(setting, None)
