@@ -97,7 +97,11 @@
                         {{ rtable.name }}
                     </div>
                 </td>
-                <td><!--! IGWs here --></td>
+                <td>
+                    <div ng-repeat="igw in item.internet_gateways">
+                        {{ igw.name }}
+                    </div>
+                </td>
                 <td>{{ item.tags }}</td>
                 <td>{{ item.default_vpc }}</td>
                 <td>

@@ -90,17 +90,19 @@ class VPCsJsonView(BaseView):
             vpc_items = self.vpc_conn.get_all_vpcs() if self.vpc_conn else []
             subnets = self.vpc_conn.get_all_subnets()
             route_tables = self.vpc_conn.get_all_route_tables()
+            internet_gateways = self.vpc_conn.get_all_internet_gateways()
 
         # Filter items based on MSB params
         zone = self.request.params.get('availability_zone')
         if zone:
-            vpc_items = self.filter_by_availability_zone(vpc_items, zone=zone)
+            vpc_items = self.filter_vpcs_by_availability_zone(vpc_items, zone=zone)
 
         vpc_list = []
         for vpc in vpc_items:
             vpc_subnets = self.filter_subnets_by_vpc(subnets, vpc.id)
             availability_zones = [subnet.get('availability_zone') for subnet in vpc_subnets]
             vpc_route_tables = self.filter_route_tables_by_vpc(route_tables, vpc.id)
+            vpc_internet_gateways = self.filter_internet_gateways_by_vpc(internet_gateways, vpc.id)
             vpc_list.append(dict(
                 id=vpc.id,
                 name=TaggedItemView.get_display_name(vpc),
@@ -109,14 +111,15 @@ class VPCsJsonView(BaseView):
                 subnets=vpc_subnets,
                 availability_zones=availability_zones,
                 route_tables=vpc_route_tables,
+                internet_gateways=vpc_internet_gateways,
                 default_vpc=_('yes') if vpc.is_default else _('no'),
                 tags=TaggedItemView.get_tags_display(vpc.tags),
             ))
         return dict(results=vpc_list)
 
     @staticmethod
-    def filter_by_availability_zone(items, zone=None):
-        return [item for item in items if zone in item.availability_zones]
+    def filter_vpcs_by_availability_zone(vpc_items, zone=None):
+        return [item for item in vpc_items if zone in item.availability_zones]
 
     @staticmethod
     def filter_subnets_by_vpc(subnets, vpc_id):
@@ -137,9 +140,22 @@ class VPCsJsonView(BaseView):
         for rtable in route_tables:
             if rtable.vpc_id == vpc_id:
                 rtables_list.append(dict(
+                    id=rtable.id,
                     name=TaggedItemView.get_display_name(rtable),
                 ))
         return rtables_list
+
+    @staticmethod
+    def filter_internet_gateways_by_vpc(internet_gateways, vpc_id):
+        internet_gateways_list = []
+        for igw in internet_gateways:
+            for attachment in igw.attachments:
+                if attachment.vpc_id == vpc_id:
+                    internet_gateways_list.append(dict(
+                        id=igw.id,
+                        name=TaggedItemView.get_display_name(igw),
+                    ))
+        return internet_gateways_list
 
 
 class VPCNetworksJsonView(BaseView):
