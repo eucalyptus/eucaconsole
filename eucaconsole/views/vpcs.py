@@ -112,7 +112,7 @@ class VPCsJsonView(BaseView):
                 availability_zones=availability_zones,
                 route_tables=vpc_route_tables,
                 internet_gateways=vpc_internet_gateways,
-                default_vpc=_('yes') if vpc.is_default else _('no'),
+                default_vpc=_('Yes') if vpc.is_default else _('No'),
                 tags=TaggedItemView.get_tags_display(vpc.tags),
             ))
         return dict(results=vpc_list)

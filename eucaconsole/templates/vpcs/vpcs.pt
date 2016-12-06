@@ -75,12 +75,12 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="" st-sort="name" st-skip-natural="true" st-sort-default="true">Name</th>
                 <th i18n:translate="" st-sort="state" st-skip-natural="true">State</th>
-                <th i18n:translate="" st-sort="cidr_block" st-skip-natural="true">VPC CIDR</th>
-                <th i18n:translate="">SUBNET</th>
+                <th i18n:translate="">CIDR BLOCK</th>
+                <th i18n:translate="">SUBNETS</th>
                 <th i18n:translate="">ROUTE TABLE</th>
                 <th i18n:translate="">INTERNET GATEWAY</th>
                 <th i18n:translate="">TAGS</th>
-                <th i18n:translate="">DEFAULT</th>
+                <th i18n:translate="" st-sort="default_vpc" st-skip-natural="true">DEFAULT</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
