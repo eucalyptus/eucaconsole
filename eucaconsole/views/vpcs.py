@@ -58,7 +58,7 @@ class VPCsView(LandingPageView):
     @view_config(route_name='vpcs', renderer=TEMPLATE)
     def vpcs_landing(self):
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = []
+        self.filter_keys = ['state']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name=_(u'Name: A to Z')),
