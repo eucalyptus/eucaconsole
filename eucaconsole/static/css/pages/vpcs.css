@@ -159,3 +159,5 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .state.available { background-color: #425563; }
 
 .state.pending { background-color: #6d899e; }
+
+.tile { height: 256px; max-height: 256px; }

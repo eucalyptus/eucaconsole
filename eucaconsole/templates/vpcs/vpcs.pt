@@ -56,6 +56,12 @@
                     </span>
                 </div>
                 <div>
+                    <span class="label" title="Internet gateway" i18n:attributes="title" data-tooltip="">IG</span>
+                    <span ng-repeat="igw in item.internet_gateways">
+                        {{ igw.name }}<br ng-if="!$last" />
+                    </span>
+                </div>
+                <div>
                     <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
                     {{ item.tags }}
                 </div>

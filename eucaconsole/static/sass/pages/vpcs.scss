@@ -5,3 +5,9 @@
 .state.available { background-color: $hpe-slate; }
 .state.pending { background-color: lighten($hpe-slate, 20%); }
 
+// tile view
+$tile-height-adjustment: 36px;
+.tile {
+    height: $tile-height + $tile-height-adjustment;
+    max-height: $tile-height + $tile-height-adjustment;
+}
