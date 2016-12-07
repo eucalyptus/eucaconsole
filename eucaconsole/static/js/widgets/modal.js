@@ -75,6 +75,14 @@ angular.module('ModalModule', [])
         $rootScope.$broadcast('modal:close', name);
     }
 
+    function isOpen (name) {
+        var modal = _modals[name];
+        if(!modal) {
+            return;
+        }
+        return modal.hasClass('open');
+    }
+
     function _getModals () {
         return _modals;
     }
@@ -86,6 +94,7 @@ angular.module('ModalModule', [])
     return {
         openModal: openModal,
         closeModal: closeModal,
+        isOpen: isOpen,
         registerModal: registerModal,
         unregisterModals: unregisterModals,
         _getModals: _getModals,

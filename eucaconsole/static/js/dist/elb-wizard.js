@@ -840,8 +840,20 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule'])
             policy: '=ngModel'
         },
         templateUrl: '/_template/elbs/listener-editor/security-policy',
-        controller: ['$scope', function ($scope) {
-        }]
+        controller: ['$scope', 'ModalService', function ($scope, ModalService) {
+            var vm = this;
+            vm.policyRadioButton = 'existing';
+            vm.handleUsePolicy = function ($event) {
+                $event.preventDefault();
+                if ($scope.securityPolicyForm.$invalid) {
+                    return false;
+                }
+            };
+            vm.isShowing = function() {
+                return ModalService.isOpen('securityPolicyEditor');
+            };
+        }],
+        controllerAs: 'policyCtrl'
     };
 });
 
@@ -1675,6 +1687,14 @@ angular.module('ModalModule', [])
         $rootScope.$broadcast('modal:close', name);
     }
 
+    function isOpen (name) {
+        var modal = _modals[name];
+        if(!modal) {
+            return;
+        }
+        return modal.hasClass('open');
+    }
+
     function _getModals () {
         return _modals;
     }
@@ -1686,6 +1706,7 @@ angular.module('ModalModule', [])
     return {
         openModal: openModal,
         closeModal: closeModal,
+        isOpen: isOpen,
         registerModal: registerModal,
         unregisterModals: unregisterModals,
         _getModals: _getModals,
