@@ -267,6 +267,7 @@ urls = [
     Route(name='vpcnetworks_json', pattern='/vpcnetworks/json'),
     Route(name='vpcsubnets_json', pattern='/vpcsubnets/json'),
     Route(name='vpcsecuritygroups_json', pattern='/vpcsecuritygroups/json'),
+    Route(name='vpc_view', pattern='/vpcs/{id}'),
 
     # Key pairs #####
     # Landing page

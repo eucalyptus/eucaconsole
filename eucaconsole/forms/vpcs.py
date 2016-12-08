@@ -29,7 +29,7 @@ Forms for VPC resources
 
 """
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class VPCsFiltersForm(BaseSecureForm):
@@ -55,3 +55,14 @@ class VPCsFiltersForm(BaseSecureForm):
 
     def get_availability_zone_choices(self):
         return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(self.region, add_blank=False))
+
+
+class VPCForm(BaseSecureForm):
+    """VPC form (to update an existing VPC)"""
+    name_error_msg = _(u'Not a valid name')
+    name = TextEscapedField(label=_(u'Name'))
+
+    def __init__(self, request, vpc_conn=None, **kwargs):
+        super(VPCForm, self).__init__(request, **kwargs)
+        self.vpc_conn = vpc_conn
+        self.name.error_msg = self.name_error_msg

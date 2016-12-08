@@ -30,10 +30,11 @@ Pyramid views for Eucalyptus and AWS VPCs
 """
 import simplejson as json
 
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms import ChoicesManager
-from ..forms.vpcs import VPCsFiltersForm
+from ..forms.vpcs import VPCsFiltersForm, VPCForm
 from ..i18n import _
 from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
@@ -186,3 +187,38 @@ class VPCSecurityGroupsJsonView(BaseView):
         with boto_error_handler(self.request):
             vpc_securitygroups = ChoicesManager(self.conn).security_groups(add_blank=False, use_id=True)
             return dict(results=[dict(id=item[0], label=item[1]) for item in vpc_securitygroups])
+
+
+class VPCView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/vpcs/vpc_view.pt'
+
+    def __init__(self, request, **kwargs):
+        super(VPCView, self).__init__(request, **kwargs)
+        self.location = self.request.route_path('vpc_view', id=self.request.matchdict.get('id'))
+        with boto_error_handler(request, self.location):
+            self.vpc_conn = self.get_connection(conn_type='vpc')
+            self.vpc = self.get_vpc()
+        self.vpc_name = self.get_display_name(self.vpc)
+        self.title_parts = [_(u'VPC'), self.vpc_name]
+        self.vpc_form = VPCForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            vpc=self.vpc,
+            vpc_name=self.vpc_name,
+            vpc_form=self.vpc_form,
+            default_vpc=_('Yes') if self.vpc.is_default else _('No'),
+            tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
+        )
+
+    @view_config(route_name='vpc_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def vpc_view(self):
+        if self.vpc is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    def get_vpc(self):
+        vpc_id = self.request.matchdict.get('id')
+        if vpc_id:
+            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            return vpcs_list[0] if vpcs_list else None
+        return None
+
