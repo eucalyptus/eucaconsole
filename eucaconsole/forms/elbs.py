@@ -638,6 +638,7 @@ class SecurityPolicyForm(BaseSecureForm):
         self.ssl_protocols.choices = self.get_ssl_protocol_choices()
         self.ssl_ciphers.choices = self.get_ssl_cipher_choices()
         self.predefined_policy.choices = self.get_predefined_policy_choices()
+        print(">>>>>>>>>>>> policy choices = "+str(self.predefined_policy.choices))
 
     def set_initial_data(self):
         # Default to TLS 1, 1.1, and 1.2 for ssl_protocols

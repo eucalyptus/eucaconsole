@@ -5,7 +5,7 @@
         A security policy configures SSL negotiation settings when you use a secure
         protocol like HTTPS or SSL.
     </p>
-    <form id="securityPolicyForm" ng-if="policyCtrl.isShowing()">
+    <form id="securityPolicyForm" ng-if="policyCtrl.isShowing()" novalidate="">
         <div>
             <input type="radio" id="policy-type-predefined" name="policy_type_radio"
                    value="existing" ng-model="policyCtrl.policyRadioButton" />
@@ -45,10 +45,9 @@
                 <div class="large-12 small-12 columns field">
                     <select id="ssl_protocols" required="required" name="ssl_protocols"
                             ng-model="policy.sslProtocols" chosen="true"
+                            ng-init="policy.sslProtocols = policyCtrl.protocolChoices.slice()"
+                            ng-options="opt as opt.label for opt in policyCtrl.protocolChoices track by opt.id"
                             multiple="" data-placeholder="Select..." i18n:attributes="data-placeholder">
-                        <option value="Protocol-TLSv1.2" selected="">TLSv1.2</option>
-                        <option value="Protocol-TLSv1.1" selected="">TLSv1.1</option>
-                        <option value="Protocol-TLSv1" selected="">TLSv1</option>
                     </select>
                     <small class="error">At least one protocol is required.</small>
                 </div>
@@ -62,7 +61,7 @@
                 </div>
                 <div class="large-12 small-12 columns field">
                     <select id="ssl_ciphers" required="required" name="ssl_ciphers"
-                            ng-model="policy.sslCiphers" chosen="true" ng-options="cipher in policyCtrl.cipherChoices"
+                            ng-model="policy.sslCiphers" chosen="true" ng-options="cipher for cipher in policyCtrl.cipherChoices"
                             multiple="" data-placeholder="Select..." i18n:attributes="data-placeholder">
                     </select>
                     <small class="error">At least one cipher is required.</small>
@@ -79,9 +78,8 @@
         <hr />
         <div class="row">
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" id="security-policy-dialog-submit-btn" i18n:translate=""
-                    ng-click="policyCtrl.handleUsePolicy()"
-                    ng-disabled="policyCtrl.policyRadioButton === 'new' &amp;&amp; (!sslProtocols.length || !sslCiphers.length)">
+                <button type="submit" class="button expand" id="security-policy-dialog-submit-btn"
+                        i18n:translate="" ng-click="policyCtrl.handleUsePolicy()">
                     Use This Policy
                 </button>
             </div>
