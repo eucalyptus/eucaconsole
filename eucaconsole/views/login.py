@@ -112,7 +112,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.https_scheme = self.request.scheme == 'https'
         self.oidc_host = self.request.registry.settings.get('oidc.hostname', None)
         login_link = 'https://{oidc_host}/v2/oauth2/authorize?' \
-            'scope=urn%3Aglobus%3Aauth%3Ascope%3Atransfer.api.globus.org%3Aall&' \
+            'scope=urn%3Aglobus%3Aauth%3Ascope%3Aauth.globus.org%3Aview_identities+openid+email+profile&' \
             'redirect_uri=https%3A%2F%2F{oidc_console_host}%2Flogin&' \
             'access_type=online&response_type=code&' \
             'client_id={oidc_client_id}'
