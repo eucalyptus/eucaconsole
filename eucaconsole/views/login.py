@@ -111,16 +111,17 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
         self.oidc_host = self.request.registry.settings.get('oidc.hostname', None)
-        login_link = 'https://{oidc_host}/v2/oauth2/authorize?' \
-            'scope=urn%3Aglobus%3Aauth%3Ascope%3Aauth.globus.org%3Aview_identities+openid+email+profile&' \
-            'redirect_uri=https%3A%2F%2F{oidc_console_host}%2Flogin&' \
-            'access_type=online&response_type=code&' \
-            'client_id={oidc_client_id}'
+        oidc_scope = self.request.registry.settings.get('oidc.scope', None)
         oidc_client_id = self.request.registry.settings.get('oidc.client.id', None)
         oidc_console_host = self.request.registry.settings.get('oidc.console.hostname', None)
-        login_link = login_link.format(
-            oidc_host=self.oidc_host, oidc_console_host=oidc_console_host, oidc_client_id=oidc_client_id
+        login_params = dict(
+            scope=oidc_scope,
+            redirect_uri='https://{0}/login'.format(oidc_console_host),
+            access_type='online',
+            response_type='code',
+            client_id=oidc_client_id
         )
+        login_link = 'https://{0}/v2/oauth2/authorize?'.format(self.oidc_host) + urllib.urlencode(login_params)
         options_json = BaseView.escape_json(json.dumps(dict(
             account=request.params.get('account', default=''),
             username=request.params.get('username', default=''),
