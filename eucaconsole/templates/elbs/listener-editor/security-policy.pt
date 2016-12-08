@@ -5,7 +5,7 @@
         A security policy configures SSL negotiation settings when you use a secure
         protocol like HTTPS or SSL.
     </p>
-    <form id="securityPolicyForm" ng-if="policyCtrl.isShowing()" novalidate="">
+    <ng-form id="securityPolicyForm" ng-if="policyCtrl.isShowing()" novalidate="">
         <div>
             <input type="radio" id="policy-type-predefined" name="policy_type_radio"
                    value="existing" ng-model="policyCtrl.policyRadioButton" />
@@ -84,5 +84,5 @@
                 </button>
             </div>
         </div>
-    </form>
+    </ng-form>
 </div>
