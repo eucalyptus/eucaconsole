@@ -62,7 +62,11 @@ class VPCForm(BaseSecureForm):
     name_error_msg = _(u'Not a valid name')
     name = TextEscapedField(label=_(u'Name'))
 
-    def __init__(self, request, vpc_conn=None, **kwargs):
+    def __init__(self, request, vpc_conn=None, vpc=None, **kwargs):
         super(VPCForm, self).__init__(request, **kwargs)
         self.vpc_conn = vpc_conn
+        self.vpc = vpc
         self.name.error_msg = self.name_error_msg
+
+        if vpc is not None:
+            self.name.data = vpc.tags.get('Name', '')

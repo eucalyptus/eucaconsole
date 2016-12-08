@@ -1,5 +1,10 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/vpc.css')}" />
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="VPCDetailsPage" ng-controller="VPCDetailsPageCtrl">
@@ -43,7 +48,9 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <div>
+                <form action="${request.route_path('vpc_update', id=vpc.id)}" id="vpc-form" name="vpcForm"
+                      method="post" data-abide="abide">
+                    ${structure:vpc_form['csrf_token']}
                     <h6 i18n:translate="">VPC</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="large-3 small-4 columns"><label i18n:translate="" id="vpc-status-label">Status</label></div>
@@ -74,7 +81,19 @@
                         <div class="large-3 small-4 columns"><label i18n:translate="">Main route table</label></div>
                         <div class="large-9 small-8 columns value">TODO: Main route table here</div>
                     </div>
-                </div>
+                    <hr />
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
+                    </div>
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="save-changes-btn">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('vpcs')}" id="cancel-update-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="large-12 columns">
@@ -83,6 +102,11 @@
             </div>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/vpc_view.js')}"></script>
 </div>
 
 </metal:block>

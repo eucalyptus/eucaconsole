@@ -85,7 +85,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword">
-                    <a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a>
+                    <a ng-href="${prefix}/{{ item.id }}">{{ item.name | ellipsis: 30 }}</a>
                 </td>
                 <td>
                     <span class="label radius state" ng-class="item.state">

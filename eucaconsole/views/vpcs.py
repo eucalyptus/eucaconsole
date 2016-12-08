@@ -36,6 +36,7 @@ from pyramid.view import view_config
 from ..forms import ChoicesManager
 from ..forms.vpcs import VPCsFiltersForm, VPCForm
 from ..i18n import _
+from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
@@ -196,11 +197,14 @@ class VPCView(TaggedItemView):
         super(VPCView, self).__init__(request, **kwargs)
         self.location = self.request.route_path('vpc_view', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
+            self.conn = self.get_connection()
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
         self.vpc_name = self.get_display_name(self.vpc)
+        self.tagged_obj = self.vpc
         self.title_parts = [_(u'VPC'), self.vpc_name]
-        self.vpc_form = VPCForm(self.request, formdata=self.request.params or None)
+        self.vpc_form = VPCForm(
+            self.request, vpc=self.vpc, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             vpc=self.vpc,
             vpc_name=self.vpc_name,
@@ -213,6 +217,27 @@ class VPCView(TaggedItemView):
     def vpc_view(self):
         if self.vpc is None:
             raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='vpc_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def vpc_update(self):
+        if self.vpc and self.vpc_form.validate():
+            location = self.request.route_path('vpc_view', id=self.vpc.id)
+            with boto_error_handler(self.request, location):
+                # Update tags
+                self.update_tags()
+
+                # Save Name tag
+                name = self.request.params.get('name', '')
+                self.update_name_tag(name)
+
+                # TODO: Handle internet gateway update
+
+            msg = _(u'Successfully updated VPC')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.vpc_form.get_errors_list()
         return self.render_dict
 
     def get_vpc(self):
