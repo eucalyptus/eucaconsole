@@ -92,7 +92,6 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                         result.forEach(function(val) {
                             vm.predefinedPolicyChoices.push(val); 
                         });
-                        $scope.policy.predefinedPolicy = vm.predefinedPolicyChoices[0];
                     },
                     function error(errData) {
                         eucaHandleError(errData.data.message, errData.status);
