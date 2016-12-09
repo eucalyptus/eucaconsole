@@ -119,7 +119,7 @@ class sdist_with_git_version(sdist):
 
 requires = [
     'beaker >= 1.5.4',
-    'boto >= 2.38.0',
+    'boto >= 2.43.0',
     'botocore',
     'chameleon >= 2.5.3',
     'defusedxml >= 0.4',
