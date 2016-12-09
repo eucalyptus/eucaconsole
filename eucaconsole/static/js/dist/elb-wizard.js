@@ -178,6 +178,17 @@ angular.module('ELBServiceModule', [])
                 };
                 return data.results;
             });
+        },
+        getPolicies: function () {
+            return $http({
+                method: 'GET',
+                url: '/elbs/policies/json'
+            }).then(function success (response) {
+                var data = response.data || {
+                    results: []
+                };
+                return data.results;
+            });
         }
     };
 }]);
@@ -832,7 +843,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
     };
 });
 
-angular.module('ELBSecurityPolicyEditorModule', ['ModalModule'])
+angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModule', 'EucaConsoleUtils'])
 .directive('securityPolicyEditor', function () {
     return {
         restrict: 'E',
@@ -840,9 +851,10 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule'])
             policy: '=ngModel'
         },
         templateUrl: '/_template/elbs/listener-editor/security-policy',
-        controller: ['$scope', '$timeout', 'ModalService', function ($scope, $timeout, ModalService) {
+        controller: ['$scope', '$timeout', 'ModalService', 'ELBService', 'eucaHandleError', function ($scope, $timeout, ModalService, ELBService, eucaHandleError) {
             var vm = this;
             vm.policyRadioButton = 'existing';
+            vm.predefinedPolicyChoices = [];
             vm.protocolChoices = [
                 {id:'Protocol-TLSv1.2', label:'TLSv1.2'},
                 {id:'Protocol-TLSv1.1', label:'TLSv1.1'},
@@ -918,6 +930,19 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule'])
             vm.isShowing = function() {
                 return ModalService.isOpen('securityPolicyEditor');
             };
+            // load certificates
+            if (vm.predefinedPolicyChoices.length === 0) {
+                ELBService.getPolicies().then(
+                    function success(result) {
+                        result.forEach(function(val) {
+                            vm.predefinedPolicyChoices.push(val); 
+                        });
+                        $scope.policy.predefinedPolicy = vm.predefinedPolicyChoices[0];
+                    },
+                    function error(errData) {
+                        eucaHandleError(errData.data.message, errData.status);
+                    });
+            }
         }],
         controllerAs: 'policyCtrl'
     };

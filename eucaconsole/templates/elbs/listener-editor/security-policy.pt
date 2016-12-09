@@ -23,7 +23,8 @@
                 </div>
                 <div class="large-10 small-8 columns field">
                     <select id="predefined_policy" required="required" name="predefined_policy"
-                            ng-model="policy.predefinedPolicy" ng-options="policy in predefinedPolicyChoices">
+                            ng-model="policy.predefinedPolicy"
+                            ng-options="policy for policy in predefinedPolicyChoices">
                     </select>
                     <small class="error" i18n:translate="">Policy is required</small>
                 </div>

@@ -46,6 +46,17 @@ angular.module('ELBServiceModule', [])
                 };
                 return data.results;
             });
+        },
+        getPolicies: function () {
+            return $http({
+                method: 'GET',
+                url: '/elbs/policies/json'
+            }).then(function success (response) {
+                var data = response.data || {
+                    results: []
+                };
+                return data.results;
+            });
         }
     };
 }]);

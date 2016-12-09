@@ -173,6 +173,7 @@ urls = [
     Route(name='elb_healthchecks', pattern='/elbs/{id}/healthchecks'),
     Route(name='elb_healthchecks_update', pattern='/elbs/{id}/healthchecks/update'),
     Route(name='elb_monitoring', pattern='/elbs/{id}/monitoring'),
+    Route(name='elb_policies_json', pattern='/elbs/policies/json'),
 
     # Certificate modal
     Route(name='certificate_create', pattern='/certificate/create'),
