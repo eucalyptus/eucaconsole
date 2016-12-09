@@ -251,7 +251,7 @@ class VPCView(TaggedItemView):
 
     def get_vpc_subnets(self):
         subnets_list = []
-        vpc_subnets = self.vpc_conn.get_all_subnets(filters={'vpcId': [self.vpc.id]})
+        vpc_subnets = self.vpc_conn.get_all_subnets(filters={'vpc-id': [self.vpc.id]})
         for subnet in vpc_subnets:
             subnets_list.append(dict(
                 id=subnet.id,
@@ -260,5 +260,19 @@ class VPCView(TaggedItemView):
                 cidr_block=subnet.cidr_block,
                 zone=subnet.availability_zone,
                 available_ips=subnet.available_ip_address_count,
+                instances=self.get_subnet_instances(subnet_id=subnet.id),
             ))
         return subnets_list
+
+    def get_subnet_instances(self, subnet_id=None):
+        instances = []
+        if self.conn and subnet_id:
+            with boto_error_handler(self.request):
+                reservations = self.conn.get_all_reservations(filters={'subnet-id': [subnet_id]})
+            for reservation in reservations:
+                for instance in reservation.instances:
+                    instances.append(dict(
+                        id=instance.id,
+                        name=TaggedItemView.get_display_name(instance),
+                    ))
+        return instances

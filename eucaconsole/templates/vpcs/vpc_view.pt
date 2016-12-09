@@ -105,7 +105,11 @@
                                 <td>${subnet.zone}</td>
                                 <td>TODO: Route table</td>
                                 <td>TODO: Network ACL</td>
-                                <td>TODO: Instances</td>
+                                <td>
+                                    <div tal:repeat="instance subnet.instances">
+                                        ${instance.name}
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
