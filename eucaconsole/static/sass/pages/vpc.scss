@@ -1,3 +1,11 @@
 /* @fileOverview VPC details page CSS */
 
 @import "../includes/eucavariables";
+
+// VPC State colors
+.state.available { background-color: $hpe-slate; }
+.state.pending { background-color: lighten($hpe-slate, 20%); }
+
+.table.subnets {
+  width: 100%;
+}

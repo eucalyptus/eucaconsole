@@ -53,9 +53,9 @@
                     ${structure:vpc_form['csrf_token']}
                     <h6 i18n:translate="">VPC</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="">
-                        <div class="large-3 small-4 columns"><label i18n:translate="" id="vpc-status-label">Status</label></div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="" id="vpc-status-label">State</label></div>
                         <div class="large-9 small-8 columns value" ng-cloak="">
-                            <span class="label radius status ${vpc.state}">${vpc.state}</span>
+                            <span class="label radius state ${vpc.state}">${vpc.state}</span>
                         </div>
                     </div>
                     <div>
@@ -81,6 +81,37 @@
                         <div class="large-3 small-4 columns"><label i18n:translate="">Main route table</label></div>
                         <div class="large-9 small-8 columns value">TODO: Main route table here</div>
                     </div>
+                    <hr />
+                    <h6 i18n:translate="">SUBNETS</h6>
+                    <table class="table subnets">
+                        <thead>
+                            <tr>
+                                <th i18n:translate="">NAME (ID)</th>
+                                <th i18n:translate="">STATE</th>
+                                <th i18n:translate="">CIDR</th>
+                                <th i18n:translate="">AVAILABLE IPS</th>
+                                <th i18n:translate="">ZONE</th>
+                                <th i18n:translate="">ROUTE TABLE</th>
+                                <th i18n:translate="">NETWORK ACL</th>
+                                <th i18n:translate="">INSTANCES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr tal:repeat="subnet vpc_subnets">
+                                <td>${subnet.id}</td>
+                                <td><span class="label radius state ${subnet.state}">${subnet.state}</span></td>
+                                <td>${subnet.cidr_block}</td>
+                                <td>${subnet.available_ips}</td>
+                                <td>${subnet.zone}</td>
+                                <td>TODO: Route table</td>
+                                <td>TODO: Network ACL</td>
+                                <td>TODO: Instances</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a class="button tiny secondary round" i18n:translate="" id="add-subnet-btn">
+                        Add Subnet
+                    </a>
                     <hr />
                     <div ng-cloak="">
                         <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>

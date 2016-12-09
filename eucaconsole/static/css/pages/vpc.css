@@ -3,3 +3,8 @@
 /* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
+.state.available { background-color: #425563; }
+
+.state.pending { background-color: #6d899e; }
+
+.table.subnets { width: 100%; }

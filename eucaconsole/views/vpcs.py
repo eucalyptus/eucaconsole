@@ -200,6 +200,7 @@ class VPCView(TaggedItemView):
             self.conn = self.get_connection()
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
+            self.vpc_subnets = self.get_vpc_subnets()
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
         self.title_parts = [_(u'VPC'), self.vpc_name]
@@ -209,6 +210,7 @@ class VPCView(TaggedItemView):
             vpc=self.vpc,
             vpc_name=self.vpc_name,
             vpc_form=self.vpc_form,
+            vpc_subnets=self.vpc_subnets,
             default_vpc=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
         )
@@ -247,3 +249,16 @@ class VPCView(TaggedItemView):
             return vpcs_list[0] if vpcs_list else None
         return None
 
+    def get_vpc_subnets(self):
+        subnets_list = []
+        vpc_subnets = self.vpc_conn.get_all_subnets(filters={'vpcId': [self.vpc.id]})
+        for subnet in vpc_subnets:
+            subnets_list.append(dict(
+                id=subnet.id,
+                name=TaggedItemView.get_display_name(subnet),
+                state=subnet.state,
+                cidr_block=subnet.cidr_block,
+                zone=subnet.availability_zone,
+                available_ips=subnet.available_ip_address_count,
+            ))
+        return subnets_list
