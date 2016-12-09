@@ -254,6 +254,8 @@ class VPCView(TaggedItemView):
     def get_vpc_subnets(self):
         subnets_list = []
         vpc_subnets = self.vpc_conn.get_all_subnets(filters={'vpc-id': [self.vpc.id]})
+        vpc_route_tables = self.vpc_conn.get_all_route_tables(
+            filters={'association.subnet-id': [subnet.id for subnet in vpc_subnets]})
         for subnet in vpc_subnets:
             subnets_list.append(dict(
                 id=subnet.id,
@@ -263,7 +265,7 @@ class VPCView(TaggedItemView):
                 zone=subnet.availability_zone,
                 available_ips=subnet.available_ip_address_count,
                 instances=self.get_subnet_instances(subnet_id=subnet.id),
-                route_tables=self.get_subnet_route_tables(subnet_id=subnet.id),
+                route_tables=self.get_subnet_route_tables(subnet_id=subnet.id, vpc_route_tables=vpc_route_tables),
             ))
         return subnets_list
 
@@ -280,16 +282,15 @@ class VPCView(TaggedItemView):
                     ))
         return instances
 
-    def get_subnet_route_tables(self, subnet_id=None):
+    def get_subnet_route_tables(self, subnet_id=None, vpc_route_tables=None):
         subnet_route_tables = []
-        if self.vpc_conn and subnet_id:
-            with boto_error_handler(self.request):
-                route_tables = self.vpc_conn.get_all_route_tables(filters={'association.subnet-id': [subnet_id]})
-            for route_table in route_tables:
-                subnet_route_tables.append(dict(
-                    id=route_table.id,
-                    name=TaggedItemView.get_display_name(route_table),
-                ))
+        if self.vpc_conn and subnet_id and vpc_route_tables:
+            for route_table in vpc_route_tables:
+                if route_table.association.subnet_id == subnet_id:
+                    subnet_route_tables.append(dict(
+                        id=route_table.id,
+                        name=TaggedItemView.get_display_name(route_table),
+                    ))
         return subnet_route_tables
 
     def get_main_route_table(self):
