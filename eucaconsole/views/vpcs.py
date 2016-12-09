@@ -201,6 +201,7 @@ class VPCView(TaggedItemView):
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
             self.vpc_subnets = self.get_vpc_subnets()
+            self.vpc_main_route_table = self.get_main_route_table()
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
         self.title_parts = [_(u'VPC'), self.vpc_name]
@@ -211,6 +212,7 @@ class VPCView(TaggedItemView):
             vpc_name=self.vpc_name,
             vpc_form=self.vpc_form,
             vpc_subnets=self.vpc_subnets,
+            vpc_main_route_table=self.vpc_main_route_table,
             default_vpc=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
         )
@@ -261,6 +263,7 @@ class VPCView(TaggedItemView):
                 zone=subnet.availability_zone,
                 available_ips=subnet.available_ip_address_count,
                 instances=self.get_subnet_instances(subnet_id=subnet.id),
+                route_tables=self.get_subnet_route_tables(subnet_id=subnet.id),
             ))
         return subnets_list
 
@@ -276,3 +279,25 @@ class VPCView(TaggedItemView):
                         name=TaggedItemView.get_display_name(instance),
                     ))
         return instances
+
+    def get_subnet_route_tables(self, subnet_id=None):
+        subnet_route_tables = []
+        if self.vpc_conn and subnet_id:
+            with boto_error_handler(self.request):
+                route_tables = self.vpc_conn.get_all_route_tables(filters={'association.subnet-id': [subnet_id]})
+            for route_table in route_tables:
+                subnet_route_tables.append(dict(
+                    id=route_table.id,
+                    name=TaggedItemView.get_display_name(route_table),
+                ))
+        return subnet_route_tables
+
+    def get_main_route_table(self):
+        filters = {
+            'vpc-id': [self.vpc.id],
+            'association.main': 'true'
+        }
+        route_tables = self.vpc_conn.get_all_route_tables(filters=filters)
+        if route_tables:
+            return TaggedItemView.get_display_name(route_tables[0])
+        return None
