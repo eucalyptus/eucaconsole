@@ -257,6 +257,7 @@ class VPCView(TaggedItemView):
         vpc_subnet_ids = [subnet.id for subnet in vpc_subnets]
         vpc_route_tables = self.vpc_conn.get_all_route_tables(
             filters={'association.subnet-id': [vpc_subnet_ids]})
+        vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': [self.vpc.id]})
         vpc_reservations = self.conn.get_all_reservations(filters={'vpc-id': [self.vpc.id]})
         for subnet in vpc_subnets:
             subnets_list.append(dict(
@@ -268,6 +269,7 @@ class VPCView(TaggedItemView):
                 available_ips=subnet.available_ip_address_count,
                 instances=self.get_subnet_instances(subnet_id=subnet.id, vpc_reservations=vpc_reservations),
                 route_tables=self.get_subnet_route_tables(subnet_id=subnet.id, vpc_route_tables=vpc_route_tables),
+                network_acls=self.get_subnet_network_acls(subnet_id=subnet.id, vpc_network_acls=vpc_network_acls),
             ))
         return subnets_list
 
@@ -282,6 +284,18 @@ class VPCView(TaggedItemView):
                             name=TaggedItemView.get_display_name(instance),
                         ))
         return instances
+
+    def get_subnet_network_acls(self, subnet_id=None, vpc_network_acls=None):
+        subnet_network_acls = []
+        if self.vpc_conn and subnet_id and vpc_network_acls:
+            for network_acl in vpc_network_acls:
+                subnet_associations = [association.subnet_id for association in network_acl.associations]
+                if subnet_id in subnet_associations:
+                    subnet_network_acls.append(dict(
+                        id=network_acl.id,
+                        name=TaggedItemView.get_display_name(network_acl),
+                    ))
+        return subnet_network_acls
 
     def get_subnet_route_tables(self, subnet_id=None, vpc_route_tables=None):
         subnet_route_tables = []

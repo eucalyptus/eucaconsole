@@ -108,7 +108,11 @@
                                         ${route_table.name}
                                     </div>
                                 </td>
-                                <td>TODO: Network ACL</td>
+                                <td>
+                                    <div tal:repeat="network_acl subnet.network_acls">
+                                        ${network_acl.name}
+                                    </div>
+                                </td>
                                 <td>
                                     <div tal:repeat="instance subnet.instances">
                                         ${instance.name}
