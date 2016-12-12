@@ -101,7 +101,7 @@
 </div>
 
 <div class="modal large" modal="securityPolicyEditor">
-    <security-policy-editor ng-model="ctrl.policies"></security-policy-editor>
+    <security-policy-editor ng-model="ctrl.policy"></security-policy-editor>
 </div>
 
 <!--div class="modal xlarge" modal="certificateEditor">

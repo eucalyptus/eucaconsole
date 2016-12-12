@@ -146,6 +146,12 @@ angular.module('ELBServiceModule', [])
                 csrf_token: csrfToken,
                 name: values.elbName,
                 elb_listener: JSON.stringify(values.listeners),
+                elb_security_policy_updated: values.policy.securityPolicyUpdated,
+                elb_ssl_using_custom_policy: values.policy.sslUsingCustomPolicy,
+                elb_predefined_policy: values.policy.predefiedPolicy,
+                elb_ssl_protocols: values.policy.sslProtocols,
+                elb_ssl_ciphers: values.policy.sslCiphers,
+                elb_ssl_server_order_pref: values.policy.sslServerOrderPref,
                 tags: JSON.stringify(values.tags),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
@@ -850,6 +856,12 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
         scope: {
             policy: '=ngModel'
         },
+        // values.policy.securityPolicyUpdated,
+        // values.policy.sslUsingCustomPolicy,
+        // values.policy.predefiedPolicy,
+        // values.policy.sslProtocols,
+        // values.policy.sslCiphers,
+        // values.policy.sslServerOrderPref,
         templateUrl: '/_template/elbs/listener-editor/security-policy',
         controller: ['$scope', '$timeout', 'ModalService', 'ELBService', 'eucaHandleError', function ($scope, $timeout, ModalService, ELBService, eucaHandleError) {
             var vm = this;
@@ -926,6 +938,11 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                 if ($scope.securityPolicyForm.$invalid) {
                     return false;
                 }
+                if (vm.policyRadioButton === 'new') {
+                    // if new, assign name to display when modal is closed
+                    $scope.predefinedPolicy = 'ELB-CustomSecurityPolicy';
+                    $scope.sslUsingCustomPolicy = 'on';
+                }
             };
             vm.isShowing = function() {
                 return ModalService.isOpen('securityPolicyEditor');
@@ -937,7 +954,6 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                         result.forEach(function(val) {
                             vm.predefinedPolicyChoices.push(val); 
                         });
-                        //$scope.policy.predefinedPolicy = vm.predefinedPolicyChoices[0];
                     },
                     function error(errData) {
                         eucaHandleError(errData.data.message, errData.status);

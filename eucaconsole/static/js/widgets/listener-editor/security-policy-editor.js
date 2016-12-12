@@ -5,6 +5,13 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
         scope: {
             policy: '=ngModel'
         },
+        // values the policy needs
+        // values.policy.securityPolicyUpdated,
+        // values.policy.sslUsingCustomPolicy,
+        // values.policy.predefiedPolicy,
+        // values.policy.sslProtocols,
+        // values.policy.sslCiphers,
+        // values.policy.sslServerOrderPref,
         templateUrl: '/_template/elbs/listener-editor/security-policy',
         controller: ['$scope', '$timeout', 'ModalService', 'ELBService', 'eucaHandleError', function ($scope, $timeout, ModalService, ELBService, eucaHandleError) {
             var vm = this;
@@ -80,6 +87,11 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                 $event.preventDefault();
                 if ($scope.securityPolicyForm.$invalid) {
                     return false;
+                }
+                if (vm.policyRadioButton === 'new') {
+                    // if new, assign name to display when modal is closed
+                    $scope.predefinedPolicy = 'ELB-CustomSecurityPolicy';
+                    $scope.sslUsingCustomPolicy = 'on';
                 }
             };
             vm.isShowing = function() {
