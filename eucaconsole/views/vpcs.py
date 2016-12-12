@@ -202,6 +202,7 @@ class VPCView(TaggedItemView):
             self.vpc = self.get_vpc()
             self.vpc_subnets = self.get_vpc_subnets()
             self.vpc_main_route_table = self.get_main_route_table()
+            self.vpc_internet_gateway = self.get_internet_gateway()
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
         self.title_parts = [_(u'VPC'), self.vpc_name]
@@ -213,6 +214,7 @@ class VPCView(TaggedItemView):
             vpc_form=self.vpc_form,
             vpc_subnets=self.vpc_subnets,
             vpc_main_route_table=self.vpc_main_route_table,
+            vpc_internet_gateway=self.vpc_internet_gateway,
             default_vpc=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
         )
@@ -309,6 +311,7 @@ class VPCView(TaggedItemView):
         return subnet_route_tables
 
     def get_main_route_table(self):
+        """Fetch main route table for VPC. Returns formatted route table name or None if lookup fails"""
         filters = {
             'vpc-id': [self.vpc.id],
             'association.main': 'true'
@@ -316,4 +319,14 @@ class VPCView(TaggedItemView):
         route_tables = self.vpc_conn.get_all_route_tables(filters=filters)
         if route_tables:
             return TaggedItemView.get_display_name(route_tables[0])
+        return None
+
+    def get_internet_gateway(self):
+        """Fetch internet gateway for VPC. Returns formatted internet gateway name or None if lookup fails"""
+        filters = {
+            'attachment.vpc-id': [self.vpc.id]
+        }
+        internet_gateways = self.vpc_conn.get_all_internet_gateways(filters=filters)
+        if internet_gateways:
+            return TaggedItemView.get_display_name(internet_gateways[0])
         return None
