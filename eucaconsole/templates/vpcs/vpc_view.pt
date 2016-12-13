@@ -73,6 +73,14 @@
                         <div class="large-3 small-4 columns"><label i18n:translate="">Default VPC?</label></div>
                         <div class="large-9 small-8 columns value">${default_vpc}</div>
                     </div>
+                    <div class="row controls-wrapper readonly" tal:condition="vpc_default_security_group">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Default security group</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <a href="${request.route_path('securitygroup_view', id=vpc_default_security_group.id)}">
+                                ${vpc_default_security_group.id}
+                            </a>
+                        </div>
+                    </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Main route table</label></div>
                         <div class="large-9 small-8 columns value">${vpc_main_route_table_name}</div>

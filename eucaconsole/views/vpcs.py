@@ -201,6 +201,7 @@ class VPCView(TaggedItemView):
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
             self.vpc_subnets = self.get_vpc_subnets()
+            self.vpc_default_security_group = self.get_default_security_group()
             self.vpc_main_route_table = self.get_main_route_table()
             self.vpc_internet_gateway = self.get_internet_gateway()
             self.vpc_form = VPCForm(
@@ -218,7 +219,9 @@ class VPCView(TaggedItemView):
             vpc_form=self.vpc_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
             vpc_subnets=self.vpc_subnets,
-            vpc_main_route_table_name=TaggedItemView.get_display_name(self.vpc_main_route_table),
+            vpc_default_security_group=self.vpc_default_security_group,
+            vpc_main_route_table_name=TaggedItemView.get_display_name(
+                self.vpc_main_route_table) if self.vpc_main_route_table else '',
             default_vpc=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
         )
@@ -332,6 +335,17 @@ class VPCView(TaggedItemView):
                         name=TaggedItemView.get_display_name(route_table),
                     ))
         return subnet_route_tables
+
+    def get_default_security_group(self):
+        """Fetch default security group for VPC"""
+        filters = {
+            'vpc-id': [self.vpc.id],
+            'group-name': 'default'
+        }
+        vpc_security_groups = self.conn.get_all_security_groups(filters=filters)
+        if vpc_security_groups:
+            return vpc_security_groups[0]
+        return None
 
     def get_main_route_table(self):
         """Fetch main route table for VPC. Returns None if lookup fails"""
