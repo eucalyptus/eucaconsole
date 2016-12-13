@@ -93,6 +93,6 @@
     </div>
 </div>
 
-<!--div class="modal xlarge" modal="certificateEditor">
+<div class="modal xlarge" modal="certificateEditor">
     <certificate-editor ng-model="ctrl.certificates"></certificate-editor>
-</div-->
+</div>

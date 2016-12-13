@@ -3,7 +3,7 @@ angular.module('ELBWizard', [
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
     'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule', 'BucketServiceModule',
-    'ModalModule', 'CreateBucketModule',
+    'ModalModule', 'CreateBucketModule', 'ELBServiceModule'
 ])
 .directive('elbWizard', function () {
     return {
@@ -83,6 +83,7 @@ angular.module('ELBWizard', [
             }],
             policy: {
                 predefinedPolicy: '',
+                predefinedPolicyChoices: [],
                 sslUsingCustomPolicy: undefined
             },
             tags: [],
@@ -155,10 +156,21 @@ angular.module('ELBWizard', [
         controllerAs: 'summary'
     };
 })
-.directive('fetchData', function(InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
+.directive('fetchData', function(ELBService, InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
     return {
         restrict: 'E',
         link: function(scope, elem, attrs) {
+            // load certificates
+            ELBService.getPolicies().then(
+                function success(result) {
+                    result.forEach(function(val) {
+                        ELBWizardService.values.policy.predefinedPolicyChoices.push(val); 
+                    });
+                    ELBWizardService.values.policy.predefinedPolicy = result[0];
+                },
+                function error(errData) {
+                    eucaHandleError(errData.data.message, errData.status);
+                });
             if (attrs.isVpc === 'True') {
                 // load vpcs, subnets, groups
                 VPCService.getVPCNetworks().then(
@@ -254,5 +266,5 @@ angular.module('ELBWizard', [
             controllerAs: 'advanced'
         });
 
-    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
+    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:true});
 });

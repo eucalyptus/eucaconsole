@@ -7,7 +7,7 @@
  */
 angular.module('ModalModule', [])
 .directive('modal', ['ModalService', '$interpolate', function (ModalService, $interpolate) {
-    var template = '<div class="modal-bg" ng-click="closeModal(\'{{modalName}}\')"></div><div class="modal-content">' +
+    var template = '<div class="modal-bg" ng-click="closeModal(\'{{modalName}}\')"></div><div class="modal-content" ng-if="isOpen()">' +
         '<a ng-click="closeModal(\'{{modalName}}\')" class="close-modal">×</a><ng-transclude></ng-transclude></div>';
     return {
         restrict: 'A',
@@ -16,6 +16,7 @@ angular.module('ModalModule', [])
             var tmp = $interpolate(template)({modalName:tAttrs.modal});
             tElem.append(tmp);
             return function (scope, element, attrs) {
+                scope.name = attrs.modal;
                 ModalService.registerModal(attrs.modal, element);
 
                 // Set the height of the containing div based upon the content
@@ -33,6 +34,10 @@ angular.module('ModalModule', [])
             };
         },
         controller: ['$scope', function ($scope) {
+            $scope.isOpen = function () {
+                return ModalService.isOpen($scope.name);
+            };
+
             $scope.closeModal = function (name) {
                 ModalService.closeModal(name);
             };

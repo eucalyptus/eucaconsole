@@ -204,7 +204,7 @@ angular.module('ELBWizard', [
     'ELBSecurityPolicyEditorModule', 'ELBCertificateEditorModule', 'ModalModule',
     'InstancesSelectorModule', 'EucaConsoleUtils', 'InstancesServiceModule',
     'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule', 'BucketServiceModule',
-    'ModalModule', 'CreateBucketModule',
+    'ModalModule', 'CreateBucketModule', 'ELBServiceModule'
 ])
 .directive('elbWizard', function () {
     return {
@@ -284,6 +284,7 @@ angular.module('ELBWizard', [
             }],
             policy: {
                 predefinedPolicy: '',
+                predefinedPolicyChoices: [],
                 sslUsingCustomPolicy: undefined
             },
             tags: [],
@@ -356,10 +357,21 @@ angular.module('ELBWizard', [
         controllerAs: 'summary'
     };
 })
-.directive('fetchData', function(InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
+.directive('fetchData', function(ELBService, InstancesService, ZonesService, VPCService, ELBWizardService, eucaHandleError) {
     return {
         restrict: 'E',
         link: function(scope, elem, attrs) {
+            // load certificates
+            ELBService.getPolicies().then(
+                function success(result) {
+                    result.forEach(function(val) {
+                        ELBWizardService.values.policy.predefinedPolicyChoices.push(val); 
+                    });
+                    ELBWizardService.values.policy.predefinedPolicy = result[0];
+                },
+                function error(errData) {
+                    eucaHandleError(errData.data.message, errData.status);
+                });
             if (attrs.isVpc === 'True') {
                 // load vpcs, subnets, groups
                 VPCService.getVPCNetworks().then(
@@ -455,7 +467,7 @@ angular.module('ELBWizard', [
             controllerAs: 'advanced'
         });
 
-    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
+    $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:true});
 });
 
 angular.module('ELBWizard')
@@ -864,7 +876,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
     };
 });
 
-angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModule', 'EucaConsoleUtils'])
+angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'EucaConsoleUtils'])
 .directive('securityPolicyEditor', function () {
     return {
         restrict: 'E',
@@ -879,10 +891,10 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
         // values.policy.sslCiphers,
         // values.policy.sslServerOrderPref,
         templateUrl: '/_template/elbs/listener-editor/security-policy',
-        controller: ['$scope', '$timeout', 'ModalService', 'ELBService', 'eucaHandleError', function ($scope, $timeout, ModalService, ELBService, eucaHandleError) {
+        controller: ['$scope', '$timeout', 'ModalService', 'ELBWizardService', 'eucaHandleError', function ($scope, $timeout, ModalService, ELBWizardService, eucaHandleError) {
             var vm = this;
             vm.policyRadioButton = 'existing';
-            vm.predefinedPolicyChoices = [];
+            vm.predefinedPolicyChoices = ELBWizardService.values.policy.predefinedPolicyChoices;
             vm.protocolChoices = [
                 {id:'Protocol-TLSv1.2', label:'TLSv1.2'},
                 {id:'Protocol-TLSv1.1', label:'TLSv1.1'},
@@ -962,22 +974,6 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                 }
                 ModalService.closeModal('securityPolicyEditor');
             };
-            vm.isShowing = function() {
-                return ModalService.isOpen('securityPolicyEditor');
-            };
-            // load certificates
-            if (vm.predefinedPolicyChoices.length === 0) {
-                ELBService.getPolicies().then(
-                    function success(result) {
-                        result.forEach(function(val) {
-                            vm.predefinedPolicyChoices.push(val); 
-                        });
-                        $scope.policy.predefinedPolicy = result[0];
-                    },
-                    function error(errData) {
-                        eucaHandleError(errData.data.message, errData.status);
-                    });
-            }
         }],
         controllerAs: 'policyCtrl'
     };
@@ -1745,7 +1741,7 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
 
 angular.module('ModalModule', [])
 .directive('modal', ['ModalService', '$interpolate', function (ModalService, $interpolate) {
-    var template = '<div class="modal-bg" ng-click="closeModal(\'{{modalName}}\')"></div><div class="modal-content">' +
+    var template = '<div class="modal-bg" ng-click="closeModal(\'{{modalName}}\')"></div><div class="modal-content" ng-if="isOpen()">' +
         '<a ng-click="closeModal(\'{{modalName}}\')" class="close-modal">×</a><ng-transclude></ng-transclude></div>';
     return {
         restrict: 'A',
@@ -1754,6 +1750,7 @@ angular.module('ModalModule', [])
             var tmp = $interpolate(template)({modalName:tAttrs.modal});
             tElem.append(tmp);
             return function (scope, element, attrs) {
+                scope.name = attrs.modal;
                 ModalService.registerModal(attrs.modal, element);
 
                 // Set the height of the containing div based upon the content
@@ -1771,6 +1768,10 @@ angular.module('ModalModule', [])
             };
         },
         controller: ['$scope', function ($scope) {
+            $scope.isOpen = function () {
+                return ModalService.isOpen($scope.name);
+            };
+
             $scope.closeModal = function (name) {
                 ModalService.closeModal(name);
             };
