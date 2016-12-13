@@ -130,6 +130,8 @@ ELB_MONITORING_CHARTS_LIST = [
 ]
 
 
+# The list in static/js/widgets/lister-editor/security-policy-editor.py will replace this.
+# For now, changes need to be made in both places
 SSL_CIPHERS = [
     'ECDHE-ECDSA-AES128-GCM-SHA256',
     'ECDHE-RSA-AES128-GCM-SHA256',

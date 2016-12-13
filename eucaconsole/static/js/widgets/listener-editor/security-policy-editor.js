@@ -22,6 +22,8 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'EucaConsoleUtil
                 {id:'Protocol-TLSv1.1', label:'TLSv1.1'},
                 {id:'Protocol-TLSv1', label:'TLSv1'},
             ];
+            // This list will replace the list in contstants/elb.py. For now changes need to be done
+            // in both places
             vm.cipherChoices = [
                 'ECDHE-ECDSA-AES128-GCM-SHA256',
                 'ECDHE-RSA-AES128-GCM-SHA256',
