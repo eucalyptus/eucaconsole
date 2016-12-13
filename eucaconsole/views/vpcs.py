@@ -244,7 +244,12 @@ class VPCView(TaggedItemView):
                 name = self.request.params.get('name', '')
                 self.update_name_tag(name)
 
-                # TODO: Handle internet gateway update
+                # Handle internet gateway update
+                selected_internet_gateway = self.request.params.get('internet_gateway')
+                if self.vpc_internet_gateway.id != selected_internet_gateway:
+                    if self.vpc_internet_gateway and selected_internet_gateway == 'None':
+                        self.vpc_conn.detach_internet_gateway(self.vpc_internet_gateway.id, self.vpc.id)
+                # TODO: Handle attach_internet_gateway
 
             msg = _(u'Successfully updated VPC')
             self.request.session.flash(msg, queue=Notification.SUCCESS)

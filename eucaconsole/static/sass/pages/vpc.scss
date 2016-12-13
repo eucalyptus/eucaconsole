@@ -10,6 +10,17 @@
   width: 100%;
 }
 
+#internet_gateway {
+  width: 40%;
+}
+
+@media only screen and (max-width: 40em) {
+  #internet_gateway {
+    width: 100%;
+  }
+}
+
+
 // Set main route table dialog
 #controls_route_table {
   select {
