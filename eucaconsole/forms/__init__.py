@@ -479,6 +479,23 @@ class ChoicesManager(object):
                 choices.append((vpc.id, vpc.cidr_block))
         return sorted(set(choices))
 
+    def vpc_route_tables(self, vpc=None, add_blank=True, escapebraces=True):
+        from ..views import TaggedItemView
+        choices = []
+        if add_blank:
+            choices = [('None', _(u'None'))]
+        filters = {}
+        if vpc is not None:
+            filters.update({
+                'vpc-id': vpc.id
+            })
+        if self.conn is not None:
+            route_tables = self.conn.get_all_route_tables(filters=filters)
+            for route_table in route_tables:
+                route_table_name = TaggedItemView.get_display_name(route_table, escapebraces=escapebraces)
+                choices.append((route_table.id, route_table_name))
+        return sorted(set(choices))
+
 
 class CFSampleTemplateManager(object):
 

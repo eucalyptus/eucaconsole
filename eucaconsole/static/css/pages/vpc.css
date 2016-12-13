@@ -8,3 +8,5 @@
 .state.pending { background-color: #6d899e; }
 
 .table.subnets { width: 100%; }
+
+#controls_route_table select { width: 30%; }

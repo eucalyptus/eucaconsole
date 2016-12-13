@@ -28,6 +28,8 @@
 Forms for VPC resources
 
 """
+from wtforms import SelectField
+
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
@@ -70,3 +72,16 @@ class VPCForm(BaseSecureForm):
 
         if vpc is not None:
             self.name.data = vpc.tags.get('Name', '')
+
+
+class VPCMainRouteTableForm(BaseSecureForm):
+    """VPC form to set main route table"""
+    route_table = SelectField(label=_('Route table'))
+
+    def __init__(self, request, vpc_conn=None, vpc=None, vpc_main_route_table=None, **kwargs):
+        super(VPCMainRouteTableForm, self).__init__(request, **kwargs)
+        vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.route_table.choices = vpc_choices_manager.vpc_route_tables(vpc=vpc, add_blank=False)
+
+        if vpc_main_route_table is not None:
+            self.route_table.data = vpc_main_route_table.id

@@ -32,7 +32,7 @@
                             </a>
                         </li>
                         <li>
-                            <a data-reveal-id="set-route-table-modal" id="set-route-table-action" i18n:translate="">
+                            <a data-reveal-id="set-main-route-table-modal" id="set-route-table-action" i18n:translate="">
                                 Set main route table
                             </a>
                         </li>
@@ -75,11 +75,13 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Main route table</label></div>
-                        <div class="large-9 small-8 columns value">${vpc_main_route_table}</div>
+                        <div class="large-9 small-8 columns value">${vpc_main_route_table_name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Internet gateway</label></div>
-                        <div class="large-9 small-8 columns value">${vpc_internet_gateway}</div>
+                        <div class="large-9 small-8 columns value">
+                            TODO: Internet gateway here
+                        </div>
                     </div>
                     <hr />
                     <h6 i18n:translate="">SUBNETS</h6>
@@ -146,6 +148,27 @@
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
             </div>
         </div>
+        <!--! Modal dialogs -->
+        <!--! Set Main Route Table modal dialog -->
+        <div id="set-main-route-table-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Set main route table</h3>
+            <form id="set-main-route-table-form" method="post"
+                  action="${request.route_path('vpc_set_main_route_table', id=vpc.id)}">
+                ${structure:vpc_main_route_table_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Select a route table to set as the main route table for VPC</span>
+                    <strong>${vpc_name}</strong>
+                </p>
+                <div>
+                    ${panel('form_field', field=vpc_main_route_table_form['route_table'], stack_label=True)}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Set main route table
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+
     </div>
 </div>
 

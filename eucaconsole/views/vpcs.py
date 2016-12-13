@@ -34,7 +34,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms import ChoicesManager
-from ..forms.vpcs import VPCsFiltersForm, VPCForm
+from ..forms.vpcs import VPCsFiltersForm, VPCForm, VPCMainRouteTableForm
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
@@ -208,13 +208,16 @@ class VPCView(TaggedItemView):
         self.title_parts = [_(u'VPC'), self.vpc_name]
         self.vpc_form = VPCForm(
             self.request, vpc=self.vpc, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+        self.vpc_main_route_table_form = VPCMainRouteTableForm(
+            self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
+            vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
         self.render_dict = dict(
             vpc=self.vpc,
             vpc_name=self.vpc_name,
             vpc_form=self.vpc_form,
+            vpc_main_route_table_form=self.vpc_main_route_table_form,
             vpc_subnets=self.vpc_subnets,
-            vpc_main_route_table=self.vpc_main_route_table,
-            vpc_internet_gateway=self.vpc_internet_gateway,
+            vpc_main_route_table_name=TaggedItemView.get_display_name(self.vpc_main_route_table),
             default_vpc=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
         )
@@ -240,6 +243,22 @@ class VPCView(TaggedItemView):
                 # TODO: Handle internet gateway update
 
             msg = _(u'Successfully updated VPC')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.vpc_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='vpc_set_main_route_table', renderer=VIEW_TEMPLATE, request_method='POST')
+    def vpc_set_main_route_table(self):
+        if self.vpc and self.vpc_main_route_table_form.validate():
+            location = self.request.route_path('vpc_view', id=self.vpc.id)
+            with boto_error_handler(self.request, location):
+                selected_route_table = self.vpc_main_route_table_form.route_table.data
+                # TODO: Handle main route table update
+                pass
+
+            msg = _(u'Successfully set main route table for VPC')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -311,22 +330,22 @@ class VPCView(TaggedItemView):
         return subnet_route_tables
 
     def get_main_route_table(self):
-        """Fetch main route table for VPC. Returns formatted route table name or None if lookup fails"""
+        """Fetch main route table for VPC. Returns None if lookup fails"""
         filters = {
             'vpc-id': [self.vpc.id],
             'association.main': 'true'
         }
         route_tables = self.vpc_conn.get_all_route_tables(filters=filters)
         if route_tables:
-            return TaggedItemView.get_display_name(route_tables[0])
+            return route_tables[0]
         return None
 
     def get_internet_gateway(self):
-        """Fetch internet gateway for VPC. Returns formatted internet gateway name or None if lookup fails"""
+        """Fetch internet gateway for VPC. Returns None if lookup fails"""
         filters = {
             'attachment.vpc-id': [self.vpc.id]
         }
         internet_gateways = self.vpc_conn.get_all_internet_gateways(filters=filters)
         if internet_gateways:
-            return TaggedItemView.get_display_name(internet_gateways[0])
+            return internet_gateways[0]
         return None
