@@ -203,14 +203,15 @@ class VPCView(TaggedItemView):
             self.vpc_subnets = self.get_vpc_subnets()
             self.vpc_main_route_table = self.get_main_route_table()
             self.vpc_internet_gateway = self.get_internet_gateway()
+            self.vpc_form = VPCForm(
+                self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
+                vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
+            self.vpc_main_route_table_form = VPCMainRouteTableForm(
+                self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
+                vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
         self.title_parts = [_(u'VPC'), self.vpc_name]
-        self.vpc_form = VPCForm(
-            self.request, vpc=self.vpc, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
-        self.vpc_main_route_table_form = VPCMainRouteTableForm(
-            self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
-            vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
         self.render_dict = dict(
             vpc=self.vpc,
             vpc_name=self.vpc_name,

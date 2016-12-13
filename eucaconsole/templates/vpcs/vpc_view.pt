@@ -80,7 +80,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Internet gateway</label></div>
                         <div class="large-9 small-8 columns value">
-                            TODO: Internet gateway here
+                            ${vpc_form.internet_gateway}
                         </div>
                     </div>
                     <hr />

@@ -63,15 +63,20 @@ class VPCForm(BaseSecureForm):
     """VPC form (to update an existing VPC)"""
     name_error_msg = _(u'Not a valid name')
     name = TextEscapedField(label=_(u'Name'))
+    internet_gateway = SelectField(label=_('Internet gateway'))
 
-    def __init__(self, request, vpc_conn=None, vpc=None, **kwargs):
+    def __init__(self, request, vpc_conn=None, vpc=None, vpc_internet_gateway=None, **kwargs):
         super(VPCForm, self).__init__(request, **kwargs)
         self.vpc_conn = vpc_conn
         self.vpc = vpc
         self.name.error_msg = self.name_error_msg
+        vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.internet_gateway.choices = vpc_choices_manager.internet_gateways()
 
         if vpc is not None:
             self.name.data = vpc.tags.get('Name', '')
+            if vpc_internet_gateway is not None:
+                self.internet_gateway.data = vpc_internet_gateway.id
 
 
 class VPCMainRouteTableForm(BaseSecureForm):
