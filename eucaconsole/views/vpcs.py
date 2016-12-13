@@ -252,15 +252,18 @@ class VPCView(TaggedItemView):
     @view_config(route_name='vpc_set_main_route_table', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_set_main_route_table(self):
         if self.vpc and self.vpc_main_route_table_form.validate():
-            location = self.request.route_path('vpc_view', id=self.vpc.id)
-            with boto_error_handler(self.request, location):
-                selected_route_table = self.vpc_main_route_table_form.route_table.data
-                # TODO: Handle main route table update
-                pass
-
+            selected_route_table_id = self.vpc_main_route_table_form.route_table.data
+            if self.vpc_main_route_table:
+                existing_main_table_associations = [
+                    assoc for assoc in self.vpc_main_route_table.associations if assoc.main is True]
+                if existing_main_table_associations:
+                    existing_assocation_id = existing_main_table_associations[0].id
+                    with boto_error_handler(self.request, self.location):
+                        self.vpc_conn.replace_route_table_association_with_assoc(
+                            association_id=existing_assocation_id, route_table_id=selected_route_table_id)
             msg = _(u'Successfully set main route table for VPC')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
+            return HTTPFound(location=self.location)
         else:
             self.request.error_messages = self.vpc_form.get_errors_list()
         return self.render_dict
