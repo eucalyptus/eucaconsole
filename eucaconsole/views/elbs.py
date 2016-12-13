@@ -1193,22 +1193,35 @@ class ELBWizardView(BaseView):
             return JSONResponse(status=400, message=err.message)  # Malformed certificate
 
 
-class ELBFilterView(BaseELBView):
-    """ """
+class ELBXHRView(BaseView):
+    """
+    Low-overhead views for XHR calls to support client-side components
+    """
 
     def __init__(self, request, **kwargs):
-        super(ELBFilterView, self).__init__(request, **kwargs)
+        super(ELBXHRView, self).__init__(request, **kwargs)
+        self.elb_conn = self.get_connection(conn_type='elb')
 
     @view_config(route_name='elb_instances_filters', request_method='GET', renderer='json', xhr=True)
     def elb_instances_filters(self):
+        ec2_conn = self.get_connection()
+        iam_conn = self.get_connection(conn_type='iam')
+        autoscale_conn = self.get_connection(conn_type='autoscale')
+        s3_conn = s3_conn or self.get_connection(conn_type='s3')
+        vpc_conn = self.get_connection(conn_type='vpc')
         filters_form = ELBInstancesFiltersForm(
-            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn,
-            iam_conn=None, vpc_conn=self.vpc_conn,
+            self.request, ec2_conn=ec2_conn, autoscale_conn=autoscale_conn,
+            iam_conn=iam_conn, vpc_conn=vpc_conn,
             cloud_type=self.cloud_type)
         search_facets = filters_form.facets
         string_facets = BaseView.escape_json(json.dumps(search_facets))
         return dict(results=string_facets)
         
+    @view_config(route_name='elb_policies_json', request_method='GET', renderer='json', xhr=True)
+    def elb_policies_json_view(self):
+        predefined_policy_choices = ChoicesManager(conn=self.elb_conn).predefined_policy_choices(add_blank=False)
+        return dict(results=[policy[0] for policy in predefined_policy_choices])
+
 
 class CreateELBView(BaseELBView):
     """Create ELB wizard"""

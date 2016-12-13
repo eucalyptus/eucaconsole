@@ -11,6 +11,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.from = {};
             this.to = {};
+            this.policy = {};
 
             var validPorts = [25, 80, 443, 465, 587],
                 validPortMin = 1024,
@@ -93,10 +94,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                 vm.to = vm.protocols[0];
             };
             this.cancel = this.reset;
-
-            this.openPolicyModal = function () {
-                ModalService.openModal('securityPolicyEditor');
-            };
 
             this.openCertificateModal = function () {
                 ModalService.openModal('certificateEditor');

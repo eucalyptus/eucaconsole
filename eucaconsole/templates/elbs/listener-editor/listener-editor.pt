@@ -65,13 +65,6 @@
     <div class="security-section" ng-show="ctrl.portsValid()">
         <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>
         <div class="security-row">
-            <label class="inline" i18n:translate="">Policy</label>
-            <span>{{ selectedSecurityPolicy }}</span>
-            <a ng-click="ctrl.openPolicyModal()" title="Change policy" i18n:translate="">
-                Change
-            </a>
-        </div>
-        <div class="security-row">
             <label class="inline">
                 <span i18n:translate="">Certificates</span>
                 <span class="req">*</span>
@@ -99,10 +92,6 @@
         <a class="cancel-link" i18n:translate="" ng-click="ctrl.cancel()">Cancel</a>
     </div>
 </div>
-
-<!--div class="modal xlarge" modal="securityPolicyEditor">
-    <security-policy-editor ng-model="ctrl.policies"></security-policy-editor>
-</div-->
 
 <div class="modal xlarge" modal="certificateEditor">
     <certificate-editor ng-model="ctrl.certificates"></certificate-editor>

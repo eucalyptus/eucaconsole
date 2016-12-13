@@ -23,7 +23,20 @@
         </div>
     </div>
 
+    <div ng-show="general.isHTTPSListenerDefined()">
+        <hr/>
+        <h6 i18n:translate="">Security Policy</h6>
+        <div class="security-row">
+            <span ng-show="general.values.policy.sslUsingCustomPolicy != 'on'">{{ general.values.policy.predefinedPolicy }}</span>
+            <span ng-show="general.values.policy.sslUsingCustomPolicy == 'on'" i18n:translate="">ELB-CustomSecurityPolicy</span>
+            <a ng-click="general.openPolicyModal()" title="Change policy" i18n:translate=""> Change</a>
+        </div>
+    </div>
+    <div class="modal large" modal="securityPolicyEditor">
+        <security-policy-editor ng-model="general.values.policy"></security-policy-editor>
+    </div>
     <hr/>
+
 
     <div class="row controls-wrapper">
         <div class="columns" ng-cloak="">

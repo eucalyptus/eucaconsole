@@ -1,38 +1,90 @@
-<div>
+<!--! ELB Security Policy dialog -->
+<div i18n:domain="eucaconsole">
     <h3 i18n:translate="">Select security policy</h3>
     <p i18n:translate="">
         A security policy configures SSL negotiation settings when you use a secure
         protocol like HTTPS or SSL.
     </p>
-    <form method="post">
+    <ng-form name="securityPolicyForm" novalidate="">
         <div>
-            <input type="radio" name="policy_type_radio"
-                   value="existing" ng-model="policyRadioButton" />
+            <input type="radio" id="policy-type-predefined" name="policy_type_radio"
+                   value="existing" ng-model="policyCtrl.policyRadioButton" />
             <label for="policy-type-predefined" i18n:translate="">
                 Choose a predefined security policy
             </label>
         </div>
-        <div ng-show="policyRadioButton === 'existing'">
+        <div ng-if="policyCtrl.policyRadioButton === 'existing'">
+            <div id="controls_predefined_policy" class="row inline controls-wrapper">
+                <div class="large-2 small-4 columns">
+                    <label class="right">
+                        <span i18n:translate="">Policy name</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-10 small-8 columns field">
+                    <select id="predefined_policy" required="required" name="predefined_policy"
+                            ng-model="policy.predefinedPolicy"
+                            ng-options="policy for policy in policyCtrl.predefinedPolicyChoices">
+                    </select>
+                    <small class="error" i18n:translate="">Policy is required</small>
+                </div>
+            </div>
         </div>
         <div>
-            <input type="radio" name="policy_type_radio"
-                   value="new" ng-model="policyRadioButton" />
+            <input type="radio" id="policy-type-new" name="policy_type_radio"
+                   value="new" ng-model="policyCtrl.policyRadioButton" />
             <label for="policy-type-new" i18n:translate="">Create a custom security policy</label>
         </div>
-        <div ng-show="policyRadioButton === 'new'">
-            <h6 i18n:translate="">SSL Options</h6>
+        <div ng-if="policyCtrl.policyRadioButton === 'new'" id="new-policy-wrapper">
+            <div id="controls_ssl_protocols" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">SSL Protocols</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <select id="ssl_protocols" required="required" name="ssl_protocols"
+                            ng-model="policy.sslProtocols" chosen="true"
+                            ng-init="policy.sslProtocols = policyCtrl.protocolChoices.slice()"
+                            ng-options="opt as opt.label for opt in policyCtrl.protocolChoices track by opt.id"
+                            multiple="" data-placeholder="Select..." i18n:attributes="data-placeholder">
+                    </select>
+                    <small class="error" i18n:translate="">At least one protocol is required.</small>
+                </div>
+            </div>
+            <div id="controls_ssl_ciphers" class="row inline stacked controls-wrapper">
+                <div class="columns">
+                    <label class="left stack-label">
+                        <span i18n:translate="">SSL Ciphers</span>
+                        <span class="req">*</span>
+                    </label>
+                </div>
+                <div class="large-12 small-12 columns field">
+                    <select id="ssl_ciphers" required="required" name="ssl_ciphers"
+                            ng-model="policy.sslCiphers" chosen="true" ng-options="cipher for cipher in policyCtrl.cipherChoices"
+                            ng-init="policy.sslCiphers = []"
+                            multiple="" data-placeholder="Select..." i18n:attributes="data-placeholder">
+                    </select>
+                    <small class="error" i18n:translate="">At least one cipher is required.</small>
+                </div>
+            </div>
+            <h6 i18n:translate="" id="ssl-options-header">SSL Options</h6>
+            <div id="controls_server_order_preference" class="row inline controls-wrapper">
+                <div class="columns field">
+                    <input id="server_order_preference" type="checkbox" ng-model="policy.sslServerOrderPref" name="server_order_preference"/>
+                    <label class="left-align" for="server_order_preference" i18n:translate="">Server order preference</label>
+                </div>
+            </div>
         </div>
-    </form>
-    <hr />
-    <div>
+        <hr />
         <div class="row">
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate=""
-                    ng-click="setSecurityPolicy()"
-                    ng-disabled="policyRadioButton === 'new' &amp;&amp; (!sslProtocols.length || !sslCiphers.length)">
+                <button type="submit" class="button expand" id="security-policy-dialog-submit-btn"
+                        i18n:translate="" ng-click="policyCtrl.handleUsePolicy($event)">
                     Use This Policy
                 </button>
             </div>
         </div>
-    </div>
+    </ng-form>
 </div>

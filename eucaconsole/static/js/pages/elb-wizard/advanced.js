@@ -7,6 +7,9 @@ function ($scope, $routeParams, $window, ELBWizardService, ELBService, BucketSer
     vm.creatingELB = false;
     vm.createELB = function($event) {
         $event.preventDefault();
+        if($scope.advancedForm.$invalid) {
+            return;
+        }
         vm.creatingELB = true;
         ELBService.createELB($('#csrf_token').val(), this.values).then(
             function success(result) {

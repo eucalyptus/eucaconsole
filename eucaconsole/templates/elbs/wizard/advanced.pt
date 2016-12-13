@@ -1,4 +1,4 @@
-<form id="elb-form" i18n:domain="eucaconsole">
+<form name="advancedForm" i18n:domain="eucaconsole">
     <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
     <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
 
