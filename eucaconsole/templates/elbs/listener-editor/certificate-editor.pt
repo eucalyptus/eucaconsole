@@ -26,24 +26,25 @@
                 <input type="radio" name="certificate-type" value="existing" ng-model="ctrl.certType"/>
                 <label>Choose an existing SSL certificate</label>
             </div>
-            <fieldset ng-show="ctrl.certType === 'existing'">
+            <div ng-show="ctrl.certType === 'existing'">
                 <div class="large-2 small-3 columns">
                     <label class="right">Certificate
                         <span class="req">*</span>
                     </label>
                 </div>
                 <div class="large-10 small-9 columns field">
-                    <select ng-model="ctrl.selectedCertificate" required=""
+                    <select ng-model="ctrl.selectedCertificate" required="" chosen="true"
                         ng-options="item.server_certificate_name for item in certsAvailable track by item.arn">
+                        <option value="" i18n:translate="">Select...</option>
                     </select>
                 </div>
-            </fieldset>
+            </div>
             
             <div>
                 <input type="radio" name="certificate-type" value="new" ng-model="ctrl.certType"/>
                 <label>Upload a new SSL certificate</label>
             </div>
-            <fieldset ng-show="ctrl.certType === 'new'">
+            <div ng-show="ctrl.certType === 'new'">
                 <div class="columns">
                     <label class="left stack-label">Certificate name
                         <span class="req">*</span>
@@ -87,7 +88,7 @@
                 <div class="columns large-12 small-12 field">
                     <textarea ng-model="ctrl.certificateChain"></textarea>
                 </div>
-            </fieldset>
+            </div>
 
             <hr/>
 
