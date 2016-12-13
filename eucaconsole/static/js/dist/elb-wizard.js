@@ -507,7 +507,34 @@ angular.module('ELBWizard')
         }],
         controllerAs: 'nav'
     };
-});
+})
+.factory('WizardService', ['$location', function ($location) {
+    function Navigation (steps) {
+        steps = steps || [];
+        this.steps = steps.map(function (current, index, ary) {
+            current._next = ary[index + 1];
+            return current;
+        });
+        this.current = this.steps[0];
+    }
+
+    Navigation.prototype.next = function () {
+        this.current = this.current._next;
+        return this.current;
+    };
+
+    var svc = {
+        initNav: function (steps) {
+            this._nav = new Navigation(steps);
+            return this._nav;
+        },
+
+        next: function () {
+        }
+    };
+
+    return svc;
+}]);
 
 angular.module('ELBWizard')
 .controller('MainController', function () {
@@ -900,6 +927,8 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'EucaConsoleUtil
                 {id:'Protocol-TLSv1.1', label:'TLSv1.1'},
                 {id:'Protocol-TLSv1', label:'TLSv1'},
             ];
+            // This list will replace the list in contstants/elb.py. For now changes need to be done
+            // in both places
             vm.cipherChoices = [
                 'ECDHE-ECDSA-AES128-GCM-SHA256',
                 'ECDHE-RSA-AES128-GCM-SHA256',
