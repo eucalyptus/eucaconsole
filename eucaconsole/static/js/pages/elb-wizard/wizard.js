@@ -81,6 +81,10 @@ angular.module('ELBWizard', [
                 'fromProtocol': 'HTTP',
                 'toProtocol': 'HTTP'
             }],
+            policy: {
+                predefinedPolicy: '',
+                sslUsingCustomPolicy: undefined
+            },
             tags: [],
             vpcNetwork: 'None',
             vpcNetworkChoices: [],

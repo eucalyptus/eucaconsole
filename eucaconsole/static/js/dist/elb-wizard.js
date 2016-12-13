@@ -282,6 +282,10 @@ angular.module('ELBWizard', [
                 'fromProtocol': 'HTTP',
                 'toProtocol': 'HTTP'
             }],
+            policy: {
+                predefinedPolicy: '',
+                sslUsingCustomPolicy: undefined
+            },
             tags: [],
             vpcNetwork: 'None',
             vpcNetworkChoices: [],
@@ -501,6 +505,7 @@ angular.module('ELBWizard')
 .controller('GeneralController', ['$scope', '$route', '$routeParams', 
         '$location', 'ModalService', 'ELBWizardService', 'certificates', 'policies',
     function ($scope, $route, $routeParams, $location, ModalService, ELBWizardService, certificates, policies) {
+        var vm = this;
 
         ELBWizardService.certsAvailable = certificates;
         ELBWizardService.policies = policies;
@@ -513,6 +518,16 @@ angular.module('ELBWizard')
             }
 
             ELBWizardService.next({});
+        };
+
+        this.isHTTPSListenerDefined = function() {
+            return vm.values.listeners.findIndex(function(val) {
+                return val.fromProtocol == "HTTPS";
+            }) > -1;
+        };
+
+        this.openPolicyModal = function () {
+            ModalService.openModal('securityPolicyEditor');
         };
 
         $scope.$on('$destroy', function () {
@@ -626,6 +641,9 @@ function ($scope, $routeParams, $window, ELBWizardService, ELBService, BucketSer
     vm.creatingELB = false;
     vm.createELB = function($event) {
         $event.preventDefault();
+        if($scope.advancedForm.$invalid) {
+            return;
+        }
         vm.creatingELB = true;
         ELBService.createELB($('#csrf_token').val(), this.values).then(
             function success(result) {
@@ -696,6 +714,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.from = {};
             this.to = {};
+            this.policy = {};
 
             var validPorts = [25, 80, 443, 465, 587],
                 validPortMin = 1024,
@@ -779,10 +798,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             };
             this.cancel = this.reset;
 
-            this.openPolicyModal = function () {
-                ModalService.openModal('securityPolicyEditor');
-            };
-
             this.openCertificateModal = function () {
                 ModalService.openModal('certificateEditor');
             };
@@ -856,6 +871,7 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
         scope: {
             policy: '=ngModel'
         },
+        // values the policy needs
         // values.policy.securityPolicyUpdated,
         // values.policy.sslUsingCustomPolicy,
         // values.policy.predefiedPolicy,
@@ -939,10 +955,12 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                     return false;
                 }
                 if (vm.policyRadioButton === 'new') {
-                    // if new, assign name to display when modal is closed
-                    $scope.predefinedPolicy = 'ELB-CustomSecurityPolicy';
-                    $scope.sslUsingCustomPolicy = 'on';
+                    $scope.policy.sslUsingCustomPolicy = 'on';
                 }
+                else {
+                    $scope.policy.sslUsingCustomPolicy = undefined;
+                }
+                ModalService.closeModal('securityPolicyEditor');
             };
             vm.isShowing = function() {
                 return ModalService.isOpen('securityPolicyEditor');
@@ -954,6 +972,7 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                         result.forEach(function(val) {
                             vm.predefinedPolicyChoices.push(val); 
                         });
+                        $scope.policy.predefinedPolicy = result[0];
                     },
                     function error(errData) {
                         eucaHandleError(errData.data.message, errData.status);

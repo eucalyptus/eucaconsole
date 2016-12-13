@@ -89,10 +89,12 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                     return false;
                 }
                 if (vm.policyRadioButton === 'new') {
-                    // if new, assign name to display when modal is closed
-                    $scope.predefinedPolicy = 'ELB-CustomSecurityPolicy';
-                    $scope.sslUsingCustomPolicy = 'on';
+                    $scope.policy.sslUsingCustomPolicy = 'on';
                 }
+                else {
+                    $scope.policy.sslUsingCustomPolicy = undefined;
+                }
+                ModalService.closeModal('securityPolicyEditor');
             };
             vm.isShowing = function() {
                 return ModalService.isOpen('securityPolicyEditor');
@@ -104,6 +106,7 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'ELBServiceModul
                         result.forEach(function(val) {
                             vm.predefinedPolicyChoices.push(val); 
                         });
+                        $scope.policy.predefinedPolicy = result[0];
                     },
                     function error(errData) {
                         eucaHandleError(errData.data.message, errData.status);
