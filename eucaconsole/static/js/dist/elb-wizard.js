@@ -456,7 +456,7 @@ angular.module('ELBWizard')
         require: '?^elbWizard',
         templateUrl: '/_template/elbs/wizard/navigation',
         link: function (scope, element, attributes, ctrl) {
-            var steps = ctrl.validSteps();
+            var steps = ctrl.validSteps(); // Find a way to pass the valid steps in, and you can get rid of the upward dependency on elbWizard
             scope.setNav(steps);
 
             scope.$on('$locationChangeStart', function (evt, to, from) {
