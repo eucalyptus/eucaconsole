@@ -115,7 +115,7 @@
                         </thead>
                         <tbody>
                             <tr tal:repeat="subnet vpc_subnets">
-                                <td>${subnet.id}</td>
+                                <td>${subnet.name}</td>
                                 <td><span class="label radius state ${subnet.state}">${subnet.state}</span></td>
                                 <td>${subnet.cidr_block}</td>
                                 <td>${subnet.available_ips}</td>

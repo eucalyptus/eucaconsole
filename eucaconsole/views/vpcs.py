@@ -203,10 +203,10 @@ class VPCView(TaggedItemView):
             self.conn = self.get_connection()
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
-            self.vpc_subnets = self.get_vpc_subnets()
             self.vpc_default_security_group = self.get_default_security_group()
             self.vpc_main_route_table = self.get_main_route_table()
             self.vpc_internet_gateway = self.get_internet_gateway()
+            self.vpc_subnets = self.get_vpc_subnets()
             self.vpc_form = VPCForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
@@ -306,9 +306,7 @@ class VPCView(TaggedItemView):
     def get_vpc_subnets(self):
         subnets_list = []
         vpc_subnets = self.vpc_conn.get_all_subnets(filters={'vpc-id': [self.vpc.id]})
-        vpc_subnet_ids = [subnet.id for subnet in vpc_subnets]
-        vpc_route_tables = self.vpc_conn.get_all_route_tables(
-            filters={'association.subnet-id': [vpc_subnet_ids]})
+        vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': [self.vpc.id]})
         vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': [self.vpc.id]})
         vpc_reservations = self.conn.get_all_reservations(filters={'vpc-id': [self.vpc.id]})
         for subnet in vpc_subnets:
@@ -355,10 +353,17 @@ class VPCView(TaggedItemView):
         subnet_route_tables = []
         if self.vpc_conn and subnet_id and vpc_route_tables:
             for route_table in vpc_route_tables:
-                if route_table.association.subnet_id == subnet_id:
+                association_subnet_ids = [assoc.subnet_id for assoc in route_table.associations]
+                if subnet_id in association_subnet_ids:
                     subnet_route_tables.append(dict(
                         id=route_table.id,
                         name=TaggedItemView.get_display_name(route_table),
+                    ))
+                elif association_subnet_ids == [None]:
+                    # Show VPC's main route table for subnet
+                    subnet_route_tables.append(dict(
+                        id=self.vpc_main_route_table.id,
+                        name=TaggedItemView.get_display_name(self.vpc_main_route_table),
                     ))
         return subnet_route_tables
 
