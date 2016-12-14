@@ -92,21 +92,24 @@ class VPCsJsonView(BaseView):
 
         with boto_error_handler(self.request):
             vpc_items = self.vpc_conn.get_all_vpcs() if self.vpc_conn else []
-            subnets = self.vpc_conn.get_all_subnets()
-            route_tables = self.vpc_conn.get_all_route_tables()
-            internet_gateways = self.vpc_conn.get_all_internet_gateways()
 
         # Filter items based on MSB params
         zone = self.request.params.get('availability_zone')
         if zone:
             vpc_items = self.filter_vpcs_by_availability_zone(vpc_items, zone=zone)
 
+        vpc_ids = [vpc.id for vpc in vpc_items]
+        with boto_error_handler(self.request):
+            subnets = self.vpc_conn.get_all_subnets(filters={'vpc-id': vpc_ids})
+            main_route_tables = self.vpc_conn.get_all_route_tables(filters={'association.main': 'true'})
+            internet_gateways = self.vpc_conn.get_all_internet_gateways(filters={'attachment.vpc-id': vpc_ids})
+
         vpc_list = []
         for vpc in vpc_items:
             vpc_subnets = self.filter_subnets_by_vpc(subnets, vpc.id)
             availability_zones = [subnet.get('availability_zone') for subnet in vpc_subnets]
-            vpc_route_tables = self.filter_route_tables_by_vpc(route_tables, vpc.id)
-            vpc_internet_gateways = self.filter_internet_gateways_by_vpc(internet_gateways, vpc.id)
+            vpc_main_route_table = self.get_main_route_table_for_vpc(main_route_tables, vpc.id)
+            vpc_internet_gateway = self.get_internet_gateway_for_vpc(internet_gateways, vpc.id)
             vpc_list.append(dict(
                 id=vpc.id,
                 name=TaggedItemView.get_display_name(vpc),
@@ -114,8 +117,8 @@ class VPCsJsonView(BaseView):
                 cidr_block=vpc.cidr_block,
                 subnets=vpc_subnets,
                 availability_zones=availability_zones,
-                route_tables=vpc_route_tables,
-                internet_gateways=vpc_internet_gateways,
+                main_route_table=vpc_main_route_table,
+                internet_gateway=vpc_internet_gateway,
                 default_vpc=_('Yes') if vpc.is_default else _('No'),
                 tags=TaggedItemView.get_tags_display(vpc.tags),
             ))
@@ -139,27 +142,25 @@ class VPCsJsonView(BaseView):
         return subnet_list
 
     @staticmethod
-    def filter_route_tables_by_vpc(route_tables, vpc_id):
-        rtables_list = []
+    def get_main_route_table_for_vpc(route_tables, vpc_id):
         for rtable in route_tables:
             if rtable.vpc_id == vpc_id:
-                rtables_list.append(dict(
+                return dict(
                     id=rtable.id,
                     name=TaggedItemView.get_display_name(rtable),
-                ))
-        return rtables_list
+                )
+        return None
 
     @staticmethod
-    def filter_internet_gateways_by_vpc(internet_gateways, vpc_id):
-        internet_gateways_list = []
+    def get_internet_gateway_for_vpc(internet_gateways, vpc_id):
         for igw in internet_gateways:
             for attachment in igw.attachments:
                 if attachment.vpc_id == vpc_id:
-                    internet_gateways_list.append(dict(
+                    return dict(
                         id=igw.id,
                         name=TaggedItemView.get_display_name(igw),
-                    ))
-        return internet_gateways_list
+                    )
+        return None
 
 
 class VPCNetworksJsonView(BaseView):

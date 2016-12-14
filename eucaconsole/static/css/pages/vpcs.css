@@ -160,6 +160,6 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .state.pending { background-color: #6d899e; }
 
-.table .subnet-item { min-width: 16rem; }
+.table .subnet-item { min-width: 10rem; }
 
 .tile { height: 256px; max-height: 256px; }

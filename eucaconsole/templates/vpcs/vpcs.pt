@@ -42,7 +42,7 @@
                 <div>
                     <span class="label" title="Subnets" i18n:attributes="title" data-tooltip="">SN</span>
                     <span ng-repeat="subnet in item.subnets">
-                        {{ subnet.name }}<br ng-if="!$last" />
+                        {{ subnet.id }}<br ng-if="!$last" />
                     </span>
                 </div>
                 <div>
@@ -50,20 +50,16 @@
                     {{ item.default_vpc }}
                 </div>
                 <div>
-                    <span class="label" title="Route table" i18n:attributes="title" data-tooltip="">RT</span>
-                    <span ng-repeat="rtable in item.route_tables">
-                        {{ rtable.name }}<br ng-if="!$last" />
+                    <span class="label" title="Main route table" i18n:attributes="title" data-tooltip="">RT</span>
+                    <span ng-if="item.main_route_table">
+                        {{ item.main_route_table.id }}
                     </span>
                 </div>
                 <div>
                     <span class="label" title="Internet gateway" i18n:attributes="title" data-tooltip="">IG</span>
-                    <span ng-repeat="igw in item.internet_gateways">
-                        {{ igw.name }}<br ng-if="!$last" />
+                    <span ng-if="item.internet_gateway">
+                        {{ item.internet_gateway.id }}
                     </span>
-                </div>
-                <div>
-                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
-                    {{ item.tags }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tile_footer">
@@ -77,9 +73,8 @@
                 <th i18n:translate="" st-sort="state" st-skip-natural="true">State</th>
                 <th i18n:translate="">CIDR BLOCK</th>
                 <th i18n:translate="">SUBNETS</th>
-                <th i18n:translate="">ROUTE TABLE</th>
-                <th i18n:translate="">INTERNET GATEWAY</th>
-                <th i18n:translate="">TAGS</th>
+                <th i18n:translate="" st-sort="main_route_table.name" st-skip-natural="true">MAIN ROUTE TABLE</th>
+                <th i18n:translate="" st-sort="internet_gateway.name" st-skip-natural="true">INTERNET GATEWAY</th>
                 <th i18n:translate="" st-sort="default_vpc" st-skip-natural="true">DEFAULT</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
@@ -95,20 +90,19 @@
                 <td>{{ item.cidr_block }}</td>
                 <td>
                     <div ng-repeat="subnet in item.subnets" class="subnet-item">
-                        {{ subnet.name }} - {{ subnet.cidr_block }} - {{ subnet.availability_zone }}
+                        {{ subnet.name }} - {{ subnet.availability_zone }}
                     </div>
                 </td>
                 <td>
-                    <div ng-repeat="rtable in item.route_tables">
-                        {{ rtable.name }}
-                    </div>
+                    <span ng-if="item.main_route_table">
+                        {{ item.main_route_table.name }}
+                    </span>
                 </td>
                 <td>
-                    <div ng-repeat="igw in item.internet_gateways">
-                        {{ igw.name }}
+                    <div ng-if="item.internet_gateway">
+                        {{ item.internet_gateway.name }}
                     </div>
                 </td>
-                <td>{{ item.tags }}</td>
                 <td>{{ item.default_vpc }}</td>
                 <td>
                     <span class="actions">
