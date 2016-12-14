@@ -32,6 +32,7 @@ from wtforms import SelectField
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
+from ..views import TaggedItemView
 
 
 class VPCsFiltersForm(BaseSecureForm):
@@ -69,14 +70,27 @@ class VPCForm(BaseSecureForm):
         super(VPCForm, self).__init__(request, **kwargs)
         self.vpc_conn = vpc_conn
         self.vpc = vpc
+        self.vpc_internet_gateway = vpc_internet_gateway
         self.name.error_msg = self.name_error_msg
-        vpc_choices_manager = ChoicesManager(conn=vpc_conn)
-        self.internet_gateway.choices = vpc_choices_manager.internet_gateways()
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.internet_gateway.choices = self.get_internet_gateway_choices()
 
         if vpc is not None:
             self.name.data = vpc.tags.get('Name', '')
-            if vpc_internet_gateway is not None:
-                self.internet_gateway.data = vpc_internet_gateway.id
+            if self.vpc_internet_gateway is not None:
+                self.internet_gateway.data = self.vpc_internet_gateway.id
+
+    def get_internet_gateway_choices(self):
+        choices_list = []
+        if self.vpc and self.vpc_internet_gateway:
+            # Add the existing IGW if necessary, as we're going to filter out attached internet gateways later
+            choices_list.append(
+                (TaggedItemView.get_display_name(self.vpc_internet_gateway), self.vpc_internet_gateway.id)
+            )
+        igw_choices = self.vpc_choices_manager.internet_gateways(filters={'attachment.state': 'available'})
+        for choice in igw_choices:
+            choices_list.append(choice)
+        return sorted(set(choices_list))
 
 
 class VPCMainRouteTableForm(BaseSecureForm):
