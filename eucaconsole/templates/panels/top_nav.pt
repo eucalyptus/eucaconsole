@@ -38,6 +38,11 @@
         </a>
     </li>
     <i class="icon networksecurity"></i><label i18n:translate="">NETWORK &amp; SECURITY</label>
+    <li class="vpcs" tal:condition="layout.is_vpc_supported">
+        <a id="resource-menuitem-vpcs" class="vpcs" href="${request.route_path('vpcs')}">
+            <span i18n:translate="">VPCs</span>
+        </a>
+    </li>
     <li class="ipaddresses">
         <a id="resource-menuitem-ipaddresses" class="ipaddresses" href="${request.route_path('ipaddresses')}">
             <span i18n:translate="">Elastic IP addresses</span>
