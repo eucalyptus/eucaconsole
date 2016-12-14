@@ -52,9 +52,9 @@
                       method="post" data-abide="abide">
                     ${structure:vpc_form['csrf_token']}
                     <h6 i18n:translate="">VPC</h6>
-                    <div class="row controls-wrapper readonly" ng-cloak="">
+                    <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="" id="vpc-status-label">State</label></div>
-                        <div class="large-9 small-8 columns value" ng-cloak="">
+                        <div class="large-9 small-8 columns value">
                             <span class="label radius state ${vpc.state}">${vpc.state}</span>
                         </div>
                     </div>
@@ -191,7 +191,24 @@
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
-
+        <!--! Create Internet Gateway modal dialog -->
+        <div id="create-internet-gateway-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Create internet gateway</h3>
+            <form id="create-internet-gateway-form" name="createInternetGatewayForm" method="post"
+                  action="${request.route_path('vpc_create_internet_gateway', id=vpc.id)}">
+                ${structure:create_internet_gateway_form['csrf_token']}
+                <p i18n:translate="">
+                    An internet gateway is a virtual router that connects a VPC to the Internet.
+                </p>
+                <div>
+                    ${panel('form_field', field=create_internet_gateway_form['new_igw_name'], stack_label=True, **{'ng-model': 'newInternetGatewayName'})}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Create internet gateway
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

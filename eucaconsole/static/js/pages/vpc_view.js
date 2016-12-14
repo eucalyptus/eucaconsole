@@ -1,7 +1,7 @@
 /**
  * Copyright 2016 Hewlett Packard Enterprise Development LP
  *
- * @fileOverview VPC Detaile Page JS
+ * @fileOverview VPC Details Page JS
  * @requires AngularJS
  *
  */

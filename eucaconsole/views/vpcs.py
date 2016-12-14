@@ -34,7 +34,9 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms import ChoicesManager
-from ..forms.vpcs import VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, INTERNET_GATEWAY_HELP_TEXT
+from ..forms.vpcs import (
+    VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, INTERNET_GATEWAY_HELP_TEXT, CreateInternetGatewayForm
+)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
@@ -210,6 +212,8 @@ class VPCView(TaggedItemView):
             self.vpc_main_route_table_form = VPCMainRouteTableForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
+            self.create_internet_gateway_form = CreateInternetGatewayForm(
+                self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
         self.title_parts = [_(u'VPC'), self.vpc_name]
@@ -218,6 +222,7 @@ class VPCView(TaggedItemView):
             vpc_name=self.vpc_name,
             vpc_form=self.vpc_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
+            create_internet_gateway_form=self.create_internet_gateway_form,
             vpc_subnets=self.vpc_subnets,
             internet_gateway_help_text=INTERNET_GATEWAY_HELP_TEXT,
             max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
@@ -274,6 +279,21 @@ class VPCView(TaggedItemView):
         else:
             self.request.error_messages = self.vpc_form.get_errors_list()
         return self.render_dict
+
+    @view_config(route_name='vpc_create_internet_gateway', renderer='json', request_method='POST')
+    def vpc_create_internet_gateway(self):
+        location = self.request.route_path('vpc_view', id=self.vpc.id)
+        if self.create_internet_gateway_form.validate():
+            name = self.request.params.get('new_igw_name')
+            with boto_error_handler(self.request):
+                new_igw = self.vpc_conn.create_internet_gateway()
+                if name:
+                    new_igw.add_tag('Name', name)
+            msg = _(u'Successfully created internet gateway')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+        else:
+            self.request.error_messages = ', '.join(self.create_internet_gateway_form.get_errors_list())
+        return HTTPFound(location=location)
 
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('id')
@@ -375,18 +395,20 @@ class VPCView(TaggedItemView):
 
     def update_internet_gateway(self):
         selected_igw = self.request.params.get('internet_gateway')
-        action = None
+        actions = []
 
         if self.vpc_internet_gateway:
             if self.vpc_internet_gateway.id != selected_igw:
                 if selected_igw == 'None':
-                    action = 'detach'
+                    actions.append('detach')
                 else:
-                    action = 'attach'
+                    actions.append('detach')
+                    actions.append('attach')
         elif selected_igw != 'None':
-            action = 'attach'
+            actions.append('attach')
 
-        if action == 'attach':
-            self.vpc_conn.attach_internet_gateway(selected_igw, self.vpc.id)
-        elif action == 'detach':
+        actions = set(actions)
+        if 'detach' in actions:
             self.vpc_conn.detach_internet_gateway(self.vpc_internet_gateway.id, self.vpc.id)
+        if 'attach' in actions:
+            self.vpc_conn.attach_internet_gateway(selected_igw, self.vpc.id)

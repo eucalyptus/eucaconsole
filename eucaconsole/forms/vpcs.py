@@ -28,7 +28,7 @@
 Forms for VPC resources
 
 """
-from wtforms import SelectField
+from wtforms import SelectField, StringField
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
@@ -112,3 +112,7 @@ class VPCMainRouteTableForm(BaseSecureForm):
 
         if vpc_main_route_table is not None:
             self.route_table.data = vpc_main_route_table.id
+
+
+class CreateInternetGatewayForm(BaseSecureForm):
+    new_igw_name = StringField(label=_('Name'))
