@@ -71,7 +71,7 @@ class MasterLayout(object):
         self.access_id = self.request.session.get('access_id')
         self.has_regions = True
         self.default_region = ''
-        self.is_vpc_supported = 'VPC' in request.session.get('supported_platforms', [])
+        self.is_vpc_supported = BaseView.is_vpc_supported(request)
         if self.cloud_type == 'aws':
             self.regions = AWS_REGIONS
             self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
