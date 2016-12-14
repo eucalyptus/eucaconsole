@@ -7,10 +7,14 @@ angular.module('ELBWizard')
         link: function (scope, element, attributes, ctrl) {
             var steps = ctrl.validSteps();
             scope.setNav(steps);
+
+            scope.$on('$locationChangeStart', function (evt, to, from) {
+                //  You can use this event to perform checks on navigation
+            });
         },
-        controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
+        controller: ['$scope', '$location', 'WizardService', function ($scope, $location, WizardService) {
             $scope.setNav = function (steps) {
-                $scope.navigation = ELBWizardService.initNav(steps);
+                $scope.navigation = WizardService.initNav(steps);
             };
 
             this.validSteps = function () {
@@ -57,7 +61,14 @@ angular.module('ELBWizard')
             return this._nav;
         },
 
+        getNav: function () {
+            return this._nav;
+        },
+
         next: function () {
+            this._nav.current.complete = true;
+            var next = this._nav.next();
+            $location.path(next.href);
         }
     };
 

@@ -20,10 +20,11 @@ describe('ELB Wizard Module', function () {
 
     describe('ELBWizardService', function () {
 
-        var ELBWizardService, steps;
+        var ELBWizardService, WizardService, steps;
 
-        beforeEach(angular.mock.inject(function (_ELBWizardService_) {
+        beforeEach(angular.mock.inject(function (_ELBWizardService_, _WizardService_) {
             ELBWizardService = _ELBWizardService_;
+            WizardService = _WizardService_;
             steps = [
                 {
                     label: 'General',
@@ -63,20 +64,12 @@ describe('ELB Wizard Module', function () {
             });
         });
 
-        describe('#initNav', function () {
-
-            it('should return a navigation object with the correct number of steps', function () {
-                var nav = ELBWizardService.initNav(steps);
-                expect(nav.steps.length).toEqual(steps.length);
-            });
-        });
-
         describe('#next', function () {
 
             var nav, current;
 
             beforeEach(function () {
-                nav = ELBWizardService.initNav(steps);
+                nav = WizardService.initNav(steps);
                 spyOn(nav, 'next').and.callThrough();
 
                 current = nav.current;  // Save a reference to the original "current" for testing later
