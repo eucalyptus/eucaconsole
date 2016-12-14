@@ -535,6 +535,7 @@ class OIDCAuthenticator(object):
             port=self.port,
             path=auth_path,
             region=region,
+            anon=True,
             https_connection_factory=(conn_factory, ())
         )
         conn.http_connection_kwargs['timeout'] = timeout

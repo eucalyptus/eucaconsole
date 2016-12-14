@@ -48,6 +48,7 @@ from ..caches import invalidate_cache
 from ..constants.elbs import ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
+from ..models.policy import Policy
 
 
 BLANK_CHOICE = ('', _(u'Select...'))
@@ -384,19 +385,9 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if self.conn is not None:
-            xml_prefix = '{http://elasticloadbalancing.amazonaws.com/doc/2012-12-01/}'
-            resp = self.conn.make_request('DescribeLoadBalancerPolicies')
-            root = ElementTree.fromstring(resp.read())
-            policy_descriptions = root.find('.//{0}PolicyDescriptions'.format(xml_prefix))
-            policies = policy_descriptions.getchildren() if policy_descriptions is not None else []
-            for policy in policies:
-                policy_type = policy.find('.//{0}PolicyTypeName'.format(xml_prefix))
-                if policy_type is not None and policy_type.text == 'SSLNegotiationPolicyType':
-                    policy_name = policy.find('.//{0}PolicyName'.format(xml_prefix)).text
-                    if policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX):
-                        choices.append((policy_name, policy_name))
+            choices = self.conn.get_list('DescribeLoadBalancerPolicies', {}, [('member', Policy)])
         if choices:
-            choices = reversed(sorted(set(choices)))
+            choices = reversed(sorted(set([(choice.policy_name, choice.policy_name) for choice in choices])))
         return list(choices)
 
     # IAM options

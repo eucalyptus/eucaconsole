@@ -14,6 +14,12 @@ angular.module('ELBServiceModule', [])
                 csrf_token: csrfToken,
                 name: values.elbName,
                 elb_listener: JSON.stringify(values.listeners),
+                elb_security_policy_updated: values.policy.securityPolicyUpdated,
+                elb_ssl_using_custom_policy: values.policy.sslUsingCustomPolicy,
+                elb_predefined_policy: values.policy.predefiedPolicy,
+                elb_ssl_protocols: values.policy.sslProtocols,
+                elb_ssl_ciphers: values.policy.sslCiphers,
+                elb_ssl_server_order_pref: values.policy.sslServerOrderPref,
                 tags: JSON.stringify(values.tags),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
@@ -40,6 +46,17 @@ angular.module('ELBServiceModule', [])
                 url: '/elbs/create',
                 data: $.param(data, true),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function success (response) {
+                var data = response.data || {
+                    results: []
+                };
+                return data.results;
+            });
+        },
+        getPolicies: function () {
+            return $http({
+                method: 'GET',
+                url: '/elbs/policies/json'
             }).then(function success (response) {
                 var data = response.data || {
                     results: []
