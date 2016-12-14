@@ -21,14 +21,14 @@
                    href="#">Create VPC</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right"
-                   data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
-                <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_header" tal:omit-tag="">
-                <a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name }}</a>
+                <a ng-href="${prefix}/{{ item.id }}">{{ item.name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -112,10 +112,10 @@
                 <td>{{ item.default_vpc }}</td>
                 <td>
                     <span class="actions">
-                        <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round"
-                           data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
-                        <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                        <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_{{ item.id }}"><i class="grid-action"></i></a>
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
                         </ul>
                     </span>
                 </td>
