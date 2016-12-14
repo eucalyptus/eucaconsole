@@ -379,7 +379,7 @@ class VPCView(TaggedItemView):
                     action = 'detach'
                 else:
                     action = 'attach'
-        else:
+        elif selected_igw != 'None':
             action = 'attach'
 
         if action == 'attach':
