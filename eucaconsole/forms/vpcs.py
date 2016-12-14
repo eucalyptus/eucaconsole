@@ -35,6 +35,12 @@ from . import BaseSecureForm, ChoicesManager, TextEscapedField
 from ..views import TaggedItemView
 
 
+INTERNET_GATEWAY_HELP_TEXT = _(
+    'An internet gateway allows communication between instances in your VPC and the Internet.'
+    'An internet gateway must be attached to a VPC if you wish to create one or more public subnets in the VPC.'
+)
+
+
 class VPCsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
 

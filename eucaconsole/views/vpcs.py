@@ -34,7 +34,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms import ChoicesManager
-from ..forms.vpcs import VPCsFiltersForm, VPCForm, VPCMainRouteTableForm
+from ..forms.vpcs import VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, INTERNET_GATEWAY_HELP_TEXT
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
@@ -219,6 +219,7 @@ class VPCView(TaggedItemView):
             vpc_form=self.vpc_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
             vpc_subnets=self.vpc_subnets,
+            internet_gateway_help_text=INTERNET_GATEWAY_HELP_TEXT,
             max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
             vpc_default_security_group=self.vpc_default_security_group,
             vpc_main_route_table_name=TaggedItemView.get_display_name(

@@ -86,7 +86,14 @@
                         <div class="large-9 small-8 columns value">${vpc_main_route_table_name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-3 small-4 columns"><label i18n:translate="">Internet gateway</label></div>
+                        <div class="large-3 small-4 columns">
+                            <label>
+                                <span i18n:translate="">Internet gateway</span>
+                                <span data-tooltip="" title="${internet_gateway_help_text}">
+                                    <i class="helptext-icon"></i>
+                                </span>
+                            </label>
+                        </div>
                         <div class="large-9 small-8 columns value">
                             ${vpc_form.internet_gateway}
                         </div>
