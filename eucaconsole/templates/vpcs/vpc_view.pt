@@ -124,10 +124,18 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div tal:repeat="instance subnet.instances">
-                                        <a href="${request.route_path('instance_view', id=instance.id)}">
-                                            ${instance.name}
+                                    <div tal:condition="subnet.instance_count > max_subnet_instance_count" tal:omit-tag="">
+                                        <a href="${request.route_path('instances', _query={'subnet_id': subnet.id})}">
+                                            ${subnet.instance_count}
+                                            <span i18n:translate="">instances</span>
                                         </a>
+                                    </div>
+                                    <div tal:condition="subnet.instance_count &lt;= max_subnet_instance_count" tal:omit-tag="">
+                                        <div tal:repeat="instance subnet.instances">
+                                            <a href="${request.route_path('instance_view', id=instance.id)}">
+                                                ${instance.name}
+                                            </a>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

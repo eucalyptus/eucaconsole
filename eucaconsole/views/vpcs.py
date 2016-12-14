@@ -219,6 +219,7 @@ class VPCView(TaggedItemView):
             vpc_form=self.vpc_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
             vpc_subnets=self.vpc_subnets,
+            max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
             vpc_default_security_group=self.vpc_default_security_group,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
@@ -289,6 +290,7 @@ class VPCView(TaggedItemView):
         vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': [self.vpc.id]})
         vpc_reservations = self.conn.get_all_reservations(filters={'vpc-id': [self.vpc.id]})
         for subnet in vpc_subnets:
+            instances = self.get_subnet_instances(subnet_id=subnet.id, vpc_reservations=vpc_reservations)
             subnets_list.append(dict(
                 id=subnet.id,
                 name=TaggedItemView.get_display_name(subnet),
@@ -296,7 +298,8 @@ class VPCView(TaggedItemView):
                 cidr_block=subnet.cidr_block,
                 zone=subnet.availability_zone,
                 available_ips=subnet.available_ip_address_count,
-                instances=self.get_subnet_instances(subnet_id=subnet.id, vpc_reservations=vpc_reservations),
+                instances=instances,
+                instance_count=len(instances),
                 route_tables=self.get_subnet_route_tables(subnet_id=subnet.id, vpc_route_tables=vpc_route_tables),
                 network_acls=self.get_subnet_network_acls(subnet_id=subnet.id, vpc_network_acls=vpc_network_acls),
             ))
