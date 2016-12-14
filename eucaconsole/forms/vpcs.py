@@ -77,7 +77,9 @@ class VPCForm(BaseSecureForm):
 
         if vpc is not None:
             self.name.data = vpc.tags.get('Name', '')
-            if self.vpc_internet_gateway is not None:
+            if self.vpc_internet_gateway is None:
+                self.internet_gateway.data = 'None'
+            else:
                 self.internet_gateway.data = self.vpc_internet_gateway.id
 
     def get_internet_gateway_choices(self):
@@ -87,7 +89,7 @@ class VPCForm(BaseSecureForm):
             choices_list.append(
                 (TaggedItemView.get_display_name(self.vpc_internet_gateway), self.vpc_internet_gateway.id)
             )
-        igw_choices = self.vpc_choices_manager.internet_gateways(filters={'attachment.state': 'available'})
+        igw_choices = self.vpc_choices_manager.internet_gateways()
         for choice in igw_choices:
             choices_list.append(choice)
         return sorted(set(choices_list))
