@@ -104,11 +104,6 @@ describe("CORS Configuration Modal Directive", function() {
         $templateCache.put('mock.template.html', template);
     }));
 
-    beforeEach(angular.mock.inject(function ($injector) {
-        $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.when('GET', '/static/json/routes.json').respond(200, '');
-    }));
-
     beforeEach(function () {
         var directiveHtml = [
             '<div cors-config-modal=""',
