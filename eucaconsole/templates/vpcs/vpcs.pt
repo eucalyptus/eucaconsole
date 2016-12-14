@@ -94,7 +94,7 @@
                 </td>
                 <td>{{ item.cidr_block }}</td>
                 <td>
-                    <div ng-repeat="subnet in item.subnets">
+                    <div ng-repeat="subnet in item.subnets" class="subnet-item">
                         {{ subnet.name }} - {{ subnet.cidr_block }} - {{ subnet.availability_zone }}
                     </div>
                 </td>
