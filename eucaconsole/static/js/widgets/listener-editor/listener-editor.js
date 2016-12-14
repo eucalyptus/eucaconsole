@@ -102,50 +102,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         controllerAs: 'ctrl'
     };
 })
-.directive('protocolPort', function () {
-    return {
-        restrict: 'E',
-        require: 'ngModel',
-        scope: {
-            target: '=ngModel',
-            label: '@',
-            protocols: '='
-        },
-        templateUrl: '/_template/elbs/listener-editor/protocol-port',
-        link: function (scope, element, attrs, ctrl) {
-            //  Custon form-field behavior. Let protocol-port act as a form field.
-
-            var protocolField = element.find('select'),
-                portField = element.find('input');
-
-            protocolField.on('change blur', updateViewValue);
-            portField.on('change blur', updateViewValue);
-
-            function updateViewValue () {
-                var protocol = protocolField.val(),
-                    port = portField.val();
-
-                ctrl.$setViewValue({
-                    protocol: protocol,
-                    port: port
-                });
-
-                ctrl.$setTouched();
-            }
-
-            ctrl.$render = function () {
-                protocolField.val(scope.target.protocol);
-                portField.val(scope.target.port);
-            };
-        },
-        controller: ['$scope', function ($scope) {
-            this.onUpdate = function (protocol) {
-                $scope.port = protocol.port;
-            };
-        }],
-        controllerAs: 'ctrl'
-    };
-})
 .filter('policy', function () {
     return function (input) {
         if(!input) {
