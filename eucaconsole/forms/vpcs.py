@@ -68,8 +68,8 @@ class VPCsFiltersForm(BaseSecureForm):
 
 class VPCForm(BaseSecureForm):
     """VPC form (to update an existing VPC)"""
-    name_error_msg = _(u'Not a valid name')
-    name = TextEscapedField(label=_(u'Name'))
+    name_error_msg = _('Not a valid name')
+    name = TextEscapedField(label=_('Name'))
     internet_gateway = SelectField(label=_('Internet gateway'))
 
     def __init__(self, request, vpc_conn=None, vpc=None, vpc_internet_gateway=None, **kwargs):
