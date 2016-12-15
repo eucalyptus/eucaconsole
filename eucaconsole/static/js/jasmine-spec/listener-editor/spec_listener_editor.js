@@ -42,8 +42,8 @@ describe('ELB Listener Editor', function () {
             });
 
             it('should default client and instance-side port configurations to empty', function () {
-                expect(controller.from).toEqual({});
-                expect(controller.to).toEqual({});
+                expect(controller.from).toEqual({name: 'Select...', value: 'None', port: ''});
+                expect(controller.to).toEqual({name: 'Select...', value: 'None', port: ''});
             });
 
             describe('#sourceValid', function () {
@@ -191,7 +191,7 @@ describe('ELB Listener Editor', function () {
                 });
 
                 it('should accept undefined as a value if allowEmpty is true', function () {
-                    var res = controller.portOutOfRange({}, true);
+                    var res = controller.portOutOfRange({name: 'Select...', value: 'None', port: ''}, true);
                     expect(res).toBe(false);
                 });
             });
