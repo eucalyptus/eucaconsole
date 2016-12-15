@@ -20,6 +20,7 @@ angular.module('ELBServiceModule', [])
                 elb_ssl_protocols: values.policy.sslProtocols,
                 elb_ssl_ciphers: values.policy.sslCiphers,
                 elb_ssl_server_order_pref: values.policy.sslServerOrderPref,
+                backend_certificates: JSON.stringify(values.backendCertificates),
                 tags: JSON.stringify(values.tags),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),

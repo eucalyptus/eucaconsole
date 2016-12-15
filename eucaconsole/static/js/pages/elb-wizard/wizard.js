@@ -79,7 +79,8 @@ angular.module('ELBWizard', [
                 'fromPort': 80,
                 'toPort': 80,
                 'fromProtocol': 'HTTP',
-                'toProtocol': 'HTTP'
+                'toProtocol': 'HTTP',
+                'certificateArn': ''
             }],
             policy: {
                 predefinedPolicy: '',

@@ -11,7 +11,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.from = {};
             this.to = {};
-            this.policy = {};
+            this.certificateARN = '';
+            this.backendCertificates = [];
 
             var validPorts = [25, 80, 443, 465, 587],
                 validPortMin = 1024,
@@ -82,7 +83,9 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                     fromPort: vm.from.port,
                     fromProtocol: vm.from.protocol,
                     toPort: vm.to.port,
-                    toProtocol: vm.to.protocol
+                    toProtocol: vm.to.protocol,
+                    certificateArn: vm.certificateArn,
+                    backendCertificates: vm.backendCertificates
                 };
                 $scope.listeners.push(listener);
 

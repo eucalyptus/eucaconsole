@@ -152,6 +152,7 @@ angular.module('ELBServiceModule', [])
                 elb_ssl_protocols: values.policy.sslProtocols,
                 elb_ssl_ciphers: values.policy.sslCiphers,
                 elb_ssl_server_order_pref: values.policy.sslServerOrderPref,
+                backend_certificates: JSON.stringify(values.backendCertificates),
                 tags: JSON.stringify(values.tags),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
@@ -280,7 +281,8 @@ angular.module('ELBWizard', [
                 'fromPort': 80,
                 'toPort': 80,
                 'fromProtocol': 'HTTP',
-                'toProtocol': 'HTTP'
+                'toProtocol': 'HTTP',
+                'certificateArn': ''
             }],
             policy: {
                 predefinedPolicy: '',
@@ -726,7 +728,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.from = {};
             this.to = {};
-            this.policy = {};
+            this.certificateARN = '';
+            this.backendCertificates = [];
 
             var validPorts = [25, 80, 443, 465, 587],
                 validPortMin = 1024,
@@ -797,7 +800,9 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                     fromPort: vm.from.port,
                     fromProtocol: vm.from.protocol,
                     toPort: vm.to.port,
-                    toProtocol: vm.to.protocol
+                    toProtocol: vm.to.protocol,
+                    certificateArn: vm.certificateArn,
+                    backendCertificates: vm.backendCertificates
                 };
                 $scope.listeners.push(listener);
 
@@ -900,6 +905,8 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'EucaConsoleUtil
                 {id:'Protocol-TLSv1.1', label:'TLSv1.1'},
                 {id:'Protocol-TLSv1', label:'TLSv1'},
             ];
+            // This list will replace the list in contstants/elb.py. For now changes need to be done
+            // in both places
             vm.cipherChoices = [
                 'ECDHE-ECDSA-AES128-GCM-SHA256',
                 'ECDHE-RSA-AES128-GCM-SHA256',
@@ -1638,10 +1645,12 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
     return {
         restrict: 'E',
         scope: {
-            certificate: '=ngModel'
+            certificate: '=ngModel',
+            backendCertificates: '='
         },
         templateUrl: '/_template/elbs/listener-editor/certificate-editor',
         controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', function ($scope, CertificateService, ModalService, ELBWizardService) {
+            var vm = this;
             this.activeTab = 'SSL';
             this.certType = 'existing';
 
@@ -1653,7 +1662,7 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
             };
 
             this.chooseSSL = function () {
-                $scope.certificate = this.selectedCertificate;
+                $scope.certificate = this.selectedCertificate.arn;
                 ModalService.closeModal('certificateEditor');
             };
 
@@ -1663,7 +1672,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                     privateKey: this.privateKey,
                     publicKey: this.publicKey,
                     certificateChain: this.certificateChain
-                }).then(function success () {
+                }).then(function success (result) {
+                    $scope.certificate = result.id;
                     ModalService.closeModal('certificateEditor');
                 }, function error () {
                 });
@@ -1681,7 +1691,16 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                 }
             };
 
-            this.submitBackend = function () {
+            this.useBackendCerts = function() {
+            };
+
+            this.addBackendCertificate = function () {
+                $scope.backendCertificates.push({
+                    name: vm.backendCertificateName,
+                    certificateBody: vm.backendCertificateBody
+                });
+                vm.backendCertificateName = '';
+                vm.backendCertificateBody = '';
             };
         }],
         controllerAs: 'ctrl'

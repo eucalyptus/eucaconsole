@@ -3,10 +3,12 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
     return {
         restrict: 'E',
         scope: {
-            certificate: '=ngModel'
+            certificate: '=ngModel',
+            backendCertificates: '='
         },
         templateUrl: '/_template/elbs/listener-editor/certificate-editor',
         controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', function ($scope, CertificateService, ModalService, ELBWizardService) {
+            var vm = this;
             this.activeTab = 'SSL';
             this.certType = 'existing';
 
@@ -18,7 +20,7 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
             };
 
             this.chooseSSL = function () {
-                $scope.certificate = this.selectedCertificate;
+                $scope.certificate = this.selectedCertificate.arn;
                 ModalService.closeModal('certificateEditor');
             };
 
@@ -28,7 +30,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                     privateKey: this.privateKey,
                     publicKey: this.publicKey,
                     certificateChain: this.certificateChain
-                }).then(function success () {
+                }).then(function success (result) {
+                    $scope.certificate = result.id;
                     ModalService.closeModal('certificateEditor');
                 }, function error () {
                 });
@@ -46,7 +49,16 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                 }
             };
 
-            this.submitBackend = function () {
+            this.useBackendCerts = function() {
+            };
+
+            this.addBackendCertificate = function () {
+                $scope.backendCertificates.push({
+                    name: vm.backendCertificateName,
+                    certificateBody: vm.backendCertificateBody
+                });
+                vm.backendCertificateName = '';
+                vm.backendCertificateBody = '';
             };
         }],
         controllerAs: 'ctrl'

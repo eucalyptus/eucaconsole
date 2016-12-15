@@ -94,5 +94,5 @@
 </div>
 
 <div class="modal xlarge" modal="certificateEditor">
-    <certificate-editor ng-model="ctrl.certificates"></certificate-editor>
+    <certificate-editor ng-model="ctrl.certificate" backend-certificates="ctrl.backendCertificates"></certificate-editor>
 </div>
