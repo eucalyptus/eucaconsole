@@ -461,7 +461,9 @@ angular.module('ELBWizard')
 
             scope.$on('$locationChangeStart', function (evt, to, from) {
                 //  You can use this event to perform checks on navigation
+                console.log(from + to);
             });
+            scope.setInitialTab();
         },
         controller: ['$scope', '$location', 'WizardService', function ($scope, $location, WizardService) {
             $scope.setNav = function (steps) {
@@ -479,6 +481,10 @@ angular.module('ELBWizard')
                 return '';
             };
 
+            this.visitStep = function (step) {
+                WizardService.setCurrent(step);
+            };
+
             this.status = function (step) {
                 var path = $location.path();
                 return {
@@ -486,6 +492,12 @@ angular.module('ELBWizard')
                     disabled: (path != step.href) && !step.complete,
                     complete: step.complete
                 };
+            };
+
+            $scope.setInitialTab = function() {
+                if ($location.path() !== '/elbs/wizard/') {
+                    $location.path('/elbs/wizard/');
+                }
             };
         }],
         controllerAs: 'nav'
@@ -520,6 +532,11 @@ angular.module('ELBWizard')
             this._nav.current.complete = true;
             var next = this._nav.next();
             $location.path(next.href);
+        },
+
+        setCurrent: function(step) {
+            this._nav.current = step;
+            $location.path(step.href);
         }
     };
 
