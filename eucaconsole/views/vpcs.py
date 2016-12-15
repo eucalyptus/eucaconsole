@@ -206,7 +206,6 @@ class VPCView(TaggedItemView):
             self.vpc_default_security_group = self.get_default_security_group()
             self.vpc_main_route_table = self.get_main_route_table()
             self.vpc_internet_gateway = self.get_internet_gateway()
-            self.vpc_subnets = self.get_vpc_subnets()
             self.vpc_form = VPCForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
@@ -224,7 +223,6 @@ class VPCView(TaggedItemView):
             vpc_form=self.vpc_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
             create_internet_gateway_form=self.create_internet_gateway_form,
-            vpc_subnets=self.vpc_subnets,
             internet_gateway_help_text=INTERNET_GATEWAY_HELP_TEXT,
             max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
             vpc_default_security_group=self.vpc_default_security_group,
@@ -238,6 +236,9 @@ class VPCView(TaggedItemView):
     def vpc_view(self):
         if self.vpc is None:
             raise HTTPNotFound()
+        self.render_dict.update({
+            'vpc_subnets': self.get_vpc_subnets()
+        })
         return self.render_dict
 
     @view_config(route_name='vpc_update', renderer=VIEW_TEMPLATE, request_method='POST')
