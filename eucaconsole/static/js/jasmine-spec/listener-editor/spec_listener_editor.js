@@ -42,8 +42,8 @@ describe('ELB Listener Editor', function () {
             });
 
             it('should default client and instance-side port configurations to empty', function () {
-                expect(controller.from).toEqual({});
-                expect(controller.to).toEqual({});
+                expect(controller.from).toEqual({name: 'Select...', value: 'None', port: ''});
+                expect(controller.to).toEqual({name: 'Select...', value: 'None', port: ''});
             });
 
             describe('#sourceValid', function () {
@@ -191,7 +191,7 @@ describe('ELB Listener Editor', function () {
                 });
 
                 it('should accept undefined as a value if allowEmpty is true', function () {
-                    var res = controller.portOutOfRange({}, true);
+                    var res = controller.portOutOfRange({name: 'Select...', value: 'None', port: ''}, true);
                     expect(res).toBe(false);
                 });
             });
@@ -247,61 +247,6 @@ describe('ELB Listener Editor', function () {
                     controller.reset();
                     expect(controller.from).toEqual(controller.protocols[0]);
                     expect(controller.to).toEqual(controller.protocols[0]);
-                });
-            });
-        });
-    });
-
-    describe('protocolPort directive', function () {
-
-        beforeEach(angular.mock.inject(function ($injector) {
-            $httpBackend = $injector.get('$httpBackend');
-            $httpBackend.when('GET', '/_template/elbs/listener-editor/protocol-port').respond(
-                    200, '');
-        }));
-
-        var element, scope;
-        beforeEach(function () {
-            $rootScope.model = {
-                port: 80,
-                protocol: 'HTTP'
-            };
-
-            element = $compile(
-                '<protocol-port ng-model="model" label="My Label"></protocol-port>'
-            )($rootScope);
-            $rootScope.$digest();
-            $httpBackend.flush();
-
-            scope = element.isolateScope();
-        });
-
-        it('should display the value of the label attribute', function () {
-            expect(scope.label).toEqual('My Label');
-        });
-
-        it('should accept and map the value of its model', function () {
-            expect(scope.target).toEqual({
-                port: 80,
-                protocol: 'HTTP'
-            });
-        });
-
-        describe('the controller', function () {
-
-            var controller;
-            beforeEach(function () {
-                controller = element.controller('protocolPort');
-            });
-
-            describe('#onUpdate', function () {
-
-                it('should set the correct port when a protocol is selected', function () {
-                    controller.onUpdate({
-                        protocol: 'FOO',
-                        port: 1000
-                    });
-                    expect(scope.port).toEqual(1000);
                 });
             });
         });

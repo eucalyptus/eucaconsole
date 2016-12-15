@@ -42,6 +42,7 @@ TERMINATION_PROTECTION_HELP_TEXT = _(
     'Instance termination protection prevents termination via the console, CLI, or other tools when enabled.'
 )
 
+
 class InstanceForm(BaseSecureForm):
     """Instance form (to update an existing instance)
        Form to launch an instance is in LaunchInstanceForm

@@ -1,0 +1,57 @@
+# -*- coding: utf-8 -*-
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+"""
+Forms for VPC resources
+
+"""
+from ..i18n import _
+from . import BaseSecureForm, ChoicesManager
+
+
+class VPCsFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+
+    def __init__(self, request, ec2_conn=None, cloud_type='euca', **kwargs):
+        super(VPCsFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.cloud_type = cloud_type
+        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        self.facets = [
+            {'name': 'state', 'label': _('State'), 'options': self.get_state_choices()},
+            {'name': 'availability_zone', 'label': _('Availability zone'),
+                'options': self.get_availability_zone_choices()},
+        ]
+
+    @staticmethod
+    def get_state_choices():
+        return [
+            {'key': 'available', 'label': _(u'Available')},
+            {'key': 'pending', 'label': _(u'Pending')},
+        ]
+
+    def get_availability_zone_choices(self):
+        return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(self.region, add_blank=False))

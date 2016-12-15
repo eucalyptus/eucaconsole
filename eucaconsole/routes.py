@@ -263,6 +263,8 @@ urls = [
     Route(name='securitygroup_delete', pattern='/securitygroups/{id}/delete'),
 
     # VPCs #####
+    Route(name='vpcs', pattern='/vpcs'),
+    Route(name='vpcs_json', pattern='/vpcs/json'),
     Route(name='vpcnetworks_json', pattern='/vpcnetworks/json'),
     Route(name='vpcsubnets_json', pattern='/vpcsubnets/json'),
     Route(name='vpcsecuritygroups_json', pattern='/vpcsecuritygroups/json'),
