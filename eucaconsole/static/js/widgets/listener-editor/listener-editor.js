@@ -9,10 +9,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         controller: ['$scope', 'ModalService', function ($scope, ModalService) {
             var vm = this;
 
-            this.from = {};
-            this.to = {};
-            this.policy = {};
-
             var validPorts = [25, 80, 443, 465, 587],
                 validPortMin = 1024,
                 validPortMax = 65535;
@@ -24,6 +20,9 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                 {name: 'TCP', value: 'TCP', port: 80},
                 {name: 'SSL', value: 'SSL', port: 443}
             ];
+
+            this.from = this.protocols[0];
+            this.to = this.protocols[0];
 
             this.sourceValid = function (source) {
                 var validPort = !this.portInUse(source) && !this.portOutOfRange(source);
@@ -56,7 +55,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             };
 
             this.portOutOfRange = function (target, allowEmpty) {
-                if(target.port === undefined && allowEmpty) {
+                if(target.port === '' && allowEmpty) {
                     return false;
                 }
 
@@ -80,9 +79,9 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
                 var listener = {
                     fromPort: vm.from.port,
-                    fromProtocol: vm.from.protocol,
+                    fromProtocol: vm.from.value,
                     toPort: vm.to.port,
-                    toProtocol: vm.to.protocol
+                    toProtocol: vm.to.value
                 };
                 $scope.listeners.push(listener);
 
@@ -97,50 +96,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.openCertificateModal = function () {
                 ModalService.openModal('certificateEditor');
-            };
-        }],
-        controllerAs: 'ctrl'
-    };
-})
-.directive('protocolPort', function () {
-    return {
-        restrict: 'E',
-        require: 'ngModel',
-        scope: {
-            target: '=ngModel',
-            label: '@',
-            protocols: '='
-        },
-        templateUrl: '/_template/elbs/listener-editor/protocol-port',
-        link: function (scope, element, attrs, ctrl) {
-            //  Custon form-field behavior. Let protocol-port act as a form field.
-
-            var protocolField = element.find('select'),
-                portField = element.find('input');
-
-            protocolField.on('change blur', updateViewValue);
-            portField.on('change blur', updateViewValue);
-
-            function updateViewValue () {
-                var protocol = protocolField.val(),
-                    port = portField.val();
-
-                ctrl.$setViewValue({
-                    protocol: protocol,
-                    port: port
-                });
-
-                ctrl.$setTouched();
-            }
-
-            ctrl.$render = function () {
-                protocolField.val(scope.target.protocol);
-                portField.val(scope.target.port);
-            };
-        },
-        controller: ['$scope', function ($scope) {
-            this.onUpdate = function (protocol) {
-                $scope.port = protocol.port;
             };
         }],
         controllerAs: 'ctrl'

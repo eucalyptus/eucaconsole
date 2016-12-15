@@ -50,7 +50,24 @@
     </div>
 
     <div>
-        <protocol-port label="Client side" name="from" protocols="ctrl.protocols" ng-model="ctrl.from" ></protocol-port>
+        <div class="protocol-port">
+            <div class="subsection-label" i18n:translate="">Client side</div>
+            <div class="controls-wrapper">
+                <label i18n:translate="" class="inline">Protocol</label>
+                <select ng-options="protocol.name for protocol in ctrl.protocols track by protocol.value"
+                    ng-model="ctrl.from" name="from"
+                    ng-init="protocol = ctrl.protocols[0]" class="ip-protocol">
+                </select>
+            </div>
+            <div class="controls-wrapper">
+                <label i18n:translate="" class="inline">Port</label>
+                <span class="elb-port-tooltip" data-tooltip="" i18n:attributes="title"
+                      title="Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535">
+                    <i class="helptext-icon"></i>
+                </span>
+                <input class="port" type="number" ng-model="ctrl.from.port"></input>
+            </div>
+        </div>
         <div i18n:translate="" class="port-out-of-range">
             Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
         </div>
@@ -59,7 +76,20 @@
         </div>
     </div>
     <div>
-        <protocol-port label="Instance side" name="to" protocols="ctrl.protocols" ng-model="ctrl.to" ng-show="ctrl.sourceValid(ctrl.from)"></protocol-port>
+        <div class="protocol-port" ng-show="ctrl.sourceValid(ctrl.from)">
+            <div class="subsection-label" i18n:translate="">Instance side</div>
+            <div class="controls-wrapper">
+                <label i18n:translate="" class="inline">Protocol</label>
+                <select ng-options="protocol.name for protocol in ctrl.protocols track by protocol.value"
+                    ng-model="ctrl.to" name="to"
+                    ng-init="protocol = ctrl.protocols[0]" class="ip-protocol">
+                </select>
+            </div>
+            <div class="controls-wrapper">
+                <label i18n:translate="" class="inline">Port</label>
+                <input class="port" type="number" ng-model="ctrl.to.port"></input>
+            </div>
+        </div>
     </div>
 
     <div class="security-section" ng-show="ctrl.portsValid()">
