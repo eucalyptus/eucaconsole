@@ -43,8 +43,8 @@ angular.module('ELBWizard')
             };
 
             $scope.setInitialTab = function() {
-                if ($location.path() !== '/elbs/wizard/') {
-                    $location.path('/elbs/wizard/');
+                if ($location.path() !== $scope.navigation.steps[0].href) {
+                    $location.path($scope.navigation.steps[0].href);
                 }
             };
         }],
