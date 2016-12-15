@@ -61,6 +61,10 @@
             </div>
             <div class="controls-wrapper">
                 <label i18n:translate="" class="inline">Port</label>
+                <span class="elb-port-tooltip" data-tooltip="" i18n:attributes="title"
+                      title="Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535">
+                    <i class="helptext-icon"></i>
+                </span>
                 <input class="port" type="number" ng-model="ctrl.from.port"></input>
             </div>
         </div>

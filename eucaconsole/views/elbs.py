@@ -1207,7 +1207,7 @@ class ELBXHRView(BaseView):
         ec2_conn = self.get_connection()
         iam_conn = self.get_connection(conn_type='iam')
         autoscale_conn = self.get_connection(conn_type='autoscale')
-        s3_conn = s3_conn or self.get_connection(conn_type='s3')
+        s3_conn = self.get_connection(conn_type='s3')
         vpc_conn = self.get_connection(conn_type='vpc')
         filters_form = ELBInstancesFiltersForm(
             self.request, ec2_conn=ec2_conn, autoscale_conn=autoscale_conn,
