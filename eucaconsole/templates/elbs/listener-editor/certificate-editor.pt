@@ -34,6 +34,7 @@
                 </div>
                 <div class="large-10 small-9 columns field">
                     <select ng-model="ctrl.selectedCertificate" required="" chosen="true"
+                        ng-init="crt.selectedCertificate = ''"
                         ng-options="item.server_certificate_name for item in certsAvailable track by item.arn">
                         <option value="" i18n:translate="">Select...</option>
                     </select>

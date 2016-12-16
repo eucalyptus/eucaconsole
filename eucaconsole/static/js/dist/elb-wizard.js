@@ -773,7 +773,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.from = this.protocols[0];
             this.to = this.protocols[0];
-            this.certificateARN = '';
+            this.certificate = {};
             this.backendCertificates = [];
 
             this.sourceValid = function (source) {
@@ -834,7 +834,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                     fromProtocol: vm.from.value,
                     toPort: vm.to.port,
                     toProtocol: vm.to.value,
-                    certificateArn: vm.certificateArn,
+                    certificate: vm.certificate,
                     backendCertificates: vm.backendCertificates
                 };
                 $scope.listeners.push(listener);
@@ -867,6 +867,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         if(!input) {
             return 'N/A';
         }
+        return input;
     };
 });
 
@@ -1651,7 +1652,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
             };
 
             this.chooseSSL = function () {
-                $scope.certificate = this.selectedCertificate.arn;
+                $scope.certificate.server_certificate_name = this.selectedCertificate.server_certificate_name;
+                $scope.certificate.arn = this.selectedCertificate.arn;
                 ModalService.closeModal('certificateEditor');
             };
 

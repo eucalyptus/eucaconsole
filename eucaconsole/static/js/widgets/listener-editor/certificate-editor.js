@@ -20,7 +20,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
             };
 
             this.chooseSSL = function () {
-                $scope.certificate = this.selectedCertificate.arn;
+                $scope.certificate.server_certificate_name = this.selectedCertificate.server_certificate_name;
+                $scope.certificate.arn = this.selectedCertificate.arn;
                 ModalService.closeModal('certificateEditor');
             };
 

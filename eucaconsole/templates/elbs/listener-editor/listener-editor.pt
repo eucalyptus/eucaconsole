@@ -27,7 +27,7 @@
                 <td>{{ listener.toProtocol }}</td>
                 <td>{{ listener.toPort }}</td>
                 <td>{{ listener.policy | policy }}</td>
-                <td>{{ listener.certificates | certificates }}</td>
+                <td>{{ listener.certificate.server_certificate_name | certificates }}</td>
                 <td>
                     <a class="circle remove" ng-click="ctrl.removeListener($index)" title="RemoveListener">
                         <i class="fi-minus-circle"></i>
@@ -99,9 +99,9 @@
                 <span i18n:translate="">Certificates</span>
                 <span class="req">*</span>
             </label>
-            <span ng-show="ctrl.certificates">
+            <span ng-show="ctrl.certificate.server_certificate_name">
                 <span i18n:translate="">SSL cert</span>
-                {{ ctrl.certificates.server_certificate_name }}
+                {{ ctrl.certificate.server_certificate_name }}
             </span>
             <a ng-click="ctrl.openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                 title="Change certficate">
