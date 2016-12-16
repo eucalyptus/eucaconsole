@@ -100,7 +100,10 @@
                     </div>
                     <hr />
                     <h6 i18n:translate="">SUBNETS</h6>
-                    <table class="table subnets">
+                    <p i18n:translate="" tal:condition="not: vpc_subnets">
+                        There are currently no subnets in this VPC.
+                    </p>
+                    <table class="table subnets" tal:condition="vpc_subnets">
                         <thead>
                             <tr>
                                 <th i18n:translate="">NAME (ID)</th>
