@@ -12,10 +12,12 @@
                 <th class="vertical-border-header">PORT</th>
                 <th>PROTOCOL</th>
                 <th class="vertical-border-header">PORT</th>
-                <th>POLICY</th>
                 <th>
                     <span i18n:translate="">CERTIFICATES</span>
-                    <i class="helptext-icon"></i>
+                    <span title="Back-end certificates are contained within back-end policies once they are saved to the cloud."
+                        i18n:attributes="title" data-tooltip="">
+                        <i class="helptext-icon"></i>
+                    </span>
                 </th>
                 <th></th>
             </tr>
@@ -26,7 +28,6 @@
                 <td>{{ listener.fromPort }}</td>
                 <td>{{ listener.toProtocol }}</td>
                 <td>{{ listener.toPort }}</td>
-                <td>{{ listener.policy | policy }}</td>
                 <td>{{ listener.certificate.server_certificate_name | certificates }}</td>
                 <td>
                     <a class="circle remove" ng-click="ctrl.removeListener($index)" title="RemoveListener">

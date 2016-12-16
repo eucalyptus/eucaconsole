@@ -68,7 +68,8 @@ describe('ELB Certificate Editor', function () {
             describe('#chooseSSL', function () {
 
                 beforeEach(function () {
-                    controller.selectedCertificate = {foo: 'bar'};
+                    controller.selectedCertificate = {server_certificate_name: 'foo', arn: 'bar'};
+                    scope.certificate = {};
                     spyOn(ModalService, 'closeModal');
                 });
 
@@ -80,7 +81,7 @@ describe('ELB Certificate Editor', function () {
 
                 it('should update model on success', function () {
                     controller.chooseSSL();
-                    expect(scope.certificate).toEqual({foo: 'bar'});
+                    expect(scope.certificate).toEqual({server_certificate_name: 'foo', arn: 'bar'});
                 });
             });
 
