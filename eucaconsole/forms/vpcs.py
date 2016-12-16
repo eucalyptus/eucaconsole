@@ -133,7 +133,7 @@ class CreateVPCForm(BaseSecureForm):
         label=_('CIDR block'),
         validators=[
             validators.InputRequired(message=cidr_block_error_msg),
-            validators.Regexp(CIDR_BLOCK_REGEX),
+            validators.Regexp(CIDR_BLOCK_REGEX, message=cidr_block_error_msg),
         ]
     )
     internet_gateway = SelectField(label=_('Internet gateway'))
