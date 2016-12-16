@@ -28,7 +28,7 @@
 Forms for VPC resources
 
 """
-from wtforms import SelectField, StringField
+from wtforms import SelectField, StringField, validators
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
@@ -39,6 +39,9 @@ INTERNET_GATEWAY_HELP_TEXT = _(
     'An internet gateway allows communication between instances in your VPC and the Internet.'
     'An internet gateway must be attached to a VPC if you wish to create one or more public subnets in the VPC.'
 )
+
+CIDR_BLOCK_REGEX = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}' \
+                    '([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
 
 
 class VPCsFiltersForm(BaseSecureForm):
@@ -116,3 +119,26 @@ class VPCMainRouteTableForm(BaseSecureForm):
 
 class CreateInternetGatewayForm(BaseSecureForm):
     new_igw_name = StringField(label=_('Name'))
+
+
+class CreateVPCForm(BaseSecureForm):
+    name_error_msg = _('Not a valid name')
+    name = StringField(label=_('Name'))
+    cidr_block_error_msg = _('A valid CIDR block is required')
+    cidr_block = StringField(
+        label=_('CIDR block'),
+        validators=[
+            validators.InputRequired(message=cidr_block_error_msg),
+            validators.Regexp(CIDR_BLOCK_REGEX),
+        ]
+    )
+    internet_gateway = SelectField(label=_('Internet gateway'))
+
+    def __init__(self, request, vpc_conn=None, **kwargs):
+        super(CreateVPCForm, self).__init__(request, **kwargs)
+        self.vpc_conn = vpc_conn
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        # TODO: Filter IGW list to show unattached gateways only
+        self.internet_gateway.choices = self.vpc_choices_manager.internet_gateways()
+        self.name.error_msg = self.name_error_msg
+        self.cidr_block.error_msg = self.cidr_block_error_msg

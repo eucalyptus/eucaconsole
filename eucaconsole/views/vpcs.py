@@ -35,7 +35,8 @@ from pyramid.view import view_config
 
 from ..forms import ChoicesManager
 from ..forms.vpcs import (
-    VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, INTERNET_GATEWAY_HELP_TEXT, CreateInternetGatewayForm
+    VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
+    CreateVPCForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -419,3 +420,47 @@ class VPCView(TaggedItemView):
             self.vpc_conn.detach_internet_gateway(self.vpc_internet_gateway.id, self.vpc.id)
         if 'attach' in actions:
             self.vpc_conn.attach_internet_gateway(selected_igw, self.vpc.id)
+
+
+class CreateVPCView(BaseView):
+    """Create VPC view and handler"""
+    TEMPLATE = '../templates/vpcs/vpc_new.pt'
+
+    def __init__(self, request):
+        super(CreateVPCView, self).__init__(request)
+        self.title_parts = [_(u'VPC'), _(u'Create')]
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.create_vpc_form = CreateVPCForm(self.request, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+        self.render_dict = dict(
+            create_vpc_form=self.create_vpc_form
+        )
+
+    @view_config(route_name='vpc_new', renderer=TEMPLATE, request_method='GET')
+    def vpc_new(self):
+        """Displays the Create VPC page"""
+        return self.render_dict
+
+    @view_config(route_name='vpc_create', renderer=TEMPLATE, request_method='POST')
+    def vpc_create(self):
+        """Handle VPC creation"""
+        if self.create_vpc_form.validate():
+            name = self.request.params.get('name')
+            cidr_block = self.request.params.get('cidr_block')
+            internet_gateway = self.request.params.get('internet_gateway')
+            self.log_request(_(u"Creating VPC {0}").format(name))
+            with boto_error_handler(self.request):
+                new_vpc = self.vpc_conn.create_vpc(cidr_block)
+                new_vpc_id = new_vpc.id
+                self.log_request(_(u"Created VPC {0} ({1})").format(name, new_vpc_id))
+                if internet_gateway not in [None, 'None']:
+                    self.log_request(_(u"Attaching internet gateway to VPC {0}").format(new_vpc_id))
+                    self.vpc_conn.attach_internet_gateway(internet_gateway, new_vpc_id)
+            msg = _(u'Successfully sent create VPC request. '
+                    u'It may take a moment for the VPC to be available.')
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            location = self.request.route_path('vpc_view', id=new_vpc_id)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_vpc_form.get_errors_list()
+        return self.render_dict
