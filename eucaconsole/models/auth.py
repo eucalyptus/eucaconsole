@@ -30,6 +30,7 @@ Authentication and Authorization models
 """
 import base64
 import httplib
+import logging
 import pylibmc
 import socket
 import ssl
@@ -60,6 +61,7 @@ from boto.sts.credentials import Credentials
 from pyramid.security import Authenticated, authenticated_userid
 from .admin import EucalyptusAdmin
 from ..caches import default_term
+from ..constants import AWS_REGIONS
 
 
 class User(object):
@@ -178,8 +180,8 @@ class ConnectionManager(object):
             path = 'ec2'
             conn_class = EC2Connection
         elif conn_type == 'autoscale':
-            conn_class = boto.ec2.autoscale.AutoScaleConnection
             path = 'autoscaling'
+            conn_class = boto.ec2.autoscale.AutoScaleConnection
         elif conn_type == 'cloudwatch':
             path = 'monitoring'
             conn_class = boto.ec2.cloudwatch.CloudWatchConnection
@@ -200,6 +202,9 @@ class ConnectionManager(object):
                 aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token
             )
         else:
+            if len([reg for reg in AWS_REGIONS if reg.get('name') == region]) != 1:
+                logging.error('Invalid region provided: ' + str(region))
+                return None
             endpoint = '{0}.{1}.amazonaws.com'.format(path, region)
             region_obj = RegionInfo(name=region, endpoint=endpoint)
             conn = conn_class(
