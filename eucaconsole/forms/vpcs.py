@@ -145,3 +145,12 @@ class CreateVPCForm(BaseSecureForm):
         self.internet_gateway.choices = self.vpc_choices_manager.internet_gateways(hide_attached=True)
         self.name.error_msg = self.name_error_msg
         self.cidr_block.error_msg = self.cidr_block_error_msg
+        self.name.help_text = _(
+            'Creates a tag with key = Name and value set to the specified string.'
+        )
+        self.cidr_block.help_text = _(
+            'The range of IPs to be used for your VPC, in CIDR format (e.g. 10.0.0.0/24).<br /><br />'
+            'WARNING: Creating a VPC with a CIDR block that conflicts with the pubic IPs of the cloud'
+            'may lead to unpredictable behavior.'
+        )
+        self.internet_gateway.help_text = INTERNET_GATEWAY_HELP_TEXT
