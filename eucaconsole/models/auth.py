@@ -42,6 +42,7 @@ from ssl import SSLError
 
 from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
+from boto.vpc import VPCConnection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
 from boto.sts.connection import STSConnection
@@ -191,7 +192,7 @@ class ConnectionManager(object):
             conn_class = boto.ec2.elb.ELBConnection
         elif conn_type == 'vpc':
             path = 'ec2'
-            conn_class = boto.vpc.VPCConnection
+            conn_class = VPCConnection
         elif conn_type in ['iam', 'sts']:
             return None
 
@@ -289,7 +290,7 @@ class ConnectionManager(object):
             path = 'objectstorage'
             conn_class = S3Connection
         elif conn_type == 'vpc':
-            conn_class = boto.vpc.VPCConnection
+            conn_class = VPCConnection
 
         if dns_enabled:
             ufshost = "{0}.{1}".format(path.lower(), ufshost)
