@@ -13,3 +13,7 @@
 
 @media only screen and (max-width: 40em) { #name, #internet_gateway { width: 100%; } }
 #controls_route_table select { width: 30%; }
+
+.default-vpc-warning { color: red; }
+
+button.button.warning { background-color: red; }

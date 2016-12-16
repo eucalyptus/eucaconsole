@@ -36,7 +36,7 @@ from pyramid.view import view_config
 from ..forms import ChoicesManager
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
-    CreateVPCForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateVPCForm, VPCDeleteForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -215,6 +215,7 @@ class VPCView(TaggedItemView):
                 vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
             self.create_internet_gateway_form = CreateInternetGatewayForm(
                 self.request, formdata=self.request.params or None)
+        self.vpc_delete_form = VPCDeleteForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
         self.title_parts = [_(u'VPC'), self.vpc_name]
@@ -222,6 +223,7 @@ class VPCView(TaggedItemView):
             vpc=self.vpc,
             vpc_name=self.vpc_name,
             vpc_form=self.vpc_form,
+            vpc_delete_form=self.vpc_delete_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
             create_internet_gateway_form=self.create_internet_gateway_form,
             internet_gateway_help_text=INTERNET_GATEWAY_HELP_TEXT,
@@ -229,7 +231,10 @@ class VPCView(TaggedItemView):
             vpc_default_security_group=self.vpc_default_security_group,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
-            default_vpc=_('Yes') if self.vpc.is_default else _('No'),
+            vpc_internet_gateway_name=TaggedItemView.get_display_name(
+                self.vpc_internet_gateway) if self.get_internet_gateway() else '',
+            default_vpc=self.vpc.is_default,
+            default_vpc_label=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
         )
 
@@ -262,6 +267,23 @@ class VPCView(TaggedItemView):
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.vpc_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='vpc_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def vpc_delete(self):
+        if self.vpc and self.vpc_delete_form.validate():
+            location = self.request.route_path('vpcs')
+            deleted_vpc_name = TaggedItemView.get_display_name(self.vpc)
+            with boto_error_handler(self.request, location):
+                # Detach IGW if present
+                if self.vpc_internet_gateway:
+                    self.vpc_conn.detach_internet_gateway(self.vpc_internet_gateway.id, self.vpc.id)
+                self.vpc_conn.delete_vpc(self.vpc.id)
+            msg = _(u'Successfully deleted VPC {0}').format(deleted_vpc_name)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.vpc_delete_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='vpc_set_main_route_table', renderer=VIEW_TEMPLATE, request_method='POST')

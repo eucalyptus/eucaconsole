@@ -104,6 +104,10 @@ class VPCForm(BaseSecureForm):
         return sorted(set(choices_list))
 
 
+class VPCDeleteForm(BaseSecureForm):
+    pass
+
+
 class VPCMainRouteTableForm(BaseSecureForm):
     """VPC form to set main route table"""
     route_table = SelectField(label=_('Route table'))
