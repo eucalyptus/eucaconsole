@@ -447,11 +447,23 @@ class CreateVPCView(BaseView):
             name = self.request.params.get('name')
             cidr_block = self.request.params.get('cidr_block')
             internet_gateway = self.request.params.get('internet_gateway')
+            tags_json = self.request.params.get('tags')
             self.log_request(_(u"Creating VPC {0}").format(name))
             with boto_error_handler(self.request):
                 new_vpc = self.vpc_conn.create_vpc(cidr_block)
                 new_vpc_id = new_vpc.id
                 self.log_request(_(u"Created VPC {0} ({1})").format(name, new_vpc_id))
+
+                # Add tags
+                if name:
+                    new_vpc.add_tag('Name', name)
+                if tags_json:
+                    tags = json.loads(tags_json)
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
+                        new_vpc.add_tag(tagname, tagvalue)
+
+                # Attach internet gateway to VPC if selected
                 if internet_gateway not in [None, 'None']:
                     self.log_request(_(u"Attaching internet gateway to VPC {0}").format(new_vpc_id))
                     self.vpc_conn.attach_internet_gateway(internet_gateway, new_vpc_id)
