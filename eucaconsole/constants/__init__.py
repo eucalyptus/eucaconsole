@@ -51,8 +51,16 @@ AWS_REGIONS = [
         label='US West (Oregon)',
     ),
     dict(
+        name='ca-central-1',
+        label='Canada (Central)',
+    ),
+    dict(
         name='eu-west-1',
         label='EU (Ireland)',
+    ),
+    dict(
+        name='eu-west-2',
+        label='EU (London)',
     ),
     dict(
         name='eu-central-1',

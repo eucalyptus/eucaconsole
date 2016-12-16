@@ -175,28 +175,37 @@ class ConnectionManager(object):
         """
         conn = None
         if conn_type == 'ec2':
-            conn = ec2.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'ec2'
+            conn_class = EC2Connection
         elif conn_type == 'autoscale':
-            conn = ec2.autoscale.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            conn_class = boto.ec2.autoscale.AutoScaleConnection
+            path = 'autoscaling'
         elif conn_type == 'cloudwatch':
-            conn = ec2.cloudwatch.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'monitoring'
+            conn_class = boto.ec2.cloudwatch.CloudWatchConnection
         elif conn_type == 'cloudformation':
-            conn = boto.cloudformation.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
-        elif conn_type == 's3':
-            conn = boto.connect_s3(  # Don't specify region when connecting to S3
-                aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'cloudformation'
+            conn_class = boto.cloudformation.CloudFormationConnection
         elif conn_type == 'elb':
-            conn = ec2.elb.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'elasticloadbalancing'
+            conn_class = boto.ec2.elb.ELBConnection
         elif conn_type == 'vpc':
-            conn = vpc.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
-        elif conn_type == 'iam':
+            path = 'ec2'
+            conn_class = boto.vpc.VPCConnection
+        elif conn_type in ['iam', 'sts']:
             return None
+
+        if conn_type == 's3':
+            conn = boto.connect_s3(  # Don't specify region when connecting to S3
+                aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token
+            )
+        else:
+            endpoint = '{0}.{1}.amazonaws.com'.format(path, region)
+            region_obj = RegionInfo(name=region, endpoint=endpoint)
+            conn = conn_class(
+                aws_access_key_id=access_key, aws_secret_access_key=secret_key,
+                security_token=token, region=region_obj
+            )
         if conn:
             conn.https_validate_certificates = validate_certs
         return conn
