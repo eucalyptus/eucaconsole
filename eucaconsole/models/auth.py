@@ -40,8 +40,6 @@ from urlparse import urlparse
 from defusedxml.sax import parseString
 from ssl import SSLError
 
-from boto import ec2
-from boto import vpc
 from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
