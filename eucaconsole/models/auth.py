@@ -30,6 +30,7 @@ Authentication and Authorization models
 """
 import base64
 import httplib
+import logging
 import pylibmc
 import socket
 import ssl
@@ -39,10 +40,9 @@ from urlparse import urlparse
 from defusedxml.sax import parseString
 from ssl import SSLError
 
-from boto import ec2
-from boto import vpc
 from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
+from boto.vpc import VPCConnection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
 from boto.sts.connection import STSConnection
@@ -60,6 +60,7 @@ from boto.sts.credentials import Credentials
 from pyramid.security import Authenticated, authenticated_userid
 from .admin import EucalyptusAdmin
 from ..caches import default_term
+from ..constants import AWS_REGIONS
 
 
 class User(object):
@@ -175,28 +176,40 @@ class ConnectionManager(object):
         """
         conn = None
         if conn_type == 'ec2':
-            conn = ec2.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'ec2'
+            conn_class = EC2Connection
         elif conn_type == 'autoscale':
-            conn = ec2.autoscale.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'autoscaling'
+            conn_class = boto.ec2.autoscale.AutoScaleConnection
         elif conn_type == 'cloudwatch':
-            conn = ec2.cloudwatch.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'monitoring'
+            conn_class = boto.ec2.cloudwatch.CloudWatchConnection
         elif conn_type == 'cloudformation':
-            conn = boto.cloudformation.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
-        elif conn_type == 's3':
-            conn = boto.connect_s3(  # Don't specify region when connecting to S3
-                aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'cloudformation'
+            conn_class = boto.cloudformation.CloudFormationConnection
         elif conn_type == 'elb':
-            conn = ec2.elb.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+            path = 'elasticloadbalancing'
+            conn_class = boto.ec2.elb.ELBConnection
         elif conn_type == 'vpc':
-            conn = vpc.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
-        elif conn_type == 'iam':
+            path = 'ec2'
+            conn_class = VPCConnection
+        elif conn_type in ['iam', 'sts']:
             return None
+
+        if conn_type == 's3':
+            conn = boto.connect_s3(  # Don't specify region when connecting to S3
+                aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token
+            )
+        else:
+            if len([reg for reg in AWS_REGIONS if reg.get('name') == region]) != 1:
+                logging.error('Invalid region provided: ' + str(region))
+                return None
+            endpoint = '{0}.{1}.amazonaws.com'.format(path, region)
+            region_obj = RegionInfo(name=region, endpoint=endpoint)
+            conn = conn_class(
+                aws_access_key_id=access_key, aws_secret_access_key=secret_key,
+                security_token=token, region=region_obj
+            )
         if conn:
             conn.https_validate_certificates = validate_certs
         return conn
@@ -277,7 +290,7 @@ class ConnectionManager(object):
             path = 'objectstorage'
             conn_class = S3Connection
         elif conn_type == 'vpc':
-            conn_class = boto.vpc.VPCConnection
+            conn_class = VPCConnection
 
         if dns_enabled:
             ufshost = "{0}.{1}".format(path.lower(), ufshost)
