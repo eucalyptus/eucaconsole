@@ -26,7 +26,7 @@
                 <input type="radio" name="certificate-type" value="existing" ng-model="ctrl.certType"/>
                 <label>Choose an existing SSL certificate</label>
             </div>
-            <div ng-show="ctrl.certType === 'existing'">
+            <div ng-if="ctrl.certType === 'existing'">
                 <div class="large-2 small-3 columns">
                     <label class="right">Certificate
                         <span class="req">*</span>
@@ -45,7 +45,7 @@
                 <input type="radio" name="certificate-type" value="new" ng-model="ctrl.certType"/>
                 <label>Upload a new SSL certificate</label>
             </div>
-            <div ng-show="ctrl.certType === 'new'">
+            <div ng-if="ctrl.certType === 'new'">
                 <div class="columns">
                     <label class="left stack-label">Certificate name
                         <span class="req">*</span>

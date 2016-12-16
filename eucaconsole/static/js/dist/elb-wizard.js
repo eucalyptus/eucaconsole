@@ -860,6 +860,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         if(!input) {
             return 'N/A';
         }
+        return input;
     };
 })
 .filter('certificates', function () {
@@ -1639,7 +1640,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
             backendCertificates: '='
         },
         templateUrl: '/_template/elbs/listener-editor/certificate-editor',
-        controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', function ($scope, CertificateService, ModalService, ELBWizardService) {
+        controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', 'eucaHandleError',
+            function ($scope, CertificateService, ModalService, ELBWizardService, eucaHandleError) {
             var vm = this;
             this.activeTab = 'SSL';
             this.certType = 'existing';
@@ -1659,14 +1661,17 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
 
             this.uploadSSL = function () {
                 CertificateService.createCertificate({
-                    name: this.name,
-                    privateKey: this.privateKey,
-                    publicKey: this.publicKey,
-                    certificateChain: this.certificateChain
+                    name: vm.name,
+                    privateKey: vm.privateKey,
+                    publicKey: vm.publicKey,
+                    certificateChain: vm.certificateChain
                 }).then(function success (result) {
-                    $scope.certificate = result.id;
+                    $scope.certificate.server_certificate_name = vm.name;
+                    $scope.certificate.arn = result.id;
                     ModalService.closeModal('certificateEditor');
-                }, function error () {
+                    Notify.success(result.message);
+                }, function error(errData) {
+                    eucaHandleError(errData.data.message, errData.status);
                 });
             };
 
@@ -1742,6 +1747,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                 method: 'POST',
                 url: '/certificate',
                 data: cert
+            }).then(function success (result) {
+                return result.data;
             });
         }
     };
