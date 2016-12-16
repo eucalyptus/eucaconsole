@@ -487,14 +487,15 @@ class ChoicesManager(object):
                 choices.append((route_table.id, route_table_name))
         return sorted(set(choices))
 
-    def internet_gateways(self, add_blank=True, escapebraces=True, filters=None):
+    def internet_gateways(self, add_blank=True, escapebraces=True, hide_attached=False):
         from ..views import TaggedItemView
         choices = []
-        filters = filters or {}
         if add_blank:
             choices = [('None', _(u'None'))]
         if self.conn is not None:
-            internet_gateways = self.conn.get_all_internet_gateways(filters=filters)
+            internet_gateways = self.conn.get_all_internet_gateways()
+            if hide_attached:
+                internet_gateways = [igw for igw in internet_gateways if len(igw.attachments) == 0]
             for igw in internet_gateways:
                 igw_name = TaggedItemView.get_display_name(igw, escapebraces=escapebraces)
                 choices.append((igw.id, igw_name))

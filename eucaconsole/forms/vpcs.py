@@ -138,7 +138,6 @@ class CreateVPCForm(BaseSecureForm):
         super(CreateVPCForm, self).__init__(request, **kwargs)
         self.vpc_conn = vpc_conn
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
-        # TODO: Filter IGW list to show unattached gateways only
-        self.internet_gateway.choices = self.vpc_choices_manager.internet_gateways()
+        self.internet_gateway.choices = self.vpc_choices_manager.internet_gateways(hide_attached=True)
         self.name.error_msg = self.name_error_msg
         self.cidr_block.error_msg = self.cidr_block_error_msg
