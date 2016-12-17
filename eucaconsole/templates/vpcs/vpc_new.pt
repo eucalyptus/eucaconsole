@@ -30,7 +30,7 @@
                     </p>
                     ${structure:create_vpc_form['csrf_token']}
                     ${panel('form_field', field=create_vpc_form['name'], stack_label=True, autofocus='', pattern=layout.tag_pattern_value)}
-                    ${panel('form_field', field=create_vpc_form['cidr_block'], stack_label=True)}
+                    ${panel('form_field', field=create_vpc_form['cidr_block'], stack_label=True, pattern=create_vpc_form.cidr_block_regex)}
                     ${panel('form_field', field=create_vpc_form['internet_gateway'], stack_label=True)}
                     <hr/>
                     <div ng-cloak="">

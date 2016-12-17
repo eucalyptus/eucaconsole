@@ -129,6 +129,7 @@ class CreateVPCForm(BaseSecureForm):
     name_error_msg = _('Not a valid name')
     name = StringField(label=_('Name'))
     cidr_block_error_msg = _('A valid CIDR block is required')
+    cidr_block_regex = CIDR_BLOCK_REGEX
     cidr_block = StringField(
         label=_('CIDR block'),
         validators=[
