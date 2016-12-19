@@ -232,9 +232,16 @@
                 </div>
                 <div tal:condition="not vpc_subnets">
                     <p i18n:translate="">
-                        Deleting a VPC will disassociate any attached resources from the VPC
-                        such as internet gateways, network ACLs, etc.
+                        Deleting a VPC will disassociate or delete the following resources from the VPC.
                     </p>
+                    <div class="resources-list">
+                        <div tal:condition="vpc_internet_gateway_name" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Internet gateway:
+                            </div>
+                            <div>${vpc_internet_gateway_name}</div>
+                        </div>
+                    </div>
                     <p i18n:translate="" tal:condition="default_vpc" class="default-vpc-warning">
                         WARNING: This VPC is the default for your cloud. If you delete the VPC,
                         you will need to contact your cloud administrator to recreate a default VPC.
