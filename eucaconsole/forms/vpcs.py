@@ -96,9 +96,9 @@ class VPCForm(BaseSecureForm):
         if self.vpc and self.vpc_internet_gateway:
             # Add the existing IGW if necessary, as we're going to filter out attached internet gateways later
             choices_list.append(
-                (TaggedItemView.get_display_name(self.vpc_internet_gateway), self.vpc_internet_gateway.id)
+                (self.vpc_internet_gateway.id, TaggedItemView.get_display_name(self.vpc_internet_gateway))
             )
-        igw_choices = self.vpc_choices_manager.internet_gateways()
+        igw_choices = self.vpc_choices_manager.internet_gateways(hide_attached=True)
         for choice in igw_choices:
             choices_list.append(choice)
         return sorted(set(choices_list))
