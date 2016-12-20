@@ -278,9 +278,8 @@ class VPCView(TaggedItemView):
     @view_config(route_name='vpc_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_delete(self):
         if self.vpc and self.vpc_delete_form.validate():
-            location = self.request.route_path('vpcs')
             deleted_vpc_name = TaggedItemView.get_display_name(self.vpc)
-            with boto_error_handler(self.request, location):
+            with boto_error_handler(self.request, self.location):
                 # Detach IGW if present
                 if self.vpc_internet_gateway:
                     igw_id = self.vpc_internet_gateway.id
@@ -306,10 +305,10 @@ class VPCView(TaggedItemView):
                 self.vpc_conn.delete_vpc(self.vpc.id)
             msg = _('Successfully deleted VPC {0}').format(deleted_vpc_name)
             self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
+            return HTTPFound(location=self.request.route_path('vpcs'))
         else:
             self.request.error_messages = self.vpc_delete_form.get_errors_list()
-        return self.render_dict
+            return self.render_dict
 
     @view_config(route_name='vpc_set_main_route_table', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_set_main_route_table(self):
@@ -515,7 +514,7 @@ class CreateVPCView(BaseView):
                 if internet_gateway not in [None, 'None']:
                     self.log_request(_(u"Attaching internet gateway to VPC {0}").format(new_vpc_id))
                     self.vpc_conn.attach_internet_gateway(internet_gateway, new_vpc_id)
-            msg = _(u'Successfully sent create VPC request. '
+            msg = _(u'Successfully created VPC. '
                     u'It may take a moment for the VPC to be available.')
             queue = Notification.SUCCESS
             self.request.session.flash(msg, queue=queue)
