@@ -263,6 +263,17 @@
                                 </span>
                             </div>
                         </div>
+                        <div tal:condition="vpc_network_acls" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Network ACLs:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="network_acl vpc_network_acls">
+                                    ${layout.get_display_name(network_acl)}<span
+                                        tal:condition="not repeat.network_acl.end">,&nbsp;</span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <p i18n:translate="" tal:condition="default_vpc" class="default-vpc-warning">
                         WARNING: This VPC is the default for your cloud. If you delete the VPC,

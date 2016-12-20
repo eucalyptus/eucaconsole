@@ -208,6 +208,7 @@ class VPCView(TaggedItemView):
             self.vpc_main_route_table = self.get_main_route_table(route_tables=self.vpc_route_tables)
             self.vpc_internet_gateway = self.get_internet_gateway()
             self.vpc_security_groups = self.conn.get_all_security_groups(filters={'vpc-id': self.vpc.id})
+            self.vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': self.vpc.id})
             self.vpc_default_security_group = self.get_default_security_group(security_groups=self.vpc_security_groups)
             self.vpc_form = VPCForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
@@ -233,6 +234,7 @@ class VPCView(TaggedItemView):
             vpc_default_security_group=self.vpc_default_security_group,
             vpc_security_groups=self.vpc_security_groups,
             vpc_route_tables=self.vpc_route_tables,
+            vpc_network_acls=self.vpc_network_acls,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
             vpc_internet_gateway_name=TaggedItemView.get_display_name(
@@ -286,14 +288,21 @@ class VPCView(TaggedItemView):
                     self.vpc_conn.detach_internet_gateway(igw_id, self.vpc.id)
                 # Delete VPC route tables
                 for route_table in self.vpc_route_tables:
-                    if route_table != self.vpc_main_route_table:  # No need to explicitly delete main route table
+                    if route_table != self.vpc_main_route_table:  # Don't explicitly delete main route table
                         self.log_request(_('Deleting route table {0}').format(route_table.id))
                         self.vpc_conn.delete_route_table(route_table.id)
                 # Delete VPC security groups
                 for security_group in self.vpc_security_groups:
-                    if security_group.name != 'default':  # No need to explicitly delete default security group
+                    if security_group.name != 'default':  # Don't explicitly delete default security group
                         self.log_request(_('Deleting VPC security group {0}').format(security_group.id))
                         security_group.delete()
+                # Delete VPC network ACLs
+                for network_acl in self.vpc_network_acls:
+                    if network_acl.default != 'true':  # Don't explicitly delete default network ACL
+                        self.log_request(_('Deleting network ACL {0}').format(network_acl.id))
+                        self.vpc_conn.delete_network_acl(network_acl.id)
+                # Finally, delete VPC
+                self.log_request(_('Deleting VPC {0}').format(self.vpc.id))
                 self.vpc_conn.delete_vpc(self.vpc.id)
             msg = _('Successfully deleted VPC {0}').format(deleted_vpc_name)
             self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -351,10 +360,11 @@ class VPCView(TaggedItemView):
 
     def get_vpc_subnets(self):
         subnets_list = []
-        vpc_subnets = self.vpc_conn.get_all_subnets(filters={'vpc-id': [self.vpc.id]})
-        vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': [self.vpc.id]})
-        vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': [self.vpc.id]})
-        vpc_reservations = self.conn.get_all_reservations(filters={'vpc-id': [self.vpc.id]})
+        vpc_id_filter = {'vpc-id': [self.vpc.id]}
+        vpc_subnets = self.vpc_conn.get_all_subnets(filters=vpc_id_filter)
+        vpc_route_tables = self.vpc_conn.get_all_route_tables(filters=vpc_id_filter)
+        vpc_network_acls = self.vpc_network_acls or self.vpc_conn.get_all_network_acls(filters=vpc_id_filter)
+        vpc_reservations = self.conn.get_all_reservations(filters=vpc_id_filter)
         for subnet in vpc_subnets:
             instances = self.get_subnet_instances(subnet_id=subnet.id, vpc_reservations=vpc_reservations)
             subnets_list.append(dict(
