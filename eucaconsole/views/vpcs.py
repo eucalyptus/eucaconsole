@@ -204,7 +204,8 @@ class VPCView(TaggedItemView):
             self.conn = self.get_connection()
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
-            self.vpc_main_route_table = self.get_main_route_table()
+            self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
+            self.vpc_main_route_table = self.get_main_route_table(route_tables=self.vpc_route_tables)
             self.vpc_internet_gateway = self.get_internet_gateway()
             self.vpc_security_groups = self.conn.get_all_security_groups(filters={'vpc-id': self.vpc.id})
             self.vpc_default_security_group = self.get_default_security_group(security_groups=self.vpc_security_groups)
@@ -231,6 +232,7 @@ class VPCView(TaggedItemView):
             max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
             vpc_default_security_group=self.vpc_default_security_group,
             vpc_security_groups=self.vpc_security_groups,
+            vpc_route_tables=self.vpc_route_tables,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
             vpc_internet_gateway_name=TaggedItemView.get_display_name(
@@ -282,10 +284,15 @@ class VPCView(TaggedItemView):
                     igw_id = self.vpc_internet_gateway.id
                     self.log_request(_('Detaching internet gateway {0} from VPC {1}').format(igw_id, self.vpc.id))
                     self.vpc_conn.detach_internet_gateway(igw_id, self.vpc.id)
+                # Delete VPC route tables
+                for route_table in self.vpc_route_tables:
+                    if route_table != self.vpc_main_route_table:  # No need to explicitly delete main route table
+                        self.log_request(_('Deleting route table {0}').format(route_table.id))
+                        self.vpc_conn.delete_route_table(route_table.id)
                 # Delete VPC security groups
                 for security_group in self.vpc_security_groups:
                     if security_group.name != 'default':  # No need to explicitly delete default security group
-                        self.log_request(_('Deleting VPC security group {0}').format(security_group.name))
+                        self.log_request(_('Deleting VPC security group {0}').format(security_group.id))
                         security_group.delete()
                 self.vpc_conn.delete_vpc(self.vpc.id)
             msg = _('Successfully deleted VPC {0}').format(deleted_vpc_name)
@@ -406,22 +413,20 @@ class VPCView(TaggedItemView):
                     ))
         return subnet_route_tables
 
-    def get_default_security_group(self, security_groups):
+    @staticmethod
+    def get_default_security_group(security_groups):
         """Fetch default security group for VPC"""
         security_groups_named_default = [sgroup for sgroup in security_groups if sgroup.name == 'default']
         if security_groups_named_default:
             return security_groups_named_default[0]
         return None
 
-    def get_main_route_table(self):
+    @staticmethod
+    def get_main_route_table(route_tables):
         """Fetch main route table for VPC. Returns None if lookup fails"""
-        filters = {
-            'vpc-id': [self.vpc.id],
-            'association.main': 'true'
-        }
-        route_tables = self.vpc_conn.get_all_route_tables(filters=filters)
-        if route_tables:
-            return route_tables[0]
+        for route_table in route_tables:
+            if [association for association in route_table.associations if association.main is True]:
+                return route_table
         return None
 
     def get_internet_gateway(self):

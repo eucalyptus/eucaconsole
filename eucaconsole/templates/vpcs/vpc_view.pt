@@ -241,6 +241,17 @@
                             </div>
                             <div class="columns small-9">${vpc_internet_gateway_name}</div>
                         </div>
+                        <div tal:condition="vpc_route_tables" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Route tables:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="route_table vpc_route_tables">
+                                    ${layout.get_display_name(route_table)}<span
+                                        tal:condition="not repeat.route_table.end">,&nbsp;</span>
+                                </span>
+                            </div>
+                        </div>
                         <div tal:condition="vpc_security_groups" class="row">
                             <div class="columns small-3" i18n:translate="">
                                 Security groups:

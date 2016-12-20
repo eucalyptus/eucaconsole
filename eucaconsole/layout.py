@@ -44,7 +44,7 @@ from .forms.login import EucaLogoutForm
 from .i18n import _
 from .models import Notification
 from .models.auth import ConnectionManager, RegionCache
-from .views import BaseView
+from .views import BaseView, TaggedItemView
 
 try:
     from version import __version__
@@ -72,6 +72,7 @@ class MasterLayout(object):
         self.has_regions = True
         self.default_region = ''
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.get_display_name = TaggedItemView.get_display_name
         if self.cloud_type == 'aws':
             self.regions = AWS_REGIONS
             if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
