@@ -204,10 +204,10 @@ class VPCView(TaggedItemView):
             self.conn = self.get_connection()
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
-            self.vpc_default_security_group = self.get_default_security_group()
             self.vpc_main_route_table = self.get_main_route_table()
             self.vpc_internet_gateway = self.get_internet_gateway()
-            self.vpc_security_groups = self.get_vpc_security_groups()
+            self.vpc_security_groups = self.conn.get_all_security_groups(filters={'vpc-id': self.vpc.id})
+            self.vpc_default_security_group = self.get_default_security_group(security_groups=self.vpc_security_groups)
             self.vpc_form = VPCForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
@@ -406,15 +406,11 @@ class VPCView(TaggedItemView):
                     ))
         return subnet_route_tables
 
-    def get_default_security_group(self):
+    def get_default_security_group(self, security_groups):
         """Fetch default security group for VPC"""
-        filters = {
-            'vpc-id': [self.vpc.id],
-            'group-name': 'default'
-        }
-        vpc_security_groups = self.conn.get_all_security_groups(filters=filters)
-        if vpc_security_groups:
-            return vpc_security_groups[0]
+        security_groups_named_default = [sgroup for sgroup in security_groups if sgroup.name == 'default']
+        if security_groups_named_default:
+            return security_groups_named_default[0]
         return None
 
     def get_main_route_table(self):
