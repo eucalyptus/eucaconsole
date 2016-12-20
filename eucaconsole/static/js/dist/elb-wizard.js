@@ -142,17 +142,29 @@ angular.module('ELBServiceModule', [])
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     return {
         createELB: function (csrfToken, values) {
+            // update listeners to be passed to API call
+            var listeners = JSON.parse(JSON.stringify(values.listeners));
+            var backendCertificates = '';
+            listeners.forEach(function(val) {
+                if (val.certificate) {
+                    val.certificateARN = val.certificate.arn;
+                    val.certificate = undefined;
+                }
+                if (val.backendCertificates) {
+                    backendCertificates = val.backendCertificates;
+                }
+            });
             var data = {
                 csrf_token: csrfToken,
                 name: values.elbName,
-                elb_listener: JSON.stringify(values.listeners),
+                elb_listener: JSON.stringify(listeners),
                 elb_security_policy_updated: values.policy.securityPolicyUpdated,
                 elb_ssl_using_custom_policy: values.policy.sslUsingCustomPolicy,
-                elb_predefined_policy: values.policy.predefiedPolicy,
+                elb_predefined_policy: values.policy.predefinedPolicy,
                 elb_ssl_protocols: values.policy.sslProtocols,
                 elb_ssl_ciphers: values.policy.sslCiphers,
                 elb_ssl_server_order_pref: values.policy.sslServerOrderPref,
-                backend_certificates: JSON.stringify(values.backendCertificates),
+                backend_certificates: JSON.stringify(backendCertificates),
                 tags: JSON.stringify(values.tags),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
@@ -692,7 +704,7 @@ function ($scope, $routeParams, $window, ELBWizardService, ELBService, BucketSer
             return;
         }
         vm.creatingELB = true;
-        ELBService.createELB($('#csrf_token').val(), this.values).then(
+        ELBService.createELB($('#csrf_token').val(), vm.values).then(
             function success(result) {
                 $window.location = '/elbs';
             },
@@ -845,6 +857,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             this.reset = function () {
                 vm.from = vm.protocols[0];
                 vm.to = vm.protocols[0];
+                vm.certificate = {};
+                vm.backendCertificates = [];
             };
             this.cancel = this.reset;
 
@@ -856,14 +870,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
     };
 })
 .filter('policy', function () {
-    return function (input) {
-        if(!input) {
-            return 'N/A';
-        }
-        return input;
-    };
-})
-.filter('certificates', function () {
     return function (input) {
         if(!input) {
             return 'N/A';
@@ -1645,9 +1651,14 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
             var vm = this;
             this.activeTab = 'SSL';
             this.certType = 'existing';
+            this.selectedCertificate = {};
 
             $scope.certsAvailable = ELBWizardService.certsAvailable;
             $scope.policies = ELBWizardService.policies;
+
+            if ($scope.certificate.server_certificate_name) {
+                this.selectedCertificate = $scope.certificate;
+            }
 
             this.showTab = function (tab) {
                 this.activeTab = tab;
@@ -1685,9 +1696,6 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                 } else {
                     this.uploadSSL();
                 }
-            };
-
-            this.useBackendCerts = function() {
             };
 
             this.addBackendCertificate = function () {

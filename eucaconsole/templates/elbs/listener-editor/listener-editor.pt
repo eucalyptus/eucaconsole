@@ -28,7 +28,22 @@
                 <td>{{ listener.fromPort }}</td>
                 <td>{{ listener.toProtocol }}</td>
                 <td>{{ listener.toPort }}</td>
-                <td>{{ listener.certificate.server_certificate_name | certificates }}</td>
+                <td>
+                    <span ng-show="listener.certificate.server_certificate_name">
+                        <span i18n:translate="">SSL cert</span>
+                        {{ listener.certificate.server_certificate_name }}
+                        <span ng-show="listener.backendCertificates.length">,</span>
+                    <span>
+                    <span ng-show="listener.backendCertificates.length">
+                        <span i18n:translate="">Back-end cert(s)</span>
+                        <span ng-repeat="bcert in listener.backendCertificates">
+                            {{ bcert.name }}<span ng-hide="$last">, </span>
+                        </span>
+                    </span>
+                    <span ng-hide="listener.certificate.server_certificate_name || listener.backendCertificates.length">
+                        <span i18n:translate="">N/A</span>
+                    </span>
+                </td>
                 <td>
                     <a class="circle remove" ng-click="ctrl.removeListener($index)" title="RemoveListener">
                         <i class="fi-minus-circle"></i>
@@ -103,6 +118,13 @@
             <span ng-show="ctrl.certificate.server_certificate_name">
                 <span i18n:translate="">SSL cert</span>
                 {{ ctrl.certificate.server_certificate_name }}
+            </span>
+            <span ng-show="ctrl.certificate.server_certificate_name && ctrl.backendCertificates.length">,</span>
+            <span ng-show="ctrl.backendCertificates.length > 0">
+                <span i18n:translate="">Back-end cert(s)</span>
+                <span ng-repeat="cert in ctrl.backendCertificates">
+                    {{ cert.name }}<span ng-hide="$last">, </span>
+                </span>
             </span>
             <a ng-click="ctrl.openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
                 title="Change certficate">

@@ -112,7 +112,7 @@
                     <label class="left-align" for="logging_enabled" i18n:translate="">Enable logging</label>
                 </div>
             </div>
-            <div id="access-logs-wrapper" ng-show="advanced.values.loggingEnabled">
+            <div id="access-logs-wrapper" ng-if="advanced.values.loggingEnabled">
                 <p i18n:translate="">Specify where your logs should be stored in the cloud.</p>
                 <div id="controls_bucket_name" class="row inline stacked controls-wrapper">
                     <div class="columns">

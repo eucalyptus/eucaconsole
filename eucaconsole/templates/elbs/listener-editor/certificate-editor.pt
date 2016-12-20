@@ -174,7 +174,7 @@
 
         <div>
             <button type="submit" class="button expand"
-                    ng-disabled="backendCertificates.length == 0" ng-click="ctrl.useBackendCerts()">
+                    ng-disabled="backendCertificates.length == 0" ng-click="ctrl.submitSSL()">
                 Use This Certificate
             </button>
         </div>

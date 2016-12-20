@@ -11,7 +11,7 @@ function ($scope, $routeParams, $window, ELBWizardService, ELBService, BucketSer
             return;
         }
         vm.creatingELB = true;
-        ELBService.createELB($('#csrf_token').val(), this.values).then(
+        ELBService.createELB($('#csrf_token').val(), vm.values).then(
             function success(result) {
                 $window.location = '/elbs';
             },

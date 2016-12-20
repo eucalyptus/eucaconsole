@@ -95,6 +95,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             this.reset = function () {
                 vm.from = vm.protocols[0];
                 vm.to = vm.protocols[0];
+                vm.certificate = {};
+                vm.backendCertificates = [];
             };
             this.cancel = this.reset;
 
@@ -106,14 +108,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
     };
 })
 .filter('policy', function () {
-    return function (input) {
-        if(!input) {
-            return 'N/A';
-        }
-        return input;
-    };
-})
-.filter('certificates', function () {
     return function (input) {
         if(!input) {
             return 'N/A';
