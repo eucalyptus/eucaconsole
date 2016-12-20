@@ -239,7 +239,18 @@
                             <div class="columns small-3" i18n:translate="">
                                 Internet gateway:
                             </div>
-                            <div>${vpc_internet_gateway_name}</div>
+                            <div class="columns small-9">${vpc_internet_gateway_name}</div>
+                        </div>
+                        <div tal:condition="vpc_security_groups" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Security groups:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="sec_group vpc_security_groups">
+                                    <a href="${request.route_path('securitygroup_view', id=sec_group.id)}">
+                                        ${sec_group.name} (${sec_group.id})</a><span tal:condition="not repeat.sec_group.end">,&nbsp;</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <p i18n:translate="" tal:condition="default_vpc" class="default-vpc-warning">

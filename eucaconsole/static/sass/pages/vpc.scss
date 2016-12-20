@@ -30,6 +30,9 @@
 
 // Delete vpc dialog
 #delete-vpc-modal {
+  a:hover {
+    text-decoration: underline;
+  }
   .default-vpc-warning {
     color: red;
   }

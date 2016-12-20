@@ -207,6 +207,7 @@ class VPCView(TaggedItemView):
             self.vpc_default_security_group = self.get_default_security_group()
             self.vpc_main_route_table = self.get_main_route_table()
             self.vpc_internet_gateway = self.get_internet_gateway()
+            self.vpc_security_groups = self.get_vpc_security_groups()
             self.vpc_form = VPCForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
@@ -229,6 +230,7 @@ class VPCView(TaggedItemView):
             internet_gateway_help_text=INTERNET_GATEWAY_HELP_TEXT,
             max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
             vpc_default_security_group=self.vpc_default_security_group,
+            vpc_security_groups=self.vpc_security_groups,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
             vpc_internet_gateway_name=TaggedItemView.get_display_name(
@@ -277,9 +279,16 @@ class VPCView(TaggedItemView):
             with boto_error_handler(self.request, location):
                 # Detach IGW if present
                 if self.vpc_internet_gateway:
-                    self.vpc_conn.detach_internet_gateway(self.vpc_internet_gateway.id, self.vpc.id)
+                    igw_id = self.vpc_internet_gateway.id
+                    self.log_request(_('Detaching internet gateway {0} from VPC {1}').format(igw_id, self.vpc.id))
+                    self.vpc_conn.detach_internet_gateway(igw_id, self.vpc.id)
+                # Delete VPC security groups
+                for security_group in self.vpc_security_groups:
+                    if security_group.name != 'default':  # No need to explicitly delete default security group
+                        self.log_request(_('Deleting VPC security group {0}').format(security_group.name))
+                        security_group.delete()
                 self.vpc_conn.delete_vpc(self.vpc.id)
-            msg = _(u'Successfully deleted VPC {0}').format(deleted_vpc_name)
+            msg = _('Successfully deleted VPC {0}').format(deleted_vpc_name)
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -326,6 +335,12 @@ class VPCView(TaggedItemView):
             vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
             return vpcs_list[0] if vpcs_list else None
         return None
+
+    def get_vpc_security_groups(self):
+        vpc_id = self.request.matchdict.get('id')
+        if vpc_id:
+            return self.conn.get_all_security_groups(filters={'vpc-id': vpc_id})
+        return []
 
     def get_vpc_subnets(self):
         subnets_list = []

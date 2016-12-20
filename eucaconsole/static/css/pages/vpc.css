@@ -14,6 +14,7 @@
 @media only screen and (max-width: 40em) { #name, #internet_gateway { width: 100%; } }
 #controls_route_table select { width: 30%; }
 
+#delete-vpc-modal a:hover { text-decoration: underline; }
 #delete-vpc-modal .default-vpc-warning { color: red; }
 #delete-vpc-modal button.button.warning { background-color: red; }
 #delete-vpc-modal .resources-list { margin-bottom: 1rem; }
