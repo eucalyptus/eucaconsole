@@ -30,12 +30,12 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 from pyramid import testing
+from wtforms import validators
 
 from eucaconsole.forms import BaseSecureForm
-from eucaconsole.forms.vpcs import VPCForm
+from eucaconsole.forms.vpcs import VPCForm, CreateVPCForm, CIDR_BLOCK_REGEX
 
 from tests import BaseFormTestCase
-
 
 class VPCFormTestCase(BaseFormTestCase):
     """VPC details page form"""
@@ -52,3 +52,31 @@ class VPCFormTestCase(BaseFormTestCase):
     def test_optional_fields(self):
         self.assert_not_required('name')
         self.assert_not_required('internet_gateway')
+
+
+class CreateVPCFormTestCase(BaseFormTestCase):
+    """Create VPC form tests"""
+    form_class = CreateVPCForm
+    request = testing.DummyRequest()
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_secure_form(self):
+        self.has_field('csrf_token')
+        self.assertTrue(issubclass(self.form_class, BaseSecureForm))
+
+    def test_optional_fields(self):
+        self.assert_not_required('name')
+        self.assert_not_required('internet_gateway')
+
+    def test_required_fields(self):
+        self.assert_required('cidr_block')
+
+    def test_invalid_cidr_block(self):
+        cidr_block_input = self.form.cidr_block
+        cidr_block_input.data = 'invalid CIDR block'
+        self.form.validate()
+        errors_list = self.form.get_errors_list()
+        error = u'cidr_block: A valid CIDR block is required'
+        self.assertIn(error, errors_list)
