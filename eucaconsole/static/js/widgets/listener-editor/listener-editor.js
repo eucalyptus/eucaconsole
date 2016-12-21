@@ -23,6 +23,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.from = this.protocols[0];
             this.to = this.protocols[0];
+            this.certificate = {};
+            this.backendCertificates = [];
 
             this.sourceValid = function (source) {
                 var validPort = !this.portInUse(source) && !this.portOutOfRange(source);
@@ -81,7 +83,9 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                     fromPort: vm.from.port,
                     fromProtocol: vm.from.value,
                     toPort: vm.to.port,
-                    toProtocol: vm.to.value
+                    toProtocol: vm.to.value,
+                    certificate: vm.certificate,
+                    backendCertificates: vm.backendCertificates
                 };
                 $scope.listeners.push(listener);
 
@@ -91,6 +95,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             this.reset = function () {
                 vm.from = vm.protocols[0];
                 vm.to = vm.protocols[0];
+                vm.certificate = {};
+                vm.backendCertificates = [];
             };
             this.cancel = this.reset;
 
@@ -106,12 +112,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         if(!input) {
             return 'N/A';
         }
-    };
-})
-.filter('certificates', function () {
-    return function (input) {
-        if(!input) {
-            return 'N/A';
-        }
+        return input;
     };
 });

@@ -181,7 +181,7 @@
                     {{ pruneCertificateLabel(serverCertificateARN || serverCertificateName) }}<span ng-show="backendCertificateArray.length">, </span>
                 </span>
                 <span ng-show="backendCertificateArray.length" i18n:translate="">
-                    Back-end certs
+                    Back-end cert(s)
                 </span>
                 <span ng-repeat="bcert in backendCertificateArray">
                     {{ bcert.name }}<span ng-hide="$last">, </span>

@@ -1,4 +1,4 @@
-<form name="advancedForm" i18n:domain="eucaconsole">
+<form name="advancedForm" id="advanced-form" i18n:domain="eucaconsole">
     <div i18n:translate="">Your load balancer will monitor the health of its instances based on the following health check.</div>
     <div i18n:translate="">Instances that fail the health check will be removed from the load balancer.</div>
 
@@ -28,20 +28,21 @@
         </div>
         <div class="large-12 small-12 columns field">
             <input max="65535" maxlength="5" min="1" name="port"
-                ng-model="advanced.values.pingPort" pattern="^[1-9]\d*$" required="required" type="number">
+                ng-model="advanced.values.pingPort" pattern="^[1-9]\d*$" required="required" type="number"/>
         </div>
     </div>
 
     <div ng-show="advanced.values.pingProtocol === 'HTTP' || advanced.values.pingProtocol === 'HTTPS'">
         <div class="row inline stacked controls-wrapper">
-        <div class="columns">
-            <label class="left stack-label">
-                <span i18n:translate="">Path</span>&nbsp;<span class="req">*</span>
-            </label>
-        </div>
-        <div class="large-12 small-12 columns field">
-            <input class="text-input" name="path" ng-model="advanced.values.pingPath" required="required" type="text">
-            <div class="error" i18n:translate="">Ping path is required and must start with a /</div>
+            <div class="columns">
+                <label class="left stack-label">
+                    <span i18n:translate="">Path</span>&nbsp;<span class="req">*</span>
+                </label>
+            </div>
+            <div class="large-12 small-12 columns field">
+                <input class="text-input" name="path" ng-model="advanced.values.pingPath" required="required" type="text"/>
+                <div class="error" i18n:translate="">Ping path is required and must start with a /</div>
+            </div>
         </div>
     </div>
     <div id="advanced-section" class="expando" ng-init="expanded = false">
@@ -62,7 +63,7 @@
                     </label>
                 </div>
                 <div class="large-12 small-12 columns field">
-                    <input id="response_timeout" type="number" value="" required="required" pattern="^[1-9]\d*$" ng-model="advanced.values.responseTimeout" name="response_timeout" min="1">
+                    <input id="response_timeout" type="number" value="" required="required" pattern="^[1-9]\d*$" ng-model="advanced.values.responseTimeout" name="response_timeout" min="1"/>
                 </div>
             </div>
             <div id="controls_time_between_pings" class="row inline stacked controls-wrapper">
@@ -108,11 +109,11 @@
             <h6 class="section-label">Access logs</h6>
             <div id="controls_logging_enabled" class="row inline controls-wrapper">
                 <div class="columns field">
-                    <input id="logging_enabled" type="checkbox" value="y" ng-model="advanced.values.loggingEnabled" name="logging_enabled" ng-click="advanced.handleLoggingChange()">
+                    <input id="logging_enabled" type="checkbox" value="y" ng-model="advanced.values.loggingEnabled" name="logging_enabled" ng-click="advanced.handleLoggingChange()"/>
                     <label class="left-align" for="logging_enabled" i18n:translate="">Enable logging</label>
                 </div>
             </div>
-            <div id="access-logs-wrapper" ng-show="advanced.values.loggingEnabled">
+            <div id="access-logs-wrapper" ng-if="advanced.values.loggingEnabled">
                 <p i18n:translate="">Specify where your logs should be stored in the cloud.</p>
                 <div id="controls_bucket_name" class="row inline stacked controls-wrapper">
                     <div class="columns">
@@ -145,7 +146,7 @@
                         </label>
                     </div>
                     <div class="large-12 small-12 columns field">
-                        <input id="bucket_prefix" type="text" value="" pattern="^[^A-Z]*$" name="bucket_prefix" ng-model="advanced.values.bucketPrefix">
+                        <input id="bucket_prefix" type="text" value="" pattern="^[^A-Z]*$" name="bucket_prefix" ng-model="advanced.values.bucketPrefix"/>
                         <small class="error" i18n:translate="">Prefix may not contain uppercase letters</small>
                     </div>
                 </div>
@@ -163,7 +164,7 @@
             </div>
         </div>
     </div>
-    <hr>
+    <hr/>
     <div>
         <label>
             <span class="req">*</span>

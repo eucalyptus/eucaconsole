@@ -75,13 +75,14 @@
 #elb-form input.text-input { width: 300px; }
 #elb-form input[type="number"] { width: 100px; }
 #elb-form select.ip-protocol { width: 100px; }
-#elb-form select.ping-delay { width: 120px; }
-#elb-form select.ping-threshold { width: 100px; }
 #elb-form table { margin-left: auto; margin-right: auto; }
 #elb-form table.table { width: 100%; }
 #elb-form .section-label { margin-top: 1.5rem; margin-bottom: 1rem; }
 #elb-form .section-label-with-helptext-icon { margin-bottom: 0.5rem; }
 #elb-form .checkbox-with-helptext-icon label { margin-right: 0; }
+
+#advanced-form select.ping-delay { width: 120px; }
+#advanced-form select.ping-threshold { width: 100px; }
 
 .summary .multi-row div { padding-bottom: 0.25rem; }
 .summary .row.logging-summary { margin-top: 1rem; }

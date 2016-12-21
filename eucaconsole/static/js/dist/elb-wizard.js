@@ -142,16 +142,29 @@ angular.module('ELBServiceModule', [])
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     return {
         createELB: function (csrfToken, values) {
+            // update listeners to be passed to API call
+            var listeners = JSON.parse(JSON.stringify(values.listeners));
+            var backendCertificates = '';
+            listeners.forEach(function(val) {
+                if (val.certificate) {
+                    val.certificateARN = val.certificate.arn;
+                    val.certificate = undefined;
+                }
+                if (val.backendCertificates) {
+                    backendCertificates = val.backendCertificates;
+                }
+            });
             var data = {
                 csrf_token: csrfToken,
                 name: values.elbName,
-                elb_listener: JSON.stringify(values.listeners),
+                elb_listener: JSON.stringify(listeners),
                 elb_security_policy_updated: values.policy.securityPolicyUpdated,
                 elb_ssl_using_custom_policy: values.policy.sslUsingCustomPolicy,
-                elb_predefined_policy: values.policy.predefiedPolicy,
+                elb_predefined_policy: values.policy.predefinedPolicy,
                 elb_ssl_protocols: values.policy.sslProtocols,
                 elb_ssl_ciphers: values.policy.sslCiphers,
                 elb_ssl_server_order_pref: values.policy.sslServerOrderPref,
+                backend_certificates: JSON.stringify(backendCertificates),
                 tags: JSON.stringify(values.tags),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
@@ -266,7 +279,8 @@ angular.module('ELBWizard', [
                 'fromPort': 80,
                 'toPort': 80,
                 'fromProtocol': 'HTTP',
-                'toProtocol': 'HTTP'
+                'toProtocol': 'HTTP',
+                'certificateArn': ''
             }],
             policy: {
                 predefinedPolicy: '',
@@ -690,7 +704,7 @@ function ($scope, $routeParams, $window, ELBWizardService, ELBService, BucketSer
             return;
         }
         vm.creatingELB = true;
-        ELBService.createELB($('#csrf_token').val(), this.values).then(
+        ELBService.createELB($('#csrf_token').val(), vm.values).then(
             function success(result) {
                 $window.location = '/elbs';
             },
@@ -771,6 +785,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.from = this.protocols[0];
             this.to = this.protocols[0];
+            this.certificate = {};
+            this.backendCertificates = [];
 
             this.sourceValid = function (source) {
                 var validPort = !this.portInUse(source) && !this.portOutOfRange(source);
@@ -829,7 +845,9 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                     fromPort: vm.from.port,
                     fromProtocol: vm.from.value,
                     toPort: vm.to.port,
-                    toProtocol: vm.to.value
+                    toProtocol: vm.to.value,
+                    certificate: vm.certificate,
+                    backendCertificates: vm.backendCertificates
                 };
                 $scope.listeners.push(listener);
 
@@ -839,6 +857,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             this.reset = function () {
                 vm.from = vm.protocols[0];
                 vm.to = vm.protocols[0];
+                vm.certificate = {};
+                vm.backendCertificates = [];
             };
             this.cancel = this.reset;
 
@@ -854,13 +874,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         if(!input) {
             return 'N/A';
         }
-    };
-})
-.filter('certificates', function () {
-    return function (input) {
-        if(!input) {
-            return 'N/A';
-        }
+        return input;
     };
 });
 
@@ -1628,34 +1642,47 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
     return {
         restrict: 'E',
         scope: {
-            certificate: '=ngModel'
+            certificate: '=ngModel',
+            backendCertificates: '='
         },
         templateUrl: '/_template/elbs/listener-editor/certificate-editor',
-        controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', function ($scope, CertificateService, ModalService, ELBWizardService) {
+        controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', 'eucaHandleError',
+            function ($scope, CertificateService, ModalService, ELBWizardService, eucaHandleError) {
+            var vm = this;
             this.activeTab = 'SSL';
             this.certType = 'existing';
+            this.selectedCertificate = {};
 
             $scope.certsAvailable = ELBWizardService.certsAvailable;
             $scope.policies = ELBWizardService.policies;
 
+            if ($scope.certificate.server_certificate_name) {
+                vm.selectedCertificate = $scope.certificate;
+            }
+
             this.showTab = function (tab) {
-                this.activeTab = tab;
+                vm.activeTab = tab;
             };
 
             this.chooseSSL = function () {
-                $scope.certificate = this.selectedCertificate;
+                $scope.certificate.server_certificate_name = vm.selectedCertificate.server_certificate_name;
+                $scope.certificate.arn = vm.selectedCertificate.arn;
                 ModalService.closeModal('certificateEditor');
             };
 
             this.uploadSSL = function () {
                 CertificateService.createCertificate({
-                    name: this.name,
-                    privateKey: this.privateKey,
-                    publicKey: this.publicKey,
-                    certificateChain: this.certificateChain
-                }).then(function success () {
+                    name: vm.name,
+                    privateKey: vm.privateKey,
+                    publicKey: vm.publicKey,
+                    certificateChain: vm.certificateChain
+                }).then(function success (result) {
+                    $scope.certificate.server_certificate_name = vm.name;
+                    $scope.certificate.arn = result.id;
                     ModalService.closeModal('certificateEditor');
-                }, function error () {
+                    Notify.success(result.message);
+                }, function error(errData) {
+                    eucaHandleError(errData.data.message, errData.status);
                 });
             };
 
@@ -1664,14 +1691,20 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                     return;
                 }
 
-                if(this.certType === 'existing') {
-                    this.chooseSSL();
+                if(vm.certType === 'existing') {
+                    vm.chooseSSL();
                 } else {
-                    this.uploadSSL();
+                    vm.uploadSSL();
                 }
             };
 
-            this.submitBackend = function () {
+            this.addBackendCertificate = function () {
+                $scope.backendCertificates.push({
+                    name: vm.backendCertificateName,
+                    certificateBody: vm.backendCertificateBody
+                });
+                vm.backendCertificateName = '';
+                vm.backendCertificateBody = '';
             };
         }],
         controllerAs: 'ctrl'
@@ -1722,6 +1755,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                 method: 'POST',
                 url: '/certificate',
                 data: cert
+            }).then(function success (result) {
+                return result.data;
             });
         }
     };
