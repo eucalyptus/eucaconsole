@@ -1,4 +1,4 @@
-<div id="select-certificate-modal">
+<div id="select-certificate-modal" i18n:domain="eucaconsole">
     <h3 i18n:translate="">Select certificate(s)</h3>
     <ul class="btn-group">
         <li>
