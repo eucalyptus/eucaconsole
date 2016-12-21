@@ -865,6 +865,18 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             this.openCertificateModal = function () {
                 ModalService.openModal('certificateEditor');
             };
+            $scope.instProtocol = function (protocol) {
+                return function (instProtocol) {
+                    // if listener protocol HTTP or HTTPS, remove SSL and TCP from options
+                    if (['HTTP', 'HTTPS'].indexOf(protocol) > -1) {
+                        return ['SSL', 'TCP'].indexOf(instProtocol.value) === -1;
+                    }
+                    // if listener protocol SSL or TCP, remove HTTP and HTTPS from options
+                    if (['SSL', 'TCP'].indexOf(protocol) > -1) {
+                        return ['HTTP', 'HTTPS'].indexOf(instProtocol.value) === -1;
+                    }
+                };
+            };
         }],
         controllerAs: 'ctrl'
     };
