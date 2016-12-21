@@ -5,6 +5,14 @@
 .state.available { background-color: $hpe-slate; }
 .state.pending { background-color: lighten($hpe-slate, 20%); }
 
+
+// Table view
+.table {
+    .subnet-item {
+        min-width: 10rem;
+    }
+}
+
 // tile view
 $tile-height-adjustment: 36px;
 .tile {

@@ -18,16 +18,16 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
             $scope.policies = ELBWizardService.policies;
 
             if ($scope.certificate.server_certificate_name) {
-                this.selectedCertificate = $scope.certificate;
+                vm.selectedCertificate = $scope.certificate;
             }
 
             this.showTab = function (tab) {
-                this.activeTab = tab;
+                vm.activeTab = tab;
             };
 
             this.chooseSSL = function () {
-                $scope.certificate.server_certificate_name = this.selectedCertificate.server_certificate_name;
-                $scope.certificate.arn = this.selectedCertificate.arn;
+                $scope.certificate.server_certificate_name = vm.selectedCertificate.server_certificate_name;
+                $scope.certificate.arn = vm.selectedCertificate.arn;
                 ModalService.closeModal('certificateEditor');
             };
 
@@ -52,10 +52,10 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                     return;
                 }
 
-                if(this.certType === 'existing') {
-                    this.chooseSSL();
+                if(vm.certType === 'existing') {
+                    vm.chooseSSL();
                 } else {
-                    this.uploadSSL();
+                    vm.uploadSSL();
                 }
             };
 

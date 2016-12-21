@@ -28,8 +28,17 @@
 Forms for VPC resources
 
 """
+from wtforms import SelectField, StringField
+
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
+from ..views import TaggedItemView
+
+
+INTERNET_GATEWAY_HELP_TEXT = _(
+    'An internet gateway allows communication between instances in your VPC and the Internet.'
+    'An internet gateway must be attached to a VPC if you wish to create one or more public subnets in the VPC.'
+)
 
 
 class VPCsFiltersForm(BaseSecureForm):
@@ -55,3 +64,55 @@ class VPCsFiltersForm(BaseSecureForm):
 
     def get_availability_zone_choices(self):
         return self.get_options_from_choices(self.ec2_choices_manager.availability_zones(self.region, add_blank=False))
+
+
+class VPCForm(BaseSecureForm):
+    """VPC form (to update an existing VPC)"""
+    name_error_msg = _('Not a valid name')
+    name = TextEscapedField(label=_('Name'))
+    internet_gateway = SelectField(label=_('Internet gateway'))
+
+    def __init__(self, request, vpc_conn=None, vpc=None, vpc_internet_gateway=None, **kwargs):
+        super(VPCForm, self).__init__(request, **kwargs)
+        self.vpc_conn = vpc_conn
+        self.vpc = vpc
+        self.vpc_internet_gateway = vpc_internet_gateway
+        self.name.error_msg = self.name_error_msg
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.internet_gateway.choices = self.get_internet_gateway_choices()
+
+        if vpc is not None:
+            self.name.data = vpc.tags.get('Name', '')
+            if self.vpc_internet_gateway is None:
+                self.internet_gateway.data = 'None'
+            else:
+                self.internet_gateway.data = self.vpc_internet_gateway.id
+
+    def get_internet_gateway_choices(self):
+        choices_list = []
+        if self.vpc and self.vpc_internet_gateway:
+            # Add the existing IGW if necessary, as we're going to filter out attached internet gateways later
+            choices_list.append(
+                (TaggedItemView.get_display_name(self.vpc_internet_gateway), self.vpc_internet_gateway.id)
+            )
+        igw_choices = self.vpc_choices_manager.internet_gateways()
+        for choice in igw_choices:
+            choices_list.append(choice)
+        return sorted(set(choices_list))
+
+
+class VPCMainRouteTableForm(BaseSecureForm):
+    """VPC form to set main route table"""
+    route_table = SelectField(label=_('Route table'))
+
+    def __init__(self, request, vpc_conn=None, vpc=None, vpc_main_route_table=None, **kwargs):
+        super(VPCMainRouteTableForm, self).__init__(request, **kwargs)
+        vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.route_table.choices = vpc_choices_manager.vpc_route_tables(vpc=vpc, add_blank=False)
+
+        if vpc_main_route_table is not None:
+            self.route_table.data = vpc_main_route_table.id
+
+
+class CreateInternetGatewayForm(BaseSecureForm):
+    new_igw_name = StringField(label=_('Name'))

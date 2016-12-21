@@ -1149,6 +1149,7 @@ class ELBWizardView(BaseView):
 
     @view_config(route_name='elb_wizard', renderer=TEMPLATE)
     def elb_wizard(self):
+        self.title_parts = [_(u'Create')]
         self.render_dict.update(
             base_href=self.base_href,
             cloud_type=self.cloud_type,

@@ -869,15 +869,11 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                 return function (instProtocol) {
                     // if listener protocol HTTP or HTTPS, remove SSL and TCP from options
                     if (['HTTP', 'HTTPS'].indexOf(protocol) > -1) {
-                        var ret = ['SSL', 'TCP'].indexOf(instProtocol.value) === -1;
-                        console.log("for "+protocol+" -> "+instProtocol.value+" = "+ret);
-                        return ret;
+                        return ['SSL', 'TCP'].indexOf(instProtocol.value) === -1;
                     }
                     // if listener protocol SSL or TCP, remove HTTP and HTTPS from options
                     if (['SSL', 'TCP'].indexOf(protocol) > -1) {
-                        var ret = ['HTTP', 'HTTPS'].indexOf(instProtocol.value) === -1;
-                        console.log("for "+protocol+" -> "+instProtocol.value+" = "+ret);
-                        return ret;
+                        return ['HTTP', 'HTTPS'].indexOf(instProtocol.value) === -1;
                     }
                 };
             };
@@ -1673,16 +1669,16 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
             $scope.policies = ELBWizardService.policies;
 
             if ($scope.certificate.server_certificate_name) {
-                this.selectedCertificate = $scope.certificate;
+                vm.selectedCertificate = $scope.certificate;
             }
 
             this.showTab = function (tab) {
-                this.activeTab = tab;
+                vm.activeTab = tab;
             };
 
             this.chooseSSL = function () {
-                $scope.certificate.server_certificate_name = this.selectedCertificate.server_certificate_name;
-                $scope.certificate.arn = this.selectedCertificate.arn;
+                $scope.certificate.server_certificate_name = vm.selectedCertificate.server_certificate_name;
+                $scope.certificate.arn = vm.selectedCertificate.arn;
                 ModalService.closeModal('certificateEditor');
             };
 
@@ -1707,10 +1703,10 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                     return;
                 }
 
-                if(this.certType === 'existing') {
-                    this.chooseSSL();
+                if(vm.certType === 'existing') {
+                    vm.chooseSSL();
                 } else {
-                    this.uploadSSL();
+                    vm.uploadSSL();
                 }
             };
 
