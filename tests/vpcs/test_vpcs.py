@@ -30,12 +30,12 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 from pyramid import testing
-from wtforms import validators
 
 from eucaconsole.forms import BaseSecureForm
-from eucaconsole.forms.vpcs import VPCForm, CreateVPCForm, CIDR_BLOCK_REGEX
+from eucaconsole.forms.vpcs import VPCForm, CreateVPCForm
 
 from tests import BaseFormTestCase
+
 
 class VPCFormTestCase(BaseFormTestCase):
     """VPC details page form"""

@@ -214,7 +214,7 @@ class VPCView(TaggedItemView):
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
             self.vpc_main_route_table_form = VPCMainRouteTableForm(
-                self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
+                self.request, vpc=self.vpc, vpc_conn=self.vpc_conn, route_tables=self.vpc_route_tables,
                 vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
             self.create_internet_gateway_form = CreateInternetGatewayForm(
                 self.request, formdata=self.request.params or None)
@@ -380,9 +380,10 @@ class VPCView(TaggedItemView):
             ))
         return subnets_list
 
-    def get_subnet_instances(self, subnet_id=None, vpc_reservations=None):
+    @staticmethod
+    def get_subnet_instances(subnet_id=None, vpc_reservations=None):
         instances = []
-        if self.conn and subnet_id and vpc_reservations:
+        if subnet_id and vpc_reservations:
             for reservation in vpc_reservations:
                 for instance in reservation.instances:
                     if instance.subnet_id == subnet_id:
@@ -392,9 +393,10 @@ class VPCView(TaggedItemView):
                         ))
         return instances
 
-    def get_subnet_network_acls(self, subnet_id=None, vpc_network_acls=None):
+    @staticmethod
+    def get_subnet_network_acls(subnet_id=None, vpc_network_acls=None):
         subnet_network_acls = []
-        if self.vpc_conn and subnet_id and vpc_network_acls:
+        if subnet_id and vpc_network_acls:
             for network_acl in vpc_network_acls:
                 subnet_associations = [association.subnet_id for association in network_acl.associations]
                 if subnet_id in subnet_associations:
@@ -406,7 +408,7 @@ class VPCView(TaggedItemView):
 
     def get_subnet_route_tables(self, subnet_id=None, vpc_route_tables=None):
         subnet_route_tables = []
-        if self.vpc_conn and subnet_id and vpc_route_tables:
+        if subnet_id and vpc_route_tables:
             for route_table in vpc_route_tables:
                 association_subnet_ids = [assoc.subnet_id for assoc in route_table.associations]
                 if subnet_id in association_subnet_ids:
