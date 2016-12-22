@@ -142,16 +142,29 @@ angular.module('ELBServiceModule', [])
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     return {
         createELB: function (csrfToken, values) {
+            // update listeners to be passed to API call
+            var listeners = JSON.parse(JSON.stringify(values.listeners));
+            var backendCertificates = '';
+            listeners.forEach(function(val) {
+                if (val.certificate) {
+                    val.certificateARN = val.certificate.arn;
+                    val.certificate = undefined;
+                }
+                if (val.backendCertificates) {
+                    backendCertificates = val.backendCertificates;
+                }
+            });
             var data = {
                 csrf_token: csrfToken,
                 name: values.elbName,
-                elb_listener: JSON.stringify(values.listeners),
+                elb_listener: JSON.stringify(listeners),
                 elb_security_policy_updated: values.policy.securityPolicyUpdated,
                 elb_ssl_using_custom_policy: values.policy.sslUsingCustomPolicy,
-                elb_predefined_policy: values.policy.predefiedPolicy,
+                elb_predefined_policy: values.policy.predefinedPolicy,
                 elb_ssl_protocols: values.policy.sslProtocols,
                 elb_ssl_ciphers: values.policy.sslCiphers,
                 elb_ssl_server_order_pref: values.policy.sslServerOrderPref,
+                backend_certificates: JSON.stringify(backendCertificates),
                 tags: JSON.stringify(values.tags),
                 vpc_network: values.vpcNetwork.id,
                 vpc_subnet: values.vpcSubnets.map(function(val) { return val.id; }),
@@ -255,21 +268,7 @@ angular.module('ELBWizard', [
         controllerAs: 'wizard'
     };
 })
-.factory('ELBWizardService', ['$location', function ($location) {
-
-    function Navigation (steps) {
-        steps = steps || [];
-        this.steps = steps.map(function (current, index, ary) {
-            current._next = ary[index + 1];
-            return current;
-        });
-        this.current = this.steps[0];
-    }
-
-    Navigation.prototype.next = function () {
-        this.current = this.current._next;
-        return this.current;
-    };
+.factory('ELBWizardService', ['$location', 'WizardService', function ($location, WizardService) {
 
     var svc = {
         certsAvailable: [],
@@ -280,7 +279,8 @@ angular.module('ELBWizard', [
                 'fromPort': 80,
                 'toPort': 80,
                 'fromProtocol': 'HTTP',
-                'toProtocol': 'HTTP'
+                'toProtocol': 'HTTP',
+                'certificateArn': ''
             }],
             policy: {
                 predefinedPolicy: '',
@@ -310,24 +310,17 @@ angular.module('ELBWizard', [
             collectionInterval: '5'
         },
 
-        initNav: function (steps) {
-            this.nav = new Navigation(steps);
-            return this.nav;
-        },
-
         next: function (params) {
             angular.merge(this.values, params);
-
-            this.nav.current.complete = true;
-            var next = this.nav.next();
-            $location.path(next.href);
+            WizardService.next();
         },
 
         displaySummary: function(step) {
-            if(!this.nav) {
+            var nav = WizardService.getNav();
+            if(!nav) {
                 return false;
             }
-            return this.nav.steps[step].complete || this.nav.steps[step] === this.nav.current;
+            return nav.steps[step].complete || nav.steps[step] === nav.current;
         },
 
         submit: function () {
@@ -477,12 +470,17 @@ angular.module('ELBWizard')
         require: '?^elbWizard',
         templateUrl: '/_template/elbs/wizard/navigation',
         link: function (scope, element, attributes, ctrl) {
-            var steps = ctrl.validSteps();
+            var steps = ctrl.validSteps(); // Find a way to pass the valid steps in, and you can get rid of the upward dependency on elbWizard
             scope.setNav(steps);
+
+            scope.$on('$locationChangeStart', function (evt, to, from) {
+                //  You can use this event to perform checks on navigation
+            });
+            scope.setInitialTab();
         },
-        controller: ['$scope', '$location', 'ELBWizardService', function ($scope, $location, ELBWizardService) {
+        controller: ['$scope', '$location', 'WizardService', function ($scope, $location, WizardService) {
             $scope.setNav = function (steps) {
-                $scope.navigation = ELBWizardService.initNav(steps);
+                $scope.navigation = WizardService.initNav(steps);
             };
 
             this.validSteps = function () {
@@ -496,6 +494,10 @@ angular.module('ELBWizard')
                 return '';
             };
 
+            this.visitStep = function (step) {
+                WizardService.setCurrent(step);
+            };
+
             this.status = function (step) {
                 var path = $location.path();
                 return {
@@ -504,10 +506,55 @@ angular.module('ELBWizard')
                     complete: step.complete
                 };
             };
+
+            $scope.setInitialTab = function() {
+                if ($location.path() !== $scope.navigation.steps[0].href) {
+                    $location.path($scope.navigation.steps[0].href);
+                }
+            };
         }],
         controllerAs: 'nav'
     };
-});
+})
+.factory('WizardService', ['$location', function ($location) {
+    function Navigation (steps) {
+        steps = steps || [];
+        this.steps = steps.map(function (current, index, ary) {
+            current._next = ary[index + 1];
+            return current;
+        });
+        this.current = this.steps[0];
+    }
+
+    Navigation.prototype.next = function () {
+        this.current = this.current._next;
+        return this.current;
+    };
+
+    var svc = {
+        initNav: function (steps) {
+            this._nav = new Navigation(steps);
+            return this._nav;
+        },
+
+        getNav: function () {
+            return this._nav;
+        },
+
+        next: function () {
+            this._nav.current.complete = true;
+            var next = this._nav.next();
+            $location.path(next.href);
+        },
+
+        setCurrent: function(step) {
+            this._nav.current = step;
+            $location.path(step.href);
+        }
+    };
+
+    return svc;
+}]);
 
 angular.module('ELBWizard')
 .controller('MainController', function () {
@@ -657,7 +704,7 @@ function ($scope, $routeParams, $window, ELBWizardService, ELBService, BucketSer
             return;
         }
         vm.creatingELB = true;
-        ELBService.createELB($('#csrf_token').val(), this.values).then(
+        ELBService.createELB($('#csrf_token').val(), vm.values).then(
             function success(result) {
                 $window.location = '/elbs';
             },
@@ -724,10 +771,6 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         controller: ['$scope', 'ModalService', function ($scope, ModalService) {
             var vm = this;
 
-            this.from = {};
-            this.to = {};
-            this.policy = {};
-
             var validPorts = [25, 80, 443, 465, 587],
                 validPortMin = 1024,
                 validPortMax = 65535;
@@ -739,6 +782,11 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                 {name: 'TCP', value: 'TCP', port: 80},
                 {name: 'SSL', value: 'SSL', port: 443}
             ];
+
+            this.from = this.protocols[0];
+            this.to = this.protocols[0];
+            this.certificate = {};
+            this.backendCertificates = [];
 
             this.sourceValid = function (source) {
                 var validPort = !this.portInUse(source) && !this.portOutOfRange(source);
@@ -771,7 +819,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             };
 
             this.portOutOfRange = function (target, allowEmpty) {
-                if(target.port === undefined && allowEmpty) {
+                if(target.port === '' && allowEmpty) {
                     return false;
                 }
 
@@ -795,9 +843,11 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
                 var listener = {
                     fromPort: vm.from.port,
-                    fromProtocol: vm.from.protocol,
+                    fromProtocol: vm.from.value,
                     toPort: vm.to.port,
-                    toProtocol: vm.to.protocol
+                    toProtocol: vm.to.value,
+                    certificate: vm.certificate,
+                    backendCertificates: vm.backendCertificates
                 };
                 $scope.listeners.push(listener);
 
@@ -807,55 +857,25 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             this.reset = function () {
                 vm.from = vm.protocols[0];
                 vm.to = vm.protocols[0];
+                vm.certificate = {};
+                vm.backendCertificates = [];
             };
             this.cancel = this.reset;
 
             this.openCertificateModal = function () {
                 ModalService.openModal('certificateEditor');
             };
-        }],
-        controllerAs: 'ctrl'
-    };
-})
-.directive('protocolPort', function () {
-    return {
-        restrict: 'E',
-        require: 'ngModel',
-        scope: {
-            target: '=ngModel',
-            label: '@',
-            protocols: '='
-        },
-        templateUrl: '/_template/elbs/listener-editor/protocol-port',
-        link: function (scope, element, attrs, ctrl) {
-            //  Custon form-field behavior. Let protocol-port act as a form field.
-
-            var protocolField = element.find('select'),
-                portField = element.find('input');
-
-            protocolField.on('change blur', updateViewValue);
-            portField.on('change blur', updateViewValue);
-
-            function updateViewValue () {
-                var protocol = protocolField.val(),
-                    port = portField.val();
-
-                ctrl.$setViewValue({
-                    protocol: protocol,
-                    port: port
-                });
-
-                ctrl.$setTouched();
-            }
-
-            ctrl.$render = function () {
-                protocolField.val(scope.target.protocol);
-                portField.val(scope.target.port);
-            };
-        },
-        controller: ['$scope', function ($scope) {
-            this.onUpdate = function (protocol) {
-                $scope.port = protocol.port;
+            $scope.instProtocol = function (protocol) {
+                return function (instProtocol) {
+                    // if listener protocol HTTP or HTTPS, remove SSL and TCP from options
+                    if (['HTTP', 'HTTPS'].indexOf(protocol) > -1) {
+                        return ['SSL', 'TCP'].indexOf(instProtocol.value) === -1;
+                    }
+                    // if listener protocol SSL or TCP, remove HTTP and HTTPS from options
+                    if (['SSL', 'TCP'].indexOf(protocol) > -1) {
+                        return ['HTTP', 'HTTPS'].indexOf(instProtocol.value) === -1;
+                    }
+                };
             };
         }],
         controllerAs: 'ctrl'
@@ -866,13 +886,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         if(!input) {
             return 'N/A';
         }
-    };
-})
-.filter('certificates', function () {
-    return function (input) {
-        if(!input) {
-            return 'N/A';
-        }
+        return input;
     };
 });
 
@@ -900,6 +914,8 @@ angular.module('ELBSecurityPolicyEditorModule', ['ModalModule', 'EucaConsoleUtil
                 {id:'Protocol-TLSv1.1', label:'TLSv1.1'},
                 {id:'Protocol-TLSv1', label:'TLSv1'},
             ];
+            // This list will replace the list in contstants/elb.py. For now changes need to be done
+            // in both places
             vm.cipherChoices = [
                 'ECDHE-ECDSA-AES128-GCM-SHA256',
                 'ECDHE-RSA-AES128-GCM-SHA256',
@@ -1568,8 +1584,8 @@ angular.module('InstancesSelectorModule', ['MagicSearch', 'MagicSearchFilterModu
             instancesLoading: '@'
         },
         templateUrl: '/_template/elbs/instance-selector',
-        controller: ['$scope', '$timeout', 'InstancesFiltersService', 'MagicSearchFilterService',
-        function ($scope, $timeout, InstancesFiltersService, MagicSearchFilterService) {
+        controller: ['$scope', '$timeout', 'InstancesFiltersService', 'MagicSearchFilterService', 'eucaHandleError',
+        function ($scope, $timeout, InstancesFiltersService, MagicSearchFilterService, eucaHandleError) {
             InstancesFiltersService.getInstancesFilters().then(
                 function success(result) {
                     $scope.facets = result;
@@ -1638,34 +1654,47 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
     return {
         restrict: 'E',
         scope: {
-            certificate: '=ngModel'
+            certificate: '=ngModel',
+            backendCertificates: '='
         },
         templateUrl: '/_template/elbs/listener-editor/certificate-editor',
-        controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', function ($scope, CertificateService, ModalService, ELBWizardService) {
+        controller: ['$scope', 'CertificateService', 'ModalService', 'ELBWizardService', 'eucaHandleError',
+            function ($scope, CertificateService, ModalService, ELBWizardService, eucaHandleError) {
+            var vm = this;
             this.activeTab = 'SSL';
             this.certType = 'existing';
+            this.selectedCertificate = {};
 
             $scope.certsAvailable = ELBWizardService.certsAvailable;
             $scope.policies = ELBWizardService.policies;
 
+            if ($scope.certificate.server_certificate_name) {
+                vm.selectedCertificate = $scope.certificate;
+            }
+
             this.showTab = function (tab) {
-                this.activeTab = tab;
+                vm.activeTab = tab;
             };
 
             this.chooseSSL = function () {
-                $scope.certificate = this.selectedCertificate;
+                $scope.certificate.server_certificate_name = vm.selectedCertificate.server_certificate_name;
+                $scope.certificate.arn = vm.selectedCertificate.arn;
                 ModalService.closeModal('certificateEditor');
             };
 
             this.uploadSSL = function () {
                 CertificateService.createCertificate({
-                    name: this.name,
-                    privateKey: this.privateKey,
-                    publicKey: this.publicKey,
-                    certificateChain: this.certificateChain
-                }).then(function success () {
+                    name: vm.name,
+                    privateKey: vm.privateKey,
+                    publicKey: vm.publicKey,
+                    certificateChain: vm.certificateChain
+                }).then(function success (result) {
+                    $scope.certificate.server_certificate_name = vm.name;
+                    $scope.certificate.arn = result.id;
                     ModalService.closeModal('certificateEditor');
-                }, function error () {
+                    Notify.success(result.message);
+                }, function error(errData) {
+                    eucaHandleError(errData.data.message, errData.status);
                 });
             };
 
@@ -1674,14 +1703,20 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                     return;
                 }
 
-                if(this.certType === 'existing') {
-                    this.chooseSSL();
+                if(vm.certType === 'existing') {
+                    vm.chooseSSL();
                 } else {
-                    this.uploadSSL();
+                    vm.uploadSSL();
                 }
             };
 
-            this.submitBackend = function () {
+            this.addBackendCertificate = function () {
+                $scope.backendCertificates.push({
+                    name: vm.backendCertificateName,
+                    certificateBody: vm.backendCertificateBody
+                });
+                vm.backendCertificateName = '';
+                vm.backendCertificateBody = '';
             };
         }],
         controllerAs: 'ctrl'
@@ -1732,6 +1767,8 @@ angular.module('ELBCertificateEditorModule', ['ModalModule', 'ELBWizard'])
                 method: 'POST',
                 url: '/certificate',
                 data: cert
+            }).then(function success (result) {
+                return result.data;
             });
         }
     };

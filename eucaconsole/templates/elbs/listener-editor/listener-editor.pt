@@ -1,98 +1,152 @@
-<div ng-form="listenerEditor" class="elb-listener-editor" ng-class="{'euca-invalid-port-in-use': ctrl.portInUse(ctrl.from), 'euca-invalid-port-out-of-range': ctrl.portOutOfRange(ctrl.from, true)}">
-    <h6 i18n:translate="">Listeners</h6>
-    <table class="table" ng-show="listeners.length">
-        <thead>
-            <tr class="top-header">
-                <th class="vertical-border-header" colspan="2">Client Side:</th>
-                <th class="vertical-border-header" colspan="2">Instance Side:</th>
-                <th colspan="3">Security:</th>
-            </tr>
-            <tr>
-                <th>PROTOCOL</th>
-                <th class="vertical-border-header">PORT</th>
-                <th>PROTOCOL</th>
-                <th class="vertical-border-header">PORT</th>
-                <th>POLICY</th>
-                <th>
-                    <span i18n:translate="">CERTIFICATES</span>
-                    <i class="helptext-icon"></i>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="listener in listeners">
-                <td>{{ listener.fromProtocol }}</td>
-                <td>{{ listener.fromPort }}</td>
-                <td>{{ listener.toProtocol }}</td>
-                <td>{{ listener.toPort }}</td>
-                <td>{{ listener.policy | policy }}</td>
-                <td>{{ listener.certificates | certificates }}</td>
-                <td>
-                    <a class="circle remove" ng-click="ctrl.removeListener($index)" title="RemoveListener">
-                        <i class="fi-minus-circle"></i>
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div ng-show="!listeners.length" i18n:translate="">
-        You must define at least one listener.
-    </div>
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div ng-form="listenerEditor" class="elb-listener-editor" ng-class="{'euca-invalid-port-in-use': ctrl.portInUse(ctrl.from), 'euca-invalid-port-out-of-range': ctrl.portOutOfRange(ctrl.from, true)}">
+        <h6 i18n:translate="">Listeners</h6>
+        <table class="table" ng-show="listeners.length">
+            <thead>
+                <tr class="top-header">
+                    <th class="vertical-border-header" colspan="2">Client Side:</th>
+                    <th class="vertical-border-header" colspan="2">Instance Side:</th>
+                    <th colspan="3">Security:</th>
+                </tr>
+                <tr>
+                    <th>PROTOCOL</th>
+                    <th class="vertical-border-header">PORT</th>
+                    <th>PROTOCOL</th>
+                    <th class="vertical-border-header">PORT</th>
+                    <th>
+                        <span i18n:translate="">CERTIFICATES</span>
+                        <span title="Back-end certificates are contained within back-end policies once they are saved to the cloud."
+                            i18n:attributes="title" data-tooltip="">
+                            <i class="helptext-icon"></i>
+                        </span>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="listener in listeners">
+                    <td>{{ listener.fromProtocol }}</td>
+                    <td>{{ listener.fromPort }}</td>
+                    <td>{{ listener.toProtocol }}</td>
+                    <td>{{ listener.toPort }}</td>
+                    <td>
+                        <span ng-show="listener.certificate.server_certificate_name">
+                            <span i18n:translate="">SSL cert</span>
+                            {{ listener.certificate.server_certificate_name }}
+                            <span ng-show="listener.backendCertificates.length">,</span>
+                        </span>
+                        <span ng-show="listener.backendCertificates.length">
+                            <span i18n:translate="">Back-end cert(s)</span>
+                            <span ng-repeat="bcert in listener.backendCertificates">
+                                {{ bcert.name }}<span ng-hide="$last">, </span>
+                            </span>
+                        </span>
+                        <span ng-hide="listener.certificate.server_certificate_name || listener.backendCertificates.length">
+                            <span i18n:translate="">N/A</span>
+                        </span>
+                    </td>
+                    <td>
+                        <a class="circle remove" ng-click="ctrl.removeListener($index)" title="RemoveListener">
+                            <i class="fi-minus-circle"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div ng-show="!listeners.length" i18n:translate="">
+            You must define at least one listener.
+        </div>
 
-    <div>
-        <div ng-show="listeners.length === 0">
-            <span class="section-label" i18n:translate="">Add a listener:</span>
+        <div>
+            <div ng-show="listeners.length === 0">
+                <span class="section-label" i18n:translate="">Add a listener:</span>
+            </div>
+            <div ng-show="listeners.length > 0">
+                <span class="section-label" i18n:translate="">Add another listener:</span>
+            </div>
         </div>
-        <div ng-show="listeners.length > 0">
-            <span class="section-label" i18n:translate="">Add another listener:</span>
+        <div>
+            <div class="protocol-port">
+                <div class="subsection-label" i18n:translate="">Client side</div>
+                <div class="controls-wrapper">
+                    <label i18n:translate="" class="inline">Protocol</label>
+                    <select ng-options="protocol.name for protocol in ctrl.protocols track by protocol.value"
+                        ng-model="ctrl.from" name="from"
+                        ng-init="protocol = ctrl.protocols[0]" class="ip-protocol">
+                    </select>
+                </div>
+                <div class="controls-wrapper">
+                    <label i18n:translate="" class="inline">Port</label>
+                    <span class="elb-port-tooltip" data-tooltip="" i18n:attributes="title"
+                          title="Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535">
+                        <i class="helptext-icon"></i>
+                    </span>
+                    <input class="port" type="number" ng-model="ctrl.from.port"></input>
+                </div>
+            </div>
+            <div i18n:translate="" class="port-out-of-range">
+                Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
+            </div>
+            <div i18n:translate="" class="port-in-use">
+                Selected port is already in use by another listener. Please select an unused port.
+            </div>
         </div>
-    </div>
+        <div>
+            <div class="protocol-port" ng-show="ctrl.sourceValid(ctrl.from)">
+                <div class="subsection-label" i18n:translate="">Instance side</div>
+                <div class="controls-wrapper">
+                    <label i18n:translate="" class="inline">Protocol</label>
+                    <select ng-options="protocol.name for protocol in ctrl.protocols | filter:instProtocol(ctrl.from.value) track by protocol.value"
+                        ng-model="ctrl.to" name="to"
+                        ng-init="protocol = ctrl.protocols[0]" class="ip-protocol">
+                    </select>
+                </div>
+                <div class="controls-wrapper">
+                    <label i18n:translate="" class="inline">Port</label>
+                    <input class="port" type="number" ng-model="ctrl.to.port"></input>
+                </div>
+            </div>
+        </div>
 
-    <div>
-        <protocol-port label="Client side" name="from" protocols="ctrl.protocols" ng-model="ctrl.from" ></protocol-port>
-        <div i18n:translate="" class="port-out-of-range">
-            Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
+        <div class="security-section" ng-show="ctrl.portsValid()">
+            <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>
+            <div class="security-row">
+                <label class="inline">
+                    <span i18n:translate="">Certificates</span>
+                    <span class="req">*</span>
+                </label>
+                <span ng-show="ctrl.certificate.server_certificate_name">
+                    <span i18n:translate="">SSL cert</span>
+                    {{ ctrl.certificate.server_certificate_name }}
+                </span>
+                <span ng-show="ctrl.certificate.server_certificate_name &amp;&amp; ctrl.backendCertificates.length">,</span>
+                <span ng-show="ctrl.backendCertificates.length > 0">
+                    <span i18n:translate="">Back-end cert(s)</span>
+                    <span ng-repeat="cert in ctrl.backendCertificates">
+                        {{ cert.name }}<span ng-hide="$last">, </span>
+                    </span>
+                </span>
+                <a ng-click="ctrl.openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
+                    title="Change certficate">
+                    <span i18n:translate="" ng-show="!ctrl.certificates">
+                        Select
+                    </span>
+                    <span i18n:translate="" ng-show="ctrl.certificates">
+                        Change
+                    </span>
+                </a>
+            </div>
         </div>
-        <div i18n:translate="" class="port-in-use">
-            Selected port is already in use by another listener. Please select an unused port.
-        </div>
-    </div>
-    <div>
-        <protocol-port label="Instance side" name="to" protocols="ctrl.protocols" ng-model="ctrl.to" ng-show="ctrl.sourceValid(ctrl.from)"></protocol-port>
-    </div>
 
-    <div class="security-section" ng-show="ctrl.portsValid()">
-        <div class="subsection-label"><strong i18n:translate="" class="upper">Security</strong></div>
-        <div class="security-row">
-            <label class="inline">
-                <span i18n:translate="">Certificates</span>
-                <span class="req">*</span>
-            </label>
-            <span ng-show="ctrl.certificates">
-                <span i18n:translate="">SSL cert</span>
-                {{ ctrl.certificates.server_certificate_name }}
+        <div id="add-listener-button-div">
+            <span class="button round tiny" i18n:translate="" ng-click="ctrl.addListener($event)" ng-disabled="!ctrl.portsValid()">
+                Add Listener
             </span>
-            <a ng-click="ctrl.openCertificateModal(fromProtocol.value, toProtocol.value, fromPort, toPort)"
-                title="Change certficate">
-                <span i18n:translate="" ng-show="!ctrl.certificates">
-                    Select
-                </span>
-                <span i18n:translate="" ng-show="ctrl.certificates">
-                    Change
-                </span>
-            </a>
+            <a class="cancel-link" i18n:translate="" ng-click="ctrl.cancel()">Cancel</a>
         </div>
     </div>
 
-    <div id="add-listener-button-div">
-        <span class="button round tiny" i18n:translate="" ng-click="ctrl.addListener($event)" ng-disabled="!ctrl.portsValid()">
-            Add Listener
-        </span>
-        <a class="cancel-link" i18n:translate="" ng-click="ctrl.cancel()">Cancel</a>
+    <div class="modal xlarge" modal="certificateEditor">
+        <certificate-editor ng-model="ctrl.certificate" backend-certificates="ctrl.backendCertificates"></certificate-editor>
     </div>
-</div>
-
-<div class="modal xlarge" modal="certificateEditor">
-    <certificate-editor ng-model="ctrl.certificates"></certificate-editor>
 </div>

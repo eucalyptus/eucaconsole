@@ -31,8 +31,8 @@ angular.module('InstancesSelectorModule', ['MagicSearch', 'MagicSearchFilterModu
             instancesLoading: '@'
         },
         templateUrl: '/_template/elbs/instance-selector',
-        controller: ['$scope', '$timeout', 'InstancesFiltersService', 'MagicSearchFilterService',
-        function ($scope, $timeout, InstancesFiltersService, MagicSearchFilterService) {
+        controller: ['$scope', '$timeout', 'InstancesFiltersService', 'MagicSearchFilterService', 'eucaHandleError',
+        function ($scope, $timeout, InstancesFiltersService, MagicSearchFilterService, eucaHandleError) {
             InstancesFiltersService.getInstancesFilters().then(
                 function success(result) {
                     $scope.facets = result;

@@ -20,7 +20,7 @@
 
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('elbs')}" i18n:translate="">Load balancers</a></li>
+                <li><a href="${request.route_path('elbs')}" target="_self" i18n:translate="">Load balancers</a></li>
                 <li class="current"><a href="#" i18n:translate="">Create load balancer</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>

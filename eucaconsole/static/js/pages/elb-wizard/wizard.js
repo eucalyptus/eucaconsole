@@ -54,21 +54,7 @@ angular.module('ELBWizard', [
         controllerAs: 'wizard'
     };
 })
-.factory('ELBWizardService', ['$location', function ($location) {
-
-    function Navigation (steps) {
-        steps = steps || [];
-        this.steps = steps.map(function (current, index, ary) {
-            current._next = ary[index + 1];
-            return current;
-        });
-        this.current = this.steps[0];
-    }
-
-    Navigation.prototype.next = function () {
-        this.current = this.current._next;
-        return this.current;
-    };
+.factory('ELBWizardService', ['$location', 'WizardService', function ($location, WizardService) {
 
     var svc = {
         certsAvailable: [],
@@ -79,7 +65,8 @@ angular.module('ELBWizard', [
                 'fromPort': 80,
                 'toPort': 80,
                 'fromProtocol': 'HTTP',
-                'toProtocol': 'HTTP'
+                'toProtocol': 'HTTP',
+                'certificateArn': ''
             }],
             policy: {
                 predefinedPolicy: '',
@@ -109,24 +96,17 @@ angular.module('ELBWizard', [
             collectionInterval: '5'
         },
 
-        initNav: function (steps) {
-            this.nav = new Navigation(steps);
-            return this.nav;
-        },
-
         next: function (params) {
             angular.merge(this.values, params);
-
-            this.nav.current.complete = true;
-            var next = this.nav.next();
-            $location.path(next.href);
+            WizardService.next();
         },
 
         displaySummary: function(step) {
-            if(!this.nav) {
+            var nav = WizardService.getNav();
+            if(!nav) {
                 return false;
             }
-            return this.nav.steps[step].complete || this.nav.steps[step] === this.nav.current;
+            return nav.steps[step].complete || nav.steps[step] === nav.current;
         },
 
         submit: function () {
