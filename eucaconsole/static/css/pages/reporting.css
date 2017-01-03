@@ -1,0 +1,33 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.modal { display: none; z-index: 10000; }
+.modal.tiny .modal-content { width: 30%; }
+.modal.small .modal-content { width: 40%; }
+.modal.medium .modal-content { width: 60%; }
+.modal.large .modal-content { width: 70%; }
+.modal.xlarge .modal-content { width: 95%; }
+.modal .modal-content { opacity: 1; background-color: #FFF; z-index: 100000; width: 60%; max-width: 65rem; margin: 0 auto; left: 0; right: 0; border-radius: 3px; padding: 1.875rem; border: solid 1px #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
+.modal .modal-content .close-modal { font-size: 2.5rem; line-height: 1; position: absolute; top: 0.635rem; right: 1.375rem; color: #AAA; font-weight: bold; cursor: pointer; }
+.modal .modal-content .close-modal:hover { color: #01a982; }
+.modal .modal-content button { margin: 0; }
+.modal .modal-content input[type="number"] { width: 100%; }
+.modal .modal-bg { z-index: 99999; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
+
+@keyframes slidedown { from { opacity: 0; top: -1000px; }
+  to { opacity: 1; top: -40px; } }
+.modal .modal-content { top: -40px; position: absolute; }
+.modal.open { display: block; }
+.modal.open .modal-content { animation-name: slidedown; animation-duration: 0.3s; }
+
+select { width: 12rem; }
+
+.active-tags select { width: 40rem; }
+
+.cancel-link { margin-left: 2rem; color: #6a737b; }
+.cancel-link:hover { color: #01a982; }

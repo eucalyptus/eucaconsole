@@ -1,0 +1,21 @@
+@import "../includes/eucavariables";
+
+@import "../widgets/modal";
+
+select {
+    width: 12rem;
+}
+
+.active-tags {
+    select {
+        width: 40rem;
+    }
+}
+
+.cancel-link {
+    margin-left: 2rem;
+    color: $euca-grey;
+    &:hover {
+        color: $hpe-green;
+    }
+}
