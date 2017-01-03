@@ -365,7 +365,7 @@ class VPCView(TaggedItemView):
         vpc_network_acls = self.vpc_network_acls or self.vpc_conn.get_all_network_acls(filters=vpc_id_filter)
         vpc_reservations = self.conn.get_all_reservations(filters=vpc_id_filter)
         for subnet in vpc_subnets:
-            instances = self.get_subnet_instances(subnet_id=subnet.id, vpc_reservations=vpc_reservations)
+            instances = self.get_subnet_instances(subnet.id, vpc_reservations)
             subnets_list.append(dict(
                 id=subnet.id,
                 name=TaggedItemView.get_display_name(subnet),
@@ -375,53 +375,50 @@ class VPCView(TaggedItemView):
                 available_ips=subnet.available_ip_address_count,
                 instances=instances,
                 instance_count=len(instances),
-                route_tables=self.get_subnet_route_tables(subnet_id=subnet.id, vpc_route_tables=vpc_route_tables),
-                network_acls=self.get_subnet_network_acls(subnet_id=subnet.id, vpc_network_acls=vpc_network_acls),
+                route_tables=self.get_subnet_route_tables(subnet.id, vpc_route_tables),
+                network_acls=self.get_subnet_network_acls(subnet.id, vpc_network_acls),
             ))
         return subnets_list
 
     @staticmethod
-    def get_subnet_instances(subnet_id=None, vpc_reservations=None):
+    def get_subnet_instances(subnet_id, vpc_reservations):
         instances = []
-        if subnet_id and vpc_reservations:
-            for reservation in vpc_reservations:
-                for instance in reservation.instances:
-                    if instance.subnet_id == subnet_id:
-                        instances.append(dict(
-                            id=instance.id,
-                            name=TaggedItemView.get_display_name(instance),
-                        ))
+        for reservation in vpc_reservations:
+            for instance in reservation.instances:
+                if instance.subnet_id == subnet_id:
+                    instances.append(dict(
+                        id=instance.id,
+                        name=TaggedItemView.get_display_name(instance),
+                    ))
         return instances
 
     @staticmethod
-    def get_subnet_network_acls(subnet_id=None, vpc_network_acls=None):
+    def get_subnet_network_acls(subnet_id, vpc_network_acls):
         subnet_network_acls = []
-        if subnet_id and vpc_network_acls:
-            for network_acl in vpc_network_acls:
-                subnet_associations = [association.subnet_id for association in network_acl.associations]
-                if subnet_id in subnet_associations:
-                    subnet_network_acls.append(dict(
-                        id=network_acl.id,
-                        name=TaggedItemView.get_display_name(network_acl),
-                    ))
+        for network_acl in vpc_network_acls:
+            subnet_associations = [association.subnet_id for association in network_acl.associations]
+            if subnet_id in subnet_associations:
+                subnet_network_acls.append(dict(
+                    id=network_acl.id,
+                    name=TaggedItemView.get_display_name(network_acl),
+                ))
         return subnet_network_acls
 
-    def get_subnet_route_tables(self, subnet_id=None, vpc_route_tables=None):
+    def get_subnet_route_tables(self, subnet_id, vpc_route_tables):
         subnet_route_tables = []
-        if subnet_id and vpc_route_tables:
-            for route_table in vpc_route_tables:
-                association_subnet_ids = [assoc.subnet_id for assoc in route_table.associations]
-                if subnet_id in association_subnet_ids:
-                    subnet_route_tables.append(dict(
-                        id=route_table.id,
-                        name=TaggedItemView.get_display_name(route_table),
-                    ))
-                elif association_subnet_ids == [None]:
-                    # Show VPC's main route table for subnet
-                    subnet_route_tables.append(dict(
-                        id=self.vpc_main_route_table.id,
-                        name=TaggedItemView.get_display_name(self.vpc_main_route_table),
-                    ))
+        for route_table in vpc_route_tables:
+            association_subnet_ids = [assoc.subnet_id for assoc in route_table.associations]
+            if subnet_id in association_subnet_ids:
+                subnet_route_tables.append(dict(
+                    id=route_table.id,
+                    name=TaggedItemView.get_display_name(route_table),
+                ))
+            elif association_subnet_ids == [None]:
+                # Show VPC's main route table for subnet
+                subnet_route_tables.append(dict(
+                    id=self.vpc_main_route_table.id,
+                    name=TaggedItemView.get_display_name(self.vpc_main_route_table),
+                ))
         return subnet_route_tables
 
     @staticmethod
@@ -501,7 +498,6 @@ class CreateVPCView(BaseView):
             with boto_error_handler(self.request):
                 new_vpc = self.vpc_conn.create_vpc(cidr_block)
                 new_vpc_id = new_vpc.id
-                self.log_request(_(u"Created VPC {0} ({1})").format(name, new_vpc_id))
 
                 # Add tags
                 if name:
