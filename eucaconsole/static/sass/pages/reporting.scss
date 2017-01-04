@@ -19,3 +19,15 @@ select {
         color: $hpe-green;
     }
 }
+
+form {
+    .error {
+        font-size: small;
+        display: none;
+    }
+}
+
+.policy-text-area {
+    height: 15rem;
+    overflow-y: scroll;
+}

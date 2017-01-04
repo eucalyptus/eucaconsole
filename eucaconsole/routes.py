@@ -417,5 +417,8 @@ urls = [
     Route(name='topics', pattern='/topics'),
 
     # Reporting
+    # API calls
+    Route(name='reporting_prefs', pattern='/reporting_api/preferences'),
+    # Views
     Route(name='reporting', pattern='/reporting*subpath'),
 ]

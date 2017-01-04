@@ -21,7 +21,7 @@
             </button>
             <div ng-show="createBucket.isCreatingBucket">
                 <span i18n:translate="">Creating bucket...</span>
-                <span class="busy">&nbsp;</span>
+                <i class="busy"></i>
             </div>
         </div>
     </form>

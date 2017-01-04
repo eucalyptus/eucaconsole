@@ -45,6 +45,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/bucket-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/reporting-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/create_bucket_dialog2.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/reporting.js')}"></script>

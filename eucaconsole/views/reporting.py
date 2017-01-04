@@ -50,3 +50,26 @@ class ReportingView(BaseView):
             reporting_configured='true' if self.is_reporting_configured() else 'false'
         )
 
+class ReportingAPIView(BaseView):
+    """
+    A view for reporting related XHR calls that carrys very little overhead
+    """
+    def __init__(self, request):
+        super(ReportingAPIView, self).__init__(request)
+
+    @view_config(route_name='reporting_prefs', renderer='json', request_method='GET', xhr=True)
+    def get_reporting_prefs(self):
+        # use "ViewBilling" call to fetch billing configuration information
+        ret = dict(
+            enabled=True,
+            bucketName='',
+            activeTags=['one'],
+            inactiveTags=['two', 'three']
+        )
+        return dict(results=ret)
+
+    @view_config(route_name='reporting_prefs', renderer='json', request_method='PUT', xhr=True)
+    def set_reporting_prefs(self):
+        # use "ModifyBilling" to change billing configuration
+        return dict(message="ok")
+
