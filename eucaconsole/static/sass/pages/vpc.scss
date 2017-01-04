@@ -28,3 +28,23 @@
   }
 }
 
+// Delete vpc dialog
+#delete-vpc-modal {
+  a:hover {
+    text-decoration: underline;
+  }
+  .default-vpc-warning {
+    color: red;
+  }
+  button.button.warning {
+    background-color: red;
+  }
+  .resources-list {
+    margin-bottom: 1rem;
+    .small-3 {
+      text-align: right;
+      font-weight: bold;
+    }
+  }
+}
+

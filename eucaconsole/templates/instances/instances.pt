@@ -213,7 +213,9 @@
                     </div>
                     <div tal:omit-tag="" tal:condition="is_vpc_supported">
                         <span class="label" title="VPC subnet" i18n:attributes="title" data-tooltip="">VS</span>
-                        {{ item.vpc_subnet_display }} | {{ item.vpc_name }} ({{ item.availability_zone }})
+                        {{ item.vpc_subnet_display }} |
+                        <a ng-href="/vpcs/{{ item.vpc_id }}">{{ item.vpc_name }}</a>
+                        ({{ item.availability_zone }})
                     </div>
                 </div>
                 <div>
@@ -280,7 +282,9 @@
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
                 <td>
                     <span tal:condition="is_vpc_supported">
-                        {{ item.vpc_subnet_display }} | {{ item.vpc_name }} ({{ item.availability_zone }})
+                        {{ item.vpc_subnet_display }} |
+                        <a ng-href="/vpcs/{{ item.vpc_id }}">{{ item.vpc_name }}</a>
+                        ({{ item.availability_zone }})
                     </span>
                     <span tal:condition="not: is_vpc_supported">
                         {{ item.availability_zone }}

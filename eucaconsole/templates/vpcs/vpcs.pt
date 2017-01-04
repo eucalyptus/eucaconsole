@@ -18,7 +18,7 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-vpc-btn"
-                   href="#">Create VPC</a>
+                   href="${request.route_path('vpc_new')}">Create VPC</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right"
