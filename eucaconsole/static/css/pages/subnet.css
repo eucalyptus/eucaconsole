@@ -1,0 +1,12 @@
+/* @fileOverview VPC details page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.state.available { background-color: #425563; }
+
+.state.pending { background-color: #6d899e; }
+
+#name { width: 40%; }
+
+@media only screen and (max-width: 40em) { #name { width: 100%; } }

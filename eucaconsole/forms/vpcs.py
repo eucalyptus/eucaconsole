@@ -155,3 +155,19 @@ class CreateVPCForm(BaseSecureForm):
             'may lead to unpredictable behavior.'
         )
         self.internet_gateway.help_text = INTERNET_GATEWAY_HELP_TEXT
+
+
+class SubnetForm(BaseSecureForm):
+    """Form to update an existing subnet"""
+    name_error_msg = _('Not a valid name')
+    name = TextEscapedField(label=_('Name'))
+
+    def __init__(self, request, vpc_conn=None, subnet=None, **kwargs):
+        super(SubnetForm, self).__init__(request, **kwargs)
+        self.vpc_conn = vpc_conn
+        self.subnet = subnet
+        self.name.error_msg = self.name_error_msg
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+
+        if subnet is not None:
+            self.name.data = subnet.tags.get('Name', '')

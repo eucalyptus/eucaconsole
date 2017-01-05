@@ -36,7 +36,7 @@ from pyramid.view import view_config
 from ..forms import ChoicesManager
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
-    CreateVPCForm, VPCDeleteForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateVPCForm, VPCDeleteForm, SubnetForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -521,3 +521,68 @@ class CreateVPCView(BaseView):
         else:
             self.request.error_messages = self.create_vpc_form.get_errors_list()
         return self.render_dict
+
+
+class SubnetView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/vpcs/subnet_view.pt'
+
+    def __init__(self, request, **kwargs):
+        super(SubnetView, self).__init__(request, **kwargs)
+        self.location = self.request.route_path('vpc_view', id=self.request.matchdict.get('id'))
+        with boto_error_handler(request, self.location):
+            self.vpc_conn = self.get_connection(conn_type='vpc')
+            self.vpc = self.get_vpc()
+            self.subnet = self.get_subnet()
+            self.subnet_form = SubnetForm(
+                self.request, vpc_conn=self.vpc_conn, subnet=self.subnet, formdata=self.request.params or None)
+        self.vpc_name = self.get_display_name(self.vpc)
+        self.subnet_name = self.get_display_name(self.subnet)
+        self.tagged_obj = self.subnet
+        self.title_parts = [_(u'Subnet'), self.subnet_name]
+        self.render_dict = dict(
+            vpc=self.vpc,
+            vpc_name=self.vpc_name,
+            subnet=self.subnet,
+            subnet_name=self.subnet_name,
+            subnet_form=self.subnet_form,
+            tags=self.serialize_tags(self.subnet.tags) if self.subnet else [],
+        )
+
+    @view_config(route_name='subnet_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def vpc_view(self):
+        if self.subnet is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='subnet_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def subnet_update(self):
+        if self.subnet and self.subnet_form.validate():
+            location = self.request.route_path('subnet_view', vpc_id=self.vpc.id, id=self.subnet.id)
+            with boto_error_handler(self.request, location):
+                # Update tags
+                self.update_tags()
+
+                # Save Name tag
+                name = self.request.params.get('name', '')
+                self.update_name_tag(name)
+
+            msg = _(u'Successfully updated subnet')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.subnet_form.get_errors_list()
+        return self.render_dict
+
+    def get_vpc(self):
+        vpc_id = self.request.matchdict.get('vpc_id')
+        if vpc_id:
+            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            return vpcs_list[0] if vpcs_list else None
+        return None
+
+    def get_subnet(self):
+        subnet_id = self.request.matchdict.get('id')
+        if subnet_id:
+            subnet_list = self.vpc_conn.get_all_subnets(filters={'subnet-id': [subnet_id]})
+            return subnet_list[0] if subnet_list else None
+        return None
