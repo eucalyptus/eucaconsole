@@ -2,6 +2,7 @@ angular.module('ReportingPage')
 .controller('PreferencesController', ['$scope', '$routeParams', 'BucketService', 'eucaHandleError', 'ModalService', 'ReportingService',
 function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, ReportingService) {
     var vm = this;
+    /*jshint multistr: true */
     vm.defaultPolicy = '{ \n\
     "Version": "", \n\
     "Statement": [{ \n\
@@ -18,7 +19,7 @@ function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, Re
         bucketName: '',
         bucketPolicy: vm.defaultPolicy,
         tagKeys: []
-    }
+    };
     vm.buckets = [];
     vm.bucketPolicy = '';
     vm.tagKeyChoices = [];
