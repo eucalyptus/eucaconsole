@@ -113,7 +113,7 @@ class EucalyptusReporting(AWSQueryConnection):
 
     def modify_billing(self, enabled, bucket_name, cost_allocation_tags=[]):
         """
-        implements ViewBilling
+        implements ModifyBilling
         """
         params = {
             'DetailedBillingEnabled': enabled,
@@ -123,6 +123,30 @@ class EucalyptusReporting(AWSQueryConnection):
             for i, tag in enumerate(cost_allocation_tags):
                 params['ActiveCostAllocationTags.%d' % (i + 1)] = tag
         ret = self._do_request('ModifyBilling', params, 'POST')
+        return ret
+
+    def view_monthly_usage(self, year, month):
+        """
+        implements ViewMonthlyUsage
+        """
+        params = {
+            'Year': year,
+            'Month': month
+        }
+        ret = self._do_request('ViewMonthlyUsage', params, 'POST')
+        return ret
+
+    def view_usage(self, service, usage_types, operations, report_granularity='Hours'):
+        """
+        implements ViewUsage
+        """
+        params = {
+            'Services': service,
+            'UsageTypes': usage_types,
+            'Operations': operations,
+            'ReportGranularity': report_granularity
+        }
+        ret = self._do_request('ViewUsage', params, 'POST')
         return ret
 
 
