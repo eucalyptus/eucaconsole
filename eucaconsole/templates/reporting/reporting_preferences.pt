@@ -9,7 +9,7 @@
                 </div>
             </div>
             <p i18n:translate="">
-                Turn on usage ports, including detailed usage ports with resources and tags, to receive ongoing rerorts of your Eucalyptus resource utilization. Eucalyptus delivers this reports to an S3 bucket that you specify below.
+                Turn on usage reports, including detailed usage reports with resources and tags, to receive ongoing rerorts of your Eucalyptus resource utilization. Eucalyptus delivers this reports to an S3 bucket that you specify below.
             </p>
             <div class="row inline stacked controls-wrapper">
                 <div class="columns">
@@ -33,15 +33,15 @@
                 </div>
             </div>
             <p i18n:translate="">
-                Note: you must apply appropriate permissions to your S3 bucket via bucket policy to allow reports to be stored in your bucket.
+                Note: by enabling usage reporting for this bucket, we will update the bucket policy to allow eucalyptus to write reports there.
             </p>
-            <div class="row inline stacked controls-wrapper">
+            <!--div class="row inline stacked controls-wrapper">
                 <div class="small-12 columns">
                     <a href="#" class="circle remove has-tip policy-row-item" ng-click="preferences.showBucketPolicy()"
                        title="View/Edit policy"><i class="fi-pencil"></i></a>
                     <span class="policy-row-item" ng-init="preferences.bucketPolicyName = 'BucketPolicy-nnnn'">{{ preferences.bucketPolicyName }}</span>
                 </div>
-            </div>
+            </div-->
         </div>
         <hr/>
         <div class="section">
