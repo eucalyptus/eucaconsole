@@ -30,7 +30,6 @@ A connection object for Eucalyptus Reporting features
 """
 
 import httplib
-import logging
 import ssl
 
 import boto
@@ -55,19 +54,18 @@ class HttpsConnectionFactory(object):
         return httplib.HTTPSConnection(host, port=self.port, **kwargs)
 
 
-class EucalyptusReporting(AWSQueryConnection):
+class EucalyptusConnection(AWSQueryConnection):
+    """
+    This class contains common code used by both billing/reporting endpoints.
+    """
 
-    def __init__(self, ufshost, port, access_id=None, secret_key=None, token=None, dns_enabled=True):
-        self.version = '2016-08-02'
-        if dns_enabled:
-            ufshost = 'portal.{0}'.format(ufshost)
-        path = '/services/Portal'
-        super(AWSQueryConnection, self).__init__(
-            ufshost, access_id, secret_key,
-            is_secure=True, port=port,
-            path=path, security_token=token,
+    def __init__(self, ufshost, port, access_id=None, secret_key=None, token=None, path='/'):
+        super(EucalyptusConnection, self).__init__(
+            access_id, secret_key, host=ufshost,
+            port=port, path=path, security_token=token,
             https_connection_factory=(HttpsConnectionFactory(port).https_connection_factory, ())
         )
+        self.version = '2016-08-02'
 
     def _required_auth_capability(self):
         return ['hmac-v4']
@@ -102,7 +100,21 @@ class EucalyptusReporting(AWSQueryConnection):
             boto.log.error('%s %s' % (response.status, response.reason))
             boto.log.error('%s' % body)
             raise self.ResponseError(response.status, response.reason, body=body)
-        
+
+
+class EucalyptusReporting(EucalyptusConnection):
+    """
+    This class contains methods to access API calls against the Portal endpoint
+    """
+
+    def __init__(self, ufshost, port, access_id=None, secret_key=None, token=None, dns_enabled=True):
+        if dns_enabled:
+            ufshost = 'portal.{0}'.format(ufshost)
+        path = '/services/Portal'
+        super(EucalyptusReporting, self).__init__(
+            ufshost, port, access_id=access_id, secret_key=secret_key, token=token, path=path
+        )
+
     def view_billing(self):
         """
         implements ViewBilling
@@ -136,7 +148,7 @@ class EucalyptusReporting(AWSQueryConnection):
         ret = self._do_request('ViewMonthlyUsage', params, 'POST')
         return ret
 
-    def view_usage(self, service, usage_types, operations, report_granularity='Hours'):
+    def view_usage(self, service, usage_types, operations, start_time, end_time, report_granularity='Hours'):
         """
         implements ViewUsage
         """
@@ -144,9 +156,41 @@ class EucalyptusReporting(AWSQueryConnection):
             'Services': service,
             'UsageTypes': usage_types,
             'Operations': operations,
+            'TimePeriodFrom': start_time.isoformat(),
+            'TimePeriodTo': end_time.isoformat(),
             'ReportGranularity': report_granularity
         }
         ret = self._do_request('ViewUsage', params, 'POST')
         return ret
 
+
+class EucalyptusEC2Reports(EucalyptusConnection):
+    """
+    This class contains methods to access API calls against the EC2Reports endpoint
+    """
+
+    def __init__(self, ufshost, port, access_id=None, secret_key=None, token=None, dns_enabled=True):
+        if dns_enabled:
+            ufshost = 'ec2reports.{0}'.format(ufshost)
+        path = '/services/Ec2Reports'
+        super(EucalyptusEC2Reports, self).__init__(
+            ufshost, port, access_id=access_id, secret_key=secret_key, token=token, path=path
+        )
+
+    def view_instance_usage_report(self, start_time, end_time, filters, group_by, report_granularity='Daily'):
+        """
+        implements ViewUsage
+        """
+        params = {
+            'Granularity': report_granularity,
+            'TimePeriodFrom': start_time.isoformat(),
+            'TimePeriodTo': end_time.isoformat(),
+            'GroupBy.Key': group_by,
+        }
+        if len(filters) > 0:
+            for i, f in enumerate(filters):
+                params['Filters.member.%d.Type' % (i + 1)] = f.get('type')
+                params['Filters.member.%d.Key' % (i + 1)] = f.get('key')
+        ret = self._do_request('ViewUsage', params, 'POST')
+        return ret
 
