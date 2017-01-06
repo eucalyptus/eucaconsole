@@ -530,11 +530,16 @@ class SubnetView(TaggedItemView):
         super(SubnetView, self).__init__(request, **kwargs)
         self.location = self.request.route_path('vpc_view', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
+            self.conn = self.get_connection()  # Needed for tag updates
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
+            self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.subnet = self.get_subnet()
+            self.subnet_route_table = self.get_subnet_route_table()
             self.subnet_form = SubnetForm(
-                self.request, vpc_conn=self.vpc_conn, subnet=self.subnet, formdata=self.request.params or None)
+                self.request, vpc_conn=self.vpc_conn, vpc=self.vpc, route_tables=self.vpc_route_tables,
+                subnet=self.subnet, subnet_route_table=self.subnet_route_table, formdata=self.request.params or None
+            )
         self.vpc_name = self.get_display_name(self.vpc)
         self.subnet_name = self.get_display_name(self.subnet)
         self.tagged_obj = self.subnet
@@ -567,6 +572,9 @@ class SubnetView(TaggedItemView):
                 name = self.request.params.get('name', '')
                 self.update_name_tag(name)
 
+                # Update route table
+                self.update_route_table()
+
             msg = _(u'Successfully updated subnet')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -587,3 +595,27 @@ class SubnetView(TaggedItemView):
             subnet_list = self.vpc_conn.get_all_subnets(filters={'subnet-id': [subnet_id]})
             return subnet_list[0] if subnet_list else None
         return None
+
+    def get_subnet_route_table(self):
+        for route_table in self.vpc_route_tables:
+            if [association for association in route_table.associations if association.subnet_id == self.subnet.id]:
+                return route_table
+        return None
+
+    def update_route_table(self):
+        new_route_table_id = self.request.params.get('route_table')
+        actions = []
+        if self.subnet_route_table and new_route_table_id == 'None':
+            actions.append('disassociate')
+        if not self.subnet_route_table and new_route_table_id != 'None':
+            actions.append('associate')
+        if self.subnet_route_table and new_route_table_id != 'None':
+            actions.append('disassociate')
+            actions.append('associate')
+        if 'disassociate' in actions:
+            for association in self.subnet_route_table.associations:
+                if association.subnet_id == self.subnet.id:
+                    self.vpc_conn.disassociate_route_table(association.id)
+        if 'associate' in actions:
+            self.vpc_conn.associate_route_table(new_route_table_id, self.subnet.id)
+

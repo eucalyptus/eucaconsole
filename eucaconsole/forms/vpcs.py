@@ -161,13 +161,37 @@ class SubnetForm(BaseSecureForm):
     """Form to update an existing subnet"""
     name_error_msg = _('Not a valid name')
     name = TextEscapedField(label=_('Name'))
+    route_table = SelectField(label=_('Route table'))
+    route_table_help_text = _(
+        "A route table controls how traffic originating from VPC subnets are directed."
+        "Select 'None' to automatically use the VPC's main route table."
+    )
 
-    def __init__(self, request, vpc_conn=None, subnet=None, **kwargs):
+    def __init__(self, request, vpc_conn=None, vpc=None, route_tables=None,
+                 subnet=None, subnet_route_table=None, **kwargs):
         super(SubnetForm, self).__init__(request, **kwargs)
         self.vpc_conn = vpc_conn
+        self.vpc = vpc
+        self.route_tables = route_tables
         self.subnet = subnet
+        self.subnet_route_table = subnet_route_table
         self.name.error_msg = self.name_error_msg
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.set_initial_data()
+        self.set_choices()
+        self.set_help_text()
 
-        if subnet is not None:
-            self.name.data = subnet.tags.get('Name', '')
+    def set_initial_data(self):
+        if self.subnet is not None:
+            self.name.data = self.subnet.tags.get('Name', '')
+        if self.subnet_route_table is None:
+            self.route_table.data = 'None'
+        else:
+            self.route_table.data = self.subnet_route_table.id
+
+    def set_choices(self):
+        self.route_table.choices = self.vpc_choices_manager.vpc_route_tables(
+            vpc=self.vpc, route_tables=self.route_tables)
+
+    def set_help_text(self):
+        self.route_table.help_text = self.route_table_help_text
