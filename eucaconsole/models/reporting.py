@@ -29,29 +29,11 @@ A connection object for Eucalyptus Reporting features
 
 """
 
-import httplib
-import ssl
-
 import boto
 from boto.connection import AWSQueryConnection
-from boto.resultset import ResultSet
 from boto.compat import json
 
-
-class HttpsConnectionFactory(object):
-    def __init__(self, port):
-        self.port = port
-
-    def https_connection_factory(self, host, **kwargs):
-        """Returns HTTPS connection object with appropriate SSL context
-        :param host:
-
-        NOTE: Python < 2.7.9 is missing the ssl._create_unverified_context
-              and doesn't accept a 'context' kwarg in httplib.HTTPSConnection
-        """
-        if hasattr(ssl, '_create_unverified_context'):
-            kwargs.update(context=ssl._create_unverified_context())
-        return httplib.HTTPSConnection(host, port=self.port, **kwargs)
+from .auth import HttpsConnectionFactory
 
 
 class EucalyptusConnection(AWSQueryConnection):
