@@ -475,6 +475,7 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
                 sortable_subnet_zone=sortable_subnet_zone,
                 key_name=instance.key_name,
                 exists_key=exists_key,
+                vpc_id=instance.vpc_id,
                 vpc_name=instance.vpc_name,
                 subnet_id=instance.subnet_id if instance.subnet_id else None,
                 vpc_subnet_display=vpc_subnet_display,

@@ -35,7 +35,8 @@ from pyramid.view import view_config
 
 from ..forms import ChoicesManager
 from ..forms.vpcs import (
-    VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, INTERNET_GATEWAY_HELP_TEXT, CreateInternetGatewayForm
+    VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
+    CreateVPCForm, VPCDeleteForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -203,17 +204,21 @@ class VPCView(TaggedItemView):
             self.conn = self.get_connection()
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
-            self.vpc_default_security_group = self.get_default_security_group()
-            self.vpc_main_route_table = self.get_main_route_table()
+            self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
+            self.vpc_main_route_table = self.get_main_route_table(route_tables=self.vpc_route_tables)
             self.vpc_internet_gateway = self.get_internet_gateway()
+            self.vpc_security_groups = self.conn.get_all_security_groups(filters={'vpc-id': self.vpc.id})
+            self.vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': self.vpc.id})
+            self.vpc_default_security_group = self.get_default_security_group(security_groups=self.vpc_security_groups)
             self.vpc_form = VPCForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
             self.vpc_main_route_table_form = VPCMainRouteTableForm(
-                self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
+                self.request, vpc=self.vpc, vpc_conn=self.vpc_conn, route_tables=self.vpc_route_tables,
                 vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
             self.create_internet_gateway_form = CreateInternetGatewayForm(
                 self.request, formdata=self.request.params or None)
+        self.vpc_delete_form = VPCDeleteForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
         self.title_parts = [_(u'VPC'), self.vpc_name]
@@ -221,14 +226,21 @@ class VPCView(TaggedItemView):
             vpc=self.vpc,
             vpc_name=self.vpc_name,
             vpc_form=self.vpc_form,
+            vpc_delete_form=self.vpc_delete_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
             create_internet_gateway_form=self.create_internet_gateway_form,
             internet_gateway_help_text=INTERNET_GATEWAY_HELP_TEXT,
             max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
             vpc_default_security_group=self.vpc_default_security_group,
+            vpc_security_groups=self.vpc_security_groups,
+            vpc_route_tables=self.vpc_route_tables,
+            vpc_network_acls=self.vpc_network_acls,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
-            default_vpc=_('Yes') if self.vpc.is_default else _('No'),
+            vpc_internet_gateway_name=TaggedItemView.get_display_name(
+                self.vpc_internet_gateway) if self.get_internet_gateway() else '',
+            default_vpc=self.vpc.is_default,
+            default_vpc_label=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
         )
 
@@ -262,6 +274,41 @@ class VPCView(TaggedItemView):
         else:
             self.request.error_messages = self.vpc_form.get_errors_list()
         return self.render_dict
+
+    @view_config(route_name='vpc_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def vpc_delete(self):
+        if self.vpc and self.vpc_delete_form.validate():
+            deleted_vpc_name = TaggedItemView.get_display_name(self.vpc)
+            with boto_error_handler(self.request, self.location):
+                # Detach IGW if present
+                if self.vpc_internet_gateway:
+                    igw_id = self.vpc_internet_gateway.id
+                    self.log_request(_('Detaching internet gateway {0} from VPC {1}').format(igw_id, self.vpc.id))
+                    self.vpc_conn.detach_internet_gateway(igw_id, self.vpc.id)
+                # Delete VPC route tables
+                for route_table in self.vpc_route_tables:
+                    if route_table != self.vpc_main_route_table:  # Don't explicitly delete main route table
+                        self.log_request(_('Deleting route table {0}').format(route_table.id))
+                        self.vpc_conn.delete_route_table(route_table.id)
+                # Delete VPC security groups
+                for security_group in self.vpc_security_groups:
+                    if security_group.name != 'default':  # Don't explicitly delete default security group
+                        self.log_request(_('Deleting VPC security group {0}').format(security_group.id))
+                        security_group.delete()
+                # Delete VPC network ACLs
+                for network_acl in self.vpc_network_acls:
+                    if network_acl.default != 'true':  # Don't explicitly delete default network ACL
+                        self.log_request(_('Deleting network ACL {0}').format(network_acl.id))
+                        self.vpc_conn.delete_network_acl(network_acl.id)
+                # Finally, delete VPC
+                self.log_request(_('Deleting VPC {0}').format(self.vpc.id))
+                self.vpc_conn.delete_vpc(self.vpc.id)
+            msg = _('Successfully deleted VPC {0}').format(deleted_vpc_name)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('vpcs'))
+        else:
+            self.request.error_messages = self.vpc_delete_form.get_errors_list()
+            return self.render_dict
 
     @view_config(route_name='vpc_set_main_route_table', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_set_main_route_table(self):
@@ -304,14 +351,21 @@ class VPCView(TaggedItemView):
             return vpcs_list[0] if vpcs_list else None
         return None
 
+    def get_vpc_security_groups(self):
+        vpc_id = self.request.matchdict.get('id')
+        if vpc_id:
+            return self.conn.get_all_security_groups(filters={'vpc-id': vpc_id})
+        return []
+
     def get_vpc_subnets(self):
         subnets_list = []
-        vpc_subnets = self.vpc_conn.get_all_subnets(filters={'vpc-id': [self.vpc.id]})
-        vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': [self.vpc.id]})
-        vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': [self.vpc.id]})
-        vpc_reservations = self.conn.get_all_reservations(filters={'vpc-id': [self.vpc.id]})
+        vpc_id_filter = {'vpc-id': [self.vpc.id]}
+        vpc_subnets = self.vpc_conn.get_all_subnets(filters=vpc_id_filter)
+        vpc_route_tables = self.vpc_conn.get_all_route_tables(filters=vpc_id_filter)
+        vpc_network_acls = self.vpc_network_acls or self.vpc_conn.get_all_network_acls(filters=vpc_id_filter)
+        vpc_reservations = self.conn.get_all_reservations(filters=vpc_id_filter)
         for subnet in vpc_subnets:
-            instances = self.get_subnet_instances(subnet_id=subnet.id, vpc_reservations=vpc_reservations)
+            instances = self.get_subnet_instances(subnet.id, vpc_reservations)
             subnets_list.append(dict(
                 id=subnet.id,
                 name=TaggedItemView.get_display_name(subnet),
@@ -321,73 +375,66 @@ class VPCView(TaggedItemView):
                 available_ips=subnet.available_ip_address_count,
                 instances=instances,
                 instance_count=len(instances),
-                route_tables=self.get_subnet_route_tables(subnet_id=subnet.id, vpc_route_tables=vpc_route_tables),
-                network_acls=self.get_subnet_network_acls(subnet_id=subnet.id, vpc_network_acls=vpc_network_acls),
+                route_tables=self.get_subnet_route_tables(subnet.id, vpc_route_tables),
+                network_acls=self.get_subnet_network_acls(subnet.id, vpc_network_acls),
             ))
         return subnets_list
 
-    def get_subnet_instances(self, subnet_id=None, vpc_reservations=None):
+    @staticmethod
+    def get_subnet_instances(subnet_id, vpc_reservations):
         instances = []
-        if self.conn and subnet_id and vpc_reservations:
-            for reservation in vpc_reservations:
-                for instance in reservation.instances:
-                    if instance.subnet_id == subnet_id:
-                        instances.append(dict(
-                            id=instance.id,
-                            name=TaggedItemView.get_display_name(instance),
-                        ))
+        for reservation in vpc_reservations:
+            for instance in reservation.instances:
+                if instance.subnet_id == subnet_id:
+                    instances.append(dict(
+                        id=instance.id,
+                        name=TaggedItemView.get_display_name(instance),
+                    ))
         return instances
 
-    def get_subnet_network_acls(self, subnet_id=None, vpc_network_acls=None):
+    @staticmethod
+    def get_subnet_network_acls(subnet_id, vpc_network_acls):
         subnet_network_acls = []
-        if self.vpc_conn and subnet_id and vpc_network_acls:
-            for network_acl in vpc_network_acls:
-                subnet_associations = [association.subnet_id for association in network_acl.associations]
-                if subnet_id in subnet_associations:
-                    subnet_network_acls.append(dict(
-                        id=network_acl.id,
-                        name=TaggedItemView.get_display_name(network_acl),
-                    ))
+        for network_acl in vpc_network_acls:
+            subnet_associations = [association.subnet_id for association in network_acl.associations]
+            if subnet_id in subnet_associations:
+                subnet_network_acls.append(dict(
+                    id=network_acl.id,
+                    name=TaggedItemView.get_display_name(network_acl),
+                ))
         return subnet_network_acls
 
-    def get_subnet_route_tables(self, subnet_id=None, vpc_route_tables=None):
+    def get_subnet_route_tables(self, subnet_id, vpc_route_tables):
         subnet_route_tables = []
-        if self.vpc_conn and subnet_id and vpc_route_tables:
-            for route_table in vpc_route_tables:
-                association_subnet_ids = [assoc.subnet_id for assoc in route_table.associations]
-                if subnet_id in association_subnet_ids:
-                    subnet_route_tables.append(dict(
-                        id=route_table.id,
-                        name=TaggedItemView.get_display_name(route_table),
-                    ))
-                elif association_subnet_ids == [None]:
-                    # Show VPC's main route table for subnet
-                    subnet_route_tables.append(dict(
-                        id=self.vpc_main_route_table.id,
-                        name=TaggedItemView.get_display_name(self.vpc_main_route_table),
-                    ))
+        for route_table in vpc_route_tables:
+            association_subnet_ids = [assoc.subnet_id for assoc in route_table.associations]
+            if subnet_id in association_subnet_ids:
+                subnet_route_tables.append(dict(
+                    id=route_table.id,
+                    name=TaggedItemView.get_display_name(route_table),
+                ))
+            elif association_subnet_ids == [None]:
+                # Show VPC's main route table for subnet
+                subnet_route_tables.append(dict(
+                    id=self.vpc_main_route_table.id,
+                    name=TaggedItemView.get_display_name(self.vpc_main_route_table),
+                ))
         return subnet_route_tables
 
-    def get_default_security_group(self):
+    @staticmethod
+    def get_default_security_group(security_groups):
         """Fetch default security group for VPC"""
-        filters = {
-            'vpc-id': [self.vpc.id],
-            'group-name': 'default'
-        }
-        vpc_security_groups = self.conn.get_all_security_groups(filters=filters)
-        if vpc_security_groups:
-            return vpc_security_groups[0]
+        security_groups_named_default = [sgroup for sgroup in security_groups if sgroup.name == 'default']
+        if security_groups_named_default:
+            return security_groups_named_default[0]
         return None
 
-    def get_main_route_table(self):
+    @staticmethod
+    def get_main_route_table(route_tables):
         """Fetch main route table for VPC. Returns None if lookup fails"""
-        filters = {
-            'vpc-id': [self.vpc.id],
-            'association.main': 'true'
-        }
-        route_tables = self.vpc_conn.get_all_route_tables(filters=filters)
-        if route_tables:
-            return route_tables[0]
+        for route_table in route_tables:
+            if [association for association in route_table.associations if association.main is True]:
+                return route_table
         return None
 
     def get_internet_gateway(self):
@@ -419,3 +466,58 @@ class VPCView(TaggedItemView):
             self.vpc_conn.detach_internet_gateway(self.vpc_internet_gateway.id, self.vpc.id)
         if 'attach' in actions:
             self.vpc_conn.attach_internet_gateway(selected_igw, self.vpc.id)
+
+
+class CreateVPCView(BaseView):
+    """Create VPC view and handler"""
+    TEMPLATE = '../templates/vpcs/vpc_new.pt'
+
+    def __init__(self, request):
+        super(CreateVPCView, self).__init__(request)
+        self.title_parts = [_(u'VPC'), _(u'Create')]
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.create_vpc_form = CreateVPCForm(self.request, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+        self.render_dict = dict(
+            create_vpc_form=self.create_vpc_form
+        )
+
+    @view_config(route_name='vpc_new', renderer=TEMPLATE, request_method='GET')
+    def vpc_new(self):
+        """Displays the Create VPC page"""
+        return self.render_dict
+
+    @view_config(route_name='vpc_create', renderer=TEMPLATE, request_method='POST')
+    def vpc_create(self):
+        """Handle VPC creation"""
+        if self.create_vpc_form.validate():
+            name = self.request.params.get('name')
+            cidr_block = self.request.params.get('cidr_block')
+            internet_gateway = self.request.params.get('internet_gateway')
+            tags_json = self.request.params.get('tags')
+            self.log_request(_(u"Creating VPC {0}").format(name))
+            with boto_error_handler(self.request):
+                new_vpc = self.vpc_conn.create_vpc(cidr_block)
+                new_vpc_id = new_vpc.id
+
+                # Add tags
+                if name:
+                    new_vpc.add_tag('Name', name)
+                if tags_json:
+                    tags = json.loads(tags_json)
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
+                        new_vpc.add_tag(tagname, tagvalue)
+
+                # Attach internet gateway to VPC if selected
+                if internet_gateway not in [None, 'None']:
+                    self.log_request(_(u"Attaching internet gateway to VPC {0}").format(new_vpc_id))
+                    self.vpc_conn.attach_internet_gateway(internet_gateway, new_vpc_id)
+            msg = _(u'Successfully created VPC. '
+                    u'It may take a moment for the VPC to be available.')
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            location = self.request.route_path('vpc_view', id=new_vpc_id)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_vpc_form.get_errors_list()
+        return self.render_dict

@@ -268,8 +268,11 @@ urls = [
     Route(name='vpcnetworks_json', pattern='/vpcnetworks/json'),
     Route(name='vpcsubnets_json', pattern='/vpcsubnets/json'),
     Route(name='vpcsecuritygroups_json', pattern='/vpcsecuritygroups/json'),
+    Route(name='vpc_new', pattern='/vpcs/new'),
+    Route(name='vpc_create', pattern='/vpcs/create'),
     Route(name='vpc_view', pattern='/vpcs/{id}'),
     Route(name='vpc_update', pattern='/vpcs/{id}/update'),
+    Route(name='vpc_delete', pattern='/vpcs/{id}/delete'),
     Route(name='vpc_set_main_route_table', pattern='/vpcs/{id}/set-main-route-table'),
     Route(name='vpc_create_internet_gateway', pattern='/vpcs/{id}/create-internet-gateway'),
 

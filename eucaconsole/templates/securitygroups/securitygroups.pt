@@ -53,7 +53,7 @@
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div tal:condition="is_vpc_supported" ng-show="item.vpc_id">
                     <span class="label" title="VPC Network" i18n:attributes="title" data-tooltip="">VN</span>
-                    {{ item.vpc_name }}
+                    <a ng-href="/vpcs/{{ item.vpc_id }}">{{ item.vpc_name }}</a>
                 </div>
                 <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
@@ -81,7 +81,9 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
-                <td tal:condition="is_vpc_supported" class="breakword"><span ng-show="item.vpc_id">{{ item.vpc_name }}</span></td>
+                <td tal:condition="is_vpc_supported" class="breakword">
+                    <a ng-show="item.vpc_id" ng-href="/vpcs/{{ item.vpc_id }}">{{ item.vpc_name }}</a>
+                </td>
                 <td class="breakword">{{ item.description | ellipsis: 64 }}</td>
                 <td>${panel('securitygroup_rules_landingpage', tile_view=False)}</td>
                 <td tal:condition="is_vpc_supported">${panel('securitygroup_rules_egress_landingpage', tile_view=False)}</td>
