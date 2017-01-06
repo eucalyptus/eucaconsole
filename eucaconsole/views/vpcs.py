@@ -545,6 +545,7 @@ class SubnetView(TaggedItemView):
             subnet=self.subnet,
             subnet_name=self.subnet_name,
             subnet_form=self.subnet_form,
+            default_for_zone_label=_('yes') if self.subnet.defaultForAz else _('no'),
             tags=self.serialize_tags(self.subnet.tags) if self.subnet else [],
         )
 
