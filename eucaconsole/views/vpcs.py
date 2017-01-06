@@ -551,6 +551,7 @@ class SubnetView(TaggedItemView):
             subnet_name=self.subnet_name,
             subnet_form=self.subnet_form,
             default_for_zone_label=_('yes') if self.subnet.defaultForAz else _('no'),
+            public_ip_auto_assignment=_('Enabled') if self.subnet.mapPublicIpOnLaunch == 'true' else _('Disabled'),
             tags=self.serialize_tags(self.subnet.tags) if self.subnet else [],
         )
 
@@ -574,6 +575,8 @@ class SubnetView(TaggedItemView):
 
                 # Update route table
                 self.update_route_table()
+
+                # TODO: Allow public IP auto-assignment to be set when Boto supports ModifySubnetAttribute
 
             msg = _(u'Successfully updated subnet')
             self.request.session.flash(msg, queue=Notification.SUCCESS)

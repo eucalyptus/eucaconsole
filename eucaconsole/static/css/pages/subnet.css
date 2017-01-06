@@ -7,6 +7,6 @@
 
 .state.pending { background-color: #6d899e; }
 
-#name, #route_table { width: 40%; }
+#name, #route_table, #public_ip_auto_assignment { width: 40%; }
 
-@media only screen and (max-width: 40em) { #name, #route_table { width: 100%; } }
+@media only screen and (max-width: 40em) { #name, #route_table, #public_ip_auto_assignment { width: 100%; } }

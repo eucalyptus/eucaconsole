@@ -163,8 +163,13 @@ class SubnetForm(BaseSecureForm):
     name = TextEscapedField(label=_('Name'))
     route_table = SelectField(label=_('Route table'))
     route_table_help_text = _(
-        "A route table controls how traffic originating from VPC subnets are directed."
+        "A route table controls how traffic originating from VPC subnets are directed. "
         "Select 'None' to automatically use the VPC's main route table."
+    )
+    public_ip_auto_assignment = SelectField(label=_('Public IP auto-assignment'))
+    public_ip_auto_assignment_help_text = _(
+        "Public IP auto-assignment automatically requests a public IP address "
+        "for instances launched into this subnet."
     )
 
     def __init__(self, request, vpc_conn=None, vpc=None, route_tables=None,
@@ -182,8 +187,8 @@ class SubnetForm(BaseSecureForm):
         self.set_help_text()
 
     def set_initial_data(self):
-        if self.subnet is not None:
-            self.name.data = self.subnet.tags.get('Name', '')
+        self.name.data = self.subnet.tags.get('Name', '')
+        self.public_ip_auto_assignment.data = self.subnet.mapPublicIpOnLaunch
         if self.subnet_route_table is None:
             self.route_table.data = 'None'
         else:
@@ -192,6 +197,11 @@ class SubnetForm(BaseSecureForm):
     def set_choices(self):
         self.route_table.choices = self.vpc_choices_manager.vpc_route_tables(
             vpc=self.vpc, route_tables=self.route_tables)
+        self.public_ip_auto_assignment.choices = (
+            ('true', _('Enabled')),
+            ('false', _('Disabled')),
+        )
 
     def set_help_text(self):
         self.route_table.help_text = self.route_table_help_text
+        self.public_ip_auto_assignment.help_text = self.public_ip_auto_assignment_help_text
