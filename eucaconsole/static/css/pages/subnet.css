@@ -7,6 +7,19 @@
 
 .state.pending { background-color: #6d899e; }
 
+.status.running { background-color: #425563; }
+
+.status.pending { background-color: #6d899e; }
+
+.status.stopped { background-color: darkred; }
+
+.status.stopping { background-color: #ff6666; }
+
+.status.terminated { background-color: #666666; }
+
+.status.shutting-down { background-color: #cccccc; }
+
 #name, #route_table, #public_ip_auto_assignment { width: 40%; }
 
 @media only screen and (max-width: 40em) { #name, #route_table, #public_ip_auto_assignment { width: 100%; } }
+table.instances { width: 100%; margin-bottom: 2rem; }

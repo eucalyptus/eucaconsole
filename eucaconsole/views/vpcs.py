@@ -530,7 +530,7 @@ class SubnetView(TaggedItemView):
         super(SubnetView, self).__init__(request, **kwargs)
         self.location = self.request.route_path('vpc_view', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
-            self.conn = self.get_connection()  # Needed for tag updates
+            self.conn = self.get_connection()
             self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
             self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
@@ -553,13 +553,44 @@ class SubnetView(TaggedItemView):
             default_for_zone_label=_('yes') if self.subnet.defaultForAz else _('no'),
             public_ip_auto_assignment=_('Enabled') if self.subnet.mapPublicIpOnLaunch == 'true' else _('Disabled'),
             tags=self.serialize_tags(self.subnet.tags) if self.subnet else [],
+            controller_options_json=self.get_controller_options_json(),
         )
 
     @view_config(route_name='subnet_view', renderer=VIEW_TEMPLATE, request_method='GET')
-    def vpc_view(self):
+    def subnet_view(self):
         if self.subnet is None:
             raise HTTPNotFound()
         return self.render_dict
+
+    @view_config(route_name='subnet_instances', renderer='json', request_method='GET')
+    def subnet_instances(self):
+        """
+        XHR view to fetch instances in a subnet.
+        NOTE: We're not reusing the instances landing page fetch since that call is far heavier than what's needed here.
+        """
+        instances = []
+        filters = {'subnet-id': self.subnet.id}
+        reservations = self.conn.get_all_reservations(filters=filters)
+        transitional_count = 0
+        transitional_states = ['pending', 'stopping', 'shutting-down']
+        for reservation in reservations:
+            for instance in reservation.instances:
+                security_groups = [dict(id=group.id, name=group.name) for group in instance.groups]
+                is_transitional = False
+                if instance.state in transitional_states:
+                    is_transitional = True
+                    transitional_count += 1
+                instances.append(dict(
+                    id=instance.id,
+                    name=self.get_display_name(instance),
+                    state=instance.state,
+                    transitional=is_transitional,
+                    image_id=instance.image_id,
+                    ip_address=instance.ip_address or instance.private_ip_address,
+                    key_name=instance.key_name,
+                    security_groups=security_groups,
+                ))
+        return dict(results=instances, transitional_count=transitional_count)
 
     @view_config(route_name='subnet_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def subnet_update(self):
@@ -622,3 +653,8 @@ class SubnetView(TaggedItemView):
         if 'associate' in actions:
             self.vpc_conn.associate_route_table(new_route_table_id, self.subnet.id)
 
+    def get_controller_options_json(self):
+        return BaseView.escape_json(json.dumps({
+            'subnet_instances_json_url': self.request.route_path(
+                'subnet_instances', vpc_id=self.vpc.id, id=self.subnet.id),
+        }))

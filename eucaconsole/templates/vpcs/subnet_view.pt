@@ -7,7 +7,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="SubnetDetailsPage" ng-controller="SubnetDetailsPageCtrl">
+         ng-app="SubnetDetailsPage" ng-controller="SubnetDetailsPageCtrl as ctrl"
+         ng-init="ctrl.init('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
@@ -96,6 +97,53 @@
                     </div>
                     <hr />
                     <h6 i18n:translate="">INSTANCES</h6>
+                    <p ng-if="ctrl.instancesLoading">
+                        <span i18n:translate="">Loading...</span>
+                        <span class="busy"></span>
+                    </p>
+                    <p ng-if="!ctrl.instancesLoading &amp;&amp; ctrl.subnetInstances.length === 0">
+                        <span i18n:translate="">There are no instances in this subnet.</span>
+                        <a href="/instances/new" i18n:translate="">
+                            Use the launch instance wizard to launch a new instance.
+                        </a>
+                    </p>
+                    <table class="table instances" ng-if="ctrl.subnetInstances.length &amp;&amp; !ctrl.instancesLoading">
+                        <thead>
+                            <tr>
+                                <th i18n:translate="">NAME (ID)</th>
+                                <th i18n:translate="">STATE</th>
+                                <th i18n:translate="">IMAGE</th>
+                                <th i18n:translate="">IP ADDRESS</th>
+                                <th i18n:translate="">KEY NAME</th>
+                                <th i18n:translate="">SECURITY GROUP</th>
+                                <th i18n:translate="">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="instance in ctrl.subnetInstances" ng-cloak="">
+                                <td>
+                                    <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
+                                </td>
+                                <td>
+                                    <span class="label radius status {{ instance.state }}">{{ instance.state }}</span>
+                                    <span class="busy" ng-show="instance.transitional"></span>
+                                </td>
+                                <td>
+                                    <a ng-href="/images/{{ instance.image_id }}">{{ instance.image_id }}</a>
+                                </td>
+                                <td>{{ instance.ip_address }}</td>
+                                <td>
+                                    <a ng-href="/keypairs/{{ instance.key_name }}">{{ instance.key_name }}</a>
+                                </td>
+                                <td>
+                                    <div ng-repeat="secgroup in instance.security_groups">
+                                        <a ng-href="/securitygroups/{{ secgroup.id }}">{{ secgroup.name }}</a>
+                                    </div>
+                                </td>
+                                <td><!--! Actions here --></td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <hr />
                     <div ng-cloak="">
                         <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
