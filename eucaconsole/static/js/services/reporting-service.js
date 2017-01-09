@@ -25,12 +25,12 @@ angular.module('ReportingServiceModule', [])
             return $http({
                 method: 'PUT',
                 url: '/reporting_api/preferences',
-                data: $.param({
+                data: {
                     enabled: enabled,
                     bucketName: bucketName,
                     tags: tags,
                     csrf_token: csrf_token
-                })
+                }
             });
         },
     };

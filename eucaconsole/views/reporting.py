@@ -28,11 +28,13 @@
 Pyramid views for Eucalyptus and Usage Reporting
 
 """
+import simplejson as json
 
 from pyramid.view import view_config
 
 from ..i18n import _
 from ..views import BaseView
+from ..views import BaseView, JSONResponse
 
 
 class ReportingView(BaseView):
@@ -56,20 +58,31 @@ class ReportingAPIView(BaseView):
     """
     def __init__(self, request):
         super(ReportingAPIView, self).__init__(request)
+        self.conn = self.get_connection(conn_type='reporting')
 
     @view_config(route_name='reporting_prefs', renderer='json', request_method='GET', xhr=True)
     def get_reporting_prefs(self):
         # use "ViewBilling" call to fetch billing configuration information
+        ret = self.conn.view_billing()
+        prefs = ret.get('billingSettings')
         ret = dict(
-            enabled=True,
-            bucketName='',
-            activeTags=['one'],
-            inactiveTags=['two', 'three']
+            enabled=True if prefs.get('detailedBillingEnabled') else False,
+            bucketName=prefs.get('reportBucket') or '',
+            activeTags=prefs.get('activeCostAllocationTags') or ['one'],
+            inactiveTags=prefs.get('inactiveCostAllocationTags') or ['two', 'three', 'four']
         )
         return dict(results=ret)
 
     @view_config(route_name='reporting_prefs', renderer='json', request_method='PUT', xhr=True)
     def set_reporting_prefs(self):
+        params = json.loads(self.request.body)
+        csrf_token = params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message="missing CSRF token")
         # use "ModifyBilling" to change billing configuration
+        enabled = params.get('enabled')
+        bucket_name = params.get('bucketName')
+        tags = params.get('tags')
+        prefs = self.conn.modify_billing(enabled, bucket_name, tags)
         return dict(message="ok")
 
