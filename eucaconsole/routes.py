@@ -277,7 +277,6 @@ urls = [
     Route(name='vpc_create_internet_gateway', pattern='/vpcs/{id}/create-internet-gateway'),
     Route(name='subnet_view', pattern='/vpcs/{vpc_id}/subnets/{id}'),
     Route(name='subnet_update', pattern='/vpcs/{vpc_id}/subnets/{id}/update'),
-    Route(name='subnet_instances', pattern='/vpcs/{vpc_id}/subnets/{id}/instances'),
 
     # Key pairs #####
     # Landing page

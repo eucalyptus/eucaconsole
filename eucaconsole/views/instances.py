@@ -426,6 +426,9 @@ class InstancesJsonView(LandingPageView, BaseInstanceView):
         root_device_type_param = self.request.params.getall('root_device_type')
         if root_device_type_param:
             filters.update({'root-device-type': root_device_type_param})
+        subnet_param = self.request.params.get('subnet_id')
+        if subnet_param:
+            filters.update({'subnet-id': [subnet_param]})
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in InstancesFiltersForm
         ignore_params = [

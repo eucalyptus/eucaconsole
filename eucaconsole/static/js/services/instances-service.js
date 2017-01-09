@@ -6,14 +6,18 @@
  *
  */
 angular.module('InstancesServiceModule', [])
-.factory('InstancesService', ['$http', function ($http) {
+.factory('InstancesService', ['$http', '$httpParamSerializer', function ($http, $httpParamSerializer) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     return {
-        getInstances: function (csrfToken) {
+        getInstances: function (csrfToken, params) {
+            // Pass params as an object (e.g. {'subnet_id': 'subnet-123456'} to filter by subnet)
+            params = params || {};
+            params.csrf_token = csrfToken;
+            var data = $httpParamSerializer(params);
             return $http({
                 method: 'POST',
                 url: '/instances/json',
-                data: 'csrf_token=' + csrfToken,
+                data: data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function success (response) {
                 var data = response.data || {

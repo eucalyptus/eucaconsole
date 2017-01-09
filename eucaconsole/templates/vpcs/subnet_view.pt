@@ -125,7 +125,7 @@
                                     <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
                                 </td>
                                 <td>
-                                    <span class="label radius status {{ instance.state }}">{{ instance.state }}</span>
+                                    <span class="label radius status {{ instance.status }}">{{ instance.status }}</span>
                                     <span class="busy" ng-show="instance.transitional"></span>
                                 </td>
                                 <td>
@@ -170,6 +170,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/instances-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/subnet_view.js')}"></script>
 </div>
 
