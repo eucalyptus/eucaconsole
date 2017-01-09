@@ -52,6 +52,7 @@ function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, Re
         vm.savingChanges = true;
         ReportingService.setReportingPrefs(vm.values.reportsEnabled, vm.values.bucketName, vm.values.tagKeys, $('#csrf_token').val()).then(
             function success(result) {
+                Notify.success(result.message);
                 vm.savingChanges = false;
             },
             function error(errData) {

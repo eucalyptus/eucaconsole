@@ -84,5 +84,5 @@ class ReportingAPIView(BaseView):
         bucket_name = params.get('bucketName')
         tags = params.get('tags')
         prefs = self.conn.modify_billing(enabled, bucket_name, tags)
-        return dict(message="ok")
+        return dict(message=_("Successully updated reporting preferences."))
 

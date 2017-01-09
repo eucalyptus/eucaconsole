@@ -31,6 +31,8 @@ angular.module('ReportingServiceModule', [])
                     tags: tags,
                     csrf_token: csrf_token
                 }
+            }).then( function (response) {
+                return response.data || {};
             });
         },
     };
