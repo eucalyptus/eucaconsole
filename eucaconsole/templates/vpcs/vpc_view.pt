@@ -71,7 +71,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Default VPC?</label></div>
-                        <div class="large-9 small-8 columns value">${default_vpc}</div>
+                        <div class="large-9 small-8 columns value">${default_vpc_label}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="vpc_default_security_group">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Default security group</label></div>
@@ -100,7 +100,10 @@
                     </div>
                     <hr />
                     <h6 i18n:translate="">SUBNETS</h6>
-                    <table class="table subnets">
+                    <p i18n:translate="" tal:condition="not: vpc_subnets">
+                        There are currently no subnets in this VPC.
+                    </p>
+                    <table class="table subnets" tal:condition="vpc_subnets">
                         <thead>
                             <tr>
                                 <th i18n:translate="">NAME (ID)</th>
@@ -205,6 +208,85 @@
                 </div>
                 <button class="button expand" i18n:translate="">
                     Create internet gateway
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Delete VPC modal dialog -->
+        <div id="delete-vpc-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete VPC</h3>
+            <form id="delete-vpc-form" name="deleteVPCForm" method="post"
+                  action="${request.route_path('vpc_delete', id=vpc.id)}">
+                ${structure:vpc_delete_form['csrf_token']}
+                <div tal:condition="vpc_subnets">
+                    <p i18n:translate="">
+                        This VPC has one or more subnets that must be deleted prior to deleting the VPC.
+                    </p>
+                    <p i18n:translate="">
+                        Click on each subnet to view the subnet details page, where you can delete the subnet
+                        and terminate all instances in the subnet.
+                    </p>
+                    <span tal:repeat="subnet vpc_subnets">
+                        ${subnet.name}
+                    </span>
+                </div>
+                <div tal:condition="not vpc_subnets">
+                    <p i18n:translate="">
+                        Deleting a VPC will disassociate or delete the following resources from the VPC.
+                    </p>
+                    <div class="resources-list">
+                        <div tal:condition="vpc_internet_gateway_name" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Internet gateway:
+                            </div>
+                            <div class="columns small-9">${vpc_internet_gateway_name}</div>
+                        </div>
+                        <div tal:condition="vpc_route_tables" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Route tables:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="route_table vpc_route_tables">
+                                    ${layout.get_display_name(route_table)}<span
+                                        tal:condition="not repeat.route_table.end">,&nbsp;</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div tal:condition="vpc_security_groups" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Security groups:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="sec_group vpc_security_groups">
+                                    <a href="${request.route_path('securitygroup_view', id=sec_group.id)}">
+                                        ${sec_group.name} (${sec_group.id})</a><span tal:condition="not repeat.sec_group.end">,&nbsp;</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div tal:condition="vpc_network_acls" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Network ACLs:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="network_acl vpc_network_acls">
+                                    ${layout.get_display_name(network_acl)}<span
+                                        tal:condition="not repeat.network_acl.end">,&nbsp;</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <p i18n:translate="" tal:condition="default_vpc" class="default-vpc-warning">
+                        WARNING: This VPC is the default for your cloud. If you delete the VPC,
+                        you will need to contact your cloud administrator to recreate a default VPC.
+                    </p>
+                    <p>
+                        <span i18n:translate="">Are you sure you want to delete VPC</span>
+                        <strong>${vpc_name}</strong>?
+                    </p>
+                </div>
+                <button class="button expand ${'warning' if default_vpc else ''}"
+                        i18n:translate="" tal:condition="not vpc_subnets">
+                    Yes, Delete VPC
                 </button>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>

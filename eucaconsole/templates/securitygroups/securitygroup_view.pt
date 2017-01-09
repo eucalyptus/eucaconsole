@@ -62,7 +62,9 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group and is_vpc_supported">
                         <div class="large-2 small-3 columns"><label i18n:translate="">VPC</label></div>
-                        <div class="large-10 small-9 columns field inline" ng-init="securityGroupVPC='${security_group.vpc_id}'">${security_group_vpc}</div>
+                        <div class="large-10 small-9 columns field inline" ng-init="securityGroupVPC='${security_group.vpc_id}'">
+                            <a href="${request.route_path('vpc_view', id=security_group.vpc_id)}">${security_group_vpc}</a>
+                        </div>
                     </div>
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, rules_egress=sgroup_rules_egress)}

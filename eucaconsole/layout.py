@@ -41,10 +41,11 @@ from pyramid.settings import asbool
 
 from .constants import AWS_REGIONS
 from .forms.login import EucaLogoutForm
+from .forms.vpcs import CIDR_BLOCK_REGEX
 from .i18n import _
 from .models import Notification
 from .models.auth import ConnectionManager, RegionCache
-from .views import BaseView
+from .views import BaseView, TaggedItemView
 
 try:
     from version import __version__
@@ -72,6 +73,7 @@ class MasterLayout(object):
         self.has_regions = True
         self.default_region = ''
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
+        self.get_display_name = TaggedItemView.get_display_name
         if self.cloud_type == 'aws':
             self.regions = AWS_REGIONS
             if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
@@ -123,10 +125,7 @@ class MasterLayout(object):
         self.tag_pattern_value = '^(?!aws:).{0,256}$'
         self.integer_gt_zero_pattern = '^[1-9]\d*$'
         self.non_negative_pattern = '^[0-9]\d*$'
-        self.cidr_pattern = u'{0}{1}'.format(
-            '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
-            '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
-        )
+        self.cidr_pattern = CIDR_BLOCK_REGEX
         self.ascii_without_slashes_pattern = r'^((?![\x2F\x5c])[\x20-\x7F]){1,255}$'
         self.name_without_spaces_pattern = r'^[a-zA-Z0-9\-]{1,255}$'
         self.port_range_pattern = u'{0}'.format(
