@@ -2,26 +2,12 @@ angular.module('ReportingPage')
 .controller('PreferencesController', ['$scope', '$routeParams', 'BucketService', 'eucaHandleError', 'ModalService', 'ReportingService',
 function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, ReportingService) {
     var vm = this;
-    /*jshint multistr: true */
-    vm.defaultPolicy = '{ \n\
-    "Version": "", \n\
-    "Statement": [{ \n\
-        "Effect": "Allow", \n\
-        "Action": "s3:PutObject", \n\
-        "Resource": "arn:aws:s3:::<bucket_name>/*", \n\
-        "Principal": { \n\
-            "AWS": "blah" \n\
-        } \n\
-    ] \n\
-}';
     vm.values = {
         reportsEnabled: false,
         bucketName: '',
-        bucketPolicy: vm.defaultPolicy,
         tagKeys: []
     };
     vm.buckets = [];
-    vm.bucketPolicy = '';
     vm.tagKeyChoices = [];
 
     ReportingService.getReportingPrefs().then(
@@ -62,16 +48,6 @@ function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, Re
 
     vm.showCreateBucket = function() {
         ModalService.openModal('createBucketDialog');
-    };
-
-    vm.showBucketPolicy = function() {
-        vm.bucketPolicy = vm.values.bucketPolicy;
-        ModalService.openModal('bucketPolicyDialog');
-    };
-
-    vm.saveBuckePolicy = function($event) {
-        vm.values.bucketPolicy = vm.bucketPolicy;
-        ModalService.closeModal('bucketPolicyDialog');
     };
 
     $scope.$watch('preferences.values.bucketName', function(newVal, oldVal) {

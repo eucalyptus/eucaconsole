@@ -33,17 +33,10 @@
                 </div>
             </div>
             <p i18n:translate="">
-                Note: by enabling usage reporting for this bucket, we will update the bucket policy to allow eucalyptus to write reports there.
+                Note: by enabling usage reporting for this bucket, a bucket policy will be added to allow Eucalyptus to store reports in your bucket. To view or modify the bucket policy, visist the bucket's detail page.
             </p>
-            <!--div class="row inline stacked controls-wrapper">
-                <div class="small-12 columns">
-                    <a href="#" class="circle remove has-tip policy-row-item" ng-click="preferences.showBucketPolicy()"
-                       title="View/Edit policy"><i class="fi-pencil"></i></a>
-                    <span class="policy-row-item" ng-init="preferences.bucketPolicyName = 'BucketPolicy-nnnn'">{{ preferences.bucketPolicyName }}</span>
-                </div>
-            </div-->
         </div>
-        <hr/>
+        <!--hr/>
         <div class="section">
             <h6 class="section-label" i18n:translate="">Manage Report Tags</h6>
             <p i18n:translate="">
@@ -73,7 +66,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div-->
         <hr/>
         <div ng-show="!preferences.savingChanges">
             <button type="submit" class="button" id="save-changes-btn" ng-click="preferences.saveChanges($event)"
@@ -91,22 +84,4 @@
             <div create-bucket-dialog="" bucket-name="preferences.values.bucketName"></div>
         </div>
     </form>
-    <div class="modal large" modal="bucketPolicyDialog">
-        <form name="policyForm">
-            <h3 i18n:translate="">Configure bucket policy</h3>
-            <p i18n:translate="">
-                A bucket policy configures permissions for your bucket and allows Eucalyptus to store
-                reports in your bucket if the default policy is selected.
-            </p>
-            <a ng-click="preferences.bucketPolicy = preferences.defaultPolicy" i18n:translate="">
-                Restore default bucket policy
-            </a>
-            <textarea class="policy-text-area" ng-model="preferences.bucketPolicy">
-            </textarea>
-            <button type="submit" class="button expand" id="save-policy-btn" ng-click="saveBucketPolicy($event)"
-                    ng-disabled="policyForm.$invalid">
-                <span i18n:translate="">Save Bucket Policy</span>
-            </button>
-        </form>
-    </div>
 </div>
