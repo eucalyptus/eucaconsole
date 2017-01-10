@@ -421,7 +421,7 @@ urls = [
 
     # Reporting
     # API calls
-    Route(name='reporting_prefs', pattern='/reporting_api/preferences'),
+    Route(name='reporting_prefs', pattern='/reporting-api/preferences'),
     # Views
     Route(name='reporting', pattern='/reporting*subpath'),
 ]
