@@ -6,8 +6,9 @@
  *
  */
 
-angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule', 'EucaConsoleUtils'])
-    .controller('SubnetDetailsPageCtrl', function ($http, $timeout, InstancesService, eucaUnescapeJson) {
+angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule', 'EucaConsoleUtils', 'smart-table'])
+    .controller('SubnetDetailsPageCtrl', function ($http, $timeout, InstancesService,
+                                                   eucaUnescapeJson, eucaHandleError) {
         var vm = this;
         vm.instancesLoading = true;
         vm.subnetInstances = [];

@@ -107,20 +107,22 @@
                             Use the launch instance wizard to launch a new instance.
                         </a>
                     </p>
-                    <table class="table instances" ng-if="ctrl.subnetInstances.length &amp;&amp; !ctrl.instancesLoading">
+                    <table class="table smart-table instances" st-safe-src="ctrl.subnetInstances" st-table="displayedCollection"
+                           ng-if="ctrl.subnetInstances.length &amp;&amp; !ctrl.instancesLoading">
                         <thead>
                             <tr>
-                                <th i18n:translate="">NAME (ID)</th>
-                                <th i18n:translate="">STATE</th>
-                                <th i18n:translate="">IMAGE</th>
-                                <th i18n:translate="">IP ADDRESS</th>
-                                <th i18n:translate="">KEY NAME</th>
-                                <th i18n:translate="">SECURITY GROUP</th>
+                                <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME (ID)</th>
+                                <th i18n:translate="" st-skip-natural="true" st-sort="status">STATE</th>
+                                <th i18n:translate="" st-skip-natural="true" st-sort="image_id">IMAGE</th>
+                                <th i18n:translate="" st-skip-natural="true" st-sort="sortable_ip">IP ADDRESS</th>
+                                <th i18n:translate="" st-skip-natural="true" st-sort="image_id">KEY NAME</th>
+                                <th i18n:translate="" st-skip-natural="true" st-sort="sortable_secgroups">SECURITY GROUP</th>
+                                <th i18n:translate="" st-skip-natural="true" st-sort="launch_time" st-sort-default="reverse">LAUNCH TIME</th>
                                 <th i18n:translate="">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="instance in ctrl.subnetInstances" ng-cloak="">
+                            <tr ng-repeat="instance in displayedCollection" ng-cloak="">
                                 <td>
                                     <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
                                 </td>
@@ -139,6 +141,9 @@
                                     <div ng-repeat="secgroup in instance.security_groups">
                                         <a ng-href="/securitygroups/{{ secgroup.id }}">{{ secgroup.name }}</a>
                                     </div>
+                                </td>
+                                <td class="breakword">
+                                    {{ instance.launch_time | date: '${layout.angular_date_format}' }}
                                 </td>
                                 <td><!--! Actions here --></td>
                             </tr>
@@ -171,6 +176,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/instances-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/subnet_view.js')}"></script>
 </div>
 
