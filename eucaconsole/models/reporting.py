@@ -76,7 +76,6 @@ class EucalyptusConnection(AWSQueryConnection):
         response = self.make_request(call, params, self.path, method)
         body = response.read().decode('utf-8')
         if response.status == 200:
-            print body
             body = json.loads(body)
             return body
         else:
