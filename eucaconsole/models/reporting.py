@@ -25,7 +25,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-A connection object for Eucalyptus Reporting features
+A connection objects for Eucalyptus Reporting features
 
 """
 
@@ -33,7 +33,7 @@ import boto
 from boto.connection import AWSQueryConnection
 from boto.compat import json
 
-from .auth import HttpsConnectionFactory
+from .utils import HttpsConnectionFactory
 
 
 class EucalyptusConnection(AWSQueryConnection):

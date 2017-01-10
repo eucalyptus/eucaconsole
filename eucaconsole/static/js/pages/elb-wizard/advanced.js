@@ -45,6 +45,7 @@ function ($scope, $routeParams, $window, ELBWizardService, ELBService, BucketSer
     };
     $scope.$watch('advanced.values.bucketName', function(newVal, oldVal) {
         if (newVal === oldVal) return;
+        if (vm.buckets.indexOf(newVal) > -1) return;
         vm.buckets.push(newVal);
     });
 }])
