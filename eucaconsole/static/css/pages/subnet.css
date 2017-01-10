@@ -22,4 +22,4 @@
 #name, #route_table, #public_ip_auto_assignment { width: 40%; }
 
 @media only screen and (max-width: 40em) { #name, #route_table, #public_ip_auto_assignment { width: 100%; } }
-table.instances { width: 100%; margin-bottom: 2rem; }
+table.instances { width: 100%; margin-bottom: 1rem; }

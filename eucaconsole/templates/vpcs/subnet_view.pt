@@ -122,7 +122,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="instance in displayedCollection" ng-cloak="">
+                            <tr ng-repeat="instance in displayedCollection | limitTo: ctrl.subnetInstanceLimit" ng-cloak="">
                                 <td>
                                     <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
                                 </td>
@@ -149,6 +149,14 @@
                             </tr>
                         </tbody>
                     </table>
+                    <p ng-if="ctrl.subnetInstances.length > ctrl.subnetInstanceLimit">
+                        <span i18n:translate="">There are</span>
+                        {{ ctrl.subnetInstances.length - ctrl.subnetInstanceLimit }}
+                        <span>more instances in this subnet.</span>
+                        <a i18n:translate="" href="${subnet_instances_link}">
+                            Click here to manage all instances in this subnet.
+                        </a>
+                    </p>
                     <hr />
                     <div ng-cloak="">
                         <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>

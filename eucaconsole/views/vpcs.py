@@ -550,6 +550,7 @@ class SubnetView(TaggedItemView):
             subnet=self.subnet,
             subnet_name=self.subnet_name,
             subnet_form=self.subnet_form,
+            subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
             default_for_zone_label=_('yes') if self.subnet.defaultForAz else _('no'),
             public_ip_auto_assignment=_('Enabled') if self.subnet.mapPublicIpOnLaunch == 'true' else _('Disabled'),
             tags=self.serialize_tags(self.subnet.tags) if self.subnet else [],

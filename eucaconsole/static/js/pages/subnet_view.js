@@ -12,6 +12,7 @@ angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule'
         var vm = this;
         vm.instancesLoading = true;
         vm.subnetInstances = [];
+        vm.subnetInstanceLimit = 25;  // Limit subnet instances table to 25 rows
 
         vm.init = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
