@@ -187,8 +187,10 @@ class SubnetForm(BaseSecureForm):
         self.set_help_text()
 
     def set_initial_data(self):
-        self.name.data = self.subnet.tags.get('Name', '')
-        self.public_ip_auto_assignment.data = self.subnet.mapPublicIpOnLaunch
+        if self.subnet:
+            self.name.data = self.subnet.tags.get('Name', '')
+            self.public_ip_auto_assignment.data = self.subnet.mapPublicIpOnLaunch
+
         if self.subnet_route_table is None:
             self.route_table.data = 'None'
         else:

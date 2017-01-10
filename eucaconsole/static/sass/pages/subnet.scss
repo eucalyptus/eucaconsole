@@ -1,6 +1,7 @@
-/* @fileOverview VPC details page CSS */
+/* @fileOverview Subnet details page CSS */
 
 @import "../includes/eucavariables";
+@import "../includes/landingpage";  // Required for subnet instances table
 
 // Subnet State colors
 .state.available { background-color: $hpe-slate; }

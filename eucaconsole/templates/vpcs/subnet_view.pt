@@ -107,48 +107,60 @@
                             Use the launch instance wizard to launch a new instance.
                         </a>
                     </p>
-                    <table class="table smart-table instances" st-safe-src="ctrl.subnetInstances" st-table="displayedCollection"
-                           ng-if="ctrl.subnetInstances.length &amp;&amp; !ctrl.instancesLoading">
-                        <thead>
-                            <tr>
-                                <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME (ID)</th>
-                                <th i18n:translate="" st-skip-natural="true" st-sort="status">STATE</th>
-                                <th i18n:translate="" st-skip-natural="true" st-sort="image_id">IMAGE</th>
-                                <th i18n:translate="" st-skip-natural="true" st-sort="sortable_ip">IP ADDRESS</th>
-                                <th i18n:translate="" st-skip-natural="true" st-sort="image_id">KEY NAME</th>
-                                <th i18n:translate="" st-skip-natural="true" st-sort="sortable_secgroups">SECURITY GROUP</th>
-                                <th i18n:translate="" st-skip-natural="true" st-sort="launch_time" st-sort-default="reverse">LAUNCH TIME</th>
-                                <th i18n:translate="">ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="instance in displayedCollection | limitTo: ctrl.subnetInstanceLimit" ng-cloak="">
-                                <td>
-                                    <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
-                                </td>
-                                <td>
-                                    <span class="label radius status {{ instance.status }}">{{ instance.status }}</span>
-                                    <span class="busy" ng-show="instance.transitional"></span>
-                                </td>
-                                <td>
-                                    <a ng-href="/images/{{ instance.image_id }}">{{ instance.image_id }}</a>
-                                </td>
-                                <td>{{ instance.ip_address }}</td>
-                                <td>
-                                    <a ng-href="/keypairs/{{ instance.key_name }}">{{ instance.key_name }}</a>
-                                </td>
-                                <td>
-                                    <div ng-repeat="secgroup in instance.security_groups">
-                                        <a ng-href="/securitygroups/{{ secgroup.id }}">{{ secgroup.name }}</a>
-                                    </div>
-                                </td>
-                                <td class="breakword">
-                                    {{ instance.launch_time | date: '${layout.angular_date_format}' }}
-                                </td>
-                                <td><!--! Actions here --></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="gridwrapper">
+                        <table class="table smart-table instances" st-safe-src="ctrl.subnetInstances" st-table="displayedCollection"
+                               ng-if="ctrl.subnetInstances.length &amp;&amp; !ctrl.instancesLoading">
+                            <thead>
+                                <tr>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME (ID)</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="status">STATE</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="image_id">IMAGE</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="sortable_ip">IP ADDRESS</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="image_id">KEY NAME</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="sortable_secgroups">SECURITY GROUP</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="launch_time" st-sort-default="reverse">LAUNCH TIME</th>
+                                    <th i18n:translate="">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="instance in displayedCollection | limitTo: ctrl.subnetInstanceLimit" ng-cloak="">
+                                    <td>
+                                        <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
+                                    </td>
+                                    <td>
+                                        <span class="label radius status {{ instance.status }}">{{ instance.status }}</span>
+                                        <span class="busy" ng-show="instance.transitional"></span>
+                                    </td>
+                                    <td>
+                                        <a ng-href="/images/{{ instance.image_id }}">{{ instance.image_id }}</a>
+                                    </td>
+                                    <td>{{ instance.ip_address }}</td>
+                                    <td>
+                                        <a ng-href="/keypairs/{{ instance.key_name }}">{{ instance.key_name }}</a>
+                                    </td>
+                                    <td>
+                                        <div ng-repeat="secgroup in instance.security_groups">
+                                            <a ng-href="/securitygroups/{{ secgroup.id }}">{{ secgroup.name }}</a>
+                                        </div>
+                                    </td>
+                                    <td class="breakword">
+                                        {{ instance.launch_time | date: '${layout.angular_date_format}' }}
+                                    </td>
+                                    <td>
+                                        <span class="actions">
+                                            <span id="table-item-dropdown_{{ instance.id }}" class="tiny secondary button dropdown round"
+                                                  data-dropdown="item-dropdown_{{ instance.id }}"><i class="grid-action"></i></span>
+                                            <ul id="item-dropdown_{{ instance.id }}" class="f-dropdown" data-dropdown-content="">
+                                                <li>
+                                                    <a ng-href="/instances/{{ instance.id }}" i18n:translate="">View details</a>
+                                                </li>
+                                            </ul>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <p ng-if="ctrl.subnetInstances.length > ctrl.subnetInstanceLimit">
                         <span i18n:translate="">There are</span>
                         {{ ctrl.subnetInstances.length - ctrl.subnetInstanceLimit }}
