@@ -20,6 +20,10 @@
   width: 40%;
 }
 
+#subnet-instances-link {
+  text-align: right;
+}
+
 @media only screen and (max-width: 40em) {
   #name, #route_table, #public_ip_auto_assignment {
     width: 100%;
