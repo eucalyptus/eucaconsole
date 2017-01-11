@@ -68,11 +68,11 @@ class ReportingAPIView(BaseView):
         ret = self.conn.view_account()
         acct_prefs = ret.get('accountSettings')
         ret = dict(
-            enabled=True if prefs.get('detailedBillingEnabled') else False,
+            enabled=prefs.get('detailedBillingEnabled'),
             bucketName=prefs.get('reportBucket') or '',
             activeTags=prefs.get('activeCostAllocationTags') or ['one'],
             inactiveTags=prefs.get('inactiveCostAllocationTags') or ['two', 'three', 'four'],
-            userReportsEnabled=True if acct_prefs.get('userBillingAccess') else False,
+            userReportsEnabled=acct_prefs.get('userBillingAccess'),
         )
         return dict(results=ret)
 
