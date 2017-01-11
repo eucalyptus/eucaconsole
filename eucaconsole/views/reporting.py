@@ -33,7 +33,6 @@ import simplejson as json
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..views import BaseView
 from ..views import BaseView, JSONResponse
 
 
@@ -51,6 +50,7 @@ class ReportingView(BaseView):
         return dict(
             reporting_configured='true' if self.is_reporting_configured() else 'false'
         )
+
 
 class ReportingAPIView(BaseView):
     """
@@ -87,9 +87,9 @@ class ReportingAPIView(BaseView):
         enabled = params.get('enabled')
         bucket_name = params.get('bucketName')
         tags = params.get('tags')
-        prefs = self.conn.modify_billing(enabled, bucket_name, tags)
+        self.conn.modify_billing(enabled, bucket_name, tags)
         # use "ModifyAccount" to change report access
         user_reports_enabled = params.get('userReportsEnabled')
-        prefs = self.conn.modify_account(user_reports_enabled)
+        self.conn.modify_account(user_reports_enabled)
         return dict(message=_("Successully updated reporting preferences."))
 
