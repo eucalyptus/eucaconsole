@@ -33,7 +33,6 @@ import simplejson as json
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..views import BaseView
 from ..views import BaseView, JSONResponse
 
 
@@ -52,6 +51,7 @@ class ReportingView(BaseView):
             reporting_configured='true' if self.is_reporting_configured() else 'false'
         )
 
+
 class ReportingAPIView(BaseView):
     """
     A view for reporting related XHR calls that carrys very little overhead
@@ -65,11 +65,14 @@ class ReportingAPIView(BaseView):
         # use "ViewBilling" call to fetch billing configuration information
         ret = self.conn.view_billing()
         prefs = ret.get('billingSettings')
+        ret = self.conn.view_account()
+        acct_prefs = ret.get('accountSettings')
         ret = dict(
-            enabled=True if prefs.get('detailedBillingEnabled') else False,
+            enabled=prefs.get('detailedBillingEnabled'),
             bucketName=prefs.get('reportBucket') or '',
             activeTags=prefs.get('activeCostAllocationTags') or ['one'],
-            inactiveTags=prefs.get('inactiveCostAllocationTags') or ['two', 'three', 'four']
+            inactiveTags=prefs.get('inactiveCostAllocationTags') or ['two', 'three', 'four'],
+            userReportsEnabled=acct_prefs.get('userBillingAccess'),
         )
         return dict(results=ret)
 
@@ -79,10 +82,14 @@ class ReportingAPIView(BaseView):
         csrf_token = params.get('csrf_token')
         if not self.is_csrf_valid(token=csrf_token):
             return JSONResponse(status=400, message="missing CSRF token")
+        self.log_request(_(u"Saving report preferences"))
         # use "ModifyBilling" to change billing configuration
         enabled = params.get('enabled')
         bucket_name = params.get('bucketName')
         tags = params.get('tags')
-        prefs = self.conn.modify_billing(enabled, bucket_name, tags)
+        self.conn.modify_billing(enabled, bucket_name, tags)
+        # use "ModifyAccount" to change report access
+        user_reports_enabled = params.get('userReportsEnabled')
+        self.conn.modify_account(user_reports_enabled)
         return dict(message=_("Successully updated reporting preferences."))
 

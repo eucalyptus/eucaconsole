@@ -5,7 +5,8 @@ function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, Re
     vm.values = {
         reportsEnabled: false,
         bucketName: '',
-        tagKeys: []
+        tagKeys: [],
+        userReportsEnabled: false
     };
     vm.buckets = [];
     vm.tagKeyChoices = [];
@@ -17,6 +18,7 @@ function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, Re
             vm.values.bucketName = prefs.bucketName;
             vm.values.tagKeys = prefs.activeTags;
             vm.tagKeyChoices = prefs.inactiveTags.concat(prefs.activeTags);
+            vm.values.userReportsEnabled = prefs.userReportsEnabled;
         },
         function error(errData) {
             eucaHandleError(errData.data.message, errData.status);
@@ -36,7 +38,8 @@ function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, Re
 
     vm.saveChanges = function($event) {
         vm.savingChanges = true;
-        ReportingService.setReportingPrefs(vm.values.reportsEnabled, vm.values.bucketName, vm.values.tagKeys, $('#csrf_token').val()).then(
+        ReportingService.setReportingPrefs(vm.values.reportsEnabled, vm.values.bucketName,
+                vm.values.tagKeys, vm.values.userReportsEnabled, $('#csrf_token').val()).then(
             function success(result) {
                 Notify.success(result.message);
                 vm.savingChanges = false;

@@ -4,8 +4,8 @@
             <h6 class="section-label" i18n:translate="">Usage Reports</h6>
             <div class="row inline controls-wrapper">
                 <div class="columns field">
-                    <input type="checkbox" value="y" ng-model="preferences.values.reportsEnabled" name="reportsEnabled"/>
-                    <label class="left-align" for="logging_enabled" i18n:translate="">Enable usage reports</label>
+                    <input type="checkbox" value="y" ng-model="preferences.values.reportsEnabled" name="reportsEnabled" id="reportsEnabled"/>
+                    <label class="left-align" for="reportsEnabled" i18n:translate="">Enable usage reports</label>
                 </div>
             </div>
             <p i18n:translate="">
@@ -39,6 +39,15 @@
                 to allow Eucalyptus to store reports in your bucket. To view or modify the bucket
                 policy, visist the bucket's detail page.
             </p>
+            <div class="row inline controls-wrapper">
+                <div class="columns field">
+                    <input type="checkbox" value="y" ng-model="preferences.values.userReportsEnabled" name="userReportsEnabled" id="userReportsEnabled"/>
+                    <label class="left-align" for="userReportsEnabled">
+                        <span i18n:translate="">Allow users in this account to access report information.</span>
+                        <span data-tooltip="" title="Users will be able to access report information if they are allowed by IAM policy and this setting is selected. This provides a quick way to disable access and billing data for non-admin users." i18n:attributes="title"><i class="helptext-icon"></i></span>
+                    </label>
+                </div>
+            </div>
         </div>
         <!-- Cost Allocations tags not supported in back end for 5.0, can uncomment later when they are -->
         <!--hr/>
