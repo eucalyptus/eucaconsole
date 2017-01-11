@@ -78,9 +78,9 @@
                         <div class="large-9 small-8 columns value">${default_for_zone_label}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-3 small-4 columns"><label i18n:translate="">Network ACLs</label></div>
-                        <div class="large-9 small-8 columns value">
-                            <!--! TODO: Network ACLs here -->&nbsp;
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Network ACL</label></div>
+                        <div class="large-9 small-8 columns value" tal:condition="subnet_network_acl">
+                            ${subnet_network_acl.name}
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">

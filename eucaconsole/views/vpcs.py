@@ -537,6 +537,7 @@ class SubnetView(TaggedItemView):
             self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.subnet = self.get_subnet()
             self.subnet_route_table = self.get_subnet_route_table()
+            self.subnet_network_acl = self.get_subnet_network_acl()
             self.subnet_form = SubnetForm(
                 self.request, vpc_conn=self.vpc_conn, vpc=self.vpc, route_tables=self.vpc_route_tables,
                 subnet=self.subnet, subnet_route_table=self.subnet_route_table, formdata=self.request.params or None
@@ -551,6 +552,7 @@ class SubnetView(TaggedItemView):
             vpc_name=self.vpc_name,
             subnet=self.subnet,
             subnet_name=self.subnet_name,
+            subnet_network_acl=self.subnet_network_acl,
             subnet_form=self.subnet_form,
             terminate_form=self.terminate_form,
             subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
@@ -608,6 +610,13 @@ class SubnetView(TaggedItemView):
         for route_table in self.vpc_route_tables:
             if [association for association in route_table.associations if association.subnet_id == self.subnet.id]:
                 return route_table
+        return None
+
+    def get_subnet_network_acl(self):
+        vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': self.vpc.id})
+        subnet_network_acls = VPCView.get_subnet_network_acls(self.subnet.id, vpc_network_acls)
+        if subnet_network_acls:
+            return subnet_network_acls[0]
         return None
 
     def update_route_table(self):
