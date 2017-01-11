@@ -25,6 +25,20 @@ angular.module('InstancesServiceModule', [])
                 };
                 return data.results;
             });
+        },
+        terminateInstance: function (csrfToken, params) {
+            params = params || {};
+            params.csrf_token = csrfToken;
+            var data = $httpParamSerializer(params);
+            return $http({
+                method: 'POST',
+                url: '/instances/terminate',
+                data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function success (response) {
+                return response;
+            });
+
         }
     };
 }]);

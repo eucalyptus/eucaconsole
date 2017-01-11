@@ -154,6 +154,17 @@
                                                 <li>
                                                     <a ng-href="/instances/{{ instance.id }}" i18n:translate="">View details</a>
                                                 </li>
+                                                <li ng-show="['shutting-down', 'terminated'].indexOf(instance.status) === -1">
+                                                    <a ng-click="ctrl.openTerminateInstanceDialog(instance)" i18n:translate="">
+                                                        Terminate
+                                                    </a>
+                                                </li>
+                                                <li ng-show="instance.status === 'terminated'"
+                                                    tal:condition="layout.cloud_type == 'euca'">
+                                                    <a ng-click="ctrl.terminateInstance($event, instance, true)" i18n:translate="">
+                                                        Remove from view
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </span>
                                     </td>
@@ -190,6 +201,28 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Terminate instance</h3>
+            <p i18n:translate="" ng-show="ctrl.selectedInstance.root_device_type === 'ebs'">
+                Terminating an EBS-backed instance may also delete the root volume if the volume is set up to do so.
+                Data on that volume will be lost. To keep the volume, you may stop the instance instead.
+            </p>
+            <p>
+                <span i18n:translate="">Are you sure you want to terminate</span>
+                <strong>{{ ctrl.selectedInstance.name }}</strong>?
+            </p>
+            <form method="post" id="terminate-form">
+                ${structure:terminate_form['csrf_token']}
+                <button type="submit" id="terminate_instance_submit_button" class="button expand" i18n:translate=""
+                        ng-click="ctrl.terminateInstance($event, ctrl.selectedInstance)">
+                    Yes, Terminate
+                </button>
+                <div ng-if="ctrl.terminatingInstance">
+                    <span i18n:translate="">Sending request </span>&nbsp;<i class="busy"></i>
+                </div>
+            </form>
+            <a href="#" id="terminate_instance_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

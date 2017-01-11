@@ -34,6 +34,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms import ChoicesManager
+from ..forms.instances import TerminateInstanceForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
     CreateVPCForm, VPCDeleteForm, SubnetForm, INTERNET_GATEWAY_HELP_TEXT
@@ -540,6 +541,7 @@ class SubnetView(TaggedItemView):
                 self.request, vpc_conn=self.vpc_conn, vpc=self.vpc, route_tables=self.vpc_route_tables,
                 subnet=self.subnet, subnet_route_table=self.subnet_route_table, formdata=self.request.params or None
             )
+            self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.subnet_name = self.get_display_name(self.subnet)
         self.tagged_obj = self.subnet
@@ -550,6 +552,7 @@ class SubnetView(TaggedItemView):
             subnet=self.subnet,
             subnet_name=self.subnet_name,
             subnet_form=self.subnet_form,
+            terminate_form=self.terminate_form,
             subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
             default_for_zone_label=_('yes') if self.subnet.defaultForAz else _('no'),
             public_ip_auto_assignment=_('Enabled') if self.subnet.mapPublicIpOnLaunch == 'true' else _('Disabled'),
@@ -627,4 +630,7 @@ class SubnetView(TaggedItemView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'subnet_id': self.subnet.id,
+            'terminated_instance_notice': _(
+                'Successfully sent request to terminate instance. It may take a moment to shut down the instance.'),
+            'removed_terminated_instance_notice': _('Successfully removed terminated instance.')
         }))
