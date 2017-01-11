@@ -76,6 +76,7 @@ class EucalyptusConnection(AWSQueryConnection):
         response = self.make_request(call, params, self.path, method)
         body = response.read().decode('utf-8')
         if response.status == 200:
+            print body
             body = json.loads(body)
             return body
         else:
@@ -96,6 +97,24 @@ class EucalyptusReporting(EucalyptusConnection):
         super(EucalyptusReporting, self).__init__(
             ufshost, port, access_id=access_id, secret_key=secret_key, token=token, path=path
         )
+
+    def view_account(self):
+        """
+        implements ViewAccount
+        """
+        params = {}
+        ret = self._do_request('ViewAccount', params, 'POST')
+        return ret
+
+    def modify_account(self, user_billing_access_enabled):
+        """
+        implements ModifyAccount
+        """
+        params = {
+            'UserBillingAccess': user_billing_access_enabled
+        }
+        ret = self._do_request('ModifyAccount', params, 'POST')
+        return ret
 
     def view_billing(self):
         """

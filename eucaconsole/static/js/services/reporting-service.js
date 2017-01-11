@@ -13,7 +13,7 @@ angular.module('ReportingServiceModule', [])
         getReportingPrefs: function () {
             return $http({
                 method: 'GET',
-                url: '/reporting_api/preferences'
+                url: '/reporting-api/preferences'
             }).then( function (response) {
                 return response.data || {
                     enabled: false
@@ -21,14 +21,15 @@ angular.module('ReportingServiceModule', [])
             });
         },
 
-        setReportingPrefs: function (enabled, bucketName, tags, csrf_token) {
+        setReportingPrefs: function (enabled, bucketName, tags, userReportsEnabled, csrf_token) {
             return $http({
                 method: 'PUT',
-                url: '/reporting_api/preferences',
+                url: '/reporting-api/preferences',
                 data: {
                     enabled: enabled,
                     bucketName: bucketName,
                     tags: tags,
+                    userReportsEnabled: userReportsEnabled,
                     csrf_token: csrf_token
                 }
             }).then( function (response) {
