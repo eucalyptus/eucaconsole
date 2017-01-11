@@ -102,6 +102,11 @@
                                 </div>
                             </div>
                             <div class="row" tal:condition="oidc_enabled">
+                                <div class="small-1 small-centered columns">
+                                    <label class="stack-label" i18n:translate="">OR</label>
+                                </div>
+                            </div>
+                            <div class="row" tal:condition="oidc_enabled">
                                 <div class="small-12 columns">
                                     <button type="submit" class="submit oidc button" ng-click="openOIDCModal($event)" id="globus-login-button">
                                         ${oidc_link_text}
