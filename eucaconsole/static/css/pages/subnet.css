@@ -25,3 +25,9 @@
 
 @media only screen and (max-width: 40em) { #name, #route_table, #public_ip_auto_assignment { width: 100%; } }
 table.instances { width: 100%; margin-bottom: 1rem; }
+
+#delete-subnet-modal #default-subnet-warning { color: red; }
+#delete-subnet-modal button.button.warning { background-color: red; }
+#delete-subnet-modal button.button.warning:hover { outline-color: red; }
+#delete-subnet-modal .resources-list { margin-bottom: 1rem; }
+#delete-subnet-modal .resources-list .small-3 { text-align: right; font-weight: bold; }

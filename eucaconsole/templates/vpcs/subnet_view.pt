@@ -187,6 +187,46 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <div id="delete-subnet-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete Subnet</h3>
+            <form id="delete-subnet-form" name="deleteSubnetForm">
+                <div>
+                    <p i18n:translate="">
+                        Deleting a subnet will disassociate or delete the following resources from the subnet.
+                    </p>
+                    <div class="resources-list">
+                        <div tal:condition="subnet_route_table" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Route table:
+                            </div>
+                            <div class="columns small-9">
+                                ${layout.get_display_name(subnet_route_table)}
+                            </div>
+                        </div>
+                        <div tal:condition="subnet_network_acl" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Network ACL:
+                            </div>
+                            <div class="columns small-9">
+                                ${subnet_network_acl.name}
+                            </div>
+                        </div>
+                    </div>
+                    <p i18n:translate="" tal:condition="default_for_zone" class="default-subnet-warning">
+                        WARNING: This subnet is the default for the availability zone. If you delete the subnet,
+                        you will need to contact your cloud administrator to recreate a default subnet for your zone.
+                    </p>
+                    <p>
+                        <span i18n:translate="">Are you sure you want to delete subnet</span>
+                        <strong>${subnet_name}</strong>?
+                    </p>
+                </div>
+                <button class="button expand ${'warning' if default_for_zone else ''}" i18n:translate="">
+                    Yes, Delete Subnet
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

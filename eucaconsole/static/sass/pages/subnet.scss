@@ -34,3 +34,24 @@ table.instances {
   width: 100%;
   margin-bottom: 1rem;
 }
+
+
+// Delete subnet modal
+#delete-subnet-modal {
+  #default-subnet-warning {
+    color: red;
+  }
+  button.button.warning {
+    background-color: red;
+    &:hover {
+      outline-color: red;
+    }
+  }
+  .resources-list {
+    margin-bottom: 1rem;
+    .small-3 {
+      text-align: right;
+      font-weight: bold;
+    }
+  }
+}

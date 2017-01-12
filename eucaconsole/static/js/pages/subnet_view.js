@@ -13,6 +13,7 @@ angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule'
         vm.instancesLoading = true;
         vm.selectedInstance = {};
         vm.subnetInstances = [];
+        vm.nonTerminatedInstances = [];
         vm.subnetInstanceLimit = 25;  // Limit subnet instances table to 25 rows
         vm.subnetId = '';
 
@@ -29,6 +30,9 @@ angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule'
                 function success(results) {
                     vm.instancesLoading = false;
                     vm.subnetInstances = results;
+                    vm.nonTerminatedInstances = results.filter(function (instance) {
+                        return instance.status !== 'terminated';
+                    });
                     var transitionalCount = results.filter(function(instance) {
                         return instance.transitional;
                     }).length;
