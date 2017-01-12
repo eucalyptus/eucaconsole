@@ -19,7 +19,7 @@
 
     <div class="row controls-wrapper">
         <div class="columns">
-            <listener-editor ng-model="general.values.listeners"></listener-editor>
+            <listener-editor ng-model="general.values.listeners" cloud-type="{{general.cloudType}}"></listener-editor>
         </div>
     </div>
 

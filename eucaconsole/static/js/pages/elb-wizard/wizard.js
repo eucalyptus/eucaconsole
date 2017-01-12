@@ -5,7 +5,7 @@ angular.module('ELBWizard', [
     'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule', 'BucketServiceModule',
     'ModalModule', 'CreateBucketModule', 'ELBServiceModule'
 ])
-.directive('elbWizard', function () {
+.directive('elbWizard', function (ELBWizardService) {
     return {
         restrict: 'A',
         scope: {
@@ -50,6 +50,7 @@ angular.module('ELBWizard', [
                 });
                 return validSteps;
             };
+            ELBWizardService.cloudType = $scope.cloudType;
         }],
         controllerAs: 'wizard'
     };
@@ -59,6 +60,7 @@ angular.module('ELBWizard', [
     var svc = {
         certsAvailable: [],
         policies: [],
+        cloudType: '',
         values: {
             elbName: '',
             listeners: [{

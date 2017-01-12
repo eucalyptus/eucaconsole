@@ -3,7 +3,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
     return {
         restrict: 'E',
         scope: {
-            listeners: '=ngModel'
+            listeners: '=ngModel',
+            cloudType: '@'
         },
         templateUrl: '/_template/elbs/listener-editor/listener-editor',
         controller: ['$scope', 'ModalService', function ($scope, ModalService) {
@@ -20,6 +21,11 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
                 {name: 'TCP', value: 'TCP', port: 80},
                 {name: 'SSL', value: 'SSL', port: 443}
             ];
+            if ($scope.cloudType == 'aws') {  // remove HTTPS and SSL listeners since we don't have cert access
+                this.protocols = this.protocols.filter(function (val) {
+                    return !(val.value == 'HTTPS' || val.value == 'SSL');
+                });
+            }
 
             this.from = this.protocols[0];
             this.to = this.protocols[0];
@@ -42,7 +48,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
 
             this.portsValid = function () {
                 var fromValid = this.sourceValid(vm.from);
-                var toValid = this.targetValid(vm.to);
+                var toValid = (vm.to != null)?this.targetValid(vm.to):true;
 
                 return fromValid && toValid;
             };
