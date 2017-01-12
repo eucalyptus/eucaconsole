@@ -118,7 +118,11 @@
                         </thead>
                         <tbody>
                             <tr tal:repeat="subnet vpc_subnets">
-                                <td>${subnet.name}</td>
+                                <td>
+                                    <a href="${request.route_path('subnet_view', vpc_id=vpc.id, id=subnet.id)}">
+                                        ${subnet.name}
+                                    </a>
+                                </td>
                                 <td><span class="label radius state ${subnet.state}">${subnet.state}</span></td>
                                 <td>${subnet.cidr_block}</td>
                                 <td>${subnet.available_ips}</td>
@@ -227,7 +231,9 @@
                         and terminate all instances in the subnet.
                     </p>
                     <span tal:repeat="subnet vpc_subnets">
-                        ${subnet.name}
+                        <a href="${request.route_path('subnet_view', vpc_id=vpc.id, id=subnet.id)}">
+                            ${subnet.name}
+                        </a>
                     </span>
                 </div>
                 <div tal:condition="not vpc_subnets">

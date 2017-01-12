@@ -14,7 +14,7 @@ var Notify = (function() {
                     .append($('<span>')))
                 .append($('<div class="message">')
                     .text(message))
-                .append($('<a class="close" href="#">&times;</a>')
+                .append($('<a class="close">&times;</a>')
                     .click(function () {
                         Notify.clear();
                     }))));

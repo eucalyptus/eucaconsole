@@ -474,7 +474,8 @@ class ChoicesManager(object):
         from ..views import TaggedItemView
         choices = []
         if add_blank:
-            choices = [('None', _(u'None'))]
+            # NOTE: Do not mark the 'None' value for i18n
+            choices = [('None', _(u'None (use main route table for VPC)'))]
         filters = {}
         if vpc is not None:
             filters.update({

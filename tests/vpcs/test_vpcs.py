@@ -31,8 +31,9 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 """
 from pyramid import testing
 
+from eucaconsole.i18n import _
 from eucaconsole.forms import BaseSecureForm
-from eucaconsole.forms.vpcs import VPCForm, CreateVPCForm
+from eucaconsole.forms.vpcs import VPCForm, CreateVPCForm, SubnetForm
 
 from tests import BaseFormTestCase
 
@@ -80,3 +81,27 @@ class CreateVPCFormTestCase(BaseFormTestCase):
         errors_list = self.form.get_errors_list()
         error = u'cidr_block: A valid CIDR block is required'
         self.assertIn(error, errors_list)
+
+
+class SubnetFormTestCase(BaseFormTestCase):
+    """Subnet details page form"""
+    form_class = SubnetForm
+    request = testing.DummyRequest()
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
+
+    def test_secure_form(self):
+        self.has_field('csrf_token')
+        self.assertTrue(issubclass(self.form_class, BaseSecureForm))
+
+    def test_optional_fields(self):
+        self.assert_not_required('name')
+        self.assert_not_required('route_table')
+
+    def test_public_ip_auto_assignment_field(self):
+        expected_choices = (
+            ('true', _('Enabled')),
+            ('false', _('Disabled')),
+        )
+        self.assertEqual(self.form.public_ip_auto_assignment.choices, expected_choices)

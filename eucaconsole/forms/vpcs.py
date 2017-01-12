@@ -155,3 +155,55 @@ class CreateVPCForm(BaseSecureForm):
             'may lead to unpredictable behavior.'
         )
         self.internet_gateway.help_text = INTERNET_GATEWAY_HELP_TEXT
+
+
+class SubnetForm(BaseSecureForm):
+    """Form to update an existing subnet"""
+    name_error_msg = _('Not a valid name')
+    name = TextEscapedField(label=_('Name'))
+    route_table = SelectField(label=_('Route table'))
+    route_table_help_text = _(
+        "A route table controls how traffic originating from VPC subnets are directed. "
+        "Select 'None' to automatically use the VPC's main route table."
+    )
+    public_ip_auto_assignment = SelectField(label=_('Public IP auto-assignment'))
+    public_ip_auto_assignment_help_text = _(
+        "Public IP auto-assignment automatically requests a public IP address "
+        "for instances launched into this subnet."
+    )
+
+    def __init__(self, request, vpc_conn=None, vpc=None, route_tables=None,
+                 subnet=None, subnet_route_table=None, **kwargs):
+        super(SubnetForm, self).__init__(request, **kwargs)
+        self.vpc_conn = vpc_conn
+        self.vpc = vpc
+        self.route_tables = route_tables
+        self.subnet = subnet
+        self.subnet_route_table = subnet_route_table
+        self.name.error_msg = self.name_error_msg
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
+        self.set_initial_data()
+        self.set_choices()
+        self.set_help_text()
+
+    def set_initial_data(self):
+        if self.subnet:
+            self.name.data = self.subnet.tags.get('Name', '')
+            self.public_ip_auto_assignment.data = self.subnet.mapPublicIpOnLaunch
+
+        if self.subnet_route_table is None:
+            self.route_table.data = 'None'
+        else:
+            self.route_table.data = self.subnet_route_table.id
+
+    def set_choices(self):
+        self.route_table.choices = self.vpc_choices_manager.vpc_route_tables(
+            vpc=self.vpc, route_tables=self.route_tables)
+        self.public_ip_auto_assignment.choices = (
+            ('true', _('Enabled')),
+            ('false', _('Disabled')),
+        )
+
+    def set_help_text(self):
+        self.route_table.help_text = self.route_table_help_text
+        self.public_ip_auto_assignment.help_text = self.public_ip_auto_assignment_help_text
