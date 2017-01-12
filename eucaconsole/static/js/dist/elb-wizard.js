@@ -219,7 +219,7 @@ angular.module('ELBWizard', [
     'ZonesServiceModule', 'VPCServiceModule', 'ELBServiceModule', 'BucketServiceModule',
     'ModalModule', 'CreateBucketModule', 'ELBServiceModule'
 ])
-.directive('elbWizard', function (ELBWizardService) {
+.directive('elbWizard', ['ELBWizardService', function (ELBWizardService) {
     return {
         restrict: 'A',
         scope: {
@@ -268,7 +268,7 @@ angular.module('ELBWizard', [
         }],
         controllerAs: 'wizard'
     };
-})
+}])
 .factory('ELBWizardService', ['$location', 'WizardService', function ($location, WizardService) {
 
     var svc = {
