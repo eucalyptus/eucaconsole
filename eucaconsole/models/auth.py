@@ -44,6 +44,8 @@ from boto.ec2.connection import EC2Connection
 from boto.vpc import VPCConnection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
+from boto.sqs.connection import SQSConnection
+from boto.sns.connection import SNSConnection
 from boto.sts.connection import STSConnection
 # uncomment to enable boto request logger. Use only for development (see ref in euca_connection)
 # from boto.requestlog import RequestLogger
@@ -177,10 +179,10 @@ class ConnectionManager(object):
             conn_class = boto.ec2.elb.ELBConnection
         elif conn_type == 'sqs':
             path = 'sqs'
-            conn_class = boto.sqs.SQSConnection
+            conn_class = SQSConnection
         elif conn_type == 'sns':
             path = 'sns'
-            conn_class = boto.sns.SNSConnection
+            conn_class = SNSConnection
         elif conn_type == 'vpc':
             path = 'ec2'
             conn_class = VPCConnection
