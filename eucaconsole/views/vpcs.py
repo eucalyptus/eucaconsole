@@ -642,4 +642,7 @@ class SubnetView(TaggedItemView):
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
             'subnet_id': self.subnet.id,
+            'terminated_instances_notice': _(
+                'Successfully sent request to terminate instances. It may take a moment to shut down the instances.'
+            ),
         }))

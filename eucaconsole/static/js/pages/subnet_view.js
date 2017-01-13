@@ -11,16 +11,20 @@ angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule'
                                                    eucaUnescapeJson, eucaHandleError) {
         var vm = this;
         vm.instancesLoading = true;
+        vm.sendingTerminateInstancesRequest = false;
         vm.selectedInstance = {};
         vm.subnetInstances = [];
         vm.nonTerminatedInstances = [];
         vm.subnetInstanceLimit = 25;  // Limit subnet instances table to 25 rows
+        vm.terminatedInstancesNotice = '';
         vm.subnetId = '';
 
         vm.init = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            vm.terminatedInstancesNotice = options.terminated_instances_notice;
             vm.subnetId = options.subnet_id;
             vm.fetchSubnetInstances();
+            vm.setWatch();
         };
 
         vm.fetchSubnetInstances = function () {
@@ -47,6 +51,33 @@ angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule'
                 });
         };
 
+        vm.terminateInstances = function ($event) {
+            $event.preventDefault();
+            vm.sendingTerminateInstancesRequest = true;
+            var csrfToken = $('#csrf_token').val();
+            var instanceIDs = vm.nonTerminatedInstances.map(function (instance) {
+                return instance.id;
+            }).join(',');
+            var params = {'instance_id': instanceIDs};
 
+            InstancesService.terminateInstances(csrfToken, params).then(
+                function success() {
+                vm.sendingTerminateInstancesRequest = false;
+                    $('#delete-subnet-modal').foundation('reveal', 'close');
+                    $rootScope.$broadcast('instancesTerminating');
+                    Notify.success(vm.terminatedInstancesNotice);
+                },
+                function error(errData) {
+                vm.sendingTerminateInstancesRequest = false;
+                    eucaHandleError(errData.data.message, errData.status);
+                }
+            );
+        };
+
+        vm.setWatch = function () {
+            $rootScope.$on('instancesTerminating', function () {
+                vm.fetchSubnetInstances();
+            });
+        };
     })
 ;

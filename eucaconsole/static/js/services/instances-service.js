@@ -26,7 +26,7 @@ angular.module('InstancesServiceModule', [])
                 return data.results;
             });
         },
-        terminateInstance: function (csrfToken, params) {
+        terminateInstances: function (csrfToken, params) {
             params = params || {};
             params.csrf_token = csrfToken;
             var data = $httpParamSerializer(params);
