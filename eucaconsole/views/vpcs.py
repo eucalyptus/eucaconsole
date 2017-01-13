@@ -547,6 +547,7 @@ class SubnetView(TaggedItemView):
         self.subnet_name = self.get_display_name(self.subnet)
         self.tagged_obj = self.subnet
         self.title_parts = [_(u'Subnet'), self.subnet_name]
+        subnet_is_default_for_zone = self.subnet.defaultForAz == 'true'
         self.render_dict = dict(
             vpc=self.vpc,
             vpc_name=self.vpc_name,
@@ -557,8 +558,8 @@ class SubnetView(TaggedItemView):
             subnet_form=self.subnet_form,
             terminate_form=self.terminate_form,
             subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
-            default_for_zone=self.subnet.defaultForAz,
-            default_for_zone_label=_('yes') if self.subnet.defaultForAz else _('no'),
+            default_for_zone=subnet_is_default_for_zone,
+            default_for_zone_label=_('yes') if subnet_is_default_for_zone else _('no'),
             public_ip_auto_assignment=_('Enabled') if self.subnet.mapPublicIpOnLaunch == 'true' else _('Disabled'),
             tags=self.serialize_tags(self.subnet.tags) if self.subnet else [],
             controller_options_json=self.get_controller_options_json(),
