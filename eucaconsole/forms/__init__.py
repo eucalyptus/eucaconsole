@@ -278,22 +278,6 @@ class ChoicesManager(object):
             ret.append(('none', _(u'None')))
         return ret
 
-    def elastic_ips(self, instance=None, ipaddresses=None):
-        choices = []
-        ipaddresses = ipaddresses or []
-        if not ipaddresses and self.conn is not None:
-            ipaddresses = self.conn.get_all_addresses()
-        if instance and instance.state == 'running':
-            choices.append(('', _(u'Unassign Address')))
-        for eip in ipaddresses:
-            if eip.instance_id is None or eip.instance_id == '':
-                choices.append((eip.public_ip, eip.public_ip))
-        if instance and instance.ip_address:
-            choices.append((instance.ip_address, instance.ip_address))
-        if instance and instance.ip_address is None and instance.state == 'stopped':
-            choices.append(('none', _(u'no address in stopped state')))
-        return sorted(set(choices))
-
     def kernels(self, kernel_images=None, image=None):
         """Get kernel id choices"""
         choices = [('', _(u'Use default from image'))]
