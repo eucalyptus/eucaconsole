@@ -35,7 +35,7 @@ from pyramid.security import Authenticated
 from pyramid.testing import DummyRequest
 
 from eucaconsole.forms.login import AWSLoginForm, EucaLoginForm
-from eucaconsole.models.auth import AWSAuthenticator, User, groupfinder
+from eucaconsole.models.auth import AWSAuthenticator, User, groupfinder, ConnectionManager
 from eucaconsole.views import BaseView
 from eucaconsole.views.login import LogoutView
 from tests import BaseTestCase, BaseFormTestCase, BaseViewTestCase
@@ -84,7 +84,6 @@ class AWSAuthTestCase(BaseTestCase):
         self.assertEqual(self.auth.package, self.expected_url)
 
     def test_aws_authentication_failure(self):
-        import logging; logging.info("url = "+self.expected_url)
         try:
             self.auth.authenticate(timeout=1)
             self.assertFalse(True, msg="Auth should have thrown an exception")
@@ -124,3 +123,12 @@ class LogoutViewTestCase(BaseViewTestCase):
         request = self.create_request()
         view = LogoutView(request).logout
         self.assert_(isinstance(view(), HTTPFound))
+
+
+class AWSConnectionCase(BaseTestCase):
+    def test_host_for_region(self):
+        conn = ConnectionManager.aws_connection('eu-west-2', 'access', 'secret', 'token', 'ec2', True)
+        self.assertEqual(conn.host, 'ec2.eu-west-2.amazonaws.com')
+
+        conn = ConnectionManager.aws_connection('invalid-region', 'access', 'secret', 'token', 'ec2', True)
+        self.assertEqual(conn, None)
