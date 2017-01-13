@@ -44,8 +44,6 @@ from boto.ec2.connection import EC2Connection
 from boto.vpc import VPCConnection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
-from boto.sqs.connection import SQSConnection
-from boto.sns.connection import SNSConnection
 from boto.sts.connection import STSConnection
 # uncomment to enable boto request logger. Use only for development (see ref in euca_connection)
 # from boto.requestlog import RequestLogger
