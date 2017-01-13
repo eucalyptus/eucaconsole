@@ -278,8 +278,8 @@ class ChoicesManager(object):
             ret.append(('none', _(u'None')))
         return ret
 
-    def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
-        choices = []  # ('', _(u'None assigned'))]
+    def elastic_ips(self, instance=None, ipaddresses=None):
+        choices = []
         ipaddresses = ipaddresses or []
         if not ipaddresses and self.conn is not None:
             ipaddresses = self.conn.get_all_addresses()

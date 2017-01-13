@@ -49,7 +49,6 @@ class InstanceForm(BaseSecureForm):
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
     userdata_file = wtforms.FileField(label='')
-    ip_address = wtforms.SelectField(label=_(u'Public IP address'))
     monitored = wtforms.BooleanField(label=_(u'Monitoring enabled'))
     kernel = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk = wtforms.SelectField(label=_(u'RAM disk ID (ramfs)'))
@@ -69,14 +68,12 @@ class InstanceForm(BaseSecureForm):
         if instance is not None:
             self.name.data = instance.tags.get('Name', '')
             self.instance_type.data = instance.instance_type
-            self.ip_address.data = instance.ip_address or 'none'
             self.monitored.data = instance.monitored
             self.kernel.data = instance.kernel or ''
             self.ramdisk.data = instance.ramdisk or ''
             self.userdata.data = ''
 
     def set_choices(self):
-        self.ip_address.choices = self.choices_manager.elastic_ips(instance=self.instance)
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
         self.kernel.choices = self.choices_manager.kernels()
         self.ramdisk.choices = self.choices_manager.ramdisks()
@@ -141,7 +138,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.choices_manager = ChoicesManager(conn=conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_help_text()
-        self.set_choices(request)
+        self.set_choices()
         self.set_monitoring_enabled_field()
         self.role.data = ''
 
@@ -169,7 +166,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.associate_public_ip_address.help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
 
-    def set_choices(self, request):
+    def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         self.zone.choices = self.get_availability_zone_choices()
         if self.cloud_type == 'euca' and self.is_vpc_supported:
