@@ -8,6 +8,7 @@ angular.module('ELBWizard')
         ELBWizardService.policies = policies;
 
         this.values = ELBWizardService.values;
+        this.cloudType = ELBWizardService.cloudType;
 
         this.submit = function () {
             if($scope.generalForm.$invalid) {
