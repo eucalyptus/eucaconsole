@@ -90,10 +90,8 @@
                     <div>
                         ${panel('form_field', field=subnet_form.route_table, leftcol_width_large=3, rightcol_width_large=9)}
                     </div>
-                    <div class="row controls-wrapper readonly">
-                        <!--! TODO: Replace with form field when boto supports ModifySubnetAttribute -->
-                        <div class="large-3 small-4 columns"><label i18n:translate="">Public IP auto-assignment</label></div>
-                        <div class="large-9 small-8 columns value">${public_ip_auto_assignment}</div>
+                    <div>
+                        ${panel('form_field', field=subnet_form.public_ip_auto_assignment, leftcol_width_large=3, rightcol_width_large=9)}
                     </div>
                     <hr />
                     <div class="row">

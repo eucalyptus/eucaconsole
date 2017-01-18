@@ -588,7 +588,8 @@ class SubnetView(TaggedItemView):
                 # Update route table
                 self.update_route_table()
 
-                # TODO: Allow public IP auto-assignment to be set when Boto supports ModifySubnetAttribute
+                # Update public IP auto-assignment value
+                self.modify_public_auto_ip_assignment()
 
             msg = _(u'Successfully updated subnet')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -666,6 +667,14 @@ class SubnetView(TaggedItemView):
                     self.vpc_conn.disassociate_route_table(association.id)
         if 'associate' in actions:
             self.vpc_conn.associate_route_table(new_route_table_id, self.subnet.id)
+
+    def modify_public_auto_ip_assignment(self):
+        map_public_ip_on_launch = self.request.params.get('public_ip_auto_assignment', 'false')
+        params = {
+            'SubnetId': self.subnet.id,
+            'MapPublicIpOnLaunch.Value': map_public_ip_on_launch
+        }
+        self.vpc_conn.get_status('ModifySubnetAttribute', params)
 
     def get_controller_options_json(self):
         return BaseView.escape_json(json.dumps({
