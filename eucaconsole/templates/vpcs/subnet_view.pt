@@ -189,8 +189,10 @@
         <!--! Modal dialogs -->
         <div id="delete-subnet-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Delete Subnet</h3>
-            <form id="delete-subnet-form" name="deleteSubnetForm" ng-cloak=""
-                  ng-if="ctrl.nonTerminatedInstances.length === 0">
+            <form id="delete-subnet-form" name="deleteSubnetForm" ng-cloak="" method="post"
+                  ng-if="ctrl.nonTerminatedInstances.length === 0"
+                  action="${request.route_path('subnet_delete', vpc_id=vpc.id, id=subnet.id)}">
+                ${structure:subnet_delete_form['csrf_token']}
                 <p i18n:translate="">
                     Deleting a subnet will disassociate or delete the following resources from the subnet.
                 </p>

@@ -108,6 +108,10 @@ class VPCDeleteForm(BaseSecureForm):
     pass
 
 
+class SubnetDeleteForm(BaseSecureForm):
+    pass
+
+
 class VPCMainRouteTableForm(BaseSecureForm):
     """VPC form to set main route table"""
     route_table = SelectField(label=_('Route table'))

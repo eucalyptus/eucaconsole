@@ -37,7 +37,7 @@ from ..forms import ChoicesManager
 from ..forms.instances import TerminateInstanceForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
-    CreateVPCForm, VPCDeleteForm, SubnetForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateVPCForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -542,6 +542,7 @@ class SubnetView(TaggedItemView):
                 self.request, vpc_conn=self.vpc_conn, vpc=self.vpc, route_tables=self.vpc_route_tables,
                 subnet=self.subnet, subnet_route_table=self.subnet_route_table, formdata=self.request.params or None
             )
+            self.subnet_delete_form = SubnetDeleteForm(self.request, formdata=self.request.params or None)
             self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.subnet_name = self.get_display_name(self.subnet)
@@ -556,6 +557,7 @@ class SubnetView(TaggedItemView):
             subnet_route_table=self.subnet_route_table,
             subnet_network_acl=self.subnet_network_acl,
             subnet_form=self.subnet_form,
+            subnet_delete_form=self.subnet_delete_form,
             terminate_form=self.terminate_form,
             subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
             default_for_zone=subnet_is_default_for_zone,
@@ -594,6 +596,32 @@ class SubnetView(TaggedItemView):
         else:
             self.request.error_messages = self.subnet_form.get_errors_list()
         return self.render_dict
+
+    @view_config(route_name='subnet_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def subnet_delete(self):
+        if self.subnet and self.subnet_delete_form.validate():
+            deleted_subnet_name = TaggedItemView.get_display_name(self.subnet)
+            with boto_error_handler(self.request, self.location):
+                # Disassociate route table from subnet
+                if self.subnet_route_table:
+                    for association in self.subnet_route_table.associations:
+                        if association.subnet_id == self.subnet.id:
+                            self.vpc_conn.disassociate_route_table(association.id)
+
+                # Disassociate network ACL from subnet
+                if self.subnet_network_acl:
+                    self.vpc_conn.disassociate_network_acl(self.subnet.id)
+
+                # Finally, delete subnet
+                self.log_request(_('Deleting subnet {0}').format(self.subnet.id))
+                self.vpc_conn.delete_subnet(self.subnet.id)
+
+            msg = _('Successfully deleted subnet {0}').format(deleted_subnet_name)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('vpcs'))
+        else:
+            self.request.error_messages = self.subnet_delete_form.get_errors_list()
+            return self.render_dict
 
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('vpc_id')
