@@ -179,6 +179,40 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <!--! Add subnet modal dialog -->
+        <div id="add-subnet-modal" class="reveal-modal medium" data-reveal="" novalidate="novalidate">
+            <h3 i18n:translate="">Add subnet</h3>
+            <form id="add-subnet-form" method="post" data-abide="abide"
+                  action="${request.route_path('vpc_add_subnet', id=vpc.id)}">
+                ${structure:add_subnet_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Add a subnet to VPC</span>
+                    <strong>${vpc_name}</strong>,
+                    <span i18n:translate="">which has a CIDR block of</span>
+                    <strong>${vpc.cidr_block}</strong>.
+                    <span i18n:translate="">
+                        Use the CIDR format to specify your subnet's IP address block (e.g. 10.0.0.0/24).
+                        Note that block sizes must be between a /16 netmask and a /28 netmask.
+                        Also, note that a subnet can be the same size as your VPC.
+                    </span>
+                </p>
+                <div>
+                    ${panel('form_field', field=add_subnet_form['name'], stack_label=True)}
+                </div>
+                <div>
+                    ${panel('form_field', field=add_subnet_form['cidr_block'], stack_label=True, pattern=add_subnet_form.cidr_block_regex)}
+                </div>
+                <div>
+                    ${panel('form_field', field=add_subnet_form['availability_zone'], stack_label=True)}
+                </div>
+                <hr />
+                <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
+                <button class="button expand" i18n:translate="">
+                    Add Subnet
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
         <!--! Set Main Route Table modal dialog -->
         <div id="set-main-route-table-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Set main route table</h3>

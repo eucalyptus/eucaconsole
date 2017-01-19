@@ -37,7 +37,7 @@ from ..forms import ChoicesManager
 from ..forms.instances import TerminateInstanceForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
-    CreateVPCForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateVPCForm, VPCDeleteForm, SubnetForm, CreateSubnetForm, SubnetDeleteForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -219,6 +219,8 @@ class VPCView(TaggedItemView):
                 vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
             self.create_internet_gateway_form = CreateInternetGatewayForm(
                 self.request, formdata=self.request.params or None)
+            self.add_subnet_form = CreateSubnetForm(
+                self.request, ec2_conn=self.conn, formdata=self.request.params or None)
         self.vpc_delete_form = VPCDeleteForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
@@ -229,6 +231,7 @@ class VPCView(TaggedItemView):
             vpc_form=self.vpc_form,
             vpc_delete_form=self.vpc_delete_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
+            add_subnet_form=self.add_subnet_form,
             create_internet_gateway_form=self.create_internet_gateway_form,
             internet_gateway_help_text=INTERNET_GATEWAY_HELP_TEXT,
             max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
@@ -310,6 +313,24 @@ class VPCView(TaggedItemView):
         else:
             self.request.error_messages = self.vpc_delete_form.get_errors_list()
             return self.render_dict
+
+    @view_config(route_name='vpc_add_subnet', renderer=VIEW_TEMPLATE, request_method='POST')
+    def vpc_add_subnet(self):
+        location = self.request.route_path('vpc_view', id=self.vpc.id)
+        if self.add_subnet_form.validate():
+            name = self.request.params.get('name')
+            cidr_block = self.request.params.get('cidr_block')
+            zone = self.request.params.get('availability_zone')
+            with boto_error_handler(self.request, location=location):
+                new_subnet = self.vpc_conn.create_subnet(self.vpc.id, cidr_block, availability_zone=zone)
+                if name:
+                    new_subnet.add_tag('Name', name)
+            prefix = _(u'Successfully created subnet')
+            msg = '{0} {1}'.format(prefix, new_subnet.id)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+        else:
+            self.request.error_messages = ', '.join(self.add_subnet_form.get_errors_list())
+        return HTTPFound(location=location)
 
     @view_config(route_name='vpc_set_main_route_table', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_set_main_route_table(self):

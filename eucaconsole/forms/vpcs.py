@@ -161,6 +161,28 @@ class CreateVPCForm(BaseSecureForm):
         self.internet_gateway.help_text = INTERNET_GATEWAY_HELP_TEXT
 
 
+class CreateSubnetForm(BaseSecureForm):
+    name_error_msg = _('Not a valid name')
+    name = StringField(label=_('Name'))
+    cidr_block_error_msg = _('A valid CIDR block is required')
+    cidr_block_regex = CIDR_BLOCK_REGEX
+    cidr_block = StringField(
+        label=_('CIDR block'),
+        validators=[
+            validators.InputRequired(message=cidr_block_error_msg),
+            validators.Regexp(CIDR_BLOCK_REGEX, message=cidr_block_error_msg),
+        ]
+    )
+    availability_zone = SelectField(label=_('Availability zone'))
+
+    def __init__(self, request, ec2_conn=None, **kwargs):
+        super(CreateSubnetForm, self).__init__(request, **kwargs)
+        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        self.availability_zone.choices = self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
+        self.name.error_msg = self.name_error_msg
+        self.cidr_block.error_msg = self.cidr_block_error_msg
+
+
 class SubnetForm(BaseSecureForm):
     """Form to update an existing subnet"""
     name_error_msg = _('Not a valid name')
