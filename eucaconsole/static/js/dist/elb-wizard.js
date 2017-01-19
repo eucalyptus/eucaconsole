@@ -60,14 +60,18 @@ angular.module('BucketServiceModule', [])
 }]);
 
 angular.module('InstancesServiceModule', [])
-.factory('InstancesService', ['$http', function ($http) {
+.factory('InstancesService', ['$http', '$httpParamSerializer', function ($http, $httpParamSerializer) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     return {
-        getInstances: function (csrfToken) {
+        getInstances: function (csrfToken, params) {
+            // Pass params as an object (e.g. {'subnet_id': 'subnet-123456'} to filter by subnet)
+            params = params || {};
+            params.csrf_token = csrfToken;
+            var data = $httpParamSerializer(params);
             return $http({
                 method: 'POST',
                 url: '/instances/json',
-                data: 'csrf_token=' + csrfToken,
+                data: data,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function success (response) {
                 var data = response.data || {
@@ -75,6 +79,20 @@ angular.module('InstancesServiceModule', [])
                 };
                 return data.results;
             });
+        },
+        terminateInstance: function (csrfToken, params) {
+            params = params || {};
+            params.csrf_token = csrfToken;
+            var data = $httpParamSerializer(params);
+            return $http({
+                method: 'POST',
+                url: '/instances/terminate',
+                data: data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(function success (response) {
+                return response;
+            });
+
         }
     };
 }]);
@@ -144,14 +162,14 @@ angular.module('ELBServiceModule', [])
         createELB: function (csrfToken, values) {
             // update listeners to be passed to API call
             var listeners = JSON.parse(JSON.stringify(values.listeners));
-            var backendCertificates = '';
+            var backendCertificates = [];
             listeners.forEach(function(val) {
                 if (val.certificate) {
                     val.certificateARN = val.certificate.arn;
                     val.certificate = undefined;
                 }
                 if (val.backendCertificates) {
-                    backendCertificates = val.backendCertificates;
+                    backendCertificates = [val.backendCertificates];
                 }
             });
             var data = {
@@ -613,12 +631,23 @@ angular.module('ELBWizard')
         // https://github.com/leocaseiro/angular-chosen/issues/145
         $scope.$watch('instances.availabilityZones', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
+            if (newval === undefined) {  // avoid situation where newval is incorrectly undefined
+                vm.availabilityZones = [];
+                return;
+            }
+            if (oldval === undefined) return;
             vm.handleDeselection(newval, oldval, 'availability_zone');
-        });
+        }, true);
         $scope.$watch('instances.vpcSubnets', function(newval, oldval) {
             if (newval === oldval) return;  // leave unless there's a change
+            if (newval === undefined) {  // avoid situation where newval is incorrectly undefined
+                vm.vpcSubnets = [];
+                return;
+            }
+            if (oldval === undefined) return;
             vm.handleDeselection(newval, oldval, 'subnet_id');
-        });
+            $scope.instanceForm.vpc_subnet.$validate();
+        }, true);
         vm.handleDeselection = function(newval, oldval, field) {
             var valDiff = oldval.filter(function(x) {
                 var idx = newval.findIndex(function(val) {

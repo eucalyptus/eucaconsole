@@ -12,6 +12,7 @@
                 <select id="zone" multiple="" chosen="true" search-contains="true" width="100"
                     ng-model="instances.availabilityZones" focus-on-load="true" required=""
                     ng-options="zone as zone.label for zone in instances.availabilityZoneChoices track by zone.id"
+                    name="zone"
                     data-placeholder="Select availability zones" i18n:attributes="data-placeholder">
                 </select>
             </div>
@@ -35,6 +36,7 @@
                 <select id="vpc_subnet" multiple="" chosen="true" search-containers="true" width="100"
                     ng-model="instances.vpcSubnets" focus-on-load="true" required=""
                     ng-options="subnet as subnet.label for subnet in instances.vpcSubnetChoices track by subnet.id"
+                    name="vpc_subnet"
                     data-placeholder="Select VPC subnets" i18n:attributes="data-placeholder">
                 </select>
             </div>
