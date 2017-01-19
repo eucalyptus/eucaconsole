@@ -163,7 +163,7 @@ urls = [
     Route(name='elbs_delete', pattern='/elbs/delete'),
     # Detail page
     Route(name='elb_wizard', pattern='/elbs/wizard*step'),
-    Route(name='elb_new', pattern='/elbs/new'),
+    Route(name='elb_new', pattern='/elbs/wizard'),
     Route(name='elb_create', pattern='/elbs/create'),
     Route(name='elb_delete', pattern='/elbs/{id}/delete'),
     Route(name='elb_view', pattern='/elbs/{id}'),
