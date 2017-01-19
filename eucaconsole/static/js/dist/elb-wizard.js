@@ -162,14 +162,14 @@ angular.module('ELBServiceModule', [])
         createELB: function (csrfToken, values) {
             // update listeners to be passed to API call
             var listeners = JSON.parse(JSON.stringify(values.listeners));
-            var backendCertificates = '';
+            var backendCertificates = [];
             listeners.forEach(function(val) {
                 if (val.certificate) {
                     val.certificateARN = val.certificate.arn;
                     val.certificate = undefined;
                 }
                 if (val.backendCertificates) {
-                    backendCertificates = val.backendCertificates;
+                    backendCertificates = [val.backendCertificates];
                 }
             });
             var data = {
