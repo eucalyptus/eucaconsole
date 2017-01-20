@@ -318,8 +318,8 @@ class VPCView(TaggedItemView):
     def vpc_add_subnet(self):
         location = self.request.route_path('vpc_view', id=self.vpc.id)
         if self.add_subnet_form.validate():
-            name = self.request.params.get('name')
-            cidr_block = self.request.params.get('cidr_block')
+            name = self.request.params.get('subnet_name')
+            cidr_block = self.request.params.get('subnet_cidr_block')
             zone = self.request.params.get('availability_zone')
             with boto_error_handler(self.request, location=location):
                 new_subnet = self.vpc_conn.create_subnet(self.vpc.id, cidr_block, availability_zone=zone)

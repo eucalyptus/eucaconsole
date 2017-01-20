@@ -163,10 +163,10 @@ class CreateVPCForm(BaseSecureForm):
 
 class CreateSubnetForm(BaseSecureForm):
     name_error_msg = _('Not a valid name')
-    name = StringField(label=_('Name'))
+    subnet_name = StringField(label=_('Name'))
     cidr_block_error_msg = _('A valid CIDR block is required')
     cidr_block_regex = CIDR_BLOCK_REGEX
-    cidr_block = StringField(
+    subnet_cidr_block = StringField(
         label=_('CIDR block'),
         validators=[
             validators.InputRequired(message=cidr_block_error_msg),
@@ -179,8 +179,8 @@ class CreateSubnetForm(BaseSecureForm):
         super(CreateSubnetForm, self).__init__(request, **kwargs)
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.availability_zone.choices = self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
-        self.name.error_msg = self.name_error_msg
-        self.cidr_block.error_msg = self.cidr_block_error_msg
+        self.subnet_name.error_msg = self.name_error_msg
+        self.subnet_cidr_block.error_msg = self.cidr_block_error_msg
 
 
 class SubnetForm(BaseSecureForm):

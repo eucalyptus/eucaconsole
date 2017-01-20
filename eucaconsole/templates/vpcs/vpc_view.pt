@@ -138,6 +138,7 @@
                                     </div>
                                 </td>
                                 <td>
+                                    <div tal:condition="subnet.instance_count == 0" i18n:translate="">none</div>
                                     <div tal:condition="subnet.instance_count > max_subnet_instance_count" tal:omit-tag="">
                                         <a href="${request.route_path('instances', _query={'subnet_id': subnet.id})}">
                                             ${subnet.instance_count}
@@ -180,7 +181,7 @@
         </div>
         <!--! Modal dialogs -->
         <!--! Add subnet modal dialog -->
-        <div id="add-subnet-modal" class="reveal-modal medium" data-reveal="" novalidate="novalidate">
+        <div id="add-subnet-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Add subnet</h3>
             <form id="add-subnet-form" method="post" data-abide="abide"
                   action="${request.route_path('vpc_add_subnet', id=vpc.id)}">
@@ -197,16 +198,21 @@
                     </span>
                 </p>
                 <div>
-                    ${panel('form_field', field=add_subnet_form['name'], stack_label=True)}
+                    ${panel('form_field', field=add_subnet_form['subnet_name'], stack_label=True)}
                 </div>
                 <div>
-                    ${panel('form_field', field=add_subnet_form['cidr_block'], stack_label=True, pattern=add_subnet_form.cidr_block_regex)}
+                    ${panel('form_field', field=add_subnet_form['subnet_cidr_block'], stack_label=True, pattern=add_subnet_form.cidr_block_regex)}
                 </div>
                 <div>
                     ${panel('form_field', field=add_subnet_form['availability_zone'], stack_label=True)}
                 </div>
                 <hr />
-                <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
+                <div class="required-fields-indicator">
+                    <label>
+                        <span class="req">*</span>
+                        <span i18n:translate="">Required fields</span>
+                    </label>
+                </div>
                 <button class="button expand" i18n:translate="">
                     Add Subnet
                 </button>
