@@ -38,10 +38,6 @@ angular.module('ReportingPage', ['ngRoute', 'localytics.directives', 'EucaConsol
     console.log('dashboard');
     // would be nice to keep this controller function in a separate file to avoid this getting bloated
 }])
-.controller('ReportsController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    console.log('reports');
-    // would be nice to keep this controller function in a separate file to avoid this getting bloated
-}])
 .config(function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/reporting/reports', {
