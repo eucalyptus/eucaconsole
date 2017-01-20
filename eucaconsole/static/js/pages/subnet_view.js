@@ -11,19 +11,18 @@ angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule'
                                                    eucaUnescapeJson, eucaHandleError) {
         var vm = this;
         vm.instancesLoading = true;
-        vm.terminatingInstance = false;
+        vm.sendingTerminateInstancesRequest = false;
         vm.selectedInstance = {};
         vm.subnetInstances = [];
+        vm.nonTerminatedInstances = [];
         vm.subnetInstanceLimit = 25;  // Limit subnet instances table to 25 rows
-        vm.terminatedInstanceNotice = '';
+        vm.terminatedInstancesNotice = '';
         vm.subnetId = '';
-        vm.removedTerminatedInstanceNotice = '';
 
         vm.init = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            vm.terminatedInstancesNotice = options.terminated_instances_notice;
             vm.subnetId = options.subnet_id;
-            vm.terminatedInstanceNotice = options.terminated_instance_notice;
-            vm.removedTerminatedInstanceNotice = options.removed_terminated_instance_notice;
             vm.fetchSubnetInstances();
             vm.setWatch();
         };
@@ -35,6 +34,9 @@ angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule'
                 function success(results) {
                     vm.instancesLoading = false;
                     vm.subnetInstances = results;
+                    vm.nonTerminatedInstances = results.filter(function (instance) {
+                        return instance.status !== 'terminated';
+                    });
                     var transitionalCount = results.filter(function(instance) {
                         return instance.transitional;
                     }).length;
@@ -49,41 +51,33 @@ angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule'
                 });
         };
 
-        vm.openTerminateInstanceDialog = function (instance) {
-            vm.selectedInstance = instance;
-            $('#terminate-instance-modal').foundation('reveal', 'open');
-        };
-
-        vm.terminateInstance = function ($event, instance, removeFromView) {
+        vm.terminateInstances = function ($event) {
             $event.preventDefault();
-            removeFromView = removeFromView || false;
-            vm.terminatingInstance = true;
+            vm.sendingTerminateInstancesRequest = true;
             var csrfToken = $('#csrf_token').val();
-            var params = {'instance_id': instance.id};
+            var instanceIDs = vm.nonTerminatedInstances.map(function (instance) {
+                return instance.id;
+            }).join(',');
+            var params = {'instance_id': instanceIDs};
 
-            InstancesService.terminateInstance(csrfToken, params).then(
+            InstancesService.terminateInstances(csrfToken, params).then(
                 function success() {
-                    vm.terminatingInstance = false;
-                    $('#terminate-instance-modal').foundation('reveal', 'close');
-                    $rootScope.$broadcast('instanceTerminated');
-                    if (removeFromView) {
-                        Notify.success(vm.removedTerminatedInstanceNotice);
-                    } else {
-                        Notify.success(vm.terminatedInstanceNotice);
-                    }
+                vm.sendingTerminateInstancesRequest = false;
+                    $('#delete-subnet-modal').foundation('reveal', 'close');
+                    $rootScope.$broadcast('instancesTerminating');
+                    Notify.success(vm.terminatedInstancesNotice);
                 },
                 function error(errData) {
-                    vm.terminatingInstance = false;
+                vm.sendingTerminateInstancesRequest = false;
                     eucaHandleError(errData.data.message, errData.status);
                 }
             );
         };
 
         vm.setWatch = function () {
-            $rootScope.$on('instanceTerminated', function () {
+            $rootScope.$on('instancesTerminating', function () {
                 vm.fetchSubnetInstances();
             });
         };
-
     })
 ;

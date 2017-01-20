@@ -17,5 +17,6 @@
 #delete-vpc-modal a:hover { text-decoration: underline; }
 #delete-vpc-modal .default-vpc-warning { color: red; }
 #delete-vpc-modal button.button.warning { background-color: red; }
+#delete-vpc-modal button.button.warning:hover { outline-color: red; }
 #delete-vpc-modal .resources-list { margin-bottom: 1rem; }
 #delete-vpc-modal .resources-list .small-3 { text-align: right; font-weight: bold; }

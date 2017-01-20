@@ -38,6 +38,9 @@
   }
   button.button.warning {
     background-color: red;
+    &:hover {
+      outline-color: red;
+    }
   }
   .resources-list {
     margin-bottom: 1rem;
