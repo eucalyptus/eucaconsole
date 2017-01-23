@@ -113,20 +113,27 @@ class LoginView(BaseView, PermissionCheckMixin):
         self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
         self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
         self.https_scheme = self.request.scheme == 'https'
+
         self.oidc_host = self.request.registry.settings.get('oidc.hostname', None)
-        oidc_scope = self.request.registry.settings.get('oidc.scope', None)
-        creds = self.load_oidc_credentials(self.request.registry.settings)
-        self.oidc_client_id = creds.client_id
-        self.oidc_client_secret = creds.client_secret
-        self.oidc_console_host = self.request.registry.settings.get('oidc.console.hostname', None)
-        login_params = dict(
-            scope=oidc_scope,
-            redirect_uri='https://{0}/login'.format(self.oidc_console_host),
-            access_type='online',
-            response_type='code',
-            client_id=self.oidc_client_id
-        )
-        login_link = 'https://{0}/v2/oauth2/authorize?'.format(self.oidc_host) + urllib.urlencode(login_params)
+        oidc_enabled = self.oidc_host is not None
+        login_link = ''
+        if oidc_enabled:
+            oidc_scope = self.request.registry.settings.get('oidc.scope', None)
+            creds = self.load_oidc_credentials(self.request.registry.settings)
+            if creds:
+                self.oidc_client_id = creds.client_id
+                self.oidc_client_secret = creds.client_secret
+                self.oidc_console_host = self.request.registry.settings.get('oidc.console.hostname', None)
+                login_params = dict(
+                    scope=oidc_scope,
+                    redirect_uri='https://{0}/login'.format(self.oidc_console_host),
+                    access_type='online',
+                    response_type='code',
+                    client_id=self.oidc_client_id
+                )
+                login_link = 'https://{0}/v2/oauth2/authorize?'.format(self.oidc_host) + urllib.urlencode(login_params)
+            else:
+                oidc_enabled = False
         options_json = BaseView.escape_json(json.dumps(dict(
             account=request.params.get('account', default=''),
             username=request.params.get('username', default=''),
@@ -142,7 +149,7 @@ class LoginView(BaseView, PermissionCheckMixin):
             login_refresh=self.login_refresh,
             came_from=self.came_from,
             controller_options_json=options_json,
-            oidc_enabled=self.oidc_host is not None,
+            oidc_enabled=oidc_enabled,
             oidc_link_text=self.request.registry.settings.get('oidc.login.button.label', 'oidc login')
         )
 
@@ -381,6 +388,7 @@ class LoginView(BaseView, PermissionCheckMixin):
         source = settings.get('oidc.client.ini', 'oidc-credentials.ini')
         if not os.path.exists(source):
             logging.error("missing the oidc.client.ini file, refer to this setting in the console.ini")
+            return None
         else:
             ini = ConfigParser.ConfigParser()
             with open(source) as f:
