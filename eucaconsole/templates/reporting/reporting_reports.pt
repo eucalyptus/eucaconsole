@@ -21,16 +21,20 @@
                     <span i18n:translate="">Month</span>
                 </label>
             </div>
-            <div class="large-12 small-12 columns field">
+            <div class="large-6 small-6 columns field">
                 <select required="required" ng-options="month for month in reports.monthChoices" ng-model="reports.values.monthSelection" name="month">
                 </select>
-                <button i18n:translate="">Update</button>
-                <button i18n:translate="">Download CSV</button>
+                <!--
+                <button class="round tiny" i18n:translate="">Update</button>
+                -->
+            </div>
+            <div class="large-6 small-6 columns field">
+                <a class="button round tiny right" i18n:translate="">Download CSV</a>
             </div>
         </div>
         <div class="row">
-            <div class="columns">
-                <table>
+            <div class="columns gridwrapper">
+                <table class="table">
                     <thead>
                         <tr>
                             <th i18n:translate="">Eucalyptus Service Usage Details</th>
