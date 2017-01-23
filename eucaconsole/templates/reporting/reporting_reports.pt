@@ -1,11 +1,11 @@
 <div i18n:domain="eucaconsole">
     <div class="section">
         <h6 class="section-label" i18n:translate="">Usage Reports</h6>
-        <a i18n:translate="">EC2 Instance Usage Report</a>
+        <a i18n:translate="" ng-click="reports.showEC2InstanceUsageReport()">EC2 Instance Usage Report</a>
         <p i18n:translate="">
             An interactive report that shows usage for your EC2 instances over a specified period
         </p>
-        <a i18n:translate="">Usage Reports by Service</a>
+        <a i18n:translate="" ng-click="reports.showUsageReportsByService()">Usage Reports by Service</a>
         <p i18n:translate="">
             Downloadable reports for usage by service (e.g. EC2) for a given time period and granularity
         </p>
@@ -22,14 +22,17 @@
                 </label>
             </div>
             <div class="large-6 small-6 columns field">
-                <select required="required" ng-options="month for month in reports.monthChoices" ng-model="reports.values.monthSelection" name="month">
+                <select required="required" name="month"
+                        ng-model="reports.values.monthSelection"
+                        ng-options="month for month in reports.monthChoices"
+                        ng-change="reports.loadMonlyData()">
                 </select>
                 <!--
                 <button class="round tiny" i18n:translate="">Update</button>
                 -->
             </div>
             <div class="large-6 small-6 columns field">
-                <a class="button round tiny right" i18n:translate="">Download CSV</a>
+                <a class="button round tiny right" i18n:translate="" ng-click="reports.downloadCSV()">Download CSV</a>
             </div>
         </div>
         <div class="row">
