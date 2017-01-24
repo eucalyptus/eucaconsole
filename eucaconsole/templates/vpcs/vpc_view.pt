@@ -83,7 +83,11 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Main route table</label></div>
-                        <div class="large-9 small-8 columns value">${vpc_main_route_table_name}</div>
+                        <div class="large-9 small-8 columns value">
+                            <a href="${request.route_path('route_table_view', vpc_id=vpc.id, id=vpc_main_route_table.id)}">
+                                ${vpc_main_route_table_name}
+                            </a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns">
@@ -129,7 +133,9 @@
                                 <td>${subnet.zone}</td>
                                 <td>
                                     <div tal:repeat="route_table subnet.route_tables">
-                                        ${route_table.name}
+                                        <a href="${request.route_path('route_table_view', vpc_id=vpc.id, id=route_table.id)}">
+                                            ${route_table.name}
+                                        </a>
                                     </div>
                                 </td>
                                 <td>

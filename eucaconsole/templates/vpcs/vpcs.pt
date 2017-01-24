@@ -52,7 +52,9 @@
                 <div>
                     <span class="label" title="Main route table" i18n:attributes="title" data-tooltip="">RT</span>
                     <span ng-if="item.main_route_table">
-                        {{ item.main_route_table.id }}
+                        <a ng-href="/vpcs/{{ item.id }}/route-tables/{{ item.main_route_table.id }}">
+                            {{ item.main_route_table.id }}
+                        </a>
                     </span>
                 </div>
                 <div>
@@ -96,7 +98,9 @@
                 </td>
                 <td>
                     <span ng-if="item.main_route_table">
-                        {{ item.main_route_table.name }}
+                        <a ng-href="/vpcs/{{ item.id }}/route-tables/{{ item.main_route_table.id }}">
+                            {{ item.main_route_table.name }}
+                        </a>
                     </span>
                 </td>
                 <td>

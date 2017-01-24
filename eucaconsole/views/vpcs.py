@@ -36,8 +36,8 @@ from pyramid.view import view_config
 from ..forms import ChoicesManager
 from ..forms.instances import TerminateInstanceForm
 from ..forms.vpcs import (
-    VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
-    CreateVPCForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, INTERNET_GATEWAY_HELP_TEXT
+    VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm,
+    RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -236,6 +236,7 @@ class VPCView(TaggedItemView):
             vpc_security_groups=self.vpc_security_groups,
             vpc_route_tables=self.vpc_route_tables,
             vpc_network_acls=self.vpc_network_acls,
+            vpc_main_route_table=self.vpc_main_route_table,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
             vpc_internet_gateway_name=TaggedItemView.get_display_name(
@@ -529,7 +530,8 @@ class SubnetView(TaggedItemView):
 
     def __init__(self, request, **kwargs):
         super(SubnetView, self).__init__(request, **kwargs)
-        self.location = self.request.route_path('vpc_view', id=self.request.matchdict.get('id'))
+        self.location = self.request.route_path(
+            'subnet_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.conn = self.get_connection()
             self.vpc_conn = self.get_connection(conn_type='vpc')
@@ -683,3 +685,89 @@ class SubnetView(TaggedItemView):
                 'Successfully sent request to terminate instances. It may take a moment to shut down the instances.'
             ),
         }))
+
+
+class RouteTableView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/vpcs/route_table_view.pt'
+
+    def __init__(self, request, **kwargs):
+        super(RouteTableView, self).__init__(request, **kwargs)
+        self.location = self.request.route_path(
+            'route_table_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
+
+        with boto_error_handler(request, self.location):
+            self.conn = self.get_connection()
+            self.vpc_conn = self.get_connection(conn_type='vpc')
+            self.vpc = self.get_vpc()
+            self.route_table = self.get_route_table()
+            self.route_table_name = self.get_display_name(self.route_table)
+            vpc_main_route_tables = self.vpc_conn.get_all_route_tables(
+                filters={'vpc-id': self.vpc.id, 'association.main': 'true'})
+        self.is_main_route_table = self.is_main_route_table_for_vpc(vpc_main_route_tables)
+        self.route_table_form = RouteTableForm(
+            self.request, route_table=self.route_table, formdata=self.request.params or None
+        )
+        self.vpc_name = self.get_display_name(self.vpc)
+        self.tagged_obj = self.route_table
+        self.title_parts = [_(u'Route Table'), self.route_table_name]
+        self.render_dict = dict(
+            vpc=self.vpc,
+            vpc_name=self.vpc_name,
+            route_table=self.route_table,
+            route_table_name=self.route_table_name,
+            is_main_route_table=self.is_main_route_table,
+            main_route_table_label=_('yes') if self.is_main_route_table else _('no'),
+            route_table_form=self.route_table_form,
+            tags=self.serialize_tags(self.route_table.tags) if self.route_table else [],
+        )
+
+    @view_config(route_name='route_table_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def route_table_view(self):
+        if self.route_table is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='route_table_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def route_table_update(self):
+        if self.route_table and self.route_table_form.validate():
+            location = self.request.route_path('route_table_view', vpc_id=self.vpc.id, id=self.route_table.id)
+            with boto_error_handler(self.request, location):
+                # Update tags
+                self.update_tags()
+
+                # Save Name tag
+                name = self.request.params.get('name', '')
+                self.update_name_tag(name)
+
+                # TODO: Update routes
+
+            msg = _(u'Successfully updated route table')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.route_table_form.get_errors_list()
+        return self.render_dict
+
+    def get_vpc(self):
+        vpc_id = self.request.matchdict.get('vpc_id')
+        if vpc_id:
+            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            return vpcs_list[0] if vpcs_list else None
+        return None
+
+    def get_route_table(self):
+        route_table_id = self.request.matchdict.get('id')
+        filters = {
+            'vpc-id': self.vpc.id,
+            'route-table-id': route_table_id
+        }
+        route_tables = self.vpc_conn.get_all_route_tables(filters=filters)
+        if route_tables:
+            return route_tables[0]
+        return None
+
+    def is_main_route_table_for_vpc(self, main_route_tables):
+        main_route_table_ids = [rtable.id for rtable in main_route_tables]
+        if self.route_table.id in main_route_table_ids:
+            return True
+        return False
