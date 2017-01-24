@@ -280,6 +280,7 @@ urls = [
     Route(name='subnet_delete', pattern='/vpcs/{vpc_id}/subnets/{id}/delete'),
     Route(name='route_table_view', pattern='/vpcs/{vpc_id}/route-tables/{id}'),
     Route(name='route_table_update', pattern='/vpcs/{vpc_id}/route-tables/{id}/update'),
+    Route(name='route_table_delete', pattern='/vpcs/{vpc_id}/route-tables/{id}/delete'),
     Route(name='route_table_set_main_for_vpc', pattern='/vpcs/{vpc_id}/route-tables/{id}/set-main-for-vpc'),
 
     # Key pairs #####

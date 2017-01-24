@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/route_table.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -61,6 +62,16 @@
                             </a>
                         </div>
                     </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Subnets</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <div tal:repeat="subnet route_table_subnets">
+                                <a href="${request.route_path('subnet_view', vpc_id=vpc.id, id=subnet.id)}">
+                                    ${layout.get_display_name(subnet)}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <hr />
                     <!--! Route table editor here -->
                     <hr />
@@ -101,6 +112,37 @@
                     Yes, set as main route table
                 </button>
             </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Delete Route Table modal dialog -->
+        <div id="delete-route-table-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete route table</h3>
+            <form id="delete-route-table-form" method="post" tal:condition="not: is_main_route_table"
+                  action="${request.route_path('route_table_delete', vpc_id=vpc.id, id=route_table.id)}">
+                ${structure:route_table_delete_form['csrf_token']}
+                <div tal:condition="route_table_subnets">
+                    <p i18n:translate="">
+                        Deleting this route table will disassociate the route table from the following subnets.
+                    </p>
+                    <div class="resources-list">
+                        <span tal:repeat="subnet route_table_subnets">
+                            <strong>${layout.get_display_name(subnet)}</strong><span tal:condition="not repeat.subnet.end">,</span>
+                        </span>
+                    </div>
+                </div>
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete route table</span>
+                    <strong>${route_table_name}</strong>?
+                </p>
+                <button class="button expand" i18n:translate="">
+                    Yes, delete route table
+                </button>
+            </form>
+            <p tal:condition="is_main_route_table">
+                <span i18n:translate="">This route table is the main route table for VPC</span>
+                <strong>${vpc_name}</strong>
+                <span i18n:translate="">and cannot be deleted.</span>
+            </p>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
     </div>

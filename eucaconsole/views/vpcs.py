@@ -37,7 +37,7 @@ from ..forms import ChoicesManager
 from ..forms.instances import TerminateInstanceForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm,
-    RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm,
+    RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
     INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
@@ -202,9 +202,9 @@ class VPCView(TaggedItemView):
     def __init__(self, request, **kwargs):
         super(VPCView, self).__init__(request, **kwargs)
         self.location = self.request.route_path('vpc_view', id=self.request.matchdict.get('id'))
+        self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
-            self.conn = self.get_connection()
-            self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
             self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.vpc_main_route_table = self.get_main_route_table(route_tables=self.vpc_route_tables)
@@ -533,9 +533,9 @@ class SubnetView(TaggedItemView):
         super(SubnetView, self).__init__(request, **kwargs)
         self.location = self.request.route_path(
             'subnet_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
+        self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
-            self.conn = self.get_connection()
-            self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
             self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.subnet = self.get_subnet()
@@ -545,8 +545,8 @@ class SubnetView(TaggedItemView):
                 self.request, vpc_conn=self.vpc_conn, vpc=self.vpc, route_tables=self.vpc_route_tables,
                 subnet=self.subnet, subnet_route_table=self.subnet_route_table, formdata=self.request.params or None
             )
-            self.subnet_delete_form = SubnetDeleteForm(self.request, formdata=self.request.params or None)
-            self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.subnet_delete_form = SubnetDeleteForm(self.request, formdata=self.request.params or None)
+        self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.subnet_name = self.get_display_name(self.subnet)
         self.tagged_obj = self.subnet
@@ -695,20 +695,21 @@ class RouteTableView(TaggedItemView):
         super(RouteTableView, self).__init__(request, **kwargs)
         self.location = self.request.route_path(
             'route_table_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
-
+        self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
-            self.conn = self.get_connection()
-            self.vpc_conn = self.get_connection(conn_type='vpc')
             self.vpc = self.get_vpc()
             self.route_table = self.get_route_table()
-            self.route_table_name = self.get_display_name(self.route_table)
+            self.route_table_subnets = self.get_route_table_subnets()
             vpc_main_route_tables = self.vpc_conn.get_all_route_tables(
                 filters={'vpc-id': self.vpc.id, 'association.main': 'true'})
-            self.vpc_main_route_table = vpc_main_route_tables[0]
+        self.vpc_main_route_table = vpc_main_route_tables[0]
+        self.route_table_name = self.get_display_name(self.route_table)
         self.is_main_route_table = self.route_table.id == self.vpc_main_route_table.id
         self.route_table_form = RouteTableForm(
             self.request, route_table=self.route_table, formdata=self.request.params or None
         )
+        self.route_table_delete_form = RouteTableDeleteForm(self.request, formdata=self.request.params or None)
         self.route_table_set_main_form = RouteTableSetMainForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.route_table
@@ -718,9 +719,11 @@ class RouteTableView(TaggedItemView):
             vpc_name=self.vpc_name,
             route_table=self.route_table,
             route_table_name=self.route_table_name,
+            route_table_subnets=self.route_table_subnets,
             is_main_route_table=self.is_main_route_table,
             main_route_table_label=_('yes') if self.is_main_route_table else _('no'),
             route_table_form=self.route_table_form,
+            route_table_delete_form=self.route_table_delete_form,
             route_table_set_main_form=self.route_table_set_main_form,
             tags=self.serialize_tags(self.route_table.tags) if self.route_table else [],
         )
@@ -750,6 +753,24 @@ class RouteTableView(TaggedItemView):
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.route_table_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='route_table_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def route_table_delete(self):
+        if self.route_table and self.route_table_delete_form.validate():
+            with boto_error_handler(self.request, self.location):
+                # Disassociate any subnets from route table
+                for association in self.route_table.associations:
+                    self.vpc_conn.disassociate_route_table(association.id)
+
+                # Delete route table
+                self.vpc_conn.delete_route_table(self.route_table.id)
+
+            msg = _(u'Successfully deleted route table')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('vpcs'))
+        else:
+            self.request.error_messages = self.route_table_delete_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='route_table_set_main_for_vpc', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -787,3 +808,7 @@ class RouteTableView(TaggedItemView):
         if route_tables:
             return route_tables[0]
         return None
+
+    def get_route_table_subnets(self):
+        route_table_association_subnet_ids = [assoc.subnet_id for assoc in self.route_table.associations]
+        return self.vpc_conn.get_all_subnets(filters={'subnet-id': route_table_association_subnet_ids})
