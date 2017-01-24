@@ -225,3 +225,8 @@ class RouteTableForm(BaseSecureForm):
 
         if self.route_table:
             self.name.data = self.route_table.tags.get('Name', '')
+
+
+class RouteTableSetMainForm(BaseSecureForm):
+    """Form to set route table as main one for VPC"""
+    pass

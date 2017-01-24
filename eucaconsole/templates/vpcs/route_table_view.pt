@@ -26,7 +26,7 @@
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
-                        <li>
+                        <li tal:condition="not: is_main_route_table">
                             <a data-reveal-id="set-main-route-table-modal" id="set-main-route-table-action" i18n:translate="">
                                 Set as main route table
                             </a>
@@ -84,6 +84,25 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <!--! Set Main Route Table modal dialog -->
+        <div id="set-main-route-table-modal" class="reveal-modal medium" data-reveal=""
+             tal:condition="not: is_main_route_table">
+            <h3 i18n:translate="">Set main route table</h3>
+            <form id="set-main-route-table-form" method="post"
+                  action="${request.route_path('route_table_set_main_for_vpc', vpc_id=vpc.id, id=route_table.id)}">
+                ${structure:route_table_set_main_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Are you sure you want to set route table</span>
+                    <strong>${route_table_name}</strong>
+                    <span i18n:translate="">as the main route table for</span>
+                    <strong>${vpc_name}</strong>?
+                </p>
+                <button class="button expand" i18n:translate="">
+                    Yes, set as main route table
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

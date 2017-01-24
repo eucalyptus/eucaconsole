@@ -37,7 +37,8 @@ from ..forms import ChoicesManager
 from ..forms.instances import TerminateInstanceForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm,
-    RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, INTERNET_GATEWAY_HELP_TEXT
+    RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm,
+    INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -703,10 +704,12 @@ class RouteTableView(TaggedItemView):
             self.route_table_name = self.get_display_name(self.route_table)
             vpc_main_route_tables = self.vpc_conn.get_all_route_tables(
                 filters={'vpc-id': self.vpc.id, 'association.main': 'true'})
-        self.is_main_route_table = self.is_main_route_table_for_vpc(vpc_main_route_tables)
+            self.vpc_main_route_table = vpc_main_route_tables[0]
+        self.is_main_route_table = self.route_table.id == self.vpc_main_route_table.id
         self.route_table_form = RouteTableForm(
             self.request, route_table=self.route_table, formdata=self.request.params or None
         )
+        self.route_table_set_main_form = RouteTableSetMainForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.route_table
         self.title_parts = [_(u'Route Table'), self.route_table_name]
@@ -718,6 +721,7 @@ class RouteTableView(TaggedItemView):
             is_main_route_table=self.is_main_route_table,
             main_route_table_label=_('yes') if self.is_main_route_table else _('no'),
             route_table_form=self.route_table_form,
+            route_table_set_main_form=self.route_table_set_main_form,
             tags=self.serialize_tags(self.route_table.tags) if self.route_table else [],
         )
 
@@ -748,6 +752,24 @@ class RouteTableView(TaggedItemView):
             self.request.error_messages = self.route_table_form.get_errors_list()
         return self.render_dict
 
+    @view_config(route_name='route_table_set_main_for_vpc', renderer=VIEW_TEMPLATE, request_method='POST')
+    def route_table_set_main_for_vpc(self):
+        if self.vpc and self.route_table_set_main_form.validate():
+            if self.vpc_main_route_table:
+                existing_main_table_associations = [
+                    assoc for assoc in self.vpc_main_route_table.associations if assoc.main is True]
+                if existing_main_table_associations:
+                    existing_assocation_id = existing_main_table_associations[0].id
+                    with boto_error_handler(self.request, self.location):
+                        self.vpc_conn.replace_route_table_association_with_assoc(
+                            association_id=existing_assocation_id, route_table_id=self.route_table.id)
+            msg = _(u'Successfully set main route table for VPC')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        else:
+            self.request.error_messages = self.route_table_set_main_form.get_errors_list()
+        return self.render_dict
+
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('vpc_id')
         if vpc_id:
@@ -765,9 +787,3 @@ class RouteTableView(TaggedItemView):
         if route_tables:
             return route_tables[0]
         return None
-
-    def is_main_route_table_for_vpc(self, main_route_tables):
-        main_route_table_ids = [rtable.id for rtable in main_route_tables]
-        if self.route_table.id in main_route_table_ids:
-            return True
-        return False
