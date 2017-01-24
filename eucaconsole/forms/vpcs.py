@@ -177,8 +177,8 @@ class CreateSubnetForm(BaseSecureForm):
 
     def __init__(self, request, ec2_conn=None, **kwargs):
         super(CreateSubnetForm, self).__init__(request, **kwargs)
-        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
-        self.availability_zone.choices = self.ec2_choices_manager.availability_zones(self.region, add_blank=False)
+        ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        self.availability_zone.choices = ec2_choices_manager.availability_zones(self.region, add_blank=False)
         self.subnet_name.error_msg = self.name_error_msg
         self.subnet_cidr_block.error_msg = self.cidr_block_error_msg
 

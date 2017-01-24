@@ -322,6 +322,7 @@ class VPCView(TaggedItemView):
             cidr_block = self.request.params.get('subnet_cidr_block')
             zone = self.request.params.get('availability_zone')
             with boto_error_handler(self.request, location=location):
+                self.log_request(_('Adding subnet to VPC {0}').format(self.vpc.id))
                 new_subnet = self.vpc_conn.create_subnet(self.vpc.id, cidr_block, availability_zone=zone)
                 if name:
                     new_subnet.add_tag('Name', name)
