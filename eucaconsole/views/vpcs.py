@@ -316,7 +316,7 @@ class VPCView(TaggedItemView):
     @view_config(route_name='vpc_set_main_route_table', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_set_main_route_table(self):
         if self.vpc and self.vpc_main_route_table_form.validate():
-            selected_route_table_id = self.vpc_main_route_table_form.route_table.data
+            selected_route_table_id = self.request.params.get('route_table')
             if self.vpc_main_route_table:
                 existing_main_table_associations = [
                     assoc for assoc in self.vpc_main_route_table.associations if assoc.main is True]
