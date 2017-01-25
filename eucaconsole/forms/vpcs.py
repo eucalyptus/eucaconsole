@@ -175,11 +175,12 @@ class CreateSubnetForm(BaseSecureForm):
     )
     availability_zone = SelectField(label=_('Availability zone'))
 
-    def __init__(self, request, ec2_conn=None, **kwargs):
+    def __init__(self, request, ec2_conn=None, suggested_subnet_cidr_block=None, **kwargs):
         super(CreateSubnetForm, self).__init__(request, **kwargs)
         self.availability_zone.choices = ChoicesManager(conn=ec2_conn).availability_zones(self.region, add_blank=False)
         self.subnet_name.error_msg = self.name_error_msg
         self.subnet_cidr_block.error_msg = self.cidr_block_error_msg
+        self.subnet_cidr_block.data = suggested_subnet_cidr_block
 
 
 class SubnetForm(BaseSecureForm):

@@ -211,6 +211,7 @@ class VPCView(TaggedItemView):
             self.vpc_security_groups = self.conn.get_all_security_groups(filters={'vpc-id': self.vpc.id})
             self.vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': self.vpc.id})
             self.vpc_default_security_group = self.get_default_security_group(security_groups=self.vpc_security_groups)
+            self.suggested_subnet_cidr_block = self.get_suggested_subnet_cidr_block(self.vpc.cidr_block)
             self.vpc_form = VPCForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
@@ -220,7 +221,9 @@ class VPCView(TaggedItemView):
             self.create_internet_gateway_form = CreateInternetGatewayForm(
                 self.request, formdata=self.request.params or None)
             self.add_subnet_form = CreateSubnetForm(
-                self.request, ec2_conn=self.conn, formdata=self.request.params or None)
+                self.request, ec2_conn=self.conn, suggested_subnet_cidr_block=self.suggested_subnet_cidr_block,
+                formdata=self.request.params or None
+            )
         self.vpc_delete_form = VPCDeleteForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
@@ -426,6 +429,36 @@ class VPCView(TaggedItemView):
                     name=TaggedItemView.get_display_name(network_acl),
                 ))
         return subnet_network_acls
+
+    @staticmethod
+    def get_suggested_subnet_cidr_block(vpc_cidr_block):
+        """Suggest a subnet CIDR block based on the VPC's CIDR block"""
+        vpc_cidr_split = vpc_cidr_block.split('/')
+        cidr_ip = vpc_cidr_split[0]
+        cidr_netmask = int(vpc_cidr_split[1])
+        cidr_ip_parts = cidr_ip.split('.')
+        num_ip_parts = 2
+        ip_suffix = '.128.0'  # The 128 in '.128.0' is somewhat arbitrary but seems safer than suggesting '.0.0'
+
+        if 16 <= cidr_netmask < 24:
+            pass  # Use above defaults for num_ip_parts and ip_suffix
+
+        if cidr_netmask >= 24:
+            num_ip_parts = 3
+            ip_suffix = '.128'
+
+        # Suggest a subnet netmask __ bits offset from the VPC netmask
+        if 16 <= cidr_netmask <= 24:
+            netmask_bits_offset = 4
+        elif 24 < cidr_netmask <= 26:
+            netmask_bits_offset = 2
+        else:
+            # Although a VPC is unlikely to have a /27 or /28 netmask, we still need a fallback value
+            netmask_bits_offset = 0
+
+        subnet_netmask = cidr_netmask + netmask_bits_offset
+
+        return '{0}{1}/{2}'.format('.'.join(cidr_ip_parts[:num_ip_parts]), ip_suffix, subnet_netmask)
 
     def get_subnet_route_tables(self, subnet_id, vpc_route_tables):
         subnet_route_tables = []

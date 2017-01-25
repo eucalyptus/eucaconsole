@@ -156,7 +156,8 @@
                             </tr>
                         </tbody>
                     </table>
-                    <a class="button tiny secondary round" i18n:translate="" id="add-subnet-btn">
+                    <a class="button tiny secondary round" i18n:translate="" id="add-subnet-btn"
+                       data-reveal-id="add-subnet-modal">
                         Add Subnet
                     </a>
                     <hr />
