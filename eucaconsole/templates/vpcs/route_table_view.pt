@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/route-table-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/route_table.css')}" />
 </head>
 
@@ -73,7 +74,10 @@
                         </div>
                     </div>
                     <hr />
-                    <!--! Route table editor here -->
+                    <h6 i18n:translate="">Routes</h6>
+                    <div ng-cloak="">
+                        <route-table-editor ng-model="routes" tal:content="routes | structure"></route-table-editor>
+                    </div>
                     <hr />
                     <div ng-cloak="">
                         <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
@@ -150,6 +154,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/route-table-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/route_table_view.js')}"></script>
 </div>
 

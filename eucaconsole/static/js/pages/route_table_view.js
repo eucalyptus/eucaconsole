@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('RouteTableDetailsPage', ['TagEditorModule'])
+angular.module('RouteTableDetailsPage', ['TagEditorModule', 'RouteTableEditorModule'])
     .controller('RouteTableDetailsPageCtrl', function () {
         // pass
     })

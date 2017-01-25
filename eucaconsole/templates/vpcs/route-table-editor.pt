@@ -1,0 +1,33 @@
+<div ng-form="routeTableForm" class="route-table-editor" i18n:domain="eucaconsole">
+    <p i18n:translate="">
+        A route table controls how traffic originating from VPC subnets are directed.
+        Routes are rules that define where traffic matching the destination CIDR block will be directed.
+        The destination CIDR block can be within the entire IPv4 space and isn't limited to the VPC's CIDR block.
+        For example, a typical route destination (CIDR block) for an internet gateway is 0.0.0.0/0
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th i18n:translate="">Destination (CIDR)</th>
+                <th i18n:translate="">Target</th>
+                <th i18n:translate="">Status</th>
+                <th i18n:translate="">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="route in routes">
+                <td>{{ route.destination_cidr_block }}</td>
+                <td>{{ route.gateway_id || route.instance_id || route.interface_id }}</td>
+                <td>{{ route.state }}</td>
+                <td>(-)<!-- TODO: delete route here --></td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- TODO: Add route inputs here -->
+    <div class="route-entry-submit">
+        <a ng-click="addRoute($event)" class="button round tiny" id="add-route-btn" title="Add route" i18n:translate="">Add Route</a>
+    </div>
+    <div class="routes-entry-result">
+        <textarea id="routes" name="routes" class="">{{ routes }}</textarea>
+    </div>
+</div>

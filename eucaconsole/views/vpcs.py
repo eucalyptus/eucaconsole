@@ -725,6 +725,7 @@ class RouteTableView(TaggedItemView):
             route_table_form=self.route_table_form,
             route_table_delete_form=self.route_table_delete_form,
             route_table_set_main_form=self.route_table_set_main_form,
+            routes=self.serialize_routes(self.route_table.routes),
             tags=self.serialize_tags(self.route_table.tags) if self.route_table else [],
         )
 
@@ -812,3 +813,19 @@ class RouteTableView(TaggedItemView):
     def get_route_table_subnets(self):
         route_table_association_subnet_ids = [assoc.subnet_id for assoc in self.route_table.associations]
         return self.vpc_conn.get_all_subnets(filters={'subnet-id': route_table_association_subnet_ids})
+
+    @staticmethod
+    def serialize_routes(routes):
+        """Returns a JSON-stringified list of boto.vpc.RouteTable.Route objects converted to dicts"""
+        routes_list = []
+        for route in routes:
+            routes_list.append(dict(
+                destination_cidr_block=route.destination_cidr_block,
+                gateway_id=route.gateway_id,
+                instance_id=route.instance_id,
+                interface_id=route.interface_id,
+                origin=route.origin,
+                state=route.state,
+                vpc_peering_connection_id=route.vpc_peering_connection_id,
+            ))
+        return BaseView.escape_json(json.dumps(routes_list))

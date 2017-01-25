@@ -1,0 +1,7 @@
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.route-table-editor #routes { visibility: hidden; }
+.route-table-editor table.table { width: 67%; }
+@media only screen and (max-width: 40em) { .route-table-editor table.table { width: 100%; } }
