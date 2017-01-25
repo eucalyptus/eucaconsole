@@ -36,5 +36,17 @@ angular.module('ReportingServiceModule', [])
                 return response.data || {};
             });
         },
+
+        getMonthlyUsage: function (year, month) {
+            var url = '/reporting-api/monthlyusage?year=' + year + '&month=' + month;
+            return $http({
+                method: 'GET',
+                url: url
+            }).then( function (response) {
+                return response.data || {
+                    enabled: false
+                };
+            });
+        },
     };
 }]);

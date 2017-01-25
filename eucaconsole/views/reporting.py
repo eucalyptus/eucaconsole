@@ -42,8 +42,10 @@ class ReportingView(BaseView):
         self.title_parts = [_(u'Reporting')]
 
     def is_reporting_configured(self):
-        # replace this with logic that checks actual reporting configuration status
-        return False
+        conn = self.get_connection(conn_type='reporting')
+        ret = conn.view_billing()
+        prefs = ret.get('billingSettings')
+        return prefs.get('detailedBillingEnabled')
 
     @view_config(route_name='reporting', renderer='../templates/reporting/reporting.pt')
     def queues_landing(self):
@@ -92,4 +94,12 @@ class ReportingAPIView(BaseView):
         user_reports_enabled = params.get('userReportsEnabled')
         self.conn.modify_account(user_reports_enabled)
         return dict(message=_("Successully updated reporting preferences."))
+
+    @view_config(route_name='reporting_monthly_usage', renderer='json', request_method='GET', xhr=True)
+    def get_reporting_monthly_usage(self):
+        year = int(self.request.params.get('year'))
+        month = int(self.request.params.get('month'))
+        # use "ViewMontlyUsage" call to fetch usage information
+        ret = self.conn.view_monthly_usage(year, month)
+        return dict(results=ret.get('data'))
 
