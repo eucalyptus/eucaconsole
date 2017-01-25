@@ -674,7 +674,7 @@ class SubnetView(TaggedItemView):
 
             msg = _('Successfully deleted subnet {0}').format(deleted_subnet_name)
             self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.request.route_path('vpcs'))
+            return HTTPFound(location=self.request.route_path('vpc_view', id=self.vpc.id))
         else:
             self.request.error_messages = self.subnet_delete_form.get_errors_list()
             return self.render_dict

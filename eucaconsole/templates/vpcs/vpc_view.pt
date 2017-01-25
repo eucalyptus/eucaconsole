@@ -200,6 +200,10 @@
                         with an existing subnet's CIDR block in the VPC.
                     </span>
                 </p>
+                <p tal:condition="vpc_subnets">
+                    <span i18n:translate="">The existing subnet CIDR blocks in this VPC are</span>
+                    <span tal:repeat="subnet vpc_subnets"><strong>${subnet.cidr_block}</strong><span tal:condition="not repeat.subnet.end">,&nbsp;</span></span>
+                </p>
                 <div>
                     ${panel('form_field', field=add_subnet_form['subnet_name'], stack_label=True)}
                 </div>
