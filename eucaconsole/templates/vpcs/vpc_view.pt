@@ -194,8 +194,10 @@
                     <strong>${vpc.cidr_block}</strong>.
                     <span i18n:translate="">
                         Use the CIDR format to specify your subnet's IP address block (e.g. 10.0.0.0/24).
-                        Note that block sizes must be between a /16 netmask and a /28 netmask.
-                        Also, note that a subnet can be the same size as your VPC.
+                        Block sizes must be between a /16 netmask and a /28 netmask.
+                        A subnet can be the same size as your VPC if the subnet is the only one in the VPC.
+                        Note the pre-populated subnet CIDR block will need to be modified if it conflicts
+                        with an existing subnet's CIDR block in the VPC.
                     </span>
                 </p>
                 <div>
