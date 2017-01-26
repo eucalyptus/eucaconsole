@@ -35,8 +35,8 @@
             <label for="destination_cidr_block" i18n:translate="">
                 Destination (IPv4 CIDR block)
             </label>
-            <input type="text" ng-model="destinationCidrBlock" id="destination_cidr_block"
-                   pattern="{{ cidrPattern }}"/>
+            <input type="text" ng-model="destinationCidrBlock" id="destination_cidr_block" i18n:attributes="placeholder"
+                   placeholder="e.g. 0.0.0.0/0" required="required" ng-pattern="cidrPattern" />
         </div>
         <div class="small-6 columns">
             <label for="route-target" i18n:translate="">
