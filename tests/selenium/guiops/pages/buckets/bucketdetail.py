@@ -1,6 +1,5 @@
 from pages.detailpage import DetailPage
 
-
 class BucketDetailPage(DetailPage):
 
     def __init__(self, tester, bucket_name):
@@ -15,6 +14,9 @@ class BucketDetailPage(DetailPage):
     _upload_file_action_menuitem_id = 'upload-file-action'
     _propagate_permissions_checkbox_id = 'propagate_acls'
     _object_count_selector = '#bucket-details-form .bucket-object-count'
+    _add_cors_configuration_button_css = "#cors-configuration :.button.round.tiny"
+    _delete_cors_configuration_css = "#existing-cors-config-wrapper >a>i"
+    _edit_cors_configuration_css = ".icon.edit.has-tip>i"
 
     _share_account_chosen_id = 'share_account_chosen'
     _share_account_selectors = {
@@ -71,3 +73,15 @@ class BucketDetailPage(DetailPage):
 
     def click_object_count_on_detail_page(self):
         self.tester.click_element_by_css(self._object_count_selector)
+
+    def click_add_cors_configuration(self):
+        self.tester.click_element_by_css(self._add_cors_configuration_button_css)
+
+    def click_delete_cors_configuration(self):
+        self.tester.click_element_by_css(self._delete_cors_configuration_css)
+
+    def click_edit_cors_configuration(self):
+        self.tester.click_element_by_css(self._edit_cors_configuration_css)
+
+
+

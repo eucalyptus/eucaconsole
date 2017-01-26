@@ -38,9 +38,12 @@ class GuiTester(SeleniumApi):
             ffprofile.set_preference("browser.download.dir", "/tmp/")
             ffprofile.set_preference("browser.helperApps.alwaysAsk.force", False)
             ffprofile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/x-pem-file, text/csv, application/xml, text/plain, image/jpeg, application/x-apple-diskimage, application/zip")
+            #ffprofile.accept_untrusted_certs = True
             desired_capabilities = webdriver.DesiredCapabilities.FIREFOX
             desired_capabilities['version'] = version
             desired_capabilities['platform'] = platform
+            #desired_capabilities['marionette'] = True
+            #desired_capabilities['acceptSslCerts'] = True
             #desired_capabilities['name'] = 'Testing ' + browser + ' ' + version + ' on ' + platform
             #self.driver = webdriver.Remote(webdriver_url, webdriver.DesiredCapabilities.FIREFOX)
 
@@ -55,7 +58,7 @@ class GuiTester(SeleniumApi):
                 print "Using remote webdriver " + webdriver_url
             print "Setting webdriver profile"
         self.driver.implicitly_wait(60)
-#        self.driver.maximize_window()
+        #self.driver.maximize_window()
         self.driver.set_window_size(1024, 768)
         self.driver.get(console_url)
 

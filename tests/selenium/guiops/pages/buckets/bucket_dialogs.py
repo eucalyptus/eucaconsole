@@ -1,7 +1,6 @@
 from pages.basepage import BasePage
 
 
-
 class DeleteBucketModal(BasePage):
 
     def __init__(self, tester):
@@ -62,6 +61,25 @@ class DownloadObjectModal(BasePage):
         self.tester.send_keys_by_id(self._shared_object_path_id, object_path)
         self.tester.click_element_by_id(self._download_object_btn)
 
+class CreateCORSconfigurationModal(BasePage):
+
+    _create_cors_configuration_button_css = "#cors-configuration-form>button"
+
+
+    def create_cors_configuration(self, cors_config = None):
+
+        if cors_config is not None:
+            pass
+
+        self.tester.click_element_by_css(self._create_cors_configuration_button_css)
+
+
+class DeleteCORSconfigurationModai(BasePage):
+
+    _delete_cors_configuration_button_css = "#cors-deletion-form>button"
+
+    def delete_cors_configuration(self):
+        self.tester.click_element_by_css(self._delete_cors_configuration_button_css)
 
 class BucketCreateFolderModal(BasePage):
     pass

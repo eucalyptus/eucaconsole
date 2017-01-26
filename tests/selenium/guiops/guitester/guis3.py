@@ -108,3 +108,13 @@ class GuiS3(GuiTester):
         BucketsLanding(self).click_action_view_contents_on_view_page(bucket_name)
         BucketContentsPage(self, bucket_name).delete_all_objects_in_bucket()
         DeleteEverythingModal(self).delete_all()
+
+    def add_default_cors_configuration(self, bucket_name):
+        pass
+
+    def delete_cors_configuration(self, bucket_name):
+        pass
+
+    def modify_cors_configuration(self, bucket_name):
+        pass
+
