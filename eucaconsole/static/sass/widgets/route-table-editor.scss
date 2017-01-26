@@ -1,13 +1,32 @@
 @import "../includes/eucavariables";
 
 
+
 .route-table-editor {
+
+  // Route states
+  .state.active { background-color: $hpe-green; }
+  .state.blackhole { background-color: $hpe-black; }
+
   #routes {
-    visibility: hidden;
+    display: none;
   }
+
+  .route-entry {
+    label {
+      display: inline-block;
+      margin-right: 1rem;
+    }
+    input, select {
+      display: inline-block;
+      width: 50%;
+    }
+  }
+
   table.table {
     width: 67%;
   }
+
   @media only screen and (max-width: 40em) {
     table.table {
       width: 100%;

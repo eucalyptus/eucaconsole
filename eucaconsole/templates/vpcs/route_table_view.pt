@@ -76,7 +76,9 @@
                     <hr />
                     <h6 i18n:translate="">Routes</h6>
                     <div ng-cloak="">
-                        <route-table-editor ng-model="routes" tal:content="routes | structure"></route-table-editor>
+                        <route-table-editor ng-model="routes" cidr-pattern="${layout.cidr_pattern}"
+                                            tal:content="routes | structure">
+                        </route-table-editor>
                     </div>
                     <hr />
                     <div ng-cloak="">

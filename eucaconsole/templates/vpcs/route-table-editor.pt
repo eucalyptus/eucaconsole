@@ -18,14 +18,42 @@
             <tr ng-repeat="route in routes">
                 <td>{{ route.destination_cidr_block }}</td>
                 <td>{{ route.gateway_id || route.instance_id || route.interface_id }}</td>
-                <td>{{ route.state }}</td>
+                <td>
+                    <span class="label radius state {{ route.state }}">
+                        {{ route.state }}
+                    </span>
+                </td>
                 <td>(-)<!-- TODO: delete route here --></td>
             </tr>
         </tbody>
     </table>
-    <!-- TODO: Add route inputs here -->
+    <div>
+        <strong i18n:translate="">Add another route:</strong>
+    </div>
+    <div class="row route-entry controls-wrapper">
+        <div class="small-6 columns">
+            <label for="destination_cidr_block" i18n:translate="">
+                Destination (IPv4 CIDR block)
+            </label>
+            <input type="text" ng-model="destinationCidrBlock" id="destination_cidr_block"
+                   pattern="{{ cidrPattern }}"/>
+        </div>
+        <div class="small-6 columns">
+            <label for="route-target" i18n:translate="">
+                Target
+            </label>
+            <select ng-model="routeTarget" id="route-target"></select>
+        </div>
+    </div>
+    <div class="errors-wrapper">
+        <!-- FIXME: Ensure validation error displays when entering an invalid CIDR -->
+        <span class="error" ng-show="routeTableForm.destinationCidrBlock.$invalid" i18n:translate="">
+            The CIDR block is invalid. An example of a valid CIDR block is 0.0.0.0/0
+        </span>
+    </div>
     <div class="route-entry-submit">
-        <a ng-click="addRoute($event)" class="button round tiny" id="add-route-btn" title="Add route" i18n:translate="">Add Route</a>
+        <a ng-click="addRoute($event)" class="button round tiny"
+           id="add-route-btn" title="Add route" i18n:translate="">Add Route</a>
     </div>
     <div class="routes-entry-result">
         <textarea id="routes" name="routes" class="">{{ routes }}</textarea>
