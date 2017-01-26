@@ -9,9 +9,9 @@
 
 .table.subnets { width: 100%; }
 
-#name, #internet_gateway { width: 40%; }
+#name, #internet_gateway, #subnet_name, #subnet_cidr_block, #availability_zone { width: 40%; }
 
-@media only screen and (max-width: 40em) { #name, #internet_gateway { width: 100%; } }
+@media only screen and (max-width: 40em) { #name, #internet_gateway, #subnet_name, #subnet_cidr_block, #availability_zone { width: 100%; } }
 #controls_route_table select { width: 30%; }
 
 #delete-vpc-modal a:hover { text-decoration: underline; }
@@ -20,3 +20,6 @@
 #delete-vpc-modal button.button.warning:hover { outline-color: red; }
 #delete-vpc-modal .resources-list { margin-bottom: 1rem; }
 #delete-vpc-modal .resources-list .small-3 { text-align: right; font-weight: bold; }
+
+#add-subnet-modal hr { margin-bottom: 0; }
+#add-subnet-modal .required-fields-indicator { margin-bottom: 1rem; }

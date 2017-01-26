@@ -37,7 +37,7 @@ from ..forms import ChoicesManager
 from ..forms.instances import TerminateInstanceForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm,
-    CreateVPCForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateVPCForm, VPCDeleteForm, SubnetForm, CreateSubnetForm, SubnetDeleteForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -211,6 +211,7 @@ class VPCView(TaggedItemView):
             self.vpc_security_groups = self.conn.get_all_security_groups(filters={'vpc-id': self.vpc.id})
             self.vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': self.vpc.id})
             self.vpc_default_security_group = self.get_default_security_group(security_groups=self.vpc_security_groups)
+            self.suggested_subnet_cidr_block = self.get_suggested_subnet_cidr_block(self.vpc.cidr_block)
             self.vpc_form = VPCForm(
                 self.request, vpc=self.vpc, vpc_conn=self.vpc_conn,
                 vpc_internet_gateway=self.vpc_internet_gateway, formdata=self.request.params or None)
@@ -219,6 +220,10 @@ class VPCView(TaggedItemView):
                 vpc_main_route_table=self.vpc_main_route_table, formdata=self.request.params or None)
             self.create_internet_gateway_form = CreateInternetGatewayForm(
                 self.request, formdata=self.request.params or None)
+            self.add_subnet_form = CreateSubnetForm(
+                self.request, ec2_conn=self.conn, suggested_subnet_cidr_block=self.suggested_subnet_cidr_block,
+                formdata=self.request.params or None
+            )
         self.vpc_delete_form = VPCDeleteForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.tagged_obj = self.vpc
@@ -229,6 +234,7 @@ class VPCView(TaggedItemView):
             vpc_form=self.vpc_form,
             vpc_delete_form=self.vpc_delete_form,
             vpc_main_route_table_form=self.vpc_main_route_table_form,
+            add_subnet_form=self.add_subnet_form,
             create_internet_gateway_form=self.create_internet_gateway_form,
             internet_gateway_help_text=INTERNET_GATEWAY_HELP_TEXT,
             max_subnet_instance_count=10,  # Determines when to link to instances landing page in VPC subnets table
@@ -310,6 +316,25 @@ class VPCView(TaggedItemView):
         else:
             self.request.error_messages = self.vpc_delete_form.get_errors_list()
             return self.render_dict
+
+    @view_config(route_name='vpc_add_subnet', renderer=VIEW_TEMPLATE, request_method='POST')
+    def vpc_add_subnet(self):
+        location = self.request.route_path('vpc_view', id=self.vpc.id)
+        if self.add_subnet_form.validate():
+            name = self.request.params.get('subnet_name')
+            cidr_block = self.request.params.get('subnet_cidr_block')
+            zone = self.request.params.get('availability_zone')
+            with boto_error_handler(self.request, location=location):
+                self.log_request(_('Adding subnet to VPC {0}').format(self.vpc.id))
+                new_subnet = self.vpc_conn.create_subnet(self.vpc.id, cidr_block, availability_zone=zone)
+                if name:
+                    new_subnet.add_tag('Name', name)
+            prefix = _(u'Successfully created subnet')
+            msg = '{0} {1}'.format(prefix, new_subnet.id)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+        else:
+            self.request.error_messages = ', '.join(self.add_subnet_form.get_errors_list())
+        return HTTPFound(location=location)
 
     @view_config(route_name='vpc_set_main_route_table', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_set_main_route_table(self):
@@ -404,6 +429,36 @@ class VPCView(TaggedItemView):
                     name=TaggedItemView.get_display_name(network_acl),
                 ))
         return subnet_network_acls
+
+    @staticmethod
+    def get_suggested_subnet_cidr_block(vpc_cidr_block):
+        """Suggest a subnet CIDR block based on the VPC's CIDR block"""
+        vpc_cidr_split = vpc_cidr_block.split('/')
+        cidr_ip = vpc_cidr_split[0]
+        cidr_netmask = int(vpc_cidr_split[1])
+        cidr_ip_parts = cidr_ip.split('.')
+        num_ip_parts = 2
+        ip_suffix = '.128.0'  # The 128 in '.128.0' is somewhat arbitrary but seems safer than suggesting '.0.0'
+
+        if 16 <= cidr_netmask < 24:
+            pass  # Use above defaults for num_ip_parts and ip_suffix
+
+        if cidr_netmask >= 24:
+            num_ip_parts = 3
+            ip_suffix = '.128'
+
+        # Suggest a subnet netmask __ bits offset from the VPC netmask
+        if 16 <= cidr_netmask <= 24:
+            netmask_bits_offset = 4
+        elif 24 < cidr_netmask <= 26:
+            netmask_bits_offset = 2
+        else:
+            # Although a VPC is unlikely to have a /27 or /28 netmask, we still need a fallback value
+            netmask_bits_offset = 0
+
+        subnet_netmask = cidr_netmask + netmask_bits_offset
+
+        return '{0}{1}/{2}'.format('.'.join(cidr_ip_parts[:num_ip_parts]), ip_suffix, subnet_netmask)
 
     def get_subnet_route_tables(self, subnet_id, vpc_route_tables):
         subnet_route_tables = []
@@ -619,7 +674,7 @@ class SubnetView(TaggedItemView):
 
             msg = _('Successfully deleted subnet {0}').format(deleted_subnet_name)
             self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.request.route_path('vpcs'))
+            return HTTPFound(location=self.request.route_path('vpc_view', id=self.vpc.id))
         else:
             self.request.error_messages = self.subnet_delete_form.get_errors_list()
             return self.render_dict
