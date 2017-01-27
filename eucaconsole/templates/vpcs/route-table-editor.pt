@@ -35,25 +35,24 @@
             <label for="destination_cidr_block" i18n:translate="">
                 Destination (IPv4 CIDR block)
             </label>
-            <input type="text" ng-model="destinationCidrBlock" id="destination_cidr_block" i18n:attributes="placeholder"
-                   placeholder="e.g. 0.0.0.0/0" required="required" ng-pattern="cidrPattern" />
+            <input type="text" ng-model="destinationCidrBlock" name="destinationCidrBlock" id="destination_cidr_block"
+                   i18n:attributes="placeholder" placeholder="e.g. 0.0.0.0/0"
+                   required="required" ng-pattern="cidrPattern" />
         </div>
         <div class="small-6 columns">
             <label for="route-target" i18n:translate="">
                 Target
             </label>
-            <select ng-model="routeTarget" id="route-target"></select>
+            <select ng-model="routeTarget" name="routeTarget" id="route-target"></select>
         </div>
-    </div>
-    <div class="errors-wrapper">
-        <!-- FIXME: Ensure validation error displays when entering an invalid CIDR -->
-        <span class="error" ng-show="routeTableForm.destinationCidrBlock.$invalid" i18n:translate="">
-            The CIDR block is invalid. An example of a valid CIDR block is 0.0.0.0/0
-        </span>
     </div>
     <div class="route-entry-submit">
         <a ng-click="addRoute($event)" class="button round tiny"
            id="add-route-btn" title="Add route" i18n:translate="">Add Route</a>
+        <small ng-show="routeTableForm.destinationCidrBlock.$error.pattern" i18n:translate=""
+              class="error" ng-class="{'show': routeTableForm.destinationCidrBlock.$error.pattern}">
+            The CIDR block is invalid. An example of a valid CIDR block is 0.0.0.0/0
+        </small>
     </div>
     <div class="routes-entry-result">
         <textarea id="routes" name="routes" class="">{{ routes }}</textarea>

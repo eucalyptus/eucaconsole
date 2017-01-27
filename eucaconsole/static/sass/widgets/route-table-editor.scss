@@ -23,6 +23,14 @@
     }
   }
 
+  .error {
+    @include validation-error-mixin;
+    margin-left: 2rem;
+    &.show {
+      display: inline-block;
+    }
+  }
+
   table.table {
     width: 67%;
   }
