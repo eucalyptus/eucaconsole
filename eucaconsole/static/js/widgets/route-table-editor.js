@@ -44,6 +44,11 @@ angular.module('RouteTableEditorModule', [])
                     $scope.$emit('routeTableUpdated');
                 };
 
+                $scope.removeRoute = function ($index) {
+                    $scope.routes.splice($index, 1);
+                    $scope.$emit('routeTableUpdated');
+                };
+
                 var resetForm = function () {
                     $scope.destinationCidrBlock = '';
                     $scope.routeTarget = '';

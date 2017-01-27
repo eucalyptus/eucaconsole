@@ -282,6 +282,7 @@ urls = [
     Route(name='route_table_update', pattern='/vpcs/{vpc_id}/route-tables/{id}/update'),
     Route(name='route_table_delete', pattern='/vpcs/{vpc_id}/route-tables/{id}/delete'),
     Route(name='route_table_set_main_for_vpc', pattern='/vpcs/{vpc_id}/route-tables/{id}/set-main-for-vpc'),
+    Route(name='route_targets_json', pattern='/vpcs/{vpc_id}/route-targets-json'),
 
     # Key pairs #####
     # Landing page

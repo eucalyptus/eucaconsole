@@ -23,7 +23,10 @@
                         {{ route.state }}
                     </span>
                 </td>
-                <td>(-)<!-- TODO: delete route here --></td>
+                <td>
+                    <a ng-show="route.gateway_id !== 'local'" class="circle remove has-tip" ng-click="removeRoute($index)"
+                       title="Remove route" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
+                </td>
             </tr>
         </tbody>
     </table>

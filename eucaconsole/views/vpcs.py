@@ -829,3 +829,25 @@ class RouteTableView(TaggedItemView):
                 vpc_peering_connection_id=route.vpc_peering_connection_id,
             ))
         return BaseView.escape_json(json.dumps(routes_list))
+
+
+class RouteTargetsJsonView(BaseView):
+    """Route targets returned as JSON"""
+
+    def __init__(self, request):
+        super(RouteTargetsJsonView, self).__init__(request)
+        self.vpc_conn = self.get_connection(conn_type="vpc")
+
+    @view_config(route_name='route_targets_json', renderer='json', request_method='GET')
+    def route_targets_json(self):
+        route_targets = []
+        vpc_id = self.request.matchdict.get('vpc_id')
+        with boto_error_handler(self.request):
+            internet_gateways = self.vpc_conn.get_all_internet_gateways(filters={'attachment.vpc-id': [vpc_id]})
+            # TODO: Add NAT gateways and ENIs as target options
+        for igw in internet_gateways:
+            route_targets.append(dict(
+                target_type='igw',
+                id=igw.id,
+            ))
+        return dict(results=route_targets)
