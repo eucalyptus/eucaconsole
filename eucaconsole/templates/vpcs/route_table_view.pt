@@ -76,7 +76,7 @@
                     <hr />
                     <h6 i18n:translate="">Routes</h6>
                     <div ng-cloak="">
-                        <route-table-editor ng-model="routes" cidr-pattern="${layout.cidr_pattern}"
+                        <route-table-editor ng-model="routes" cidr-pattern="${layout.cidr_pattern}" vpc-id="${vpc.id}"
                                             tal:content="routes | structure">
                         </route-table-editor>
                     </div>
@@ -155,6 +155,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/services/route-target-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/route-table-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/route_table_view.js')}"></script>

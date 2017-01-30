@@ -1,7 +1,16 @@
-angular.module('RouteTableEditorModule', [])
-    .directive('routeTableEditor', function () {
+/**
+ * Copyright 2017 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview Route Table Editor directive
+ * @requires AngularJS
+ *
+ */
+angular.module('RouteTableEditorModule', ['RouteTargetServiceModule'])
+    .directive('routeTableEditor', function (RouteTargetService) {
         return {
-            scope: '=',
+            scope: {
+                vpcId: '@'
+            },
             transclude: true,
             restrict: 'E',
             require: 'ngModel',
@@ -9,9 +18,14 @@ angular.module('RouteTableEditorModule', [])
             controller: function ($scope) {
                 $scope.destinationCidrBlock = '';
                 $scope.routeTarget = '';
+                $scope.routeTargets = [];
 
                 $scope.$watch('destinationCidrBlock', requireOther('routeTarget'));
                 $scope.$watch('routeTarget', requireOther('destinationCidrBlock'));
+
+                RouteTargetService.getRouteTargets($scope.vpcId).then(function (results) {
+                    $scope.routeTargets = results;
+                });
 
                 function requireOther (other) {
                     return function (newVal) {
@@ -53,7 +67,7 @@ angular.module('RouteTableEditorModule', [])
                     $scope.destinationCidrBlock = '';
                     $scope.routeTarget = '';
                     $scope.routeTableForm.$setPristine();
-                    $scope.routeTable.$setUntouched();
+                    $scope.routeTableForm.$setUntouched();
                 };
 
             },
