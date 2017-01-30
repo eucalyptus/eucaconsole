@@ -19,12 +19,14 @@ angular.module('RouteTableEditorModule', ['RouteTargetServiceModule'])
                 $scope.destinationCidrBlock = '';
                 $scope.routeTarget = '';
                 $scope.routeTargets = [];
+                $scope.routeTargetsLoading = true;
 
                 $scope.$watch('destinationCidrBlock', requireOther('routeTarget'));
                 $scope.$watch('routeTarget', requireOther('destinationCidrBlock'));
 
                 RouteTargetService.getRouteTargets($scope.vpcId).then(function (results) {
                     $scope.routeTargets = results;
+                    $scope.routeTargetsLoading = false;
                 });
 
                 function requireOther (other) {

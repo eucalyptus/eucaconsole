@@ -46,8 +46,9 @@
             <label for="route-target" i18n:translate="">
                 Target
             </label>
-            <select ng-model="routeTarget" name="routeTarget" id="route-target">
-                <option value="" i18n:translate="">Select...</option>
+            <select ng-model="routeTarget" name="routeTarget" id="route-target" ng-disabled="routeTargetsLoading">
+                <option value="" i18n:translate="" ng-if="routeTargetsLoading">Loading...</option>
+                <option value="" i18n:translate="" ng-if="!routeTargetsLoading">Select...</option>
                 <option ng-repeat="targetChoice in routeTargets" value="{{ targetChoice.id }}">
                     {{ targetChoice.id }}
                 </option>

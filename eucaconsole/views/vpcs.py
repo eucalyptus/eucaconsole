@@ -28,6 +28,8 @@
 Pyramid views for Eucalyptus and AWS VPCs
 
 """
+from operator import attrgetter
+
 import simplejson as json
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -844,10 +846,14 @@ class RouteTargetsJsonView(BaseView):
         vpc_id = self.request.matchdict.get('vpc_id')
         with boto_error_handler(self.request):
             internet_gateways = self.vpc_conn.get_all_internet_gateways(filters={'attachment.vpc-id': [vpc_id]})
-            # TODO: Add NAT gateways and ENIs as target options
-        for igw in internet_gateways:
+            network_interfaces = self.vpc_conn.get_all_network_interfaces(filters={'vpc-id': [vpc_id]})
+            # TODO: Add NAT gateways as target options
+        for igw in sorted(internet_gateways, key=attrgetter('id')):
             route_targets.append(dict(
-                target_type='igw',
                 id=igw.id,
+            ))
+        for eni in sorted(network_interfaces, key=attrgetter('id')):
+            route_targets.append(dict(
+                id=eni.id
             ))
         return dict(results=route_targets)
