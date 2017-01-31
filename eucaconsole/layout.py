@@ -72,15 +72,10 @@ class MasterLayout(object):
         self.has_regions = True
         self.default_region = ''
         if self.cloud_type == 'aws':
-            self.regions = AWS_REGIONS
-            govcloud_region_option = dict(
-                name='us-gov-west-1',
-                label='US GovCloud',
-            )
-            if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
-                if govcloud_region_option not in self.regions:
-                    self.regions.append(govcloud_region_option)
             self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
+            self.regions = list(AWS_REGIONS)
+            if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
+                self.regions.append(dict(name='us-gov-west-1', label='US GovCloud'))
         else:
             if self.access_id:
                 host = self.request.registry.settings.get('ufshost')
