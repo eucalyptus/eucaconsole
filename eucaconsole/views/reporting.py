@@ -29,12 +29,26 @@ Pyramid views for Eucalyptus and Usage Reporting
 
 """
 import simplejson as json
+import io
 
 from pyramid.view import view_config
+import pandas
 
 from ..i18n import _
 from ..views import BaseView, JSONResponse
 
+UNITS_LOOKUP = [
+    {'hint': 'Bytes', 'units': 'GB'},
+    {'hint': 'Alarm', 'units': 'Alarms'},
+    {'hint': 'Requests', 'units': 'Requests'},
+    {'hint': 'Hours', 'units': 'Hrs'},
+    {'hint': 'Hrs', 'units': 'Hrs'},
+    {'hint': 'Address', 'units': 'Addresses'},
+    {'hint': 'Attempts', 'units': 'Attempts'},
+    {'hint': 'VolumeUsage', 'units': 'GB-month'},
+    {'hint': 'SnapshotUsage', 'units': 'GB-month'},
+    {'hint': 'Usage', 'units': 'Units'},
+]
 
 class ReportingView(BaseView):
     def __init__(self, request):
@@ -101,5 +115,19 @@ class ReportingAPIView(BaseView):
         month = int(self.request.params.get('month'))
         # use "ViewMontlyUsage" call to fetch usage information
         ret = self.conn.view_monthly_usage(year, month)
-        return dict(results=ret.get('data'))
+        csv = ret.get('data')
+        data = pandas.read_csv(io.StringIO(csv), engine='c')
+        grouped = data.groupby(('ProductName', 'UsageType'))
+        totals = grouped['UsageQuantity'].sum()
+        results = totals.to_frame().to_records().tolist()
+        for idx, rec in enumerate(results):
+            # ascertain unit type
+            results[idx] = rec + (self.units_from_details(rec[1]),)
+        return dict(results=results)
 
+    @staticmethod
+    def units_from_details(details):
+        for unit in UNITS_LOOKUP:
+            if unit['hint'] in details:
+                return unit['units']
+        return ''

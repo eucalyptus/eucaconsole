@@ -47,10 +47,10 @@
                     <tbody>
                         <tr ng-repeat="usage in reports.monthlyUsage">
                             <td>
-                                {{ usage[15] }}
+                                {{ usage[0] }}: {{ usage[1] }}
                             </td>
                             <td>
-                                {{ usage[21] }}
+                                {{ usage[2] }} {{ usage[3] }}
                             </td>
                         </tr>
                     </tbody>
