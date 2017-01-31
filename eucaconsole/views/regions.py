@@ -31,6 +31,7 @@ Region selector view
 import logging
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
+from pyramid.security import forget
 from pyramid.view import view_config
 
 from . import BaseView
@@ -54,9 +55,14 @@ class RegionSelectView(BaseView):
         session = self.request.session
         session['region'] = region
         try:
+            conn = self.get_connection(conn_type='vpc')
+            if conn is None:
+                # Handle broken connection case (e.g. configured AWS GovCloud region without proper access)
+                forget(self.request)
+                self.request.session.delete()
+                return HTTPFound(location=self.request.route_path('login'))
             session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
             session['default_vpc'] = self.get_account_attributes(['default-vpc'])
-            conn = self.get_connection(conn_type='vpc')
             vpcs = conn.get_all_vpcs()
             if not vpcs or len(vpcs) == 0:
                 # remove vpc from supported-platforms
