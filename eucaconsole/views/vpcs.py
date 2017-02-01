@@ -772,6 +772,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
     def route_table_update(self):
         if self.route_table and self.route_table_form.validate():
             location = self.request.route_path('route_table_view', vpc_id=self.vpc.id, id=self.route_table.id)
+            routes_updated = self.request.params.get('routes_updated', False)
             with boto_error_handler(self.request, location):
                 # Update tags
                 self.update_tags()
@@ -781,7 +782,8 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
                 self.update_name_tag(name)
 
                 # Update routes
-                self.update_routes(self.request, self.vpc_conn, self.route_table)
+                if routes_updated:
+                    self.update_routes(self.request, self.vpc_conn, self.route_table)
 
             msg = _(u'Successfully updated route table')
             self.request.session.flash(msg, queue=Notification.SUCCESS)

@@ -65,5 +65,6 @@
     </div>
     <div class="routes-entry-result">
         <textarea id="routes" name="routes" class="">{{ routes }}</textarea>
+        <input class="hide" type="checkbox" name="routes_updated" ng-model="routesUpdated" />
     </div>
 </div>

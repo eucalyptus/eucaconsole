@@ -19,6 +19,7 @@ angular.module('RouteTableEditorModule', ['RouteTargetServiceModule'])
                 $scope.destinationCidrBlock = '';
                 $scope.routeTarget = '';
                 $scope.routeTargets = [];
+                $scope.routesUpdated = false;
                 $scope.routeTargetsLoading = true;
 
                 $scope.$watch('destinationCidrBlock', requireOther('routeTarget'));
@@ -56,12 +57,12 @@ angular.module('RouteTableEditorModule', ['RouteTargetServiceModule'])
 
                     $scope.routes.push(route);
                     resetForm();
-                    $scope.$emit('routeTableUpdated');
+                    $scope.routesUpdated = true;
                 };
 
                 $scope.removeRoute = function ($index) {
                     $scope.routes.splice($index, 1);
-                    $scope.$emit('routeTableUpdated');
+                    $scope.routesUpdated = true;
                 };
 
                 var resetForm = function () {
