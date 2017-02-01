@@ -75,8 +75,7 @@
                     </div>
                     <hr />
                     <h6 i18n:translate="">Routes</h6>
-                    <!--! TODO: remove 'euca' cloud_type condition when we have full NAT gateway support -->
-                    <div ng-cloak="" tal:condition="layout.cloud_type == 'euca'">
+                    <div ng-cloak="">
                         <route-table-editor ng-model="routes" cidr-pattern="${layout.cidr_pattern}" vpc-id="${vpc.id}"
                                             tal:content="routes | structure">
                         </route-table-editor>
