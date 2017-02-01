@@ -34,8 +34,9 @@ from pyramid import testing
 from eucaconsole.i18n import _
 from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.vpcs import VPCForm, CreateVPCForm, SubnetForm
+from eucaconsole.views.vpcs import VPCView
 
-from tests import BaseFormTestCase
+from tests import BaseTestCase, BaseFormTestCase
 
 
 class VPCFormTestCase(BaseFormTestCase):
@@ -105,3 +106,24 @@ class SubnetFormTestCase(BaseFormTestCase):
             ('false', _('Disabled')),
         )
         self.assertEqual(self.form.public_ip_auto_assignment.choices, expected_choices)
+
+
+class SuggestedSubnetCIDRBlockTestCase(BaseTestCase):
+
+    def test_suggested_subnet_cidr_blocks_for_vpc_cidr_blocks(self):
+        vpc_cidr_block = '10.0.0.0/16'
+        expected_subnet_cidr_block = '10.0.128.0/20'
+        suggested_subnet_cidr_block = VPCView.get_suggested_subnet_cidr_block(vpc_cidr_block)
+        self.assertEqual(expected_subnet_cidr_block, suggested_subnet_cidr_block)
+        vpc_cidr_block = '172.31.0.0/16'
+        expected_subnet_cidr_block = '172.31.128.0/20'
+        suggested_subnet_cidr_block = VPCView.get_suggested_subnet_cidr_block(vpc_cidr_block)
+        self.assertEqual(expected_subnet_cidr_block, suggested_subnet_cidr_block)
+        vpc_cidr_block = '192.168.1.0/24'
+        expected_subnet_cidr_block = '192.168.1.128/28'
+        suggested_subnet_cidr_block = VPCView.get_suggested_subnet_cidr_block(vpc_cidr_block)
+        self.assertEqual(expected_subnet_cidr_block, suggested_subnet_cidr_block)
+        vpc_cidr_block = '192.168.2.0/25'
+        expected_subnet_cidr_block = '192.168.2.128/27'
+        suggested_subnet_cidr_block = VPCView.get_suggested_subnet_cidr_block(vpc_cidr_block)
+        self.assertEqual(expected_subnet_cidr_block, suggested_subnet_cidr_block)
