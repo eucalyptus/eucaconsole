@@ -40,7 +40,7 @@
             </label>
             <input type="text" ng-model="destinationCidrBlock" name="destinationCidrBlock" id="destination_cidr_block"
                    i18n:attributes="placeholder" placeholder="e.g. 0.0.0.0/0"
-                   required="required" ng-pattern="cidrPattern" />
+                   ng-pattern="cidrPattern" />
         </div>
         <div class="small-6 columns">
             <label for="route-target" i18n:translate="">

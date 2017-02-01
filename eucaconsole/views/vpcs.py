@@ -690,7 +690,38 @@ class SubnetView(TaggedItemView):
         }))
 
 
-class RouteTableView(TaggedItemView):
+class RouteTableMixin(object):
+    def update_routes(self, request, vpc_conn, route_table):
+        routes_json = request.params.get('routes')
+        new_routes = json.loads(routes_json)
+        self.delete_routes(vpc_conn, route_table)
+        self.add_routes(vpc_conn, route_table, new_routes)
+
+    @staticmethod
+    def delete_routes(vpc_conn, route_table):
+        for route in route_table.routes:
+            # TODO: Skip deleting local route
+            if route.gateway_id != 'local':
+                vpc_conn.delete_route(route_table.id, route.destination_cidr_block)
+
+    @staticmethod
+    def add_routes(vpc_conn, route_table, new_routes):
+        for route in new_routes:
+            route_target_id = route.get('target')
+            params = dict(
+                route_table_id=route_table.id,
+                destination_cidr_block=route.get('destination_cidr_block')
+            )
+            if route_target_id:
+                if route_target_id.startswith('igw-'):
+                    params.update(dict(gateway_id=route_target_id))
+                elif route_target_id.startswith('eni-'):
+                    params.update(dict(interface_id=route_target_id))
+                # TODO: Handle routes with NAT Gateway target
+                vpc_conn.create_route(**params)
+
+
+class RouteTableView(TaggedItemView, RouteTableMixin):
     VIEW_TEMPLATE = '../templates/vpcs/route_table_view.pt'
 
     def __init__(self, request, **kwargs):
@@ -749,7 +780,8 @@ class RouteTableView(TaggedItemView):
                 name = self.request.params.get('name', '')
                 self.update_name_tag(name)
 
-                # TODO: Update routes
+                # Update routes
+                self.update_routes(self.request, self.vpc_conn, self.route_table)
 
             msg = _(u'Successfully updated route table')
             self.request.session.flash(msg, queue=Notification.SUCCESS)

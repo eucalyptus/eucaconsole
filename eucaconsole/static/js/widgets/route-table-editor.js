@@ -51,8 +51,7 @@ angular.module('RouteTableEditorModule', ['RouteTargetServiceModule'])
                     var route = {
                         destination_cidr_block: $scope.destinationCidrBlock,
                         state: 'active',
-                        // TODO: Set interface_id instead if ENI selected
-                        gateway_id: $scope.routeTarget
+                        target: $scope.routeTarget
                     };
 
                     $scope.routes.push(route);
