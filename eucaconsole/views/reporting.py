@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and Usage Reporting
 import simplejson as json
 import io
 
+from pyramid.response import Response
 from pyramid.view import view_config
 import pandas
 
@@ -128,6 +129,24 @@ class ReportingAPIView(BaseView):
                 service = rec[0]
             results.append( (rec[0], rec[1], '{:0.8f}'.format(rec[2]).rstrip('0').rstrip('.'), self.units_from_details(rec[1])) )
         return dict(results=results)
+
+    @view_config(route_name='reporting_monthly_usage', request_method='POST')
+    def get_reporting_monthly_usage_file(self):
+        year = int(self.request.params.get('year'))
+        month = int(self.request.params.get('month'))
+        # use "ViewMontlyUsage" call to fetch usage information
+        ret = self.conn.view_monthly_usage(year, month)
+        filename = 'EucalyptusMonthlyUsage-{0}-{1}-{2}.csv'.format(
+            self.request.session.get('account'),
+            year,
+            month
+        )
+        response = Response(content_type='text/csv')
+        response.text = ret.get('data')
+        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        response.cache_control = 'no-store'
+        response.pragma = 'no-cache'
+        return response
 
     @staticmethod
     def units_from_details(details):

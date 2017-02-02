@@ -23,7 +23,12 @@ angular.module('ReportingPage')
     vm.loadMonthlyData();
     vm.downloadCSV = function() {
         // use reports service to get montly data in csv format
-        // use generateFile in success method to present file for user to download
-        // see user_view.js for an example
+        var url = '/reporting-api/monthlyusage?year=2017&month=1';
+        $.generateFile({
+            csrf_token: $('#csrf_token').val(),
+            filename: 'not-used', // let the server set this
+            content: 'none',
+            script: url
+        });
     };
 }]);
