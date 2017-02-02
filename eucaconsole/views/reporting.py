@@ -51,6 +51,7 @@ UNITS_LOOKUP = [
     {'hint': 'Usage', 'units': 'Units'},
 ]
 
+
 class ReportingView(BaseView):
     def __init__(self, request):
         super(ReportingView, self).__init__(request)
@@ -127,11 +128,17 @@ class ReportingAPIView(BaseView):
             if service != rec[0]:
                 results.append((rec[0],))
                 service = rec[0]
-            results.append( (rec[0], rec[1], '{:0.8f}'.format(rec[2]).rstrip('0').rstrip('.'), self.units_from_details(rec[1])) )
+            results.append((
+                rec[0], rec[1],
+                '{:0.8f}'.format(rec[2]).rstrip('0').rstrip('.'),
+                self.units_from_details(rec[1])
+            ))
         return dict(results=results)
 
     @view_config(route_name='reporting_monthly_usage', request_method='POST')
     def get_reporting_monthly_usage_file(self):
+        if not self.is_csrf_valid():
+            return JSONResponse(status=400, message="missing CSRF token")
         year = int(self.request.params.get('year'))
         month = int(self.request.params.get('month'))
         # use "ViewMontlyUsage" call to fetch usage information
