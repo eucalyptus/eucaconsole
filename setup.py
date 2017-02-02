@@ -142,6 +142,7 @@ requires = [
     'simplejson >= 2.0.9',
     'WTForms >= 1.0.2',
     'eventlet >= 0.15.2',
+    'pandas == 0.17',
 ]
 
 i18n_extras = [
