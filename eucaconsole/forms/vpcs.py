@@ -244,9 +244,7 @@ class RouteTableForm(BaseSecureForm):
         super(RouteTableForm, self).__init__(request, **kwargs)
         self.route_table = route_table
         self.name.error_msg = self.name_error_msg
-
-        if self.route_table:
-            self.name.data = self.route_table.tags.get('Name', '')
+        self.name.data = self.route_table.tags.get('Name', '')
 
 
 class RouteTableDeleteForm(BaseSecureForm):
