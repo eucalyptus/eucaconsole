@@ -787,7 +787,10 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
-            self.route_table = self.get_route_table()
+            self.route_table = self.get_route_table(self.vpc.id)
+        if self.route_table is None or self.vpc is None:
+            raise HTTPNotFound()
+        with boto_error_handler(request, self.location):
             self.route_table_subnets = self.get_route_table_subnets()
             vpc_main_route_tables = self.vpc_conn.get_all_route_tables(
                 filters={'vpc-id': self.vpc.id, 'association.main': 'true'})
@@ -890,10 +893,10 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
             return vpcs_list[0] if vpcs_list else None
         return None
 
-    def get_route_table(self):
+    def get_route_table(self, vpc_id):
         route_table_id = self.request.matchdict.get('id')
         filters = {
-            'vpc-id': self.vpc.id,
+            'vpc-id': vpc_id,
             'route-table-id': route_table_id
         }
         route_tables = self.vpc_conn.get_all_route_tables(filters=filters)
