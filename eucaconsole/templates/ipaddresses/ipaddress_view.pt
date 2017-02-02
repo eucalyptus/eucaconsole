@@ -47,6 +47,10 @@
                         <div class="large-10 small-8 columns value" ng-show="'${eip.domain}' == 'vpc'" i18n:translate="">VPC</div>
                         <div class="large-10 small-8 columns value" ng-show="'${eip.domain}' == 'standard'" i18n:translate="">Standard</div>
                     </div>
+                    <div class="row controls-wrapper readonly" ng-cloak="">
+                        <div class="large-2 small-4 columns"><label i18n:translate="">Allocation ID</label></div>
+                        <div class="large-10 small-8 columns value" i18n:translate="">${eip.allocation_id}</div>
+                    </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-2 small-4 columns"><label i18n:translate="">Assigned to instance</label></div>
                         <div class="large-10 small-8 columns value"> 

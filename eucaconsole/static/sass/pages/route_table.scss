@@ -1,0 +1,27 @@
+/* @fileOverview Route Table details page CSS */
+
+@import "../includes/eucavariables";
+
+
+#name {
+  width: 40%;
+}
+
+
+@media only screen and (max-width: 40em) {
+  #name {
+    width: 100%;
+  }
+}
+
+
+// Delete route table modal
+#delete-route-table-modal {
+  .resources-list {
+    margin-bottom: 1rem;
+    .small-3 {
+      text-align: right;
+      font-weight: bold;
+    }
+  }
+}
