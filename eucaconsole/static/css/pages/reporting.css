@@ -192,3 +192,7 @@ select { width: 12rem; }
 form .error { font-size: small; display: none; }
 
 .policy-text-area { height: 15rem; overflow-y: scroll; }
+
+.totals { text-align: right; }
+
+.usage-service { color: #333333; font-weight: bold; }

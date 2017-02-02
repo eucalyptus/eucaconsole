@@ -41,15 +41,18 @@
                     <thead>
                         <tr>
                             <th i18n:translate="">Eucalyptus Service Usage Details</th>
-                            <th i18n:translate="">Total</th>
+                            <th class="totals" i18n:translate="">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="usage in reports.monthlyUsage">
-                            <td>
-                                {{ usage[0] }}: {{ usage[1] }}
+                            <td ng-if="usage.length == 1" colspan="2">
+                                <span class="usage-service">{{ usage[0] }}</span>
                             </td>
-                            <td>
+                            <td ng-if="usage.length > 1">
+                                &nbsp;&nbsp;{{ usage[1] }}
+                            </td>
+                            <td ng-if="usage.length > 1" class="totals">
                                 {{ usage[2] }} {{ usage[3] }}
                             </td>
                         </tr>

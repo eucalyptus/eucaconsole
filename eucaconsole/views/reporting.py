@@ -119,14 +119,19 @@ class ReportingAPIView(BaseView):
         data = pandas.read_csv(io.StringIO(csv), engine='c')
         grouped = data.groupby(('ProductName', 'UsageType'))
         totals = grouped['UsageQuantity'].sum()
-        results = totals.to_frame().to_records().tolist()
-        for idx, rec in enumerate(results):
-            # ascertain unit type
-            results[idx] = rec + (self.units_from_details(rec[1]),)
+        totals_list = totals.to_frame().to_records().tolist()
+        results = []
+        service = ''
+        for idx, rec in enumerate(totals_list):
+            if service != rec[0]:
+                results.append((rec[0],))
+                service = rec[0]
+            results.append( (rec[0], rec[1], '{:0.8f}'.format(rec[2]).rstrip('0').rstrip('.'), self.units_from_details(rec[1])) )
         return dict(results=results)
 
     @staticmethod
     def units_from_details(details):
+        # ascertain unit type
         for unit in UNITS_LOOKUP:
             if unit['hint'] in details:
                 return unit['units']
