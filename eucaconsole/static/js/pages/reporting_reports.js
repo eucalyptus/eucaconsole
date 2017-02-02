@@ -1,5 +1,6 @@
 angular.module('ReportingPage')
-.controller('ReportsController', ['$scope', '$routeParams', 'ReportingService', 'eucaHandleError', function ($scope, $routeParams, ReportingService, eucaHandleError) {
+.controller('ReportsController', ['$scope', 'ReportingService', 'eucaHandleError',
+    function ($scope, ReportingService, eucaHandleError) {
     var vm = this;
     vm.monthChoices = ['January 2017', 'December 2016', 'November 2016'];
     vm.monthlyUsage = [{details:'ec2 instances', total:'4'}, {details:'volumes', total:'5'}];
