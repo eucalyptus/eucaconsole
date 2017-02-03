@@ -108,6 +108,10 @@ class VPCDeleteForm(BaseSecureForm):
     pass
 
 
+class SubnetDeleteForm(BaseSecureForm):
+    pass
+
+
 class VPCMainRouteTableForm(BaseSecureForm):
     """VPC form to set main route table"""
     route_table = SelectField(label=_('Route table'))
@@ -155,6 +159,28 @@ class CreateVPCForm(BaseSecureForm):
             'may lead to unpredictable behavior.'
         )
         self.internet_gateway.help_text = INTERNET_GATEWAY_HELP_TEXT
+
+
+class CreateSubnetForm(BaseSecureForm):
+    name_error_msg = _('Not a valid name')
+    subnet_name = StringField(label=_('Name'))
+    cidr_block_error_msg = _('A valid CIDR block is required')
+    cidr_block_regex = CIDR_BLOCK_REGEX
+    subnet_cidr_block = StringField(
+        label=_('CIDR block'),
+        validators=[
+            validators.InputRequired(message=cidr_block_error_msg),
+            validators.Regexp(CIDR_BLOCK_REGEX, message=cidr_block_error_msg),
+        ]
+    )
+    availability_zone = SelectField(label=_('Availability zone'))
+
+    def __init__(self, request, ec2_conn=None, suggested_subnet_cidr_block=None, **kwargs):
+        super(CreateSubnetForm, self).__init__(request, **kwargs)
+        self.availability_zone.choices = ChoicesManager(conn=ec2_conn).availability_zones(self.region, add_blank=False)
+        self.subnet_name.error_msg = self.name_error_msg
+        self.subnet_cidr_block.error_msg = self.cidr_block_error_msg
+        self.subnet_cidr_block.data = suggested_subnet_cidr_block
 
 
 class SubnetForm(BaseSecureForm):
@@ -207,3 +233,24 @@ class SubnetForm(BaseSecureForm):
     def set_help_text(self):
         self.route_table.help_text = self.route_table_help_text
         self.public_ip_auto_assignment.help_text = self.public_ip_auto_assignment_help_text
+
+
+class RouteTableForm(BaseSecureForm):
+    """Form to update an existing route table"""
+    name_error_msg = _('Not a valid name')
+    name = TextEscapedField(label=_('Name'))
+
+    def __init__(self, request, route_table=None, **kwargs):
+        super(RouteTableForm, self).__init__(request, **kwargs)
+        self.route_table = route_table
+        self.name.error_msg = self.name_error_msg
+        self.name.data = self.route_table.tags.get('Name', '')
+
+
+class RouteTableDeleteForm(BaseSecureForm):
+    pass
+
+
+class RouteTableSetMainForm(BaseSecureForm):
+    """Form to set route table as main one for VPC"""
+    pass

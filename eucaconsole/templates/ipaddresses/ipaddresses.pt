@@ -62,6 +62,10 @@
                     <span class="label" title="Scope" i18n:attributes="title" data-tooltip="">SC</span>
                     <span i18n:translate="">Standard</span>
                 </div>
+                <div>
+                    <span class="label" title="Allocation ID" i18n:attributes="title" data-tooltip="">AI</span>
+                    <span i18n:translate="">{{ item.allocation_id }}</span>
+                </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right"
@@ -86,6 +90,7 @@
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
                 <th i18n:translate="">Assigned to instance</th>
+                <th i18n:translate="">Allocation ID</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -99,6 +104,7 @@
                     <span i18n:translate="">Standard</span>
                 </td>
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
+                <td>{{ item.allocation_id }}</td>
                 <td>
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right round"

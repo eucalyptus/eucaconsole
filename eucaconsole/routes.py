@@ -163,7 +163,7 @@ urls = [
     Route(name='elbs_delete', pattern='/elbs/delete'),
     # Detail page
     Route(name='elb_wizard', pattern='/elbs/wizard*step'),
-    Route(name='elb_new', pattern='/elbs/new'),
+    Route(name='elb_new', pattern='/elbs/wizard'),
     Route(name='elb_create', pattern='/elbs/create'),
     Route(name='elb_delete', pattern='/elbs/{id}/delete'),
     Route(name='elb_view', pattern='/elbs/{id}'),
@@ -273,10 +273,17 @@ urls = [
     Route(name='vpc_view', pattern='/vpcs/{id}'),
     Route(name='vpc_update', pattern='/vpcs/{id}/update'),
     Route(name='vpc_delete', pattern='/vpcs/{id}/delete'),
+    Route(name='vpc_add_subnet', pattern='/vpcs/{id}/add-subnet'),
     Route(name='vpc_set_main_route_table', pattern='/vpcs/{id}/set-main-route-table'),
     Route(name='vpc_create_internet_gateway', pattern='/vpcs/{id}/create-internet-gateway'),
     Route(name='subnet_view', pattern='/vpcs/{vpc_id}/subnets/{id}'),
     Route(name='subnet_update', pattern='/vpcs/{vpc_id}/subnets/{id}/update'),
+    Route(name='subnet_delete', pattern='/vpcs/{vpc_id}/subnets/{id}/delete'),
+    Route(name='route_table_view', pattern='/vpcs/{vpc_id}/route-tables/{id}'),
+    Route(name='route_table_update', pattern='/vpcs/{vpc_id}/route-tables/{id}/update'),
+    Route(name='route_table_delete', pattern='/vpcs/{vpc_id}/route-tables/{id}/delete'),
+    Route(name='route_table_set_main_for_vpc', pattern='/vpcs/{vpc_id}/route-tables/{id}/set-main-for-vpc'),
+    Route(name='route_targets_json', pattern='/vpcs/{vpc_id}/route-targets-json'),
 
     # Key pairs #####
     # Landing page

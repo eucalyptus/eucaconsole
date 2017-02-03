@@ -721,6 +721,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 msg = _(u'Successfully modified instance')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
+        else:
+            self.request.error_messages = self.instance_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
