@@ -5,8 +5,8 @@
 .route-table-editor .state.active { background-color: #01a982; }
 .route-table-editor .state.blackhole { background-color: #333333; }
 .route-table-editor #routes { display: none; }
-.route-table-editor .route-entry label { display: inline-block; margin-right: 1rem; }
-.route-table-editor .route-entry input, .route-table-editor .route-entry select { display: inline-block; width: 50%; }
+.route-table-editor .route-entry label { text-align: left; display: block; margin-right: 1rem; margin-bottom: 2px; }
+.route-table-editor .route-entry select { max-width: 16rem; }
 .route-table-editor .error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; margin-left: 2rem; }
 .route-table-editor .error.show { display: inline-block; }
 .route-table-editor table.table { width: 67%; }

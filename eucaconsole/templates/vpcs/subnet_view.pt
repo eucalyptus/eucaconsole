@@ -186,12 +186,12 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        <div id="create-route-table-modal" class="reveal-modal large" data-reveal="">
+        <div id="create-route-table-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Create route table</h3>
             <form id="create-route-table-form" name="deleteSubnetForm" ng-cloak="" method="post"
                   action="${request.route_path('route_table_create', vpc_id=vpc.id, id=subnet.id)}">
                 ${structure:create_route_table_form['csrf_token']}
-                <div>
+                <div class="row">
                     ${panel('form_field', field=create_route_table_form['route_table_name'], stack_label=True)}
                 </div>
                 <hr />
