@@ -208,6 +208,9 @@ class VPCView(TaggedItemView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
+        if self.vpc is None:
+            raise HTTPNotFound()
+        with boto_error_handler(request, self.location):
             self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.vpc_main_route_table = self.get_main_route_table(route_tables=self.vpc_route_tables)
             self.vpc_internet_gateway = self.get_internet_gateway()
@@ -377,7 +380,7 @@ class VPCView(TaggedItemView):
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('id')
         if vpc_id:
-            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
             return vpcs_list[0] if vpcs_list else None
         return None
 
@@ -594,8 +597,11 @@ class SubnetView(TaggedItemView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
-            self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.subnet = self.get_subnet()
+        if self.subnet is None or self.vpc is None:
+            raise HTTPNotFound()
+        with boto_error_handler(request, self.location):
+            self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.subnet_route_table = self.get_subnet_route_table()
             self.subnet_network_acl = self.get_subnet_network_acl()
             self.subnet_form = SubnetForm(
@@ -687,7 +693,7 @@ class SubnetView(TaggedItemView):
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('vpc_id')
         if vpc_id:
-            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
             return vpcs_list[0] if vpcs_list else None
         return None
 
@@ -889,7 +895,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('vpc_id')
         if vpc_id:
-            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
             return vpcs_list[0] if vpcs_list else None
         return None
 
