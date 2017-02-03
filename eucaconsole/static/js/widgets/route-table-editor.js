@@ -67,13 +67,18 @@ angular.module('RouteTableEditorModule', [])
 
                     var route = {
                         destination_cidr_block: $scope.destinationCidrBlock,
-                        state: 'active',
-                        target: $scope.routeTarget
+                        state: 'active'
                     };
 
+                    if ($scope.routeTarget.indexOf('igw-') === 0) {
+                        route.gateway_id = $scope.routeTarget;
+                    } else if ($scope.routeTarget.indexOf('eni-') === 0) {
+                        route.interface_id = $scope.routeTarget;
+                    }
+
                     $scope.routes.push(route);
-                    resetForm();
                     $scope.routesUpdated = true;
+                    resetForm();
                 };
 
                 $scope.removeRoute = function ($index) {
