@@ -75,14 +75,11 @@ class MasterLayout(object):
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.get_display_name = TaggedItemView.get_display_name
         if self.cloud_type == 'aws':
-            self.regions = AWS_REGIONS
-            if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
-                self.regions.append(dict(
-                    name='us-gov-west-1',
-                    label='US GovCloud',
-                ))
             self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
             self.is_vpc_supported = True
+            self.regions = list(AWS_REGIONS)
+            if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
+                self.regions.append(dict(name='us-gov-west-1', label='US GovCloud'))
         else:
             if self.access_id:
                 host = self.request.registry.settings.get('ufshost')
