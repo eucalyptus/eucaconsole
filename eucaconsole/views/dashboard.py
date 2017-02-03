@@ -30,6 +30,8 @@ Pyramid views for Dashboard
 """
 import simplejson as json
 
+from pyramid.httpexceptions import HTTPFound
+from pyramid.security import forget
 from pyramid.view import view_config
 from boto.exception import BotoServerError
 
@@ -69,6 +71,11 @@ class DashboardView(BaseView):
 
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')
     def dashboard_home(self):
+        if self.conn is None:
+            # Handle broken connection case (e.g. configured AWS GovCloud region without proper access)
+            forget(self.request)
+            self.request.session.delete()
+            return HTTPFound(location=self.request.route_path('login'))
         with boto_error_handler(self.request):
             availability_zones = ChoicesManager(self.conn).get_availability_zones(self.conn.host)
             alarms_triggered = self.get_connection(conn_type='cloudwatch').describe_alarms(state_value="ALARM")
