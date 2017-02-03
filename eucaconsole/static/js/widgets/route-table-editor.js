@@ -57,11 +57,19 @@ angular.module('RouteTableEditorModule', [])
                 $scope.addRoute = function ($event) {
                     $event.preventDefault();
 
+                    // Don't add route if either CIDR block or route target is empty
                     if ($scope.destinationCidrBlock === '' || $scope.routeTarget === '') {
                         return;
                     }
-
                     if ($scope.routeTableForm.$invalid || $scope.routeTableForm.$pristine) {
+                        return;
+                    }
+
+                    // Avoid adding route that conflicts with another destination CIDR block
+                    var existingCidrBlocks = $scope.routes.map(function (route) {
+                        return route.destination_cidr_block;
+                    });
+                    if (existingCidrBlocks.indexOf($scope.destinationCidrBlock) !== -1) {
                         return;
                     }
 
