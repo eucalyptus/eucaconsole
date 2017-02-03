@@ -1186,6 +1186,11 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
         """Handles the POST from the Launch instanced wizard"""
         if self.launch_form.validate():
             tags_json = self.request.params.get('tags')
+            if self.image is None:
+                # image must no longer be available
+                msg = _(u'Selected image not available. It may have been recently removed or made private by another user.')
+                self.request.session.flash(msg, queue=Notification.ERROR)
+                return self.render_dict
             image_id = self.image.id
             num_instances = int(self.request.params.get('number', 1))
             key_name = self.unescape_braces(self.request.params.get('keypair', ''))
