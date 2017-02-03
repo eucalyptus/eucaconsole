@@ -408,7 +408,7 @@ class VPCView(TaggedItemView):
                 available_ips=subnet.available_ip_address_count,
                 instances=instances,
                 instance_count=len(instances),
-                route_tables=self.get_subnet_route_tables(subnet.id, vpc_route_tables),
+                route_table=self.get_subnet_route_table(subnet.id, vpc_route_tables),
                 network_acls=self.get_subnet_network_acls(subnet.id, vpc_network_acls),
             ))
         return subnets_list
@@ -467,22 +467,13 @@ class VPCView(TaggedItemView):
 
         return '{0}{1}/{2}'.format('.'.join(cidr_ip_parts[:num_ip_parts]), ip_suffix, subnet_netmask)
 
-    def get_subnet_route_tables(self, subnet_id, vpc_route_tables):
-        subnet_route_tables = []
+    def get_subnet_route_table(self, subnet_id, vpc_route_tables):
         for route_table in vpc_route_tables:
             association_subnet_ids = [assoc.subnet_id for assoc in route_table.associations]
             if subnet_id in association_subnet_ids:
-                subnet_route_tables.append(dict(
-                    id=route_table.id,
-                    name=TaggedItemView.get_display_name(route_table),
-                ))
+                return route_table
             elif association_subnet_ids == [None]:
-                # Show VPC's main route table for subnet
-                subnet_route_tables.append(dict(
-                    id=self.vpc_main_route_table.id,
-                    name=TaggedItemView.get_display_name(self.vpc_main_route_table),
-                ))
-        return subnet_route_tables
+                return self.vpc_main_route_table
 
     @staticmethod
     def get_default_security_group(security_groups):
