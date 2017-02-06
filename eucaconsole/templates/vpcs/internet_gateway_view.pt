@@ -1,0 +1,83 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/internet_gateway.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="InternetGatewayDetailsPage"
+         ng-controller="InternetGatewayDetailsPageCtrl">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
+                <li class="current">
+                    <a tal:condition="internet_gateway">${internet_gateway_name }</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for Internet Gateway:</strong>
+            <em class="breakword">${internet_gateway_name}</em>
+        </h3>
+        <div class="large-12 columns">
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a data-reveal-id="attach-vpc-modal" id="attach-to-vpc-action" i18n:translate="">
+                                Attach to VPC
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="detach-vpc-modal" id="detach-from-vpc-action" i18n:translate="">
+                                Detach from VPC
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form action="${request.route_path('internet_gateway_update', id=internet_gateway.id)}"
+                      id="internet-gateway-form" method="post" data-abide="abide">
+                    ${structure:internet_gateway_form['csrf_token']}
+                    <h6 i18n:translate="">Internet Gateway</h6>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="" id="igw-status-label">Status</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <span class="label radius status ${igw_status}">${igw_status}</span>
+                        </div>
+                    </div>
+                    <div>
+                        ${panel('form_field', field=internet_gateway_form.name, pattern=layout.tag_pattern_value, leftcol_width_large=3, rightcol_width_large=9)}
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">ID</label></div>
+                        <div class="large-9 small-8 columns value">${internet_gateway.id}</div>
+                    </div>
+                    <hr />
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
+                    </div>
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="save-changes-btn">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('vpcs')}" id="cancel-update-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/internet_gateway_view.js')}"></script>
+</div>
+
+</metal:block>
+
