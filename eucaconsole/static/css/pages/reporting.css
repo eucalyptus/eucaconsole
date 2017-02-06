@@ -35,3 +35,16 @@ select { width: 12rem; }
 form .error { font-size: small; display: none; }
 
 .policy-text-area { height: 15rem; overflow-y: scroll; }
+
+.totals { text-align: right; }
+
+.usage-service { color: #333333; font-weight: bold; }
+
+.table { border: none; width: 100%; }
+.table thead tr { background-color: white; }
+.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #333333; text-transform: uppercase; }
+.table thead tr th.actions { text-align: right; }
+.table thead tr th.count { text-align: center; }
+.table thead tr th.checkbox-header { width: 1.5rem; }
+.table tr { border-bottom: 1px solid #cccccc; }
+.table tr td.count { text-align: center; }

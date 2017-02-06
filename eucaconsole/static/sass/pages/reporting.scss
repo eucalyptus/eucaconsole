@@ -31,3 +31,18 @@ form {
     height: 15rem;
     overflow-y: scroll;
 }
+
+.totals {
+    text-align: right;
+}
+
+.usage-service {
+    color: $hpe-black;
+    font-weight: bold;
+}
+
+.table {
+    @include table-styles-mixin;
+    width: 100%
+}
+

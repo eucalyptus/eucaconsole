@@ -29,11 +29,27 @@ Pyramid views for Eucalyptus and Usage Reporting
 
 """
 import simplejson as json
+import io
 
+from pyramid.response import Response
 from pyramid.view import view_config
+import pandas
 
 from ..i18n import _
 from ..views import BaseView, JSONResponse
+
+UNITS_LOOKUP = [
+    {'hint': 'Bytes', 'units': 'GB'},
+    {'hint': 'Alarm', 'units': 'Alarms'},
+    {'hint': 'Requests', 'units': 'Requests'},
+    {'hint': 'Hours', 'units': 'Hrs'},
+    {'hint': 'Hrs', 'units': 'Hrs'},
+    {'hint': 'Address', 'units': 'Addresses'},
+    {'hint': 'Attempts', 'units': 'Attempts'},
+    {'hint': 'VolumeUsage', 'units': 'GB-month'},
+    {'hint': 'SnapshotUsage', 'units': 'GB-month'},
+    {'hint': 'Usage', 'units': 'Units'},
+]
 
 
 class ReportingView(BaseView):
@@ -42,8 +58,10 @@ class ReportingView(BaseView):
         self.title_parts = [_(u'Reporting')]
 
     def is_reporting_configured(self):
-        # replace this with logic that checks actual reporting configuration status
-        return False
+        conn = self.get_connection(conn_type='reporting')
+        ret = conn.view_billing()
+        prefs = ret.get('billingSettings')
+        return prefs.get('detailedBillingEnabled')
 
     @view_config(route_name='reporting', renderer='../templates/reporting/reporting.pt')
     def queues_landing(self):
@@ -93,3 +111,54 @@ class ReportingAPIView(BaseView):
         self.conn.modify_account(user_reports_enabled)
         return dict(message=_("Successully updated reporting preferences."))
 
+    @view_config(route_name='reporting_monthly_usage', renderer='json', request_method='GET', xhr=True)
+    def get_reporting_monthly_usage(self):
+        year = int(self.request.params.get('year'))
+        month = int(self.request.params.get('month'))
+        # use "ViewMontlyUsage" call to fetch usage information
+        ret = self.conn.view_monthly_usage(year, month)
+        csv = ret.get('data')
+        data = pandas.read_csv(io.StringIO(csv), engine='c')
+        grouped = data.groupby(('ProductName', 'UsageType'))
+        totals = grouped['UsageQuantity'].sum()
+        totals_list = totals.to_frame().to_records().tolist()
+        results = []
+        service = ''
+        for idx, rec in enumerate(totals_list):
+            if service != rec[0]:
+                results.append((rec[0],))
+                service = rec[0]
+            results.append((
+                rec[0], rec[1],
+                '{:0.8f}'.format(rec[2]).rstrip('0').rstrip('.'),
+                self.units_from_details(rec[1])
+            ))
+        return dict(results=results)
+
+    @view_config(route_name='reporting_monthly_usage', request_method='POST')
+    def get_reporting_monthly_usage_file(self):
+        if not self.is_csrf_valid():
+            return JSONResponse(status=400, message="missing CSRF token")
+        year = int(self.request.params.get('year'))
+        month = int(self.request.params.get('month'))
+        # use "ViewMontlyUsage" call to fetch usage information
+        ret = self.conn.view_monthly_usage(year, month)
+        filename = 'EucalyptusMonthlyUsage-{0}-{1}-{2}.csv'.format(
+            self.request.session.get('account'),
+            year,
+            month
+        )
+        response = Response(content_type='text/csv')
+        response.text = ret.get('data')
+        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        response.cache_control = 'no-store'
+        response.pragma = 'no-cache'
+        return response
+
+    @staticmethod
+    def units_from_details(details):
+        # ascertain unit type
+        for unit in UNITS_LOOKUP:
+            if unit['hint'] in details:
+                return unit['units']
+        return ''

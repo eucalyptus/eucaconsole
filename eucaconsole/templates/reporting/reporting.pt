@@ -49,6 +49,7 @@
     <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/create_bucket_dialog2.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/reporting.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/reporting_reports.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/reporting_preferences.js')}"></script>
 </div>
 
