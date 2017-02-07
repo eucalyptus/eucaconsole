@@ -268,6 +268,8 @@ urls = [
     Route(name='vpcnetworks_json', pattern='/vpcnetworks/json'),
     Route(name='vpcsubnets_json', pattern='/vpcsubnets/json'),
     Route(name='vpcsecuritygroups_json', pattern='/vpcsecuritygroups/json'),
+    Route(name='internet_gateway_view', pattern='/vpcs/internet-gateways/{id}'),
+    Route(name='internet_gateway_update', pattern='/vpcs/internet-gateways/{id}/update'),
     Route(name='vpc_new', pattern='/vpcs/new'),
     Route(name='vpc_create', pattern='/vpcs/create'),
     Route(name='vpc_view', pattern='/vpcs/{id}'),
@@ -284,8 +286,6 @@ urls = [
     Route(name='route_table_delete', pattern='/vpcs/{vpc_id}/route-tables/{id}/delete'),
     Route(name='route_table_set_main_for_vpc', pattern='/vpcs/{vpc_id}/route-tables/{id}/set-main-for-vpc'),
     Route(name='route_targets_json', pattern='/vpcs/{vpc_id}/route-targets-json'),
-    Route(name='internet_gateway_view', pattern='/internet-gateways/{id}'),
-    Route(name='internet_gateway_update', pattern='/internet-gateways/{id}/update'),
 
     # Key pairs #####
     # Landing page
