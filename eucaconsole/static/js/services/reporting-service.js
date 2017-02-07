@@ -48,17 +48,5 @@ angular.module('ReportingServiceModule', [])
                 };
             });
         },
-
-        getServiceUsage: function (service, usageType, granularity) {
-            var url = '/reporting-api/serviceusage?service=' + service + '&usageType=' + usageTypes;
-            return $http({
-                method: 'GET',
-                url: url
-            }).then( function (response) {
-                return response.data || {
-                    enabled: false
-                };
-            });
-        },
     };
 }]);

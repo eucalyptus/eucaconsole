@@ -161,13 +161,19 @@ class ReportingAPIView(BaseView):
         if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
         service = self.request.params.get('service')
-        usageType = self.request.params.get('usageType')
-        timePeriod = self.request.params.get('timePeriod')
-        duration = 43200
+        usage_type = self.request.params.get('usageType')
+        granularity = self.request.params.get('granularity')
+        time_period = self.request.params.get('timePeriod')
         end_time = datetime.datetime.utcnow()
-        start_time = end_time - datetime.timedelta(seconds=duration)
+        if time_period == 'lastWeek':
+            start_time = end_time - datetime.timedelta(days=7)
+        elif time_period == 'lastMonth':
+            start_time = end_time - datetime.timedelta(month=1)
+        else:
+             start_time = self.request.params.get('fromTime')
+             end_time = self.request.params.get('toTime')
         # use "ViewUsage" call to fetch usage information
-        ret = self.conn.view_usage(service, usageType, 'all')
+        ret = self.conn.view_usage(service, usage_type, 'all', start_time, end_time, report_granularity=granularity)
         filename = 'EucalyptusServiceUsage-{0}-{1}-{2}.csv'.format(
             self.request.session.get('account'),
             service,

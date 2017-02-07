@@ -53,7 +53,7 @@
     <script src="${request.static_path('eucaconsole:static/js/pages/reporting.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/reporting_reports.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/reporting_preferences.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/usage_reports.js')}"></script>
 </div>
 
