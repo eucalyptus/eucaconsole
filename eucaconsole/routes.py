@@ -270,6 +270,8 @@ urls = [
     Route(name='vpcsecuritygroups_json', pattern='/vpcsecuritygroups/json'),
     Route(name='internet_gateway_view', pattern='/vpcs/internet-gateways/{id}'),
     Route(name='internet_gateway_update', pattern='/vpcs/internet-gateways/{id}/update'),
+    Route(name='internet_gateway_detach', pattern='/vpcs/internet-gateways/{id}/detach'),
+    Route(name='internet_gateway_delete', pattern='/vpcs/internet-gateways/{id}/delete'),
     Route(name='vpc_new', pattern='/vpcs/new'),
     Route(name='vpc_create', pattern='/vpcs/create'),
     Route(name='vpc_view', pattern='/vpcs/{id}'),

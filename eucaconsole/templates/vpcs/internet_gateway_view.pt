@@ -26,14 +26,19 @@
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
-                        <li>
-                            <a data-reveal-id="attach-vpc-modal" id="attach-to-vpc-action" i18n:translate="">
+                        <li tal:condition="not: is_attached">
+                            <a data-reveal-id="attach-to-vpc-modal" id="attach-to-vpc-action" i18n:translate="">
                                 Attach to VPC
                             </a>
                         </li>
-                        <li>
-                            <a data-reveal-id="detach-vpc-modal" id="detach-from-vpc-action" i18n:translate="">
+                        <li tal:condition="is_attached">
+                            <a data-reveal-id="detach-from-vpc-modal" id="detach-from-vpc-action" i18n:translate="">
                                 Detach from VPC
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="delete-internet-gateway-modal" id="delete-internet-gateway-action" i18n:translate="">
+                                Delete
                             </a>
                         </li>
                     </metal:actions>
@@ -79,6 +84,43 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <div id="detach-from-vpc-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Detach internet gateway</h3>
+            <form id="detach-internet-gateway-form" method="post" tal:condition="is_attached"
+                  action="${request.route_path('internet_gateway_detach', id=internet_gateway.id)}">
+                ${structure:internet_gateway_detach_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Are you sure you want to detach internet gateway</span>
+                    <strong>${internet_gateway_name}</strong>
+                    <span i18n:translate="">from</span>
+                    <strong>${layout.get_display_name(internet_gateway_vpc)}</strong>?
+                </p>
+                <button class="button expand" i18n:translate="">
+                    Yes, detach internet gateway
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="delete-internet-gateway-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete internet gateway</h3>
+            <form id="delete-internet-gateway-form" method="post" tal:condition="not: is_attached"
+                  action="${request.route_path('internet_gateway_delete', id=internet_gateway.id)}">
+                ${structure:internet_gateway_delete_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete internet gateway</span>
+                    <strong>${internet_gateway_name}</strong>?
+                </p>
+                <button class="button expand" i18n:translate="">
+                    Yes, delete internet gateway
+                </button>
+            </form>
+            <p tal:condition="is_attached and internet_gateway_vpc">
+                <span i18n:translate="">This internet gateway must be detached from VPC</span>
+                <strong>${layout.get_display_name(internet_gateway_vpc)}</strong>
+                <span i18n:translate="">before it can be deleted.</span>
+            </p>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

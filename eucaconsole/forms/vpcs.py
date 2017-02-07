@@ -266,3 +266,10 @@ class InternetGatewayForm(BaseSecureForm):
         self.name.error_msg = self.name_error_msg
         self.name.data = internet_gateway.tags.get('Name', '')
 
+
+class InternetGatewayDeleteForm(BaseSecureForm):
+    pass
+
+
+class InternetGatewayDetachForm(BaseSecureForm):
+    pass
