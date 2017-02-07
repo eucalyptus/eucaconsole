@@ -177,7 +177,7 @@ class ReportingAPIView(BaseView):
         filename = 'EucalyptusServiceUsage-{0}-{1}-{2}.csv'.format(
             self.request.session.get('account'),
             service,
-            usageType
+            usage_type
         )
         response = Response(content_type='text/csv')
         response.text = ret.get('data')
