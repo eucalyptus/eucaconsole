@@ -963,6 +963,8 @@ class InternetGatewayView(TaggedItemView):
             self.internet_gateway = self.get_internet_gateway()
         if self.internet_gateway is None:
             raise HTTPNotFound()
+        with boto_error_handler(request, self.location):
+            self.internet_gateway_vpc = self.get_internet_gateway_vpc()
         self.internet_gateway_form = InternetGatewayForm(
             self.request, internet_gateway=self.internet_gateway, formdata=self.request.params or None
         )
@@ -974,6 +976,7 @@ class InternetGatewayView(TaggedItemView):
             internet_gateway=self.internet_gateway,
             internet_gateway_name=self.internet_gateway_name,
             internet_gateway_form=self.internet_gateway_form,
+            internet_gateway_vpc=self.internet_gateway_vpc,
             is_attached=self.is_attached,
             igw_status=_('attached') if self.is_attached else _('available'),
             tags=self.serialize_tags(self.internet_gateway.tags) if self.internet_gateway else [],
@@ -1007,4 +1010,12 @@ class InternetGatewayView(TaggedItemView):
         if igw_id:
             igws_list = self.vpc_conn.get_all_internet_gateways(filters={'internet-gateway-id': igw_id})
             return igws_list[0] if igws_list else None
+        return None
+
+    def get_internet_gateway_vpc(self):
+        if self.internet_gateway.attachments:
+            vpc_id = self.internet_gateway.attachments[0].vpc_id
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
+            if vpcs_list:
+                return vpcs_list[0]
         return None

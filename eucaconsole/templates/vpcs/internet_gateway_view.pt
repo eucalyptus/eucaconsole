@@ -55,6 +55,14 @@
                         <div class="large-3 small-4 columns"><label i18n:translate="">ID</label></div>
                         <div class="large-9 small-8 columns value">${internet_gateway.id}</div>
                     </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">VPC</label></div>
+                        <div class="large-9 small-8 columns value" tal:condition="internet_gateway_vpc">
+                            <a href="${request.route_path('vpc_view', id=internet_gateway_vpc.id)}">
+                                ${layout.get_display_name(internet_gateway_vpc)}
+                            </a>
+                        </div>
+                    </div>
                     <hr />
                     <div ng-cloak="">
                         <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
