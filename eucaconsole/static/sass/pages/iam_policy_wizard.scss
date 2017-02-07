@@ -57,8 +57,9 @@
     }
 }
 
-@media only screen and (min-width: 64.063em) {  // 64.063em = large screen width
-    // Fix position of policy editor textarea to keep it visible when page scrolls
+@media only screen and (min-width: 64.063em) and (min-height: 52rem) {  // 64.063em = large screen width
+    // Fix position of policy editor textarea to keep it visible when page scrolls,
+    // and only fix position if the viewport height is tall enough to display the Create Policy button
     #policy-preview {
         position: fixed;
         min-width: 26rem;
