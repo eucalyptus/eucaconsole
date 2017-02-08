@@ -34,7 +34,7 @@
         <strong i18n:translate="">Add another route:</strong>
     </div>
     <div class="row route-entry controls-wrapper">
-        <div class="small-6 columns">
+        <div class="small-4 columns">
             <label for="destination_cidr_block" i18n:translate="">
                 Destination (IPv4 CIDR block)
             </label>
@@ -42,7 +42,7 @@
                    i18n:attributes="placeholder" placeholder="e.g. 0.0.0.0/0"
                    ng-pattern="cidrPattern" />
         </div>
-        <div class="small-6 columns">
+        <div class="small-8 columns">
             <label for="route-target" i18n:translate="">
                 Target
             </label>

@@ -132,11 +132,9 @@
                                 <td>${subnet.available_ips}</td>
                                 <td>${subnet.zone}</td>
                                 <td>
-                                    <div tal:repeat="route_table subnet.route_tables">
-                                        <a href="${request.route_path('route_table_view', vpc_id=vpc.id, id=route_table.id)}">
-                                            ${route_table.name}
-                                        </a>
-                                    </div>
+                                    <a href="${request.route_path('route_table_view', vpc_id=vpc.id, id=subnet.route_table.id)}">
+                                        ${layout.get_display_name(subnet.route_table)}
+                                    </a>
                                 </td>
                                 <td>
                                     <div tal:repeat="network_acl subnet.network_acls">

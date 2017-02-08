@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/route-table-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/subnet.css')}" />
 </head>
 
@@ -31,6 +32,12 @@
                         <li>
                             <a data-reveal-id="create-route-table-modal" id="create-route-table-action" i18n:translate="">
                                 Create route table
+                            </a>
+                        </li>
+                        <li tal:condition="subnet_route_table">
+                            <a id="view-route-table-action" i18n:translate=""
+                               href="${request.route_path('route_table_view', vpc_id=vpc.id, id=subnet_route_table.id)}">
+                                View route table for subnet
                             </a>
                         </li>
                         <li>
@@ -185,6 +192,28 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <div id="create-route-table-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Create route table</h3>
+            <form id="create-route-table-form" name="deleteSubnetForm" ng-cloak="" method="post"
+                  action="${request.route_path('route_table_create', vpc_id=vpc.id, id=subnet.id)}">
+                ${structure:create_route_table_form['csrf_token']}
+                <div class="row">
+                    ${panel('form_field', field=create_route_table_form['route_table_name'], stack_label=True)}
+                </div>
+                <hr />
+                <h6 i18n:translate="">Routes</h6>
+                <div ng-cloak="">
+                    <route-table-editor ng-model="routes" cidr-pattern="${layout.cidr_pattern}" vpc-id="${vpc.id}"
+                                        tal:content="routes | structure">
+                    </route-table-editor>
+                </div>
+                <hr />
+                <button class="button expand ${'warning' if default_for_zone else ''}" i18n:translate="">
+                    Create Route Table
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
         <div id="delete-subnet-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Delete Subnet</h3>
             <form id="delete-subnet-form" name="deleteSubnetForm" ng-cloak="" method="post"
@@ -251,6 +280,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/route-table-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/instances-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/subnet_view.js')}"></script>

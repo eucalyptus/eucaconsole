@@ -15,7 +15,7 @@
 .status.shutting-down { background-color: $hpe-lightgray; }
 
 
-#name, #route_table, #public_ip_auto_assignment {
+#name, #route_table, #route_table_name, #public_ip_auto_assignment {
   width: 40%;
 }
 
@@ -24,7 +24,7 @@
 }
 
 @media only screen and (max-width: 40em) {
-  #name, #route_table, #public_ip_auto_assignment {
+  #name, #route_table, #route_table_name, #public_ip_auto_assignment {
     width: 100%;
   }
 }

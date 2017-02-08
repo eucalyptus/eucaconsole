@@ -235,6 +235,14 @@ class SubnetForm(BaseSecureForm):
         self.public_ip_auto_assignment.help_text = self.public_ip_auto_assignment_help_text
 
 
+class CreateRouteTableForm(BaseSecureForm):
+    name_error_msg = _('Not a valid name')
+    route_table_name = StringField(label=_('Name'))
+
+    def __init__(self, request, **kwargs):
+        super(CreateRouteTableForm, self).__init__(request, **kwargs)
+
+
 class RouteTableForm(BaseSecureForm):
     """Form to update an existing route table"""
     name_error_msg = _('Not a valid name')
