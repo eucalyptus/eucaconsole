@@ -26,7 +26,7 @@
 #policy-preview { background-color: white; padding: 1rem; margin-top: 40px; }
 #policy-preview input[type=text], #policy-preview textarea { background-color: white; }
 
-@media only screen and (min-width: 64.063em) { #policy-preview { position: fixed; min-width: 26rem; } }
+@media only screen and (min-width: 64.063em) and (min-height: 52rem) { #policy-preview { position: fixed; min-width: 26rem; } }
 #policy-generator { border-color: #cccccc; border-left: none; border-right: none; width: 100%; }
 #policy-generator tr.namespace { border-top: 1px solid #cccccc; background-color: white; }
 #policy-generator tr.namespace td { font-size: 1rem; }
