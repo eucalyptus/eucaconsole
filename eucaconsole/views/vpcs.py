@@ -248,8 +248,7 @@ class VPCView(TaggedItemView):
             vpc_main_route_table=self.vpc_main_route_table,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
-            vpc_internet_gateway_name=TaggedItemView.get_display_name(
-                self.vpc_internet_gateway) if self.get_internet_gateway() else '',
+            vpc_internet_gateway=self.vpc_internet_gateway,
             default_vpc=self.vpc.is_default,
             default_vpc_label=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
