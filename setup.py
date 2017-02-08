@@ -35,6 +35,7 @@ from eucaconsole import __version__
 
 DATA_DIR = os.path.join(sys.prefix, 'share')
 LIBEXECDIR = os.path.join(sys.prefix, 'libexec')
+SYSCONFDIR = '/etc'
 
 
 def get_data_files(path, regex):
@@ -182,6 +183,8 @@ setup(
     message_extractors=message_extractors,
     data_files=(get_data_files("locale", r'.*\.mo$') +
                 get_data_files("eucaconsole/cf-templates", r'.*\.json$') +
+                [(os.path.join(SYSCONFDIR, 'eucaconsole'),
+                  ['conf/console.ini', 'conf/nginx.conf'])] +
                 [(os.path.join(LIBEXECDIR, 'eucaconsole'),
                   ['bin/eucaconsole-certgen',
                    'bin/eucaconsole-keygen'])]),
