@@ -41,7 +41,7 @@ from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm, CreateSubnetForm,
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
     InternetGatewayForm, InternetGatewayDeleteForm, InternetGatewayDetachForm, CreateRouteTableForm,
-    INTERNET_GATEWAY_HELP_TEXT
+    CreateNatGatewayForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -617,6 +617,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
             'subnet_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.vpc_conn3 = self.get_connection3()
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
             self.subnet = self.get_subnet()
@@ -626,6 +627,8 @@ class SubnetView(TaggedItemView, RouteTableMixin):
             self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.subnet_route_table = self.get_subnet_route_table()
             self.subnet_network_acl = self.get_subnet_network_acl()
+            self.create_nat_gateway_form = CreateNatGatewayForm(
+                self.request, ec2_conn=self.conn, formdata=self.request.params or None)
             self.subnet_form = SubnetForm(
                 self.request, vpc_conn=self.vpc_conn, vpc=self.vpc, route_tables=self.vpc_route_tables,
                 subnet=self.subnet, subnet_route_table=self.subnet_route_table, formdata=self.request.params or None
@@ -650,6 +653,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
             subnet_delete_form=self.subnet_delete_form,
             routes=json.dumps([vpc_local_route]),
             create_route_table_form=self.create_route_table_form,
+            create_nat_gateway_form=self.create_nat_gateway_form,
             terminate_form=self.terminate_form,
             subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
             default_for_zone=subnet_is_default_for_zone,
@@ -736,6 +740,23 @@ class SubnetView(TaggedItemView, RouteTableMixin):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             self.request.error_messages = ', '.join(self.create_route_table_form.get_errors_list())
+        return HTTPFound(location=location)
+
+    @view_config(route_name='nat_gateway_create', renderer=VIEW_TEMPLATE, request_method='POST')
+    def nat_gateway_create(self):
+        location = self.request.route_path('subnet_view', vpc_id=self.vpc.id, id=self.subnet.id)
+        if self.create_nat_gateway_form.validate():
+            with boto_error_handler(self.request, location):
+                subnet_id = self.request.params.get('nat_gateway_subnet_id')
+                eip_allocation_id = self.request.params.get('eip_allocation_id')
+                with boto_error_handler(self.request):
+                    self.log_request('Creating NAT gateway in VPC {0}'.format(self.vpc.id))
+                    # Leverage botocore to create NAT gateway
+                    new_ngw = self.vpc_conn3.create_nat_gateway(SubnetId=subnet_id, AllocationId=eip_allocation_id)
+                msg = _(u'Successfully created NAT gateway {0}'.format(self.subnet.id))
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+        else:
+            self.request.error_messages = ', '.join(self.create_nat_gateway_form.get_errors_list())
         return HTTPFound(location=location)
 
     def get_vpc(self):

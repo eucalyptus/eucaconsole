@@ -34,6 +34,11 @@
                                 Create route table
                             </a>
                         </li>
+                        <li>
+                            <a data-reveal-id="create-nat-gateway-modal" id="create-nat-gateway-action" i18n:translate="">
+                                Create NAT gateway
+                            </a>
+                        </li>
                         <li tal:condition="subnet_route_table">
                             <a id="view-route-table-action" i18n:translate=""
                                href="${request.route_path('route_table_view', vpc_id=vpc.id, id=subnet_route_table.id)}">
@@ -210,6 +215,42 @@
                 <hr />
                 <button class="button expand" i18n:translate="">
                     Create Route Table
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="create-nat-gateway-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Create NAT gateway</h3>
+            <form id="create-nat-gateway-form" name="createNatGatewayForm" ng-cloak="" method="post"
+                  action="${request.route_path('nat_gateway_create', vpc_id=vpc.id, id=subnet.id)}">
+                ${structure:create_nat_gateway_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">
+                        You can use a NAT (network address translation) gateway to enable instances in subnet
+                    </span>
+                    <strong>${subnet_name}</strong>
+                    <span i18n:translate="">
+                        to connect to the Internet or other services without using public IP addresses of their own.
+                    </span>
+                </p>
+                <p tal:condition="layout.cloud_type == 'aws'" i18n:translate="">
+                    NOTE: NAT gateways are not supported for IPv6 traffic.  Use an egress-only internet gateway instead.
+                </p>
+                <p>
+                    <span i18n:translate="">Create a NAT gateway for subnet</span>
+                    <strong>${subnet_name}</strong>
+                    <span i18n:translate="">and assign it an elastic IP address.</span>
+                    <span i18n:translate="">
+                        It will not be possible to disassociate this address from the new NAT gateway
+                        without deleting the NAT gateway.
+                    </span>
+                </p>
+                <input type="hidden" name="nat_gateway_subnet_id" value="${subnet.id}" />
+                <div class="row">
+                    ${panel('form_field', field=create_nat_gateway_form['eip_allocation_id'], stack_label=True)}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Create NAT Gateway
                 </button>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>

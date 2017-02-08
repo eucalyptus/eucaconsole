@@ -281,3 +281,22 @@ class InternetGatewayDeleteForm(BaseSecureForm):
 
 class InternetGatewayDetachForm(BaseSecureForm):
     pass
+
+
+class CreateNatGatewayForm(BaseSecureForm):
+    eip_allocation_id = SelectField(label=_('Elastic IP address allocation ID'))
+
+    def __init__(self, request, ec2_conn=None, **kwargs):
+        super(CreateNatGatewayForm, self).__init__(request, **kwargs)
+        self.eip_allocation_id.choices = self.get_allocation_id_choices(ec2_conn)
+
+    @staticmethod
+    def get_allocation_id_choices(ec2_conn):
+        allocation_id_choices = []
+        elastic_ips = ec2_conn.get_all_addresses(filters={'domain': 'vpc'})
+        for eip in elastic_ips:
+            if eip.association_id is None:
+                value = eip.allocation_id
+                label = '{0} ({1})'.format(eip.allocation_id, eip.public_ip)
+                allocation_id_choices.append((value, label))
+        return allocation_id_choices
