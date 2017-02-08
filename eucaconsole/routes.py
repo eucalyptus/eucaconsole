@@ -283,6 +283,7 @@ urls = [
     Route(name='subnet_view', pattern='/vpcs/{vpc_id}/subnets/{id}'),
     Route(name='subnet_update', pattern='/vpcs/{vpc_id}/subnets/{id}/update'),
     Route(name='subnet_delete', pattern='/vpcs/{vpc_id}/subnets/{id}/delete'),
+    Route(name='route_table_create', pattern='/vpcs/{vpc_id}/subnets/{id}/create-route-table'),
     Route(name='route_table_view', pattern='/vpcs/{vpc_id}/route-tables/{id}'),
     Route(name='route_table_update', pattern='/vpcs/{vpc_id}/route-tables/{id}/update'),
     Route(name='route_table_delete', pattern='/vpcs/{vpc_id}/route-tables/{id}/delete'),
