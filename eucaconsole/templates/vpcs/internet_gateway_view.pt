@@ -26,11 +26,6 @@
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
-                        <li tal:condition="not: is_attached">
-                            <a data-reveal-id="attach-to-vpc-modal" id="attach-to-vpc-action" i18n:translate="">
-                                Attach to VPC
-                            </a>
-                        </li>
                         <li tal:condition="is_attached">
                             <a data-reveal-id="detach-from-vpc-modal" id="detach-from-vpc-action" i18n:translate="">
                                 Detach from VPC
