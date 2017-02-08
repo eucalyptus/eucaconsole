@@ -1,4 +1,4 @@
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright (c) 2013-2017 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -180,6 +180,7 @@ setup(
     packages=find_packages(),
     package_data={'eucaconsole': get_package_files('eucaconsole', r'^[static\|templates]\.*')},
     include_package_data=True,
+    scripts=('bin/eucaconsole',),
     zip_safe=False,
     install_requires=requires,
     tests_require=[],

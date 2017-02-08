@@ -12,7 +12,7 @@ nosetests.xml
 coverage.xml
 tutorial.db
 build/
-bin/
+dist/
 lib/
 include/
 .idea/
@@ -34,3 +34,4 @@ eucaconsole.backup/
 eucaconsole/static/js/minified/
 Gemfile.lock
 eucaconsole/static/css/font-awesome/font-awesome.css
+/MANIFEST
