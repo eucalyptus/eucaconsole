@@ -262,3 +262,22 @@ class RouteTableDeleteForm(BaseSecureForm):
 class RouteTableSetMainForm(BaseSecureForm):
     """Form to set route table as main one for VPC"""
     pass
+
+
+class InternetGatewayForm(BaseSecureForm):
+    """Form to update an existing internet gateway"""
+    name_error_msg = _('Not a valid name')
+    name = TextEscapedField(label=_('Name'))
+
+    def __init__(self, request, internet_gateway=None, **kwargs):
+        super(InternetGatewayForm, self).__init__(request, **kwargs)
+        self.name.error_msg = self.name_error_msg
+        self.name.data = internet_gateway.tags.get('Name', '')
+
+
+class InternetGatewayDeleteForm(BaseSecureForm):
+    pass
+
+
+class InternetGatewayDetachForm(BaseSecureForm):
+    pass

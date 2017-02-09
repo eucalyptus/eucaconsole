@@ -1,0 +1,18 @@
+/* @fileOverview Internet Gateway details page CSS */
+
+@import "../includes/eucavariables";
+
+// Status colors
+.status.attached { background-color: $hpe-slate; }
+.status.available { background-color: lighten($hpe-slate, 20%); }
+
+#name {
+  width: 40%;
+}
+
+@media only screen and (max-width: 40em) {
+  #name {
+    width: 100%;
+  }
+}
+

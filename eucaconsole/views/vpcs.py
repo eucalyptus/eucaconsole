@@ -40,7 +40,8 @@ from ..forms.instances import TerminateInstanceForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm, CreateSubnetForm,
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
-    CreateRouteTableForm, INTERNET_GATEWAY_HELP_TEXT
+    InternetGatewayForm, InternetGatewayDeleteForm, InternetGatewayDetachForm, CreateRouteTableForm,
+    INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -251,8 +252,7 @@ class VPCView(TaggedItemView):
             vpc_main_route_table=self.vpc_main_route_table,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
-            vpc_internet_gateway_name=TaggedItemView.get_display_name(
-                self.vpc_internet_gateway) if self.get_internet_gateway() else '',
+            vpc_internet_gateway=self.vpc_internet_gateway,
             default_vpc=self.vpc.is_default,
             default_vpc_label=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
@@ -362,7 +362,7 @@ class VPCView(TaggedItemView):
             self.request.error_messages = self.vpc_form.get_errors_list()
         return self.render_dict
 
-    @view_config(route_name='vpc_create_internet_gateway', renderer='json', request_method='POST')
+    @view_config(route_name='vpc_create_internet_gateway', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_create_internet_gateway(self):
         location = self.request.route_path('vpc_view', id=self.vpc.id)
         if self.create_internet_gateway_form.validate():
@@ -806,7 +806,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
         super(RouteTableView, self).__init__(request, **kwargs)
         self.location = self.request.route_path(
             'route_table_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
-        self.conn = self.get_connection()
+        self.conn = self.get_connection()  # Required for tag updates
         self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
@@ -972,3 +972,111 @@ class RouteTargetsJsonView(BaseView):
                 id=eni.id
             ))
         return dict(results=route_targets)
+
+
+class InternetGatewayView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/vpcs/internet_gateway_view.pt'
+
+    def __init__(self, request, **kwargs):
+        super(InternetGatewayView, self).__init__(request, **kwargs)
+        self.location = self.request.route_path('internet_gateway_view', id=self.request.matchdict.get('id'))
+        self.conn = self.get_connection()  # Required for tag updates
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        with boto_error_handler(request, self.location):
+            self.internet_gateway = self.get_internet_gateway()
+        if self.internet_gateway is None:
+            raise HTTPNotFound()
+        with boto_error_handler(request, self.location):
+            self.internet_gateway_vpc = self.get_internet_gateway_vpc()
+        self.internet_gateway_form = InternetGatewayForm(
+            self.request, internet_gateway=self.internet_gateway, formdata=self.request.params or None
+        )
+        self.internet_gateway_delete_form = InternetGatewayDeleteForm(
+            self.request, formdata=self.request.params or None)
+        self.internet_gateway_detach_form = InternetGatewayDetachForm(
+            self.request, formdata=self.request.params or None)
+        self.internet_gateway_name = self.get_display_name(self.internet_gateway)
+        self.tagged_obj = self.internet_gateway
+        self.title_parts = [_('Internet Gateway'), self.internet_gateway_name]
+        self.is_attached = len(self.internet_gateway.attachments) > 0
+        self.render_dict = dict(
+            internet_gateway=self.internet_gateway,
+            internet_gateway_name=self.internet_gateway_name,
+            internet_gateway_form=self.internet_gateway_form,
+            internet_gateway_detach_form=self.internet_gateway_detach_form,
+            internet_gateway_delete_form=self.internet_gateway_delete_form,
+            internet_gateway_vpc=self.internet_gateway_vpc,
+            is_attached=self.is_attached,
+            igw_status=_('attached') if self.is_attached else _('available'),
+            tags=self.serialize_tags(self.internet_gateway.tags) if self.internet_gateway else [],
+        )
+
+    @view_config(route_name='internet_gateway_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def internet_gateway_view(self):
+        return self.render_dict
+
+    @view_config(route_name='internet_gateway_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def internet_gateway_update(self):
+        if self.internet_gateway and self.internet_gateway_form.validate():
+            location = self.request.route_path('internet_gateway_view', id=self.internet_gateway.id)
+            with boto_error_handler(self.request, location):
+                # Update tags
+                self.update_tags()
+
+                # Save Name tag
+                name = self.request.params.get('name', '')
+                self.update_name_tag(name)
+
+            msg = _(u'Successfully updated internet gateway')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.internet_gateway_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='internet_gateway_detach', renderer=VIEW_TEMPLATE, request_method='POST')
+    def internet_gateway_detach(self):
+        if self.internet_gateway and self.internet_gateway_detach_form.validate():
+            location = self.request.route_path('internet_gateway_view', id=self.internet_gateway.id)
+            with boto_error_handler(self.request, location):
+                log_msg = _('Detaching internet gateway {0} from VPC {1}').format(
+                    self.internet_gateway.id, self.internet_gateway_vpc.id)
+                self.log_request(log_msg)
+                self.vpc_conn.detach_internet_gateway(self.internet_gateway.id, self.internet_gateway_vpc.id)
+
+            msg = _(u'Successfully detached internet gateway from VPC')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.internet_gateway_detach_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='internet_gateway_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def internet_gateway_delete(self):
+        if self.internet_gateway and self.internet_gateway_delete_form.validate():
+            location = self.request.route_path('internet_gateway_view', id=self.internet_gateway.id)
+            with boto_error_handler(self.request, location):
+                log_msg = _('Deleting internet gateway {0}').format(self.internet_gateway.id)
+                self.log_request(log_msg)
+                self.vpc_conn.delete_internet_gateway(self.internet_gateway.id)
+            msg = _(u'Successfully deleted internet gateway')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('vpcs'))
+        else:
+            self.request.error_messages = self.internet_gateway_delete_form.get_errors_list()
+        return self.render_dict
+
+    def get_internet_gateway(self):
+        igw_id = self.request.matchdict.get('id')
+        if igw_id:
+            igws_list = self.vpc_conn.get_all_internet_gateways(filters={'internet-gateway-id': igw_id})
+            return igws_list[0] if igws_list else None
+        return None
+
+    def get_internet_gateway_vpc(self):
+        if self.internet_gateway.attachments:
+            vpc_id = self.internet_gateway.attachments[0].vpc_id
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
+            if vpcs_list:
+                return vpcs_list[0]
+        return None

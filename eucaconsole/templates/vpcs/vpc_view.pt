@@ -41,6 +41,12 @@
                                 Create internet gateway
                             </a>
                         </li>
+                        <li tal:condition="vpc_internet_gateway">
+                            <a href="${request.route_path('internet_gateway_view', id=vpc_internet_gateway.id)}"
+                               id="view-internet-gateway-action" i18n:translate="">
+                                View internet gateway for VPC
+                            </a>
+                        </li>
                         <li>
                             <a data-reveal-id="delete-vpc-modal" id="delete-vpc-action" i18n:translate="">
                                 Delete VPC
@@ -292,11 +298,11 @@
                         Deleting a VPC will disassociate or delete the following resources from the VPC.
                     </p>
                     <div class="resources-list">
-                        <div tal:condition="vpc_internet_gateway_name" class="row">
+                        <div tal:condition="vpc_internet_gateway" class="row">
                             <div class="columns small-3" i18n:translate="">
                                 Internet gateway:
                             </div>
-                            <div class="columns small-9">${vpc_internet_gateway_name}</div>
+                            <div class="columns small-9">${layout.get_display_name(vpc_internet_gateway)}</div>
                         </div>
                         <div tal:condition="vpc_route_tables" class="row">
                             <div class="columns small-3" i18n:translate="">

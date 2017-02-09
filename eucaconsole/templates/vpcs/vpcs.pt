@@ -60,7 +60,9 @@
                 <div>
                     <span class="label" title="Internet gateway" i18n:attributes="title" data-tooltip="">IG</span>
                     <span ng-if="item.internet_gateway">
-                        {{ item.internet_gateway.id }}
+                        <a ng-href="/vpcs/internet-gateways/{{ item.internet_gateway.id }}">
+                            {{ item.internet_gateway.id }}
+                        </a>
                     </span>
                 </div>
             </div>
@@ -105,7 +107,9 @@
                 </td>
                 <td>
                     <div ng-if="item.internet_gateway">
-                        {{ item.internet_gateway.name }}
+                        <a ng-href="/vpcs/internet-gateways/{{ item.internet_gateway.id }}">
+                            {{ item.internet_gateway.name }}
+                        </a>
                     </div>
                 </td>
                 <td>{{ item.default_vpc }}</td>
