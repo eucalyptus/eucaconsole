@@ -1123,6 +1123,7 @@ class NatGatewayView(BaseView):
         with boto_error_handler(request, self.location):
             self.nat_gateway = self.get_nat_gateway()
             self.nat_gateway_vpc = self.get_nat_gateway_vpc()
+            self.vpc_internet_gateway = self.get_vpc_internet_gateway()
         if self.nat_gateway is None or self.nat_gateway_vpc is None:
             raise HTTPNotFound()
         self.subnet_id = self.nat_gateway.get('SubnetId')
@@ -1137,6 +1138,7 @@ class NatGatewayView(BaseView):
             nat_gateway_subnet=self.nat_gateway_subnet,
             nat_gateway_delete_form=self.nat_gateway_delete_form,
             nat_gateway_network_info=self.get_nat_gateway_network_info(),
+            vpc_internet_gateway=self.vpc_internet_gateway,
         )
 
     @view_config(route_name='nat_gateway_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -1181,3 +1183,10 @@ class NatGatewayView(BaseView):
             return addresses[0]
         return {}
 
+    def get_vpc_internet_gateway(self):
+        internet_gateways = self.vpc_conn.get_all_internet_gateways(filters={'attachment.vpc-id': [self.vpc_id]})
+        for igw in internet_gateways:
+            for attachment in igw.attachments:
+                if attachment.vpc_id == self.vpc_id:
+                    return igw
+        return None

@@ -12,3 +12,5 @@
 .status.deleted { background-color: #666666; }
 
 .status.failed { background-color: darkred; }
+
+.warning .fi-alert { color: darkred; }

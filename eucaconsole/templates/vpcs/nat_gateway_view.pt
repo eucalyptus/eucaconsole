@@ -52,6 +52,26 @@
                     </div>
                 </div>
                 <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="">Internet Gateway for VPC</label></div>
+                    <div class="large-9 small-8 columns value">
+                        <a href="${request.route_path('internet_gateway_view', id=vpc_internet_gateway.id)}"
+                           tal:condition="vpc_internet_gateway">
+                            ${layout.get_display_name(vpc_internet_gateway)}
+                        </a>
+                        <span tal:condition="not vpc_internet_gateway" class="warning">
+                            <span i18n:translate="">None</span>&nbsp;
+                            <i class="fi-alert"></i>
+                            <span i18n:translate="">WARNING: The NAT gateway requires an internet gateway in VPC</span>
+                            <a href="${request.route_path('vpc_view', id=nat_gateway_vpc.id)}">
+                                ${layout.get_display_name(nat_gateway_vpc)}
+                            </a>
+                            <span i18n:translate="">
+                                to allow instances in the subnet without elastic IP addresses to access the Internet.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="row controls-wrapper readonly">
                     <div class="large-3 small-4 columns"><label i18n:translate="">Subnet</label></div>
                     <div class="large-9 small-8 columns value">
                         <a href="${request.route_path('subnet_view', vpc_id=nat_gateway_vpc.id, id=nat_gateway_subnet.id)}">

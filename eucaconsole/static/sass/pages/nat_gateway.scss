@@ -9,3 +9,6 @@
 .status.deleted { background-color: $hpe-gray; }
 .status.failed { background-color: darkred; }
 
+.warning .fi-alert {
+  color: darkred;
+}
