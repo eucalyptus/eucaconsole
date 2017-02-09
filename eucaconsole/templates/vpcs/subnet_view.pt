@@ -95,6 +95,15 @@
                             ${subnet_network_acl.name}
                         </div>
                     </div>
+                    <div class="row controls-wrapper readonly" tal:condition="subnet_nat_gateways">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">NAT gateways</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <div tal:repeat="nat_gateway subnet_nat_gateways">
+                                <!-- TODO: Link to NGW details page -->
+                                ${nat_gateway.NatGatewayId}
+                            </div>
+                        </div>
+                    </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Available IP addresses</label></div>
                         <div class="large-9 small-8 columns value">${subnet.available_ip_address_count}</div>
@@ -236,6 +245,15 @@
                 <p tal:condition="layout.cloud_type == 'aws'" i18n:translate="">
                     NOTE: NAT gateways are not supported for IPv6 traffic.  Use an egress-only internet gateway instead.
                 </p>
+                <div tal:condition="subnet_nat_gateways" class="existing-nat-gateways-notice">
+                    <span i18n:translate="">
+                        NOTE: This subnet is already associated with the following NAT gateway(s)...
+                    </span>
+                    <strong tal:repeat="nat_gateway subnet_nat_gateways">
+                        <!-- TODO: Link to NGW details page -->
+                        ${nat_gateway.NatGatewayId}<span tal:condition="not repeat.nat_gateway.end">,&nbsp;</span>
+                    </strong>
+                </div>
                 <p>
                     <span i18n:translate="">Create a NAT gateway for subnet</span>
                     <strong>${subnet_name}</strong>

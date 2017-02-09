@@ -616,8 +616,8 @@ class SubnetView(TaggedItemView, RouteTableMixin):
         self.location = self.request.route_path(
             'subnet_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
         self.conn = self.get_connection()
+        self.conn3 = self.get_connection3()
         self.vpc_conn = self.get_connection(conn_type='vpc')
-        self.vpc_conn3 = self.get_connection3()
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
             self.subnet = self.get_subnet()
@@ -649,6 +649,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
             subnet_name=self.subnet_name,
             subnet_route_table=self.subnet_route_table,
             subnet_network_acl=self.subnet_network_acl,
+            subnet_nat_gateways=self.get_subnet_nat_gateways(),
             subnet_form=self.subnet_form,
             subnet_delete_form=self.subnet_delete_form,
             routes=json.dumps([vpc_local_route]),
@@ -752,7 +753,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
                 with boto_error_handler(self.request):
                     self.log_request('Creating NAT gateway in VPC {0}'.format(self.vpc.id))
                     # Leverage botocore to create NAT gateway
-                    new_ngw = self.vpc_conn3.create_nat_gateway(SubnetId=subnet_id, AllocationId=eip_allocation_id)
+                    self.conn3.create_nat_gateway(SubnetId=subnet_id, AllocationId=eip_allocation_id)
                 msg = _(u'Successfully created NAT gateway {0}'.format(self.subnet.id))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
@@ -785,6 +786,11 @@ class SubnetView(TaggedItemView, RouteTableMixin):
         if subnet_network_acls:
             return subnet_network_acls[0]
         return None
+
+    def get_subnet_nat_gateways(self):
+        filters = [{'Name': 'subnet-id', 'Values': [self.subnet.id]}]
+        subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
+        return subnet_nat_gateways_resp.get('NatGateways')
 
     def update_route_table(self):
         new_route_table_id = self.request.params.get('route_table')
