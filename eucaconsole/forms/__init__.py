@@ -35,7 +35,6 @@ import pylibmc
 import sys
 import os
 
-from defusedxml import ElementTree
 from markupsafe import escape
 from wtforms import StringField
 from wtforms.ext.csrf import SecureForm
@@ -45,7 +44,6 @@ from boto.exception import BotoServerError
 
 from ..caches import extra_long_term
 from ..caches import invalidate_cache
-from ..constants.elbs import ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 from ..models.policy import Policy
@@ -278,6 +276,16 @@ class ChoicesManager(object):
         elif no_keypair_filter_option:
             ret.append(('none', _(u'None')))
         return ret
+
+    def elastic_ip_allocation_ids(self):
+        allocation_id_choices = []
+        elastic_ips = self.conn.get_all_addresses(filters={'domain': 'vpc'})
+        for eip in elastic_ips:
+            if eip.association_id is None:
+                value = eip.allocation_id
+                label = '{0} ({1})'.format(eip.allocation_id, eip.public_ip)
+                allocation_id_choices.append((value, label))
+        return sorted(set(allocation_id_choices))
 
     def kernels(self, kernel_images=None, image=None):
         """Get kernel id choices"""
