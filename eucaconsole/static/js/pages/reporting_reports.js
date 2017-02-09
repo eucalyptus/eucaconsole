@@ -1,6 +1,6 @@
 angular.module('ReportingPage')
-.controller('ReportsController', ['$scope', 'ReportingService', 'eucaHandleError',
-    function ($scope, ReportingService, eucaHandleError) {
+.controller('ReportsController', ['$scope', 'ReportingService', 'eucaHandleError', 'ModalService',
+    function ($scope, ReportingService, eucaHandleError, ModalService) {
     var vm = this;
     vm.monthChoices = ['January 2017', 'December 2016', 'November 2016'];
     vm.monthlyUsage = [{details:'ec2 instances', total:'4'}, {details:'volumes', total:'5'}];
@@ -10,6 +10,7 @@ angular.module('ReportingPage')
     vm.showEC2InstanceUsageReport = function() {
     };
     vm.showUsageReportsByService = function() {
+        ModalService.openModal('usageReports');
     };
     vm.loadMonthlyData = function() {
         // use reports service to load montly report data

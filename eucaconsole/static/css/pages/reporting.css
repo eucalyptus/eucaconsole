@@ -48,3 +48,6 @@ form .error { font-size: small; display: none; }
 .table thead tr th.checkbox-header { width: 1.5rem; }
 .table tr { border-bottom: 1px solid #cccccc; }
 .table tr td.count { text-align: center; }
+
+#usage-reports-modal .row { padding-left: 1rem; }
+#usage-reports-modal .row .columns { padding-left: 0; }
