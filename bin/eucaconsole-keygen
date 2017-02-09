@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+KEY_FILE="/etc/eucaconsole/session-keys.ini"
+
+if [ -f "$KEY_FILE" ]; then
+    exit 0
+fi
+
+umask 077
+
+cat > "$KEY_FILE" << EOF
+[general]
+session.encrypt_key = $(dd if=/dev/urandom bs=24 count=1 status=none | base64 | tr -d '/+=')
+session.validate_key = $(dd if=/dev/urandom bs=24 count=1 status=none | base64 | tr -d '/+=')
+EOF
+
+chown root:eucaconsole "$KEY_FILE"
+chmod 0640 "$KEY_FILE"

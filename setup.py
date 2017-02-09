@@ -23,7 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
+import os.path
 import re
 import sys
 
@@ -33,17 +33,8 @@ from setuptools import setup, find_packages
 
 from eucaconsole import __version__
 
-DATA_DIR = '/usr/share/'
-
-py_version = sys.version_info[:2]
-
-
-if py_version < (2, 7):
-    # Workaround for https://bugs.python.org/issue15881
-    try:
-        import multiprocessing
-    except ImportError:
-        pass
+DATA_DIR = os.path.join(sys.prefix, 'share')
+LIBEXECDIR = os.path.join(sys.prefix, 'libexec')
 
 
 def get_data_files(path, regex):
@@ -189,7 +180,11 @@ setup(
         'dev': dev_extras,
     },
     message_extractors=message_extractors,
-    data_files=get_data_files("locale", r'.*\.mo$') + get_data_files("eucaconsole/cf-templates", r'.*\.json$'),
+    data_files=(get_data_files("locale", r'.*\.mo$') +
+                get_data_files("eucaconsole/cf-templates", r'.*\.json$') +
+                [(os.path.join(LIBEXECDIR, 'eucaconsole'),
+                  ['bin/eucaconsole-certgen',
+                   'bin/eucaconsole-keygen'])]),
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
