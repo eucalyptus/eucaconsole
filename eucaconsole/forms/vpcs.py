@@ -289,3 +289,7 @@ class CreateNatGatewayForm(BaseSecureForm):
     def __init__(self, request, ec2_conn=None, **kwargs):
         super(CreateNatGatewayForm, self).__init__(request, **kwargs)
         self.eip_allocation_id.choices = ChoicesManager(conn=ec2_conn).elastic_ip_allocation_ids()
+
+
+class NatGatewayDeleteForm(BaseSecureForm):
+    pass

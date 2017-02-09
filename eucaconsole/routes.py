@@ -290,6 +290,8 @@ urls = [
     Route(name='route_table_set_main_for_vpc', pattern='/vpcs/{vpc_id}/route-tables/{id}/set-main-for-vpc'),
     Route(name='route_targets_json', pattern='/vpcs/{vpc_id}/route-targets-json'),
     Route(name='nat_gateway_create', pattern='/vpcs/{vpc_id}/subnets/{id}/create-nat-gateway'),
+    Route(name='nat_gateway_view', pattern='/vpcs/{vpc_id}/nat-gateways/{id}'),
+    Route(name='nat_gateway_delete', pattern='/vpcs/{vpc_id}/nat-gateways/{id}/delete'),
 
     # Key pairs #####
     # Landing page

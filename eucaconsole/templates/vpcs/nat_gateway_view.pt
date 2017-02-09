@@ -1,0 +1,106 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/nat_gateway.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="NatGatewayDetailsPage"
+         ng-controller="NatGatewayDetailsPageCtrl">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
+                <li class="current">
+                    <a tal:condition="nat_gateway">${nat_gateway_id}</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for NAT Gateway:</strong>
+            <em class="breakword">${nat_gateway_id}</em>
+        </h3>
+        <div class="large-12 columns">
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a data-reveal-id="delete-nat-gateway-modal" id="delete-nat-gateway-action" i18n:translate="">
+                                Delete
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <h6 i18n:translate="">NAT Gateway</h6>
+                <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="" id="ngw-status-label">Status</label></div>
+                    <div class="large-9 small-8 columns value">
+                        <span class="label radius status ${nat_gateway.State}">${nat_gateway.State}</span>
+                    </div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="">ID</label></div>
+                    <div class="large-9 small-8 columns value">${nat_gateway_id}</div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="">VPC</label></div>
+                    <div class="large-9 small-8 columns value">
+                        <a href="${request.route_path('vpc_view', id=nat_gateway_vpc.id)}">
+                            ${layout.get_display_name(nat_gateway_vpc)}
+                        </a>
+                    </div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="">Subnet</label></div>
+                    <div class="large-9 small-8 columns value">
+                        <a href="${request.route_path('subnet_view', vpc_id=nat_gateway_vpc.id, id=nat_gateway_subnet.id)}">
+                            ${layout.get_display_name(nat_gateway_subnet)}
+                        </a>
+                    </div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="">Created</label></div>
+                    <div class="large-9 small-8 columns value">
+                        ${nat_gateway.CreateTime.strftime(layout.date_format)}
+                        <span i18n:translate="">UTC</span>
+                    </div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="">Elastic IP address</label></div>
+                    <div class="large-9 small-8 columns value">${nat_gateway_network_info.PublicIp}</div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="">Private IP address</label></div>
+                    <div class="large-9 small-8 columns value">${nat_gateway_network_info.PrivateIp}</div>
+                </div>
+                <div class="row controls-wrapper readonly">
+                    <div class="large-3 small-4 columns"><label i18n:translate="">Network interface ID</label></div>
+                    <div class="large-9 small-8 columns value">${nat_gateway_network_info.NetworkInterfaceId}</div>
+                </div>
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="delete-nat-gateway-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete NAT gateway</h3>
+            <form id="delete-nat-gateway-form" method="post"
+                  action="${request.route_path('nat_gateway_delete', vpc_id=nat_gateway_vpc.id, id=nat_gateway_id)}">
+                ${structure:nat_gateway_delete_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete NAT gateway</span>
+                    <strong>${nat_gateway_id}</strong>?
+                </p>
+                <button class="button expand" i18n:translate="">
+                    Yes, delete NAT gateway
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/nat_gateway_view.js')}"></script>
+</div>
+
+</metal:block>

@@ -28,7 +28,7 @@
 Pyramid views for Eucalyptus and AWS VPCs
 
 """
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 
 import simplejson as json
 
@@ -41,7 +41,7 @@ from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm, CreateSubnetForm,
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
     InternetGatewayForm, InternetGatewayDeleteForm, InternetGatewayDetachForm, CreateRouteTableForm,
-    CreateNatGatewayForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateNatGatewayForm, NatGatewayDeleteForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -790,7 +790,8 @@ class SubnetView(TaggedItemView, RouteTableMixin):
     def get_subnet_nat_gateways(self):
         filters = [{'Name': 'subnet-id', 'Values': [self.subnet.id]}]
         subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
-        return subnet_nat_gateways_resp.get('NatGateways')
+        nat_gateways = subnet_nat_gateways_resp.get('NatGateways')
+        return reversed(sorted(nat_gateways, key=itemgetter('CreateTime')))
 
     def update_route_table(self):
         new_route_table_id = self.request.params.get('route_table')
@@ -1107,3 +1108,76 @@ class InternetGatewayView(TaggedItemView):
             if vpcs_list:
                 return vpcs_list[0]
         return None
+
+
+class NatGatewayView(BaseView):
+    VIEW_TEMPLATE = '../templates/vpcs/nat_gateway_view.pt'
+
+    def __init__(self, request, **kwargs):
+        super(NatGatewayView, self).__init__(request, **kwargs)
+        self.vpc_id = self.request.matchdict.get('vpc_id')
+        self.nat_gateway_id = self.request.matchdict.get('id')
+        self.location = self.request.route_path('nat_gateway_view', vpc_id=self.vpc_id, id=self.nat_gateway_id)
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.conn3 = self.get_connection3()
+        with boto_error_handler(request, self.location):
+            self.nat_gateway = self.get_nat_gateway()
+            self.nat_gateway_vpc = self.get_nat_gateway_vpc()
+        if self.nat_gateway is None or self.nat_gateway_vpc is None:
+            raise HTTPNotFound()
+        self.subnet_id = self.nat_gateway.get('SubnetId')
+        with boto_error_handler(request, self.location):
+            self.nat_gateway_subnet = self.get_nat_gateway_subnet()
+        self.nat_gateway_delete_form = NatGatewayDeleteForm(self.request, formdata=self.request.params or None)
+        self.title_parts = [_('NAT Gateway'), self.nat_gateway_id]
+        self.render_dict = dict(
+            nat_gateway=self.nat_gateway,
+            nat_gateway_id=self.nat_gateway_id,
+            nat_gateway_vpc=self.nat_gateway_vpc,
+            nat_gateway_subnet=self.nat_gateway_subnet,
+            nat_gateway_delete_form=self.nat_gateway_delete_form,
+            nat_gateway_network_info=self.get_nat_gateway_network_info(),
+        )
+
+    @view_config(route_name='nat_gateway_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def nat_gateway_view(self):
+        return self.render_dict
+
+    @view_config(route_name='nat_gateway_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def nat_gateway_delete(self):
+        if self.nat_gateway and self.nat_gateway_delete_form.validate():
+            location = self.request.route_path('nat_gateway_view', id=self.nat_gateway_id)
+            with boto_error_handler(self.request, location):
+                log_msg = _('Deleting NAT gateway {0}').format(self.nat_gateway_id)
+                self.log_request(log_msg)
+                # TODO: Delete NAT gateway
+            msg = _(u'Successfully deleted NAT gateway')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('vpcs'))
+        else:
+            self.request.error_messages = self.nat_gateway_delete_form.get_errors_list()
+        return self.render_dict
+
+    def get_nat_gateway(self):
+        filters = [
+            {'Name': 'vpc-id', 'Values': [self.vpc_id]},
+            {'Name': 'nat-gateway-id', 'Values': [self.nat_gateway_id]}
+        ]
+        subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
+        nat_gateways = subnet_nat_gateways_resp.get('NatGateways')
+        return nat_gateways[0] if nat_gateways else None
+
+    def get_nat_gateway_vpc(self):
+        vpc_list = self.vpc_conn.get_all_vpcs(filters={'vpc-id': [self.vpc_id]})
+        return vpc_list[0] if vpc_list else None
+
+    def get_nat_gateway_subnet(self):
+        subnet_list = self.vpc_conn.get_all_subnets(filters={'subnet-id': [self.subnet_id]})
+        return subnet_list[0] if subnet_list else None
+
+    def get_nat_gateway_network_info(self):
+        addresses = self.nat_gateway.get('NatGatewayAddresses')
+        if addresses:
+            return addresses[0]
+        return {}
+
