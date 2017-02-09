@@ -1,0 +1,15 @@
+[Unit]
+Description=Eucalyptus management console
+Documentation=https://docs.eucalyptus.com/eucalyptus/latest/#shared/console_section.html
+After=eucaconsole-keygen.service
+After=network.target
+Wants=eucaconsole-keygen.service
+Wants=eucaconsole-memcached.service
+Wants=eucaconsole-nginx.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/eucaconsole
+
+[Install]
+WantedBy=multi-user.target

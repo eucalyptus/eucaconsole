@@ -23,13 +23,16 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import glob
 import os.path
 import re
+import subprocess
 import sys
 
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
 from setuptools import setup, find_packages
+import setuptools.command.install
 
 from eucaconsole import __version__
 
@@ -109,6 +112,29 @@ class sdist_with_git_version(sdist):
             new_ver.flush()
         os.rename(new_ver_name, old_ver_name)
 
+
+class InitsysInstallData(setuptools.command.install.install):
+    init_system = None  # magically populated by setuptools
+    user_options = setuptools.command.install.install.user_options + [
+        ('init-system=', None, ('init system to configure (systemd) [default: none]'))]
+
+    def initialize_options(self):
+        setuptools.command.install.install.initialize_options(self)
+        self.init_system = ''
+
+    def finalize_options(self):
+        setuptools.command.install.install.finalize_options(self)
+
+        if self.init_system == 'systemd':
+            system_unitdir = subprocess.check_output(
+                ('pkg-config', '--variable=systemdsystemunitdir', 'systemd')).strip()
+            if system_unitdir:
+                self.distribution.data_files.append(
+                    (system_unitdir, glob.glob('systemd/units/*')))
+        # Update the file list
+        self.distribution.reinitialize_command('install_data', True)
+
+
 requires = [
     'beaker >= 1.5.4',
     'boto >= 2.43.0',
@@ -154,6 +180,7 @@ message_extractors = {'eucaconsole': [
     ('**.pt', 'lingua_xml', None),
 ]}
 
+
 setup(
     name='eucaconsole',
     version=__version__,
@@ -194,5 +221,6 @@ setup(
     main = eucaconsole.config:main
     """,
     cmdclass={'build_py': build_py_with_git_version,
+              'install': InitsysInstallData,
               'sdist': sdist_with_git_version}
 )

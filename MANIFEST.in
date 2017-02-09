@@ -4,3 +4,4 @@ recursive-include locale *.pot *.po *.mo
 recursive-include eucaconsole/cf-templates *.json
 recursive-include conf *
 recursive-include licenses *
+recursive-include systemd *

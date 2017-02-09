@@ -1,0 +1,14 @@
+[Unit]
+Description=Eucalyptus management console caching daemon
+Documentation=https://docs.eucalyptus.com/eucalyptus/latest/#shared/console_section.html
+After=network.target
+PartOf=eucaconsole.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/sysconfig/eucaconsole
+ExecStart=/usr/bin/memcached -m 64 -c 1024 -a 0700 -s /run/eucaconsole/memcached.sock
+User=eucaconsole
+
+[Install]
+WantedBy=multi-user.target
