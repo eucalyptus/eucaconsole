@@ -37,6 +37,7 @@ from pyramid.view import view_config
 
 from ..forms import ChoicesManager
 from ..forms.instances import TerminateInstanceForm
+from ..forms.ipaddresses import AllocateIPsForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm, CreateSubnetForm,
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
@@ -636,6 +637,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
         self.create_route_table_form = CreateRouteTableForm(self.request, formdata=self.request.params or None)
         self.subnet_delete_form = SubnetDeleteForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.allocate_eips_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.subnet_name = self.get_display_name(self.subnet)
         self.tagged_obj = self.subnet
@@ -656,6 +658,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
             create_route_table_form=self.create_route_table_form,
             create_nat_gateway_form=self.create_nat_gateway_form,
             terminate_form=self.terminate_form,
+            allocate_eips_form=self.allocate_eips_form,
             subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
             default_for_zone=subnet_is_default_for_zone,
             default_for_zone_label=_('yes') if subnet_is_default_for_zone else _('no'),
@@ -720,6 +723,29 @@ class SubnetView(TaggedItemView, RouteTableMixin):
         else:
             self.request.error_messages = self.subnet_delete_form.get_errors_list()
             return self.render_dict
+
+    @view_config(route_name='subnet_allocate_eips', renderer=VIEW_TEMPLATE, request_method='POST')
+    def subnet_allocate_eips(self):
+        if self.subnet and self.allocate_eips_form.validate():
+            location = self.request.route_path('subnet_view', vpc_id=self.vpc.id, id=self.subnet.id)
+            new_ips = []
+            domain = self.request.params.get('domain') or None
+            ipcount = int(self.request.params.get('ipcount', 0))
+            with boto_error_handler(self.request, location):
+                with boto_error_handler(self.request, self.location):
+                    self.log_request(_(u"Allocating {0} Elastic IPs").format(ipcount))
+                    for i in xrange(ipcount):
+                        new_ip = self.conn.allocate_address(domain=domain)
+                        new_ips.append(new_ip.public_ip)
+                    prefix = _(u'Successfully allocated elastic IPs')
+                    ips = ', '.join(new_ips)
+                    msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.allocate_eips_form.get_errors_list()
+        return self.render_dict
 
     @view_config(route_name='route_table_create', renderer=VIEW_TEMPLATE, request_method='POST')
     def route_table_create(self):

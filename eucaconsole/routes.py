@@ -282,6 +282,7 @@ urls = [
     Route(name='vpc_create_internet_gateway', pattern='/vpcs/{id}/create-internet-gateway'),
     Route(name='subnet_view', pattern='/vpcs/{vpc_id}/subnets/{id}'),
     Route(name='subnet_update', pattern='/vpcs/{vpc_id}/subnets/{id}/update'),
+    Route(name='subnet_allocate_eips', pattern='/vpcs/{vpc_id}/subnets/{id}/allocate-eips'),
     Route(name='subnet_delete', pattern='/vpcs/{vpc_id}/subnets/{id}/delete'),
     Route(name='route_table_create', pattern='/vpcs/{vpc_id}/subnets/{id}/create-route-table'),
     Route(name='route_table_view', pattern='/vpcs/{vpc_id}/route-tables/{id}'),

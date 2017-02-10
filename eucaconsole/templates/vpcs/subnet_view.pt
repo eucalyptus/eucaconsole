@@ -209,7 +209,7 @@
         <!--! Modal dialogs -->
         <div id="create-route-table-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Create route table</h3>
-            <form id="create-route-table-form" name="createRouteTableForm" ng-cloak="" method="post"
+            <form id="create-route-table-form" name="createRouteTableForm" method="post"
                   action="${request.route_path('route_table_create', vpc_id=vpc.id, id=subnet.id)}">
                 ${structure:create_route_table_form['csrf_token']}
                 <div class="row">
@@ -231,7 +231,7 @@
         </div>
         <div id="create-nat-gateway-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Create NAT gateway</h3>
-            <form id="create-nat-gateway-form" name="createNatGatewayForm" ng-cloak="" method="post"
+            <form id="create-nat-gateway-form" name="createNatGatewayForm" method="post"
                   action="${request.route_path('nat_gateway_create', vpc_id=vpc.id, id=subnet.id)}"
                   tal:condition="create_nat_gateway_form.eip_allocation_id.choices">
                 ${structure:create_nat_gateway_form['csrf_token']}
@@ -272,21 +272,29 @@
                     Create NAT Gateway
                 </button>
             </form>
-            <div tal:condition="not: create_nat_gateway_form.eip_allocation_id.choices">
+            <form id="allocate-eips-form" name="allocateEipsForm" method="post" data-abide=""
+                  action="${request.route_path('subnet_allocate_eips', vpc_id=vpc.id, id=subnet.id)}"
+                  tal:condition="not: create_nat_gateway_form.eip_allocation_id.choices">
+                ${structure:allocate_eips_form['csrf_token']}
+                <input type="hidden" name="domain" value="vpc" />
                 <p i18n:translate="">
                     There are no available elastic IP addresses to assign to the NAT gateway.
                 </p>
-                <p>
-                    <span i18n:translate="">Visit the</span>
-                    <a href="${request.route_path('ipaddresses')}">Elastic IPs page</a>
-                    <span i18n:translate="">to allocate one or more elastic IP addresses.</span>
+                <p i18n:translate="">
+                    Allocate one or more elastic IP addresses prior to creating the NAT gateway.
                 </p>
-            </div>
+                <div class="row">
+                    ${panel('form_field', field=allocate_eips_form.ipcount, leftcol_width_large=3, rightcol_width_large=9, **{'pattern': '^[1-9]\d*$', 'min': '1'})}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Allocate Elastic IP Addresses
+                </button>
+            </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="delete-subnet-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Delete Subnet</h3>
-            <form id="delete-subnet-form" name="deleteSubnetForm" ng-cloak="" method="post"
+            <form id="delete-subnet-form" name="deleteSubnetForm" method="post"
                   ng-if="ctrl.nonTerminatedInstances.length === 0"
                   action="${request.route_path('subnet_delete', vpc_id=vpc.id, id=subnet.id)}">
                 ${structure:subnet_delete_form['csrf_token']}

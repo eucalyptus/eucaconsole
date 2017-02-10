@@ -33,3 +33,5 @@ table.instances { width: 100%; margin-bottom: 1rem; }
 #delete-subnet-modal .resources-list .small-3 { text-align: right; font-weight: bold; }
 
 .existing-nat-gateways-notice { margin-bottom: 1rem; }
+
+#ipcount { margin-left: 1rem; }
