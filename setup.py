@@ -131,6 +131,11 @@ class InitsysInstallData(setuptools.command.install.install):
             if system_unitdir:
                 self.distribution.data_files.append(
                     (system_unitdir, glob.glob('systemd/units/*')))
+            tmpfilesdir = subprocess.check_output(
+                ('pkg-config', '--variable=tmpfilesdir', 'systemd')).strip()
+            if tmpfilesdir:
+                self.distribution.data_files.append(
+                    (tmpfilesdir, glob.glob('systemd/tempfiles/*')))
         # Update the file list
         self.distribution.reinitialize_command('install_data', True)
 
