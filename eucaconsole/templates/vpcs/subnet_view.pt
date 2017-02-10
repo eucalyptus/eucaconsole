@@ -95,7 +95,7 @@
                             ${subnet_network_acl.name}
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="subnet_nat_gateways">
+                    <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">NAT gateways</label></div>
                         <div class="large-9 small-8 columns value">
                             <div tal:repeat="nat_gateway subnet_nat_gateways">

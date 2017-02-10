@@ -754,7 +754,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
                     self.log_request('Creating NAT gateway in VPC {0}'.format(self.vpc.id))
                     # Leverage botocore to create NAT gateway
                     self.conn3.create_nat_gateway(SubnetId=subnet_id, AllocationId=eip_allocation_id)
-                msg = _(u'Successfully created NAT gateway {0}'.format(self.subnet.id))
+                msg = _(u'Successfully created NAT gateway for subnet {0}'.format(self.subnet.id))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             self.request.error_messages = ', '.join(self.create_nat_gateway_form.get_errors_list())
@@ -1148,14 +1148,16 @@ class NatGatewayView(BaseView):
     @view_config(route_name='nat_gateway_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def nat_gateway_delete(self):
         if self.nat_gateway and self.nat_gateway_delete_form.validate():
-            location = self.request.route_path('nat_gateway_view', id=self.nat_gateway_id)
+            location = self.request.route_path('nat_gateway_view', vpc_id=self.vpc_id, id=self.nat_gateway_id)
             with boto_error_handler(self.request, location):
                 log_msg = _('Deleting NAT gateway {0}').format(self.nat_gateway_id)
                 self.log_request(log_msg)
-                # TODO: Delete NAT gateway
-            msg = _(u'Successfully deleted NAT gateway')
+                self.conn3.delete_nat_gateway(NatGatewayId=self.nat_gateway_id)
+            msg = _(
+                'Successfully sent request to delete NAT gateway.  It may take a moment to delete the NAT gateway.')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.request.route_path('vpcs'))
+            # Redirect to VPC details page instead of subnet details page, as NGW may take a while to delete
+            return HTTPFound(location=self.request.route_path('vpc_view', id=self.vpc_id))
         else:
             self.request.error_messages = self.nat_gateway_delete_form.get_errors_list()
         return self.render_dict
