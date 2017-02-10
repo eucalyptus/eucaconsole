@@ -60,14 +60,7 @@
                         </a>
                         <span tal:condition="not vpc_internet_gateway" class="warning">
                             <span i18n:translate="">None</span>&nbsp;
-                            <i class="fi-alert"></i>
-                            <span i18n:translate="">WARNING: The NAT gateway requires an internet gateway in VPC</span>
-                            <a href="${request.route_path('vpc_view', id=nat_gateway_vpc.id)}">
-                                ${layout.get_display_name(nat_gateway_vpc)}
-                            </a>
-                            <span i18n:translate="">
-                                to allow instances in the subnet without elastic IP addresses to access the Internet.
-                            </span>
+                            <i class="fi-alert" title="${vpc_missing_igw_warning}" i18n:attributes="title" data-tooltip=""></i>
                         </span>
                     </div>
                 </div>
@@ -107,8 +100,8 @@
                   action="${request.route_path('nat_gateway_delete', vpc_id=nat_gateway_vpc.id, id=nat_gateway_id)}">
                 ${structure:nat_gateway_delete_form['csrf_token']}
                 <p>
-                    <span i18n:translate="">Deleting the NAT gateway may prevent instances in subnet</span>
-                    <strong>${layout.get_display_name(nat_gateway_subnet)}</strong>
+                    <span i18n:translate="">Deleting the NAT gateway may prevent instances in VPC</span>
+                    <strong>${layout.get_display_name(nat_gateway_vpc)}</strong>
                     <span i18n:translate="">without an elastic IP address from reaching the Internet or other services.</span>
                 </p>
                 <p>

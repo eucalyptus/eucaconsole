@@ -1131,6 +1131,10 @@ class NatGatewayView(BaseView):
             self.nat_gateway_subnet = self.get_nat_gateway_subnet()
         self.nat_gateway_delete_form = NatGatewayDeleteForm(self.request, formdata=self.request.params or None)
         self.title_parts = [_('NAT Gateway'), self.nat_gateway_id]
+        vpc_missing_igw_warning = _(
+            'WARNING: The NAT gateway requires an internet gateway in the VPC to allow instances '
+            'without an elastic IP address to access the Internet.'
+        )
         self.render_dict = dict(
             nat_gateway=self.nat_gateway,
             nat_gateway_id=self.nat_gateway_id,
@@ -1139,6 +1143,7 @@ class NatGatewayView(BaseView):
             nat_gateway_delete_form=self.nat_gateway_delete_form,
             nat_gateway_network_info=self.get_nat_gateway_network_info(),
             vpc_internet_gateway=self.vpc_internet_gateway,
+            vpc_missing_igw_warning=vpc_missing_igw_warning,
         )
 
     @view_config(route_name='nat_gateway_view', renderer=VIEW_TEMPLATE, request_method='GET')
