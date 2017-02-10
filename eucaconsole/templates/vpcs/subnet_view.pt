@@ -232,7 +232,8 @@
         <div id="create-nat-gateway-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Create NAT gateway</h3>
             <form id="create-nat-gateway-form" name="createNatGatewayForm" ng-cloak="" method="post"
-                  action="${request.route_path('nat_gateway_create', vpc_id=vpc.id, id=subnet.id)}">
+                  action="${request.route_path('nat_gateway_create', vpc_id=vpc.id, id=subnet.id)}"
+                  tal:condition="create_nat_gateway_form.eip_allocation_id.choices">
                 ${structure:create_nat_gateway_form['csrf_token']}
                 <p>
                     <span i18n:translate="">
@@ -271,6 +272,16 @@
                     Create NAT Gateway
                 </button>
             </form>
+            <div tal:condition="not: create_nat_gateway_form.eip_allocation_id.choices">
+                <p i18n:translate="">
+                    There are no available elastic IP addresses to assign to the NAT gateway.
+                </p>
+                <p>
+                    <span i18n:translate="">Visit the</span>
+                    <a href="${request.route_path('ipaddresses')}">Elastic IPs page</a>
+                    <span i18n:translate="">to allocate one or more elastic IP addresses.</span>
+                </p>
+            </div>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="delete-subnet-modal" class="reveal-modal medium" data-reveal="">

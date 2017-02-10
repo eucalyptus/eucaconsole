@@ -28,7 +28,7 @@
 Pyramid views for Eucalyptus and AWS VPCs
 
 """
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 
 import simplejson as json
 
@@ -791,7 +791,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
         filters = [{'Name': 'subnet-id', 'Values': [self.subnet.id]}]
         subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
         nat_gateways = subnet_nat_gateways_resp.get('NatGateways')
-        return reversed(sorted(nat_gateways, key=itemgetter('CreateTime')))
+        return list(nat_gateways)
 
     def update_route_table(self):
         new_route_table_id = self.request.params.get('route_table')
