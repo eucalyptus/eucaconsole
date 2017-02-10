@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS VPCs
 
 """
 from operator import attrgetter
+from time import sleep
 
 import simplejson as json
 
@@ -780,6 +781,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
                     self.log_request('Creating NAT gateway in VPC {0}'.format(self.vpc.id))
                     # Leverage botocore to create NAT gateway
                     self.conn3.create_nat_gateway(SubnetId=subnet_id, AllocationId=eip_allocation_id)
+                    sleep(2)  # Give new NAT gateway a moment to fire up prior to loading subnet details page
                 msg = _(u'Successfully created NAT gateway for subnet {0}'.format(self.subnet.id))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
