@@ -90,7 +90,8 @@
                 <th i18n:translate="">Public IP address</th>
                 <th i18n:translate="">Scope</th>
                 <th i18n:translate="">Assigned to instance</th>
-                <th i18n:translate="">Allocation ID</th>
+                <th i18n:translate="" tal:condition="layout.is_vpc_supported">Allocation ID</th>
+                <th i18n:translate="" tal:condition="layout.is_vpc_supported">Network Interface ID</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -104,7 +105,8 @@
                     <span i18n:translate="">Standard</span>
                 </td>
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
-                <td>{{ item.allocation_id }}</td>
+                <td tal:condition="layout.is_vpc_supported">{{ item.allocation_id }}</td>
+                <td tal:condition="layout.is_vpc_supported">{{ item.network_interface_id }}</td>
                 <td>
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right round"
