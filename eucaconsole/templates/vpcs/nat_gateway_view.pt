@@ -106,9 +106,10 @@
             <form id="delete-nat-gateway-form" method="post"
                   action="${request.route_path('nat_gateway_delete', vpc_id=nat_gateway_vpc.id, id=nat_gateway_id)}">
                 ${structure:nat_gateway_delete_form['csrf_token']}
-                <p i18n:translate="">
-                    Deleting the NAT gateway may prevent instances in this subnet without an elastic IP address
-                    from reaching the Internet or other services.
+                <p>
+                    <span i18n:translate="">Deleting the NAT gateway may prevent instances in subnet</span>
+                    <strong>${layout.get_display_name(nat_gateway_subnet)}</strong>
+                    <span i18n:translate="">without an elastic IP address from reaching the Internet or other services.</span>
                 </p>
                 <p>
                     <span i18n:translate="">Are you sure you want to delete NAT gateway</span>
