@@ -1,5 +1,5 @@
 [Unit]
-Description=Eucalyptus management console caching daemon
+Description=Eucalyptus Management Console caching daemon
 Documentation=https://docs.eucalyptus.com/eucalyptus/latest/#shared/console_section.html
 After=network.target
 PartOf=eucaconsole.service

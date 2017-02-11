@@ -1,5 +1,5 @@
 [Unit]
-Description=Eucalyptus management console
+Description=Eucalyptus Management Console
 Documentation=https://docs.eucalyptus.com/eucalyptus/latest/#shared/console_section.html
 After=eucaconsole-keygen.service
 After=network.target

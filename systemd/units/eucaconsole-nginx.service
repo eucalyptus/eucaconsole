@@ -1,5 +1,5 @@
 [Unit]
-Description=Eucalyptus management console web server
+Description=Eucalyptus Management Console web server
 Documentation=https://docs.eucalyptus.com/eucalyptus/latest/#shared/console_section.html
 Wants=eucaconsole-certgen.service
 After=eucaconsole-certgen.service
