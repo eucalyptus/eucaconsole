@@ -260,7 +260,7 @@
                     <strong>${subnet_name}</strong>
                     <span i18n:translate="">and assign it an elastic IP address.</span>
                     <span i18n:translate="">
-                        It will not be possible to disassociate this address from the new NAT gateway
+                        Note that it will not be possible to disassociate the address from the new NAT gateway
                         without deleting the NAT gateway.
                     </span>
                 </p>
