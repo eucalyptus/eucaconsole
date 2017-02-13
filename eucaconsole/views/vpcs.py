@@ -1010,6 +1010,7 @@ class RouteTargetsJsonView(BaseView):
     def __init__(self, request):
         super(RouteTargetsJsonView, self).__init__(request)
         self.vpc_conn = self.get_connection(conn_type="vpc")
+        self.conn3 = self.get_connection3()
 
     @view_config(route_name='route_targets_json', renderer='json', request_method='GET')
     def route_targets_json(self):
@@ -1018,16 +1019,27 @@ class RouteTargetsJsonView(BaseView):
         with boto_error_handler(self.request):
             internet_gateways = self.vpc_conn.get_all_internet_gateways(filters={'attachment.vpc-id': [vpc_id]})
             network_interfaces = self.vpc_conn.get_all_network_interfaces(filters={'vpc-id': [vpc_id]})
-            # TODO: Add NAT gateways as target options
+            nat_gateways = self.get_nat_gateways(vpc_id)
         for igw in sorted(internet_gateways, key=attrgetter('id')):
             route_targets.append(dict(
                 id=igw.id,
+            ))
+        for ngw in nat_gateways:
+            route_targets.append(dict(
+                id=ngw.get('NatGatewayId'),
             ))
         for eni in sorted(network_interfaces, key=attrgetter('id')):
             route_targets.append(dict(
                 id=eni.id
             ))
         return dict(results=route_targets)
+
+    def get_nat_gateways(self, vpc_id):
+        filters = [
+            {'Name': 'vpc-id', 'Values': [vpc_id]},
+        ]
+        subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
+        return subnet_nat_gateways_resp.get('NatGateways')
 
 
 class InternetGatewayView(TaggedItemView):

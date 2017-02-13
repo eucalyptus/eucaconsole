@@ -78,7 +78,7 @@ angular.module('RouteTableEditorModule', [])
                         state: 'active'
                     };
 
-                    if ($scope.routeTarget.indexOf('igw-') === 0) {
+                    if ($scope.routeTarget.indexOf('igw-') === 0 || $scope.routeTarget.indexOf('nat-') === 0) {
                         route.gateway_id = $scope.routeTarget;
                     } else if ($scope.routeTarget.indexOf('eni-') === 0) {
                         route.interface_id = $scope.routeTarget;
