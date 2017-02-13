@@ -1,4 +1,0 @@
-MEMCACHED_MAXCONN="1024"
-MEMCACHED_CACHESIZE="64"
-MEMCACHED_FLAGS="-s /var/run/eucaconsole/memcached.sock -a 0700"
-

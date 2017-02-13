@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2017 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -33,7 +33,7 @@ from pyramid.settings import asbool
 
 from tests import BaseTestCase
 
-SETTINGS = get_appsettings('conf/console.default.ini', name='main')
+SETTINGS = get_appsettings('conf/console.ini', name='main')
 
 
 class CacheImagesSettingTestCase(BaseTestCase):
