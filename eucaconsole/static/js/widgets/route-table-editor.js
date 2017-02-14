@@ -67,21 +67,23 @@ angular.module('RouteTableEditorModule', [])
 
                     // Avoid adding route that conflicts with another destination CIDR block
                     var existingCidrBlocks = $scope.routes.map(function (route) {
-                        return route.destination_cidr_block;
+                        return route.DestinationCidrBlock;
                     });
                     if (existingCidrBlocks.indexOf($scope.destinationCidrBlock) !== -1) {
                         return;
                     }
 
                     var route = {
-                        destination_cidr_block: $scope.destinationCidrBlock,
-                        state: 'active'
+                        DestinationCidrBlock: $scope.destinationCidrBlock,
+                        State: 'active'
                     };
 
                     if ($scope.routeTarget.indexOf('igw-') === 0) {
-                        route.gateway_id = $scope.routeTarget;
+                        route.GatewayId = $scope.routeTarget;
+                    } else if ($scope.routeTarget.indexOf('nat-') === 0) {
+                        route.NatGatewayId = $scope.routeTarget;
                     } else if ($scope.routeTarget.indexOf('eni-') === 0) {
-                        route.interface_id = $scope.routeTarget;
+                        route.NetworkInterfaceId = $scope.routeTarget;
                     }
 
                     $scope.routes.push(route);

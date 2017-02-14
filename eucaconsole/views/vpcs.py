@@ -579,38 +579,7 @@ class CreateVPCView(BaseView):
         return self.render_dict
 
 
-class RouteTableMixin(object):
-    def update_routes(self, request, vpc_conn, route_table):
-        routes_json = request.params.get('routes')
-        new_routes = json.loads(routes_json)
-        self.delete_routes(vpc_conn, route_table)
-        self.add_routes(vpc_conn, route_table, new_routes)
-
-    @staticmethod
-    def delete_routes(vpc_conn, route_table):
-        for route in route_table.routes:
-            # Skip deleting local route
-            if route.gateway_id != 'local':
-                vpc_conn.delete_route(route_table.id, route.destination_cidr_block)
-
-    @staticmethod
-    def add_routes(vpc_conn, route_table, new_routes):
-        for route in new_routes:
-            route_target_id = route.get('target')
-            params = dict(
-                route_table_id=route_table.id,
-                destination_cidr_block=route.get('destination_cidr_block')
-            )
-            if route_target_id:
-                if route_target_id.startswith('igw-'):
-                    params.update(dict(gateway_id=route_target_id))
-                elif route_target_id.startswith('eni-'):
-                    params.update(dict(interface_id=route_target_id))
-                # TODO: Handle routes with NAT Gateway target
-                vpc_conn.create_route(**params)
-
-
-class SubnetView(TaggedItemView, RouteTableMixin):
+class SubnetView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/vpcs/subnet_view.pt'
 
     def __init__(self, request, **kwargs):
@@ -644,7 +613,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
         self.tagged_obj = self.subnet
         self.title_parts = [_(u'Subnet'), self.subnet_name]
         subnet_is_default_for_zone = self.subnet.defaultForAz == 'true'
-        vpc_local_route = dict(destination_cidr_block=self.vpc.cidr_block, state='active', gateway_id='local')
+        vpc_local_route = dict(DestinationCidrBlock=self.vpc.cidr_block, State='active', GatewayId='local')
         self.render_dict = dict(
             vpc=self.vpc,
             vpc_name=self.vpc_name,
@@ -754,14 +723,18 @@ class SubnetView(TaggedItemView, RouteTableMixin):
         if self.create_route_table_form.validate():
             with boto_error_handler(self.request, location):
                 name = self.request.params.get('route_table_name')
+                routes_json = self.request.params.get('routes')
+                new_routes = json.loads(routes_json)
                 with boto_error_handler(self.request):
                     self.log_request('Creating route table in VPC {0}'.format(self.vpc.id))
                     new_route_table = self.vpc_conn.create_route_table(self.vpc.id)
-                    routes_json = self.request.params.get('routes')
-                    new_routes = json.loads(routes_json)
-                    # Skip 'local' route, which is added automatically
-                    new_routes = [route for route in new_routes if route.get('gateway_id') != 'local']
-                    self.add_routes(self.vpc_conn, new_route_table, new_routes)
+
+                    # Add routes via botocore -- skipping 'local' route, which is added automatically
+                    new_routes = [route for route in new_routes if route.get('GatewayId') != 'local']
+                    for route in new_routes:
+                        route.pop('State')
+                        self.conn3.create_route(RouteTableId=new_route_table.id, **route)
+                    # Add Name tag if necessary
                     if name:
                         new_route_table.add_tag('Name', name)
                 msg = _(u'Successfully created route table {0}'.format(new_route_table.id))
@@ -855,7 +828,7 @@ class SubnetView(TaggedItemView, RouteTableMixin):
         }))
 
 
-class RouteTableView(TaggedItemView, RouteTableMixin):
+class RouteTableView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/vpcs/route_table_view.pt'
 
     def __init__(self, request, **kwargs):
@@ -864,10 +837,13 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
             'route_table_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
         self.conn = self.get_connection()  # Required for tag updates
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.conn3 = self.get_connection3()
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
+            # NOTE: boto2-based RT required for tag updates; botocore-based RT required for route updates
             self.route_table = self.get_route_table(self.vpc.id)
-        if self.route_table is None or self.vpc is None:
+            self.route_table3 = self.get_route_table3(self.vpc.id)
+        if self.route_table is None or self.route_table3 is None or self.vpc is None:
             raise HTTPNotFound()
         with boto_error_handler(request, self.location):
             self.route_table_subnets = self.get_route_table_subnets()
@@ -888,6 +864,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
             vpc=self.vpc,
             vpc_name=self.vpc_name,
             route_table=self.route_table,
+            route_table3=self.route_table3,
             route_table_name=self.route_table_name,
             route_table_subnets=self.route_table_subnets,
             is_main_route_table=self.is_main_route_table,
@@ -895,7 +872,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
             route_table_form=self.route_table_form,
             route_table_delete_form=self.route_table_delete_form,
             route_table_set_main_form=self.route_table_set_main_form,
-            routes=self.serialize_routes(self.route_table.routes),
+            routes=json.dumps(self.route_table3.get('Routes')),
             tags=self.serialize_tags(self.route_table.tags) if self.route_table else [],
         )
 
@@ -920,7 +897,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
 
                 # Update routes
                 if routes_updated:
-                    self.update_routes(self.request, self.vpc_conn, self.route_table)
+                    self.update_routes()
 
             msg = _(u'Successfully updated route table')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -973,6 +950,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
         return None
 
     def get_route_table(self, vpc_id):
+        # We're fetching the route table via boto 2 to allow tag updates to work
         route_table_id = self.request.matchdict.get('id')
         filters = {
             'vpc-id': vpc_id,
@@ -983,25 +961,35 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
             return route_tables[0]
         return None
 
+    def get_route_table3(self, vpc_id):
+        # NOTE: We're fetching the route table via botocore to properly surface route targets
+        route_table_id = self.request.matchdict.get('id')
+        filters = [
+            {'Name': 'vpc-id', 'Values': [vpc_id]},
+            {'Name': 'route-table-id', 'Values': [route_table_id]},
+        ]
+        route_tables = self.conn3.describe_route_tables(Filters=filters).get('RouteTables')
+        if route_tables:
+            return route_tables[0]
+        return None
+
     def get_route_table_subnets(self):
         route_table_association_subnet_ids = [assoc.subnet_id for assoc in self.route_table.associations]
         return self.vpc_conn.get_all_subnets(filters={'subnet-id': route_table_association_subnet_ids})
 
-    @staticmethod
-    def serialize_routes(routes):
-        """Returns a JSON-stringified list of boto.vpc.RouteTable.Route objects converted to dicts"""
-        routes_list = []
-        for route in routes:
-            routes_list.append(dict(
-                destination_cidr_block=route.destination_cidr_block,
-                gateway_id=route.gateway_id,
-                instance_id=route.instance_id,
-                interface_id=route.interface_id,
-                origin=route.origin,
-                state=route.state,
-                vpc_peering_connection_id=route.vpc_peering_connection_id,
-            ))
-        return BaseView.escape_json(json.dumps(routes_list))
+    def update_routes(self):
+        route_table_id = self.route_table3.get('RouteTableId')
+        existing_routes = self.route_table3.get('Routes')
+        routes_json = self.request.params.get('routes')
+        new_routes = json.loads(routes_json)
+        for existing_route in existing_routes:
+            if existing_route not in new_routes:
+                self.conn3.delete_route(
+                    RouteTableId=route_table_id, DestinationCidrBlock=existing_route.get('DestinationCidrBlock'))
+        for new_route in new_routes:
+            if new_route not in existing_routes:
+                new_route.pop('State')
+                self.conn3.create_route(RouteTableId=self.route_table.id, **new_route)
 
 
 class RouteTargetsJsonView(BaseView):
@@ -1010,6 +998,7 @@ class RouteTargetsJsonView(BaseView):
     def __init__(self, request):
         super(RouteTargetsJsonView, self).__init__(request)
         self.vpc_conn = self.get_connection(conn_type="vpc")
+        self.conn3 = self.get_connection3()
 
     @view_config(route_name='route_targets_json', renderer='json', request_method='GET')
     def route_targets_json(self):
@@ -1018,16 +1007,27 @@ class RouteTargetsJsonView(BaseView):
         with boto_error_handler(self.request):
             internet_gateways = self.vpc_conn.get_all_internet_gateways(filters={'attachment.vpc-id': [vpc_id]})
             network_interfaces = self.vpc_conn.get_all_network_interfaces(filters={'vpc-id': [vpc_id]})
-            # TODO: Add NAT gateways as target options
+            nat_gateways = self.get_nat_gateways(vpc_id)
         for igw in sorted(internet_gateways, key=attrgetter('id')):
             route_targets.append(dict(
                 id=igw.id,
+            ))
+        for ngw in nat_gateways:
+            route_targets.append(dict(
+                id=ngw.get('NatGatewayId'),
             ))
         for eni in sorted(network_interfaces, key=attrgetter('id')):
             route_targets.append(dict(
                 id=eni.id
             ))
         return dict(results=route_targets)
+
+    def get_nat_gateways(self, vpc_id):
+        filters = [
+            {'Name': 'vpc-id', 'Values': [vpc_id]},
+        ]
+        subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
+        return subnet_nat_gateways_resp.get('NatGateways')
 
 
 class InternetGatewayView(TaggedItemView):
