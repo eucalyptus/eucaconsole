@@ -34,6 +34,11 @@
                                 Create route table
                             </a>
                         </li>
+                        <li>
+                            <a data-reveal-id="create-nat-gateway-modal" id="create-nat-gateway-action" i18n:translate="">
+                                Create NAT gateway
+                            </a>
+                        </li>
                         <li tal:condition="subnet_route_table">
                             <a id="view-route-table-action" i18n:translate=""
                                href="${request.route_path('route_table_view', vpc_id=vpc.id, id=subnet_route_table.id)}">
@@ -88,6 +93,16 @@
                         <div class="large-3 small-4 columns"><label i18n:translate="">Network ACL</label></div>
                         <div class="large-9 small-8 columns value" tal:condition="subnet_network_acl">
                             ${subnet_network_acl.name}
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">NAT gateways</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <div tal:repeat="nat_gateway subnet_nat_gateways">
+                                <a href="${request.route_path('nat_gateway_view', vpc_id=vpc.id, id=nat_gateway.NatGatewayId)}">
+                                    ${nat_gateway.NatGatewayId}
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
@@ -194,7 +209,7 @@
         <!--! Modal dialogs -->
         <div id="create-route-table-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Create route table</h3>
-            <form id="create-route-table-form" name="createRouteTableForm" ng-cloak="" method="post"
+            <form id="create-route-table-form" name="createRouteTableForm" method="post"
                   action="${request.route_path('route_table_create', vpc_id=vpc.id, id=subnet.id)}">
                 ${structure:create_route_table_form['csrf_token']}
                 <div class="row">
@@ -214,9 +229,72 @@
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
+        <div id="create-nat-gateway-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Create NAT gateway</h3>
+            <form id="create-nat-gateway-form" name="createNatGatewayForm" method="post"
+                  action="${request.route_path('nat_gateway_create', vpc_id=vpc.id, id=subnet.id)}"
+                  tal:condition="create_nat_gateway_form.eip_allocation_id.choices">
+                ${structure:create_nat_gateway_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">
+                        You can use a NAT (network address translation) gateway to enable instances in subnet
+                    </span>
+                    <strong>${subnet_name}</strong>
+                    <span i18n:translate="">
+                        to connect to the Internet or other services without using public IP addresses of their own.
+                    </span>
+                </p>
+                <p tal:condition="layout.cloud_type == 'aws'" i18n:translate="">
+                    NOTE: NAT gateways are not supported for IPv6 traffic.  Use an egress-only internet gateway instead.
+                </p>
+                <div tal:condition="subnet_nat_gateways" class="existing-nat-gateways-notice">
+                    <span i18n:translate="">
+                        NOTE: This subnet is already associated with the following NAT gateway(s)...
+                    </span>
+                    <strong tal:repeat="nat_gateway subnet_nat_gateways">
+                        ${nat_gateway.NatGatewayId}<span tal:condition="not repeat.nat_gateway.end">,&nbsp;</span>
+                    </strong>
+                </div>
+                <p>
+                    <span i18n:translate="">Create a NAT gateway for subnet</span>
+                    <strong>${subnet_name}</strong>
+                    <span i18n:translate="">and assign it an elastic IP address.</span>
+                    <span i18n:translate="">
+                        Note that it will not be possible to disassociate the address from the new NAT gateway
+                        without deleting the NAT gateway.
+                    </span>
+                </p>
+                <input type="hidden" name="nat_gateway_subnet_id" value="${subnet.id}" />
+                <div class="row">
+                    ${panel('form_field', field=create_nat_gateway_form['eip_allocation_id'], stack_label=True)}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Create NAT Gateway
+                </button>
+            </form>
+            <form id="allocate-eips-form" name="allocateEipsForm" method="post" data-abide=""
+                  action="${request.route_path('subnet_allocate_eips', vpc_id=vpc.id, id=subnet.id)}"
+                  tal:condition="not: create_nat_gateway_form.eip_allocation_id.choices">
+                ${structure:allocate_eips_form['csrf_token']}
+                <input type="hidden" name="domain" value="vpc" />
+                <p i18n:translate="">
+                    There are no available elastic IP addresses to assign to the NAT gateway.
+                </p>
+                <p i18n:translate="">
+                    Allocate one or more elastic IP addresses prior to creating the NAT gateway.
+                </p>
+                <div class="row">
+                    ${panel('form_field', field=allocate_eips_form.ipcount, leftcol_width_large=3, rightcol_width_large=9, **{'pattern': '^[1-9]\d*$', 'min': '1'})}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Allocate Elastic IP Addresses
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
         <div id="delete-subnet-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Delete Subnet</h3>
-            <form id="delete-subnet-form" name="deleteSubnetForm" ng-cloak="" method="post"
+            <form id="delete-subnet-form" name="deleteSubnetForm" method="post"
                   ng-if="ctrl.nonTerminatedInstances.length === 0"
                   action="${request.route_path('subnet_delete', vpc_id=vpc.id, id=subnet.id)}">
                 ${structure:subnet_delete_form['csrf_token']}

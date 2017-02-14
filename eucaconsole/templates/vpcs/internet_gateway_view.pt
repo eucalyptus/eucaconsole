@@ -12,7 +12,7 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
                 <li class="current">
-                    <a tal:condition="internet_gateway">${internet_gateway_name }</a>
+                    <a tal:condition="internet_gateway">${internet_gateway_name}</a>
                 </li>
             </metal:crumbs>
         </metal:breadcrumbs>
