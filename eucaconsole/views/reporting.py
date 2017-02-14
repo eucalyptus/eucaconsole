@@ -28,6 +28,7 @@
 Pyramid views for Eucalyptus and Usage Reporting
 
 """
+import datetime
 import simplejson as json
 import io
 
@@ -147,6 +148,36 @@ class ReportingAPIView(BaseView):
             self.request.session.get('account'),
             year,
             month
+        )
+        response = Response(content_type='text/csv')
+        response.text = ret.get('data')
+        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        response.cache_control = 'no-store'
+        response.pragma = 'no-cache'
+        return response
+
+    @view_config(route_name='reporting_service_usage', request_method='POST')
+    def get_reporting_service_usage_file(self):
+        if not self.is_csrf_valid():
+            return JSONResponse(status=400, message="missing CSRF token")
+        service = self.request.params.get('service')
+        usage_type = self.request.params.get('usageType')
+        granularity = self.request.params.get('granularity')
+        time_period = self.request.params.get('timePeriod')
+        end_time = datetime.datetime.utcnow()
+        if time_period == 'lastWeek':
+            start_time = end_time - datetime.timedelta(days=7)
+        elif time_period == 'lastMonth':
+            start_time = end_time - datetime.timedelta(month=1)
+        else:
+             start_time = self.request.params.get('fromTime')
+             end_time = self.request.params.get('toTime')
+        # use "ViewUsage" call to fetch usage information
+        ret = self.conn.view_usage(service, usage_type, 'all', start_time, end_time, report_granularity=granularity)
+        filename = 'EucalyptusServiceUsage-{0}-{1}-{2}.csv'.format(
+            self.request.session.get('account'),
+            service,
+            usage_type
         )
         response = Response(content_type='text/csv')
         response.text = ret.get('data')

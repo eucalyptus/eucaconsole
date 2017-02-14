@@ -1,0 +1,19 @@
+[Unit]
+Description=Eucalyptus Management Console web server
+Documentation=https://docs.eucalyptus.com/eucalyptus/latest/#shared/console_section.html
+Wants=eucaconsole-certgen.service
+After=eucaconsole-certgen.service
+After=network.target
+PartOf=eucaconsole.service
+
+[Service]
+Type=forking
+EnvironmentFile=/etc/sysconfig/eucaconsole
+ExecStart=/usr/sbin/nginx -c /etc/eucaconsole/nginx.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+KillSignal=SIGQUIT
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

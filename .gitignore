@@ -12,7 +12,7 @@ nosetests.xml
 coverage.xml
 tutorial.db
 build/
-bin/
+dist/
 lib/
 include/
 .idea/
@@ -26,7 +26,6 @@ venv/
 .DS_Store
 .sass-cache
 *.scssc
-console.ini
 session-keys.ini
 bower_components/
 node_modules/
@@ -34,3 +33,5 @@ eucaconsole.backup/
 eucaconsole/static/js/minified/
 Gemfile.lock
 eucaconsole/static/css/font-awesome/font-awesome.css
+/MANIFEST
+/console.ini

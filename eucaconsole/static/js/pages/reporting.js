@@ -6,7 +6,7 @@
  *
  */
 
-angular.module('ReportingPage', ['ngRoute', 'localytics.directives', 'EucaConsoleUtils', 'ModalModule', 'BucketServiceModule', 'CreateBucketModule', 'ReportingServiceModule'])
+angular.module('ReportingPage', ['ngRoute', 'localytics.directives', 'EucaConsoleUtils', 'ModalModule', 'BucketServiceModule', 'CreateBucketModule', 'ReportingServiceModule', 'UsageReportsModule'])
 .directive('navigation', function () {
     return {
         restrict: 'A',

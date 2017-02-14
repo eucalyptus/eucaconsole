@@ -1,0 +1,8 @@
+[Unit]
+Description=Eucalyptus Management Console certificate generation
+ConditionFileNotEmpty=|!/etc/pki/tls/certs/eucaconsole.crt
+ConditionFileNotEmpty=|!/etc/pki/tls/private/eucaconsole.key
+
+[Service]
+ExecStart=/usr/libexec/eucaconsole/eucaconsole-certgen
+Type=oneshot

@@ -61,4 +61,7 @@
             </div>
         </div>
     </div>
+    <div class="modal large" modal="usageReports">
+        <div usage-reports-dialog=""></div>
+    </div>
 </div>

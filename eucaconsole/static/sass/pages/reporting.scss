@@ -46,3 +46,11 @@ form {
     width: 100%
 }
 
+#usage-reports-modal {
+    .row {
+        padding-left: 1rem;
+        .columns {
+            padding-left: 0;
+        }
+    }
+}
