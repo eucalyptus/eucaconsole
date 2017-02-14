@@ -52,7 +52,7 @@ angular.module('UsageReportsModule', ['ModalModule', 'EucaConsoleUtils'])
                         return false;
                     }
                     vm.isDownloading = true;
-                    params = {
+                    var params = {
                         'service': vm.values.service,
                         'usageType': vm.values.usageType,
                         'granularity': vm.values.granularity,

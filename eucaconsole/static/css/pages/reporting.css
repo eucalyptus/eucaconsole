@@ -51,3 +51,5 @@ form .error { font-size: small; display: none; }
 
 #usage-reports-modal .row { padding-left: 1rem; }
 #usage-reports-modal .row .columns { padding-left: 0; }
+
+.usage-link { float: right; }

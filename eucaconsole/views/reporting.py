@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and Usage Reporting
 import datetime
 import simplejson as json
 import io
+from dateutil.relativedelta import relativedelta
 
 from pyramid.response import Response
 from pyramid.view import view_config
@@ -156,6 +157,32 @@ class ReportingAPIView(BaseView):
         response.pragma = 'no-cache'
         return response
 
+    @view_config(route_name='reporting_month_to_date_usage', renderer='json', request_method='GET', xhr=True)
+    def get_reporting_month_to_date_usage(self):
+        year = int(self.request.params.get('year'))
+        month = int(self.request.params.get('month'))
+        # use "ViewMontlyUsage" call to fetch usage information
+        ret = self.conn.view_monthly_usage(year, month)
+        csv = ret.get('data')
+        data = pandas.read_csv(io.StringIO(csv), engine='c')
+        # reduce to required columns
+        data = data.filter(['ProductName', 'UsageType', 'UsageQuantity'])
+        grouped = data.groupby(('ProductName', 'UsageType'))
+        totals = grouped['UsageQuantity'].sum()
+        totals_list = totals.to_frame().to_records().tolist()
+        results = []
+        service = ''
+        for idx, rec in enumerate(totals_list):
+            if service != rec[0]:
+                results.append((rec[0],))
+                service = rec[0]
+            results.append((
+                rec[0], rec[1],
+                '{:0.8f}'.format(rec[2]).rstrip('0').rstrip('.'),
+                self.units_from_details(rec[1])
+            ))
+        return dict(results=results)
+
     @view_config(route_name='reporting_service_usage', request_method='POST')
     def get_reporting_service_usage_file(self):
         if not self.is_csrf_valid():
@@ -166,9 +193,9 @@ class ReportingAPIView(BaseView):
         time_period = self.request.params.get('timePeriod')
         end_time = datetime.datetime.utcnow()
         if time_period == 'lastWeek':
-            start_time = end_time - datetime.timedelta(days=7)
+            start_time = end_time - relativedelta(days=7)
         elif time_period == 'lastMonth':
-            start_time = end_time - datetime.timedelta(month=1)
+            start_time = end_time - relativedelta(months=1)
         else:
              start_time = self.request.params.get('fromTime')
              end_time = self.request.params.get('toTime')

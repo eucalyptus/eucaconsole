@@ -48,5 +48,17 @@ angular.module('ReportingServiceModule', [])
                 };
             });
         },
+
+        getMonthToDateUsage: function (year, month) {
+            var url = '/reporting-api/monthtodateusage?year=' + year + '&month=' + month;
+            return $http({
+                method: 'GET',
+                url: url
+            }).then( function (response) {
+                return response.data || {
+                    enabled: false
+                };
+            });
+        },
     };
 }]);

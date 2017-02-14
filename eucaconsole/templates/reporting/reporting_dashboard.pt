@@ -1,3 +1,28 @@
-<div>
-<span>Dash</span>
+<div i18n:domain="eucaconsole">
+    <div class="section">
+        <span class="section-label"><span i18n:translate="">Usage to date for</span>&nbsp;{{dashboard.today | date:'MMMM yyyy'}}</span>
+        <a class='usage-link' href="/reporting/reports" i18n:translate="">Go to Monthly Usage Details</a>
+        <div class="row">
+            <div class="columns gridwrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th i18n:translate="">Eucalyptus Service</th>
+                            <th class="totals" i18n:translate="">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="usage in dashboard.monthlyToDateUsage">
+                            <td>
+                                &nbsp;&nbsp;{{ usage[0] }}
+                            </td>
+                            <td class="totals">
+                                {{ usage[1] }} {{ usage[2] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
