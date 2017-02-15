@@ -8,7 +8,6 @@ PartOf=eucaconsole.service
 
 [Service]
 Type=forking
-EnvironmentFile=/etc/sysconfig/eucaconsole
 ExecStart=/usr/sbin/nginx -c /etc/eucaconsole/nginx.conf
 ExecReload=/bin/kill -s HUP $MAINPID
 KillSignal=SIGQUIT

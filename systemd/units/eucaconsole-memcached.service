@@ -6,7 +6,6 @@ PartOf=eucaconsole.service
 
 [Service]
 Type=simple
-EnvironmentFile=/etc/sysconfig/eucaconsole
 ExecStart=/usr/bin/memcached -m 64 -c 1024 -a 0700 -s /run/eucaconsole/memcached.sock
 User=eucaconsole
 
