@@ -137,9 +137,9 @@
                     <input type="hidden" id="type" name="type" value="${request.params.get('type', '')}" />
                     <input type="hidden" id="id" name="id" value="${request.params.get('id', '')}" />
                     <label><strong i18n:translate="">Name</strong></label>
-                    ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=0, rightcol_width=12, autofocus='', pattern='^\S+$')}
+                    ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=0, rightcol_width=12, rightcol_width_large=12, autofocus='', pattern='^\S+$')}
                     <label><strong i18n:translate="">Policy</strong></label>
-                    ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'}, leftcol_width=0, rightcol_width=12)}
+                    ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'}, leftcol_width=0, rightcol_width=12, rightcol_width_large=12)}
                     <div>&nbsp;</div>
                     <small id="json-error" class="error" style="display:none;"></small>
                     <div id="hand-edited-warning" ng-show="handEdited">
