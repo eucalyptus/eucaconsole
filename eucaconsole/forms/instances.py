@@ -57,6 +57,7 @@ class InstanceForm(BaseSecureForm):
     monitored = wtforms.BooleanField(label=_(u'Monitoring enabled'))
     kernel = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk = wtforms.SelectField(label=_(u'RAM disk ID (ramfs)'))
+    security_groups = wtforms.SelectMultipleField(label=_('Security groups'))
     start_later = wtforms.HiddenField()
 
     def __init__(self, request, instance=None, conn=None, **kwargs):
@@ -77,11 +78,24 @@ class InstanceForm(BaseSecureForm):
             self.kernel.data = instance.kernel or ''
             self.ramdisk.data = instance.ramdisk or ''
             self.userdata.data = ''
+            if instance.vpc_id:
+                self.security_groups.data = sorted([group.id for group in instance.groups])
 
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
         self.kernel.choices = self.choices_manager.kernels()
         self.ramdisk.choices = self.choices_manager.ramdisks()
+        if self.instance and self.instance.vpc_id:
+            self.security_groups.choices = self.get_security_group_choices(self.instance.vpc_id)
+
+    def get_security_group_choices(self, vpc_id):
+        choices = []
+        security_groups = self.conn.get_all_security_groups(filters={'vpc-id': [vpc_id]})
+        for group in security_groups:
+            value = group.id
+            label = '{0} ({1})'.format(group.name, group.id)
+            choices.append((value, label))
+        return sorted(choices, key=lambda x: x[1])
 
 
 class LaunchInstanceForm(BaseSecureForm):
