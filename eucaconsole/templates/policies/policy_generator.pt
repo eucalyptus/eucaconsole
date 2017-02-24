@@ -349,7 +349,7 @@
                                     </div>
                                     <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
                                         <!--! Boolean/Null conditions -->
-                                        <div ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'BOOL'">
+                                        <div ng-if="'${cond_operator}' &amp;&amp; conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'BOOL'">
                                             <input type="checkbox" class="condition-value" />
                                             <span i18n:translate="">True</span>
                                         </div>
