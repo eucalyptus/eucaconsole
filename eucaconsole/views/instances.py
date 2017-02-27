@@ -718,6 +718,13 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     self.log_request(_(u"Starting instance {0}").format(self.instance.id))
                     self.instance.start()
 
+                # Update security groups if modified for a VPC instance
+                if self.instance.vpc_id:
+                    selected_security_groups = self.request.params.getall('security_groups')
+                    existing_security_groups = [group.id for group in self.instance.groups]
+                    if sorted(selected_security_groups) != sorted(existing_security_groups):
+                        self.conn.modify_instance_attribute(self.instance.id, 'groupSet', selected_security_groups)
+
                 msg = _(u'Successfully modified instance')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
