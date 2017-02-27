@@ -295,8 +295,12 @@
                                                     <option value="aws:SourceArn" i18n:translate="">Source ARN</option>
                                                     <option value="aws:SourceIp" i18n:translate="">Source IP</option>
                                                     <option value="aws:UserAgent" i18n:translate="">User agent</option>
-                                                    <option value="aws:userid" i18n:translate="">User ID</option>
-                                                    <option value="aws:username" i18n:translate="">Username</option>
+                                                    <option value="aws:userid" i18n:translate="" tal:condition="namespace != 'sqs'">
+                                                        User ID
+                                                    </option>
+                                                    <option value="aws:username" i18n:translate="" tal:condition="namespace != 'sqs'">
+                                                        Username
+                                                    </option>
                                                 </optgroup>
                                             </select>
                                         </div>
@@ -349,7 +353,7 @@
                                     </div>
                                     <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
                                         <!--! Boolean/Null conditions -->
-                                        <div ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'BOOL'">
+                                        <div ng-if="'${cond_operator}' &amp;&amp; conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'BOOL'">
                                             <input type="checkbox" class="condition-value" />
                                             <span i18n:translate="">True</span>
                                         </div>
