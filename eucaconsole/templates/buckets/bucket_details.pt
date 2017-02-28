@@ -161,13 +161,24 @@
             <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <!--! Modal dialog for viewing/editing bucket policy -->
-        <div class="modal large bucket-policy-modal" modal="bucketPolicyModal">
-            <div bucket-policy-modal=""
-                 template="${request.route_path('render_template', subpath='dialogs/bucket_policy_dialog')}"
-                 bucket-name="${bucket_name}"
-                 has-bucket-policy="hasBucketPolicy"
-                 bucket-policy-json="${bucket_policy_json}">
-            </div>
+        <div id="bucket-policy-modal" class="reveal-modal medium" data-reveal="">
+            <h3>
+                <span ng-if="hasBucketPolicy" i18n:translate="">Edit Bucket Policy</span>
+                <span ng-if="!hasBucketPolicy" i18n:translate="">Add Bucket policy</span>
+            </h3>
+            <form id="bucket-policy-form" method="post"
+                  ng-submit="setBucketPolicy($event)">
+                <textarea id="policy-textarea" name="bucket_policy"  ng-model="bucketPolicyJson"
+                          title="Set bucket policy" i18n:attributes="title">{{ bucketPolicyJson }}</textarea>
+                <p class="policy-error-wrapper">{{policyError}}</p>
+                <button class="button expand" i18n:translate="" ng-if="!savingBucketPolicy">
+                    Save Bucket Policy
+                </button>
+                <button class="button expand" disabled="disabled" ng-if="savingBucketPolicy">
+                    <span i18n:translate="">Saving Bucket Policy</span>&nbsp;
+                    <span class="busy"></span>
+                </button>
+            </form>
         </div>
     </div>
 </div>

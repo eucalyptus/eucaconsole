@@ -75,14 +75,13 @@
             <div id="existing-bucket-policy-wrapper">
                 <a class="icon remove has-tip" i18n:attributes="title" data-reveal-id="bucket-policy-delete-confirmation-modal"
                    title="Remove bucket policy" data-tooltip=""><i class="fi-minus-circle"></i></a>
-                <a class="icon edit has-tip" i18n:attributes="title" ng-click="openBucketPolicyModal()"
+                <a class="icon edit has-tip" i18n:attributes="title" data-reveal-id="bucket-policy-modal"
                    title="View/Edit bucket policy" data-tooltip=""><i class="fi-pencil"></i></a>
                 <span i18n:translate="">Bucket Policy</span>
             </div>
         </div>
         <div ng-if="!hasBucketPolicy">
-            <a class="button round tiny" i18n:translate=""
-               ng-click="openBucketPolicyModal()">Add Bucket Policy</a>
+            <a class="button round tiny" i18n:translate="" data-reveal-id="bucket-policy-modal">Add Bucket Policy</a>
         </div>
     </div>
     <div id="cors-configuration" tal:condition="object_type == 'bucket'">

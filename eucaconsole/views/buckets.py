@@ -698,7 +698,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
                 self.cors_configuration_xml = self.get_cors_configuration(self.bucket, xml=True)
                 if self.cors_configuration_xml:
                     self.cors_configuration_xml = self.pretty_print_xml(self.cors_configuration_xml)
-                self.bucket_policy_json = self.bucket.get_policy()
+                self.bucket_policy_json = self.get_bucket_policy(self.bucket)
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
@@ -732,6 +732,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
                 cors_deletion_form=self.cors_deletion_form,
                 cors_configuration_xml=self.cors_configuration_xml,
                 sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
+                bucket_policy_json=self.bucket_policy_json,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 controller_options_json=self.get_controller_options_json(),
                 delete_cors_config_url=self.request.route_path('bucket_cors_configuration', name=self.bucket.name),
@@ -857,6 +858,16 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
     def pretty_print_xml(xml_string=''):
         xml = etree.fromstring(xml_string)
         return etree.tostring(xml, pretty_print=True)
+
+    @staticmethod
+    def get_bucket_policy(bucket):
+        try:
+            return bucket.get_policy()
+        except S3ResponseError as err:
+            if err.error_code == 'NoSuchBucketPolicy':
+                return None  # Bucket policy is empty
+            else:
+                raise  # Re-raise exception to handle session timeouts
 
     @staticmethod
     def update_acl(request, bucket_object=None):

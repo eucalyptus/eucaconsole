@@ -193,58 +193,5 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
             ]
         };
     })
-    .directive('bucketPolicyModal', function() {
-        return {
-            restrict: 'A',
-            scope: {
-                template: '@',
-                bucketName: '@',
-                hasBucketPolicy: '=',
-                bucketPolicyJson: '@'
-            },
-            templateUrl: function (element, attributes) {
-                return attributes.template;
-            },
-            controller: ['$scope', '$rootScope', 'CorsService', 'ModalService',
-                function($scope, $rootScope, CorsService, ModalService) {
-                    $scope.setBucketPolicy = function ($event) {
-                        $event.preventDefault();
-                        $scope.savingBucketPolicy = true;
-                        $scope.policyError = '';
-                        var csrfToken = angular.element('#csrf_token').val();
-                        CorsService.setBucketPolicy($scope.bucketName, csrfToken, $scope.policyCodeEditor.getValue())
-                            .then(function success (response) {
-                                $scope.savingBucketPolicy = false;
-                                $rootScope.$broadcast('s3:bucketPolicySaved');
-                                ModalService.closeModal('bucketPolicyModal');
-                                Notify.success(response.data.message);
-                            }, function error (errData) {
-                                $scope.policyError = errData.data.message;
-                                $scope.savingBucketPolicy = false;
-                            });
-                    };
-                    $scope.$on('modal:open', function ($event, modalName) {
-                        if (modalName === 'bucketPolicyModal') {
-                            // Initialize CodeMirror for policy textarea
-                            var policyTextarea = document.getElementById('policy-textarea');
-                            $('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
-                            if (policyTextarea !== null) {
-                                $scope.policyCodeEditor = CodeMirror.fromTextArea(policyTextarea, {
-                                    mode: "json",
-                                    lineWrapping: true,
-                                    styleActiveLine: true,
-                                    lineNumbers: true
-                                });
-                            }
-                            // Reset to sample CORS config when re-adding post-deletion
-                            if (!$scope.hasBucketPolicy && !!$scope.policyCodeEditor) {
-                                 $scope.policyCodeEditor.setValue('');
-                            }
-                        }
-                    });
-                }
-            ]
-        };
-    })
 ;
 
