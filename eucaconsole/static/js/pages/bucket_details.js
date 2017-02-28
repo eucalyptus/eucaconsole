@@ -20,12 +20,15 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
         $scope.deletingCorsConfig = false;
         $scope.corsConfigXml = '';
         $scope.hasCorsConfig = false;
+        $scope.hasBucketPolicy = false;
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bucketName = options.bucket_name;
             $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
             $scope.corsConfigXml = options.cors_config_xml;
+            $scope.bucketPolicyJson = options.bucket_policy_json;
             $scope.hasCorsConfig = !!$scope.corsConfigXml;
+            $scope.hasBucketPolicy = !!scope.bucketPolicyJson;
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
@@ -183,6 +186,59 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                             // Reset to sample CORS config when re-adding post-deletion
                             if (!$scope.hasCorsConfig && !!$scope.codeEditor) {
                                  $scope.codeEditor.setValue($scope.sampleCorsConfig);
+                            }
+                        }
+                    });
+                }
+            ]
+        };
+    })
+    .directive('bucketPolicyModal', function() {
+        return {
+            restrict: 'A',
+            scope: {
+                template: '@',
+                bucketName: '@',
+                hasBucketPolicy: '=',
+                bucketPolicyJson: '@'
+            },
+            templateUrl: function (element, attributes) {
+                return attributes.template;
+            },
+            controller: ['$scope', '$rootScope', 'CorsService', 'ModalService',
+                function($scope, $rootScope, CorsService, ModalService) {
+                    $scope.setBucketPolicy = function ($event) {
+                        $event.preventDefault();
+                        $scope.savingBucketPolicy = true;
+                        $scope.policyError = '';
+                        var csrfToken = angular.element('#csrf_token').val();
+                        CorsService.setBucketPolicy($scope.bucketName, csrfToken, $scope.policyCodeEditor.getValue())
+                            .then(function success (response) {
+                                $scope.savingBucketPolicy = false;
+                                $rootScope.$broadcast('s3:bucketPolicySaved');
+                                ModalService.closeModal('bucketPolicyModal');
+                                Notify.success(response.data.message);
+                            }, function error (errData) {
+                                $scope.policyError = errData.data.message;
+                                $scope.savingBucketPolicy = false;
+                            });
+                    };
+                    $scope.$on('modal:open', function ($event, modalName) {
+                        if (modalName === 'bucketPolicyModal') {
+                            // Initialize CodeMirror for policy textarea
+                            var policyTextarea = document.getElementById('policy-textarea');
+                            $('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
+                            if (policyTextarea !== null) {
+                                $scope.policyCodeEditor = CodeMirror.fromTextArea(policyTextarea, {
+                                    mode: "json",
+                                    lineWrapping: true,
+                                    styleActiveLine: true,
+                                    lineNumbers: true
+                                });
+                            }
+                            // Reset to sample CORS config when re-adding post-deletion
+                            if (!$scope.hasBucketPolicy && !!$scope.policyCodeEditor) {
+                                 $scope.policyCodeEditor.setValue('');
                             }
                         }
                     });

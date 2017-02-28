@@ -160,6 +160,15 @@
             </form>
             <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>
         </div>
+        <!--! Modal dialog for viewing/editing bucket policy -->
+        <div class="modal large bucket-policy-modal" modal="bucketPolicyModal">
+            <div bucket-policy-modal=""
+                 template="${request.route_path('render_template', subpath='dialogs/bucket_policy_dialog')}"
+                 bucket-name="${bucket_name}"
+                 has-bucket-policy="hasBucketPolicy"
+                 bucket-policy-json="${bucket_policy_json}">
+            </div>
+        </div>
     </div>
 </div>
 

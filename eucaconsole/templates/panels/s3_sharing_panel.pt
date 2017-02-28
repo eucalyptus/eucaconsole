@@ -63,6 +63,28 @@
             </div>
         </div>
     </div>
+    <div id="bucket-policy" tal:condition="object_type == 'bucket'">
+        <div><strong i18n:translate="">Bucket Policy</strong></div>
+        <p i18n:translate="">
+            A bucket policy allows one to grant or deny access to a bucket and/or objects in the bucket,
+            and the policy applies to existing and future objects in the bucket.
+            Bucket ACLs, in contrast, only allow one to grant access to a bucket and/or objects,
+            and ACLS only apply to objects currently in the bucket.
+        </p>
+        <div ng-if="hasBucketPolicy">
+            <div id="existing-bucket-policy-wrapper">
+                <a class="icon remove has-tip" i18n:attributes="title" data-reveal-id="bucket-policy-delete-confirmation-modal"
+                   title="Remove bucket policy" data-tooltip=""><i class="fi-minus-circle"></i></a>
+                <a class="icon edit has-tip" i18n:attributes="title" ng-click="openBucketPolicyModal()"
+                   title="View/Edit bucket policy" data-tooltip=""><i class="fi-pencil"></i></a>
+                <span i18n:translate="">Bucket Policy</span>
+            </div>
+        </div>
+        <div ng-if="!hasBucketPolicy">
+            <a class="button round tiny" i18n:translate=""
+               ng-click="openBucketPolicyModal()">Add Bucket Policy</a>
+        </div>
+    </div>
     <div id="cors-configuration" tal:condition="object_type == 'bucket'">
         <div><strong i18n:translate="">CORS Configuration</strong></div>
         <p i18n:translate="">

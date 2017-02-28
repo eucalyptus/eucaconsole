@@ -688,6 +688,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name'), _(u'Details')]
         self.s3_conn = self.get_connection(conn_type='s3')
         self.cors_configuration_xml = None
+        self.bucket_policy_json = None
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             self.tagged_obj = self.bucket
@@ -697,6 +698,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
                 self.cors_configuration_xml = self.get_cors_configuration(self.bucket, xml=True)
                 if self.cors_configuration_xml:
                     self.cors_configuration_xml = self.pretty_print_xml(self.cors_configuration_xml)
+                self.bucket_policy_json = self.bucket.get_policy()
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
@@ -778,6 +780,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
         return BaseView.escape_json(json.dumps({
             'bucket_name': self.bucket.name,
             'cors_config_xml': self.cors_configuration_xml,
+            'bucket_policy_json': self.bucket_policy_json,
             'bucket_objects_count_url': self.request.route_path(
                 'bucket_objects_count_versioning_json', name=self.bucket.name),
         }))
