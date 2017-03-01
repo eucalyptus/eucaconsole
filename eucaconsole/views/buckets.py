@@ -30,6 +30,8 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 """
 from datetime import datetime
 from itertools import chain
+from string import Template
+
 import mimetypes
 import simplejson as json
 import urllib
@@ -47,7 +49,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from pyramid.settings import asbool
 from pyramid.view import view_config
 
-from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA, SAMPLE_CORS_CONFIGURATION
+from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA, SAMPLE_CORS_CONFIGURATION, SAMPLE_BUCKET_POLICY_TEMPLATE
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
@@ -55,6 +57,7 @@ from ..forms.buckets import (
 from ..i18n import _
 from ..views import BaseView, LandingPageView, JSONResponse, TaggedItemView
 from ..models import Notification
+from ..models.auth import User
 from . import boto_error_handler
 from .. import utils
 
@@ -686,9 +689,11 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
     def __init__(self, request, **kwargs):
         super(BucketDetailsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name'), _(u'Details')]
+        self.ec2_conn = self.get_connection()
         self.s3_conn = self.get_connection(conn_type='s3')
         self.cors_configuration_xml = None
         self.bucket_policy_json = None
+        self.sample_bucket_policy = ''
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             self.tagged_obj = self.bucket
@@ -699,6 +704,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
                 if self.cors_configuration_xml:
                     self.cors_configuration_xml = self.pretty_print_xml(self.cors_configuration_xml)
                 self.bucket_policy_json = self.get_bucket_policy(self.bucket)
+                self.sample_bucket_policy = self.get_sample_bucket_policy()
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
@@ -734,6 +740,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
                 policy_deletion_form=self.policy_deletion_form,
                 cors_configuration_xml=self.cors_configuration_xml,
                 sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
+                sample_bucket_policy=self.sample_bucket_policy,
                 bucket_policy_json=self.bucket_policy_json,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 controller_options_json=self.get_controller_options_json(),
@@ -784,6 +791,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
             'bucket_name': self.bucket.name,
             'cors_config_xml': self.cors_configuration_xml,
             'bucket_policy_json': self.bucket_policy_json,
+            'sample_bucket_policy': self.sample_bucket_policy,
             'bucket_objects_count_url': self.request.route_path(
                 'bucket_objects_count_versioning_json', name=self.bucket.name),
         }))
@@ -877,6 +885,11 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
     def pretty_print_json(json_string='', indent=2):
         parsed_json = json.loads(json_string)
         return json.dumps(parsed_json, indent=indent, sort_keys=True)
+
+    def get_sample_bucket_policy(self):
+        template = Template(SAMPLE_BUCKET_POLICY_TEMPLATE)
+        account_id = User.get_account_id(self.ec2_conn, self.request)
+        return template.safe_substitute(bucket_name=self.bucket.name, account_id=account_id).strip()
 
     @staticmethod
     def update_acl(request, bucket_object=None):

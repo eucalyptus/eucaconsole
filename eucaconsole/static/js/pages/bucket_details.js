@@ -30,8 +30,12 @@ angular.module('BucketDetailsPage',
             $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
             $scope.corsConfigXml = options.cors_config_xml;
             $scope.bucketPolicyJson = options.bucket_policy_json;
+            $scope.sampleBucketPolicy = options.sample_bucket_policy;
             $scope.hasCorsConfig = !!$scope.corsConfigXml;
             $scope.hasBucketPolicy = !!$scope.bucketPolicyJson;
+            if (!$scope.hasBucketPolicy) {
+                $scope.bucketPolicyJson = $scope.sampleBucketPolicy;
+            }
             $scope.initPolicyDialogListener();
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();

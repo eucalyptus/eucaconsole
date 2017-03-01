@@ -166,6 +166,10 @@
                 <span ng-if="hasBucketPolicy" i18n:translate="">Edit Bucket Policy</span>
                 <span ng-if="!hasBucketPolicy" i18n:translate="">Add Bucket policy</span>
             </h3>
+            <p ng-if="!hasBucketPolicy" i18n:translate="">
+                Add a bucket policy to restrict principals (e.g. accounts) from performing actions in this bucket. <br />
+                NOTE: Listed below is a sample bucket policy that should be modified as needed.
+            </p>
             <form id="bucket-policy-form" method="post"
                   ng-submit="setBucketPolicy($event)">
                 <textarea id="policy-textarea" name="bucket_policy"  ng-model="bucketPolicyJson"
