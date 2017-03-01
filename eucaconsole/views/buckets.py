@@ -51,7 +51,7 @@ from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA, SAMPLE_CORS_CONFIGURATI
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
-    BucketItemSharedURLForm, CorsConfigurationForm, CorsDeletionForm)
+    BucketItemSharedURLForm, CorsConfigurationForm, CorsDeletionForm, PolicyDeletionForm)
 from ..i18n import _
 from ..views import BaseView, LandingPageView, JSONResponse, TaggedItemView
 from ..models import Notification
@@ -706,6 +706,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.cors_configuration_form = CorsConfigurationForm(request, formdata=self.request.params or None)
         self.cors_deletion_form = CorsDeletionForm(request, formdata=self.request.params or None)
+        self.policy_deletion_form = PolicyDeletionForm(request, formdata=self.request.params or None)
         self.versioning_status = self.get_versioning_status(self.bucket)
         if self.bucket is None:
             self.render_dict = dict()
@@ -730,6 +731,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
                 logging_status=self.get_logging_status(),
                 cors_configuration_form=self.cors_configuration_form,
                 cors_deletion_form=self.cors_deletion_form,
+                policy_deletion_form=self.policy_deletion_form,
                 cors_configuration_xml=self.cors_configuration_xml,
                 sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
                 bucket_policy_json=self.bucket_policy_json,
@@ -1021,6 +1023,22 @@ class BucketPolicyView(BaseView, BucketMixin):
                 return JSONResponse(status=200, message=msg)
             else:
                 return JSONResponse(status=400, message=_('Invalid policy'))
+
+    @view_config(route_name='bucket_policy', renderer='json', request_method='DELETE', xhr=True)
+    def bucket_delete_policy(self):
+        csrf_token = self.request.params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        if self.bucket:
+            with boto_error_handler(self.request):
+                self.log_request(u"Deleting policy for bucket {0}".format(self.bucket.name))
+                self.bucket.delete_policy()
+                msg = '{0} {1}'.format(_(u'Successfully deleted bucket policy for'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return JSONResponse(status=200, message=msg)
+        else:
+            error = '{0} {1}'.format(_('Unable to delete bucket policy for'), self.bucket.name)
+            return JSONResponse(status=400, message=error)
 
 
 class BucketItemDetailsView(BaseView, BucketMixin):

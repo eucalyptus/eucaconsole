@@ -179,6 +179,29 @@
                     <span class="busy"></span>
                 </button>
             </form>
+            <a href="#" id="bucket_policy_dialog_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Modal dialog for confirming deletion of S3 bucket policy -->
+        <div id="bucket-policy-delete-confirmation-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete Bucket Policy</h3>
+            <div>&nbsp;</div>
+            <form id="cors-deletion-form" method="post"
+                  ng-submit="deleteBucketPolicy($event)">
+                ${structure:policy_deletion_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete the bucket policy for</span>
+                    <strong>${bucket_name}</strong><span i18n:translate="">?</span>
+                </p>
+                <p class="policy-error-wrapper">{{ deletePolicyError }}</p>
+                <button class="button expand" i18n:translate="" ng-if="!deletingBucketPolicy">
+                    Yes, Delete Bucket Policy
+                </button>
+                <button class="button expand" i18n:translate="" ng-if="deletingBucketPolicy" disabled="disabled">
+                    <span i18n:translate="">Deleting Bucket Policy</span>&nbsp;
+                    <span class="busy"></span>
+                </button>
+            </form>
+            <a href="#" id="delete_bucket_policy_dialog_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

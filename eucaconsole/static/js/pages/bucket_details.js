@@ -19,7 +19,9 @@ angular.module('BucketDetailsPage',
         $scope.objectsCountLoading = true;
         $scope.savingCorsConfig = false;
         $scope.deletingCorsConfig = false;
+        $scope.deletingBucketPolicy = false;
         $scope.corsConfigXml = '';
+        $scope.bucketPolicyJson = '';
         $scope.hasCorsConfig = false;
         $scope.hasBucketPolicy = false;
         $scope.initController = function (optionsJson) {
@@ -75,12 +77,31 @@ angular.module('BucketDetailsPage',
             BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, policyValue)
                 .then(function success(response) {
                     $scope.savingBucketPolicy = false;
+                    $scope.hasBucketPolicy = true;
                     $rootScope.$broadcast('s3:bucketPolicySaved');
                     $('#bucket-policy-modal').foundation('reveal', 'close');
                     Notify.success(response.data.message);
                 }, function error(errData) {
                     $scope.policyError = errData.data.message;
                     $scope.savingBucketPolicy = false;
+                });
+        };
+
+        $scope.deleteBucketPolicy = function ($event) {
+            $event.preventDefault();
+            $scope.deletePolicyError = '';
+            $scope.deletingBucketPolicy = true;
+            var deleteDialog = $('#bucket-policy-delete-confirmation-modal');
+            var csrfToken = angular.element('#csrf_token').val();
+            BucketPolicyService.deleteBucketPolicy($scope.bucketName, csrfToken)
+                .then(function success (response) {
+                    deleteDialog.foundation('reveal', 'close');
+                    $scope.deletingBucketPolicy = false;
+                    $scope.hasBucketPolicy = false;
+                    Notify.success(response.data.message);
+                }, function error (errData) {
+                    $scope.deletePolicyError = errData.data.message;
+                    $scope.deletingBucketPolicy = false;
                 });
         };
 
