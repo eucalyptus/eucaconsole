@@ -174,7 +174,10 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                         $scope.savingCorsConfig = true;
                         $scope.corsError = '';
                         var csrfToken = angular.element('#csrf_token').val();
-                        CorsService.setCorsConfig($scope.bucketName, csrfToken, $scope.codeEditor.getValue())
+                        var corsTextarea = angular.element('#cors-textarea');
+                        // Fall back to standard textarea in cases where CodeMirror fails to initialize
+                        var corsConfigValue = $scope.codeEditor && $scope.codeEditor.getValue() || corsTextarea.val();
+                        CorsService.setCorsConfig($scope.bucketName, csrfToken, corsConfigValue)
                             .then(function success (response) {
                                 $scope.savingCorsConfig = false;
                                 $rootScope.$broadcast('s3:corsConfigSaved');
@@ -185,6 +188,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                                 $scope.savingCorsConfig = false;
                             });
                     };
+                    // FIXME: modal:open doesn't fire in Angular 1.5
                     $scope.$on('modal:open', function ($event, modalName) {
                         if (modalName === 'corsConfigModal') {
                             // Initialize CodeMirror for CORS XML textarea
