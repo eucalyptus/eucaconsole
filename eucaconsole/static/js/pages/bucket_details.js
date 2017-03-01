@@ -29,6 +29,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
             $scope.bucketPolicyJson = options.bucket_policy_json;
             $scope.hasCorsConfig = !!$scope.corsConfigXml;
             $scope.hasBucketPolicy = !!$scope.bucketPolicyJson;
+            $scope.initPolicyDialogListener();
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
@@ -45,6 +46,21 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                 $scope.objectsCountLoading = false;
             }).error(function (oData, status) {
                 eucaHandleErrorS3(oData, status);
+            });
+        };
+        $scope.initPolicyDialogListener = function () {
+            var policyDialog = $('#bucket-policy-modal');
+            policyDialog.on('opened.fndtn.reveal', function () {
+                var policyTextarea = document.getElementById('policy-textarea');
+                policyDialog.find('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
+                if (policyTextarea !== null) {
+                    $scope.policyCodeEditor = CodeMirror.fromTextArea(policyTextarea, {
+                        mode: "javascript",
+                        lineWrapping: true,
+                        styleActiveLine: true,
+                        lineNumbers: true
+                    });
+                }
             });
         };
         // True if there exists an unsaved key or value in the tag editor field
