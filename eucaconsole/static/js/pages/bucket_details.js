@@ -7,9 +7,10 @@
  */
 
 /* Bucket details page includes the S3 Sharing Panel */
-angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'TagEditorModule', 'ModalModule'])
+angular.module('BucketDetailsPage',
+    ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'BucketPolicyServiceModule', 'TagEditorModule', 'ModalModule'])
     .controller('BucketDetailsPageCtrl', function ($scope, $rootScope, $http, eucaHandleErrorS3,
-                                                   eucaUnescapeJson, CorsService) {
+                                                   eucaUnescapeJson, CorsService, BucketPolicyService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.bucketDetailsForm = $('#bucket-details-form');
@@ -63,6 +64,26 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
                 }
             });
         };
+        $scope.setBucketPolicy = function ($event) {
+            $event.preventDefault();
+            $scope.savingBucketPolicy = true;
+            $scope.policyError = '';
+            var csrfToken = angular.element('#csrf_token').val();
+            var policyTextarea = angular.element('#policy-textarea');
+            // Fall back to standard textarea in cases where CodeMirror fails to initialize
+            var policyValue = $scope.policyCodeEditor && $scope.policyCodeEditor.getValue() || policyTextarea.val();
+            BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, policyValue)
+                .then(function success(response) {
+                    $scope.savingBucketPolicy = false;
+                    $rootScope.$broadcast('s3:bucketPolicySaved');
+                    $('#bucket-policy-modal').foundation('reveal', 'close');
+                    Notify.success(response.data.message);
+                }, function error(errData) {
+                    $scope.policyError = errData.data.message;
+                    $scope.savingBucketPolicy = false;
+                });
+        };
+
         // True if there exists an unsaved key or value in the tag editor field
         $scope.existsUnsavedTag = function () {
             var hasUnsavedTag = false;

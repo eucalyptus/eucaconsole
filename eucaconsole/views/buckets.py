@@ -994,6 +994,35 @@ class BucketCorsConfigurationView(BaseView, BucketMixin):
             return JSONResponse(status=400, message=error)
 
 
+class BucketPolicyView(BaseView, BucketMixin):
+    """XHR Views for Bucket Policy"""
+
+    def __init__(self, request, **kwargs):
+        super(BucketPolicyView, self).__init__(request, **kwargs)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(request):
+            if self.s3_conn:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+
+    @view_config(route_name='bucket_policy', renderer='json', request_method='PUT', xhr=True)
+    def bucket_set_policy(self):
+        params = json.loads(self.request.body)
+        csrf_token = params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        policy_json = params.get('bucket_policy_json')
+        if self.bucket and policy_json:
+            valid = True  # TODO: Determine if policy JSON is valid
+            if valid:
+                self.log_request(u"Setting bucket policy for {0}".format(self.bucket.name))
+                with boto_error_handler(self.request):
+                    self.bucket.set_policy(policy_json)
+                msg = u'{0} {1}'.format(_(u'Successfully set bucket policy for '), self.bucket.name)
+                return JSONResponse(status=200, message=msg)
+            else:
+                return JSONResponse(status=400, message=_('Invalid policy'))
+
+
 class BucketItemDetailsView(BaseView, BucketMixin):
     """Views for Bucket item (folder/object) details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
