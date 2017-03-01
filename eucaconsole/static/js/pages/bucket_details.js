@@ -28,7 +28,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils', 'Cors
             $scope.corsConfigXml = options.cors_config_xml;
             $scope.bucketPolicyJson = options.bucket_policy_json;
             $scope.hasCorsConfig = !!$scope.corsConfigXml;
-            $scope.hasBucketPolicy = !!scope.bucketPolicyJson;
+            $scope.hasBucketPolicy = !!$scope.bucketPolicyJson;
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);

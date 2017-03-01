@@ -859,15 +859,22 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
         xml = etree.fromstring(xml_string)
         return etree.tostring(xml, pretty_print=True)
 
-    @staticmethod
-    def get_bucket_policy(bucket):
+    @classmethod
+    def get_bucket_policy(cls, bucket):
         try:
-            return bucket.get_policy()
+            policy = bucket.get_policy()
+            if policy:
+                return cls.pretty_print_json(policy)
         except S3ResponseError as err:
             if err.error_code == 'NoSuchBucketPolicy':
                 return None  # Bucket policy is empty
             else:
                 raise  # Re-raise exception to handle session timeouts
+
+    @staticmethod
+    def pretty_print_json(json_string='', indent=2):
+        parsed_json = json.loads(json_string)
+        return json.dumps(parsed_json, indent=indent, sort_keys=True)
 
     @staticmethod
     def update_acl(request, bucket_object=None):

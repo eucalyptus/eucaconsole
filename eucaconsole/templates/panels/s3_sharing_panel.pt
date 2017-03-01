@@ -63,7 +63,7 @@
             </div>
         </div>
     </div>
-    <div id="bucket-policy" tal:condition="object_type == 'bucket'">
+    <div id="bucket-policy-section" tal:condition="object_type == 'bucket'">
         <div><strong i18n:translate="">Bucket Policy</strong></div>
         <p i18n:translate="">
             A bucket policy allows one to grant or deny access to a bucket and/or objects in the bucket,
