@@ -183,14 +183,15 @@ class EucalyptusEC2Reports(EucalyptusConnection):
         """
         params = {
             'Granularity': report_granularity,
-            'TimePeriodFrom': start_time.isoformat(),
-            'TimePeriodTo': end_time.isoformat(),
-            'GroupBy.Key': group_by,
+            'TimeRangeStart': start_time.isoformat(),
+            'TimeRangeEnd': end_time.isoformat(),
+        #    'GroupBy.Type': group_by,
+        #    'GroupBy.Key': group_by,
         }
         if len(filters) > 0:
             for i, f in enumerate(filters):
                 params['Filters.member.%d.Type' % (i + 1)] = f.get('type')
                 params['Filters.member.%d.Key' % (i + 1)] = f.get('key')
-        ret = self._do_request('ViewUsage', params, 'POST')
+        ret = self._do_request('ViewInstanceUsageReport', params, 'POST')
         return ret
 

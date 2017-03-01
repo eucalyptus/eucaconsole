@@ -444,6 +444,8 @@ urls = [
     Route(name='reporting_monthly_usage', pattern='/reporting-api/monthlyusage'),
     Route(name='reporting_month_to_date_usage', pattern='/reporting-api/monthtodateusage'),
     Route(name='reporting_service_usage', pattern='/reporting-api/serviceusage'),
+    Route(name='reporting_instance_usage', pattern='/reporting-api/instanceusage'),
     # Views
+    Route(name='reporting_instance', pattern='/reports/instance-usage'),
     Route(name='reporting', pattern='/reporting*subpath'),
 ]

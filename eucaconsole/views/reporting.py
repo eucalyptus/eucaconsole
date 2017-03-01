@@ -38,7 +38,9 @@ from pyramid.view import view_config
 import pandas
 
 from ..i18n import _
+from ..forms import ChoicesManager
 from ..views import BaseView, JSONResponse
+from ..models.auth import RegionCache
 
 UNITS_LOOKUP = [
     {'hint': 'Bytes', 'units': 'GB'},
@@ -64,6 +66,22 @@ class ReportingView(BaseView):
         ret = conn.view_billing()
         prefs = ret.get('billingSettings')
         return prefs.get('detailedBillingEnabled')
+
+    @view_config(route_name='reporting_instance', renderer='../templates/reporting/instance_usage.pt')
+    def reporting_instance_usage(self):
+        vmtypes = ChoicesManager(self.get_connection()).instance_types(self.cloud_type)
+        facets = [
+            {'name': 'instance_type', 'label': _(u'Instance type'),
+                'options': [{'key': choice[0], 'label':choice[1]} for choice in vmtypes]},
+            {'name': 'platform', 'label': _(u'Platform'),
+                'options': [{'key': 'linux', 'label': _(u'Linux')}, {'key': 'windows', 'label': _(u'Windows')}]}
+        ]
+        regions = RegionCache(None).regions()
+        if len(regions) > 1:
+            facets.append({'name': 'region', 'label': _(u'Region'),
+                           'options': [{'key': choice[0], 'label':choice[1]} for choice in regions]})
+        
+        return dict(facets=BaseView.escape_json(json.dumps(facets)))
 
     @view_config(route_name='reporting', renderer='../templates/reporting/reporting.pt')
     def queues_landing(self):
@@ -190,6 +208,7 @@ class ReportingAPIView(BaseView):
         service = self.request.params.get('service')
         usage_type = self.request.params.get('usageType')
         granularity = self.request.params.get('granularity')
+        # TODO: refactor time period -> start/end time for re-use in this and 2 other views
         time_period = self.request.params.get('timePeriod')
         end_time = datetime.datetime.utcnow()
         if time_period == 'lastWeek':
@@ -197,8 +216,8 @@ class ReportingAPIView(BaseView):
         elif time_period == 'lastMonth':
             start_time = end_time - relativedelta(months=1)
         else:
-             start_time = self.request.params.get('fromTime')
-             end_time = self.request.params.get('toTime')
+            start_time = self.request.params.get('fromTime')
+            end_time = self.request.params.get('toTime')
         # use "ViewUsage" call to fetch usage information
         ret = self.conn.view_usage(service, usage_type, 'all', start_time, end_time, report_granularity=granularity)
         filename = 'EucalyptusServiceUsage-{0}-{1}-{2}.csv'.format(
@@ -208,6 +227,60 @@ class ReportingAPIView(BaseView):
         )
         response = Response(content_type='text/csv')
         response.text = ret.get('data')
+        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        response.cache_control = 'no-store'
+        response.pragma = 'no-cache'
+        return response
+
+    @view_config(route_name='reporting_instance_usage', renderer='json', request_method='GET', xhr=True)
+    def get_reporting_instance_usage(self):
+        conn = self.get_connection(conn_type='ec2reports')
+        granularity = self.request.params.get('granularity')
+        time_period = self.request.params.get('timePeriod')
+        group_by = self.request.params.get('groupBy')
+        end_time = datetime.datetime.utcnow()
+        if time_period == 'lastWeek':
+            start_time = end_time - datetime.timedelta(days=7)
+        elif time_period == 'lastMonth':
+            start_time = end_time - datetime.timedelta(month=1)
+        else:
+            start_time = self.request.params.get('fromTime')
+            end_time = self.request.params.get('toTime')
+        # use "ViewInstanceUsageReport" call to fetch usage information
+        ret = conn.view_instance_usage_report(start_time, end_time, {}, group_by, report_granularity=granularity)
+        csv = ret.get('usageReport')
+        data = pandas.read_csv(io.StringIO(csv), engine='c')
+        values = []
+        for item in data.itertuples():
+            values.append({'x': item[1], 'y': item[3]})
+        results = [{'key': group_by, 'values': values}]
+        return dict(results=results)
+
+    @view_config(route_name='reporting_instance_usage', request_method='POST')
+    def get_reporting_instance_usage_file(self):
+        conn = self.get_connection(conn_type='ec2reports')
+        if not self.is_csrf_valid():
+            return JSONResponse(status=400, message="missing CSRF token")
+        granularity = self.request.params.get('granularity')
+        time_period = self.request.params.get('timePeriod')
+        group_by = self.request.params.get('groupBy')
+        end_time = datetime.datetime.utcnow()
+        if time_period == 'lastWeek':
+            start_time = end_time - datetime.timedelta(days=7)
+        elif time_period == 'lastMonth':
+            start_time = end_time - datetime.timedelta(month=1)
+        else:
+            start_time = self.request.params.get('fromTime')
+            end_time = self.request.params.get('toTime')
+        # use "ViewInstanceUsageReport" call to fetch usage information
+        ret = conn.view_instance_usage_report(start_time, end_time, {}, group_by, report_granularity=granularity)
+        filename = 'EucalyptusInstanceUsage-{0}-{1}-{2}.csv'.format(
+            self.request.session.get('account'),
+            '',
+            ''
+        )
+        response = Response(content_type='text/csv')
+        response.text = ret.get('usageReport')
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
         response.cache_control = 'no-store'
         response.pragma = 'no-cache'
