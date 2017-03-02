@@ -189,7 +189,7 @@
         <div id="bucket-policy-delete-confirmation-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Delete Bucket Policy</h3>
             <div>&nbsp;</div>
-            <form id="cors-deletion-form" method="post"
+            <form id="policy-deletion-form" method="post"
                   ng-submit="deleteBucketPolicy($event)">
                 ${structure:policy_deletion_form['csrf_token']}
                 <p>
