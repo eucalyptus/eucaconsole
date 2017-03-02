@@ -1027,7 +1027,13 @@ class BucketPolicyView(BaseView, BucketMixin):
             return JSONResponse(status=400, message=_('Missing CSRF token'))
         policy_json = params.get('bucket_policy_json')
         if self.bucket and policy_json:
-            valid = True  # TODO: Determine if policy JSON is valid
+            error_msg = ''
+            valid = True
+            try:
+                json.loads(policy_json)
+            except ValueError as err:
+                valid = False
+                error_msg = '{0} {1}'.format(_('Invalid policy:'), err)
             if valid:
                 self.log_request(u"Setting bucket policy for {0}".format(self.bucket.name))
                 with boto_error_handler(self.request):
@@ -1035,7 +1041,7 @@ class BucketPolicyView(BaseView, BucketMixin):
                 msg = u'{0} {1}'.format(_(u'Successfully set bucket policy for '), self.bucket.name)
                 return JSONResponse(status=200, message=msg)
             else:
-                return JSONResponse(status=400, message=_('Invalid policy'))
+                return JSONResponse(status=400, message=error_msg)
 
     @view_config(route_name='bucket_policy', renderer='json', request_method='DELETE', xhr=True)
     def bucket_delete_policy(self):
