@@ -196,7 +196,7 @@
                     <span i18n:translate="">Are you sure you want to delete the bucket policy for</span>
                     <strong>${bucket_name}</strong><span i18n:translate="">?</span>
                 </p>
-                <p i18n:translate="">
+                <p i18n:translate="" tal:condition="layout.cloud_type == 'aws'">
                     NOTE: Bucket policy deletion may take up to a minute.
                 </p>
                 <p class="policy-error-wrapper">{{ deletePolicyError }}</p>

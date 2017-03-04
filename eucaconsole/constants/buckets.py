@@ -42,16 +42,16 @@ SAMPLE_CORS_CONFIGURATION = """
 
 SAMPLE_BUCKET_POLICY_TEMPLATE = """
 {
-  "Version":"2012-10-17",
   "Statement":[
     {
-      "Sid":"SampleBucketPolicy",
+      "Action":["s3:PutObject"],
       "Effect":"Allow",
       "Principal": {"AWS":"${account_id}"},
-      "Action":["s3:PutObject"],
-      "Resource":["arn:aws:s3:::${bucket_name}/*"]
+      "Resource":["arn:aws:s3:::${bucket_name}/*"],
+      "Sid":"SampleBucketPolicy"
     }
-  ]
+  ],
+  "Version":"2012-10-17"
 }
 """
 
