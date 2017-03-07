@@ -135,7 +135,17 @@ METRIC_TITLE_MAPPING = {
     'GroupMinSize': _(u'Group min size'),
     'GroupPendingInstances': _(u'Group pending instances'),
     'GroupTerminatingInstances': _(u'Group terminating instances'),
-    'GroupTotalInstances': _(u'Group total instances')
+    'GroupTotalInstances': _(u'Group total instances'),
+    # SQS Metrics
+    'NumberOfMessagesDeleted': _(u'Number of messages deleted'),
+    'NumberOfMessagesSent': _(u'Number of messages sent'),
+    'NumberOfMessagesReceived': _(u'Number of messages received'),
+    'NumberOfEmptyReceives': _(u'Number of empty receives'),
+    'ApproximateNumberOfMessagesDelayed': _(u'Approximate number of messages delayed'),
+    'ApproximateNumberOfMessagesVisible': _(u'Approximate number of messages visible'),
+    'ApproximateNumberOfMessagesNotVisible': _(u'Approximate number of messages not visible'),
+    'ApproximateAgeOfOldestMessage': _(u'Approximate age of oldest message'),
+    'SentMessageSize': _(u'Sent message size')
 }
 
 # Statistic choices for CloudWatch charts
