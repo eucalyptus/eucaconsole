@@ -184,5 +184,5 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 table.table { width: 100%; }
 
-.alarm-history-details-modal pre { margin: 1rem 0 0; font-size: 0.9rem; height: 75vh; overflow: scroll; }
+.alarm-history-details-modal pre { margin: 1rem 0 0; font-size: 0.9rem; height: 75vh; overflow: scroll; border-width: 1px; border-style: solid; }
 .alarm-history-details-modal .button { margin: 2rem 0 0; }
