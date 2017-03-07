@@ -52,7 +52,7 @@ RESOURCE_LABELS = {
     'AvailabilityZone': _(u'Availability zone'),
 }
 
-STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3']
+STD_NAMESPACES = ['AWS/EC2', 'AWS/EBS', 'AWS/ELB', 'AWS/AutoScaling', 'AWS/S3', 'AWS/SQS']
 
 METRIC_CATEGORIES = [
     dict(
@@ -122,6 +122,12 @@ METRIC_CATEGORIES = [
         namespace='AWS/ELB',
     ),
     dict(
+        name='sqsall',
+        label=_(u'SQS - Queue Metrics'),
+        resource=['QueueName'],
+        namespace='AWS/SQS',
+    ),
+    dict(
         name='custom',
         label=_(u'Custom metrics'),
         namespace=None,
@@ -170,6 +176,18 @@ METRICS_FOR_VOLUME = [
     'VolumeWriteOps'
 ]
 
+METRICS_FOR_QUEUE = [
+    'NumberOfMessagesDeleted',
+    'NumberOfMessagesSent',
+    'NumberOfMessagesReceived',
+    'NumberOfEmptyReceives',
+    'ApproximateNumberOfMessagesDelayed',
+    'ApproximateNumberOfMessagesVisible',
+    'ApproximateNumberOfMessagesNotVisible',
+    'ApproximateAgeOfOldestMessage',
+    'SentMessageSize'
+]
+
 
 class CloudWatchMetricsView(LandingPageView):
     """CloudWatch Metrics landing page view"""
@@ -204,6 +222,9 @@ class CloudWatchMetricsView(LandingPageView):
             ]},
             {'name': 'metric_name', 'label': _(u'Volume metric'), 'options': [
                 {'key': metric, 'label': METRIC_TITLE_MAPPING[metric]} for metric in METRICS_FOR_VOLUME
+            ]},
+            {'name': 'metric_name', 'label': _(u'Queue metric'), 'options': [
+                {'key': metric, 'label': METRIC_TITLE_MAPPING[metric]} for metric in METRICS_FOR_QUEUE
             ]}
         ]
         self.render_dict = dict(
