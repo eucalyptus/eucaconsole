@@ -1030,7 +1030,7 @@ textarea.hidden {
             .active-result {
                 &.highlighted {
                     color: $hpe-black;
-                    background: $hpe-hovergray none;
+                    background: $hpe-backgroundgray none;
                 }
             }
         }
@@ -1475,7 +1475,7 @@ span.euca-nav-size {
 }
 ul.off-canvas-list li{
     a:hover {
-        background-color: $hpe-hovergray !important;
+        background-color: $hpe-backgroundgray !important;
         color: $hpe-gray !important;
     }
 }
@@ -1510,7 +1510,7 @@ ul.resources-nav {
             color: white !important;
         }
         &:hover {
-            background-color: $hpe-hovergray;
+            background-color: $hpe-backgroundgray;
             color: $hpe-gray;
         }
         span {

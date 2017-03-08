@@ -16,7 +16,7 @@
                 display: block;
                 border-bottom: 1px solid $hpe-lightgray;
                 &.selected {
-                    background-color: $hpe-hovergray;
+                    background-color: $hpe-backgroundgray;
                 }
                 &.selected:hover {
                     cursor: inherit;

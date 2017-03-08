@@ -155,7 +155,7 @@ $alarm-status-color-ok: $hpe-green;
 
 // Tile/grid view
 .tile {
-    box-shadow: 0 2px 2px 0 $hpe-hovergray;
+    box-shadow: 0 2px 2px 0 $hpe-backgroundgray;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
@@ -178,7 +178,7 @@ $alarm-status-color-ok: $hpe-green;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
-                background-color: $hpe-hovergray;
+                background-color: $hpe-backgroundgray;
                 text-decoration: none;
             }
         }
@@ -556,7 +556,7 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 .euca-split {
-    border-color: $hpe-hovergray !important;
+    border-color: $hpe-backgroundgray !important;
     width: 2.0rem !important;
 }
 

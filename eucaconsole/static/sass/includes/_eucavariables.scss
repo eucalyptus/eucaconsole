@@ -42,7 +42,6 @@ $hpe-lightgray: #cccccc;
 $hpe-extralightgray: #e6e7e8;
 $hpe-gray-40: #b3b3b3;
 $hpe-backgroundgray: #F2F2F2;
-$hpe-hovergray: #F0F0F0;
 $hpe-disabledgray: #EDEDED;
 $hpe-disabledgreen: #CCEEE6;
 $hpe-green: #01a982;
@@ -56,8 +55,6 @@ $hpe-gray-65: #5a5a5a;
 $hpe-blue: #007dba;
 $hpe-gold: #e6a818;
 
-// Forms
-$euca-input-field-height: 2rem;
 
 // Text
 $euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;
@@ -68,17 +65,6 @@ $euca-s-font-size: 14px;
 $euca-font-size: 16px;
 $euca-l-font-size: 18px;
 $euca-xl-font-size: 24px;
-$euca-text-color: $hpe-black;
-$euca-link-color: $hpe-green;
-
-// Prevent Google Fonts API call
-$include-open-sans: false;
-
-// Dimensions
-$euca-footer-height: 80px;
-
-// Misc decorations
-$euca-box-shadow: 0 2px 2px 0 $hpe-hovergray;
 
 
 // ####################
@@ -189,7 +175,7 @@ $alarm-status-color-ok: green;
 }
 
 @mixin button-shadow-mixin {
-    box-shadow: 1px 1px 5px 0 $hpe-hovergray;
+    box-shadow: 1px 1px 5px 0 $hpe-backgroundgray;
 }
 
 @mixin disabled-button-mixin {
@@ -231,7 +217,7 @@ $alarm-status-color-ok: green;
 
 @mixin dropdown-shadow-mixin {
     border-color: $hpe-lightgray;
-    box-shadow: 2px 2px 5px $hpe-hovergray;
+    box-shadow: 2px 2px 5px $hpe-backgroundgray;
 }
 
 @mixin helptext-icon-position-mixin {
