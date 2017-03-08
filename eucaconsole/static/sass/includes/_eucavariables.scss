@@ -34,11 +34,14 @@ $experimental: false;
 $euca-extrasmall-breakpoint: 480px;
 $euca-contentwrap-width: 1040px;
 
-// HPE Colors
+// Colors
 $hpe-black: #333333;
 $hpe-gray: #666666;
+$hpe-darkgray: #444444;
 $hpe-lightgray: #cccccc;
-$hpe-backgroundgray: #F2F2F2; 
+$hpe-extralightgray: #e6e7e8;
+$hpe-gray-40: #b3b3b3;
+$hpe-backgroundgray: #F2F2F2;
 $hpe-hovergray: #F0F0F0;
 $hpe-disabledgray: #EDEDED;
 $hpe-disabledgreen: #CCEEE6;
@@ -48,51 +51,10 @@ $hpe-turq: #2ad2c9;
 $hpe-purple: #614767;
 $hpe-bronze: #80746E;
 $hpe-steel: #5F7A76;
-$hpe-orange: #FF8D6D;
-
-// Colors
-$euca-darkblue: #03405f;
-$euca-extralightblue: #ecf4f7;
-$euca-notificationblue: #40a8c6;
-$euca-orange: #f3901d;
-
-$euca-green: #8cc63e;
-$euca-lightgreen: #8dc640;
-$euca-extralightgreen: #eef7e3;
-$euca-darkgreen: #468400;
-
-$euca-grey: #6a737b;
-$euca-darkgrey: #444;
-$euca-lightgrey: #ccc;
-$euca-extralightgrey: #e6e7e8;
-
-$euca-turquoise: #009e93;
-$euca-olive: #7a853b;
-
-$aws-orange: #ff9900;
-
-$euca-validation-error-color: darkred;
-$euca-validation-input-bgcolor: lighten(lightpink, 10%);
-
-// HP accessible palette styles
-$hp-accessible-blue: #007dba;
-$hp-hover-blue: #006699;
-$hp-hover-orange: #c1401a;
-$hp-gray-65: #5a5a5a;
-$hp-gray-40: #b3b3b3;
-$hp-gray-20: #cccccc;
-$hp-gray-5: #f2f2f2;
-$hp-red: #ff0000;
-$hp-light-red: #f7d7d7;
-$hp-border-radius: 8px;
-
-// HP secondary styles 
-$hp-orange: #d7410b;
-$hp-green: #008424;
-$hp-purple: #822980;
-
-// Additional colors used with HP palette
-$hp-gold: #e6a818;
+$hpe-validation-input-bgcolor: lighten(lightpink, 10%);
+$hpe-gray-65: #5a5a5a;
+$hpe-blue: #007dba;
+$hpe-gold: #e6a818;
 
 // Forms
 $euca-input-field-height: 2rem;
@@ -204,8 +166,8 @@ $tooltip-padding: rem-calc(5);
 
 // Alarm status colors
 $alarm-status-color-alarm: darkred;
-$alarm-status-color-insufficient-data: $hp-gray-65;
-$alarm-status-color-ok: $hp-green;
+$alarm-status-color-insufficient-data: $hpe-gray-65;
+$alarm-status-color-ok: green;
 
 // Mixins
 // Text overflow (e.g. for handling long resource names)
@@ -283,7 +245,7 @@ $alarm-status-color-ok: $hp-green;
 @mixin validation-error-mixin {
     margin-bottom: 6px;
     background-color: transparent;
-    color: $euca-validation-error-color;
+    color: darkred;
     font-weight: bold;
     padding-left: 0;
     font-style: normal;
