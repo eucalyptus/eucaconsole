@@ -452,9 +452,9 @@ a.circle {
             }
         }
         &.warning {
-            border: 2px solid $hp-gold;
+            border: 2px solid $hpe-gold;
             .icon {
-                background-color: $hp-gold;
+                background-color: $hpe-gold;
                 span:before {
                     content: "\26A0"
                 }
@@ -812,7 +812,7 @@ form {
     }
     .cancel-link {
         margin-left: 2rem;
-        color: $euca-grey;
+        color: $hpe-gray;
         &:hover {
             color: $hpe-green;
         }
@@ -838,7 +838,7 @@ form {
     .error .chosen-container .chosen-single,
     .ng-invalid.ng-touched {
         border-color: darkred;
-        background: $euca-validation-input-bgcolor;
+        background: $hpe-validation-input-bgcolor;
     }
 }
 
@@ -945,7 +945,7 @@ form .controls-wrapper > [class*='small-'] label {
     }
     input, select {
         border: 1px solid darkred;
-        background-color: $euca-validation-input-bgcolor;
+        background-color: $hpe-validation-input-bgcolor;
     }
     small.error {
         @include validation-error-mixin;
@@ -1261,15 +1261,15 @@ $btn-group-radius: 10px;
             padding: 0.2rem 1.5rem 0.3rem 1.5rem;
             border-collapse: collapse;
             margin: 0;
-            border: 1px solid $hp-gray-20;
+            border: 1px solid $hpe-lightgray;
             font-weight: bold;
-            color: $hp-gray-65;
+            color: $hpe-gray-65;
             &:hover {
-                color: $hp-accessible-blue;
+                color: $hpe-blue;
             }
             &.active {
                 color: white;
-                background-color: $hp-accessible-blue;
+                background-color: $hpe-blue;
             }
             &:first-child {
                 border-top-left-radius: $btn-group-radius;
@@ -1589,7 +1589,7 @@ ul.bullet-list {
         font-size: 0.9rem;
         content: '\f138';
         margin: 0 5px 0 -15px;
-        color: $hp-accessible-blue;
+        color: $hpe-blue;
     }
 }
 
