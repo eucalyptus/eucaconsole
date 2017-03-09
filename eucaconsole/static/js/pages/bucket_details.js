@@ -9,7 +9,7 @@
 /* Bucket details page includes the S3 Sharing Panel */
 angular.module('BucketDetailsPage',
     ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'BucketPolicyServiceModule', 'TagEditorModule', 'ModalModule'])
-    .controller('BucketDetailsPageCtrl', function ($scope, $rootScope, $http, eucaHandleErrorS3,
+    .controller('BucketDetailsPageCtrl', function ($scope, $rootScope, $http, $timeout, eucaHandleErrorS3,
                                                    eucaUnescapeJson, CorsService, BucketPolicyService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
@@ -76,9 +76,7 @@ angular.module('BucketDetailsPage',
             $scope.policyError = '';
             var csrfToken = angular.element('#csrf_token').val();
             var policyTextarea = angular.element('#policy-textarea');
-            // Fall back to standard textarea in cases where CodeMirror fails to initialize (i.e. Angular 1.5)
-            var policyValue = $scope.policyCodeEditor && $scope.policyCodeEditor.getValue() || policyTextarea.val();
-            BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, policyValue)
+            BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, $scope.policyCodeEditor.getValue())
                 .then(function success(response) {
                     $scope.savingBucketPolicy = false;
                     $scope.hasBucketPolicy = true;
@@ -190,6 +188,29 @@ angular.module('BucketDetailsPage',
         $rootScope.$on('s3:corsConfigSaved', function () {
             $scope.hasCorsConfig = true;
         });
+        $scope.$on('modal:open', function ($event, modalName) {
+            if (modalName === 'corsConfigModal') {
+                // Initialize CodeMirror for CORS XML textarea
+                $timeout(function () {  // Timeout required to allow CORS textarea to be visible
+                    var corsTextarea = document.getElementById('cors-textarea');
+                    $('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
+                    if (corsTextarea !== null) {
+                        // Use rootScope to set codeEditor to avoid $scope race condition with directive
+                        $rootScope.codeEditor = CodeMirror.fromTextArea(corsTextarea, {
+                            mode: "xml",
+                            lineWrapping: true,
+                            styleActiveLine: true,
+                            autoCloseTags: true,
+                            lineNumbers: true
+                        });
+                    }
+                    // Reset to sample CORS config when re-adding post-deletion
+                    if (!$scope.hasCorsConfig && !!$rootScope.codeEditor) {
+                         $rootScope.codeEditor.setValue($scope.sampleCorsConfig);
+                    }
+                }, 300);
+            }
+        });
         // Receive postMessage from file upload window, refreshing list when file upload completes
         window.addEventListener('message', function (event) {
             if (event.data === 's3:fileUploaded') {
@@ -220,10 +241,7 @@ angular.module('BucketDetailsPage',
                         $scope.savingCorsConfig = true;
                         $scope.corsError = '';
                         var csrfToken = angular.element('#csrf_token').val();
-                        var corsTextarea = angular.element('#cors-textarea');
-                        // Fall back to standard textarea in cases where CodeMirror fails to initialize
-                        var corsConfigValue = $scope.codeEditor && $scope.codeEditor.getValue() || corsTextarea.val();
-                        CorsService.setCorsConfig($scope.bucketName, csrfToken, corsConfigValue)
+                        CorsService.setCorsConfig($scope.bucketName, csrfToken, $rootScope.codeEditor.getValue())
                             .then(function success (response) {
                                 $scope.savingCorsConfig = false;
                                 $rootScope.$broadcast('s3:corsConfigSaved');
@@ -234,27 +252,6 @@ angular.module('BucketDetailsPage',
                                 $scope.savingCorsConfig = false;
                             });
                     };
-                    // FIXME: modal:open doesn't fire in Angular 1.5
-                    $scope.$on('modal:open', function ($event, modalName) {
-                        if (modalName === 'corsConfigModal') {
-                            // Initialize CodeMirror for CORS XML textarea
-                            var corsTextarea = document.getElementById('cors-textarea');
-                            $('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
-                            if (corsTextarea !== null) {
-                                $scope.codeEditor = CodeMirror.fromTextArea(corsTextarea, {
-                                    mode: "xml",
-                                    lineWrapping: true,
-                                    styleActiveLine: true,
-                                    autoCloseTags: true,
-                                    lineNumbers: true
-                                });
-                            }
-                            // Reset to sample CORS config when re-adding post-deletion
-                            if (!$scope.hasCorsConfig && !!$scope.codeEditor) {
-                                 $scope.codeEditor.setValue($scope.sampleCorsConfig);
-                            }
-                        }
-                    });
                 }
             ]
         };
