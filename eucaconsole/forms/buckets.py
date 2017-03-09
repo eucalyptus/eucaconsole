@@ -244,5 +244,5 @@ class CorsDeletionForm(BaseSecureForm):
 
 
 class PolicyDeletionForm(BaseSecureForm):
-    """S3 Bucket CORS Deletion Confirmation form"""
+    """S3 Bucket Policy Deletion Confirmation form"""
     pass

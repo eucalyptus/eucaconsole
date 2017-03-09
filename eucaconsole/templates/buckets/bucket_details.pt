@@ -129,7 +129,7 @@
         ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form, delete_form=delete_form)}
         ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
         <!--! Modal dialog for viewing/editing CORS configuration -->
-        <div class="modal large cors-config-modal" modal="corsConfigModal">
+        <div class="modal large" modal="corsConfigModal" id="cors-config-modal">
             <div cors-config-modal=""
                  template="${request.route_path('render_template', subpath='dialogs/bucket_cors_configuration_dialog')}"
                  bucket-name="${bucket_name}"

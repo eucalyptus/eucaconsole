@@ -24,7 +24,7 @@
 }
 
 // CORS Configuration and Bucket Policy modal dialogs
-.cors-config-modal, #bucket-policy-modal {
+#cors-config-modal, #bucket-policy-modal {
     textarea {
         height: 12rem;
     }

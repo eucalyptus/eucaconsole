@@ -76,7 +76,7 @@ angular.module('BucketDetailsPage',
             $scope.policyError = '';
             var csrfToken = angular.element('#csrf_token').val();
             var policyTextarea = angular.element('#policy-textarea');
-            // Fall back to standard textarea in cases where CodeMirror fails to initialize
+            // Fall back to standard textarea in cases where CodeMirror fails to initialize (i.e. Angular 1.5)
             var policyValue = $scope.policyCodeEditor && $scope.policyCodeEditor.getValue() || policyTextarea.val();
             BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, policyValue)
                 .then(function success(response) {
