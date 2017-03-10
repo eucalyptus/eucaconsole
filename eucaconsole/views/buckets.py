@@ -30,6 +30,8 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 """
 from datetime import datetime
 from itertools import chain
+from string import Template
+
 import mimetypes
 import simplejson as json
 import urllib
@@ -47,14 +49,15 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound, HTTPBadRequest
 from pyramid.settings import asbool
 from pyramid.view import view_config
 
-from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA, SAMPLE_CORS_CONFIGURATION
+from ..constants.buckets import CORS_XML_RELAXNG_SCHEMA, SAMPLE_CORS_CONFIGURATION, SAMPLE_BUCKET_POLICY_TEMPLATE
 from ..forms.buckets import (
     BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm,
     MetadataForm, CreateBucketForm, CreateFolderForm, BucketDeleteForm, BucketUploadForm,
-    BucketItemSharedURLForm, CorsConfigurationForm, CorsDeletionForm)
+    BucketItemSharedURLForm, CorsConfigurationForm, CorsDeletionForm, PolicyDeletionForm)
 from ..i18n import _
 from ..views import BaseView, LandingPageView, JSONResponse, TaggedItemView
 from ..models import Notification
+from ..models.auth import User
 from . import boto_error_handler
 from .. import utils
 
@@ -686,8 +689,11 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
     def __init__(self, request, **kwargs):
         super(BucketDetailsView, self).__init__(request, **kwargs)
         self.title_parts = [_(u'Bucket'), request.matchdict.get('name'), _(u'Details')]
+        self.ec2_conn = self.get_connection()
         self.s3_conn = self.get_connection(conn_type='s3')
         self.cors_configuration_xml = None
+        self.bucket_policy_json = None
+        self.sample_bucket_policy = ''
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             self.tagged_obj = self.bucket
@@ -697,6 +703,8 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
                 self.cors_configuration_xml = self.get_cors_configuration(self.bucket, xml=True)
                 if self.cors_configuration_xml:
                     self.cors_configuration_xml = self.pretty_print_xml(self.cors_configuration_xml)
+                self.bucket_policy_json = self.get_bucket_policy(self.bucket)
+                self.sample_bucket_policy = self.get_sample_bucket_policy()
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
@@ -704,6 +712,7 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
         self.create_folder_form = CreateFolderForm(request, formdata=self.request.params or None)
         self.cors_configuration_form = CorsConfigurationForm(request, formdata=self.request.params or None)
         self.cors_deletion_form = CorsDeletionForm(request, formdata=self.request.params or None)
+        self.policy_deletion_form = PolicyDeletionForm(request, formdata=self.request.params or None)
         self.versioning_status = self.get_versioning_status(self.bucket)
         if self.bucket is None:
             self.render_dict = dict()
@@ -728,8 +737,11 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
                 logging_status=self.get_logging_status(),
                 cors_configuration_form=self.cors_configuration_form,
                 cors_deletion_form=self.cors_deletion_form,
+                policy_deletion_form=self.policy_deletion_form,
                 cors_configuration_xml=self.cors_configuration_xml,
                 sample_cors_configuration=SAMPLE_CORS_CONFIGURATION,
+                sample_bucket_policy=self.sample_bucket_policy,
+                bucket_policy_json=self.bucket_policy_json,
                 bucket_contents_url=self.request.route_path('bucket_contents', name=self.bucket.name, subpath=''),
                 controller_options_json=self.get_controller_options_json(),
                 delete_cors_config_url=self.request.route_path('bucket_cors_configuration', name=self.bucket.name),
@@ -778,6 +790,8 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
         return BaseView.escape_json(json.dumps({
             'bucket_name': self.bucket.name,
             'cors_config_xml': self.cors_configuration_xml,
+            'bucket_policy_json': self.bucket_policy_json,
+            'sample_bucket_policy': self.sample_bucket_policy,
             'bucket_objects_count_url': self.request.route_path(
                 'bucket_objects_count_versioning_json', name=self.bucket.name),
         }))
@@ -854,6 +868,28 @@ class BucketDetailsView(TaggedItemView, BucketMixin):
     def pretty_print_xml(xml_string=''):
         xml = etree.fromstring(xml_string)
         return etree.tostring(xml, pretty_print=True)
+
+    @classmethod
+    def get_bucket_policy(cls, bucket):
+        try:
+            policy = bucket.get_policy()
+            if policy:
+                return cls.pretty_print_json(policy)
+        except S3ResponseError as err:
+            if err.error_code == 'NoSuchBucketPolicy':
+                return None  # Bucket policy is empty
+            else:
+                raise  # Re-raise exception to handle session timeouts
+
+    @staticmethod
+    def pretty_print_json(json_string='', indent=2):
+        parsed_json = json.loads(json_string)
+        return json.dumps(parsed_json, indent=indent, sort_keys=True)
+
+    def get_sample_bucket_policy(self):
+        template = Template(SAMPLE_BUCKET_POLICY_TEMPLATE)
+        account_id = User.get_account_id(self.ec2_conn, self.request)
+        return template.safe_substitute(bucket_name=self.bucket.name, account_id=account_id).strip()
 
     @staticmethod
     def update_acl(request, bucket_object=None):
@@ -970,6 +1006,57 @@ class BucketCorsConfigurationView(BaseView, BucketMixin):
             return JSONResponse(status=200, message=msg)
         else:
             error = '{0} {1}'.format(_('Unable to delete CORS configuration for bucket'), self.bucket.name)
+            return JSONResponse(status=400, message=error)
+
+
+class BucketPolicyView(BaseView, BucketMixin):
+    """XHR Views for Bucket Policy"""
+
+    def __init__(self, request, **kwargs):
+        super(BucketPolicyView, self).__init__(request, **kwargs)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(request):
+            if self.s3_conn:
+                self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+
+    @view_config(route_name='bucket_policy', renderer='json', request_method='PUT', xhr=True)
+    def bucket_set_policy(self):
+        params = json.loads(self.request.body)
+        csrf_token = params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        policy_json = params.get('bucket_policy_json')
+        if self.bucket and policy_json:
+            error_msg = ''
+            valid = True
+            try:
+                json.loads(policy_json)
+            except ValueError as err:
+                valid = False
+                error_msg = '{0} {1}'.format(_('Invalid policy:'), err)
+            if valid:
+                self.log_request(u"Setting bucket policy for {0}".format(self.bucket.name))
+                with boto_error_handler(self.request):
+                    self.bucket.set_policy(policy_json)
+                msg = u'{0} {1}'.format(_(u'Successfully set bucket policy for '), self.bucket.name)
+                return JSONResponse(status=200, message=msg)
+            else:
+                return JSONResponse(status=400, message=error_msg)
+
+    @view_config(route_name='bucket_policy', renderer='json', request_method='DELETE', xhr=True)
+    def bucket_delete_policy(self):
+        csrf_token = self.request.params.get('csrf_token')
+        if not self.is_csrf_valid(token=csrf_token):
+            return JSONResponse(status=400, message=_('Missing CSRF token'))
+        if self.bucket:
+            with boto_error_handler(self.request):
+                self.log_request(u"Deleting policy for bucket {0}".format(self.bucket.name))
+                self.bucket.delete_policy()
+                msg = '{0} {1}'.format(_(u'Successfully deleted bucket policy for'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return JSONResponse(status=200, message=msg)
+        else:
+            error = '{0} {1}'.format(_('Unable to delete bucket policy for'), self.bucket.name)
             return JSONResponse(status=400, message=error)
 
 

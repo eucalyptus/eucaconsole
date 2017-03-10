@@ -9,7 +9,7 @@
     top: -1rem;
 }
 
-#existing-cors-config-wrapper{
+#existing-cors-config-wrapper, #existing-bucket-policy-wrapper {
     .icon {
         margin-right: 0.5rem;
         position: relative;
@@ -23,10 +23,10 @@
     }
 }
 
-// CORS Configuration modal dialog
-.cors-config-modal {
+// CORS Configuration and Bucket Policy modal dialogs
+#cors-config-modal, #bucket-policy-modal {
     textarea {
-        height: 10rem;
+        height: 12rem;
     }
     .CodeMirror {
         border: 1px solid #999;
@@ -34,10 +34,14 @@
         line-height: 1.1rem;
     }
 }
-.cors-error-wrapper {
+.cors-error-wrapper, .policy-error-wrapper {
     color: darkred;
 }
 
+#bucket-policy-section {
+    margin-bottom: 2rem;
+}
 
-// Overrides for CORS config modal positioning
+
+// Overrides for CORS config custom modal positioning
 @include modal-position(50px, fixed);

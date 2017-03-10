@@ -40,6 +40,21 @@ SAMPLE_CORS_CONFIGURATION = """
 </CORSConfiguration>
 """
 
+SAMPLE_BUCKET_POLICY_TEMPLATE = """
+{
+  "Statement":[
+    {
+      "Action":["s3:PutObject"],
+      "Effect":"Allow",
+      "Principal": {"AWS":"${account_id}"},
+      "Resource":["arn:aws:s3:::${bucket_name}/*"],
+      "Sid":"SampleBucketPolicy"
+    }
+  ],
+  "Version":"2012-10-17"
+}
+"""
+
 # CORS RelaxNG Schema Definition
 # See http://relaxng.org/tutorial-20011203.html
 # See http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
