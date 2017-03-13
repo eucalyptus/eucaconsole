@@ -19,7 +19,7 @@ table td input[type="checkbox"] {
 
 .chart-wrapper {
     background: #ffffff;
-    border: 1px solid $hp-gray-40;
+    border: 1px solid $hpe-gray-40;
     h6 {
         border: 0 none;
     }
@@ -109,7 +109,7 @@ div.absolute-grouping {
     .graph-close {
         float: right;
         padding: 0.35rem 0.5rem 0 0.5rem;
-        color: $hp-gray-65;
+        color: $hpe-gray-65;
         font-size: rem-calc(35);
         line-height: 0.5rem;
         font-weight: bold;
@@ -118,7 +118,7 @@ div.absolute-grouping {
     .metric-chart-menu {
         float: right;
         padding: 0 0.5rem 0 0.5rem;
-        color: $hp-gray-65;
+        color: $hpe-gray-65;
         cursor: pointer;
     }
     svg {

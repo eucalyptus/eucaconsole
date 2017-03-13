@@ -51,8 +51,8 @@ form[name="account-new-form"] {
       display: block;
     }
     .userinput.name {
-      border-color: $euca-validation-error-color;
-      background-color: $euca-validation-input-bgcolor;
+      border-color: darkred;
+      background-color: $hpe-validation-input-bgcolor;
     }
   }
   &.ng-valid-reserved {

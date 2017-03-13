@@ -39,7 +39,7 @@ form.alarm-update {
     select.dimensions-select {
         &.ng-invalid + div.chosen-container {
             border: 1px solid darkred;
-            background-color: $euca-validation-input-bgcolor;
+            background-color: $hpe-validation-input-bgcolor;
         }
     }
 

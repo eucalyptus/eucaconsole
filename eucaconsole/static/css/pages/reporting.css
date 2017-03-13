@@ -29,7 +29,7 @@ select { width: 12rem; }
 
 .active-tags select { width: 40rem; }
 
-.cancel-link { margin-left: 2rem; color: #6a737b; }
+.cancel-link { margin-left: 2rem; color: #666666; }
 .cancel-link:hover { color: #01a982; }
 
 form .error { font-size: small; display: none; }
