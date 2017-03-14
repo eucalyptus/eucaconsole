@@ -235,6 +235,14 @@ class SubnetForm(BaseSecureForm):
         self.public_ip_auto_assignment.help_text = self.public_ip_auto_assignment_help_text
 
 
+class CreateRouteTableForm(BaseSecureForm):
+    name_error_msg = _('Not a valid name')
+    route_table_name = StringField(label=_('Name'))
+
+    def __init__(self, request, **kwargs):
+        super(CreateRouteTableForm, self).__init__(request, **kwargs)
+
+
 class RouteTableForm(BaseSecureForm):
     """Form to update an existing route table"""
     name_error_msg = _('Not a valid name')
@@ -253,4 +261,35 @@ class RouteTableDeleteForm(BaseSecureForm):
 
 class RouteTableSetMainForm(BaseSecureForm):
     """Form to set route table as main one for VPC"""
+    pass
+
+
+class InternetGatewayForm(BaseSecureForm):
+    """Form to update an existing internet gateway"""
+    name_error_msg = _('Not a valid name')
+    name = TextEscapedField(label=_('Name'))
+
+    def __init__(self, request, internet_gateway=None, **kwargs):
+        super(InternetGatewayForm, self).__init__(request, **kwargs)
+        self.name.error_msg = self.name_error_msg
+        self.name.data = internet_gateway.tags.get('Name', '')
+
+
+class InternetGatewayDeleteForm(BaseSecureForm):
+    pass
+
+
+class InternetGatewayDetachForm(BaseSecureForm):
+    pass
+
+
+class CreateNatGatewayForm(BaseSecureForm):
+    eip_allocation_id = SelectField(label=_('Elastic IP address allocation ID'))
+
+    def __init__(self, request, ec2_conn=None, **kwargs):
+        super(CreateNatGatewayForm, self).__init__(request, **kwargs)
+        self.eip_allocation_id.choices = ChoicesManager(conn=ec2_conn).elastic_ip_allocation_ids()
+
+
+class NatGatewayDeleteForm(BaseSecureForm):
     pass

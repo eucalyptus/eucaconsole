@@ -1,4 +1,4 @@
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright (c) 2013-2017 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -23,27 +23,22 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
+import glob
+import os.path
 import re
+import subprocess
 import sys
 
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
 from setuptools import setup, find_packages
+import setuptools.command.install
 
 from eucaconsole import __version__
 
-DATA_DIR = '/usr/share/'
-
-py_version = sys.version_info[:2]
-
-
-if py_version < (2, 7):
-    # Workaround for https://bugs.python.org/issue15881
-    try:
-        import multiprocessing
-    except ImportError:
-        pass
+DATA_DIR = os.path.join(sys.prefix, 'share')
+LIBEXECDIR = os.path.join(sys.prefix, 'libexec')
+SYSCONFDIR = '/etc'
 
 
 def get_data_files(path, regex):
@@ -117,6 +112,34 @@ class sdist_with_git_version(sdist):
             new_ver.flush()
         os.rename(new_ver_name, old_ver_name)
 
+
+class InitsysInstallData(setuptools.command.install.install):
+    init_system = None  # magically populated by setuptools
+    user_options = setuptools.command.install.install.user_options + [
+        ('init-system=', None, ('init system to configure (systemd) [default: none]'))]
+
+    def initialize_options(self):
+        setuptools.command.install.install.initialize_options(self)
+        self.init_system = ''
+
+    def finalize_options(self):
+        setuptools.command.install.install.finalize_options(self)
+
+        if self.init_system == 'systemd':
+            system_unitdir = subprocess.check_output(
+                ('pkg-config', '--variable=systemdsystemunitdir', 'systemd')).strip()
+            if system_unitdir:
+                self.distribution.data_files.append(
+                    (system_unitdir, glob.glob('systemd/units/*')))
+            tmpfilesdir = subprocess.check_output(
+                ('pkg-config', '--variable=tmpfilesdir', 'systemd')).strip()
+            if tmpfilesdir:
+                self.distribution.data_files.append(
+                    (tmpfilesdir, glob.glob('systemd/tempfiles/*')))
+        # Update the file list
+        self.distribution.reinitialize_command('install_data', True)
+
+
 requires = [
     'beaker >= 1.5.4',
     'boto >= 2.43.0',
@@ -142,7 +165,7 @@ requires = [
     'simplejson >= 2.0.9',
     'WTForms >= 1.0.2',
     'eventlet >= 0.15.2',
-    'pandas == 0.17',
+    'pandas >= 0.17',
 ]
 
 i18n_extras = [
@@ -162,6 +185,7 @@ message_extractors = {'eucaconsole': [
     ('**.pt', 'lingua_xml', None),
 ]}
 
+
 setup(
     name='eucaconsole',
     version=__version__,
@@ -180,6 +204,7 @@ setup(
     packages=find_packages(),
     package_data={'eucaconsole': get_package_files('eucaconsole', r'^[static\|templates]\.*')},
     include_package_data=True,
+    scripts=('bin/eucaconsole',),
     zip_safe=False,
     install_requires=requires,
     tests_require=[],
@@ -188,12 +213,19 @@ setup(
         'dev': dev_extras,
     },
     message_extractors=message_extractors,
-    data_files=get_data_files("locale", r'.*\.mo$') + get_data_files("eucaconsole/cf-templates", r'.*\.json$'),
+    data_files=(get_data_files("locale", r'.*\.mo$') +
+                get_data_files("eucaconsole/cf-templates", r'.*\.json$') +
+                [(os.path.join(SYSCONFDIR, 'eucaconsole'),
+                  ['conf/console.ini', 'conf/nginx.conf'])] +
+                [(os.path.join(LIBEXECDIR, 'eucaconsole'),
+                  ['bin/eucaconsole-certgen',
+                   'bin/eucaconsole-keygen'])]),
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
     main = eucaconsole.config:main
     """,
     cmdclass={'build_py': build_py_with_git_version,
+              'install': InitsysInstallData,
               'sdist': sdist_with_git_version}
 )

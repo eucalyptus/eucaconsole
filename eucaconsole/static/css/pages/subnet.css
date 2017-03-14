@@ -19,11 +19,11 @@
 
 .status.shutting-down { background-color: #cccccc; }
 
-#name, #route_table, #public_ip_auto_assignment { width: 40%; }
+#name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id { width: 40%; }
 
 #subnet-instances-link { text-align: right; }
 
-@media only screen and (max-width: 40em) { #name, #route_table, #public_ip_auto_assignment { width: 100%; } }
+@media only screen and (max-width: 40em) { #name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id { width: 100%; } }
 table.instances { width: 100%; margin-bottom: 1rem; }
 
 #delete-subnet-modal #default-subnet-warning { color: red; }
@@ -31,3 +31,7 @@ table.instances { width: 100%; margin-bottom: 1rem; }
 #delete-subnet-modal button.button.warning:hover { outline-color: red; }
 #delete-subnet-modal .resources-list { margin-bottom: 1rem; }
 #delete-subnet-modal .resources-list .small-3 { text-align: right; font-weight: bold; }
+
+.existing-nat-gateways-notice { margin-bottom: 1rem; }
+
+#ipcount { margin-left: 1rem; }

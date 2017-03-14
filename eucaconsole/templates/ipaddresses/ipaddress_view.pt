@@ -43,17 +43,25 @@
                 </metal:block>
                 <div>
                     <div class="row controls-wrapper readonly" ng-cloak="">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Scope</label></div>
-                        <div class="large-10 small-8 columns value" ng-show="'${eip.domain}' == 'vpc'" i18n:translate="">VPC</div>
-                        <div class="large-10 small-8 columns value" ng-show="'${eip.domain}' == 'standard'" i18n:translate="">Standard</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Scope</label></div>
+                        <div class="large-9 small-8 columns value" ng-show="'${eip.domain}' == 'vpc'" i18n:translate="">VPC</div>
+                        <div class="large-9 small-8 columns value" ng-show="'${eip.domain}' == 'standard'" i18n:translate="">Standard</div>
                     </div>
-                    <div class="row controls-wrapper readonly" ng-cloak="">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Allocation ID</label></div>
-                        <div class="large-10 small-8 columns value" i18n:translate="">${eip.allocation_id}</div>
+                    <div class="row controls-wrapper readonly" tal:condition="eip.domain == 'vpc'">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Allocation ID</label></div>
+                        <div class="large-9 small-8 columns value" i18n:translate="">${eip.allocation_id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="eip.domain == 'vpc'">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Network Interface ID</label></div>
+                        <div class="large-9 small-8 columns value" i18n:translate="">${eip.network_interface_id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="eip.domain == 'vpc'">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Association ID</label></div>
+                        <div class="large-9 small-8 columns value" i18n:translate="">${eip.association_id}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Assigned to instance</label></div>
-                        <div class="large-10 small-8 columns value"> 
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Assigned to instance</label></div>
+                        <div class="large-9 small-8 columns value">
                             <a href="${request.route_path('instance_view', id=eip.instance_id)}" ng-non-bindable="">${eip.instance_name}</a>
                         </div>
                     </div>

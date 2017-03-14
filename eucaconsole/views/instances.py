@@ -718,6 +718,13 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     self.log_request(_(u"Starting instance {0}").format(self.instance.id))
                     self.instance.start()
 
+                # Update security groups if modified for a VPC instance
+                if self.instance.vpc_id:
+                    selected_security_groups = self.request.params.getall('security_groups')
+                    existing_security_groups = [group.id for group in self.instance.groups]
+                    if sorted(selected_security_groups) != sorted(existing_security_groups):
+                        self.conn.modify_instance_attribute(self.instance.id, 'groupSet', selected_security_groups)
+
                 msg = _(u'Successfully modified instance')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
@@ -1221,6 +1228,11 @@ class InstanceLaunchView(BaseInstanceView, BlockDeviceMappingItemView):
         """Handles the POST from the Launch instance wizard"""
         if self.launch_form.validate():
             tags_json = self.request.params.get('tags')
+            if self.image is None:
+                # image must no longer be available
+                msg = _(u'Selected image not available. It may have been recently removed or made private by another user.')
+                self.request.session.flash(msg, queue=Notification.ERROR)
+                return self.render_dict
             image_id = self.image.id
             num_instances = int(self.request.params.get('number', 1))
             key_name = self.unescape_braces(self.request.params.get('keypair', ''))

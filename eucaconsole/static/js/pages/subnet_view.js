@@ -6,7 +6,8 @@
  *
  */
 
-angular.module('SubnetDetailsPage', ['TagEditorModule', 'InstancesServiceModule', 'EucaConsoleUtils', 'smart-table'])
+angular.module('SubnetDetailsPage',
+    ['TagEditorModule', 'RouteTableEditorModule', 'InstancesServiceModule', 'EucaConsoleUtils', 'smart-table'])
     .controller('SubnetDetailsPageCtrl', function ($rootScope, $http, $timeout, InstancesService,
                                                    eucaUnescapeJson, eucaHandleError) {
         var vm = this;

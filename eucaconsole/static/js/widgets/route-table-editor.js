@@ -57,23 +57,38 @@ angular.module('RouteTableEditorModule', [])
                 $scope.addRoute = function ($event) {
                     $event.preventDefault();
 
+                    // Don't add route if either CIDR block or route target is empty
                     if ($scope.destinationCidrBlock === '' || $scope.routeTarget === '') {
                         return;
                     }
-
                     if ($scope.routeTableForm.$invalid || $scope.routeTableForm.$pristine) {
                         return;
                     }
 
+                    // Avoid adding route that conflicts with another destination CIDR block
+                    var existingCidrBlocks = $scope.routes.map(function (route) {
+                        return route.DestinationCidrBlock;
+                    });
+                    if (existingCidrBlocks.indexOf($scope.destinationCidrBlock) !== -1) {
+                        return;
+                    }
+
                     var route = {
-                        destination_cidr_block: $scope.destinationCidrBlock,
-                        state: 'active',
-                        target: $scope.routeTarget
+                        DestinationCidrBlock: $scope.destinationCidrBlock,
+                        State: 'active'
                     };
 
+                    if ($scope.routeTarget.indexOf('igw-') === 0) {
+                        route.GatewayId = $scope.routeTarget;
+                    } else if ($scope.routeTarget.indexOf('nat-') === 0) {
+                        route.NatGatewayId = $scope.routeTarget;
+                    } else if ($scope.routeTarget.indexOf('eni-') === 0) {
+                        route.NetworkInterfaceId = $scope.routeTarget;
+                    }
+
                     $scope.routes.push(route);
-                    resetForm();
                     $scope.routesUpdated = true;
+                    resetForm();
                 };
 
                 $scope.removeRoute = function ($index) {

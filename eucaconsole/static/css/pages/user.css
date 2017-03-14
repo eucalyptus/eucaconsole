@@ -87,7 +87,7 @@
 .gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
-.gridwrapper .table tr td .f-dropdown a { color: #444; }
+.gridwrapper .table tr td .f-dropdown a { color: #444444; }
 .gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
 .gridwrapper .table tr td .busy { font-size: 0.9rem; width: 0.9rem; height: 0.9rem; margin-left: 0.2rem; }
 .gridwrapper .table tr td a.alarm-status { color: white; }
@@ -176,7 +176,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .set-password { position: relative; padding-left: 35px; }
 
-.CodeMirror { border: 1px solid #ccc; min-height: 400px; }
+.CodeMirror { border: 1px solid #cccccc; min-height: 400px; }
 
 .content { width: 100%; padding-left: 10px; padding-right: 10px; }
 

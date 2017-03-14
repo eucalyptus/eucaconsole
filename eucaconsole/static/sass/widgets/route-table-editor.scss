@@ -14,12 +14,13 @@
 
   .route-entry {
     label {
-      display: inline-block;
+      text-align: left;
+      display: block;
       margin-right: 1rem;
+      margin-bottom: 2px;
     }
-    input, select {
-      display: inline-block;
-      width: 50%;
+    select {
+      max-width: 16rem;
     }
   }
 

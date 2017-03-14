@@ -47,6 +47,7 @@ angular.module('InstancePage', ['TagEditorModule', 'EucaConsoleUtils'])
             $('#file').on('change', $scope.getPassword);
         };
         $scope.activateWidget = function () {
+            $('#security_groups').chosen({'width': '80%', 'search_contains': true});
             $('#associate-ip-to-instance-modal').on('open.fndtn.reveal', function(){
                 var thisSelect = $(this).find('#ip_address');
                 thisSelect.chosen({'width': '80%', 'search_contains': true});

@@ -19,7 +19,7 @@
 
 .status.INSUFFICIENT_DATA { background-color: #5a5a5a; }
 
-.status.OK { background-color: #008424; }
+.status.OK { background-color: green; }
 
 .status { margin: 0 0.25rem 0 0.25rem; position: relative; bottom: 2px; }
 

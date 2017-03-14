@@ -28,14 +28,16 @@
 
 #bucket-section-title { position: relative; top: -1rem; }
 
-#existing-cors-config-wrapper .icon { margin-right: 0.5rem; position: relative; top: 2px; }
-#existing-cors-config-wrapper .icon.edit { font-size: 1.1rem; }
-#existing-cors-config-wrapper .icon.remove { top: 3px; }
+#existing-cors-config-wrapper .icon, #existing-bucket-policy-wrapper .icon { margin-right: 0.5rem; position: relative; top: 2px; }
+#existing-cors-config-wrapper .icon.edit, #existing-bucket-policy-wrapper .icon.edit { font-size: 1.1rem; }
+#existing-cors-config-wrapper .icon.remove, #existing-bucket-policy-wrapper .icon.remove { top: 3px; }
 
-.cors-config-modal textarea { height: 10rem; }
-.cors-config-modal .CodeMirror { border: 1px solid #999; font-size: 0.9rem; line-height: 1.1rem; }
+#cors-config-modal textarea, #bucket-policy-modal textarea { height: 12rem; }
+#cors-config-modal .CodeMirror, #bucket-policy-modal .CodeMirror { border: 1px solid #999; font-size: 0.9rem; line-height: 1.1rem; }
 
-.cors-error-wrapper { color: darkred; }
+.cors-error-wrapper, .policy-error-wrapper { color: darkred; }
+
+#bucket-policy-section { margin-bottom: 2rem; }
 
 @keyframes slidedown { from { opacity: 0; top: -1000px; }
   to { opacity: 1; top: 50px; } }

@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+CERT="/etc/pki/tls/certs/eucaconsole.crt"
+PRIVKEY="/etc/pki/tls/private/eucaconsole.key"
+PRIVKEY_BITS=4096
+SUBJECT="/CN=Eucalyptus Management Console"
+DURATION=365
+
+umask 077
+
+if [ ! -f "$PRIVKEY" ] || [ ! -s "$PRIVKEY" ] ; then
+    openssl genrsa -out "$PRIVKEY" "$PRIVKEY_BITS"
+    chmod 0600 "$PRIVKEY"
+fi
+
+if [ ! -f "$CERT" ] || [ ! -s "$CERT" ] ; then
+    openssl req -new -x509 -sha256 -days "$DURATION" -subj "$SUBJECT" \
+        -key "$PRIVKEY" -out "$CERT"
+    chmod 0644 "$CERT"
+fi

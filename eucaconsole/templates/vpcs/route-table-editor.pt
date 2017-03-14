@@ -16,15 +16,15 @@
         </thead>
         <tbody>
             <tr ng-repeat="route in routes">
-                <td>{{ route.destination_cidr_block }}</td>
-                <td>{{ route.gateway_id || route.instance_id || route.interface_id }}</td>
+                <td>{{ route.DestinationCidrBlock }}</td>
+                <td>{{ route.GatewayId || route.NatGatewayId || route.InstanceId || route.NetworkInterfaceId }}</td>
                 <td>
-                    <span class="label radius state {{ route.state }}">
-                        {{ route.state }}
+                    <span class="label radius state {{ route.State }}">
+                        {{ route.State }}
                     </span>
                 </td>
                 <td>
-                    <a ng-show="route.gateway_id !== 'local'" class="circle remove has-tip" ng-click="removeRoute($index)"
+                    <a ng-show="route.GatewayId !== 'local'" class="circle remove has-tip" ng-click="removeRoute($index)"
                        title="Remove route" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
                 </td>
             </tr>
@@ -34,7 +34,7 @@
         <strong i18n:translate="">Add another route:</strong>
     </div>
     <div class="row route-entry controls-wrapper">
-        <div class="small-6 columns">
+        <div class="small-4 columns">
             <label for="destination_cidr_block" i18n:translate="">
                 Destination (IPv4 CIDR block)
             </label>
@@ -42,7 +42,7 @@
                    i18n:attributes="placeholder" placeholder="e.g. 0.0.0.0/0"
                    ng-pattern="cidrPattern" />
         </div>
-        <div class="small-6 columns">
+        <div class="small-8 columns">
             <label for="route-target" i18n:translate="">
                 Target
             </label>

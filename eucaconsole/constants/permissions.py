@@ -338,6 +338,28 @@ CLOUDFORMATION_ACTIONS = [
 ]
 
 
+# Policy Generator Actions for SQS
+SQS_ACTIONS = [
+    'AddPermission',
+    'ChangeMessageVisibility',
+    'ChangeMessageVisibilityBatch',
+    'CreateQueue',
+    'DeleteMessage',
+    'DeleteMessageBatch',
+    'DeleteQueue',
+    'GetQueueAttribute',
+    'GetQueueUrl',
+    'ListDeadLetterSourceQueues',
+    'ListQueues',
+    'PurgeQueue',
+    'ReceiveMessage',
+    'RemovePermission',
+    'SendMessage',
+    'SendMessageBatch',
+    'SetQueueAttributes',
+]
+
+
 # Policy Generator Actions for IAM
 IAM_ACTIONS = [
     # 'AddRoleToInstanceProfile',
@@ -450,6 +472,11 @@ POLICY_ACTIONS = [
         'name': 'cloudformation',
         'label': _(u'All CloudFormation actions'),
         'actions': CLOUDFORMATION_ACTIONS,
+    },
+    {
+        'name': 'sqs',
+        'label': _(u'All SQS actions'),
+        'actions': SQS_ACTIONS,
     },
     {
         'name': 'iam',

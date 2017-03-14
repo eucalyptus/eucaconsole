@@ -197,6 +197,7 @@ class IPAddressesJsonView(LandingPageView):
                     id=address.public_ip,
                     public_ip=address.public_ip,
                     allocation_id=address.allocation_id,
+                    network_interface_id=address.network_interface_id,
                     instance_id=address.instance_id,
                     instance_name=TaggedItemView.get_display_name(
                         instances[address.instance_id]) if address.instance_id in instances else address.instance_id,

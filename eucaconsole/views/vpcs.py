@@ -29,6 +29,7 @@ Pyramid views for Eucalyptus and AWS VPCs
 
 """
 from operator import attrgetter
+from time import sleep
 
 import simplejson as json
 
@@ -37,10 +38,12 @@ from pyramid.view import view_config
 
 from ..forms import ChoicesManager
 from ..forms.instances import TerminateInstanceForm
+from ..forms.ipaddresses import AllocateIPsForm
 from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm, CreateSubnetForm,
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
-    INTERNET_GATEWAY_HELP_TEXT
+    InternetGatewayForm, InternetGatewayDeleteForm, InternetGatewayDetachForm, CreateRouteTableForm,
+    CreateNatGatewayForm, NatGatewayDeleteForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -208,6 +211,9 @@ class VPCView(TaggedItemView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
+        if self.vpc is None:
+            raise HTTPNotFound()
+        with boto_error_handler(request, self.location):
             self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.vpc_main_route_table = self.get_main_route_table(route_tables=self.vpc_route_tables)
             self.vpc_internet_gateway = self.get_internet_gateway()
@@ -248,8 +254,7 @@ class VPCView(TaggedItemView):
             vpc_main_route_table=self.vpc_main_route_table,
             vpc_main_route_table_name=TaggedItemView.get_display_name(
                 self.vpc_main_route_table) if self.vpc_main_route_table else '',
-            vpc_internet_gateway_name=TaggedItemView.get_display_name(
-                self.vpc_internet_gateway) if self.get_internet_gateway() else '',
+            vpc_internet_gateway=self.vpc_internet_gateway,
             default_vpc=self.vpc.is_default,
             default_vpc_label=_('Yes') if self.vpc.is_default else _('No'),
             tags=self.serialize_tags(self.vpc.tags) if self.vpc else [],
@@ -359,7 +364,7 @@ class VPCView(TaggedItemView):
             self.request.error_messages = self.vpc_form.get_errors_list()
         return self.render_dict
 
-    @view_config(route_name='vpc_create_internet_gateway', renderer='json', request_method='POST')
+    @view_config(route_name='vpc_create_internet_gateway', renderer=VIEW_TEMPLATE, request_method='POST')
     def vpc_create_internet_gateway(self):
         location = self.request.route_path('vpc_view', id=self.vpc.id)
         if self.create_internet_gateway_form.validate():
@@ -377,7 +382,7 @@ class VPCView(TaggedItemView):
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('id')
         if vpc_id:
-            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
             return vpcs_list[0] if vpcs_list else None
         return None
 
@@ -405,7 +410,7 @@ class VPCView(TaggedItemView):
                 available_ips=subnet.available_ip_address_count,
                 instances=instances,
                 instance_count=len(instances),
-                route_tables=self.get_subnet_route_tables(subnet.id, vpc_route_tables),
+                route_table=self.get_subnet_route_table(subnet.id, vpc_route_tables),
                 network_acls=self.get_subnet_network_acls(subnet.id, vpc_network_acls),
             ))
         return subnets_list
@@ -464,22 +469,13 @@ class VPCView(TaggedItemView):
 
         return '{0}{1}/{2}'.format('.'.join(cidr_ip_parts[:num_ip_parts]), ip_suffix, subnet_netmask)
 
-    def get_subnet_route_tables(self, subnet_id, vpc_route_tables):
-        subnet_route_tables = []
+    def get_subnet_route_table(self, subnet_id, vpc_route_tables):
         for route_table in vpc_route_tables:
             association_subnet_ids = [assoc.subnet_id for assoc in route_table.associations]
             if subnet_id in association_subnet_ids:
-                subnet_route_tables.append(dict(
-                    id=route_table.id,
-                    name=TaggedItemView.get_display_name(route_table),
-                ))
+                return route_table
             elif association_subnet_ids == [None]:
-                # Show VPC's main route table for subnet
-                subnet_route_tables.append(dict(
-                    id=self.vpc_main_route_table.id,
-                    name=TaggedItemView.get_display_name(self.vpc_main_route_table),
-                ))
-        return subnet_route_tables
+                return self.vpc_main_route_table
 
     @staticmethod
     def get_default_security_group(security_groups):
@@ -591,24 +587,33 @@ class SubnetView(TaggedItemView):
         self.location = self.request.route_path(
             'subnet_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
         self.conn = self.get_connection()
+        self.conn3 = self.get_connection3()
         self.vpc_conn = self.get_connection(conn_type='vpc')
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
-            self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.subnet = self.get_subnet()
+        if self.subnet is None or self.vpc is None:
+            raise HTTPNotFound()
+        with boto_error_handler(request, self.location):
+            self.vpc_route_tables = self.vpc_conn.get_all_route_tables(filters={'vpc-id': self.vpc.id})
             self.subnet_route_table = self.get_subnet_route_table()
             self.subnet_network_acl = self.get_subnet_network_acl()
+            self.create_nat_gateway_form = CreateNatGatewayForm(
+                self.request, ec2_conn=self.conn, formdata=self.request.params or None)
             self.subnet_form = SubnetForm(
                 self.request, vpc_conn=self.vpc_conn, vpc=self.vpc, route_tables=self.vpc_route_tables,
                 subnet=self.subnet, subnet_route_table=self.subnet_route_table, formdata=self.request.params or None
             )
+        self.create_route_table_form = CreateRouteTableForm(self.request, formdata=self.request.params or None)
         self.subnet_delete_form = SubnetDeleteForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.allocate_eips_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
         self.vpc_name = self.get_display_name(self.vpc)
         self.subnet_name = self.get_display_name(self.subnet)
         self.tagged_obj = self.subnet
         self.title_parts = [_(u'Subnet'), self.subnet_name]
         subnet_is_default_for_zone = self.subnet.defaultForAz == 'true'
+        vpc_local_route = dict(DestinationCidrBlock=self.vpc.cidr_block, State='active', GatewayId='local')
         self.render_dict = dict(
             vpc=self.vpc,
             vpc_name=self.vpc_name,
@@ -616,9 +621,14 @@ class SubnetView(TaggedItemView):
             subnet_name=self.subnet_name,
             subnet_route_table=self.subnet_route_table,
             subnet_network_acl=self.subnet_network_acl,
+            subnet_nat_gateways=self.get_subnet_nat_gateways(),
             subnet_form=self.subnet_form,
             subnet_delete_form=self.subnet_delete_form,
+            routes=json.dumps([vpc_local_route]),
+            create_route_table_form=self.create_route_table_form,
+            create_nat_gateway_form=self.create_nat_gateway_form,
             terminate_form=self.terminate_form,
+            allocate_eips_form=self.allocate_eips_form,
             subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
             default_for_zone=subnet_is_default_for_zone,
             default_for_zone_label=_('yes') if subnet_is_default_for_zone else _('no'),
@@ -684,10 +694,77 @@ class SubnetView(TaggedItemView):
             self.request.error_messages = self.subnet_delete_form.get_errors_list()
             return self.render_dict
 
+    @view_config(route_name='subnet_allocate_eips', renderer=VIEW_TEMPLATE, request_method='POST')
+    def subnet_allocate_eips(self):
+        if self.subnet and self.allocate_eips_form.validate():
+            location = self.request.route_path('subnet_view', vpc_id=self.vpc.id, id=self.subnet.id)
+            new_ips = []
+            domain = self.request.params.get('domain') or None
+            ipcount = int(self.request.params.get('ipcount', 0))
+            with boto_error_handler(self.request, location):
+                with boto_error_handler(self.request, self.location):
+                    self.log_request(_(u"Allocating {0} Elastic IPs").format(ipcount))
+                    for i in xrange(ipcount):
+                        new_ip = self.conn.allocate_address(domain=domain)
+                        new_ips.append(new_ip.public_ip)
+                    prefix = _(u'Successfully allocated elastic IPs')
+                    ips = ', '.join(new_ips)
+                    msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.allocate_eips_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='route_table_create', renderer=VIEW_TEMPLATE, request_method='POST')
+    def route_table_create(self):
+        location = self.request.route_path('subnet_view', vpc_id=self.vpc.id, id=self.subnet.id)
+        if self.create_route_table_form.validate():
+            with boto_error_handler(self.request, location):
+                name = self.request.params.get('route_table_name')
+                routes_json = self.request.params.get('routes')
+                new_routes = json.loads(routes_json)
+                with boto_error_handler(self.request):
+                    self.log_request('Creating route table in VPC {0}'.format(self.vpc.id))
+                    new_route_table = self.vpc_conn.create_route_table(self.vpc.id)
+
+                    # Add routes via botocore -- skipping 'local' route, which is added automatically
+                    new_routes = [route for route in new_routes if route.get('GatewayId') != 'local']
+                    for route in new_routes:
+                        route.pop('State')
+                        self.conn3.create_route(RouteTableId=new_route_table.id, **route)
+                    # Add Name tag if necessary
+                    if name:
+                        new_route_table.add_tag('Name', name)
+                msg = _(u'Successfully created route table {0}'.format(new_route_table.id))
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+        else:
+            self.request.error_messages = ', '.join(self.create_route_table_form.get_errors_list())
+        return HTTPFound(location=location)
+
+    @view_config(route_name='nat_gateway_create', renderer=VIEW_TEMPLATE, request_method='POST')
+    def nat_gateway_create(self):
+        location = self.request.route_path('subnet_view', vpc_id=self.vpc.id, id=self.subnet.id)
+        if self.create_nat_gateway_form.validate():
+            with boto_error_handler(self.request, location):
+                subnet_id = self.request.params.get('nat_gateway_subnet_id')
+                eip_allocation_id = self.request.params.get('eip_allocation_id')
+                with boto_error_handler(self.request):
+                    self.log_request('Creating NAT gateway in VPC {0}'.format(self.vpc.id))
+                    # Leverage botocore to create NAT gateway
+                    self.conn3.create_nat_gateway(SubnetId=subnet_id, AllocationId=eip_allocation_id)
+                    sleep(3)  # Give new NAT gateway a moment to fire up prior to loading subnet details page
+                msg = _(u'Successfully sent request to create NAT gateway for subnet {0}'.format(self.subnet.id))
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+        else:
+            self.request.error_messages = ', '.join(self.create_nat_gateway_form.get_errors_list())
+        return HTTPFound(location=location)
+
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('vpc_id')
         if vpc_id:
-            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
             return vpcs_list[0] if vpcs_list else None
         return None
 
@@ -710,6 +787,12 @@ class SubnetView(TaggedItemView):
         if subnet_network_acls:
             return subnet_network_acls[0]
         return None
+
+    def get_subnet_nat_gateways(self):
+        filters = [{'Name': 'subnet-id', 'Values': [self.subnet.id]}]
+        subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
+        nat_gateways = subnet_nat_gateways_resp.get('NatGateways')
+        return list(nat_gateways)
 
     def update_route_table(self):
         new_route_table_id = self.request.params.get('route_table')
@@ -745,50 +828,22 @@ class SubnetView(TaggedItemView):
         }))
 
 
-class RouteTableMixin(object):
-    def update_routes(self, request, vpc_conn, route_table):
-        routes_json = request.params.get('routes')
-        new_routes = json.loads(routes_json)
-        self.delete_routes(vpc_conn, route_table)
-        self.add_routes(vpc_conn, route_table, new_routes)
-
-    @staticmethod
-    def delete_routes(vpc_conn, route_table):
-        for route in route_table.routes:
-            # Skip deleting local route
-            if route.gateway_id != 'local':
-                vpc_conn.delete_route(route_table.id, route.destination_cidr_block)
-
-    @staticmethod
-    def add_routes(vpc_conn, route_table, new_routes):
-        for route in new_routes:
-            route_target_id = route.get('target')
-            params = dict(
-                route_table_id=route_table.id,
-                destination_cidr_block=route.get('destination_cidr_block')
-            )
-            if route_target_id:
-                if route_target_id.startswith('igw-'):
-                    params.update(dict(gateway_id=route_target_id))
-                elif route_target_id.startswith('eni-'):
-                    params.update(dict(interface_id=route_target_id))
-                # TODO: Handle routes with NAT Gateway target
-                vpc_conn.create_route(**params)
-
-
-class RouteTableView(TaggedItemView, RouteTableMixin):
+class RouteTableView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/vpcs/route_table_view.pt'
 
     def __init__(self, request, **kwargs):
         super(RouteTableView, self).__init__(request, **kwargs)
         self.location = self.request.route_path(
             'route_table_view', vpc_id=self.request.matchdict.get('vpc_id'), id=self.request.matchdict.get('id'))
-        self.conn = self.get_connection()
+        self.conn = self.get_connection()  # Required for tag updates
         self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.conn3 = self.get_connection3()
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
+            # NOTE: boto2-based RT required for tag updates; botocore-based RT required for route updates
             self.route_table = self.get_route_table(self.vpc.id)
-        if self.route_table is None or self.vpc is None:
+            self.route_table3 = self.get_route_table3(self.vpc.id)
+        if self.route_table is None or self.route_table3 is None or self.vpc is None:
             raise HTTPNotFound()
         with boto_error_handler(request, self.location):
             self.route_table_subnets = self.get_route_table_subnets()
@@ -809,6 +864,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
             vpc=self.vpc,
             vpc_name=self.vpc_name,
             route_table=self.route_table,
+            route_table3=self.route_table3,
             route_table_name=self.route_table_name,
             route_table_subnets=self.route_table_subnets,
             is_main_route_table=self.is_main_route_table,
@@ -816,7 +872,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
             route_table_form=self.route_table_form,
             route_table_delete_form=self.route_table_delete_form,
             route_table_set_main_form=self.route_table_set_main_form,
-            routes=self.serialize_routes(self.route_table.routes),
+            routes=json.dumps(self.route_table3.get('Routes')),
             tags=self.serialize_tags(self.route_table.tags) if self.route_table else [],
         )
 
@@ -841,7 +897,7 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
 
                 # Update routes
                 if routes_updated:
-                    self.update_routes(self.request, self.vpc_conn, self.route_table)
+                    self.update_routes()
 
             msg = _(u'Successfully updated route table')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -889,11 +945,12 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
     def get_vpc(self):
         vpc_id = self.request.matchdict.get('vpc_id')
         if vpc_id:
-            vpcs_list = self.vpc_conn.get_all_vpcs(vpc_ids=[vpc_id])
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
             return vpcs_list[0] if vpcs_list else None
         return None
 
     def get_route_table(self, vpc_id):
+        # We're fetching the route table via boto 2 to allow tag updates to work
         route_table_id = self.request.matchdict.get('id')
         filters = {
             'vpc-id': vpc_id,
@@ -904,25 +961,35 @@ class RouteTableView(TaggedItemView, RouteTableMixin):
             return route_tables[0]
         return None
 
+    def get_route_table3(self, vpc_id):
+        # NOTE: We're fetching the route table via botocore to properly surface route targets
+        route_table_id = self.request.matchdict.get('id')
+        filters = [
+            {'Name': 'vpc-id', 'Values': [vpc_id]},
+            {'Name': 'route-table-id', 'Values': [route_table_id]},
+        ]
+        route_tables = self.conn3.describe_route_tables(Filters=filters).get('RouteTables')
+        if route_tables:
+            return route_tables[0]
+        return None
+
     def get_route_table_subnets(self):
         route_table_association_subnet_ids = [assoc.subnet_id for assoc in self.route_table.associations]
         return self.vpc_conn.get_all_subnets(filters={'subnet-id': route_table_association_subnet_ids})
 
-    @staticmethod
-    def serialize_routes(routes):
-        """Returns a JSON-stringified list of boto.vpc.RouteTable.Route objects converted to dicts"""
-        routes_list = []
-        for route in routes:
-            routes_list.append(dict(
-                destination_cidr_block=route.destination_cidr_block,
-                gateway_id=route.gateway_id,
-                instance_id=route.instance_id,
-                interface_id=route.interface_id,
-                origin=route.origin,
-                state=route.state,
-                vpc_peering_connection_id=route.vpc_peering_connection_id,
-            ))
-        return BaseView.escape_json(json.dumps(routes_list))
+    def update_routes(self):
+        route_table_id = self.route_table3.get('RouteTableId')
+        existing_routes = self.route_table3.get('Routes')
+        routes_json = self.request.params.get('routes')
+        new_routes = json.loads(routes_json)
+        for existing_route in existing_routes:
+            if existing_route not in new_routes:
+                self.conn3.delete_route(
+                    RouteTableId=route_table_id, DestinationCidrBlock=existing_route.get('DestinationCidrBlock'))
+        for new_route in new_routes:
+            if new_route not in existing_routes:
+                new_route.pop('State')
+                self.conn3.create_route(RouteTableId=self.route_table.id, **new_route)
 
 
 class RouteTargetsJsonView(BaseView):
@@ -931,6 +998,7 @@ class RouteTargetsJsonView(BaseView):
     def __init__(self, request):
         super(RouteTargetsJsonView, self).__init__(request)
         self.vpc_conn = self.get_connection(conn_type="vpc")
+        self.conn3 = self.get_connection3()
 
     @view_config(route_name='route_targets_json', renderer='json', request_method='GET')
     def route_targets_json(self):
@@ -939,13 +1007,221 @@ class RouteTargetsJsonView(BaseView):
         with boto_error_handler(self.request):
             internet_gateways = self.vpc_conn.get_all_internet_gateways(filters={'attachment.vpc-id': [vpc_id]})
             network_interfaces = self.vpc_conn.get_all_network_interfaces(filters={'vpc-id': [vpc_id]})
-            # TODO: Add NAT gateways as target options
+            nat_gateways = self.get_nat_gateways(vpc_id)
         for igw in sorted(internet_gateways, key=attrgetter('id')):
             route_targets.append(dict(
                 id=igw.id,
+            ))
+        for ngw in nat_gateways:
+            route_targets.append(dict(
+                id=ngw.get('NatGatewayId'),
             ))
         for eni in sorted(network_interfaces, key=attrgetter('id')):
             route_targets.append(dict(
                 id=eni.id
             ))
         return dict(results=route_targets)
+
+    def get_nat_gateways(self, vpc_id):
+        filters = [
+            {'Name': 'vpc-id', 'Values': [vpc_id]},
+        ]
+        subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
+        return subnet_nat_gateways_resp.get('NatGateways')
+
+
+class InternetGatewayView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/vpcs/internet_gateway_view.pt'
+
+    def __init__(self, request, **kwargs):
+        super(InternetGatewayView, self).__init__(request, **kwargs)
+        self.location = self.request.route_path('internet_gateway_view', id=self.request.matchdict.get('id'))
+        self.conn = self.get_connection()  # Required for tag updates
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        with boto_error_handler(request, self.location):
+            self.internet_gateway = self.get_internet_gateway()
+        if self.internet_gateway is None:
+            raise HTTPNotFound()
+        with boto_error_handler(request, self.location):
+            self.internet_gateway_vpc = self.get_internet_gateway_vpc()
+        self.internet_gateway_form = InternetGatewayForm(
+            self.request, internet_gateway=self.internet_gateway, formdata=self.request.params or None
+        )
+        self.internet_gateway_delete_form = InternetGatewayDeleteForm(
+            self.request, formdata=self.request.params or None)
+        self.internet_gateway_detach_form = InternetGatewayDetachForm(
+            self.request, formdata=self.request.params or None)
+        self.internet_gateway_name = self.get_display_name(self.internet_gateway)
+        self.tagged_obj = self.internet_gateway
+        self.title_parts = [_('Internet Gateway'), self.internet_gateway_name]
+        self.is_attached = len(self.internet_gateway.attachments) > 0
+        self.render_dict = dict(
+            internet_gateway=self.internet_gateway,
+            internet_gateway_name=self.internet_gateway_name,
+            internet_gateway_form=self.internet_gateway_form,
+            internet_gateway_detach_form=self.internet_gateway_detach_form,
+            internet_gateway_delete_form=self.internet_gateway_delete_form,
+            internet_gateway_vpc=self.internet_gateway_vpc,
+            is_attached=self.is_attached,
+            igw_status=_('attached') if self.is_attached else _('available'),
+            tags=self.serialize_tags(self.internet_gateway.tags) if self.internet_gateway else [],
+        )
+
+    @view_config(route_name='internet_gateway_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def internet_gateway_view(self):
+        return self.render_dict
+
+    @view_config(route_name='internet_gateway_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def internet_gateway_update(self):
+        if self.internet_gateway and self.internet_gateway_form.validate():
+            location = self.request.route_path('internet_gateway_view', id=self.internet_gateway.id)
+            with boto_error_handler(self.request, location):
+                # Update tags
+                self.update_tags()
+
+                # Save Name tag
+                name = self.request.params.get('name', '')
+                self.update_name_tag(name)
+
+            msg = _(u'Successfully updated internet gateway')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.internet_gateway_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='internet_gateway_detach', renderer=VIEW_TEMPLATE, request_method='POST')
+    def internet_gateway_detach(self):
+        if self.internet_gateway and self.internet_gateway_detach_form.validate():
+            location = self.request.route_path('internet_gateway_view', id=self.internet_gateway.id)
+            with boto_error_handler(self.request, location):
+                log_msg = _('Detaching internet gateway {0} from VPC {1}').format(
+                    self.internet_gateway.id, self.internet_gateway_vpc.id)
+                self.log_request(log_msg)
+                self.vpc_conn.detach_internet_gateway(self.internet_gateway.id, self.internet_gateway_vpc.id)
+
+            msg = _(u'Successfully detached internet gateway from VPC')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.internet_gateway_detach_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='internet_gateway_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def internet_gateway_delete(self):
+        if self.internet_gateway and self.internet_gateway_delete_form.validate():
+            location = self.request.route_path('internet_gateway_view', id=self.internet_gateway.id)
+            with boto_error_handler(self.request, location):
+                log_msg = _('Deleting internet gateway {0}').format(self.internet_gateway.id)
+                self.log_request(log_msg)
+                self.vpc_conn.delete_internet_gateway(self.internet_gateway.id)
+            msg = _(u'Successfully deleted internet gateway')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('vpcs'))
+        else:
+            self.request.error_messages = self.internet_gateway_delete_form.get_errors_list()
+        return self.render_dict
+
+    def get_internet_gateway(self):
+        igw_id = self.request.matchdict.get('id')
+        if igw_id:
+            igws_list = self.vpc_conn.get_all_internet_gateways(filters={'internet-gateway-id': igw_id})
+            return igws_list[0] if igws_list else None
+        return None
+
+    def get_internet_gateway_vpc(self):
+        if self.internet_gateway.attachments:
+            vpc_id = self.internet_gateway.attachments[0].vpc_id
+            vpcs_list = self.vpc_conn.get_all_vpcs(filters={'vpc_id': vpc_id})
+            if vpcs_list:
+                return vpcs_list[0]
+        return None
+
+
+class NatGatewayView(BaseView):
+    VIEW_TEMPLATE = '../templates/vpcs/nat_gateway_view.pt'
+
+    def __init__(self, request, **kwargs):
+        super(NatGatewayView, self).__init__(request, **kwargs)
+        self.vpc_id = self.request.matchdict.get('vpc_id')
+        self.nat_gateway_id = self.request.matchdict.get('id')
+        self.location = self.request.route_path('nat_gateway_view', vpc_id=self.vpc_id, id=self.nat_gateway_id)
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.conn3 = self.get_connection3()
+        with boto_error_handler(request, self.location):
+            self.nat_gateway = self.get_nat_gateway()
+            self.nat_gateway_vpc = self.get_nat_gateway_vpc()
+            self.vpc_internet_gateway = self.get_vpc_internet_gateway()
+        if self.nat_gateway is None or self.nat_gateway_vpc is None:
+            raise HTTPNotFound()
+        self.subnet_id = self.nat_gateway.get('SubnetId')
+        with boto_error_handler(request, self.location):
+            self.nat_gateway_subnet = self.get_nat_gateway_subnet()
+        self.nat_gateway_delete_form = NatGatewayDeleteForm(self.request, formdata=self.request.params or None)
+        self.title_parts = [_('NAT Gateway'), self.nat_gateway_id]
+        vpc_missing_igw_warning = _(
+            'WARNING: The NAT gateway requires an internet gateway in the VPC to allow instances '
+            'without an elastic IP address to access the Internet.'
+        )
+        self.render_dict = dict(
+            nat_gateway=self.nat_gateway,
+            nat_gateway_id=self.nat_gateway_id,
+            nat_gateway_vpc=self.nat_gateway_vpc,
+            nat_gateway_subnet=self.nat_gateway_subnet,
+            nat_gateway_delete_form=self.nat_gateway_delete_form,
+            nat_gateway_network_info=self.get_nat_gateway_network_info(),
+            vpc_internet_gateway=self.vpc_internet_gateway,
+            vpc_missing_igw_warning=vpc_missing_igw_warning,
+        )
+
+    @view_config(route_name='nat_gateway_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def nat_gateway_view(self):
+        return self.render_dict
+
+    @view_config(route_name='nat_gateway_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def nat_gateway_delete(self):
+        if self.nat_gateway and self.nat_gateway_delete_form.validate():
+            location = self.request.route_path('nat_gateway_view', vpc_id=self.vpc_id, id=self.nat_gateway_id)
+            with boto_error_handler(self.request, location):
+                log_msg = _('Deleting NAT gateway {0}').format(self.nat_gateway_id)
+                self.log_request(log_msg)
+                self.conn3.delete_nat_gateway(NatGatewayId=self.nat_gateway_id)
+            msg = _(
+                'Successfully sent request to delete NAT gateway.  It may take a moment to delete the NAT gateway.')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            # Redirect to VPC details page instead of subnet details page, as NGW may take a while to delete
+            return HTTPFound(location=self.request.route_path('vpc_view', id=self.vpc_id))
+        else:
+            self.request.error_messages = self.nat_gateway_delete_form.get_errors_list()
+        return self.render_dict
+
+    def get_nat_gateway(self):
+        filters = [
+            {'Name': 'vpc-id', 'Values': [self.vpc_id]},
+            {'Name': 'nat-gateway-id', 'Values': [self.nat_gateway_id]}
+        ]
+        subnet_nat_gateways_resp = self.conn3.describe_nat_gateways(Filters=filters)
+        nat_gateways = subnet_nat_gateways_resp.get('NatGateways')
+        return nat_gateways[0] if nat_gateways else None
+
+    def get_nat_gateway_vpc(self):
+        vpc_list = self.vpc_conn.get_all_vpcs(filters={'vpc-id': [self.vpc_id]})
+        return vpc_list[0] if vpc_list else None
+
+    def get_nat_gateway_subnet(self):
+        subnet_list = self.vpc_conn.get_all_subnets(filters={'subnet-id': [self.subnet_id]})
+        return subnet_list[0] if subnet_list else None
+
+    def get_nat_gateway_network_info(self):
+        addresses = self.nat_gateway.get('NatGatewayAddresses')
+        if addresses:
+            return addresses[0]
+        return {}
+
+    def get_vpc_internet_gateway(self):
+        internet_gateways = self.vpc_conn.get_all_internet_gateways(filters={'attachment.vpc-id': [self.vpc_id]})
+        for igw in internet_gateways:
+            for attachment in igw.attachments:
+                if attachment.vpc_id == self.vpc_id:
+                    return igw
+        return None

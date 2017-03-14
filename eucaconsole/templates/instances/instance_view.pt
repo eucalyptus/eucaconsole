@@ -213,7 +213,7 @@
                             <a href="${request.route_path('keypair_view', subpath=instance_keypair)}">${instance_keypair}</a>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" tal:condition="not: instance.vpc_id">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Security group(s)</label></div>
                         <div class="large-9 small-8 columns value">
                             <div tal:repeat="group security_group_list" ng-non-bindable="">
@@ -222,6 +222,9 @@
                                 <a href="${request.route_path('securitygroup_view', id=group.id)}">${group.name}</a>
                             </div>
                         </div>
+                    </div>
+                    <div tal:condition="instance.vpc_id" ng-cloak="">
+                        ${panel('form_field', field=instance_form.security_groups, leftcol_width_large=3, rightcol_width_large=9)}
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Launch time</label></div>
