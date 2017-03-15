@@ -120,6 +120,8 @@ class ReportingAPIView(BaseView):
         ret = self.conn.view_monthly_usage(year, month)
         csv = ret.get('data')
         data = pandas.read_csv(io.StringIO(csv), engine='c')
+        if len(data) == 0:
+            return dict(result=[])
         grouped = data.groupby(('ProductName', 'UsageType'))
         totals = grouped['UsageQuantity'].sum()
         totals_list = totals.to_frame().to_records().tolist()

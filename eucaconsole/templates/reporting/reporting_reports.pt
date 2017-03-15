@@ -24,8 +24,8 @@
             <div class="large-6 small-6 columns field">
                 <select required="required" name="month"
                         ng-model="reports.values.monthSelection"
-                        ng-options="month for month in reports.monthChoices"
-                        ng-change="reports.loadMonlyData()">
+                        ng-options="(month|date:'MMMM yyyy') for month in reports.monthChoices"
+                        ng-change="reports.loadMonthlyData()">
                 </select>
                 <!--
                 <button class="round tiny" i18n:translate="">Update</button>
