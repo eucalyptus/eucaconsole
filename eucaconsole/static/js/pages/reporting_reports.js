@@ -4,6 +4,7 @@ angular.module('ReportingPage')
     var vm = this;
     vm.monthChoices = [];
     var month = new Date();
+    // set earliest year/month to show in options list (remember Jan == 0)
     while (month.getFullYear() > 2017 || month.getMonth() >= 1) {
         vm.monthChoices.push(month);
         month = new Date(month.getFullYear(), month.getMonth()-1);
@@ -12,6 +13,7 @@ angular.module('ReportingPage')
     vm.values = {
         monthSelection: vm.monthChoices[0],
     };
+    vm.loadingUsageData = false;
     vm.showEC2InstanceUsageReport = function() {
     };
     vm.showUsageReportsByService = function() {
@@ -19,13 +21,16 @@ angular.module('ReportingPage')
     };
     vm.loadMonthlyData = function() {
         // use reports service to load montly report data
+        vm.loadingUsageData = true;
         ReportingService.getMonthlyUsage(vm.values.monthSelection.getFullYear(),
             (vm.values.monthSelection.getMonth() + 1)).then(
         function success(result) {
                 vm.monthlyUsage = result.results;
+                vm.loadingUsageData = false;
             },
             function error(errData) {
                 eucaHandleError(errData.data.message, errData.status);
+                vm.loadingUsageData = false;
             });
     };
     vm.loadMonthlyData();

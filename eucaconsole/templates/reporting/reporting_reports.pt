@@ -27,9 +27,7 @@
                         ng-options="(month|date:'MMMM yyyy') for month in reports.monthChoices"
                         ng-change="reports.loadMonthlyData()">
                 </select>
-                <!--
-                <button class="round tiny" i18n:translate="">Update</button>
-                -->
+                <span ng-show="reports.loadingUsageData">&nbsp;<i class="busy"></i></span>
             </div>
             <div class="large-6 small-6 columns field">
                 <a class="button round tiny right" i18n:translate="" ng-click="reports.downloadCSV()">Download CSV</a>
