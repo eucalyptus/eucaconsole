@@ -31,15 +31,15 @@
                                 ng-model="usagereports.values.usageType">
                             <option value="all" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">All usage types</option>
-                            <option value="box" ng-hide="usagereports.values.service != 'ec2'"
+                            <option value="BoxUsage" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">Box usage</option>
                             <option value="datain" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">Data Transfer In (Bytes)</option>
                             <option value="dataout" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">Data Transfer Out (Bytes)</option>
-                            <option value="vols" ng-hide="usagereports.values.service != 'ec2'"
+                            <option value="VolumeUsage" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">EBS Volume Usage</option>
-                            <option value="volio" ng-hide="usagereports.values.service != 'ec2'"
+                            <option value="VolumeIOUsage" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">EBS Volume IO Usage</option>
                             <option value="all" ng-hide="usagereports.values.service != 's3'"
                                 i18n:translate="">All usage types</option>

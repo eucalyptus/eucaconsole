@@ -123,7 +123,7 @@ class ReportingAPIView(BaseView):
         if len(data) == 0:
             return dict(result=[])
         grouped = data.groupby(('ProductName', 'UsageType'))
-        totals = grouped['UsageQuantity'].sum()
+        totals = grouped['Usage    Quantity'].sum()
         totals_list = totals.to_frame().to_records().tolist()
         results = []
         service = ''
