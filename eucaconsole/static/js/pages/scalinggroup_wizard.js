@@ -226,15 +226,12 @@ angular.module('ScalingGroupWizard', ['EucaConsoleUtils', 'TagEditorModule'])
             var inputElement = modal.find('input[type!=hidden]').get(0);
             var textareaElement = modal.find('textarea[class!=hidden]').get(0);
             var selectElement = modal.find('select').get(0);
-            var modalButton = modal.find('button').get(0);
             if (!!textareaElement){
                 textareaElement.focus();
             } else if (!!inputElement) {
                 inputElement.focus();
             } else if (!!selectElement) {
                 selectElement.focus();
-            } else if (!!modalButton) {
-                modalButton.focus();
             }
         };
         $scope.visitNextStep = function (nextStep, $event) {
