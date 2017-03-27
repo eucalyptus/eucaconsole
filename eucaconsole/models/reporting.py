@@ -29,6 +29,8 @@ A connection objects for Eucalyptus Reporting features
 
 """
 
+import logging
+
 import boto
 from boto.connection import AWSQueryConnection
 from boto.compat import json
@@ -160,6 +162,7 @@ class EucalyptusReporting(EucalyptusConnection):
             'TimePeriodTo': end_time.isoformat(),
             'ReportGranularity': report_granularity
         }
+        logging.debug('request params: ' + str(params))
         ret = self._do_request('ViewUsage', params, 'POST')
         return ret
 

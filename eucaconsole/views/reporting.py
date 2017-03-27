@@ -170,7 +170,9 @@ class ReportingAPIView(BaseView):
         if time_period == 'lastWeek':
             start_time = end_time - datetime.timedelta(days=7)
         elif time_period == 'lastMonth':
-            start_time = end_time - datetime.timedelta(month=1)
+            # concept of month varies, so going with 4 weeks
+            # alternatively, could simply do same day of month, 1 month ago
+            start_time = end_time - datetime.timedelta(weeks=4)
         else:
              start_time = self.request.params.get('fromTime')
              end_time = self.request.params.get('toTime')
