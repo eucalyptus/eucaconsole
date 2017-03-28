@@ -37,7 +37,7 @@
             <div id="user-name-field-div" class="field columns">
                 <input class="userinput name" id="user-name-field" type="text"
                        ng-model="newUserName" ng-keypress="keyListener($event)"
-                       pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" user-name reserved="admin"/>
+                       pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" user-name="" reserved="admin"/>
                 <small id="user-list-error" class="error" i18n:translate="">
                     Must have at least one user, and the names of users must be alphanumeric, including the following
                     common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-),

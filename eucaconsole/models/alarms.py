@@ -55,6 +55,21 @@ class Alarm(object):
             alarms = [alarm for alarm in cw_conn.describe_alarms() if dimension_key in alarm.dimensions]
         return set([alarm for alarm in alarms if resource_id in chain.from_iterable(alarm.dimensions.values())])
 
+    @staticmethod
+    def get_alarms_for_dimensions(dimensions=None, cw_conn=None, alarms=None):
+        """
+        Fetch alarms for a resource by resource id. Fetches alarms if not passed as a list.
+
+        :param dimensions: CloudWatch dimensions (e.g. dictionary of dims, {res_type:[res_id1, res_id2]})
+        :param cw_conn: CloudWatch connection object
+        :param alarms: list of (ideally pre-filtered) alarms
+        :return: de-duped list of alarms for the given resource
+        """
+        if dimensions is not None:
+            alarms = [alarm for alarm in cw_conn.describe_alarms() if set(dimensions).issubset(alarm.dimensions)]
+        dim_set = set(chain.from_iterable(dimensions.values()))
+        return set([alarm for alarm in alarms if dim_set.issubset(chain.from_iterable(alarm.dimensions.values()))])
+
     @classmethod
     def get_resource_alarm_status(cls, resource_id, alarms):
         """ Get alarm status for a given resource
@@ -78,4 +93,5 @@ class Alarm(object):
             else:
                 return _(u'OK')
         return ''  # Default to when resource has no alarms set
+
 

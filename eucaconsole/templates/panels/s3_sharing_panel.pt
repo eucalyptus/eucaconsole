@@ -4,6 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
     <h6 i18n:translate="" class="sharing-label">Sharing</h6>
     <div tal:condition="object_type == 'bucket'">
+        <div><strong i18n:translate="">Bucket ACLs</strong></div>
         ${panel('form_field', field=sharing_form.propagate_acls, ng_attrs=dict(model='propagateAcls'), reverse=True)}
     </div>
     <div tal:condition="show_caution" tal:omit-tag="">
@@ -62,6 +63,49 @@
             </div>
         </div>
     </div>
+    <div id="bucket-policy-section" tal:condition="object_type == 'bucket'">
+        <div><strong i18n:translate="">Bucket Policy</strong></div>
+        <p i18n:translate="">
+            A bucket policy allows one to grant or deny access to a bucket and/or objects in the bucket,
+            and the policy applies to existing and future objects in the bucket.
+            Bucket ACLs, in contrast, only allow one to grant access to a bucket and/or objects,
+            and ACLS only apply to objects currently in the bucket.
+        </p>
+        <div ng-if="hasBucketPolicy">
+            <div id="existing-bucket-policy-wrapper">
+                <a class="icon remove has-tip" i18n:attributes="title" data-reveal-id="bucket-policy-delete-confirmation-modal"
+                   title="Remove bucket policy" data-tooltip=""><i class="fi-minus-circle"></i></a>
+                <a class="icon edit has-tip" i18n:attributes="title" data-reveal-id="bucket-policy-modal"
+                   title="View/Edit bucket policy" data-tooltip=""><i class="fi-pencil"></i></a>
+                <span i18n:translate="">Bucket Policy</span>
+            </div>
+        </div>
+        <div ng-if="!hasBucketPolicy">
+            <a class="button round tiny" i18n:translate="" data-reveal-id="bucket-policy-modal">Add Bucket Policy</a>
+        </div>
+    </div>
+    <div id="cors-configuration" tal:condition="object_type == 'bucket'">
+        <div><strong i18n:translate="">CORS Configuration</strong></div>
+        <p i18n:translate="">
+            Using CORS (Cross-Origin Resource Sharing) you can selectively allow web applications running on other
+            domains to access content in your bucket.  Each CORS rule must contain the site of origins/domains and
+            HTTP methods you want to allow for those origins. Optionally, you can also specify the headers users can
+            set in requests or access in responses and the duration the preflight responses should be cached.
+        </p>
+        <div ng-if="hasCorsConfig">
+            <div id="existing-cors-config-wrapper">
+                <a class="icon remove has-tip" i18n:attributes="title" data-reveal-id="cors-delete-confirmation-modal"
+                   title="Remove CORS Configuration" data-tooltip=""><i class="fi-minus-circle"></i></a>
+                <a class="icon edit has-tip" i18n:attributes="title" ng-click="openCorsConfigModal()"
+                   title="View/Edit CORS Configuration" data-tooltip=""><i class="fi-pencil"></i></a>
+                <span i18n:translate="">CORS Configuration</span>
+            </div>
+        </div>
+        <div ng-if="!hasCorsConfig">
+            <a class="button round tiny" i18n:translate=""
+               ng-click="openCorsConfigModal()">Add CORS Configuration</a>
+        </div>
+    </div>
     <div id="unsaved-sharing-warning-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Warning: Unsaved Sharing Entry</h3>
         <p i18n:translate="">
@@ -70,5 +114,6 @@
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/s3_sharing_panel.js')}"></script>
 </div>

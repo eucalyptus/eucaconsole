@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -38,9 +38,6 @@ from . import BaseSecureForm, ChoicesManager, TextEscapedField, BLANK_CHOICE
 
 
 class VolumeForm(BaseSecureForm):
-    """Volume form
-       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
-    """
     name_error_msg = _(u'Not a valid name')
     name = TextEscapedField(label=_(u'Name'))
     snapshot_id = wtforms.SelectField(label=_(u'Create from snapshot?'))

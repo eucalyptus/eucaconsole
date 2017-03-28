@@ -52,7 +52,7 @@
                     </div>
                     <div class="content">
                         <div>
-                            <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                            <span class="label" title="Size" i18n:attributes="title" data-tooltip="">SZ</span>
                             {{ volume.size }} GB
                         </div>
                         <div>
@@ -98,7 +98,7 @@
                 <form method="post" action="${request.route_path('instance_volume_attach', id=instance.id)}"
                       id="attach-form" data-abide="" ng-show='availableVolumeCount &gt; 0'>
                     ${structure:attach_form['csrf_token']}
-                    ${panel('form_field', field=attach_form['volume_id'], ng_attrs={'model': 'attachVolumeId', 'options': 'k as v for (k, v) in availableVolumes'})}
+                    ${panel('form_field', field=attach_form['volume_id'], ng_attrs={'model': 'attachVolumeId', 'options': 'item as item.label for item in availableVolumes track by item.id'})}
                     ${panel('form_field', field=attach_form.device)}
                     <div>
                         <label>

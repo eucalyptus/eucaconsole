@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Elastic Load Balancer Wizard JS
  * @requires AngularJS
  *
@@ -147,9 +149,9 @@ angular.module('ELBWizard', [
         $scope.pingPort = 80;
         $scope.pingPath = '/';
         $scope.responseTimeout = 5;
-        $scope.timeBetweenPings = 30;
-        $scope.failuresUntilUnhealthy = 2;
-        $scope.passesUntilHealthy = 2;
+        $scope.timeBetweenPings = '30';
+        $scope.failuresUntilUnhealthy = '2';
+        $scope.passesUntilHealthy = '2';
         $scope.showsCertificateTabDiv = false;
         $scope.certificateTab = 'SSL';
         $scope.certificateRadioButton = 'existing';
@@ -272,6 +274,8 @@ angular.module('ELBWizard', [
                         $('#securitygroup').chosen({'width': '100%', search_contains: true});
                     }
                 });
+            } else {
+                $scope.getAllSecurityGroups($scope.vpcNetwork);
             }
         }, true);
         $scope.$watch('securityGroups', function (newVal, oldVal) {
@@ -404,9 +408,6 @@ angular.module('ELBWizard', [
                 $scope.isValidationError = newVal && !$scope.bucketName;
             }
         });
-        $scope.$watch('isValidationError', function (newVal, oldVal) {
-            console.log("validation error : "+newVal);
-        });
         $scope.$watch('bucketName', function (newVal, oldVal) {
             if (newVal !== oldVal) {
                 $scope.isValidationError = $scope.loggingEnabled && !newVal;
@@ -428,18 +429,15 @@ angular.module('ELBWizard', [
         $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
             var modal = $(this);
             var modalID = $(this).attr('id');
-            if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+            if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {
                 var closeMark = modal.find('.close-reveal-modal');
                 if(!!closeMark){
                     closeMark.focus();
                 }
-            }else{
+            } else {
                 var inputElement = modal.find('input[type!=hidden]').get(0);
-                var modalButton = modal.find('button').get(0);
                 if (!!inputElement && inputElement.value === '') {
                     inputElement.focus();
-                } else if (!!modalButton) {
-                    modalButton.focus();
                 }
            }
         });
@@ -611,7 +609,10 @@ angular.module('ELBWizard', [
                 securityGroupName = sGroup.name.substr(0, 45) + "...";
             }
             $scope.securityGroupChoices[sGroup.id] = securityGroupName;
-        }); 
+            if (securityGroupName === 'default') {
+                $scope.securityGroups = [sGroup.id];  // Pre-populate default security group for VPC clouds
+            }
+        });
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
             $('#securitygroup').trigger('chosen:updated');
@@ -622,20 +623,20 @@ angular.module('ELBWizard', [
         angular.forEach($scope.availabilityZoneList, function(zone){
             var instanceCount = 0;
             angular.forEach($scope.instanceList, function(instance) {
-                if (instance.placement === zone.name) {
+                if (instance.availability_zone === zone.name) {
                     instanceCount += 1;
                 } 
             });
             $scope.availabilityZoneChoices[zone.name] = zone.name +
                 ": " + instanceCount + " instances";
         });
+        if ($scope.availabilityZones.length === 0) {
+            $scope.availabilityZones.push(Object.keys($scope.availabilityZoneChoices)[0]);
+        }
         // Timeout is needed for chosen to react after Angular updates the options
         $timeout(function(){
-            if ($scope.availabilityZones.length === 0) {
-                $scope.availabilityZones.push(Object.keys($scope.availabilityZoneChoices)[0]);
-            }
             $('#zone').trigger('chosen:updated');
-        }, 500);
+        });
     };
     $scope.updateVPCSubnetChoices = function () {
         $scope.vpcSubnetChoices = {};
@@ -692,7 +693,7 @@ angular.module('ELBWizard', [
     $scope.getInstanceCount = function (type, group) {
         var count = 0;
         angular.forEach($scope.instanceList, function (instance) {
-            if (type === 'ZONE' && instance.placement === group) {
+            if (type === 'ZONE' && instance.availability_zone === group) {
                 count += 1;
             } else if (type === 'SUBNET' && instance.subnet_id === group) {
                 count += 1;
@@ -893,6 +894,7 @@ angular.module('ELBWizard', [
         $scope.accessLogConfirmationDialog.foundation('reveal', 'close');
     };
     $scope.createELB = function ($event, confirmed) {
+        $event.preventDefault();
         confirmed = confirmed || false;
         var bucketNameField = $('#bucket_name');
         if (!$scope.isNotValid && !$scope.isValidationError) {
@@ -915,7 +917,6 @@ angular.module('ELBWizard', [
         inboundOutboundPortChecksPass = eucaCheckELBSecurityGroupRules($scope);
         if (!confirmed && !inboundOutboundPortChecksPass) {
             modal.foundation('reveal', 'open');
-            $event.preventDefault();
         } else {
             $scope.elbForm.submit();
         }

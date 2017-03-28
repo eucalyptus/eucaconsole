@@ -2,8 +2,10 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volume_monitoring.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ResourceMonitoring">
@@ -28,13 +30,29 @@
                 <dd class="active"><a i18n:translate="">Monitoring</a></dd>
             </dl>
             <div class="panel no-title cloudwatch-charts">
+                <div>
+                    <div tal:condition="volume.status == 'failed'" i18n:translate="">You cannot create alarms for a failed volume.</div>
+                    <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate=""
+                        tal:condition="volume.status != 'failed'">Create Alarm</button>
+                    <div class="modal xlarge create-alarm-modal" modal="createAlarm">
+                        <div create-alarm=""
+                            template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                            resource-type="VolumeId"
+                            resource-id="${volume.id}"
+                            resource-name="${volume_name}"
+                            namespace="AWS/EBS"
+                            default-metric="VolumeWriteOps"
+                            default-statistic="Sum"></div>
+                    </div>
+                </div>
                 <alarm-state-view
+                    tal:condition="volume.status != 'failed'"
                     template="${request.route_path('render_template', subpath='cloudwatch/alarm_state_view')}"
                     resource-id="${volume.id}" resource-name="${volume_name}"
                     resource-type="VolumeId" resource-type-name="volume" i18n:attributes="resource-type-name">
                 </alarm-state-view>
                 <hr/>
-                <h6 i18n:translate="">CloudWatch metric</h6>
+                <h6 i18n:translate="">CloudWatch metrics</h6>
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">
@@ -47,7 +65,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="actions">
+                    <div class="actions" tal:condition="monitoring_enabled">
                         <span id="refresh-charts-icon" class="action-icon" title="Refresh data" i18n:attributes="title"
                               ng-click="chartsCtrl.refreshCharts()"><i class="fa fa-refresh"></i></span>
                     </div>
@@ -60,7 +78,7 @@
                         <span i18n:translate="" tal:condition="layout.cloud_type == 'euca'">monitoring enabled.</span>
                         <span i18n:translate="" tal:condition="layout.cloud_type == 'aws'">detailed monitoring enabled.</span>
                     </p>
-                    <p tal:condition="not is_attached" id="volume-unattached-notice">
+                    <p tal:condition="not is_attached and volume.status != 'failed'" id="volume-unattached-notice">
                         <a href="${request.route_path('volume_view', id=volume.id)}?attachmodal=1" i18n:translate="">
                             Attach this volume to an instance
                         </a>
@@ -76,7 +94,7 @@
                 </div>
                 <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-3" tal:condition="monitoring_enabled"
                     id="charts-container">
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="" ng-click="chartsCtrl.showLargeChart(chart.title, chart.metric, chart.statistic, chart.unit, 'AWS/EBS', '${volume.id}', 'VolumeId')">
                         <h6 ng-attr-title="{{ chart.help }}">{{ chart.title }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
@@ -95,6 +113,9 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! HELP CONTENT HERE -->
+                 <div id="help-html-console_volume_detail_monitoring"
+                     ng-include="'${layout.help_path('console_volume_detail_monitoring.html')}'">
+                 </div> 
             </div>
         </div>
         <form method="post" id="monitoring-form" tal:condition="is_attached"
@@ -111,10 +132,16 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/metric-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/resource_monitoring.js')}"></script>
 </div>

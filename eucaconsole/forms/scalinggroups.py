@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -98,6 +98,14 @@ class BaseScalingGroupForm(BaseSecureForm):
             validators.InputRequired(message=health_check_period_error_msg),
         ],
     )
+    termination_policies_error_msg = _(u'At least one termination policy is required')
+    termination_policies_help_text = _(u'Add termination policies in the order they should be executed.')
+    termination_policies = wtforms.SelectMultipleField(
+        label=_(u'Termination policies'),
+        validators=[
+            validators.InputRequired(message=termination_policies_error_msg),
+        ],
+    )
 
     def __init__(self, request, scaling_group=None, launch_configs=None,
                  autoscale_conn=None, ec2_conn=None, vpc_conn=None, elb_conn=None, **kwargs):
@@ -123,6 +131,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.vpc_subnet.choices = self.get_vpc_subnet_choices()
         self.availability_zones.choices = self.get_availability_zone_choices()
         self.load_balancers.choices = self.get_load_balancer_choices()
+        self.termination_policies.choices = self.get_termination_policy_choices()
 
         # Set error messages
         self.launch_config.error_msg = self.launch_config_error_msg
@@ -132,9 +141,11 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.max_size.error_msg = self.max_size_error_msg
         self.min_size.error_msg = self.min_size_error_msg
         self.health_check_period.error_msg = self.health_check_period_error_msg
+        self.termination_policies.error_msg = self.termination_policies_error_msg
 
         # Set help text
         self.vpc_network.help_text = self.vpc_network_helptext
+        self.termination_policies.help_text = self.termination_policies_help_text
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name
@@ -226,6 +237,7 @@ class ScalingGroupCreateForm(BaseScalingGroupForm):
 
         # Set initial data
         self.availability_zones.data = [value for value, label in self.availability_zones.choices]
+        self.termination_policies.data = ['Default']
 
 
 class ScalingGroupEditForm(BaseScalingGroupForm):
@@ -239,14 +251,6 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
             validators.InputRequired(message=default_cooldown_error_msg),
         ],
     )
-    termination_policies_error_msg = _(u'At least one termination policy is required')
-    termination_policies_help_text = _(u'Add termination policies in the order they should be executed.')
-    termination_policies = wtforms.SelectMultipleField(
-        label=_(u'Termination policies'),
-        validators=[
-            validators.InputRequired(message=termination_policies_error_msg),
-        ],
-    )
 
     def __init__(self, request, scaling_group=None,
                  autoscale_conn=None, ec2_conn=None, vpc_conn=None, launch_configs=None, **kwargs):
@@ -254,17 +258,12 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
             request, scaling_group=scaling_group, autoscale_conn=autoscale_conn,
             ec2_conn=ec2_conn, vpc_conn=vpc_conn, launch_configs=launch_configs, **kwargs)
 
-        # Set choices
-        self.termination_policies.choices = self.get_termination_policy_choices()
-
         # Set error messages
         self.default_cooldown.error_msg = self.default_cooldown_error_msg
-        self.termination_policies.error_msg = self.termination_policies_error_msg
 
         # Set help text
         self.default_cooldown.help_text = self.default_cooldown_help_text
         self.health_check_period.help_text = self.health_check_period_help_text
-        self.termination_policies.help_text = self.termination_policies_help_text
 
         if scaling_group is not None:
             self.default_cooldown.data = scaling_group.default_cooldown

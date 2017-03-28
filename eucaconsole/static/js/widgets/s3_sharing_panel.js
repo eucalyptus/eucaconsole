@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview S3 Sharing Panel JS
  * @requires AngularJS
  *
  */
-angular.module('S3SharingPanel', ['EucaConsoleUtils'])
-    .controller('S3SharingPanelCtrl', function ($scope, $timeout, eucaUnescapeJson) {
+angular.module('S3SharingPanel', ['EucaConsoleUtils', 'ModalModule'])
+    .controller('S3SharingPanelCtrl', function ($scope, $timeout, eucaUnescapeJson, ModalService) {
         $scope.s3AclTextarea = $('#s3-sharing-acl');
         $scope.sharingAccountList = [];
         $scope.isNotValid = true;
@@ -76,6 +78,9 @@ angular.module('S3SharingPanel', ['EucaConsoleUtils'])
                     $scope.$emit('s3:sharingPanelAclUpdated');
                 }
             });
+        };
+        $scope.openCorsConfigModal = function () {
+            ModalService.openModal('corsConfigModal');
         };
         $scope.syncGrants = function() {
             $scope.s3AclTextarea.val(JSON.stringify($scope.grantsArray));

@@ -1,0 +1,95 @@
+@import '../includes/eucavariables';
+
+
+// Allow modal dialog positioning to be configurable
+// Modal position defaults to 40px above containing element set with positioning context
+// Note: Use fixed position only for modals with a height smaller than the viewport height
+//
+@mixin modal-position($top: -40px, $position: absolute) {
+    @keyframes slidedown {
+      from {
+          opacity: 0;
+          top: -1000px;
+      }
+      to {
+          opacity: 1;
+          top: $top;
+      }
+    }
+    .modal {
+        .modal-content {
+            top: $top;
+            position: $position;
+        }
+        &.open {
+            display: block;
+            .modal-content {
+                animation-name: slidedown;
+                animation-duration: 0.3s;
+            }
+        }
+    }
+}
+
+
+@mixin modal-width($width:60%) {
+    .modal-content {
+        width: $width;
+    }
+}
+
+
+.modal {
+    display: none;
+    z-index: 10000;
+    &.tiny  { @include modal-width(30%); }
+    &.small { @include modal-width(40%); }
+    &.medium  { @include modal-width(60%); }
+    &.large { @include modal-width(70%); }
+    &.xlarge { @include modal-width(95%); }
+    .modal-content {
+        opacity: 1;
+        background-color: #FFF;
+        z-index: 100000;
+        width: 60%;
+        max-width: 65rem;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        border-radius: 3px;
+        padding: 1.875rem;
+        border: solid 1px #666;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        .close-modal {
+            font-size: 2.5rem;
+            line-height: 1;
+            position: absolute;
+            top: 0.635rem;
+            right: 1.375rem;
+            color: #AAA;
+            font-weight: bold;
+            cursor: pointer;
+            &:hover {
+                color: $hpe-green;
+            }
+        }
+        button {
+            margin: 0;
+        }
+        input[type="number"] {
+            width: 100%;
+        }
+    }
+
+    .modal-bg {
+        z-index: 99999;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.45);
+    }
+}
+
+@include modal-position();

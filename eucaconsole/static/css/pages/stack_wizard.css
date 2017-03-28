@@ -11,13 +11,16 @@
 .wizard.has-title { position: relative; padding-top: 42px; }
 .wizard.has-title h6.title { position: absolute; text-transform: uppercase; letter-spacing: 1px; top: 0; left: 0; right: 0; line-height: 2.5rem; padding-left: 12px; background-color: #01a982; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .wizard .row.controls-wrapper.readonly { margin-bottom: 0.5rem; }
-.wizard .tabs dd a { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; box-shadow: none; white-space: nowrap; padding: 8px 1rem; }
+.wizard .tabs dd { padding-right: 1rem; padding-left: 1rem; }
+.wizard .tabs dd a { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; box-shadow: none; white-space: nowrap; padding: 8px 0 6px 0; }
 .wizard .tabs dd a:hover { color: #666666; border-bottom: 2px solid #666666; }
 .wizard .tabs dd a .cir { background-color: #666666; }
-.wizard .tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
-.wizard .tabs dd.active .cir { background-color: #000000; }
+.wizard .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
+.wizard .tabs dd.active .cir { background-color: #333333; }
 .wizard .tabs dd.disabled { color: #cccccc; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; padding: 8px 1rem; }
-.wizard .tabs dd.disabled .cir { margin-right: 8px; }
+.wizard .tabs dd.disabled a { color: #cccccc; margin-top: -8px; }
+.wizard .tabs dd.disabled a:hover { border-bottom: none; cursor: default; }
+.wizard .tabs dd.disabled .cir { margin-right: 8px; background-color: #cccccc; }
 .wizard .tabs dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #cccccc; color: white; margin-right: 4px; }
 .wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; }
 .wizard .tabs-content div.large-3.small-4.columns { padding-left: 0; }
@@ -30,7 +33,7 @@
 
 .summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
 .summary label { position: relative; right: -1rem; color: #666666; margin-top: 4px; cursor: default; }
-.summary .value { word-break: break-all; line-height: 1rem; color: #000000; }
+.summary .value { word-break: break-all; line-height: 1rem; color: #333333; }
 .summary .value.breakword { word-break: normal; word-wrap: break-word; }
 .summary .row { margin-bottom: 5px; }
 .summary .title { font-weight: bold; color: #666666; border-bottom: 1px solid #cccccc; margin-top: 7px; margin-bottom: 0.25rem; }
@@ -64,7 +67,7 @@
 
 small.error { margin-left: 1.5rem; }
 
-.error label { color: #6a737b; }
+.error label { color: #666666; }
 
 #userdatalabel { right: 0; }
 

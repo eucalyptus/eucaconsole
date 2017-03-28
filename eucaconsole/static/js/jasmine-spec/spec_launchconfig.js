@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for LaunchConfig JS 
  * @requires Jasmine, AngularJS mock
  *

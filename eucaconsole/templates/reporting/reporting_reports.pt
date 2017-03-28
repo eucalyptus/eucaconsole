@@ -1,0 +1,65 @@
+<div i18n:domain="eucaconsole">
+    <div class="section">
+        <h6 class="section-label" i18n:translate="">Usage Reports</h6>
+        <a i18n:translate="" ng-click="reports.showEC2InstanceUsageReport()">EC2 Instance Usage Report</a>
+        <p i18n:translate="">
+            An interactive report that shows usage for your EC2 instances over a specified period
+        </p>
+        <a i18n:translate="" ng-click="reports.showUsageReportsByService()">Usage Reports by Service</a>
+        <p i18n:translate="">
+            Downloadable reports for usage by service (e.g. EC2) for a given time period and granularity
+        </p>
+    </div>
+    <div class="section">
+        <h6 class="section-label" i18n:translate="">Monthly Usage Details</h6>
+        <p i18n:translate="">
+            Usage details for a given month, for the entire account or segmented by users in this account
+        </p>
+        <div class="row inline stacked controls-wrapper">
+            <div class="columns">
+                <label class="left stack-label">
+                    <span i18n:translate="">Month</span>
+                </label>
+            </div>
+            <div class="large-6 small-6 columns field">
+                <select required="required" name="month"
+                        ng-model="reports.values.monthSelection"
+                        ng-options="(month|date:'MMMM yyyy') for month in reports.monthChoices"
+                        ng-change="reports.loadMonthlyData()">
+                </select>
+                <span ng-show="reports.loadingUsageData">&nbsp;<i class="busy"></i></span>
+            </div>
+            <div class="large-6 small-6 columns field">
+                <a class="button round tiny right" i18n:translate="" ng-click="reports.downloadCSV()">Download CSV</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns gridwrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th i18n:translate="">Eucalyptus Service Usage Details</th>
+                            <th class="totals" i18n:translate="">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="usage in reports.monthlyUsage">
+                            <td ng-if="usage.length == 1" colspan="2">
+                                <span class="usage-service">{{ usage[0] }}</span>
+                            </td>
+                            <td ng-if="usage.length > 1">
+                                &nbsp;&nbsp;{{ usage[1] }}
+                            </td>
+                            <td ng-if="usage.length > 1" class="totals">
+                                {{ usage[2] }} {{ usage[3] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal large" modal="usageReports">
+        <div usage-reports-dialog=""></div>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -56,6 +56,7 @@ from ..constants.elbs import (
     ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX, ELB_CUSTOM_SECURITY_POLICY_NAME_PREFIX,
     AWS_ELB_ACCOUNT_IDS)
 from ..forms import ChoicesManager
+from ..forms.angularcompat import clean_value
 from ..forms.buckets import CreateBucketForm
 from ..forms.elbs import (
     ELBForm, ELBDeleteForm, CreateELBForm, ELBHealthChecksForm, ELBsFiltersForm,
@@ -321,6 +322,8 @@ class BaseELBView(TaggedItemView):
         req_params = self.request.params
         params_logging_enabled = req_params.get('logging_enabled') == 'y'
         params_bucket_name = req_params.get('bucket_name')
+        if params_bucket_name and params_bucket_name.startswith('string:'):
+            params_bucket_name = clean_value(params_bucket_name)
         params_bucket_prefix = req_params.get('bucket_prefix', '')
         params_collection_interval = int(req_params.get('collection_interval', 60))
         if elb is not None:
@@ -413,7 +416,7 @@ class BaseELBView(TaggedItemView):
         instance_port = 443
         self.elb_conn.set_lb_policies_of_backend_server(elb_name, instance_port, backend_policy_name)
 
-    def set_security_policy(self, elb_name, elb=None):
+    def set_security_policy(self, elb_name, create=False):
         """
         See http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/ssl-config-update.html
         """
@@ -425,8 +428,8 @@ class BaseELBView(TaggedItemView):
         if not has_https_listener:
             return None  # Don't set security policy unless an HTTPS listener is set
         elb_security_policy_updated = req_params.get('elb_security_policy_updated') == 'on'
-        if not elb_security_policy_updated:
-            return None  # Don't set security policy unless Security Policy dialog submit button has been clicked
+        if not create and not elb_security_policy_updated:
+            return None  # Set security policy only when policy has been updated on ELB details page
         latest_predefined_policy = self.get_latest_predefined_policy()
         if not latest_predefined_policy:
             return None  # Policy will fail unless at least one predefined security policy is configured for the cloud
@@ -459,6 +462,8 @@ class BaseELBView(TaggedItemView):
             # Set security policy for HTTPS listener in ELB
             policies = [policy_name]
             self.elb_conn.set_lb_policies_of_listener(elb_name, 443, policies)
+            if create:  # Delete default policy auto-assigned during ELB creation to ensure only selected policy is set
+                self.elb_conn.delete_lb_policy(elb_name, latest_predefined_policy)
 
     def get_latest_predefined_policy(self):
         if self.predefined_policy_choices:
@@ -552,6 +557,7 @@ class BaseELBView(TaggedItemView):
         return subnets
 
     def get_availability_zones(self):
+        # TODO: switch this over to choice manager in next release to leverage caching
         availability_zones = []
         if self.ec2_conn:
             with boto_error_handler(self.request):
@@ -562,7 +568,7 @@ class BaseELBView(TaggedItemView):
 
     def add_elb_tags(self, elb_name):
         tags_json = self.request.params.get('tags', '{}')
-        tags_dict = self._normalize_tags(json.loads(tags_json))
+        tags_dict = self.normalize_tags(json.loads(tags_json))
         add_tags_params = {'LoadBalancerNames.member.1': elb_name}
         index = 1
         for key, value in tags_dict.items():
@@ -682,6 +688,7 @@ class ELBView(BaseELBView):
                 time.sleep(1)  # Delay is needed to avoid missing listeners post-update
                 self.update_elb_tags(self.elb.name)
                 self.set_security_policy(self.elb.name)
+                self.cleanup_security_policies(delete_stale_policies=True)
                 self.configure_access_logs(elb=self.elb)
                 if self.is_vpc_supported and self.elb.security_groups != securitygroup:
                     self.elb_conn.apply_security_groups_to_lb(self.elb.name, securitygroup)
@@ -773,7 +780,6 @@ class ELBView(BaseELBView):
 
             listeners_to_add = [x for x in listeners_args if x not in normalized_elb_listeners]
             listeners_to_remove = [x[0] for x in normalized_elb_listeners if x not in listeners_args]
-            self.cleanup_security_policies(delete_stale_policies=True)
             if listeners_to_remove:
                 if 443 in listeners_to_remove:
                     self.cleanup_backend_policies()  # Note: this must be before HTTPS listeners are removed
@@ -792,7 +798,6 @@ class ELBView(BaseELBView):
                 return None  # Skip cleanup if security policy wasn't updated
             elb_listener_ports = [x[0] for x in self.elb.listeners]
             if 443 in elb_listener_ports:
-                self.elb_conn.set_lb_policies_of_listener(self.elb.name, 443, [])
                 if delete_stale_policies:
                     self.delete_stale_policies()
 
@@ -866,6 +871,7 @@ class ELBInstancesView(BaseELBView):
             if not self.elb:
                 raise HTTPNotFound()
             self.cross_zone_enabled = self.is_cross_zone_enabled(elb_attrs=elb_attrs)
+            self.scaling_groups = self.autoscale_conn.get_all_groups()
         self.elb_form = ELBInstancesForm(
             self.request, elb=self.elb, cross_zone_enabled=self.cross_zone_enabled,
             formdata=self.request.params or None)
@@ -875,6 +881,8 @@ class ELBInstancesView(BaseELBView):
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         search_facets = filters_form.facets
         filter_keys = ['id', 'name', 'placement', 'state', 'tags', 'vpc_subnet_display', 'vpc_name']
+        self.elb_scaling_group_names = [
+            asg.name for asg in self.scaling_groups if self.elb.name in asg.load_balancers]
         self.render_dict = dict(
             elb=self.elb,
             elb_name=self.escape_braces(self.elb.name) if self.elb else '',
@@ -894,24 +902,26 @@ class ELBInstancesView(BaseELBView):
     @view_config(route_name='elb_instances_update', request_method='POST', renderer=TEMPLATE)
     def elb_instances_update(self):
         if self.elb_form.validate():
-            vpc_subnet = self.request.params.getall('vpc_subnet') or None
-            if vpc_subnet == 'None':
-                vpc_subnet = None
-            zone = self.request.params.getall('zone') or None
+            vpc_subnets = self.request.params.getall('vpc_subnet') or []
+            zones = self.request.params.getall('zone') or []
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') == 'y'
-            instances = self.request.params.getall('instances') or None
+            instances = self.request.params.getall('instances') or []
+            for scaling_group_name in self.elb_scaling_group_names:
+                # NOTE: Disabled checkboxes don't populate request.params.getall('instances')
+                #       So ensure ASG instances aren't de-registered when updating ELB instances list
+                instances += self.get_scaling_group_instance_ids(scaling_group_name)
             location = self.request.route_path('elb_instances', id=self.elb.name)
             prefix = _(u'Unable to update load balancer')
             template = u'{0} {1} - {2}'.format(prefix, self.elb.name, '{0}')
             with boto_error_handler(self.request, location, template):
-                if vpc_subnet is None:
-                    self.update_elb_zones(self.elb.name, self.elb.availability_zones, zone)
+                if self.is_vpc_supported:
+                    self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnets)
+                else:
+                    self.update_elb_zones(self.elb.name, self.elb.availability_zones, zones)
                     if cross_zone_enabled:
                         self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', True)
                     else:
                         self.elb_conn.modify_lb_attribute(self.elb.name, 'crossZoneLoadBalancing', False)
-                else:
-                    self.update_elb_subnets(self.elb.name, self.elb.subnets, vpc_subnet)
                 self.update_elb_instances(self.elb.name, self.elb.instances, instances)
                 prefix = _(u'Successfully updated load balancer')
                 msg = u'{0} {1}'.format(prefix, self.elb.name)
@@ -921,6 +931,13 @@ class ELBInstancesView(BaseELBView):
         else:
             self.request.error_messages = self.elb_form.get_errors_list()
         return self.render_dict
+
+    def get_scaling_group_instance_ids(self, scaling_group_name):
+        scaling_groups = [asg for asg in self.scaling_groups if asg.name == scaling_group_name]
+        if scaling_groups:
+            instances = scaling_groups[0].instances or []
+            return [instance.instance_id for instance in instances]
+        return []
 
     def is_cross_zone_enabled(self, elb_attrs=None):
         attrs = elb_attrs or self.elb.get_attributes()
@@ -942,6 +959,8 @@ class ELBInstancesView(BaseELBView):
             'instances': self.get_elb_instance_list(),
             'instances_json_endpoint': self.request.route_path('instances_json'),
             'cross_zone_enabled': self.cross_zone_enabled,
+            'elb_scaling_group_names': self.elb_scaling_group_names,
+            'is_detail_page': True
         }))
 
     def get_all_instances(self):
@@ -980,50 +999,32 @@ class ELBInstancesView(BaseELBView):
         return instances
 
     def update_elb_zones(self, elb_name, prev_zones, new_zones):
-        if prev_zones and new_zones:
-            add_zones = []
-            remove_zones = []
-            for prev_zone in prev_zones:
-                exists_zone = False
-                for new_zone in new_zones:
-                    if prev_zone == new_zone:
-                        exists_zone = True
-                if exists_zone is False:
-                    remove_zones.append(prev_zone)
-            for new_zone in new_zones:
-                exists_zone = False
-                for prev_zone in prev_zones:
-                    if prev_zone == new_zone:
-                        exists_zone = True
-                if exists_zone is False:
-                    add_zones.append(new_zone)
-            if remove_zones:
-                self.elb_conn.disable_availability_zones(elb_name, remove_zones)
-            if add_zones:
-                self.elb_conn.enable_availability_zones(elb_name, add_zones)
+        to_add = []
+        to_remove = []
+        for zone in new_zones:
+            if zone not in prev_zones:
+                to_add.append(zone)
+        for zone in prev_zones:
+            if zone not in new_zones:
+                to_remove.append(zone)
+        if to_remove:
+            self.elb_conn.disable_availability_zones(elb_name, to_remove)
+        if to_add:
+            self.elb_conn.enable_availability_zones(elb_name, to_add)
 
     def update_elb_subnets(self, elb_name, prev_subnets, new_subnets):
-        if prev_subnets and new_subnets:
-            add_subnets = []
-            remove_subnets = []
-            for prev_subnet in prev_subnets:
-                exists_subnet = False
-                for new_subnet in new_subnets:
-                    if prev_subnet == new_subnet:
-                        exists_subnet = True
-                if exists_subnet is False:
-                    remove_subnets.append(prev_subnet)
-            for new_subnet in new_subnets:
-                exists_subnet = False
-                for prev_subnet in prev_subnets:
-                    if prev_subnet == new_subnet:
-                        exists_subnet = True
-                if exists_subnet is False:
-                    add_subnets.append(new_subnet)
-            if remove_subnets:
-                self.elb_conn.detach_lb_from_subnets(elb_name, remove_subnets)
-            if add_subnets:
-                self.elb_conn.attach_lb_to_subnets(elb_name, add_subnets)
+        to_add = []
+        to_remove = []
+        for subnet in new_subnets:
+            if subnet not in prev_subnets:
+                to_add.append(subnet)
+        for subnet in prev_subnets:
+            if subnet not in new_subnets:
+                to_remove.append(subnet)
+        if to_remove:
+            self.elb_conn.detach_lb_from_subnets(elb_name, to_remove)
+        if to_add:
+            self.elb_conn.attach_lb_to_subnets(elb_name, to_add)
 
     def update_elb_instances(self, elb_name, prev_instances, new_instances):
         add_instances = []
@@ -1062,11 +1063,11 @@ class ELBHealthChecksView(BaseELBView):
     """ELB detail page - Health Checks tab"""
     TEMPLATE = '../templates/elbs/elb_healthchecks.pt'
 
-    def __init__(self, request, elb=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(ELBHealthChecksView, self).__init__(request, **kwargs)
         self.title_parts.append(_(u'Health Checks'))
         with boto_error_handler(request):
-            self.elb = elb or self.get_elb()
+            self.elb = self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
             self.elb_form = ELBHealthChecksForm(
@@ -1105,11 +1106,11 @@ class ELBMonitoringView(BaseELBView):
     """ELB detail page - Monitoring tab"""
     TEMPLATE = '../templates/elbs/elb_monitoring.pt'
 
-    def __init__(self, request, elb=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(ELBMonitoringView, self).__init__(request, **kwargs)
         self.title_parts.append(_(u'Monitoring'))
         with boto_error_handler(request):
-            self.elb = elb or self.get_elb()
+            self.elb = self.get_elb()
             if not self.elb:
                 raise HTTPNotFound()
             self.availability_zones = [zone.get('id') for zone in self.get_availability_zones()]
@@ -1134,6 +1135,93 @@ class ELBMonitoringView(BaseELBView):
             'duration_granularities_mapping': DURATION_GRANULARITY_CHOICES_MAPPING,
             'availability_zones': self.availability_zones,
         }))
+
+
+class ELBWizardView(BaseView):
+
+    TEMPLATE = '../templates/elbs/wizard/main.pt'
+
+    def __init__(self, request):
+        super(ELBWizardView, self).__init__(request)
+        self.base_href = '/elbs/wizard'
+        self.connection = self.get_connection(conn_type='iam')
+        self.render_dict = {}
+
+    @view_config(route_name='elb_wizard', renderer=TEMPLATE)
+    def elb_wizard(self):
+        self.title_parts = [_(u'Create')]
+        self.render_dict.update(
+            base_href=self.base_href,
+            cloud_type=self.cloud_type,
+            is_vpc_supported=BaseView.is_vpc_supported(self.request)
+        )
+        return self.render_dict
+
+    @view_config(route_name='elb_certificate', request_method="GET", renderer='json')
+    def list_certs(self):
+
+        try:
+            response = self.connection.get_all_server_certs().get(
+                'list_server_certificates_response', {})
+            result = response.get('list_server_certificates_result', {})
+
+            certificates = result.get('server_certificate_metadata_list', [])
+            return JSONResponse(status=200, message=certificates)
+        except BotoServerError as err:
+            return JSONResponse(status=200, message=err.message)
+        except AttributeError as err:
+            return JSONResponse(status=403, message='Forbidden')
+
+    @view_config(route_name='elb_certificate', request_method="POST", renderer='json')
+    def publish_cert(self):
+        cert = json.loads(self.request.body)
+
+        name = cert.get('name', None)
+        public_key = cert.get('publicKey', None)
+        private_key = cert.get('privateKey', None)
+        cert_chain = cert.get('certificateChain', None)
+
+        try:
+            certificate_result = self.connection.upload_server_cert(
+                name, public_key, private_key, cert_chain=cert_chain)
+
+            prefix = _(u'Successfully uploaded server certificate')
+            msg = u'{0} {1}'.format(prefix, name)
+            certificate_arn = certificate_result.upload_server_certificate_result.server_certificate_metadata.arn
+
+            return JSONResponse(status=200, message=msg, id=certificate_arn)
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message)  # Malformed certificate
+
+
+class ELBXHRView(BaseView):
+    """
+    Low-overhead views for XHR calls to support client-side components
+    """
+
+    def __init__(self, request, **kwargs):
+        super(ELBXHRView, self).__init__(request, **kwargs)
+        self.elb_conn = self.get_connection(conn_type='elb')
+
+    @view_config(route_name='elb_instances_filters', request_method='GET', renderer='json', xhr=True)
+    def elb_instances_filters(self):
+        ec2_conn = self.get_connection()
+        iam_conn = self.get_connection(conn_type='iam')
+        autoscale_conn = self.get_connection(conn_type='autoscale')
+        s3_conn = self.get_connection(conn_type='s3')
+        vpc_conn = self.get_connection(conn_type='vpc')
+        filters_form = ELBInstancesFiltersForm(
+            self.request, ec2_conn=ec2_conn, autoscale_conn=autoscale_conn,
+            iam_conn=iam_conn, vpc_conn=vpc_conn,
+            cloud_type=self.cloud_type)
+        search_facets = filters_form.facets
+        string_facets = BaseView.escape_json(json.dumps(search_facets))
+        return dict(results=string_facets)
+        
+    @view_config(route_name='elb_policies_json', request_method='GET', renderer='json', xhr=True)
+    def elb_policies_json_view(self):
+        predefined_policy_choices = ChoicesManager(conn=self.elb_conn).predefined_policy_choices(add_blank=False)
+        return dict(results=[policy[0] for policy in predefined_policy_choices])
 
 
 class CreateELBView(BaseELBView):
@@ -1232,11 +1320,11 @@ class CreateELBView(BaseELBView):
         if self.create_form.validate():
             name = self.request.params.get('name')
             listeners_args = self.get_listeners_args()
-            vpc_subnet = self.request.params.getall('vpc_subnet') or None
+            vpc_subnet = self.create_form.vpc_subnet.data or None
             if vpc_subnet == 'None':
                 vpc_subnet = None
-            securitygroup = self.request.params.getall('securitygroup') or None
-            zone = self.request.params.getall('zone') or None
+            securitygroup = self.create_form.securitygroup.data or None
+            zone = self.create_form.zone.data or None
             cross_zone_enabled = self.request.params.get('cross_zone_enabled') or False
             instances = self.request.params.getall('instances') or None
             backend_certificates = self.request.params.get('backend_certificates') or None
@@ -1259,7 +1347,7 @@ class CreateELBView(BaseELBView):
                 if backend_certificates is not None and backend_certificates != '[]':
                     self.handle_backend_certificate_create(name)
                 self.add_elb_tags(name)
-                self.set_security_policy(name)
+                self.set_security_policy(name, create=True)
                 if self.request.params.get('logging_enabled') == 'y':
                     self.configure_access_logs(elb_name=name)
                 prefix = _(u'Successfully created elastic load balancer')

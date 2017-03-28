@@ -163,11 +163,11 @@
                     <metal:block metal:use-macro="layout.global_macros['help_expando']" />
                     <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                         <!-- HELP CONTENT -->
-                        <div id="help-html-console_create_stack_general" ng-show="currentStepIndex == 1"
-                            ng-include="'${layout.help_path('console_create_stack_general.html')}'">
+                        <div id="help-html-console_update_stack_template" ng-show="currentStepIndex == 1"
+                            ng-include="'${layout.help_path('console_update_stack_template.html')}'">
                         </div> 
-                        <div id="help-html-console_create_stack_parameters" ng-show="currentStepIndex == 2"
-                            ng-include="'${layout.help_path('console_create_stack_parameters.html')}'">
+                        <div id="help-html-console_update_stack_parameters" ng-show="currentStepIndex == 2"
+                            ng-include="'${layout.help_path('console_update_stack_parameters.html')}'">
                         </div> 
                     </div>
                 </div>
@@ -231,7 +231,6 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_aws_dialogs.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_update.js')}"></script>
 </div>

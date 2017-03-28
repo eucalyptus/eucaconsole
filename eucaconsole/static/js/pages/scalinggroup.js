@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Scaling Group detail page JS
  * @requires AngularJS
  *
@@ -226,6 +228,11 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
             $(document).on('click', '.cancel-link', function(event) {
                 window.onbeforeunload = null;
             });
+
+            $scope.$on('tagUpdate', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
@@ -239,16 +246,10 @@ angular.module('ScalingGroupPage', ['TagEditorModule', 'EucaConsoleUtils'])
                     if (!!closeMark) {
                         closeMark.focus();
                     }
-                }else{
+                } else {
                     var inputElement = modal.find('input[type!=hidden]').get(0);
-                    var modalButton = modal.find('button').get(0);
-                    var modalLink = modal.find('a').get(0);
                     if (!!inputElement) {
                         inputElement.focus();
-                    } else if (!!modalButton) {
-                        modalButton.focus();
-                    } else if (!!modalLink) {
-                        modalLink.focus();
                     }
                }
             });

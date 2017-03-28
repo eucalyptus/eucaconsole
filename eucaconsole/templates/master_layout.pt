@@ -12,10 +12,11 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width" />
+    <base href="/"/>
     <link rel="shortcut icon" href="${request.static_path('eucaconsole:static/img/favicon.ico')}" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/thirdparty/angular-csp.css')}"
           type="text/css" media="screen" charset="utf-8" />
-    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/fonts/foundation/foundation-icons.css')}"
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/fonts/foundation-icons.css')}"
           type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/thirdparty/chosen.min.css')}" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/eucaconsole.css')}"
@@ -25,7 +26,7 @@
     <metal:block metal:define-slot="head_css" />
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
@@ -56,10 +57,11 @@
                     <span class="${layout.cloud_type} down-caret"></span>
                 </a>
                 <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
-                    <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
-                    <li tal:condition="layout.cloud_type == 'euca'">
+                    <li><a href="${layout.help_url}" target="_blank" rel="noopener noreferrer" i18n:translate="">Help</a></li>
+                    <li tal:condition="layout.auth_type == 'password'">
                         <a href="${request.route_path('managecredentials')}" i18n:translate="">Manage credentials</a>
                     </li>
+                    <li><a href="${request.route_path('reporting', subpath='')}" i18n:translate="">Usage Reporting</a></li>
                     <li>
                         <a i18n:translate="" data-reveal-id="about-modal">About your cloud</a>
                     </li>
@@ -110,7 +112,7 @@
         </form>
     </footer>
     <div id="about-modal" class="reveal-modal small" data-reveal="">
-        <a href="${layout.help_path('about-the-team.html')}" target="_blank"><h3 id="about-cloud" i18n:translate="">About your cloud</h3></a>
+        <a href="${layout.help_path('about-the-team.html')}" target="_blank" rel="noopener noreferrer"><h3 id="about-cloud" i18n:translate="">About your cloud</h3></a>
         <p>
             <span i18n:translate="">Eucalyptus cloud software version:</span>
             <strong>${layout.version}</strong>

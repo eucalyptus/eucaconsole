@@ -24,7 +24,8 @@
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right"
                    data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">View details</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">Monitor</a></li>
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/instances">Manage instances</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete load balancer</a></li>
                 </ul>
@@ -79,7 +80,8 @@
                         <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round"
                            data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">View details</a></li>
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/monitoring">Monitor</a></li>
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}/instances">Manage instances</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete load balancer</a></li>
                         </ul>
@@ -100,6 +102,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/elbs.js')}"></script>

@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Instance Selector Directive JS
  * @requires AngularJS
  *
@@ -8,7 +10,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
     return {
         restrict: 'E',
         scope: {
-            option_json: '@options'
+            option_json: '@options',
+            selectedIds: '=instanceList'
         },
         templateUrl: function (scope, elem) {
             return elem.template;
@@ -29,6 +32,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
             $scope.tableText = {};
             $scope.instancesLoading = true;
             $scope.selectedZones = [];
+            $scope.elbScalingGroupNames = [];
+            $scope.isDetailPage = false;
             $scope.initSelector = function () {
                 var options = JSON.parse(eucaUnescapeJson($scope.option_json));
                 $scope.setInitialValues(options);
@@ -57,6 +62,8 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                 $scope.instanceHealthMapping = $scope.getInstanceHealthMapping();
                 $scope.allAvailabilityZones = options.availability_zone_choices;
                 $scope.allSubnets = options.vpc_subnet_choices;
+                $scope.elbScalingGroupNames = options.elb_scaling_group_names;
+                $scope.isDetailPage = options.is_detail_page || false;
                 if (options.hasOwnProperty('is_vpc_supported')) {
                     $scope.isVPCSupported = options.is_vpc_supported;
                 }
@@ -114,8 +121,10 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     });
                     $scope.$emit('eventUpdateSelectedInstanceList', $scope.selectedInstanceList);
                 }, true);
-                $scope.$watch('availabilityZones', function () {
-                    $scope.$emit('eventUpdateAvailabilityZones', $scope.availabilityZones);
+                $scope.$watch('availabilityZones', function (newVal, oldVal) {
+                    if (newVal != oldVal) {
+                        $scope.$emit('eventUpdateAvailabilityZones', $scope.availabilityZones);
+                    }
                 }, true);
                 $scope.$watch('vpcSubnets', function () {
                     $scope.$emit('eventUpdateVPCSubnets', $scope.vpcSubnets);
@@ -223,6 +232,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     var results = oData ? oData.results : [];
                     $scope.allInstanceList = results;
                     $scope.instancesLoading = false;
+                    $scope.initSelectedInstances($scope.selectedIds);
                 }).error(function (oData) {
                     eucaHandleError(oData, status);
                 });
@@ -281,7 +291,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         if (selectedInstance.id === instance.id) {
                             var includesZone = false;
                             angular.forEach($scope.availabilityZones, function(zone) {
-                                if (zone === instance.placement) {
+                                if (zone === instance.availability_zone) {
                                     includesZone = true;
                                 }
                             });
@@ -318,12 +328,12 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                         if (selectedInstance.id === instance.id) {
                             var existsZone = false;
                             angular.forEach($scope.availabilityZones, function (zone) {
-                                if (zone === instance.placement) {
+                                if (zone === instance.availability_zone) {
                                     existsZone = true;
                                 }
                             });
                             if (existsZone === false) {
-                                $scope.availabilityZones.push(instance.placement);
+                                $scope.availabilityZones.push(instance.availability_zone);
                             }
                         } 
                     });
@@ -344,7 +354,7 @@ angular.module('EucaConsoleUtils').directive('instanceSelector', function() {
                     angular.forEach($scope.allAvailabilityZones, function (zone) {
                         $scope.$parent.instanceCounts[zone.name] = 0;
                         angular.forEach($scope.selectedInstanceList, function (selectedInstance) {
-                            if (zone.name === selectedInstance.placement) {
+                            if (zone.name === selectedInstance.availability_zone) {
                                 $scope.$parent.instanceCounts[zone.name] += 1;
                             }
                         });

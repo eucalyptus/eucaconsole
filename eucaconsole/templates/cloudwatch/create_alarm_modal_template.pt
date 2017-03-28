@@ -1,0 +1,161 @@
+<div i18n:domain="eucaconsole" tal:omit-tag="">
+<form name="createAlarmForm" ng-submit="createAlarm()" novalidate="">
+    <h3>{{ title }}</h3>
+    <h6 i18n:translate="">Alarm</h6>
+    <div class="row inline controls-wrapper">
+        <div class="large-3 small-3 columns">
+            <label class="right" i18n:translate="">Name<span class="req">*</span></label>
+        </div>
+        <div class="large-9 small-9 columns field">
+            <input name="name" ng-model="alarm.name" unique-name="" required="required"
+                   type="text" ng-change="onNameChange()" ng-model-options="{ updateOn: 'keyup' }" />
+            <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.uniqueName"
+                    i18n:translate="">Alarm name must be unique.</small>
+            <small class="error" ng-show="createAlarmForm.name.$touched &amp;&amp; createAlarmForm.name.$error.required"
+                    i18n:translate="">Alarm name is required.</small>
+        </div>
+    </div>
+    <div class="row inline controls-wrapper">
+        <div class="large-3 small-3 columns">
+            <label class="right" i18n:translate="">Description</label>
+        </div>
+        <div class="large-9 small-9 columns field">
+            <textarea class=""
+                maxlength="255" name="description" ng-model="alarm.description"></textarea>
+        </div>
+    </div>
+    <div class="row controls-wrapper dimensions">
+        <div class="large-3 small-3 columns">
+            <label class="right" i18n:translate="">Dimension</label>
+        </div>
+        <div class="large-9 small-9 columns">
+            <ul ng-if="!editDimensions">
+                <li ng-repeat="(key, val) in alarm.dimensions">{{ key }} = {{ val.join(', ') }}</li>
+            </ul>
+            <select name="dimensions" ng-model="alarm.dimensions" ng-if="editDimensions"
+                    id="dimensions-select" required="required">
+                <option ng-if="alarmsLanding &amp;&amp; invalidDimensions" i18n:translate="" value="">
+                    Select dimension...
+                </option>
+                <option ng-repeat="dimension in dimensionChoices"
+                        ng-selected="dimension.selected || dimension.value === alarm.dimensions"
+                        ng-value="dimension.value">{{ dimension.label }}</option>
+            </select>
+            <small class="error"
+                   ng-show="createAlarmForm.dimensions.$touched &amp;&amp; createAlarmForm.dimensions.$error.required"
+                   i18n:translate="">Dimension is required.</small>
+        </div>
+    </div>
+    <div class="row controls-wrapper">
+        <div class="small-3 columns">
+            <label class="right" i18n:translate="">Trigger alarm when the</label>
+        </div>
+        <div class="small-3 columns">
+            <select name="statistic" ng-model="alarm.statistic">
+                <option value="Average" i18n:translate="">Average</option>
+                <option value="Minimum" i18n:translate="">Minimum</option>
+                <option value="Maximum" i18n:translate="">Maximum</option>
+                <option value="Sum" i18n:translate="">Sum</option>
+                <option value="SampleCount" i18n:translate="">Data samples</option>
+            </select>
+        </div>
+        <div class="small-6 columns">
+            <span ng-if="!metrics">{{ alarm.metric.name }}</span>
+            <select ng-if="metrics &amp;&amp; namespaces.length === 1" name="metric" ng-model="alarm.metric"
+                    ng-options="metric.label for metric in metrics track by metric.name"></select>
+            <select ng-if="metrics &amp;&amp; namespaces.length &gt; 1" name="metric" ng-model="alarm.metric"
+                    ng-change="updateStaticDimensions(alarm)"
+                    ng-options="metric.label group by metric.nslabel for metric in metrics track by metric.name"></select>
+        </div>
+    </div>
+    <div class="row controls-wrapper">
+        <div class="small-3 columns">
+            <label class="right" i18n:translate="">is</label>
+        </div>
+        <div class="small-2 columns">
+            <select name="comparison" ng-model="alarm.comparison">
+                <option value=">=">&gt;&#61;</option>
+                <option value="&lt;=">&lt;&#61;</option>
+                <option value=">">&gt;</option>
+                <option value="&lt;">&lt;</option>
+            </select>
+        </div>
+        <div class="small-3 columns">
+            <input ng-model="alarm.threshold" name="threshold" autofocus="" i18n:attributes="placeholder"
+                   placeholder="amount..." required="required" type="number" min="1"/>
+            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.required"
+                   i18n:translate="">Threshold value is required.</small>
+            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.number"
+                   i18n:translate="">Threshold value must be a number.</small>
+            <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.min"
+                   i18n:translate="">Threshold value must be a positive number.</small>
+        </div>
+        <div class="small-4 columns">
+            <div class="unit-label" ng-show="alarm.metric.unit != 'None'">{{ alarm.metric.unit }}</div>
+        </div>
+    </div>
+    <div class="row controls-wrapper">
+        <div class="small-3 columns">
+            <label class="right" i18n:translate="">for at least</label>
+        </div>
+        <div class="small-2 columns">
+            <input name="evaluation_periods" ng-model="alarm.evaluation_periods" type="number" min="1" required="required"/>
+            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.required"
+                   i18n:translate="">Period value is required.</small>
+            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.number"
+                   i18n:translate="">Period value must be a number.</small>
+            <small class="error" ng-show="createAlarmForm.evaluation_periods.$touched &amp;&amp; createAlarmForm.evaluation_periods.$error.min"
+                   i18n:translate="">Period value must be a positive number.</small>
+        </div>
+        <div class="small-3 columns">
+            <label i18n:translate="">consecutive period(s) of</label>
+        </div>
+        <div class="small-4 columns">
+            <select name="period" ng-model="alarm.period" required="required">
+                <option value="60" i18n:translate="">1 minute</option>
+                <option value="300" i18n:translate="">5 minutes</option>
+                <option value="900" i18n:translate="">15 minutes</option>
+                <option value="3600" i18n:translate="">1 hour</option>
+                <option value="21600" i18n:translate="">6 hours</option>
+                <option value="86400" i18n:translate="">1 day</option>
+            </select>
+        </div>
+    </div>
+    <div class="metric-chart chart-wrapper">
+        <h6>{{ alarm.metric.name }}</h6>
+        <svg class="cwchart"
+            metric-chart=""
+            metric="{{alarm.metric.name}}"
+            namespace="{{ alarm.namespace || alarm.metric.namespace }}"
+            duration="3600"
+            statistic="alarm.statistic"
+            unit="{{ alarm.unit || alarm.metric.unit }}"
+            threshold="{{alarm.threshold}}"
+            form-name="createAlarmForm"
+            dimensions="alarm.dimensions"></svg>
+    </div>
+    <div ng-if="!hideAlarmActions">
+        <hr/>
+        <alarm-actions
+            ng-model="alarm.actions"
+            ok-actions="alarm.ok_actions"
+            alarm-actions="alarm.alarm_actions"
+            insufficient-data-actions="alarm.insufficient_data_actions"
+            template="${request.route_path('render_template', subpath='cloudwatch/alarm_actions')}">
+        </alarm-actions>
+        <hr/>
+    </div>
+    <div class="controls">
+        <button type="submit" class="button submit expand" i18n:translate="">
+            Create Alarm
+        </button>
+    </div>
+</form>
+<div class="help">
+    <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+    <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+        <!--! HELP CONTENT HERE -->
+        <div id="help-html-console_create_alarm" ng-include="'${layout.help_path('console_create_alarm.html')}'"></div> 
+    </div>
+</div>
+</div>

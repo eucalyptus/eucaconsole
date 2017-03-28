@@ -53,7 +53,7 @@
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
                             <a i18n:translate="" class="more-actions-monitoring"
                                ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/monitoring">
-                                View monitoring
+                                Monitor
                             </a>
                         </li>
                         <hr />
@@ -115,7 +115,7 @@
                     </a>
                 </div>
                 <div>
-                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">SZ</span>
                     {{ item.size }} GB
                 </div>
                 <div ng-show="item.status !== 'deleting'">
@@ -310,6 +310,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>

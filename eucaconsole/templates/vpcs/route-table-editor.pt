@@ -1,0 +1,70 @@
+<div ng-form="routeTableForm" class="route-table-editor" i18n:domain="eucaconsole">
+    <p i18n:translate="">
+        A route table controls how traffic originating from VPC subnets are directed.
+        Routes are rules that define where traffic matching the destination CIDR block will be directed.
+        The destination CIDR block can be within the entire IPv4 space and isn't limited to the VPC's CIDR block.
+        For example, a typical route destination (CIDR block) for an internet gateway is 0.0.0.0/0
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th i18n:translate="">Destination (CIDR)</th>
+                <th i18n:translate="">Target</th>
+                <th i18n:translate="">Status</th>
+                <th i18n:translate="">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="route in routes">
+                <td>{{ route.DestinationCidrBlock }}</td>
+                <td>{{ route.GatewayId || route.NatGatewayId || route.InstanceId || route.NetworkInterfaceId }}</td>
+                <td>
+                    <span class="label radius state {{ route.State }}">
+                        {{ route.State }}
+                    </span>
+                </td>
+                <td>
+                    <a ng-show="route.GatewayId !== 'local'" class="circle remove has-tip" ng-click="removeRoute($index)"
+                       title="Remove route" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <strong i18n:translate="">Add another route:</strong>
+    </div>
+    <div class="row route-entry controls-wrapper">
+        <div class="small-4 columns">
+            <label for="destination_cidr_block" i18n:translate="">
+                Destination (IPv4 CIDR block)
+            </label>
+            <input type="text" ng-model="destinationCidrBlock" name="destinationCidrBlock" id="destination_cidr_block"
+                   i18n:attributes="placeholder" placeholder="e.g. 0.0.0.0/0"
+                   ng-pattern="cidrPattern" />
+        </div>
+        <div class="small-8 columns">
+            <label for="route-target" i18n:translate="">
+                Target
+            </label>
+            <select ng-model="routeTarget" name="routeTarget" id="route-target" ng-disabled="routeTargetsLoading">
+                <option value="" i18n:translate="" ng-if="routeTargetsLoading">Loading...</option>
+                <option value="" i18n:translate="" ng-if="!routeTargetsLoading">Select...</option>
+                <option ng-repeat="targetChoice in routeTargets" value="{{ targetChoice.id }}">
+                    {{ targetChoice.id }}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="route-entry-submit">
+        <a ng-click="addRoute($event)" class="button round tiny"
+           id="add-route-btn" title="Add route" i18n:translate="">Add Route</a>
+        <small ng-show="routeTableForm.destinationCidrBlock.$error.pattern" i18n:translate=""
+              class="error" ng-class="{'show': routeTableForm.destinationCidrBlock.$error.pattern}">
+            The CIDR block is invalid. An example of a valid CIDR block is 0.0.0.0/0
+        </small>
+    </div>
+    <div class="routes-entry-result">
+        <textarea id="routes" name="routes" class="">{{ routes }}</textarea>
+        <input class="hide" type="checkbox" name="routes_updated" ng-model="routesUpdated" />
+    </div>
+</div>

@@ -80,7 +80,6 @@ class GuiEC2(GuiTester):
         BasePage(self).goto_dashboard_via_menu()
         Dashboard(self).click_create_keypair_link_from_dashboard()
         CreateKeypairDialog(self).create_keypair(keypair_name)
-        KeypairDetailPage(self, keypair_name)
 
     def create_keypair_from_keypair_view_page(self, keypair_name):
         """

@@ -55,7 +55,7 @@
                         <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
                             <a i18n:translate="" class="more-actions-monitoring"
                                ng-href="${prefix}/{{ (items | filter: {selected: true})[0].id }}/monitoring">
-                                View monitoring
+                                Monitor
                             </a>
                         </li>
                         <hr />
@@ -151,6 +151,9 @@
                     <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                         <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                     </li>
+                    <li>
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}/monitoring">Monitor</a>
+                    </li>
                     <li ng-show="item.status == 'running'">
                         <a i18n:translate="" ng-click="revealModal('associate-ip-to', item)">
                             Associate IP address
@@ -210,7 +213,9 @@
                     </div>
                     <div tal:omit-tag="" tal:condition="is_vpc_supported">
                         <span class="label" title="VPC subnet" i18n:attributes="title" data-tooltip="">VS</span>
-                        {{ item.vpc_subnet_display }} | {{ item.vpc_name }} ({{ item.availability_zone }})
+                        <a ng-href="/vpcs/{{ item.vpc_id }}/subnets/{{ item.subnet_id }}">{{ item.vpc_subnet_display }}</a> |
+                        <a ng-href="/vpcs/{{ item.vpc_id }}">{{ item.vpc_name }}</a>
+                        ({{ item.availability_zone }})
                     </div>
                 </div>
                 <div>
@@ -277,7 +282,9 @@
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
                 <td>
                     <span tal:condition="is_vpc_supported">
-                        {{ item.vpc_subnet_display }} | {{ item.vpc_name }} ({{ item.availability_zone }})
+                        <a ng-href="/vpcs/{{ item.vpc_id }}/subnets/{{ item.subnet_id }}">{{ item.vpc_subnet_display }}</a> |
+                        <a ng-href="/vpcs/{{ item.vpc_id }}">{{ item.vpc_name }}</a>
+                        ({{ item.availability_zone }})
                     </span>
                     <span tal:condition="not: is_vpc_supported">
                         {{ item.availability_zone }}
@@ -337,6 +344,9 @@
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                                 <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                             </li>
+                            <li>
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}/monitoring">Monitor</a>
+                            </li>
                             <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('associate-ip-to', item)">
                                     Associate IP address
@@ -382,8 +392,8 @@
 </metal:block>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>

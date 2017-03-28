@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -433,9 +433,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.owner_choices = self.get_owner_choices()
 
         controller_options_json = BaseView.escape_json(json.dumps({
-            'securitygroups_choices': dict(self.create_form.securitygroup.choices),
-            'keypair_choices': dict(self.create_form.keypair.choices),
-            'role_choices': dict(self.create_form.role.choices),
+            'securitygroups_choices': self.list_options(self.create_form.securitygroup.choices),
+            'keypair_choices': self.list_options(self.create_form.keypair.choices),
+            'role_choices': self.list_options(self.create_form.role.choices),
             'securitygroups_json_endpoint': self.request.route_path('securitygroups_json'),
             'securitygroups_rules_json_endpoint': self.request.route_path('securitygroups_rules_json'),
             'image_json_endpoint': self.request.route_path('image_json', id='_id_'),
@@ -523,6 +523,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
+    @staticmethod
+    def list_options(options):
+        return [dict(id=opt[0], label=opt[1]) for opt in options]
+
     def get_security_groups(self):
         if self.conn:
             return self.conn.get_all_security_groups()
@@ -571,9 +575,10 @@ class CreateMoreLaunchConfigView(BlockDeviceMappingItemView):
         with boto_error_handler(request):
             lc = autoscale_conn.get_all_launch_configurations(names=[name])
             launch_config = lc[0]
-            images = self.get_connection().get_all_images(image_ids=[launch_config.image_id])
+            images = self.get_connection().get_all_images(filters={'image_id': launch_config.image_id})
             self.image = images[0] if images else None
-            self.image.platform_name = ImageView.get_platform(self.image)[2]
+            if self.image:
+                self.image.platform_name = ImageView.get_platform(self.image)[2]
 
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,

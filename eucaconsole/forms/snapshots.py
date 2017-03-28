@@ -1,4 +1,4 @@
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -35,9 +35,6 @@ from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class SnapshotForm(BaseSecureForm):
-    """Snapshot form
-       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
-    """
     name_error_msg = _(u'Not a valid name')
     name = TextEscapedField(label=_(u'Name'))
     volume_error_msg = _(u'Volume is required')
@@ -72,7 +69,7 @@ class SnapshotForm(BaseSecureForm):
             self.set_volume_choices()
 
     def set_volume_choices(self):
-        choices = self.choices_manager.volumes()
+        choices = self.choices_manager.volumes(add_blank=False)
         # Need to insert current choice since the source volume may have been removed after this snapshot was created
         if self.snapshot and self.snapshot.volume_id:
             vol_id = self.snapshot.volume_id

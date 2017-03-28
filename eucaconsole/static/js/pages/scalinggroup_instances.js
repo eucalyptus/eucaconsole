@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Scaling group Instances page JS
  * @requires AngularJS
  *
@@ -44,11 +46,8 @@ angular.module('ScalingGroupInstances', ['EucaConsoleUtils'])
             $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
-                var modalButton = modal.find('button').get(0);
                 if (!!inputElement) {
                     inputElement.focus();
-                } else if (!!modalButton) {
-                    modalButton.focus();
                 }
             });
         };

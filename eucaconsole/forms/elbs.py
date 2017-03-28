@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -35,6 +35,7 @@ from wtforms import validators
 
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField, NAME_WITHOUT_SPACES_NOTICE, BLANK_CHOICE
+from .angularcompat import AngularCompatibleSelectField, AngularCompatibleSelectMultipleField
 from ..constants.elbs import SSL_CIPHERS
 from ..views import BaseView
 
@@ -42,7 +43,7 @@ from ..views import BaseView
 NO_CERTIFICATES_CHOICE = ('None', _(u'There are no certificates available'))
 
 
-class PingPathRequired(validators.Required):
+class PingPathRequired(validators.DataRequired):
     """Ping path is conditionally required based on protocol value"""
 
     def __init__(self, *args, **kwargs):
@@ -53,7 +54,7 @@ class PingPathRequired(validators.Required):
             super(PingPathRequired, self).__call__(form, field)
 
 
-class BucketInfoRequired(validators.Required):
+class BucketInfoRequired(validators.DataRequired):
     """Bucket info (name, interval) conditionally required based on logging_enabled value"""
 
     def __init__(self, *args, **kwargs):
@@ -64,7 +65,7 @@ class BucketInfoRequired(validators.Required):
             super(BucketInfoRequired, self).__call__(form, field)
 
 
-class CertificateARNRequired(validators.Required):
+class CertificateARNRequired(validators.DataRequired):
     """Custom validator to conditionally require certificate_arn when certificate_name is missing"""
 
     def __init__(self, *args, **kwargs):
@@ -80,7 +81,7 @@ class ELBAccessLogsFormMixin(object):
     logging_enabled = wtforms.BooleanField(label=_(u'Enable logging'))
     bucket_name_error_msg = _(u'Bucket name is required')
     bucket_name_help_text = _(u'Choose from your existing buckets, or create a new bucket.')
-    bucket_name = wtforms.SelectField(
+    bucket_name = AngularCompatibleSelectField(
         label=_(u'Bucket name'),
         validators=[BucketInfoRequired(message=bucket_name_error_msg)],
     )
@@ -350,14 +351,14 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         label=_(u'VPC network'),
         validators=[validators.InputRequired(message=vpc_network_error_msg)],
     )
-    vpc_subnet = wtforms.SelectMultipleField(
+    vpc_subnet = AngularCompatibleSelectMultipleField(
         label=_(u'VPC subnets'),
     )
-    securitygroup = wtforms.SelectMultipleField(
+    securitygroup = AngularCompatibleSelectMultipleField(
         label=_(u'Security groups')
     )
     securitygroup_help_text = _(u'If you do not select a security group, the default group will be used.')
-    zone = wtforms.SelectMultipleField(
+    zone = AngularCompatibleSelectMultipleField(
         label=_(u'Availability zones')
     )
     cross_zone_enabled_help_text = _(u'Distribute traffic evenly across all instances in all availability zones')
@@ -377,7 +378,7 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         self.choices_manager = ChoicesManager(conn=conn)
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_choices(request)
-        self.securitygroup.help_text = self.securitygroup_help_text
+        # self.securitygroup.help_text = self.securitygroup_help_text
         self.cross_zone_enabled.help_text = self.cross_zone_enabled_help_text
         self.bucket_name.help_text = self.bucket_name_help_text
         self.bucket_prefix.help_text = self.bucket_prefix_help_text
@@ -414,6 +415,7 @@ class CreateELBForm(ELBHealthChecksForm, ELBAccessLogsFormMixin):
         return self.choices_manager.availability_zones(self.region, add_blank=False)
 
 
+# TODO: see if this matches the instances landing page and re-use
 class ELBInstancesFiltersForm(BaseSecureForm):
     """Form class for filters on create ELB wizard"""
     state = wtforms.SelectMultipleField(label=_(u'Status'))
@@ -450,7 +452,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
     def set_search_facets(self):
         if self.cloud_type == 'aws':
             self.facets = [
-                {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+                {'name': 'status', 'label': self.state.label.text, 'options': self.get_status_choices()},
                 {'name': 'availability_zone', 'label': self.availability_zone.label.text,
                     'options': self.get_availability_zone_choices(self.region)},
                 {'name': 'subnet_id', 'label': self.subnet_id.label.text,
@@ -460,7 +462,7 @@ class ELBInstancesFiltersForm(BaseSecureForm):
             vpc_choices.append(('None', _(u'No VPC')))
         else:
             self.facets = [
-                {'name': 'state', 'label': self.state.label.text, 'options': self.get_status_choices()},
+                {'name': 'status', 'label': self.state.label.text, 'options': self.get_status_choices()},
             ]
             if self.is_vpc_supported:
                 self.facets.append(
@@ -585,7 +587,7 @@ class BackendCertificateForm(BaseSecureForm):
         self.backend_certificate_body.error_msg = self.backend_certificate_body_error_msg
 
 
-class PredefinedPolicyRequired(validators.Required):
+class PredefinedPolicyRequired(validators.DataRequired):
     """Custom validator to conditionally require predefined policy if custom policy isn't uploaded"""
 
     def __init__(self, *args, **kwargs):

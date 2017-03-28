@@ -14,7 +14,8 @@
         <tbody>
             <tr ng-repeat="instance in instanceList track by instance.id">
                 <td>
-                    <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}" />
+                    <input type="checkbox" name="instances" id="instance-checkbox-{{ instance.id }}" value="{{ instance.id }}"
+                           ng-disabled="isDetailPage &amp;&amp; elbScalingGroupNames.indexOf(instance.scaling_group) !== -1" />
                 </td>
                 <td>
                     <span id="instance-name-{{ instance.id }}" class="id breakword">
@@ -47,7 +48,7 @@
             </tr>
             <tr ng-show="instanceList.length === 0">
                 <td></td>
-                <td colspan="5">
+                <td colspan="6">
                     <span ng-show="instancesLoading" class="busy"></span>
                     <span ng-show="!instancesLoading">{{ tableText.no_matching_instance_error_msg }}</span>
                 </td>

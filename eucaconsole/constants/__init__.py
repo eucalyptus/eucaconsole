@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -30,61 +30,73 @@ Common constants
 """
 
 
-# AWS Regions
-# Note: We could pull these from boto.ec2.regions(), but they don't change too often so let's hard-code them here.
-# Use a data structure to support multiple endpoint types, with EC2 per se for now.
-AWS_REGIONS = (
+# AWS Regions list
+# Endpoints are handled via boto's endpoints.json
+# Note: A future release of the Eucalyptus console will pull regions via the DescribeRegions API call
+AWS_REGIONS = [
     dict(
         name='us-east-1',
         label='US East (N. Virginia)',
-        endpoints=dict(ec2='ec2.us-east-1.amazonaws.com'),
+    ),
+    dict(
+        name='us-east-2',
+        label='US East (Ohio)',
     ),
     dict(
         name='us-west-1',
         label='US West (N. California)',
-        endpoints=dict(ec2='ec2.us-west-1.amazonaws.com'),
     ),
     dict(
         name='us-west-2',
         label='US West (Oregon)',
-        endpoints=dict(ec2='ec2.us-west-2.amazonaws.com')
+    ),
+    dict(
+        name='ca-central-1',
+        label='Canada (Central)',
     ),
     dict(
         name='eu-west-1',
         label='EU (Ireland)',
-        endpoints=dict(ec2='ec2.eu-west-1.amazonaws.com')
+    ),
+    dict(
+        name='eu-west-2',
+        label='EU (London)',
     ),
     dict(
         name='eu-central-1',
         label='EU (Frankfurt)',
-        endpoints=dict(ec2='ec2.eu-central-1.amazonaws.com')
+    ),
+    dict(
+        name='ap-south-1',
+        label='Asia Pacific (Mumbai)',
     ),
     dict(
         name='ap-southeast-1',
         label='Asia Pacific (Singapore)',
-        endpoints=dict(ec2='ec2.ap-southeast-1.amazonaws.com')
     ),
     dict(
         name='ap-southeast-2',
         label='Asia Pacific (Sydney)',
-        endpoints=dict(ec2='ec2.ap-southeast-2.amazonaws.com')
     ),
     dict(
         name='ap-northeast-1',
         label='Asia Pacific (Tokyo)',
-        endpoints=dict(ec2='ec2.ap-northeast-1.amazonaws.com')
+    ),
+    dict(
+        name='ap-northeast-2',
+        label='Asia Pacific (Seoul)',
     ),
     dict(
         name='sa-east-1',
         label=u'South America (São Paulo)',
-        endpoints=dict(ec2='ec2.sa-east-1.amazonaws.com')
     ),
-)
+]
 
 
 # List of all landing page route names (used to limit redirect handling for AWS region selection)
 LANDINGPAGE_ROUTE_NAMES = [
     'buckets', 'groups', 'images', 'instances', 'ipaddresses', 'keypairs', 'launchconfigs',
     'scalinggroups', 'securitygroups', 'snapshots', 'users', 'volumes', 'elbs', 'stacks',
+    'cloudwatch_alarms', 'cloudwatch_metrics', 'queues', 'vpcs'
 ]
 

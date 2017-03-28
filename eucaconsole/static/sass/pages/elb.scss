@@ -5,83 +5,10 @@
 @import "../includes/landingpage";
 
 
-// h6.section-label {
-//     margin-top: 1.5rem;
-// }
+h6.section-label {
+    margin-top: 1.5rem;
+}
 
-
-// General tab ==================
-// #elb-form {
-//     @include item-list;
-//     input.text-input {
-//         width: 300px;
-//     }
-//     input.timeout-field {
-//         width: 60px;
-//    }
-//     input[type="number"] {
-//         width: 80px;
-//     }
-//     .stack-label {
-//         margin-bottom: 0.5rem;
-//     }
-//     .sub-section-label {
-//         color: black;
-//     }
-//     .helptext-icon {
-//         color: $euca-grey;
-//         font-size: 1.3rem;
-//     }
-//     .section-label-with-helptext-icon {
-//         margin-bottom: 0.5rem;
-//     }
-//     .checkbox-with-helptext-icon label {
-//         margin-right: 0;
-//     }
-//     .cancel-link {
-//         margin-right: 1.5rem;
-//     }
-//     .description {
-//         margin-bottom: 1.0rem;
-//     }
-//     .enable-button {
-//         height: 37px;
-//         padding-top: 0.5rem;
-//     }
-// }
-
-
-
-// #advanced-section {
-//     margin-top: 1.5rem;
-// }
-
-
-// Instances tab ===================
-// a.nolink {
-//     color: $hp-gray-65;
-//     &:hover {
-//        color: $hp-gray-65 !important;
-//         cursor: inherit;
-//     }
-// }
-
-// p.error {
-//     color: darkred;
-// }
-
-// table.table {
-//     width: 100%;
-
-//     .status-descr {
-//         width: 20%;
-//     }
-// }
-
-// #controls_cross_zone_enabled {
-//     margin-top: 0.75rem;
-//     margin-bottom: 0.75rem;
-// }
 
 .magic-search {
     margin-top: 0.5rem;
@@ -112,13 +39,10 @@
 }
 
 #instance-section {
-//     .actions {
-//         text-align: right;
-   }
-   #refresh-instances-icon {
-       display: none;
-     }
-// }
+    #refresh-instances-icon {
+        display: none;
+    }
+}
 
 // Health Checks tab ================
 select[name="ping_protocol"] {

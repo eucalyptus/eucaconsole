@@ -1,15 +1,32 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Common JS for Landing pages
  * @requires AngularJS, jQuery, and Purl jQuery URL parser plugin
  *
  */
 
 
-angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Expando'])
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'MagicSearchFilterModule', 'Expando'])
     .config(function($locationProvider) {
         $locationProvider.html5Mode({enabled:true, requireBase:false, rewriteLinks:false });
     })
-    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize, $location) {
+    .service('lpModelService', function() {
+        var sortBy;
+        return {
+            setSortBy: function(val) {
+                sortBy = val;
+            },
+            getSortBy: function() {
+                return sortBy;
+            },
+            isDescending: function() {
+                return (sortBy[0] == '-');
+            }
+        };
+    })
+    .controller('ItemsCtrl', ['$scope', '$http', '$timeout', '$sanitize', '$location', 'lpModelService', 'MagicSearchFilterService',
+    function ($scope, $http, $timeout, $sanitize, $location, lpModelService, MagicSearchFilterService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -56,8 +73,13 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
             // Table view sorting is persisted via angular-smart-table stPersist directive where configured
             var storedSort = Modernizr.sessionstorage && sessionStorage.getItem($scope.sortByKey),
                 storedLandingPageView = Modernizr.localstorage && localStorage.getItem($scope.landingPageViewKey) || "tableview";
-            $scope.sortBy = storedSort || sortKey;
+            lpModelService.setSortBy(storedSort || sortKey);
+            $scope.sortBy = lpModelService.getSortBy(); // preserving on scope for watch function below
             $scope.landingPageView = storedLandingPageView;
+        };
+        $scope.setSortBy = function(val) {
+            $scope.sortBy = val;
+            lpModelService.setSortBy(val);
         };
         $scope.setWatch = function () {
             // Dismiss sorting dropdown on sort selection
@@ -106,11 +128,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                     }
                 }else{
                     var inputElement = modal.find('input[type!=hidden]').get(0);
-                    var modalButton = modal.find('button').get(0);
                     if (!!inputElement) {
                         inputElement.focus();
-                    } else if (!!modalButton) {
-                        modalButton.focus();
                     }
                }
             });
@@ -223,108 +242,14 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 
             });
         };
-        var matchByFacet = function(facet, val) {
-            if (typeof val === 'string') {
-                if ($.inArray(val, facet) > -1 ||
-                    $.inArray(val.toLowerCase(), facet) > -1) {
-                    return true;
-                }
-            }
-            if (typeof val === 'object') {
-                // if object, assume it has valid id or name attribute
-                if ($.inArray(val.id, facet) > -1 ||
-                    $.inArray(val.name, facet) > -1) {
-                    return true;
-                }
-            }
-        };
-        var filterByFacet = function(item) {
-            // handle special case of empty facet value, match all
-            if (this.facet.indexOf("") > -1) {
-                return true;
-            }
-            var val = item[this.key];
-            if (val === undefined || val === null) {
-                return true;
-            }
-            if (Array.isArray(val)) {
-                for (var i=0; i<val.length; i++) {
-                    return matchByFacet(this.facet, val[i]);
-                }
-            }
-            else {
-                return matchByFacet(this.facet, val);
-            }
-        };
-        /*  Apply facet filtering
-         *  to apply text filtering, call searchFilterItems instead
-         */
         $scope.facetFilterItems = function() {
-            var query;
-            var url = window.location.href;
-            if (url.indexOf("?") > -1) {
-                query = url.split("?")[1];
-            }
-            if (query !== undefined && query.length !== 0) {
-                // prepare facets by grouping
-                var tmp = query.split('&').sort();
-                var facets = {};
-                angular.forEach(tmp, function(item) {
-                    var facet = item.split('=');
-                    if (this[facet[0]] === undefined) {
-                        this[facet[0]] = [];
-                    }
-                    this[facet[0]].push(facet[1]);
-                }, facets);
-                var results = $scope.unfilteredItems;
-                // filter results
-                for (var key in facets) {
-                    results = results.filter(filterByFacet, {'facet': facets[key], 'key':key});
-                }
-                $scope.facetItems = results;
-            }
-            else {
-                $scope.facetItems = $scope.unfilteredItems.slice();
-            }
+            $scope.facetItems = MagicSearchFilterService.facetFilterItems('', $scope.unfilteredItems);
             $scope.searchFilterItems();
         };
         /*  Filter items client side based on search criteria.
          */
         $scope.searchFilterItems = function() {
-            var filterText = ($scope.searchFilter || '').toLowerCase();
-            if (filterText === '') {
-                // If the search filter is empty, skip the filtering
-                $scope.items = $scope.facetItems;
-                return;
-            }
-            // Leverage Array.prototype.filter (ECMAScript 5)
-            var filteredItems = $scope.facetItems.filter(function(item) {
-                for (var i=0; i < $scope.filterKeys.length; i++) {  // Can't use $.each or Array.prototype.forEach here
-                    var propName = $scope.filterKeys[i];
-                    var itemProp = item.hasOwnProperty(propName) && item[propName];
-                    if (itemProp && typeof itemProp === "string" && 
-                        itemProp.toLowerCase().indexOf(filterText) !== -1) {
-                        return item;
-                    } else if (itemProp && typeof itemProp === "object") {
-                        // In case of mutiple values, create a flat string and perform search
-                        var flatString = $scope.getItemNamesInFlatString(itemProp);
-                        if (flatString.toLowerCase().indexOf(filterText) !== -1) {
-                            return item;
-                        }
-                    }
-                }
-            });
-            // Update the items[] with the filtered items
-            $scope.items = filteredItems;
-        };
-        $scope.getItemNamesInFlatString = function(items) {
-            var flatString = '';
-            angular.forEach(items, function(x) {
-                if (x.hasOwnProperty('name')) {
-                    flatString += x.name + ' ';
-                }
-            });
-            return flatString;
+            $scope.items = MagicSearchFilterService.searchFilterItems($scope.searchFilter, $scope.filterKeys, $scope.facetItems);
         };
         $scope.switchView = function(view){
             $scope.landingPageView = view;
@@ -377,7 +302,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 $scope.state.allSelected = false;
             }
             // Set indeterminate state on select-all checkbox when checked and at least one item is unselected
-            allItemsCheckbox.indeterminate = !!($scope.state.allSelected && checkedIems.length < $scope.items.length);
+            if (allItemsCheckbox) {
+                allItemsCheckbox.indeterminate = !!($scope.state.allSelected && checkedIems.length < $scope.items.length);
+            }
             if (!$scope.state.allSelected && checkedIems.length === $scope.items.length) {
                 $scope.state.allSelected = true;
             }
@@ -429,7 +356,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize', 'MagicSearch', 'Ex
                 $scope.searchFilterItems();
             });
         });
-    }).directive('stPersist', function () {  // Save angular-smart-table sorting state on subsequent page loads
+    }])
+    .directive('stPersist', function () {  // Save angular-smart-table sorting state on subsequent page loads
         return {
             require: '^stTable',
             link: function (scope, element, attr, ctrl) {

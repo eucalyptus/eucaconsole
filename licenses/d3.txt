@@ -1,3 +1,11 @@
+=== d3 ===
+
+== Files ==
+
+eucaconsole/static/js/thirdparty/d3
+
+== License ==
+
 Copyright (c) 2010-2015, Michael Bostock
 All rights reserved.
 

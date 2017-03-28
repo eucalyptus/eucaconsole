@@ -34,7 +34,7 @@
             display: inline-block;
         }
     }
-    #controls_monitoring_enabled {
+    #controls_monitoring_enabled, #controls_termination_protection {
         @include helptext-icon-position-mixin;
     }
     #create-keypair-link, #create-securitygroup-link {

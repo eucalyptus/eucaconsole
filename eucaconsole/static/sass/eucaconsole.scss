@@ -153,6 +153,11 @@ label {
     }
 }
 
+b, strong {
+    font-family: $euca-bold-font-family;
+    font-weight: bold;
+}
+
 /* -----------------------------------------
    Header
 ----------------------------------------- */
@@ -447,9 +452,9 @@ a.circle {
             }
         }
         &.warning {
-            border: 2px solid $hp-gold;
+            border: 2px solid $hpe-gold;
             .icon {
-                background-color: $hp-gold;
+                background-color: $hpe-gold;
                 span:before {
                     content: "\26A0"
                 }
@@ -487,7 +492,6 @@ a.circle {
             span {
                 color: white;
                 font-size: 30px;
-                transform: translateX(50%) translateY(50%);
             }
         }
         .message {
@@ -556,27 +560,17 @@ textarea.policy-area {
 }
 
 .expando {
-    i {
-        color: $hpe-gray;
-        &:hover {
-                color: $hpe-green;
-                text-decoration: none;
-        }
-        &.helptext-icon {
-            color: $hpe-gray;
-        }
-    }
     .title {
+        display: inline-block;
         font-family: $euca-text-font-family;
         font-size: $euca-l-font-size;
         text-transform: none;
+        &:hover a, &:hover i {
+            color: $hpe-green;
+            text-decoration: none;
+        }
         a {
             color: $hpe-gray;
-            &:hover {
-                color: $hpe-green;
-                text-decoration: none;
-                border-bottom: 1px solid $hpe-green;
-            }
         }
     }
 }
@@ -672,6 +666,12 @@ textarea.policy-area {
             line-height: 34px;
             min-height: 37px;
         }
+        label {
+            margin-bottom: 4px;
+        }
+    }
+    .chosen-container .chosen-single {
+        height: 2.3rem;
     }
     input.number {
         width: 2rem;
@@ -812,7 +812,7 @@ form {
     }
     .cancel-link {
         margin-left: 2rem;
-        color: $euca-grey;
+        color: $hpe-gray;
         &:hover {
             color: $hpe-green;
         }
@@ -826,7 +826,8 @@ form {
         color: darkred;
         padding-left: 0;
     }
-    &[data-abide] .error small.error {
+    &[data-abide].error small.error,
+    .error small.error {
         background-color: white;
         font-style: normal;
         color: darkred;
@@ -834,9 +835,10 @@ form {
             display: inline-block !important;
         }
     }
-    .error .chosen-container .chosen-single {
+    .error .chosen-container .chosen-single,
+    .ng-invalid.ng-touched {
         border-color: darkred;
-        background: $euca-validation-input-bgcolor;
+        background: $hpe-validation-input-bgcolor;
     }
 }
 
@@ -863,6 +865,15 @@ form {
         text-align: left;
         position: relative;
         left: -1rem;
+    }
+    &.readonly {
+        a {
+            color: $hpe-green;
+            &:hover {
+                color: $hpe-green;
+                text-decoration: underline;
+            }
+        }
     }
     .helptext-icon.reverse {
         position: relative;
@@ -926,13 +937,15 @@ form .controls-wrapper > [class*='small-'] label {
     }
 }
 
-[data-abide] .controls-wrapper .error, [data-abide] .controls-wrapper.error {
+[data-abide] .controls-wrapper .error,
+[data-abide] .controls-wrapper.error,
+.controls-wrapper .error {
     label {
         color: $hpe-black;
     }
     input, select {
         border: 1px solid darkred;
-        background-color: $euca-validation-input-bgcolor;
+        background-color: $hpe-validation-input-bgcolor;
     }
     small.error {
         @include validation-error-mixin;
@@ -943,7 +956,8 @@ form .controls-wrapper > [class*='small-'] label {
     }
 }
 
-[data-abide] small.error {
+[data-abide] small.error,
+small.error {
         @include validation-error-mixin;
 }
 
@@ -959,11 +973,9 @@ textarea.hidden {
 ----------------------------------------- */
 .chosen-container {
     &.chosen-container-multi {
-        background: none;
-        background-color: #fff !important;
+        background: #fff none;
         .chosen-choices  {
             background: none;
-            background-color: #fff !important;
             border: 1px solid $hpe-lightgray;
             li {
                 &.search-field  {
@@ -997,21 +1009,29 @@ textarea.hidden {
             background-image: none;
             background-color: #fff !important;
             border-radius: 0;
-            height: 2rem;
-            line-height: 2rem;
+            height: 2.5rem;
+            line-height: 2.5rem;
             font-size: 0.875rem;
             b {
                 position: relative;
-                top: 4px;
+                top: 10px;
             }
         }
     }
-    .chosen-drop .chosen-results {
-        font-size: $euca-font-size;
-        .active-result {
-            &.highlighted {
-                color: $hpe-black;
-                background: $hpe-hovergray none;
+    .chosen-drop {
+        .chosen-search {
+            input {
+                height: 2rem;
+                line-height: 2rem;
+            }
+        }
+        .chosen-results {
+            font-size: $euca-font-size;
+            .active-result {
+                &.highlighted {
+                    color: $hpe-black;
+                    background: $hpe-backgroundgray none;
+                }
             }
         }
     }
@@ -1182,14 +1202,17 @@ footer {
         text-decoration: none;
         outline: 2px solid $hpe-green;
     }
+    &:focus {
+        color: $hpe-black;
+        background-color: #fff;
+    }
     &.secondary {
         background-color: #fff;
-        border: 2px $hpe-gray;
         &:hover {
             background-color: #fff;
             color: $hpe-black;
             text-decoration: none;
-            outline: 4px solid $hpe-green;
+            outline: 2px solid $hpe-gray;
         }
         font-family: $euca-header-font-family;
         text-transform: uppercase;
@@ -1207,6 +1230,13 @@ footer {
     &.round {
         &:hover {
             outline: none;
+            box-shadow: 0 0 0 2px $hpe-green;
+        }
+        &.disabled, &[disabled] {
+            &:hover {
+                outline: none;
+                box-shadow: none;
+            }
         }
     }
     &.dropdown {
@@ -1231,15 +1261,15 @@ $btn-group-radius: 10px;
             padding: 0.2rem 1.5rem 0.3rem 1.5rem;
             border-collapse: collapse;
             margin: 0;
-            border: 1px solid $hp-gray-20;
+            border: 1px solid $hpe-lightgray;
             font-weight: bold;
-            color: $hp-gray-65;
+            color: $hpe-gray-65;
             &:hover {
-                color: $hp-accessible-blue;
+                color: $hpe-blue;
             }
             &.active {
                 color: white;
-                background-color: $hp-accessible-blue;
+                background-color: $hpe-blue;
             }
             &:first-child {
                 border-top-left-radius: $btn-group-radius;
@@ -1308,6 +1338,16 @@ $btn-group-radius: 10px;
     animation: move 2s linear infinite;
     overflow: hidden;
 }
+
+/* -----------------------------------------
+   Disabled drop-down items
+----------------------------------------- */
+.f-dropdown {
+    li.disabled {
+        @include disabled-list-item-mixin;
+    }
+}
+
 
 /* -----------------------------------------
    Foundation fixes
@@ -1429,6 +1469,16 @@ $expanded-nav-width: 225px;
     }
 }
 
+// replace fa-4x or fa-5x
+span.euca-nav-size {
+    font-size: 1.65em;
+}
+ul.off-canvas-list li{
+    a:hover {
+        background-color: $hpe-backgroundgray !important;
+        color: $hpe-gray !important;
+    }
+}
 ul.resources-nav {
     width: $expanded-nav-width*2;
     list-style-type: none;
@@ -1436,10 +1486,11 @@ ul.resources-nav {
     margin-left: 0;
     left: 0;
     label {
-        padding-left: 0.5rem;
+        padding-left: 3.0rem;
         background-color: white;
         color: $hpe-gray;
-        padding-top: 0.5rem;
+        padding-top: 0.6rem;
+        margin-bottom: 0.6rem;
         border-top: 0;
     }
     hr {
@@ -1455,8 +1506,11 @@ ul.resources-nav {
             border-bottom: 0;
             position: static;
         }
+        a.active {
+            color: white !important;
+        }
         &:hover {
-            background-color: $hpe-hovergray;
+            background-color: $hpe-backgroundgray;
             color: $hpe-gray;
         }
         span {
@@ -1476,47 +1530,35 @@ ul.resources-nav {
             height: 2rem;
             width: 2rem;
         }
-        i.icon.accounts { background-image: url(../img/nav/Accounts.svg); }
-        i.icon.accounts.active { background-image: url(../img/nav/Accounts_Active_40x40.svg); }
-        i.icon.alarms { background-image: url(../img/nav/Elastic-IP.svg); }
-        i.icon.alarms.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
-        i.icon.buckets { background-image: url(../img/nav/Bucket.svg); }
-        i.icon.buckets.active { background-image: url(../img/nav/Bucket_Active.svg); }
         i.icon.dashboard { background-image: url(../img/nav/Dashboard.svg); }
         i.icon.dashboard.active { background-image: url(../img/nav/Dashboard_Active.svg); }
-        i.icon.ipaddresses { background-image: url(../img/nav/Elastic-IP.svg); }
-        i.icon.ipaddresses.active { background-image: url(../img/nav/Elastic-IP_Active.svg); }
-        i.icon.groups { background-image: url(../img/nav/Groups.svg); }
-        i.icon.groups.active { background-image: url(../img/nav/Groups_Active.svg); }
         i.icon.images { background-image: url(../img/nav/Images.svg); }
         i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
+        i.icon.queues { background-image: url(../img/nav/Queues.svg); }
+        i.icon.queues.active { background-image: url(../img/nav/Queues_Active.svg); }
+        i.icon.topics { background-image: url(../img/nav/Topics.svg); }
+        i.icon.topics.active { background-image: url(../img/nav/Topics_Active.svg); }
         i.icon.instances { background-image: url(../img/nav/Instances.svg); }
         i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
-        i.icon.keypairs { background-image: url(../img/nav/Key-Pairs.svg); }
-        i.icon.keypairs.active { background-image: url(../img/nav/Key-Pairs_Active.svg); }
-        i.icon.launchconfigs { background-image: url(../img/nav/Launch-configs.svg); }
-        i.icon.launchconfigs.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
-        i.icon.elbs { background-image: url(../img/nav/Load-Balance.svg); }
-        i.icon.elbs.active { background-image: url(../img/nav/Load-Balance_Active.svg); }
-        i.icon.metrics { background-image: url(../img/nav/Launch-configs.svg); }
-        i.icon.metrics.active { background-image: url(../img/nav/Launch-configs_Active.svg); }
-        i.icon.roles { background-image: url(../img/nav/Roles.svg); }
-        i.icon.roles.active { background-image: url(../img/nav/Roles_Active.svg); }
-        i.icon.scalinggroups { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
-        i.icon.scalinggroups.active { background-image: url(../img/nav/Auto-Scaling-Groups_Active.svg); }
-        i.icon.securitygroups { background-image: url(../img/nav/Security.svg); }
-        i.icon.securitygroups.active { background-image: url(../img/nav/Security_Active.svg); }
-        i.icon.snapshots { background-image: url(../img/nav/Snapshots.svg); }
-        i.icon.snapshots.active { background-image: url(../img/nav/Snapshots_Active.svg); }
-        i.icon.stacks { background-image: url(../img/nav/stacks.svg); }
-        i.icon.stacks.active { background-image: url(../img/nav/stacks_Active.svg); }
-        i.icon.users { background-image: url(../img/nav/Users.svg); }
-        i.icon.users.active { background-image: url(../img/nav/Users_Active.svg); }
-        i.icon.instance-types { background-image: url(../img/nav/VM-Types.svg); }
-        i.icon.instance-types.active { background-image: url(../img/nav/VM-Types_Active.svg); }
-        i.icon.volumes { background-image: url(../img/nav/Volumes.svg); }
-        i.icon.volumes.active { background-image: url(../img/nav/Volumes_Active.svg); }
     }
+    li.active {
+        background-color: $hpe-green !important;
+        color: white !important;
+    }
+    i.icon {
+        position: absolute;
+        left: 0.5rem;
+        margin-top: 0.5rem;
+        height: 2rem;
+        width: 2rem;
+        color: #939598;
+    }
+    i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
+    i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
+    i.icon.cloudformation { background-image: url(../img/nav/stacks.svg); }
+    i.icon.iam { background-image: url(../img/nav/Groups.svg); }
+    i.icon.networksecurity { background-image: url(../img/nav/Security.svg); }
+    i.icon.storage { background-image: url(../img/nav/Volumes.svg); }
 }
 
 /* IE 10+ specific adjustments */
@@ -1547,7 +1589,7 @@ ul.bullet-list {
         font-size: 0.9rem;
         content: '\f138';
         margin: 0 5px 0 -15px;
-        color: $hp-accessible-blue;
+        color: $hpe-blue;
     }
 }
 

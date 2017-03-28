@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -250,14 +250,14 @@ class SnapshotsJsonView(LandingPageView):
 class SnapshotView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/snapshots/snapshot_view.pt'
 
-    def __init__(self, request, ec2_conn=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(SnapshotView, self).__init__(request, **kwargs)
         name = request.matchdict.get('id')
         if name == 'new':
             name = _(u'Create')
         self.title_parts = [_(u'Snapshot'), name]
         self.request = request
-        self.conn = ec2_conn or self.get_connection()
+        self.conn = self.get_connection()
         self.location = self.request.route_path('snapshot_view', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.snapshot = self.get_snapshot()
@@ -288,6 +288,7 @@ class SnapshotView(TaggedItemView):
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
+            tags=self.serialize_tags(self.snapshot.tags) if self.snapshot else [],
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -351,7 +352,8 @@ class SnapshotView(TaggedItemView):
                     snapshot.add_tag('Name', name)
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         snapshot.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 queue = Notification.SUCCESS

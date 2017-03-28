@@ -20,6 +20,8 @@
 
 #primary-buttons .button { padding: 8px 1rem; }
 #primary-buttons .button.more-actions { margin-left: 1rem; padding-right: 3rem; }
+#primary-buttons .button.more-actions[disabled] { border: 2px solid #cccccc; }
+#primary-buttons .button.more-actions[disabled]:hover { outline: none; }
 #primary-buttons .button.more-actions[disabled]:after { border-color: #cccccc transparent transparent transparent; }
 
 #more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
@@ -50,8 +52,8 @@
 .tile .header a.has-checkbox { padding-left: 24px; }
 .tile .header strong { font-weight: normal; }
 .tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
-.tile .header .f-dropdown a { color: #666666; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
-.tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
+.tile .header .f-dropdown a { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
+.tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.1rem; }
 .tile .content a { color: #01a982; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
@@ -70,7 +72,7 @@
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: white; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #000000; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #333333; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table thead tr th.count { text-align: center; }
 .gridwrapper .table thead tr th.checkbox-header { width: 1.5rem; }
@@ -85,12 +87,12 @@
 .gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
-.gridwrapper .table tr td .f-dropdown a { color: #444; }
+.gridwrapper .table tr td .f-dropdown a { color: #444444; }
 .gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
 .gridwrapper .table tr td .busy { font-size: 0.9rem; width: 0.9rem; height: 0.9rem; margin-left: 0.2rem; }
 .gridwrapper .table tr td a.alarm-status { color: white; }
 .gridwrapper .table tr td a.alarm-status:hover { text-decoration: none; }
-.gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
+.gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 14px; }
 .gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
 .gridwrapper .table .fi-alert { color: darkred; }
 
@@ -142,6 +144,7 @@
 .secondary .euca-split:hover { border-color: #01a982 !important; }
 
 .split.button { padding-right: 3.0rem !important; }
+.split.button .euca-split:after { border-color: #333333 transparent transparent transparent; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
@@ -149,13 +152,89 @@
 /* Small screen */
 @media screen and (max-width: 1020px) { .columns.datagrid { padding-left: 1rem; } }
 /* expando stuff */
-.expando-tr-even { background: #white !important; }
+.expando-tr-even { background: white !important; }
 
 table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) { background: white; }
 
 .expando-tiles li { font-size: 0.875rem; }
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
+
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.actions { background: none !important; }
+.actions .item-list { margin: 0 0 15px; }
+.actions .item-list .item { color: #333333; background-color: #e6e7e8; margin-right: 8px; padding: 0.25rem 0.5rem; font-size: 0.6875rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; }
+.actions .item-list .item .remove { margin-left: 5px; color: #FFF; }
+.actions select { margin: 0 0 0.5rem 0; }
+.actions .cancel { display: inline-block; padding: 0.375rem; }
+.actions.ng-valid-action-editor-empty .button, .actions.ng-pristine .button, .actions.ng-invalid .button { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; border-color: #CCEEE6; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { border: 2px solid #CCEEE6; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { box-shadow: none; }
+.actions .button.incomplete, .actions .button.empty { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; border-color: #CCEEE6; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { border: 2px solid #CCEEE6; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { box-shadow: none; }
+
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.actions { background: none !important; }
+.actions .item-list { margin: 0 0 15px; }
+.actions .item-list .item { color: #333333; background-color: #e6e7e8; margin-right: 8px; padding: 0.25rem 0.5rem; font-size: 0.6875rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; }
+.actions .item-list .item .remove { margin-left: 5px; color: #FFF; }
+.actions select { margin: 0 0 0.5rem 0; }
+.actions .cancel { display: inline-block; padding: 0.375rem; }
+.actions.ng-valid-action-editor-empty .button, .actions.ng-pristine .button, .actions.ng-invalid .button { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; border-color: #CCEEE6; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { border: 2px solid #CCEEE6; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { box-shadow: none; }
+.actions .button.incomplete, .actions .button.empty { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; border-color: #CCEEE6; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { border: 2px solid #CCEEE6; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { box-shadow: none; }
+
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.modal { display: none; z-index: 10000; }
+.modal.tiny .modal-content { width: 30%; }
+.modal.small .modal-content { width: 40%; }
+.modal.medium .modal-content { width: 60%; }
+.modal.large .modal-content { width: 70%; }
+.modal.xlarge .modal-content { width: 95%; }
+.modal .modal-content { opacity: 1; background-color: #FFF; z-index: 100000; width: 60%; max-width: 65rem; margin: 0 auto; left: 0; right: 0; border-radius: 3px; padding: 1.875rem; border: solid 1px #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
+.modal .modal-content .close-modal { font-size: 2.5rem; line-height: 1; position: absolute; top: 0.635rem; right: 1.375rem; color: #AAA; font-weight: bold; cursor: pointer; }
+.modal .modal-content .close-modal:hover { color: #01a982; }
+.modal .modal-content button { margin: 0; }
+.modal .modal-content input[type="number"] { width: 100%; }
+.modal .modal-bg { z-index: 99999; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
+
+@keyframes slidedown { from { opacity: 0; top: -1000px; }
+  to { opacity: 1; top: -40px; } }
+.modal .modal-content { top: -40px; position: absolute; }
+.modal.open { display: block; }
+.modal.open .modal-content { animation-name: slidedown; animation-duration: 0.3s; }
+
+.create-alarm-modal .dimensions ul { list-style: none; margin: 0; padding: 0; }
+.create-alarm-modal .ng-invalid .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; }
+.create-alarm-modal .ng-invalid .button.submit:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
+.create-alarm-modal .unit-label { font-weight: bold; color: #666666; }
+.create-alarm-modal input[name=threshold] { margin-bottom: 0; }
+.create-alarm-modal .controls-wrapper.dimensions small.error { position: relative; top: -8px; }
+.create-alarm-modal .metric-chart svg .nvd3.nv-legend .nv-series:last-child { display: none; }
+.create-alarm-modal .metric-chart .nvtooltip table tbody tr.nv-pointer-events-none:last-child { display: none; }
+.create-alarm-modal .help { margin: 15px 0 0; }
+.create-alarm-modal .help .help-content { overflow: auto; max-height: 90vh; }
 
 table.expando td:nth-of-type(1) { width: 1rem; }
 
@@ -164,19 +243,20 @@ table td input[type="checkbox"] { margin: 0 0 0; }
 #graph-area { padding-top: 0.0rem; }
 
 .chart-wrapper { background: #ffffff; border: 1px solid #b3b3b3; }
-.chart-wrapper h6 { border: 0px none; }
-.chart-wrapper svg { border: 0px none; }
+.chart-wrapper h6 { border: 0 none; }
+.chart-wrapper svg { border: 0 none; }
 
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) { .actions .f-dropdown { margin-left: -120px; }
+  .actions .f-dropdown:before { margin-left: 120px; }
+  .actions .f-dropdown:after { margin-left: 120px; } }
 .split-top { height: 250px; overflow: auto; }
 
-.split-bar { height: 0.6rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; overflow-y: hidden; }
-.split-bar hr { margin: 4px 4px 4px 4px; }
+.split-bar { height: 0.9rem; width: 100%; color: grey; background: #ffffff; cursor: row-resize; overflow-y: hidden; }
+.split-bar hr { margin: 7px 4px 0px 4px; }
+.split-bar .split-grab { position: relative; top: -12px; margin-left: 49%; color: #cccccc; background: #ffffff; transform: scale(2, 1); }
 
 .split-bottom { position: relative; padding-top: 1.0rem; }
 
-select { width: 20rem; }
-
-.tile input[type="checkbox"] { position: relative; float: left; top: 9px; left: 5px; }
 .tile .dropdown.button.tiny { top: 5px !important; right: 2px !important; }
 
 #primary-buttons .button.more-actions { margin-left: 0 !important; }
@@ -187,19 +267,10 @@ th.metric-action { text-align: right !important; }
 
 magic-search .f-dropdown { min-width: 15rem; }
 
-#metric-time-range { margin: 0; display: inline; }
-
-input.datefield { width: 9rem; float: left; margin-bottom: 0; margin-right: 1rem; }
-
 .toprow select { margin-bottom: 1px; }
 
-.chart-wrapper .graph-close { position: relative; bottom: 1rem; left: 61rem; color: #5a5a5a; font-size: 2.1875rem; line-height: 0.5rem; font-weight: bold; cursor: pointer; }
-.chart-wrapper .metric-chart-menu { position: relative; bottom: 1.3rem; padding-left: 0.5rem; padding-right: 0.5rem; left: 58rem; color: #5a5a5a; cursor: pointer; }
+.chart-wrapper .graph-close { float: right; padding: 0.35rem 0.5rem 0 0.5rem; color: #5a5a5a; font-size: 2.1875rem; line-height: 0.5rem; font-weight: bold; cursor: pointer; }
+.chart-wrapper .metric-chart-menu { float: right; padding: 0 0.5rem 0 0.5rem; color: #5a5a5a; cursor: pointer; }
 .chart-wrapper svg { height: 300px !important; }
 
-.time-shift .graph-shift-left { position: relative; left: 0.25rem; color: #5a5a5a; cursor: pointer; }
-.time-shift .graph-shift-right { position: relative; left: 59rem; color: #5a5a5a; cursor: pointer; }
-
 .metrics-url-field { width: 100%; }
-
-.field-wrapper.timepicker { position: absolute; }

@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack_wizard.css')}" />
 </head>
 
@@ -96,7 +97,9 @@
                                 </div>
                             </div>
                             <hr/>
-                            ${panel('tag_editor', tags=[])}
+                            <div ng-cloak="">
+                                <tag-editor ng-model="tags">[]</tag-editor>
+                            </div>
                             <hr/>
                             <div>
                                 <label>
@@ -241,7 +244,7 @@
             </div>
         </div>
         <aws-template-dialogs
-            template="${request.route_path('stack_aws_dialogs')}"
+            template="${request.route_path('render_template', subpath='stacks/stack_aws_dialogs')}"
             service-list="serviceList"
             resource-list="resourceList"
             property-list="propertyList"
@@ -257,7 +260,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_aws_dialogs.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_wizard.js')}"></script>
 </div>

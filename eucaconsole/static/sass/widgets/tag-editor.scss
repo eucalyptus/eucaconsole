@@ -10,11 +10,12 @@
       font-size: $euca-xs-font-size;
       background-color: white;
       border: 2px solid $hpe-lightgray;
-      margin-right: 8px;
       padding: 0.25rem 0.5rem;
       border-radius: 3px;
       white-space: nowrap;
       line-height: 1;
+      display: inline-block;
+      margin: 5px 8px 0 0;
 
       .propagates {
         color: #777;
@@ -43,13 +44,23 @@
   &.ng-pristine,
   &.ng-invalid {
     .button {
-      background-color: #FFF;
-      border-color: #B3B3B3;
-      color: #B3B3B3;
+        @include primary-disabled-button-mixin;
+        &:hover {
+            box-shadow: none;
+        }
     }
   }
 
   input.ng-invalid.ng-touched ~ .error {
     display: block;
+    @include validation-error-mixin;
+  }
+
+  #propagate-wrapper {
+    white-space: nowrap;
+    .helptext-icon {
+      position: relative;
+      left: -10px;
+    }
   }
 }

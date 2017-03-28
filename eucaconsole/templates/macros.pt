@@ -17,7 +17,7 @@
 
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <div class="large-12 columns datagrid ${'has-smart-table' if use_smart_table else ''}" id="landing-page-items" ng-class="landingPageView"
          tal:define="use_smart_table getattr(view, 'enable_smart_table', False)">
@@ -281,7 +281,7 @@
                 <div class="message">
                 ${layout.escape_braces(notification.message)}
                 </div>
-                <a href="#" class="close">&times;</a>
+                <a class="close">&times;</a>
             </div>
         </div>
     </div>

@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for S3 Metadata Editor JS 
  * @requires Jasmine, AngularJS mock
  *

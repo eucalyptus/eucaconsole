@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Key pairs landing page JS
  * @requires AngularJS, jQuery
  *

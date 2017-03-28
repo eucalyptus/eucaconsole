@@ -26,6 +26,67 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
+@mixin wizard-tabs-mixin {
+    padding-right: 1rem;
+    padding-left: 1rem;
+    a {  // Visited tabs
+        color: $hpe-gray;
+        font-family: $euca-header-font-family;
+        background-color: transparent;
+        &:hover {
+            color: $hpe-gray;
+            border-bottom: 2px solid $hpe-gray;
+        }
+        box-shadow: none;
+        white-space: nowrap;
+        padding: 8px 0 6px 0;
+        .cir {
+            background-color: $hpe-gray;
+        }
+    }
+    &.active {  // Active tab
+        a {
+            color: $hpe-black;
+            font-family: $euca-header-font-family;
+            background-color: transparent;
+            border-bottom: 2px solid $hpe-black;
+        }
+        .cir {
+            background-color: $hpe-black;
+        }
+    }
+    &.disabled {  // Unvisited tabs
+        a {
+            color: $hpe-lightgray;
+            margin-top: -8px;
+            &:hover {
+                border-bottom: none;
+                cursor: default;
+            }
+        }
+        color: $hpe-lightgray;
+        font-family: $euca-header-font-family;
+        padding: 8px 1rem;
+        .cir {
+            margin-right: 8px;
+            background-color: $hpe-lightgray;
+        }
+    }
+    .cir {
+        position: relative;
+        top: -2px;
+        font-size: 0.825rem;
+        display: inline-block;
+        border-radius: 60px;
+        width: 20px; height: 20px;
+        padding: 0 0 0 0;
+        text-align: center;
+        vertical-align: middle;
+        background-color: $hpe-lightgray;
+        color: white;
+        margin-right: 4px;
+    }
+}
 
 /* @section Wizard styles */
 .wizard {

@@ -81,8 +81,14 @@ $alarm-status-color-ok: $hpe-green;
         &.more-actions {
             margin-left: 1rem;
             padding-right: 3rem;
-            &[disabled]:after {
-                border-color: $hpe-lightgray transparent transparent transparent;
+            &[disabled] {
+                border: 2px solid $hpe-lightgray;
+                &:hover {
+                    outline: none;
+                }
+                &:after {
+                    border-color: $hpe-lightgray transparent transparent transparent;
+                }
             }
         }
     }
@@ -92,14 +98,7 @@ $alarm-status-color-ok: $hpe-green;
     &.f-dropdown {
         @include dropdown-shadow-mixin;
         li.disabled {
-            cursor: default;
-            a {
-                color: $hpe-lightgray;
-                pointer-events: none;
-            }
-            &:hover {
-                background-color: #fff;
-            }
+            @include disabled-list-item-mixin;
         }
     }
     hr {
@@ -156,7 +155,7 @@ $alarm-status-color-ok: $hpe-green;
 
 // Tile/grid view
 .tile {
-    box-shadow: 0 2px 2px 0 $hpe-hovergray;
+    box-shadow: 0 2px 2px 0 $hpe-backgroundgray;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
@@ -179,7 +178,7 @@ $alarm-status-color-ok: $hpe-green;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
-                background-color: $hpe-hovergray;
+                background-color: $hpe-backgroundgray;
                 text-decoration: none;
             }
         }
@@ -195,7 +194,7 @@ $alarm-status-color-ok: $hpe-green;
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: $hp-gray-65;
+            color: $hpe-gray-65;
             font-family: $euca-header-font-family;
             &:hover {
                 color: $hpe-green;
@@ -214,6 +213,7 @@ $alarm-status-color-ok: $hpe-green;
         }
         .f-dropdown a {
             color: $hpe-gray;
+            font-family: $euca-text-font-family;
             text-decoration: none;
             font-weight: normal;
             overflow: visible;
@@ -225,6 +225,7 @@ $alarm-status-color-ok: $hpe-green;
         padding: 8px;
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
+        line-height: 1.1rem;
         a { color: $hpe-green; }
         a:hover { text-decoration: underline; }
         div {
@@ -347,7 +348,7 @@ $alarm-status-color-ok: $hpe-green;
                 word-break: break-all;
             }
             .f-dropdown a {
-                color: $euca-darkgrey;
+                color: $hpe-darkgray;
                 &:hover {
                     text-decoration: none;
                 }
@@ -369,11 +370,7 @@ $alarm-status-color-ok: $hpe-green;
     }
     .dropdown.button.tiny {
         z-index: 0;
-        top: 8px; right: 20px;
-        padding-left: 10px;
-        padding-right: 24px;
-        // background-color: $euca-extralightgrey;
-        // border: 1px solid $euca-lightgrey;
+        top: 8px; right: 14px;
         i {
             font-size: 1.2rem;
             top: 0;
@@ -487,7 +484,7 @@ $alarm-status-color-ok: $hpe-green;
     a {
         float: right;
         border-bottom: none;
-        color: $hp-gray-65;
+        color: $hpe-gray-65;
         &:hover {
             border-bottom: none;
             color: $hpe-green;
@@ -559,7 +556,7 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 .euca-split {
-    border-color: $hpe-hovergray !important;
+    border-color: $hpe-backgroundgray !important;
     width: 2.0rem !important;
 }
 
@@ -574,6 +571,11 @@ $alarm-status-color-ok: $hpe-green;
 
 .split.button {
     padding-right: 3.0rem !important;
+    .euca-split {
+        &:after {
+            border-color: $hpe-black transparent transparent transparent;
+        }
+    }
 }
 
 /* -----------------------------------------

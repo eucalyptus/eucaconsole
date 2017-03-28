@@ -7,7 +7,7 @@ describe('TagEditorModule', function () {
 
     beforeEach(angular.mock.module('TagEditorModule'));
 
-    var $compile, $rootScope, $templateCache;
+    var $compile, $rootScope, $httpBackend;
     var template = '<div ng-form="tagForm"><input name="key" ng-model="newTagKey"required tag-name/><input name="value" ng-model="newTagValue"tag-value/></div>';
     var mockTags = [
         {
@@ -21,31 +21,37 @@ describe('TagEditorModule', function () {
             propagate_at_launch: false
         }
     ];
+    var mockEvent = jasmine.createSpyObj('event', ['preventDefault']);
 
-    beforeEach(angular.mock.inject(function (_$compile_, _$rootScope_, _$templateCache_) {
+    beforeEach(angular.mock.inject(function (_$compile_, _$rootScope_) {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
-        $templateCache = _$templateCache_;
+    }));
 
-        $templateCache.put('mock.template.html', template);
+    beforeEach(angular.mock.inject(function ($injector) {
+        $httpBackend = $injector.get('$httpBackend');
+        $httpBackend.when('GET', '/_template/tag-editor/tag-editor').respond(200, template);
     }));
 
     var element, scope;
     beforeEach(function () {
         element = $compile(
-            '<tag-editor ng-model="foo" template="mock.template.html">' +
+            '<tag-editor ng-model="foo">' +
             JSON.stringify(mockTags) +
             '</tag-editor>'
         )($rootScope);
         $rootScope.$digest();
+        $httpBackend.flush();
 
         scope = element.isolateScope();
         scope.tagForm.$valid = true;
         scope.tagForm.$invalid = false;
+        scope.tagForm.$pristine = false;
         spyOn(scope.tagForm.key, '$setPristine').and.callThrough();
         spyOn(scope.tagForm.key, '$setUntouched').and.callThrough();
         spyOn(scope.tagForm.value, '$setPristine').and.callThrough();
         spyOn(scope.tagForm.value, '$setUntouched').and.callThrough();
+
     });
 
     it('should transclude content into the tags member', function () {
@@ -59,14 +65,13 @@ describe('TagEditorModule', function () {
     describe('#addTag', function () {
 
         beforeEach(function () {
-            scope.addTag({
-                name: 'tag3',
-                value: 'value3',
-                propagate_at_launch: false
-            });
+            scope.newTagKey = 'tag3';
+            scope.newTagValue = 'value3';
+            scope.addTag(mockEvent);
         });
 
         it('should add a tag when called', function () {
+            expect(mockEvent.preventDefault).toHaveBeenCalled();
             expect(scope.tags.length).toEqual(3);
         });
 

@@ -1,10 +1,41 @@
-angular.module('AlarmServiceModule', ['EucaRoutes'])
-.factory('AlarmService', ['$http', 'eucaRoutes', function ($http, eucaRoutes) {
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview factory methods for alarm XHR calls
+ * @requires AngularJS, jQuery
+ *
+ */
+angular.module('AlarmServiceModule', [])
+.factory('AlarmService', ['$http', '$interpolate', function ($http, $interpolate) {
+    $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
     return {
-        updateAlarm: function (alarm, path, csrf_token, flash) {
+        getAlarm: function (id) {
+            return $http({
+                method: 'GET',
+                url: '/alarms/' + btoa(id) + '/json'
+            }).then( function (response) {
+                return response.data || {
+                    alarm: {}
+                };
+            });
+        },
+
+        createAlarm: function (alarm, csrf_token) {
             return $http({
                 method: 'PUT',
-                url: path,
+                url: '/alarms',
+                data: {
+                    alarm: alarm,
+                    csrf_token: csrf_token
+                }
+            });
+        },
+
+        updateAlarm: function (alarm, csrf_token, flash) {
+            return $http({
+                method: 'PUT',
+                url: '/alarms',
                 data: {
                     alarm: alarm,
                     csrf_token: csrf_token,
@@ -13,14 +44,14 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
             });
         },
 
-        deleteAlarms: function (alarms, path, csrf_token, flash) {
+        deleteAlarms: function (alarms, csrf_token, flash) {
             var alarmNames = alarms.map(function (current) {
                 return current.name;
             });
 
             return $http({
                 method: 'DELETE',
-                url: path,
+                url: '/alarms',
                 data: {
                     alarms: alarmNames,
                     csrf_token: csrf_token,
@@ -29,28 +60,39 @@ angular.module('AlarmServiceModule', ['EucaRoutes'])
             });
         },
 
-        updateActions: function (actions, path) {
+        getHistory: function (id) {
             return $http({
-                method: 'PUT',
-                url: path,
-                data: {
-                    actions: actions
-                }
+                method: 'GET',
+                url: '/alarms/' + btoa(id) + '/history/json'
+            }).then(function (response) {
+                var data = response.data || {
+                    history: []
+                };
+                return data.history;
             });
         },
 
-        getHistory: function (id) {
-            return eucaRoutes.getRouteDeferred('cloudwatch_alarm_history_json', { alarm_id: id }).then(function (path) {
-                return $http({
-                    method: 'GET',
-                    url: path
-                }).then(function (response) {
-                    var data = response.data || {
-                        history: []
-                    };
-                    return data.history;
-                });
+        getAlarmsForResource: function (id, type) {
+            return $http({
+                method: 'GET',
+                url: $interpolate('/alarms/resource/{{id}}/json')({id: id}),
+                params: {
+                    'resource-type': type
+                }
+            }).then(function success (response) {
+                var data = response.data.results || [];
+                return data;
             });
-        }
+        },
+
+        getAlarmNames: function (id, type) {
+            return $http({
+                method: 'GET',
+                url: '/alarms/names/json'
+            }).then(function success (response) {
+                return response.data.results || [];
+            });
+        },
+
     };
 }]);

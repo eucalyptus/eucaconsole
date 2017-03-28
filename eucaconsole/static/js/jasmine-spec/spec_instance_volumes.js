@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Instance Volumes JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -30,33 +32,33 @@ describe("InstanceVolumes", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of availableVolumeCount is 0", function() {
+        it("should set initial value of availableVolumeCount to 0", function() {
             expect(scope.availableVolumeCount).toEqual(0);
         });
 
-        it("Initial value of instanceId is empty", function() {
+        it("should set initial value of instanceId to empty string", function() {
             expect(scope.instanceId).toEqual('');
         });
 
-        it("Initial value of initialLoading is true", function() {
-            expect(scope.initialLoading).toBeTruthy();
+        it("should set initial value of initialLoading to true", function() {
+            expect(scope.initialLoading).toBe(true);
         });
 
-        it("Initial value of isDialogHelpExpanded is false", function() {
-            expect(scope.isDialogHelpExpanded).not.toBeTruthy();
+        it("should set initial value of isDialogHelpExpanded to false", function() {
+            expect(scope.isDialogHelpExpanded).toBe(false);
         });
     });
 
-    describe("Function initController() Test", function() {
+    describe("#initController", function() {
 
-        it("Should set instanceId when initController() is called and instance_id JSON is set", function() {
-            scope.initController('{"instance_id": "i-12345678"}');
+        it("should set instanceId when initController() is called and instance_id JSON is set", function() {
+            scope.initController('{"instance_id": "i-12345678", "instance_volumes_json_url": ""}');
             expect(scope.instanceId).toEqual('i-12345678');
         });
 
-        it("Should call setWatch() when initController() is called", function() {
+        it("should call setWatch() when initController() is called", function() {
             spyOn(scope, 'setWatch');
-            scope.initController('{}');
+            scope.initController('{"instance_volumes_json_url": ""}');
             expect(scope.setWatch).toHaveBeenCalled();
         });
     });

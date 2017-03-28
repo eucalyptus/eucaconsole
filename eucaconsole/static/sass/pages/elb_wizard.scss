@@ -4,6 +4,7 @@
 // Import common wizard styles
 @import "../includes/wizard";
 
+@import "../widgets/modal";
 
 /* @section Elastic Load Balancer Wizard styles */
 
@@ -15,12 +16,6 @@
         width: 100px;
     }
     select.ip-protocol {
-        width: 100px;
-    }
-    select.ping-delay {
-        width: 120px;
-    }
-    select.ping-threshold {
         width: 100px;
     }
     table {
@@ -43,6 +38,15 @@
     }
     .checkbox-with-helptext-icon label {
         margin-right: 0;
+    }
+}
+
+#advanced-form {
+    select.ping-delay {
+        width: 120px;
+    }
+    select.ping-threshold {
+        width: 100px;
     }
 }
 
@@ -73,3 +77,13 @@
         }
     }
 }
+
+#controls_vpc_subnet {
+    padding-bottom: 1.25rem;
+}
+
+#advanced-section {
+    padding-top: 1.25rem;
+}
+
+@include modal-position(50px, fixed);

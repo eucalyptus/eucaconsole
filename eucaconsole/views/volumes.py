@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -311,18 +311,18 @@ class VolumesJsonView(LandingPageView):
 class VolumeView(TaggedItemView, BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_view.pt'
 
-    def __init__(self, request, ec2_conn=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(VolumeView, self).__init__(request, **kwargs)
         name = request.matchdict.get('id')
         if name == 'new':
             name = _(u'Create')
         self.title_parts = [_(u'Volume'), name, _(u'General')]
-        self.conn = ec2_conn or self.get_connection()
+        self.conn = self.get_connection()
         self.location = request.route_path('volume_view', id=request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
             snapshots = self.conn.get_all_snapshots(owner='self') if self.conn else []
-            zones = ChoicesManager(self.conn).get_availability_zones(self.region)
+            zones = ChoicesManager(self.conn).get_availability_zones(self.conn.host)
             instances = self.conn.get_only_instances() if self.conn else []
         self.volume_form = VolumeForm(
             self.request, conn=self.conn, volume=self.volume, snapshots=snapshots,
@@ -352,6 +352,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             delete_form=self.delete_form,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
+            tags=self.serialize_tags(self.volume.tags) if self.volume else [],
             controller_options_json=self.get_controller_options_json(),
         )
 
@@ -407,7 +408,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                     volume.add_tag('Name', name)
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         volume.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create volume request.  It may take a moment to create the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -488,10 +490,10 @@ class VolumeView(TaggedItemView, BaseVolumeView):
 
 
 class VolumeStateView(BaseVolumeView):
-    def __init__(self, request, ec2_conn=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(VolumeStateView, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = ec2_conn or self.get_connection()
+        self.conn = self.get_connection()
         self.volume = self.get_volume()
 
     @view_config(route_name='volume_state_json', renderer='json', request_method='GET')
@@ -518,13 +520,13 @@ class VolumeStateView(BaseVolumeView):
 class VolumeSnapshotsView(BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_snapshots.pt'
 
-    def __init__(self, request, ec2_conn=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(VolumeSnapshotsView, self).__init__(request, **kwargs)
         name = request.matchdict.get('id')
         if name == 'new':
             name = _(u'Create')
         self.title_parts = [_(u'Volume'), name, _(u'Snapshots')]
-        self.conn = ec2_conn or self.get_connection()
+        self.conn = self.get_connection()
         self.location = self.request.route_path('volume_snapshots', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
@@ -586,7 +588,8 @@ class VolumeSnapshotsView(BaseVolumeView):
                     snapshot.add_tag('Name', name)
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         snapshot.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)

@@ -1,6 +1,7 @@
 /* @fileOverview Login page CSS */
 @import "../includes/eucavariables";
 
+$oidc-blue: #3560A0;
 
 #notifications-wrapper {
     padding-top: 2rem;
@@ -23,7 +24,7 @@
     padding: 10px;
     label {
         font-weight: bold;
-        color: $euca-darkgrey;
+        color: $hpe-darkgray;
         white-space: nowrap;
     }
     input {
@@ -49,6 +50,16 @@
         width: 100%;
         margin-top: 12px;
         margin-bottom: 12px;
+    }
+}
+
+.button.oidc {
+    background-color: $oidc-blue;
+    color: white;
+    width: 100%;
+    border: 0;
+    &:hover {
+        outline: 2px solid $oidc-blue;
     }
 }
 

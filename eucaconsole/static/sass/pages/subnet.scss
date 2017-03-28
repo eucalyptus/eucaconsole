@@ -1,0 +1,63 @@
+/* @fileOverview Subnet details page CSS */
+
+@import "../includes/eucavariables";
+
+// Subnet State colors
+.state.available { background-color: $hpe-slate; }
+.state.pending { background-color: lighten($hpe-slate, 20%); }
+
+// Instance state colors
+.status.running { background-color: $hpe-slate; }
+.status.pending { background-color: lighten($hpe-slate, 20%); }
+.status.stopped { background-color: darkred; }
+.status.stopping { background-color: lighten(red, 20%); }
+.status.terminated { background-color: $hpe-gray; }
+.status.shutting-down { background-color: $hpe-lightgray; }
+
+
+#name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id {
+  width: 40%;
+}
+
+#subnet-instances-link {
+  text-align: right;
+}
+
+@media only screen and (max-width: 40em) {
+  #name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id {
+    width: 100%;
+  }
+}
+
+table.instances {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+
+#delete-subnet-modal {
+  #default-subnet-warning {
+    color: red;
+  }
+  button.button.warning {
+    background-color: red;
+    &:hover {
+      outline-color: red;
+    }
+  }
+  .resources-list {
+    margin-bottom: 1rem;
+    .small-3 {
+      text-align: right;
+      font-weight: bold;
+    }
+  }
+}
+
+.existing-nat-gateways-notice {
+  margin-bottom: 1rem;
+}
+
+#ipcount {
+  margin-left: 1rem;
+}

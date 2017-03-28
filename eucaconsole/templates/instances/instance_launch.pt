@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_launch.css')}" />
 </head>
 
@@ -79,7 +80,9 @@
                             ${panel('form_field', field=launch_form['instance_type'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'instanceZone'})}
                             <hr />
-                            ${panel('tag_editor', show_name_tag=False, leftcol_width=3, rightcol_width=9)}
+                            <div ng-cloak="">
+                                <tag-editor ng-model="tags">[]</tag-editor>
+                            </div>
                             <hr />
                             <div class="row controls-wrapper readonly">
                                 <div class="columns">
@@ -129,19 +132,19 @@
                             <div tal:condition="is_vpc_supported">
                                 ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8, leftcol_width_large=4, rightcol_width_large=8)}
                                 <div ng-show="instanceVPC != 'None'">
-                                    ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                    ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'subnetVPC', 'options': 'item as item.label for item in vpcSubnetChoices track by item.id'})}
                                     <span id="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                     ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width_large=4, rightcol_width_large=8)}
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=4, rightcol_width=8, leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=4, rightcol_width=8, leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'keyPair', 'options': 'item as item.label for item in keyPairChoices track by item.id'})}
                             <div class="row">
                                 <div class="large-8 small-8 columns right" id="create-keypair-link">
                                     <span class="or" i18n:translate="">Or: </span>
                                     <a ng-click="showCreateKeypairModal()" i18n:translate="">Create key pair</a>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=4, rightcol_width=8, leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
+                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=4, rightcol_width=8, leftcol_width_large=4, rightcol_width_large=8, ng_attrs={'model': 'securityGroups', 'options': 'item as item.label for item in securityGroupChoices track by item.id'}, **security_group_attrs)}
                             <div class="row">
                                 <div class="large-8 small-8 columns right" id="create-securitygroup-link">
                                     <span class="or" i18n:translate="">Or: </span>
@@ -156,7 +159,8 @@
                                     <label class="right" i18n:translate="">Role</label>
                                 </div>
                                 <div class="large-8 small-8 columns field">
-                                    <select id="role" ng-options="k as v for (k, v) in roleList" ng-model="role" name="role"></select>
+                                    <select id="role" ng-options="item as item.label for item in roleList track by item.id" ng-model="role" name="role">
+                                    </select>
                                 </div>
                             </div>
                             <hr />
@@ -194,9 +198,20 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="large-9 small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
-                                ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
-                                ${launch_form['private_addressing'].label}
+                            <div class="row inline controls-wrapper" id="controls_termination_protection">
+                                <div class="large-9 small-8 columns right">
+                                    ${structure:launch_form.termination_protection(**{'ng-model': 'terminationProtection'})}
+                                    ${launch_form['termination_protection'].label}
+                                    <span data-tooltip="" title="${launch_form.termination_protection.help_text}">
+                                        <i class="helptext-icon"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row inline controls-wrapper" id="controls_private_addressing">
+                                <div class="large-9 small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
+                                    ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
+                                    ${launch_form['private_addressing'].label}
+                                </div>
                             </div>
                             <hr/>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices, add_hr=True)}
@@ -273,10 +288,10 @@
                             </span>
                         </div>
                     </div>
-                    <div class="row" ng-show="tagsLength &gt; 0">
+                    <div class="row" ng-show="tags.length">
                         <label i18n:translate="">Tags</label>
                         <div class="columns value" id="tag-preview">
-                            <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                            <div ng-repeat="tag in tags">{{ tag.name }}={{ tag.value }}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -289,31 +304,36 @@
                 <div class="section step3 hide">
                     <div class="row" ng-show="instanceVPC != ''">
                         <label i18n:translate="">Network</label>
-                        <div class="columns value">{{ instanceVPCName }}</div>
+                        <div class="columns value">{{ instanceVPC }}</div>
                     </div>
                     <div class="row" ng-show="instanceVPC != ''">
                         <label i18n:translate="">Subnet</label>
-                        <div class="columns value">{{ vpcSubnetChoices[subnetVPC] }}</div>
+                        <div class="columns value">{{ subnetVPC.label }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Key</label>
-                        <div class="columns value breakword">{{ keyPair }}</div>
+                        <div class="columns value breakword" ng-show="keyPair.id">{{ keyPair.label }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Security group</label>
                         <div class="columns value breakword" ng-repeat="sgroup in securityGroups">
-                            {{ securityGroupChoices[sgroup] }}
+                            {{ sgroup.label }}
                         </div>
                     </div>
                     <div class="row" ng-show="role">
                         <label i18n:translate="">Role</label>
-                        <div class="columns value">{{ role }}</div>
+                        <div class="columns value" ng-show="role.id">{{ role.label }}</div>
                     </div>
                 </div>
                 <div class="section step4 hide">
                     <div class="row">
                         <div class="columns value" ng-show="monitoringEnabled">
                             <i class="fi-check"></i> <span i18n:translate="">Monitoring enabled</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="terminationProtection">
+                            <i class="fi-check"></i> <span i18n:translate="">Termination protection enabled</span>
                         </div>
                     </div>
                     <div class="row">
@@ -338,6 +358,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance_launch.js')}"></script>
 </div>
 

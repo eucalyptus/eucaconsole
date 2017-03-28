@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview ELB Detail Page JS (General tab)
  * @requires AngularJS
  *

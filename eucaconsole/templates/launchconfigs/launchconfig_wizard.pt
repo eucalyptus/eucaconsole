@@ -123,7 +123,7 @@
                                 ${panel('form_field', field=create_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9)}
                             </div>
                             <div tal:condition="not preset">
-                                ${panel('form_field', field=create_form['keypair'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                                ${panel('form_field', field=create_form['keypair'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'keyPair', 'options': 'item as item.label for item in keyPairChoices track by item.id'})}
                                 <div class="row">
                                     <div class="large-9 small-8 columns right" id="create-keypair-link">
                                         <span class="or" i18n:translate="">Or: </span>
@@ -139,7 +139,7 @@
                                 </div>
                             </div>
                             <div tal:condition="not preset">
-                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
+                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'securityGroups', 'options': 'item as item.label for item in securityGroupChoices track by item.id'}, **security_group_attrs)}
                                 <div class="row">
                                     <div class="large-9 small-8 columns right" id="create-securitygroup-link">
                                         <span class="or" i18n:translate="">Or: </span>
@@ -150,8 +150,10 @@
                             <div tal:condition="preset" ng-cloak="true">
                                 <div class="row">
                                     <div class="large-3 small-4 columns"><label class="right">Security group&nbsp;</label></div>
-                                    <div class="large-9 small-8 columns field inline" ng-repeat="sgroup in securityGroups">
-                                        {{ securityGroupChoices[sgroup] }}
+                                    <div class="large-9 small-8 columns field inline">
+                                        <div ng-repeat="sgroup in securityGroups">
+                                            {{ securityGroupChoices[sgroup] }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div ng-repeat="sGroup in securityGroups" class="hide">
@@ -166,7 +168,8 @@
                                     <label class="right" i18n:translate="">Role</label>
                                 </div>
                                 <div class="large-9 small-8 columns field">
-                                    <select id="role" ng-options="k as v for (k, v) in roleList" ng-model="role" name="role"></select>
+                                    <select id="role" ng-model="role" name="role"
+                                            ng-options="item as item.label for item in roleList track by item.id"></select>
                                 </div>
                             </div>
                             <hr />
@@ -299,17 +302,17 @@
                 <div class="section step3 hide">
                     <div class="row">
                         <label i18n:translate="">Key pair</label>
-                        <div class="columns value breakword">{{ keyPair }}</div>
+                        <div class="columns value breakword" ng-show="keyPair.id">{{ keyPair.label }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Security group</label>
-                        <div class="columns value" ng-repeat="sgroup in securityGroups">
-                            {{ securityGroupChoices[sgroup] }}
+                        <div class="columns value breakword" ng-repeat="sgroup in securityGroups">
+                            {{ sgroup.label }}
                         </div>
                     </div>
                     <div class="row" ng-show="role">
                         <label i18n:translate="">Role</label>
-                        <div class="columns value">{{ role }}</div>
+                        <div class="columns value" ng-show="role.id">{{ role.label }}</div>
                     </div>
                 </div>
                 <div class="section step4 hide">

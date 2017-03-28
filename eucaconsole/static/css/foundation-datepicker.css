@@ -9,6 +9,7 @@
 .datepicker td.old, .datepicker td.new { color: #999; }
 .datepicker td span.active { background: #2ba6cb; }
 .datepicker td.day.disabled { color: #eee; }
+.datepicker td span.month.disabled, .datepicker td span.year.disabled { color: #eee; }
 .datepicker th { text-align: center; width: 20px; height: 20px; border: 0; font-size: 12px; padding: 4px 8px; background: #fff; cursor: pointer; }
 .datepicker th.active.day, .datepicker th.active.year { background: #2ba6cb; }
 .datepicker th.date-switch { width: 145px; }

@@ -1,0 +1,10 @@
+/* @fileOverview Route Table details page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+#name { width: 40%; }
+
+@media only screen and (max-width: 40em) { #name { width: 100%; } }
+#delete-route-table-modal .resources-list { margin-bottom: 1rem; }
+#delete-route-table-modal .resources-list .small-3 { text-align: right; font-weight: bold; }

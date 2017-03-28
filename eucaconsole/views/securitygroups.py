@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -254,6 +254,7 @@ class SecurityGroupView(TaggedItemView):
             security_group_names=self.get_security_group_names(),
             controller_options_json=controller_options_json,
             is_vpc_supported=self.is_vpc_supported,
+            tags=self.serialize_tags(self.security_group.tags) if self.security_group else [],
         )
 
     def get_default_vpc_network(self):
@@ -310,7 +311,8 @@ class SecurityGroupView(TaggedItemView):
                     self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
-                    for tagname, tagvalue in tags.items():
+                    tags_dict = self.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
                         new_security_group.add_tag(tagname, tagvalue)
                 prefix = _(u'Successfully created security group')
                 msg = u'{0} {1}'.format(prefix, name)

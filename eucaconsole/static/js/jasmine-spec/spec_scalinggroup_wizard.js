@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Scalinggroup Wizard JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -22,88 +24,100 @@ describe("ScalingGroupWizard", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of isNotValid is true", function() {
-            expect(scope.isNotValid).toBeTruthy();
+        it("should set initial value of isNotValid to true", function() {
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Initial value of scalingGroupName is empty", function() {
+        it("should set initial value of scalingGroupName to empty string", function() {
             expect(scope.scalingGroupName).toEqual('');
         });
 
-        it("Initial value of launchConfig is empty", function() {
+        it("should set initial value of launchConfig to empty string", function() {
             expect(scope.launchConfig).toEqual('');
         });
 
-        it("Initial value of healthCheckType is EC2", function() {
+        it("should set initial value of healthCheckType to 'EC2'", function() {
             expect(scope.healthCheckType).toEqual('EC2');
         });
 
-        it("Initial value of healthCheckPeriod is 120", function() {
+        it("should set initial value of healthCheckPeriod to 120", function() {
             expect(scope.healthCheckPeriod).toEqual(120);
         });
 
-        it("Initial value of minSize is 1", function() {
+        it("should set initial value of minSize to 1", function() {
             expect(scope.minSize).toEqual(1);
         });
 
-        it("Initial value of desiredCapacity is 1", function() {
+        it("should set initial value of desiredCapacity to 1", function() {
             expect(scope.desiredCapacity).toEqual(1);
         });
 
-        it("Initial value of maxSize is 1", function() {
+        it("should set initial value of maxSize to 1", function() {
             expect(scope.maxSize).toEqual(1);
         });
     });
 
-    describe("Function checkRequiredInput() Test", function() {
+    describe("#checkRequiredInput", function() {
 
-        it("Should invalid input when scalingGroupName is empty", function() {
+        it("should be invalid when scalingGroupName is empty", function() {
             scope.currentStepIndex = 1;
             scope.scalingGroupName = '';
             scope.checkRequiredInput(); 
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should invalid input when launchConfig is empty", function() {
+        it("should be invalid when launchConfig is empty", function() {
             scope.currentStepIndex = 1;
             scope.launchConfig = '';
             scope.checkRequiredInput(); 
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should invalid input when minSize is empty", function() {
+        it("should be invalid input when minSize is empty", function() {
             scope.currentStepIndex = 1;
             scope.minSize = '';
             scope.checkRequiredInput(); 
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should invalid input when desiredCapacity is empty", function() {
+        it("should be invalid when desiredCapacity is empty", function() {
             scope.currentStepIndex = 1;
             scope.desiredCapacity = '';
             scope.checkRequiredInput(); 
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should invalid input when maxSize is empty", function() {
+        it("should be invalid when maxSize is empty", function() {
             scope.currentStepIndex = 1;
             scope.maxSize = '';
             scope.checkRequiredInput(); 
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should invalid input when healthCheckPeriod is empty", function() {
+        it("should be invalid when healthCheckPeriod is empty", function() {
             scope.currentStepIndex = 2;
             scope.healthCheckPeriod = '';
             scope.checkRequiredInput(); 
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should invalid input when availZones is empty", function() {
+        it("should be invalid when availZones is empty", function() {
             scope.currentStepIndex = 2;
             scope.availZones = '';
             scope.checkRequiredInput(); 
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
     });
+
+    describe("#setInitialValues", function () {
+        beforeEach(function () {
+            spyOn(scope, 'cleanLaunchConfigOptions');
+        });
+
+        it("should call cleanLaunchConfigOptions when setInitialValues is called", function () {
+            scope.setInitialValues();
+            expect(scope.cleanLaunchConfigOptions).toHaveBeenCalled();
+        });
+    });
+
 });

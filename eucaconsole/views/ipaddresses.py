@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -194,8 +194,10 @@ class IPAddressesJsonView(LandingPageView):
             instances = self.get_instances(items)
             for address in items:
                 ipaddresses.append(dict(
+                    id=address.public_ip,
                     public_ip=address.public_ip,
                     allocation_id=address.allocation_id,
+                    network_interface_id=address.network_interface_id,
                     instance_id=address.instance_id,
                     instance_name=TaggedItemView.get_display_name(
                         instances[address.instance_id]) if address.instance_id in instances else address.instance_id,

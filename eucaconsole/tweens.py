@@ -1,4 +1,4 @@
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -70,7 +70,8 @@ def usage_log_tween_factory(handler, registry):
             if 'HTTP_X_REQUESTED_WITH' not in request.environ:
                 # assume this is a page root
                 logging.info('user-nav: {0} {1}'.format(remote_addr, path))
-        if method == 'POST' and (path.find('json') == -1 or content_type == 'application/x-www-form-urlencoded'):
+        if method in ['POST', 'PUT', 'DELETE'] \
+                and (path.find('json') == -1 or content_type == 'application/x-www-form-urlencoded'):
             logging.info('user-action: {0} {1}'.format(remote_addr, path))
         response = handler(request)
         return response
@@ -82,15 +83,15 @@ class CTHeadersTweenFactory(object):
 
     header_map = {
         'application/json': {
-            'CACHE-CONTROL': 'NO-CACHE',
-            'PRAGMA': 'NO-CACHE',
+            'Cache-Control': 'NO-CACHE',
+            'Pragma': 'NO-CACHE',
         },
         'text/html': {
-            'X-FRAME-OPTIONS': 'SAMEORIGIN',
-            'CACHE-CONTROL': 'NO-CACHE',
-            'PRAGMA': 'NO-CACHE',
-            'CONTENT-SECURITY-POLICY': "script-src 'self'; form-action 'self';",
-            'X-CONTENT-SECURITY-POLICY': "script-src 'self'; form-action 'self';",
+            'X-Frame-Options': 'SAMEORIGIN',
+            'Cache-Control': 'NO-CACHE',
+            'Pragma': 'NO-CACHE',
+            'Content-Security-Policy': "script-src 'self'; form-action 'self';",
+            'X-Content-Security-Policy': "script-src 'self'; form-action 'self';",
         },
     }
 

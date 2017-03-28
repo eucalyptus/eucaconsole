@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -32,7 +32,7 @@ import re
 import simplejson as json
 import logging
 
-from boto.exception import BotoServerError
+from boto.exception import BotoServerError, S3ResponseError
 from boto.ec2.image import Image
 from boto.s3.key import Key
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -62,9 +62,14 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             return None
         bucket, bundle_id = bundling_tag.split('/')
         s3_conn = self.get_connection(conn_type='s3')
-        k = Key(s3_conn.get_bucket(bucket))
-        k.key = bundle_id
-        metadata = json.loads(k.get_contents_as_string())
+        try:
+            k = Key(s3_conn.get_bucket(bucket))
+            k.key = bundle_id
+            metadata = json.loads(k.get_contents_as_string())
+        except S3ResponseError as err:
+            logging.warn("bundle task bucket does not exist, deleting tag!")
+            self.conn.delete_tags(instance.id, ['ec_bundling'])
+            return None
         tasks = self.conn.get_all_bundle_tasks([bundle_id])
         image_id = None
         if do_not_finish and len(tasks) > 0:
@@ -121,7 +126,9 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             fakeimage.root_device_type = 'instance-store'
             fakeimage.root_device_name = '/dev/sda'
             fakeimage.block_device_mapping = {}
-            fakeimage.tags = json.loads(metadata['tags'])
+            tags = json.loads(metadata['tags'])
+            tags_dict = TaggedItemView.normalize_tags(tags)
+            fakeimage.tags = tags_dict
             return fakeimage
 
     def cancel_bundling(self, instance):
@@ -423,7 +430,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
         if self.image is not None:
             tags = self.serialize_tags(self.image.tags)
         else:
-            tags = '{}'
+            tags = '[]'
         # tags = BaseView.escape_json(json.dumps(tags))
 
         self.render_dict = dict(
@@ -470,7 +477,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                     else:
                         images = [self.handle_instance_being_bundled(instances[0], do_not_finish=True)]
                 else:
-                    images = self.conn.get_all_images(image_ids=images_param)
+                    images = self.conn.get_all_images(filters={'image_id':images_param})
         image = images[0] if images else None
         if image:
             attrs = image.__dict__

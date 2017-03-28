@@ -2,8 +2,10 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/cloudwatch_charts.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm-state-view.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_monitoring.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ResourceMonitoring">
@@ -30,7 +32,17 @@
             <div class="panel no-title cloudwatch-charts">
                 <div class="flex-space">
                     <div class="flex-column-1">
-                        <button class="create-button" i18n:translate="">Create Alarm</button>
+                        <button class="button" ng-click="chartsCtrl.revealCreateModal()" i18n:translate="">Create Alarm</button>
+                        <div class="modal xlarge create-alarm-modal" modal="createAlarm">
+                            <div create-alarm=""
+                                template="${request.route_path('render_template', subpath='cloudwatch/create_alarm_modal_template')}"
+                                namespace="AWS/EC2"
+                                resource-type="InstanceId"
+                                resource-id="${instance.id}"
+                                resource-name="${instance_name}"
+                                default-metric="CPUUtilization"
+                                default-statistic="Average"></div>
+                        </div>
                     </div>
                     <div class="flex-column-0 actions">
                         <span id="enable-monitoring-icon" class="action-icon dropdown"
@@ -62,7 +74,7 @@
                     resource-type="InstanceId" resource-type-name="instance" i18n:attributes="resource-type-name">
                 </alarm-state-view>
                 <hr/>
-                <h6 i18n:translate="">CloudWatch metric charts</h6>
+                <h6 i18n:translate="">CloudWatch metrics</h6>
                 <div class="toprow">
                     <div class="blurb">
                         <div class="duration-wrapper" tal:condition="monitoring_enabled">
@@ -98,7 +110,8 @@
                         </span>
                         <a href="#" class="close">&times;</a>
                     </div>
-                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak="">
+                    <li class="chart-wrapper" ng-repeat="chart in chartsCtrl.chartsList" ng-cloak=""
+                        ng-click="chartsCtrl.showLargeChart(chartsCtrl.metricTitleMapping[chart.metric], chart.metric, chart.statistic, chart.unit, 'AWS/EC2', '${instance.id}', 'InstanceId')">
                         <h6>{{ chartsCtrl.metricTitleMapping[chart.metric] }}<i class="busy"></i></h6>
                         <div ng-show="chartsCtrl.emptyMessages[chart.metric]" class="empty-message-wrapper">
                             <div class="empty-message">{{ chartsCtrl.emptyMessages[chart.metric] }}</div>
@@ -133,10 +146,17 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-api-service.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/chart-service.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/metric-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/scaling-groups-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/create-alarm-modal/create-alarm.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/alarm-actions-editor/alarm-actions-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarms/components.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/alarm_state_view.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/cloudwatch_charts.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/resource_monitoring.js')}"></script>
 </div>

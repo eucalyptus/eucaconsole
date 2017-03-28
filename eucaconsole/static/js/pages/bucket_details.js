@@ -1,19 +1,42 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Bucket detail page JS
  * @requires AngularJS, jQuery
  *
  */
 
 /* Bucket details page includes the S3 Sharing Panel */
-angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
-    .controller('BucketDetailsPageCtrl', function ($scope, $http, eucaHandleErrorS3) {
+angular.module('BucketDetailsPage',
+    ['S3SharingPanel', 'EucaConsoleUtils', 'CorsServiceModule', 'BucketPolicyServiceModule', 'TagEditorModule', 'ModalModule'])
+    .controller('BucketDetailsPageCtrl', function ($scope, $rootScope, $http, $timeout, eucaHandleErrorS3,
+                                                   eucaUnescapeJson, CorsService, BucketPolicyService) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.bucketName = '';
         $scope.bucketDetailsForm = $('#bucket-details-form');
         $scope.isSubmitted = false;
         $scope.hasChangesToBeSaved = false;
         $scope.objectsCountLoading = true;
-        $scope.initController = function (bucketObjectsCountUrl) {
-            $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
+        $scope.savingCorsConfig = false;
+        $scope.deletingCorsConfig = false;
+        $scope.deletingBucketPolicy = false;
+        $scope.corsConfigXml = '';
+        $scope.bucketPolicyJson = '';
+        $scope.hasCorsConfig = false;
+        $scope.hasBucketPolicy = false;
+        $scope.initController = function (optionsJson) {
+            var options = JSON.parse(eucaUnescapeJson(optionsJson));
+            $scope.bucketName = options.bucket_name;
+            $scope.bucketObjectsCountUrl = options.bucket_objects_count_url;
+            $scope.corsConfigXml = options.cors_config_xml;
+            $scope.bucketPolicyJson = options.bucket_policy_json;
+            $scope.sampleBucketPolicy = options.sample_bucket_policy;
+            $scope.hasCorsConfig = !!$scope.corsConfigXml;
+            $scope.hasBucketPolicy = !!$scope.bucketPolicyJson;
+            if (!$scope.hasBucketPolicy) {
+                $scope.bucketPolicyJson = $scope.sampleBucketPolicy;
+            }
+            $scope.initPolicyDialogListener();
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
             $scope.handleUnsavedSharingEntry($scope.bucketDetailsForm);
@@ -31,6 +54,68 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
             }).error(function (oData, status) {
                 eucaHandleErrorS3(oData, status);
             });
+        };
+        $scope.initPolicyDialogListener = function () {
+            var policyDialog = $('#bucket-policy-modal');
+            policyDialog.on('opened.fndtn.reveal', function () {
+                var policyTextarea = document.getElementById('policy-textarea');
+                policyDialog.find('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
+                if (policyTextarea !== null) {
+                    $scope.policyCodeEditor = CodeMirror.fromTextArea(policyTextarea, {
+                        mode: "javascript",
+                        lineWrapping: true,
+                        styleActiveLine: true,
+                        lineNumbers: true
+                    });
+                }
+            });
+        };
+        $scope.setBucketPolicy = function ($event) {
+            $event.preventDefault();
+            $scope.savingBucketPolicy = true;
+            $scope.policyError = '';
+            var csrfToken = angular.element('#csrf_token').val();
+            var policyTextarea = angular.element('#policy-textarea');
+            BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, $scope.policyCodeEditor.getValue())
+                .then(function success(response) {
+                    $scope.savingBucketPolicy = false;
+                    $scope.hasBucketPolicy = true;
+                    $rootScope.$broadcast('s3:bucketPolicySaved');
+                    $('#bucket-policy-modal').foundation('reveal', 'close');
+                    Notify.success(response.data.message);
+                }, function error(errData) {
+                    $scope.policyError = errData.data.message;
+                    $scope.savingBucketPolicy = false;
+                });
+        };
+
+        $scope.deleteBucketPolicy = function ($event) {
+            $event.preventDefault();
+            $scope.deletePolicyError = '';
+            $scope.deletingBucketPolicy = true;
+            var deleteDialog = $('#bucket-policy-delete-confirmation-modal');
+            var csrfToken = angular.element('#csrf_token').val();
+            BucketPolicyService.deleteBucketPolicy($scope.bucketName, csrfToken)
+                .then(function success (response) {
+                    deleteDialog.foundation('reveal', 'close');
+                    $scope.deletingBucketPolicy = false;
+                    $scope.hasBucketPolicy = false;
+                    Notify.success(response.data.message);
+                }, function error (errData) {
+                    $scope.deletePolicyError = errData.data.message;
+                    $scope.deletingBucketPolicy = false;
+                });
+        };
+
+        // True if there exists an unsaved key or value in the tag editor field
+        $scope.existsUnsavedTag = function () {
+            var hasUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if ($(this).val() !== '') {
+                    hasUnsavedTag = true;
+                }
+            });
+            return hasUnsavedTag;
         };
         $scope.revealModal = function (action) {
             var modal = $('#' + action + '-modal');
@@ -57,6 +142,9 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                     $scope.hasChangesToBeSaved = true;
                 }
             });
+            $scope.$on('tagUpdate', function($event) {
+                $scope.hasChangesToBeSaved = true;
+            });
             // Turn "isSubmitted" flag to true when a form (except the logout form) is submitted
             $('form[id!="euca-logout-form"]').on('submit', function () {
                 $scope.isSubmitted = true;
@@ -80,12 +168,93 @@ angular.module('BucketDetailsPage', ['S3SharingPanel', 'EucaConsoleUtils'])
                 }
             });
         };
+        $scope.deleteCorsConfig = function ($event) {
+            $event.preventDefault();
+            $scope.deleteError = '';
+            $scope.deletingCorsConfig = true;
+            var deleteDialog = $('#cors-delete-confirmation-modal');
+            var csrfToken = angular.element('#csrf_token').val();
+            CorsService.deleteCorsConfig($scope.bucketName, csrfToken)
+                .then(function success (response) {
+                    deleteDialog.foundation('reveal', 'close');
+                    $scope.deletingCorsConfig = false;
+                    $scope.hasCorsConfig = false;
+                    Notify.success(response.data.message);
+                }, function error (errData) {
+                    $scope.deleteError = errData.data.message;
+                    $scope.deletingCorsConfig = false;
+                });
+        };
+        $rootScope.$on('s3:corsConfigSaved', function () {
+            $scope.hasCorsConfig = true;
+        });
+        $scope.$on('modal:open', function ($event, modalName) {
+            if (modalName === 'corsConfigModal') {
+                // Initialize CodeMirror for CORS XML textarea
+                $timeout(function () {  // Timeout required to allow CORS textarea to be visible
+                    var corsTextarea = document.getElementById('cors-textarea');
+                    $('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
+                    if (corsTextarea !== null) {
+                        // Use rootScope to set codeEditor to avoid $scope race condition with directive
+                        $rootScope.codeEditor = CodeMirror.fromTextArea(corsTextarea, {
+                            mode: "xml",
+                            lineWrapping: true,
+                            styleActiveLine: true,
+                            autoCloseTags: true,
+                            lineNumbers: true
+                        });
+                    }
+                    // Reset to sample CORS config when re-adding post-deletion
+                    if (!$scope.hasCorsConfig && !!$rootScope.codeEditor) {
+                         $rootScope.codeEditor.setValue($scope.sampleCorsConfig);
+                    }
+                }, 300);
+            }
+        });
         // Receive postMessage from file upload window, refreshing list when file upload completes
         window.addEventListener('message', function (event) {
             if (event.data === 's3:fileUploaded') {
                 $scope.getBucketObjectsCount();
             }
         }, false);
+    })
+    .directive('corsConfigModal', function() {
+        return {
+            restrict: 'A',
+            scope: {
+                template: '@',
+                bucketName: '@',
+                hasCorsConfig: '=',
+                corsConfigXml: '@',
+                sampleCorsConfig: '@'
+            },
+            templateUrl: function (element, attributes) {
+                return attributes.template;
+            },
+            controller: ['$scope', '$rootScope', 'CorsService', 'ModalService',
+                function($scope, $rootScope, CorsService, ModalService) {
+                    if (!$scope.hasCorsConfig) {
+                        $scope.corsConfigXml = $scope.sampleCorsConfig;
+                    }
+                    $scope.setCorsConfiguration = function ($event) {
+                        $event.preventDefault();
+                        $scope.savingCorsConfig = true;
+                        $scope.corsError = '';
+                        var csrfToken = angular.element('#csrf_token').val();
+                        CorsService.setCorsConfig($scope.bucketName, csrfToken, $rootScope.codeEditor.getValue())
+                            .then(function success (response) {
+                                $scope.savingCorsConfig = false;
+                                $rootScope.$broadcast('s3:corsConfigSaved');
+                                ModalService.closeModal('corsConfigModal');
+                                Notify.success(response.data.message);
+                            }, function error (errData) {
+                                $scope.corsError = errData.data.message;
+                                $scope.savingCorsConfig = false;
+                            });
+                    };
+                }
+            ]
+        };
     })
 ;
 

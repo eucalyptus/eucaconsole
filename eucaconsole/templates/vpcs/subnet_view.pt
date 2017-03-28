@@ -1,0 +1,368 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/route-table-editor.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/subnet.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap"
+         ng-app="SubnetDetailsPage" ng-controller="SubnetDetailsPageCtrl as ctrl"
+         ng-init="ctrl.init('${controller_options_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
+                <li><a href="${request.route_path('vpc_view', id=vpc.id)}" i18n:translate="">${vpc_name}</a></li>
+                <li class="current">
+                    <a tal:condition="subnet">${subnet_name }</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for Subnet:</strong>
+            <em class="breakword">${subnet_name}</em>
+        </h3>
+        <div class="large-12 columns">
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a data-reveal-id="create-route-table-modal" id="create-route-table-action" i18n:translate="">
+                                Create route table
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="create-nat-gateway-modal" id="create-nat-gateway-action" i18n:translate="">
+                                Create NAT gateway
+                            </a>
+                        </li>
+                        <li tal:condition="subnet_route_table">
+                            <a id="view-route-table-action" i18n:translate=""
+                               href="${request.route_path('route_table_view', vpc_id=vpc.id, id=subnet_route_table.id)}">
+                                View route table for subnet
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="delete-subnet-modal" id="delete-subnet-action" i18n:translate="">
+                                Delete subnet
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form action="${request.route_path('subnet_update', vpc_id=vpc.id, id=subnet.id)}"
+                      id="subnet-form" name="subnetForm" method="post" data-abide="abide">
+                    ${structure:subnet_form['csrf_token']}
+                    <h6 i18n:translate="">Subnet</h6>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="" id="subnet-status-label">State</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <span class="label radius state ${subnet.state}">${subnet.state}</span>
+                        </div>
+                    </div>
+                    <div>
+                        ${panel('form_field', field=subnet_form.name, pattern=layout.tag_pattern_value, leftcol_width_large=3, rightcol_width_large=9)}
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">ID</label></div>
+                        <div class="large-9 small-8 columns value">${subnet.id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">CIDR</label></div>
+                        <div class="large-9 small-8 columns value">${subnet.cidr_block}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">VPC</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <a href="${request.route_path('vpc_view', id=vpc.id)}">
+                                ${vpc_name}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Availability zone</label></div>
+                        <div class="large-9 small-8 columns value">${subnet.availability_zone}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Default for zone?</label></div>
+                        <div class="large-9 small-8 columns value">${default_for_zone_label}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Network ACL</label></div>
+                        <div class="large-9 small-8 columns value" tal:condition="subnet_network_acl">
+                            ${subnet_network_acl.name}
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">NAT gateways</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <div tal:repeat="nat_gateway subnet_nat_gateways">
+                                <a href="${request.route_path('nat_gateway_view', vpc_id=vpc.id, id=nat_gateway.NatGatewayId)}">
+                                    ${nat_gateway.NatGatewayId}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Available IP addresses</label></div>
+                        <div class="large-9 small-8 columns value">${subnet.available_ip_address_count}</div>
+                    </div>
+                    <div>
+                        ${panel('form_field', field=subnet_form.route_table, leftcol_width_large=3, rightcol_width_large=9)}
+                    </div>
+                    <div>
+                        ${panel('form_field', field=subnet_form.public_ip_auto_assignment, leftcol_width_large=3, rightcol_width_large=9)}
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="small-4 columns">
+                            <h6 i18n:translate="">INSTANCES</h6>
+                        </div>
+                        <div class="small-8 columns" id="subnet-instances-link">
+                            <a i18n:translate="" href="${subnet_instances_link}">
+                                Manage instances in this subnet
+                            </a>
+                        </div>
+                    </div>
+                    <p ng-if="ctrl.instancesLoading">
+                        <span i18n:translate="">Loading...</span>
+                        <span class="busy"></span>
+                    </p>
+                    <p ng-if="!ctrl.instancesLoading &amp;&amp; ctrl.subnetInstances.length === 0">
+                        <span i18n:translate="">There are no instances in this subnet.</span>
+                        <a href="/instances/new" i18n:translate="">
+                            Use the launch instance wizard to launch a new instance.
+                        </a>
+                    </p>
+                    <div class="gridwrapper">
+                        <table class="table smart-table instances" st-safe-src="ctrl.subnetInstances" st-table="displayedCollection"
+                               ng-if="ctrl.subnetInstances.length &amp;&amp; !ctrl.instancesLoading">
+                            <thead>
+                                <tr>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="name">NAME (ID)</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="status">STATE</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="image_id">IMAGE</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="sortable_ip">IP ADDRESS</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="image_id">KEY NAME</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="sortable_secgroups">SECURITY GROUP</th>
+                                    <th i18n:translate="" st-skip-natural="true" st-sort="launch_time" st-sort-default="reverse">LAUNCH TIME</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="instance in displayedCollection | limitTo: ctrl.subnetInstanceLimit" ng-cloak="">
+                                    <td>
+                                        <a ng-href="/instances/{{ instance.id }}">{{ instance.name }}</a>
+                                    </td>
+                                    <td>
+                                        <span class="label radius status {{ instance.status }}">{{ instance.status }}</span>
+                                        <span class="busy" ng-show="instance.transitional"></span>
+                                    </td>
+                                    <td>
+                                        <a ng-href="/images/{{ instance.image_id }}">{{ instance.image_id }}</a>
+                                    </td>
+                                    <td>{{ instance.ip_address }}</td>
+                                    <td>
+                                        <a ng-href="/keypairs/{{ instance.key_name }}">{{ instance.key_name }}</a>
+                                    </td>
+                                    <td>
+                                        <div ng-repeat="secgroup in instance.security_groups">
+                                            <a ng-href="/securitygroups/{{ secgroup.id }}">{{ secgroup.name }}</a>
+                                        </div>
+                                    </td>
+                                    <td class="breakword">
+                                        {{ instance.launch_time | date: '${layout.angular_date_format}' }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p ng-if="ctrl.subnetInstances.length > ctrl.subnetInstanceLimit">
+                        <span i18n:translate="">There are</span>
+                        {{ ctrl.subnetInstances.length - ctrl.subnetInstanceLimit }}
+                        <span>more instances in this subnet.</span>
+                        <a i18n:translate="" href="${subnet_instances_link}">
+                            Click here to manage all instances in this subnet.
+                        </a>
+                    </p>
+                    <hr />
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
+                    </div>
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="save-changes-btn">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('vpcs')}" id="cancel-update-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="create-route-table-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Create route table</h3>
+            <form id="create-route-table-form" name="createRouteTableForm" method="post"
+                  action="${request.route_path('route_table_create', vpc_id=vpc.id, id=subnet.id)}">
+                ${structure:create_route_table_form['csrf_token']}
+                <div class="row">
+                    ${panel('form_field', field=create_route_table_form['route_table_name'], stack_label=True)}
+                </div>
+                <hr />
+                <h6 i18n:translate="">Routes</h6>
+                <div ng-cloak="">
+                    <route-table-editor ng-model="routes" cidr-pattern="${layout.cidr_pattern}" vpc-id="${vpc.id}"
+                                        tal:content="routes | structure">
+                    </route-table-editor>
+                </div>
+                <hr />
+                <button class="button expand" i18n:translate="">
+                    Create Route Table
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="create-nat-gateway-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Create NAT gateway</h3>
+            <form id="create-nat-gateway-form" name="createNatGatewayForm" method="post"
+                  action="${request.route_path('nat_gateway_create', vpc_id=vpc.id, id=subnet.id)}"
+                  tal:condition="create_nat_gateway_form.eip_allocation_id.choices">
+                ${structure:create_nat_gateway_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">
+                        You can use a NAT (network address translation) gateway to enable instances in subnet
+                    </span>
+                    <strong>${subnet_name}</strong>
+                    <span i18n:translate="">
+                        to connect to the Internet or other services without using public IP addresses of their own.
+                    </span>
+                </p>
+                <p tal:condition="layout.cloud_type == 'aws'" i18n:translate="">
+                    NOTE: NAT gateways are not supported for IPv6 traffic.  Use an egress-only internet gateway instead.
+                </p>
+                <div tal:condition="subnet_nat_gateways" class="existing-nat-gateways-notice">
+                    <span i18n:translate="">
+                        NOTE: This subnet is already associated with the following NAT gateway(s)...
+                    </span>
+                    <strong tal:repeat="nat_gateway subnet_nat_gateways">
+                        ${nat_gateway.NatGatewayId}<span tal:condition="not repeat.nat_gateway.end">,&nbsp;</span>
+                    </strong>
+                </div>
+                <p>
+                    <span i18n:translate="">Create a NAT gateway for subnet</span>
+                    <strong>${subnet_name}</strong>
+                    <span i18n:translate="">and assign it an elastic IP address.</span>
+                    <span i18n:translate="">
+                        Note that it will not be possible to disassociate the address from the new NAT gateway
+                        without deleting the NAT gateway.
+                    </span>
+                </p>
+                <input type="hidden" name="nat_gateway_subnet_id" value="${subnet.id}" />
+                <div class="row">
+                    ${panel('form_field', field=create_nat_gateway_form['eip_allocation_id'], stack_label=True)}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Create NAT Gateway
+                </button>
+            </form>
+            <form id="allocate-eips-form" name="allocateEipsForm" method="post" data-abide=""
+                  action="${request.route_path('subnet_allocate_eips', vpc_id=vpc.id, id=subnet.id)}"
+                  tal:condition="not: create_nat_gateway_form.eip_allocation_id.choices">
+                ${structure:allocate_eips_form['csrf_token']}
+                <input type="hidden" name="domain" value="vpc" />
+                <p i18n:translate="">
+                    There are no available elastic IP addresses to assign to the NAT gateway.
+                </p>
+                <p i18n:translate="">
+                    Allocate one or more elastic IP addresses prior to creating the NAT gateway.
+                </p>
+                <div class="row">
+                    ${panel('form_field', field=allocate_eips_form.ipcount, leftcol_width_large=3, rightcol_width_large=9, **{'pattern': '^[1-9]\d*$', 'min': '1'})}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Allocate Elastic IP Addresses
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="delete-subnet-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete Subnet</h3>
+            <form id="delete-subnet-form" name="deleteSubnetForm" method="post"
+                  ng-if="ctrl.nonTerminatedInstances.length === 0"
+                  action="${request.route_path('subnet_delete', vpc_id=vpc.id, id=subnet.id)}">
+                ${structure:subnet_delete_form['csrf_token']}
+                <p i18n:translate="">
+                    Deleting a subnet will disassociate or delete the following resources from the subnet.
+                </p>
+                <div class="resources-list">
+                    <div tal:condition="subnet_route_table" class="row">
+                        <div class="columns small-3" i18n:translate="">
+                            Route table:
+                        </div>
+                        <div class="columns small-9">
+                            ${layout.get_display_name(subnet_route_table)}
+                        </div>
+                    </div>
+                    <div tal:condition="subnet_network_acl" class="row">
+                        <div class="columns small-3" i18n:translate="">
+                            Network ACL:
+                        </div>
+                        <div class="columns small-9">
+                            ${subnet_network_acl.name}
+                        </div>
+                    </div>
+                </div>
+                <p i18n:translate="" tal:condition="default_for_zone" class="default-subnet-warning">
+                    WARNING: This subnet is the default for the availability zone. If you delete the subnet,
+                    you will need to contact your cloud administrator to recreate a default subnet for your zone.
+                </p>
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete subnet</span>
+                    <strong>${subnet_name}</strong>?
+                </p>
+                <button class="button expand ${'warning' if default_for_zone else ''}" i18n:translate="">
+                    Yes, Delete Subnet
+                </button>
+            </form>
+            <form id="terminate-instances-form" name="terminateInstancesForm" ng-cloak=""
+                  ng-if="ctrl.nonTerminatedInstances.length > 0">
+                <p i18n:translate="">
+                    The following instances need to be terminated prior to deleting the subnet.
+                </p>
+                <div class="resources-list">
+                    <span ng-repeat="instance in ctrl.nonTerminatedInstances">
+                        <strong>{{ instance.name }}</strong><span ng-hide="$last">,</span>
+                    </span>
+                </div>
+                <p i18n:translate="">
+                    Note that instances with termination protection enabled will not be terminated until protection is disabled.
+                </p>
+                <button class="button expand" i18n:translate="" ng-click="ctrl.terminateInstances($event)">
+                    Yes, Terminate Instances
+                </button>
+                <div ng-if="ctrl.sendingTerminateInstancesRequest" i18n:translate="">
+                    <span i18n:translate="">Sending request</span>&nbsp;<i class="busy"></i>
+                </div>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/route-table-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/instances-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/subnet_view.js')}"></script>
+</div>
+
+</metal:block>
+

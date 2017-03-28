@@ -141,6 +141,15 @@
                                     </span>
                                 </div>
                             </div>
+                            <div class="row inline controls-wrapper" id="controls_termination_protection">
+                                <div class="large-10 small-8 columns right">
+                                    ${structure:launch_more_form['termination_protection']}
+                                    ${launch_more_form['termination_protection'].label}
+                                    <span data-tooltip="" title="${launch_more_form.termination_protection.help_text}">
+                                        <i class="helptext-icon"></i>
+                                    </span>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="large-10 small-8 columns right" tal:condition="layout.cloud_type == 'euca' and not is_vpc_supported">
                                     ${structure:launch_more_form['private_addressing']}

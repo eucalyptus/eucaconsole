@@ -1,0 +1,64 @@
+<form name="generalForm" class="" ng-submit="general.submit()" i18n:domain="eucaconsole" novalidate="">
+    <h6 i18n:translate="">General</h6>
+
+    <div class="row inline stacked controls-wrapper">
+        <div class="columns large-12 small-12 field">
+            <label class="left stack-label">Name <span class="req">*</span></label>
+            <input type="text" class="text-input" pattern="^[a-zA-Z0-9-]{1,32}$"
+                   focus-on-load="true" name="name" ng-model="general.values.elbName" required="required"/>
+            <div class="error" ng-show="generalForm.name.$error.required" i18n:translate="">
+                Name is required.
+            </div>
+            <div class="error" ng-show="generalForm.name.$error.pattern" i18n:translate="">
+                Name may only contain alphanumeric characters and/or hyphens. Length may not exceed 32 characters.
+            </div>
+        </div>
+    </div>
+        
+    <hr/>
+
+    <div class="row controls-wrapper">
+        <div class="columns">
+            <listener-editor ng-model="general.values.listeners" cloud-type="{{general.cloudType}}"></listener-editor>
+        </div>
+    </div>
+
+    <div ng-show="general.isHTTPSListenerDefined()">
+        <hr/>
+        <h6 i18n:translate="">Security Policy</h6>
+        <div class="security-row">
+            <span ng-show="general.values.policy.sslUsingCustomPolicy != 'on'">{{ general.values.policy.predefinedPolicy }}</span>
+            <span ng-show="general.values.policy.sslUsingCustomPolicy == 'on'" i18n:translate="">ELB-CustomSecurityPolicy</span>
+            <a ng-click="general.openPolicyModal()" title="Change policy" i18n:translate=""> Change</a>
+        </div>
+    </div>
+    <div class="modal large" modal="securityPolicyEditor">
+        <security-policy-editor ng-model="general.values.policy"></security-policy-editor>
+    </div>
+    <hr/>
+
+
+    <div class="row controls-wrapper">
+        <div class="columns" ng-cloak="">
+            <tag-editor ng-model="general.values.tags">[]</tag-editor>
+        </div>
+    </div>
+
+    <hr/>
+
+    <div>
+        <label>
+            <span class="req">*</span>
+            <span i18n:translate="">Required fields</span>
+        </label>
+    </div>
+
+    <div class="row">
+        <div class="small-3 columns">&nbsp;</div>
+        <div class="small-9 columns field inline">
+            <input type="submit" class="button small round" value="Next" />
+            <a href="${request.route_path('elbs')}"
+               class="cancel-link" i18n:translate="">Cancel</a>
+        </div>
+    </div>
+</form>

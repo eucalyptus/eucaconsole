@@ -1,0 +1,61 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/pages/reporting.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ReportingPage"> 
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Usage Reporting</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div class="large-12 columns">
+            <dl navigation="" reporting-configured="${reporting_configured}" class="tabs">
+                <dd ng-class="nav.isTabActive('/dashboard')">
+                    <a href="/reporting/dashboard" i18n:translate="">Dashboard</a>
+                </dd>
+                <dd ng-class="nav.isTabActive('/reports')">
+                    <a href="/reporting/reports" i18n:translate="">Reports</a>
+                </dd>
+                <dd ng-class="nav.isTabActive('/preferences')">
+                    <a href="/reporting/preferences" i18n:translate="">Preferences</a>
+                </dd>
+            </dl>
+            <div class="tabs-content">
+                <div class="content active">
+                    <div ng-view=""/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-route.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/bucket-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/reporting-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/create_bucket_dialog2.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/reporting.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/reporting_reports.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/reporting_preferences.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/usage_reports.js')}"></script>
+</div>
+
+</metal:block>
+

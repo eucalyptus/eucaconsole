@@ -1,0 +1,115 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/queues.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="QueuesPage" ng-controller="QueuesCtrl">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+         ng-init="initController('queues', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Queues</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="">Queues</strong></h3>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a id="create-queue-btn" class="button"
+                    href="${request.route_path('queue_view', id='new')}">
+                    <span i18n:translate="" tal:omit-tag="">Create Queue</span>
+                    <span class="euca-split" data-dropdown="create-drop"></span>
+                </a>
+                <metal:block metal:use-macro="layout.global_macros['more_actions']">
+                    <div metal:fill-slot="menu_items" tal:omit-tag="">
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length !== 1}">
+                            <a i18n:translate="" class="more-actions-details"
+                               ng-href="${prefix}/{{ (items | filter: {selected: true})[0].name }}">
+                                View details
+                            </a>
+                        </li>
+                        <li ng-class="{'disabled': (items | filter: {selected: true}).length &lt; 1}">
+                            <a i18n:translate="" class="more-actions-delete"
+                               ng-click="revealMultiSelectModal('delete', (items | filter:{selected: true}))">
+                                Delete
+                            </a>
+                        </li>
+                    </div>
+                </metal:block>
+                <metal:block metal:use-macro="layout.global_macros['selectall_items_checkbox']" />
+            </div>
+            <div metal:fill-slot="tile_header">
+                <span metal:use-macro="layout.global_macros['select_item_checkbox']"></span>
+                <a ng-href="${prefix}/{{ item.id }}" class="has-checkbox">
+                    {{ item.name }}
+                </a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Queue Name" i18n:attributes="title" data-tooltip="">NM</span>
+                    {{ item.name }}
+                </div>
+                <div>
+                    <span class="label" title="Queue Fingerprint" i18n:attributes="title" data-tooltip="">FP</span>
+                    {{ item.fingerprint }}
+                </div>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                    <li ng-show="item.name">
+                        <a i18n:translate=""
+                           ng-click="revealModal('delete', item.name)">Delete queue</a>
+                    </li>
+                </ul>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th metal:use-macro="layout.global_macros['selectall_header_checkbox']"></th>
+                <th i18n:translate="" st-skip-natural="true" st-sort="name" st-sort-default="true">Name</th>
+                <th i18n:translate="">Messages Available</th>
+                <th i18n:translate="">Messages in Flight</th>
+                <th i18n:translate="">Created</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td><metal:block metal:use-macro="layout.global_macros['select_item_checkbox']" /></td>
+                <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.active }}</td>
+                <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
+                <td>
+                    <span class="actions">
+                        <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="grid-action"></i></a>
+                        <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                            <li><a i18n:translate="" ng-click="revealModal('details', item.name)">View details</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('purge', item.name)">Purge Queue</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('delete', item.name)">Delete Queue</a></li>
+                        </ul>
+                    </span>
+                </td>
+            </metal:block>
+        </div>
+        <!--! Modal dialogs reused across landing and detail page
+        ${panel('queue_dialogs', delete_form=delete_form, landingpage=True)}
+        -->
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        <div id="help-html-console_queues" ng-include="'${layout.help_path('console_queues.html')}'"></div> 
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-smart-table.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/queues.js')}"></script>
+</div>
+
+</metal:block>
+

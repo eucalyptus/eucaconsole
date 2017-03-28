@@ -2,7 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
 </head>
@@ -82,12 +82,8 @@
                         </div>
                     </div>
                     <hr />
-                    <div>
-                        <tag-editor
-                                ng-model="tags"
-                                template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                tal:content="tags | structure">
-                        </tag-editor>
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" tal:content="tags | structure"></tag-editor>
                     </div>
                     <hr />
                     <h6 class="section-label" i18n:translate="">Access logs</h6>
@@ -104,7 +100,7 @@
                         ${panel('form_field', field=elb_form['bucket_prefix'], pattern=elb_form.PREFIX_PATTERN, stack_label=True)}
                         ${panel('form_field', field=elb_form['collection_interval'], stack_label=True)}
                         <div tal:condition="logs_url">
-                            <a href="${logs_url}" i18n:translate="" target="_blank">View latest logs</a>
+                            <a href="${logs_url}" i18n:translate="" target="_blank" rel="noopener noreferrer">View latest logs</a>
                         </div>
                         <div tal:condition="bucket_url">
                             <a href="${bucket_url}" i18n:translate="">View my bucket</a>

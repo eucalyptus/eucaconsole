@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Security groups landing page JS
  * @requires AngularJS, jQuery
  *

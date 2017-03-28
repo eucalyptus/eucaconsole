@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
    * @fileOverview Common JS for Custom Filters
    * @requires AngularJS, jQuery, and Purl jQuery URL parser plugin
 **/
@@ -16,7 +18,7 @@ angular.module('CustomFilters', [])
 })
 .filter('ellipsis', function () {
     return function (line, num) {
-        if( line === null || line.length === 0 ){
+        if(!line) {
             return "";
         }else if( line.length <= num ){
             return line;
@@ -45,7 +47,7 @@ angular.module('CustomFilters', [])
 .filter('urlSafe', function () {
     return function (input) {
         var gen_delims = /[:\/\?#\[\]@\s]+/g;
-        var sub_delims = /[!\$&\'\(\)\*\+,;=]+/g;
+        var sub_delims = /[!\$&'\(\)\*\+,;=]+/g;
         input = input.replace(gen_delims, '-');
         input = input.replace(sub_delims, '');
         return input.toLowerCase();
@@ -54,6 +56,11 @@ angular.module('CustomFilters', [])
 .filter('toClassName', function () {
     return function (input) {
         return input.replace(/ /g, '_').toLowerCase();
+    };
+})
+.filter('b64encode', function () {
+    return function (input) {
+        return btoa(input);
     };
 })
 ;

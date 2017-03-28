@@ -1,7 +1,7 @@
 /* @fileOverview Scaling Group detail page CSS */
 @import "../includes/eucavariables";
 
-// Import landing page styles for tile view display on Scaling group policies page
+// Import landing page styles for table view display on Scaling group policies page
 @import "../includes/landingpage";
 
 
@@ -16,7 +16,7 @@ input[type="number"] {
     width: 3rem;
 }
 
-#health_check_period, #default_cooldown, #cooldown {
+#health_check_period, #default_cooldown {
     width: 4rem;
 }
 
@@ -61,7 +61,15 @@ input[type="number"] {
 }
 
 
-// Scaling group policies page and instances page
+// Scaling group policies page
+table.table.scaling-policies {
+    hr {
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+}
+
+// Scaling group instances page
 .tile {
     @include panel-tile-mixin;
     &.policy .header .title {
@@ -75,7 +83,6 @@ input[type="number"] {
 }
 
 
-
 // Scaling group instances page
 .tile {
     .footer {
@@ -86,10 +93,6 @@ input[type="number"] {
     }
 }
 
-// Scaling group policy page
-#adjustment_amount {
-    width: 4rem;
-}
 
 // Scaling group alarms page
 #evaluation_periods, #period {

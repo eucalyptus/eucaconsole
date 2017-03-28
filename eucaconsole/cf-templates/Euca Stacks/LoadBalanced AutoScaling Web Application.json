@@ -40,42 +40,187 @@
   },
 
   "Resources" : {
+    "DefaultInstanceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [
+                "ec2.amazonaws.com"
+              ]
+            },
+            "Action": [
+              "sts:AssumeRole"
+            ]
+          }]
+        },
+        "Path": "/",
+        "Policies": [{
+          "PolicyName": "AllowAllExceptIAM",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "NotAction": [
+                "iam:*"
+              ],
+              "Resource": "*"
+            }]
+          }
+        }]
+      }
+    },
+    "DefaultInstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [{
+          "Ref": "DefaultInstanceRole"
+        }]
+      }
+    },
     "ConsoleScalingGroup" : {
       "Type" : "AWS::AutoScaling::AutoScalingGroup",
       "Properties" : {
         "AvailabilityZones" : { "Fn::GetAZs" : ""},
         "LaunchConfigurationName" : { "Ref" : "ConsoleLaunchConfig" },
         "MinSize" : "1",
-        "DesiredSize" : "1",
         "MaxSize" : "3",
         "LoadBalancerNames" : [ { "Ref" : "ConsoleELB" } ]
       }
     },
-
+    "ScaleUpPolicy" : {
+       "Type" : "AWS::AutoScaling::ScalingPolicy",
+       "Properties" : {
+          "AdjustmentType" : "ChangeInCapacity",
+          "AutoScalingGroupName" : { "Ref" : "ConsoleScalingGroup" },
+          "Cooldown" : "1",
+          "ScalingAdjustment" : "1"
+       }
+    },
+    "ScaleDownPolicy" : {
+       "Type" : "AWS::AutoScaling::ScalingPolicy",
+       "Properties" : {
+          "AdjustmentType" : "ChangeInCapacity",
+          "AutoScalingGroupName" : { "Ref" : "ConsoleScalingGroup" },
+          "Cooldown" : "1",
+          "ScalingAdjustment" : "1"
+       }
+    },
+    "CPUAlarmHigh": {
+       "Type": "AWS::CloudWatch::Alarm",
+       "Properties": {
+          "EvaluationPeriods": "1",
+          "Statistic": "Average",
+          "Threshold": "85",
+          "AlarmDescription": "Alarm if CPU too high or metric disappears indicating instance is down",
+          "Period": "60",
+          "AlarmActions": [ { "Ref": "ScaleUpPolicy" } ],
+          "Namespace": "AWS/EC2",
+          "Dimensions": [ {
+             "Name": "AutoScalingGroupName",
+             "Value": { "Ref" : "ConsoleScalingGroup" }
+          } ],
+          "ComparisonOperator": "GreaterThanThreshold",
+          "MetricName": "CPUUtilization"
+       }
+    },
+    "CPUAlarmLow": {
+       "Type": "AWS::CloudWatch::Alarm",
+       "Properties": {
+          "EvaluationPeriods": "1",
+          "Statistic": "Average",
+          "Threshold": "50",
+          "AlarmDescription": "Alarm if CPU too low",
+          "Period": "60",
+          "AlarmActions": [ { "Ref": "ScaleDownPolicy" } ],
+          "Namespace": "AWS/EC2",
+          "Dimensions": [ {
+             "Name": "AutoScalingGroupName",
+             "Value": { "Ref" : "ConsoleScalingGroup" }
+          } ],
+          "ComparisonOperator": "LessThanThreshold",
+          "MetricName": "CPUUtilization"
+       }
+    },
     "ConsoleLaunchConfig" : {
       "Type" : "AWS::AutoScaling::LaunchConfiguration",
       "Metadata" : {
-        "Comment" : "Install a simple application"
+        "Comment" : "Install a simple application",
+        "AWS::CloudFormation::Init" : {
+          "configSets" : {
+            "default": [ "config1", "config2" ]
+          },
+          "config1" : {
+            "packages" : {
+              "rpm" : {
+                "eucalyptus-release" : "http://packages.release.eucalyptus-systems.com/yum/tags/eucalyptus-devel/centos/6/x86_64/eucalyptus-release-ci-0-1.el6.noarch.rpm"
+              }
+            },
+            "commands" : {
+              "installconsole" : {
+                "command" : { "Fn::Join" : ["", [
+                  "yum -y install eucaconsole --nogpg"
+                ]]},
+                "cwd" : "~"
+              },
+              "sethost" : {
+                "command" : { "Fn::Join" : ["", [
+                  "sed -i 's/localhost/", { "Ref" : "CloudIP" }, "/' /etc/eucaconsole/console.ini\n"
+                ]]},
+                "cwd" : "~"
+              }
+            }
+          },
+          "config2" : {
+            "files" : {
+              "/etc/eucaconsole/session-keys.ini" : {
+                "content" : { "Fn::Join" : ["", [
+                  "[general]\n",
+                  "session.encrypt_key = E8LnF9b8nx5E2kXlmFmM4BjDuesWt4j\n",
+                  "session.validate_key = B0SFBpZ7DMvt4q0uW0hHZCRETGn8MT\n"
+                ]]},
+                "mode"  : "000644",
+                "owner" : "eucaconsole",
+                "group" : "eucaconsole"
+              }
+            },
+            "services" : {
+              "sysvinit" : {
+                "eucaconsole" : { "enabled" : "true", "ensureRunning" : "true" }
+              }
+            }
+          }
+        }
       },
       "Properties" : {
         "KeyName" : { "Ref" : "KeyName" },
         "ImageId" : { "Ref" : "ImageId" },
         "SecurityGroups" : [ { "Ref" : "ConsoleSecurityGroup" } ],
         "InstanceType" : { "Ref" : "InstanceType" },
+        "IamInstanceProfile": { "Ref": "DefaultInstanceProfile" },
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
-            "#cloud-config\n",
-            "# vim: syntax=yaml\n",
-            "#\n",
-            "# This config installs the eucalyptus and epel repos, then installs and\n",
-            "# configures the eucaconsole package\n",
-            "runcmd:\n",
-            " - [ yum, -y, install, http://downloads.eucalyptus.com/software/eucalyptus/4.1/centos/6/x86_64/eucalyptus-4.1.0-0.0.23044.8.el6.x86_64.rpm' ]\n",
-            " - [ yum, -y, install, eucaconsole ]\n",
-            " - [ sed, -i, 's/localhost/",
-            { "Ref" : "CloudIP" },
-            "/', /etc/eucaconsole/console.ini ]\n",
-            " - [ sed, -i, 's/secure\\ =\\ false/secure\\ =\\ true/', /etc/eucaconsole/console.ini ]\n",
-            " - [ service, eucaconsole, restart ]\n"
+          "#!/bin/bash\n",
+          "yum update -y\n",
+          "yum localinstall -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm\n",
+          "yum install -y ntp gcc pip openssl-devel python-devel libffi-devel\n",
+          "pip install 'requests[security]'\n",
+          "/usr/sbin/ntpdate -u 0.centos.pool.ntp.org\n",
+          "service ntpd start\n",
+          "chkconfig ntpd on\n",
+          "mkdir aws-cfn-bootstrap-latest\n",
+          "curl https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz | tar xz -C aws-cfn-bootstrap-latest --strip-components 1\n",
+          "easy_install aws-cfn-bootstrap-latest\n",
+          "# Install the files and packages from the metadata\n",
+          "/usr/bin/cfn-init -v ",
+          "  -s ", { "Ref" : "AWS::StackName" },
+          " --role ", { "Ref": "DefaultInstanceRole" },
+          "  -r ConsoleLaunchConfig ",
+          "  --region ", { "Ref" : "AWS::Region" },
+          "  --url http://cloudformation.", { "Ref" : "CloudIP" }, ":8773/\n"
         ]]}}
       }
     },
@@ -92,7 +237,7 @@
           "InstanceProtocol" : "HTTP"
         } ],
         "HealthCheck" : {
-          "Target" : "HTTP:8888/",
+          "Target" : "HTTPS:443/",
           "HealthyThreshold" : "3",
           "UnhealthyThreshold" : "5",
           "Interval" : "30",
@@ -115,6 +260,13 @@
           "IpProtocol" : "tcp",
           "FromPort" : "8888",
           "ToPort" : "8888",
+          "SourceSecurityGroupOwnerId" : {"Fn::GetAtt" : ["ConsoleELB", "SourceSecurityGroup.OwnerAlias"]},
+          "SourceSecurityGroupName" : {"Fn::GetAtt" : ["ConsoleELB", "SourceSecurityGroup.GroupName"]}
+        },
+        {
+          "IpProtocol" : "tcp",
+          "FromPort" : "443",
+          "ToPort" : "443",
           "SourceSecurityGroupOwnerId" : {"Fn::GetAtt" : ["ConsoleELB", "SourceSecurityGroup.OwnerAlias"]},
           "SourceSecurityGroupName" : {"Fn::GetAtt" : ["ConsoleELB", "SourceSecurityGroup.GroupName"]}
         } ]

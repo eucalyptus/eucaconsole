@@ -1,7 +1,8 @@
 /* @fileOverview CloudWatch Metrics landing page CSS */
 @import "../includes/eucavariables";
-
 @import "../includes/landingpage";
+@import "../widgets/alarm-actions";
+@import "../widgets/create-alarm-dialog";
 
 
 table.expando td:nth-of-type(1) {
@@ -18,16 +19,27 @@ table td input[type="checkbox"] {
 
 .chart-wrapper {
     background: #ffffff;
-    border: 1px solid $hp-gray-40;
+    border: 1px solid $hpe-gray-40;
     h6 {
-        border: 0px none;
+        border: 0 none;
     }
     svg {
-        border: 0px none;
+        border: 0 none;
     }
 }
 
-.split-container {
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .actions {
+        .f-dropdown {
+            margin-left: -120px;
+            &:before {
+                margin-left: 120px;
+            }
+            &:after {
+                margin-left: 120px;
+            }
+        }
+    }
 }
 
 .split-top {
@@ -36,14 +48,22 @@ table td input[type="checkbox"] {
 }
 
 .split-bar {
-    height: 0.6rem;
+    height: 0.9rem;
     width: 100%;
     color: grey;
     background: #ffffff;
     cursor: row-resize;
     overflow-y: hidden;
     hr {
-        margin: 4px 4px 4px 4px;
+        margin: 7px 4px 0px 4px;
+    }
+    .split-grab {
+        position: relative;
+        top: -12px;
+        margin-left: 49%;
+        color: $hpe-lightgray;
+        background: #ffffff;
+        transform: scale(2, 1);
     }
 }
 
@@ -52,17 +72,7 @@ table td input[type="checkbox"] {
     padding-top: 1.0rem;
 }
 
-select {
-    width: 20rem;
-}
-
 .tile {
-    input[type="checkbox"] {
-        position: relative;
-        float: left;
-        top: 9px;
-        left: 5px;
-    }
     .dropdown.button.tiny {
         top: 5px !important;
         right: 2px !important;
@@ -89,18 +99,6 @@ magic-search .f-dropdown {
 div.absolute-grouping {
 }
 
-#metric-time-range {
-    margin: 0;
-    display: inline;
-}
-
-input.datefield {
-    width: 9rem;
-    float: left;
-    margin-bottom: 0;
-    margin-right: 1rem;
-}
-
 .toprow {
     select {
         margin-bottom: 1px;
@@ -109,49 +107,25 @@ input.datefield {
 
 .chart-wrapper {
     .graph-close {
-        position: relative;
-        bottom: 1rem;
-        left: 61rem;
-        color: $hp-gray-65;
+        float: right;
+        padding: 0.35rem 0.5rem 0 0.5rem;
+        color: $hpe-gray-65;
         font-size: rem-calc(35);
         line-height: 0.5rem;
         font-weight: bold;
         cursor: pointer;
     }
     .metric-chart-menu {
-        position: relative;
-        bottom: 1.3rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        left: 58rem;
-        color: $hp-gray-65;
+        float: right;
+        padding: 0 0.5rem 0 0.5rem;
+        color: $hpe-gray-65;
         cursor: pointer;
     }
     svg {
         height: 300px !important;
     }
 }
-.time-shift {
-    .graph-shift-left {
-        position: relative;
-        left: 0.25rem;
-        color: $hp-gray-65;
-        cursor: pointer;
-    }
-    .graph-shift-right {
-        position: relative;
-        left: 59rem;
-        color: $hp-gray-65;
-        cursor: pointer;
-    }
-}
 
 .metrics-url-field {
     width: 100%;
-}
-
-.field-wrapper {
-    &.timepicker {
-        position: absolute;
-    }
 }

@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Launchconfig Wizard JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -22,30 +24,30 @@ describe("LaunchConfigWizard", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of isLoadingKeyPair is false", function() {
-            expect(scope.isLoadingKeyPair).not.toBeTruthy();
+        it("should set nitial value of isLoadingKeyPair to false", function() {
+            expect(scope.isLoadingKeyPair).toBe(false);
         });
 
-        it("Initial value of isLoadingSecurityGroup is false", function() {
-            expect(scope.isLoadingSecurityGroup).not.toBeTruthy();
+        it("should set initial value of isLoadingSecurityGroup to false", function() {
+            expect(scope.isLoadingSecurityGroup).toBe(false);
         });
 
-        it("Initial value of isNotValid is true", function() {
-            expect(scope.isNotValid).toBeTruthy();
+        it("should set initial value of isNotValid to true", function() {
+            expect(scope.isNotValid).toBe(true);
         });
 
         it("Initial value of launchconfigName is empty", function() {
             expect(scope.launchconfigName).toEqual('');
         });
 
-        it("Initial value of keyPair is empty", function() {
-            expect(scope.keyPair).toEqual('');
+        it("should set initial value of keyPair to undefined", function() {
+            expect(scope.keyPair).toEqual(undefined);
         });
     });
 
-    describe("Function checkRequiredInput() Test", function() {
+    describe("#checkRequiredInput", function() {
 
-        it("Should invalid input when isNotValid is false and imageID is less 12 chars", function() {
+        it("should invalid input when isNotValid is false and imageID is less 12 chars", function() {
             scope.isNotValid = false;
             scope.currentStepIndex = 1;
             scope.imageID = "emi-1234"; 
@@ -55,7 +57,7 @@ describe("LaunchConfigWizard", function() {
             expect(scope.imageIDErrorClass).toEqual('error');
         });
 
-        it("Should invalid input when imageID is empty, but do not set the imageIDErrorClass", function() {
+        it("should invalid input when imageID is empty, but do not set the imageIDErrorClass", function() {
             scope.isNotValid = true;
             scope.currentStepIndex = 1;
             scope.imageID = ''; 
@@ -65,7 +67,7 @@ describe("LaunchConfigWizard", function() {
             expect(scope.imageIDErrorClass).toEqual('');
         });
 
-        it("Should invalid input when imageID is more 12 chars", function() {
+        it("should invalid input when imageID is more 12 chars", function() {
             scope.currentStepIndex = 1;
             scope.imageID = "emi-1234567890";
             scope.imageIDErrorClass = '';
@@ -74,7 +76,7 @@ describe("LaunchConfigWizard", function() {
             expect(scope.imageIDErrorClass).toEqual('error');
         });
 
-        it("Should invalid input when imageID is doesn't start with 'emi-'", function() {
+        it("should invalid input when imageID is doesn't start with 'emi-'", function() {
             scope.currentStepIndex = 1;
             scope.imageID = "1234567890ab"; 
             scope.imageIDErrorClass = '';
@@ -83,7 +85,7 @@ describe("LaunchConfigWizard", function() {
             expect(scope.imageIDErrorClass).toEqual('error');
         });
 
-        it("Should valid input when imageID is 12 chars and begins with 'emi-'", function() {
+        it("should valid input when imageID is 12 chars and begins with 'emi-'", function() {
             scope.currentStepIndex = 1;
             scope.imageID = "emi-12345678"; 
             scope.imageIDErrorClass = 'error';
@@ -92,14 +94,14 @@ describe("LaunchConfigWizard", function() {
             expect(scope.imageIDErrorClass).toEqual('');
         });
 
-        it("Should invalid input when launchconfigName is empty", function() {
+        it("should invalid input when launchconfigName is empty", function() {
             scope.currentStepIndex = 2;
             scope.launchconfigName = ''; 
             scope.checkRequiredInput(); 
             expect(scope.isNotValid).toBeTruthy();
         });
 
-        it("Should invalid input when keyPair is empty", function() {
+        it("should invalid input when keyPair is empty", function() {
             scope.currentStepIndex = 3;
             scope.keyPair = ''; 
             scope.urlParams = {};
@@ -107,7 +109,7 @@ describe("LaunchConfigWizard", function() {
             expect(scope.isNotValid).toBeTruthy();
         });
 
-        it("Should invalid input when securityGroups is empty", function() {
+        it("should invalid input when securityGroups is empty", function() {
             scope.currentStepIndex = 3;
             scope.securityGroups = []; 
             scope.checkRequiredInput(); 
@@ -115,9 +117,9 @@ describe("LaunchConfigWizard", function() {
         });
     });
 
-    describe("Function updateSecurityGroup Test", function() {
+    describe("#updateSecurityGroup", function() {
 
-        it("Should set securityGroups to [] if it is undefined when updateSecurityGroup is called", function() {
+        it("should set securityGroups to [] if it is undefined when updateSecurityGroup is called", function() {
             scope.securityGroups = undefined;
             scope.updateSecurityGroup();
             expect(scope.securityGroups).toEqual([]);

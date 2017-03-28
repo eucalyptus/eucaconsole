@@ -1,0 +1,14 @@
+/* @fileOverview Create VPC CSS */
+
+@import "../includes/eucavariables";
+
+#name, #cidr_block, #internet_gateway {
+  width: 40%;
+}
+
+
+@media only screen and (max-width: 40em) {
+  #name, #cidr_block, #internet_gateway {
+    width: 100%;
+  }
+}

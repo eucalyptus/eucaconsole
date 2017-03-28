@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Instance Create EBS Image JS 
  * @requires Jasmine, AngularJS mock
  *
  */
 
-describe("InstanceCreateImage", function() {
+describe("InstanceCreateEBSImage", function() {
 
     beforeEach(angular.mock.module('InstanceCreateImage'));
 
@@ -30,25 +32,25 @@ describe("InstanceCreateImage", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of expanded is false", function() {
-            expect(scope.expanded).not.toBeTruthy();
+        it("should set initial value of expanded to false", function() {
+            expect(scope.expanded).toBe(false);
         });
 
-        it("Initial value of name is empty", function() {
+        it("should set initial value of name to empty string", function() {
             expect(scope.name).toEqual('');
         });
 
-        it("Initial value of isNotValid is true", function() {
-            expect(scope.isNotValid).toBeTruthy();
+        it("should set initial value of isNotValid to true", function() {
+            expect(scope.isNotValid).toBe(true);
         });
     });
 
-    describe("Function checkRequiredInput() Test", function() {
+    describe("#checkRequiredInput", function() {
 
-        it("Should invalid input if name is empty", function() {
+        it("should set isNotValid to true if name is empty", function() {
             scope.name = '';
             scope.checkRequiredInput();
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
     });
 });

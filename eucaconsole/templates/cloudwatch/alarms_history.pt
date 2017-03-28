@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
     <head metal:fill-slot="head_css">
-        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+        <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
         <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/alarm_history.css')}"/>
     </head>
 
@@ -10,19 +10,19 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_path('cloudwatch_alarms')}" i18n:translate="">
-                            CloudWatchAlarms</a></li>
-                    <li><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}">${alarm_id}</a></li>
+                            Alarms</a></li>
+                    <li><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=encoded_id)}" tal:content="structure alarm_id" ng-non-bindable=""></a></li>
                     <li class="current"><a href="#">History</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
             <metal:block metal:use-macro="layout.global_macros['notifications']" />
             <h3 id="pagetitle">
                 <strong i18n:translate="">History for alarm:</strong>
-                <em>${alarm_id}</em>
+                <em tal:content="structure alarm_id" ng-non-bindable=""></em>
             </h3>
             <div class="large-12 columns">
                 <dl class="tabs" id="alarm-subnav">
-                    <dd><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=alarm_id)}" i18n:translate="">General</a><dd>
+                    <dd><a href="${request.route_path('cloudwatch_alarm_view', alarm_id=encoded_id)}" i18n:translate="">General</a></dd>
                     <dd class="active">
                         <a href="" i18n:translate="">History</a>
                     </dd>
@@ -46,7 +46,14 @@
                         </div>
                     </div>
                     <div class="loading" ng-show="itemsLoading"><i class="busy"></i></div>
-                    <div ng-show="!itemsLoading">
+                    <div class="modal xlarge alarm-history-details-modal" modal="historyItemDetails">
+                        <div alarm-history-details="">
+                            <pre contentEditable="true" spellcheck="false">{{ detailDisplayJson }}</pre>
+                            <a class="button expand" ng-href="data:application/octet-stream;base64,{{ downloadableContent }}"
+                                                     download="{{ currentHistoryItem.AlarmName }}.json" i18n:translate="">Download</a>
+                        </div>
+                    </div>
+                    <div ng-show="!itemsLoading" ng-init="facetFilterItems()">
                         <p ng-show="!historicEvents.length" i18n:translate="">
                         No recent alarm activity.
                         </p>
@@ -60,9 +67,9 @@
                             </thead>
                             <tbody id="historyBody">
                                 <tr ng-repeat="item in historicEvents track by $index">
-                                    <td ng-cloak="">{{ item.timestamp | date: '${layout.angular_date_format}' }}</td>
-                                    <td>{{ item.history_item_type }}</td>
-                                    <td>{{ item.summary }}</td>
+                                    <td ng-cloak="">{{ item.Timestamp | date: '${layout.angular_date_format}' }}</td>
+                                    <td>{{ item.HistoryItemType }}</td>
+                                    <td>{{ item.HistorySummary }} <a ng-click="showDetails(item)">show details</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -74,7 +81,7 @@
     <div metal:fill-slot="tail_js">
         <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/services/alarm-service.js')}"></script>
-        <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/alarms/alarm_history.js')}"></script>
     </div>
 </metal:block>

@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Volume Snapshots page JS
  * @requires AngularJS
  *
  */
 
-angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('VolumeSnapshots', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('VolumeSnapshotsCtrl', function ($scope, $http, $timeout, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.loading = false;
@@ -40,11 +42,8 @@ angular.module('VolumeSnapshots', ['TagEditor', 'EucaConsoleUtils'])
             $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
-                var modalButton = modal.find('button').get(0);
                 if (!!inputElement) {
                     inputElement.focus();
-                } else if (!!modalButton) {
-                    modalButton.focus();
                 }
             });
         };

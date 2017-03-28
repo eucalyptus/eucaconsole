@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup_wizard.css')}" />
 </head>
 
@@ -29,7 +30,7 @@
                                 <span class="cir">1</span> <b i18n:translate="">General</b>
                             </a>
                         </dd>
-                        <dd>
+                        <dd ng-class="{'disabled': isNotValid}">
                             <a id="tabStep2" href="#step2" ng-click="visitNextStep(2, $event)">
                                 <span class="cir">2</span> <b i18n:translate="">Membership</b>
                             </a>
@@ -56,7 +57,7 @@
                             <div tal:condition="is_vpc_supported">
                                 ${panel('form_field', field=create_form['vpc_network'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
                                 <div ng-show="vpcNetwork != '' &amp;&amp; vpcNetwork != 'None'">
-                                    ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcSubnets', 'options': 'k as v for (k, v) in vpcSubnetChoices'}, **vpc_subnet_html_attrs)}
+                                    ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'vpcSubnets', 'options': 'item as item.label for item in vpcSubnetChoices track by item.id'}, **vpc_subnet_html_attrs)}
                                     <span id="vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                 </div>
                             </div>
@@ -71,12 +72,13 @@
                                     ${panel('form_field', field=create_form['max_size'], leftcol_width_large=6, rightcol_width_large=6, maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
                                 </div>
                             </div>
+                            <div tal:define="term_policies_html_attrs {'data-placeholder': termination_policies_placeholder_text}" ng-cloak="">
+                                ${panel('form_field', field=create_form['termination_policies'], leftcol_width_large=3, rightcol_width_large=9, ng_attrs={'model': 'terminationPolicies'}, **term_policies_html_attrs)}
+                            </div>
                             <hr />
-                            ${panel('autoscale_tag_editor', tags=[])}
-                            <tag-editor
-                                ng-model="tags"
-                                template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}">
-                            </tag-editor>
+                            <div ng-cloak="">
+                                <tag-editor ng-model="tags" autoscale="1">[]</tag-editor>
+                            </div>
                             <hr />
                             <div>
                                 <label>
@@ -158,10 +160,10 @@
                         <label i18n:translate="">VPC network:</label>
                         <div class="columns value">{{ vpcNetworkName }}</div>
                     </div>
-                    <div tal:condition="is_vpc_supported" class="row" ng-show="vpcSubnetNames.length">
+                    <div tal:condition="is_vpc_supported" class="row" ng-show="vpcSubnets.length">
                         <label i18n:translate="">VPC subnet:</label>
                         <div class="columns value">
-                            <div ng-repeat="vpcSubnetName in vpcSubnetNames">{{ vpcSubnetName }}</div>
+                            <div ng-repeat="subnet in vpcSubnets">{{ subnet.label }}</div>
                         </div>
                     </div>
                     <div class="row">

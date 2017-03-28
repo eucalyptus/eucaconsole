@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -50,7 +50,7 @@ class KeyPairForm(BaseSecureForm):
         self.request = request
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         if keypair is not None:
-            self.name.data = keypair.name
+            self.name.data = keypair['KeyName']
 
 
 class KeyPairImportForm(BaseSecureForm):
@@ -75,7 +75,7 @@ class KeyPairImportForm(BaseSecureForm):
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         self.key_material.error_msg = self.key_material_error_msg
         if keypair is not None:
-            self.name.data = keypair.name
+            self.name.data = keypair['KeyName']
 
 
 class KeyPairDeleteForm(BaseSecureForm):

@@ -2,7 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
 </head>
 
 <div metal:fill-slot="main_content">
@@ -69,7 +69,7 @@
                                     <th i18n:translate="">START TIME</th>
                                     <th i18n:translate="">END TIME</th>
                                 </tr></thead>
-                                <tbody expando="" ng-repeat="item in history | orderBy: sortBy:sortReverse"
+                                <tbody expando="" ng-repeat="item in history | orderBy: sortBy:sortReverse | limitTo:displayCount"
                                     url="${request.route_path('scalinggroup_history_details_json', id=scaling_group.name, activity='__id__')}"
                                     item_id="{{item.activity_id}}">
                                     <tr ng-class="{'history-tr-even': $odd}" ng-cloak="true"> 
@@ -121,8 +121,8 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
              <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                  <!--! Help goes here -->
-                <div id="help-html-console_scaling_group_detail_policies"
-                    ng-include="'${layout.help_path('console_scaling_group_detail_policies.html')}'">
+                <div id="help-html-console_scaling_group_history"
+                    ng-include="'${layout.help_path('console_scaling_group_scale_history.html')}'">
                 </div> 
             </div>
         </div>
@@ -149,6 +149,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.stickytableheaders.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/magic-search-filter.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/expando.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_history.js')}"></script>
 </div>

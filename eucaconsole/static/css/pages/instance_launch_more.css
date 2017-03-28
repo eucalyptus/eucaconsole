@@ -10,7 +10,7 @@ form input.name { margin-right: 6px; }
 #controls_userdata_file { position: relative; top: -0.5rem; }
 #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
 
-#controls_monitoring_enabled .helptext-icon { position: relative; left: -1rem; color: #666666; }
+#controls_monitoring_enabled .helptext-icon, #controls_termination_protection .helptext-icon { position: relative; left: -1rem; color: #666666; }
 
 .userdatalabel { right: 0 !important; }
 

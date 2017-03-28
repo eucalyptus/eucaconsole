@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stacks.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/stack.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
 </head>
 
 <div metal:fill-slot="main_content">
@@ -65,7 +65,7 @@
                         <div class="row controls-wrapper readonly">
                             <div class="small-2 columns"><label i18n:translate="" class="right">Status</label></div>
                             <div class="small-10 columns value" ng-cloak="">
-                                <span class="label radius status {{stackStatus}}">{{ displayStatus(stackStatus) }}</span>
+                                <span class="label radius status {{stackStatus.toLowerCase()}}">{{ displayStatus(stackStatus) }}</span>
                                 <span class="busy" ng-show="isTransitional()"></span>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
                                             <td ng-show="item.url" class="breakall">
                                                 <a ng-href="{{ item.url }}">{{ item.physical_id }}</a>
                                             </td>
-                                            <td><span class="label radius status {{ item.status }}">{{ displayStatus(item.status) }}</span></td>
+                                            <td><span class="label radius status {{ item.status.toLowerCase() }}">{{ displayStatus(item.status) }}</span></td>
                                             <td>
                                                 {{ item.status_reason }}
                                             </td>
@@ -246,7 +246,7 @@
                                     <tbody>
                                         <tr ng-repeat="item in events | orderBy: sortBy" ng-cloak="true">
                                             <td>{{ item.timestamp | date:'${layout.angular_date_format}' }}</td>
-                                            <td><span class="label radius status {{ item.status }}">{{ displayStatus(item.status) }}</span></td>
+                                            <td><span class="label radius status {{ item.status.toLowerCase() }}">{{ displayStatus(item.status) }}</span></td>
                                             <td>
                                                 {{ item.status_reason }}
                                             </td>
@@ -300,7 +300,6 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/eucaroutes.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack_cancel_update_dialog.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/stack.js')}"></script>
 </div>

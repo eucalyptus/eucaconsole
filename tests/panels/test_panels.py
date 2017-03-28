@@ -37,7 +37,7 @@ from pyramid import testing
 
 from eucaconsole.forms.securitygroups import SecurityGroupForm
 from eucaconsole.views.panels import (
-    form_field_row, image_picker, securitygroup_rules, tag_editor, autoscale_tag_editor, bdmapping_editor,
+    form_field_row, image_picker, securitygroup_rules, bdmapping_editor,
     s3_sharing_panel
 )
 
@@ -54,31 +54,6 @@ class ImagePickerTests(BaseViewTestCase):
         controller_options = json.loads(panel.get('controller_options_json'))
         self.assertEqual(controller_options.get('images_json_endpoint'), self.request.route_path('images_json'))
         self.assertEqual(controller_options.get('cloud_type'), 'euca')
-
-
-class TagEditorTests(BaseViewTestCase):
-    request = testing.DummyRequest()
-
-    def test_tag_editor_panel(self):
-        """Test the standard tag editor panel"""
-        tags = {'tag1key': 'tag1val', 'tag2key': 'tag2val'}
-        panel = tag_editor(None, self.request, tags=tags, show_name_tag=False)
-        controller_options = json.loads(panel.get('controller_options_json'))
-        self.assertEqual(controller_options.get('tags'), tags)
-        self.assertFalse(controller_options.get('show_name_tag'))
-
-    def test_autoscale_tag_editor_panel(self):
-        """Test the autoscaling tag editor panel"""
-        Tag = namedtuple('Tag', ['key', 'value', 'propagate_at_launch'])
-        tags = [
-            Tag(key='foo', value='bar', propagate_at_launch=True),
-        ]
-        tags_output = [
-            dict(name='foo', value='bar', propagate_at_launch=True),
-        ]
-        panel = autoscale_tag_editor(None, self.request, tags=tags)
-        controller_options = json.loads(panel.get('controller_options_json'))
-        self.assertEqual(controller_options.get('tags_list'), tags_output)
 
 
 class SecurityGroupPanelsTestCase(BaseViewTestCase):

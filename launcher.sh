@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh -e
 #
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2013-2017 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -26,7 +26,4 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Fire up development server
-pserve console.ini --reload
-
-
-
+bin/eucaconsole -r -c console.ini

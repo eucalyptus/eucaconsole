@@ -11,17 +11,22 @@
 #maincontent { min-height: 24rem; }
 
 #login-wrapper { position: relative; padding: 10px; }
-#login-wrapper label { font-weight: bold; color: #444; white-space: nowrap; }
+#login-wrapper label { font-weight: bold; color: #444444; white-space: nowrap; }
 #login-wrapper input { height: 2.25rem; }
 #login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
-#login-wrapper .tabs { max-height: 2.6rem !important; }
-#login-wrapper .tabs dd { position: relative; top: 1px; z-index: 999; }
-#login-wrapper .tabs dd a { padding: 10px 32px 6px 24px; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+#login-wrapper .tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }
+#login-wrapper .tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
+#login-wrapper .tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
 #login-wrapper .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
-#login-wrapper .tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
+#login-wrapper .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
+#login-wrapper .tabs.switcher { display: inline-block; }
+#login-wrapper .tabs.switcher dd:last-child { padding-right: 0; }
 #login-wrapper .tabs-content { padding: 1rem; background-color: white; }
 #login-wrapper .tabs-content .content { width: 95%; margin: 0 auto; }
 #login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; }
+
+.button.oidc { background-color: #3560A0; color: white; width: 100%; border: 0; }
+.button.oidc:hover { outline: 2px solid #3560A0; }
 
 #password, #secret_key { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
 

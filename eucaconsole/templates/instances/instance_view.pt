@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
 </head>
 
@@ -43,7 +44,7 @@
                         </li>
                         <li>
                             <a i18n:translate="" id="create-launchconfig-action"
-                               href="/launchconfigs/new?image_id=${instance.image_id}&amp;instance_type=${instance.instance_type}&amp;keypair=${instance_keypair}&amp;security_group=${instance_security_groups}&amp;preset=true">
+                               href="/launchconfigs/new?image_id=${instance.image_id}&amp;instance_type=${instance.instance_type}&amp;keypair=${instance_keypair}&amp;security_group=${instance_security_groups}&amp;userdata_instanceid=${instance.id}&amp;preset=true">
                                 Create launch configuration
                             </a>
                         </li>
@@ -81,8 +82,11 @@
                                i18n:translate="">Reboot</a>
                         </li>
                         <li ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'">
-                        
-                            <a href="#" id="terminate-instance-action"
+                            <!--! Display terminate instance confirmation when termination protection is off,
+                                  otherwise display terminate warning modal -->
+                            <a href="#"
+                               tal:attributes="id 'terminate-warning-action' if termination_protection_on else 'terminate-instance-action';
+                                               data-reveal-id 'terminate-warning-modal' if termination_protection_on else None"
                                i18n:translate="">Terminate</a>
                         </li>
                     </metal:actions>
@@ -99,66 +103,90 @@
                     <!--! Modal dialogs are near the bottom of this template -->
                     <h6 i18n:translate="">Instance</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="">
-                        <div class="large-2 small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
-                        <div class="large-10 small-8 columns value" ng-cloak="">
+                        <div class="large-3 small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
+                        <div class="large-9 small-8 columns value" ng-cloak="">
                             <span class="label radius status {{ instanceState }}">{{instanceState}}</span>
                             <span class="busy" ng-show="isUpdating"></span>
                         </div>
                     </div>
                     <div>
-                        ${panel('form_field', field=instance_form.name, pattern=layout.tag_pattern_value)}
+                        ${panel('form_field', field=instance_form.name, pattern=layout.tag_pattern_value, leftcol_width_large=3, rightcol_width_large=9)}
                     </div>
-                    <div tal:omit-tag="">
+                    <div tal:condition="instance.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
-                            <div class="large-2 small-4 columns"><label i18n:translate="">Instance type</label></div>
-                            <div class="large-10 small-8 columns value">${instance.instance_type}</div>
+                            <div class="large-3 small-4 columns"><label i18n:translate="">Instance type</label></div>
+                            <div class="large-9 small-8 columns value">${instance.instance_type}</div>
                         </div>
                     </div>
                     <div tal:condition="instance.root_device_type == 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
-                            <div class="large-2 small-4 columns"><label i18n:translate="">Instance type</label></div>
-                            <div class="large-10 small-8 columns value">${instance.instance_type}</div>
+                            <div class="large-3 small-4 columns"><label i18n:translate="">Instance type</label></div>
+                            <div class="large-9 small-8 columns value">${instance.instance_type}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
                             ${panel('form_field', field=instance_form.instance_type)}
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Platform</label></div>
-                        <div class="large-10 small-8 columns value">${instance.platform}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Platform</label></div>
+                        <div class="large-9 small-8 columns value">${instance.platform}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Root device type</label></div>
-                        <div class="large-10 small-8 columns value">${instance.root_device_type}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Root device type</label></div>
+                        <div class="large-9 small-8 columns value">${instance.root_device_type}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Architecture</label></div>
-                        <div tal:condition="instance.architecture" class="large-10 small-8 columns value">${instance.architecture}</div>
-                        <div tal:condition="not instance.architecture and image" class="large-10 small-8 columns value">${image.architecture}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Architecture</label></div>
+                        <div tal:condition="instance.architecture" class="large-9 small-8 columns value">${instance.architecture}</div>
+                        <div tal:condition="not instance.architecture and image" class="large-9 small-8 columns value">${image.architecture}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Instance ID</label></div>
-                        <div class="large-10 small-8 columns value">${instance.id}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Instance ID</label></div>
+                        <div class="large-9 small-8 columns value">${instance.id}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Availability zone</label></div>
-                        <div class="large-10 small-8 columns value">${instance.placement}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Availability zone</label></div>
+                        <div class="large-9 small-8 columns value">${instance.placement}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Monitoring</label></div>
-                        <div class="large-10 small-8 columns value">${instance_monitoring_state}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Termination Protection</label></div>
+                        <div class="large-9 small-8 columns value">
+                            ${termination_protection_label}
+                            <i class="fi-alert" tal:condition="termination_protection_on and scaling_group"
+                               i18n:attributes="title" data-tooltip=""
+                               title="Enabling termination protection for an instance in a scaling group does not
+                                      prevent a scaling policy or a health check from terminating the instance"></i>
+                            <a id="set-termination-control" href="#" data-reveal-id="termination-protection-modal">
+                                <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">
+                                    Disable termination protection
+                                </span>
+                                <span i18n:translate="" tal:omit-tag="" tal:condition="not: termination_protection_on">
+                                    Enable termination protection
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Monitoring</label></div>
+                        <div class="large-9 small-8 columns value">${instance_monitoring_state}</div>
                     </div>
                     <div tal:condition="is_vpc_supported" class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">VPC network</label></div>
-                        <div class="large-10 small-8 columns value">${instance.vpc_name}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">VPC network</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <a href="${request.route_path('vpc_view', id=instance.vpc_id)}">${instance.vpc_name}</a>
+                        </div>
                     </div>
                     <div tal:condition="is_vpc_supported" class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">VPC subnet</label></div>
-                        <div class="large-10 small-8 columns value">${vpc_subnet_display}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">VPC subnet</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <a href="${request.route_path('subnet_view', vpc_id=instance.vpc_id, id=instance.subnet_id)}">
+                                ${vpc_subnet_display}
+                            </a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="instancePublicIP != null">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Public IP address</label></div>
-                        <div class="large-10 small-8 columns value" ng-cloak="">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Public IP address</label></div>
+                        <div class="large-9 small-8 columns value" ng-cloak="">
                             <span ng-show="hasElasticIP">
                                 <a ng-href="/ipaddresses/{{ instancePublicIP }}">{{ instancePublicIP }}</a>
                             </span>
@@ -168,26 +196,26 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="PublicDNS != ''">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Public hostname</label></div>
-                        <div class="large-10 small-8 columns value" ng-cloak="">{{ PublicDNS }}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Public hostname</label></div>
+                        <div class="large-9 small-8 columns value" ng-cloak="">{{ PublicDNS }}</div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="instancePrivateIP != null">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Private IP address</label></div>
-                        <div class="large-10 small-8 columns value" ng-cloak="">{{ instancePrivateIP }}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Private IP address</label></div>
+                        <div class="large-9 small-8 columns value" ng-cloak="">{{ instancePrivateIP }}</div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="PrivateDNS != ''">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Private hostname</label></div>
-                        <div class="large-10 small-8 columns value" ng-cloak="">{{ PrivateDNS }}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Private hostname</label></div>
+                        <div class="large-9 small-8 columns value" ng-cloak="">{{ PrivateDNS }}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Key name</label></div>
-                        <div class="large-10 small-8 columns value">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Key name</label></div>
+                        <div class="large-9 small-8 columns value">
                             <a href="${request.route_path('keypair_view', subpath=instance_keypair)}">${instance_keypair}</a>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Security group(s)</label></div>
-                        <div class="large-10 small-8 columns value">
+                    <div class="row controls-wrapper readonly" tal:condition="not: instance.vpc_id">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Security group(s)</label></div>
+                        <div class="large-9 small-8 columns value">
                             <div tal:repeat="group security_group_list" ng-non-bindable="">
                                 <i tal:condition="not group.rule_count" class="fi-alert" data-tooltip="" i18n:attributes="title"
                                     title="Warning: No rules defined for security group. Instance may be unreachable."></i>
@@ -195,38 +223,41 @@
                             </div>
                         </div>
                     </div>
+                    <div tal:condition="instance.vpc_id" ng-cloak="">
+                        ${panel('form_field', field=instance_form.security_groups, leftcol_width_large=3, rightcol_width_large=9)}
+                    </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Launch time</label></div>
-                        <div class="large-10 small-8 columns value" ng-cloak="">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Launch time</label></div>
+                        <div class="large-9 small-8 columns value" ng-cloak="">
                             {{ '${instance.launch_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="role">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Role</label></div>
-                        <div class="large-10 small-8 columns value">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Role</label></div>
+                        <div class="large-9 small-8 columns value">
                             <a href="${request.route_path('role_view', name=role)}" ng-non-bindable="">${role}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="scaling_group">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Scaling group</label></div>
-                        <div class="large-10 small-8 columns value">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Scaling group</label></div>
+                        <div class="large-9 small-8 columns value">
                             <a href="${request.route_path('scalinggroup_view', id=scaling_group)}">${scaling_group}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.owner_id">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Account ID</label></div>
-                        <div class="large-10 small-8 columns value">${instance.owner_id}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Account ID</label></div>
+                        <div class="large-9 small-8 columns value">${instance.owner_id}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.reservation_id">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Reservation ID</label></div>
-                        <div class="large-10 small-8 columns value">${instance.reservation_id}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Reservation ID</label></div>
+                        <div class="large-9 small-8 columns value">${instance.reservation_id}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.client_token">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Client token</label></div>
-                        <div class="large-10 small-8 columns value">${instance.client_token}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Client token</label></div>
+                        <div class="large-9 small-8 columns value">${instance.client_token}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns">
+                        <div class="large-3 small-4 columns">
                             <label>
                                 <span i18n:translate="">User data</span>
                                 <span title="User data file may not exceed 16 KB" data-tooltip="" i18n:attributes="title">
@@ -234,7 +265,7 @@
                                 </span>
                             </label>
                         </div>
-                        <div class="large-10 small-8 columns value">
+                        <div class="large-9 small-8 columns value">
                             <div ng-show="isNotStopped">
                                 <textarea id="userdata" name="userdata" disabled="disabled" ng-show="!isFileUserData"></textarea>
                                 <span id="userdatatype" ng-non-bindable="" ng-show="isFileUserData"></span>
@@ -259,50 +290,52 @@
                     <hr />
                     <h6 i18n:translate="">Image</h6>
                     <div class="row controls-wrapper readonly">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Image ID</label></div>
-                        <div tal:condition="image" class="large-10 small-8 columns value">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Image ID</label></div>
+                        <div tal:condition="image" class="large-9 small-8 columns value">
                             <a href="${request.route_path('image_view', id=image.id)}">${image.id}</a>
                         </div>
-                        <div class="large-10 small-8 columns value" tal:condition="not image">
+                        <div class="large-9 small-8 columns value" tal:condition="not image">
                             ${instance.image_id}
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="image">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Image name</label></div>
-                        <div tal:condition="image" class="large-10 small-8 columns value breakword" ng-non-bindable="">${image.name}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Image name</label></div>
+                        <div tal:condition="image" class="large-9 small-8 columns value breakword" ng-non-bindable="">${image.name}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="image">
-                        <div class="large-2 small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div tal:condition="image" class="large-10 small-8 columns value breakword">${image.location}</div>
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Image manifest</label></div>
+                        <div tal:condition="image" class="large-9 small-8 columns value breakword">${image.location}</div>
                     </div>
                     <div tal:condition="instance.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
-                            <div class="large-2 small-4 columns"><label i18n:translate="">Kernel ID</label></div>
-                            <div tal:condition="image" class="large-10 small-8 columns value">${image.kernel_id}</div>
+                            <div class="large-3 small-4 columns"><label i18n:translate="">Kernel ID</label></div>
+                            <div tal:condition="image" class="large-9 small-8 columns value">${image.kernel_id}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="large-2 small-4 columns"><label i18n:translate="">RAM disk ID (ramfs)</label></div>
-                            <div tal:condition="image" class="large-10 small-8 columns value">${image.ramdisk_id}</div>
+                            <div class="large-3 small-4 columns"><label i18n:translate="">RAM disk ID (ramfs)</label></div>
+                            <div tal:condition="image" class="large-9 small-8 columns value">${image.ramdisk_id}</div>
                         </div>
                     </div>
                     <div tal:condition="instance.root_device_type == 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
-                            <div class="large-2 small-4 columns"><label i18n:translate="">Kernel ID</label></div>
-                            <div tal:condition="instance" class="large-10 small-8 columns value">${instance.kernel}</div>
+                            <div class="large-3 small-4 columns"><label i18n:translate="">Kernel ID</label></div>
+                            <div tal:condition="instance" class="large-9 small-8 columns value">${instance.kernel}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
                             ${panel('form_field', field=instance_form.kernel)}
                         </div>
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
-                            <div class="large-2 small-4 columns"><label i18n:translate="">RAM disk ID (ramfs)</label></div>
-                            <div tal:condition="instance" class="large-10 small-8 columns value">${instance.ramdisk}</div>
+                            <div class="large-3 small-4 columns"><label i18n:translate="">RAM disk ID (ramfs)</label></div>
+                            <div tal:condition="instance" class="large-9 small-8 columns value">${instance.ramdisk}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
                             ${panel('form_field', field=instance_form.ramdisk)}
                         </div>
                     </div>
                     <hr />
-                    ${panel('tag_editor', tags=instance.tags, show_name_tag=False)}
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
+                    </div>
                     <hr />
                     <div>
                         <button type="submit" class="button" id="save-changes-btn" ng-click="submitSaveChanges($event)" ng-disabled="isNotChanged">
@@ -343,12 +376,61 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
+        <div id="termination-protection-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="" tal:condition="termination_protection_on">
+                Disable instance termination protection
+            </h3>
+            <h3 i18n:translate="" tal:condition="not: termination_protection_on">
+                Enable instance termination protection
+            </h3>
+            <p i18n:translate="" tal:condition="termination_protection_on">
+                Disabling instance termination protection will allow termination of the instance via the console,
+                command-line tools, and client libraries.
+            </p>
+            <p i18n:translate="" tal:condition="not: termination_protection_on">
+                Enabling instance termination protection will prevent termination of the instance via the console,
+                command-line tools, and client libraries.
+            </p>
+            <div tal:condition="scaling_group" tal:omit-tag="">
+                <p i18n:translate="" tal:condition="not: termination_protection_on">
+                    NOTE: An instance with termination protection enabled in a scaling group will not prevent the instance
+                    from being terminated by a scaling policy or a health check.
+                </p>
+            </div>
+            <p>
+                <span i18n:translate="" tal:omit-tag="">Are you sure you want to</span>
+                <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">disable</span>
+                <span i18n:translate="" tal:omit-tag="" tal:condition="not: termination_protection_on">enable</span>
+                <span i18n:translate="" tal:omit-tag="">termination protection for instance</span>
+                <strong>${instance_name}</strong><span i18n:translate="">?</span>
+            </p>
+            <form method="post" id="termination-protection-form"
+                  action="${request.route_path('instance_set_termination_protection', id=instance.id)}">
+                ${structure:termination_protection_form['csrf_token']}
+                <button type="submit" class="button expand">
+                    <span i18n:translate="" tal:omit-tag="">Yes,</span>
+                    <span i18n:translate="" tal:omit-tag="" tal:condition="termination_protection_on">disable</span>
+                    <span i18n:translate="" tal:omit-tag="" tal:condition="not: termination_protection_on">enable</span>
+                    <span i18n:translate="">instance termination protection</span>
+                </button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="terminate-warning-modal" class="reveal-modal medium" data-reveal=""
+             tal:condition="termination_protection_on">
+            <h3 i18n:translate="">Terminate instance</h3>
+            <p i18n:translate="">
+                The instance ${instance_name} currently has termination protection enabled.
+                You'll need to disable instance termination protection prior to terminating the instance.
+            </p>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/instance.js')}"></script>
 </div>
 

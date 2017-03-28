@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Instances landing page JS
  * @requires AngularJS, jQuery
  *
@@ -9,7 +11,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.ipAddresses = [];
-        $scope.ipAddressList = {};
+        $scope.ipAddressList = [];
         $scope.associateIPModal = $('#associate-ip-to-instance-modal');
         $scope.addressesEndpoint = '';
         $scope.multipleItemsSelected = false;
@@ -57,7 +59,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
             $scope.ipAddress = instance.ip_address;
             if (action === 'associate-ip-to') {
                 $scope.adjustIPAddressOptions(instance);
-                // timeout is needed for ipAddressList to be updated
+                // timeout is needed for IP Address list to be updated
                 $timeout(function () {
                     $('#ip_address').trigger('chosen:updated');
                 });
@@ -122,7 +124,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
                 if (evt.target.readyState === FileReader.DONE) {
                     var key_contents = evt.target.result;
                     var url = $scope.password_url.replace("_id_", $scope.instanceID);
-                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $.base64.encode(key_contents);
+                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + btoa(key_contents);
                     $http({method:'POST', url:url, data:data,
                            headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                       success(function(oData) {
@@ -148,7 +150,7 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.consoleOutput = $.base64.decode(results);
+                    $scope.consoleOutput = atob(results);
                     $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
@@ -185,12 +187,15 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
             });
         };
         $scope.adjustIPAddressOptions = function (instance) {
-            $scope.ipAddressList = {};
+            $scope.ipAddressList = [];
             if (instance.vpc_name === '') {
                 angular.forEach($scope.ipAddresses, function(ip){
                     if (ip.domain === 'standard') {
                         if (ip.instance_id === '' || ip.instance_id === null) {
-                            $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                            $scope.ipAddressList.push({
+                                'id': ip.public_ip,
+                                'label': ip.public_ip
+                            });
                         }
                     }
                 }); 
@@ -198,7 +203,10 @@ angular.module('InstancesPage', ['LandingPage', 'EucaConsoleUtils', 'smart-table
                 angular.forEach($scope.ipAddresses, function(ip){
                     if (ip.domain === 'vpc') {
                         if (ip.instance_id === '' || ip.instance_id === null) {
-                            $scope.ipAddressList[ip.public_ip] = ip.public_ip;
+                            $scope.ipAddressList.push({
+                                'id': ip.public_ip,
+                                'label': ip.public_ip
+                            });
                         }
                     }
                 }); 

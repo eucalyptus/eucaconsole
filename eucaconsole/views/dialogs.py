@@ -1,4 +1,4 @@
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -34,6 +34,7 @@ from ..i18n import _
 
 from pyramid_layout.panel import panel_config
 
+from ..constants.buckets import SAMPLE_CORS_CONFIGURATION
 from ..views import BaseView
 from ..views.buckets import BucketDetailsView, FOLDER_NAME_PATTERN
 
@@ -173,13 +174,11 @@ def create_alarm_dialog(context, request, alarm_form=None, alarm_choices=None, r
 
 
 @panel_config('delete_alarm_dialog', renderer='../templates/dialogs/delete_alarm_dialog.pt')
-def delete_alarm_dialog(context, request, modal_size='medium', service_path=None):
-    '''
-    Delete alarm dialog page.
-    '''
+def delete_alarm_dialog(context, request, modal_size='medium', detail_page=False):
+    """Delete alarm confirmation dialog"""
     return dict(
         modal_size=modal_size,
-        service_path=service_path
+        detail_page=detail_page,
     )
 
 
@@ -188,7 +187,7 @@ def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_fo
     """ Modal dialogs for Keypair landing and detail page."""
     return dict(
         keypair=keypair,
-        keypair_name=BaseView.escape_braces(keypair.name) if keypair else '',
+        keypair_name=BaseView.escape_braces(keypair['KeyName']) if keypair else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )
@@ -357,7 +356,6 @@ def elb_bucket_access_log_dialog(context, request):
     """ Modal confirmation when enabling access logs for an ELB"""
     return dict()
 
-
 @panel_config('elb_security_group_warning_dialog', renderer='../templates/dialogs/elb_security_group_warning_dialog.pt')
 def elb_security_group_warning_dialog(context, request, create=False):
     """ Modal confirmation when the security group rules for an ELB don't cover the listener and health check ports"""
@@ -381,3 +379,4 @@ def cloudwatch_chart_dialog(context, request, duration_choices=None, statistic_c
 def ufshost_warn_dialog(context, request):
     """ Modal warning when trying to create a stack, but ufshost set to localhost"""
     return dict()
+

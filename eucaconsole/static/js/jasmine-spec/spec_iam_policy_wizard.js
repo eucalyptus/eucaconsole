@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for IAM Policy Wizard JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -30,45 +32,71 @@ describe("IAMPolicyWizard", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of policyJsonEndpoint is empty", function() {
+        it("should set initial value of policyJsonEndpoint to empty string", function() {
             expect(scope.policyJsonEndpoint).toEqual('');
         });
 
-        it("Initial value of policyAPIVersion is 2012-10-17", function() {
+        it("should set initial value of policyAPIVersion to '2012-10-17'", function() {
             expect(scope.policyAPIVersion).toEqual('2012-10-17');
         });
 
-        it("Initial value of cloudType is euca", function() {
+        it("should set initial value of cloudType to 'euca'", function() {
             expect(scope.cloudType).toEqual('euca');
         });
 
-        it("Initial value of lastSelectedTabKey is policyWizard-selectedTab", function() {
+        it("should set initial value of lastSelectedTabKey to 'policyWizard-selectedTab'", function() {
             expect(scope.lastSelectedTabKey).toEqual('policyWizard-selectedTab');
         });
 
-        it("Initial value of languageCode is en", function() {
+        it("should set initial value of languageCode to 'en'", function() {
             expect(scope.languageCode).toEqual('en');
         });
 
-        it("Initial value of confirmed is false", function() {
-            expect(scope.confirmed).not.toBeTruthy();
+        it("should set initial value of confirmed to false", function() {
+            expect(scope.confirmed).toBe(false);
         });
 
-        it("Initial value of isCreating is false", function() {
-            expect(scope.isCreating).not.toBeTruthy();
+        it("should set initial value of isCreating to false", function() {
+            expect(scope.isCreating).toBe(false);
         });
 
-        it("Initial value of nameConflictKey is doNotShowPolicyNameConflictWarning", function() {
+        it("should set initial value of nameConflictKey to 'doNotShowPolicyNameConflictWarning'", function() {
             expect(scope.nameConflictKey).toEqual('doNotShowPolicyNameConflictWarning');
         });
     });
 
-    describe("Function initController() Test", function() {
+    describe("#initController", function() {
 
-        it("Should set cloudType when initController() is called and cloudType JSON is set", function() {
+        beforeEach(function () {
+            spyOn(scope, 'initActionContainers');
+            spyOn(scope, 'initSelectedTab');
+            spyOn(scope, 'initChoices');
+            spyOn(scope, 'setupListeners');
+        });
+
+        it("should set cloudType when initController() is called and cloudType JSON is set", function() {
             scope.initController('{"cloudType": "aws", "policyActions": [{"actions": []}]}');
             expect(scope.cloudType).toEqual('aws');
         });
 
+        it("should call initActionContainers when initController is called", function () {
+            scope.initController('{"cloudType": "euca", "policyActions": [{"actions": []}]}');
+            expect(scope.initActionContainers).toHaveBeenCalled();
+        });
+
+        it("should call initSelectedTab when initController is called", function () {
+            scope.initController('{"cloudType": "euca", "policyActions": [{"actions": []}]}');
+            expect(scope.initSelectedTab).toHaveBeenCalled();
+        });
+
+        it("should call initChoices when initController is called", function () {
+            scope.initController('{"cloudType": "euca", "policyActions": [{"actions": []}]}');
+            expect(scope.initChoices).toHaveBeenCalled();
+        });
+
+        it("should call setupListeners when initController is called", function () {
+            scope.initController('{"cloudType": "euca", "policyActions": [{"actions": []}]}');
+            expect(scope.setupListeners).toHaveBeenCalled();
+        });
     });
 });

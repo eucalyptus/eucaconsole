@@ -1,12 +1,14 @@
 <!--! Modal dialog for large CloudWatch chart -->
-<div tal:omit-tag="" i18n:domain="eucaconsole">
-    <div class="reveal-modal xlarge cloudwatch-charts" id="large-chart-modal" data-reveal="">
-        <h3>{{ chartsCtrl.selectedChartTitle || '&nbsp;' }}</h3>
-        <div class="toprow">
-            <div class="blurb">
-                <div class="field-wrapper"
-                     ng-show="['VolumeReadBytes', 'VolumeWriteBytes'].indexOf(chartsCtrl.largeChartMetric) === -1">
+<div class="modal xlarge large-chart-modal cloudwatch-charts" modal="largeChart">
+    <h3>{{ chartsCtrl.selectedChartTitle || '&nbsp;' }}</h3>
+    <div class="toprow">
+        <div class="blurb">
+            <div class="field-wrapper"
+                 ng-show="['VolumeReadBytes', 'VolumeWriteBytes'].indexOf(chartsCtrl.largeChartMetric) === -1">
+                <div>
                     <label for="large-chart-statistic" class="left" i18n:translate="">Statistic</label>
+                </div>
+                <div>
                     <select name="large_chart_statistic" id="large-chart-statistic" class="duration-input"
                             ng-model="chartsCtrl.largeChartStatistic" ng-change="chartsCtrl.refreshLargeChart()">
                         <option tal:repeat="option statistic_choices" value="${option[0]}">
@@ -14,32 +16,72 @@
                         </option>
                     </select>
                 </div>
-                <div class="field-wrapper">
-                    <label for="large-chart-monitoring-duration" class="left" i18n:translate="">Show data for</label>
-                    <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration" class="duration-input"
+            </div>
+            <div class="field-wrapper" id="measurement-period-controls">
+                <div>
+                    <label for="large-chart-monitoring-granularity" class="left" i18n:translate="">Measurement period</label>
+                </div>
+                <div>
+                    <select name="large_chart_monitoring_granularity" id="large-chart-monitoring-granularity" class="period-input"
+                            ng-model="chartsCtrl.largeChartGranularity" ng-change="chartsCtrl.refreshLargeChart()"
+                            ng-options="opt as opt.label for opt in chartsCtrl.granularityChoices track by opt.value">
+                    </select>
+                </div>
+            </div>
+            <div class="field-wrapper timepicker">
+                <div>
+                    <label class="left stack-label" i18n:translate="">Time range</label>
+                    <input id="metric-time-range" type="radio" name="range" value="relative"
+                           ng-model="chartsCtrl.timeRange" /><label i18n:translate="">Relative</label>
+                    <input id="metric-time-range" type="radio" name="range" value="absolute"
+                           ng-model="chartsCtrl.timeRange" /><label i18n:translate="">Absolute</label>
+                </div>
+                <div ng-if="chartsCtrl.timeRange == 'relative'">
+                    <select name="large_chart_monitoring_duration" id="large-chart-monitoring-duration"
+                            class="duration-input"
                             ng-model="chartsCtrl.largeChartDuration" ng-change="chartsCtrl.handleDurationChange()">
                         <option tal:repeat="option duration_choices" value="${option[0]}">
                             ${option[1]}
                         </option>
                     </select>
                 </div>
-                <div class="field-wrapper" id="measurement-period-controls">
-                    <label for="large-chart-monitoring-granularity" class="left" i18n:translate="">Measurement period</label>
-                    <select name="large_chart_monitoring_granularity" id="large-chart-monitoring-granularity" class="period-input"
-                            ng-model="chartsCtrl.largeChartGranularity" ng-change="chartsCtrl.refreshLargeChart()"
-                            ng-options="opt.value as opt.label for opt in chartsCtrl.granularityChoices">
-                    </select>
+                <div ng-if="chartsCtrl.timeRange == 'absolute'">
+                    <label class="left stack-label" i18n:translate="">From</label>
+                    <input type="text" class="datefield" datepicker=""
+                        ng-model="chartsCtrl.largeChartStartTime" ng-change="chartsCtrl.handleAbsoluteChange()"
+                        ng-model-options="{ getterSetter: true }"/>
+                    <label class="left stack-label" i18n:translate="">To</label>
+                    <input type="text" class="datefield" datepicker=""
+                        ng-model="chartsCtrl.largeChartEndTime" ng-change="chartsCtrl.handleAbsoluteChange()"
+                        ng-model-options="{ getterSetter: true }"/>
                 </div>
             </div>
-            <div class="actions">
-                <span id="refresh-charts-icon" class="action-icon"
-                      ng-click="chartsCtrl.refreshLargeChart()"><i class="fa fa-refresh"></i></span>
-            </div>
         </div>
-        <div class="large-chart-wrapper">
-            <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
-            <svg id="large-chart"></svg>
+        <div class="actions">
+            <span id="refresh-charts-icon" class="action-icon"
+                  ng-click="chartsCtrl.refreshLargeChart()"><i class="fa fa-refresh"></i></span>
         </div>
-        <a href="#" id="large_chart_close-link" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div class="time-shift">
+        <a ng-click="chartsCtrl.shiftTimeLeft()" class="graph-shift-left" ng-disabled="!chartsCtrl.shiftTimeLeftAllowed()">
+            <i class="fa fa-arrow-circle-o-left fa-2x"></i>
+        </a>
+        <a ng-click="chartsCtrl.shiftTimeRight()" class="graph-shift-right" ng-disabled="!chartsCtrl.shiftTimeRightAllowed()">
+            <i class="fa fa-arrow-circle-o-right fa-2x"></i>
+        </a>
+        <svg></svg>
+    </div>
+    <div class="large-chart-wrapper">
+        <i class="busy loading" ng-if="chartsCtrl.largeChartLoading"></i>
+        <svg id="large-chart" no-x-labels="true" large="true"
+             cloudwatch-chart="" class="cwchart"
+             ids="{{ chartsCtrl.largeChartIds }}" idtype="{{ chartsCtrl.largeChartIdType }}" metric="{{ chartsCtrl.largeChartMetric }}" title="{{ chartsCtrl.selectedChartTitle }}"
+             duration="{{ chartsCtrl.largeChartDuration }}" period="{{ chartsCtrl.largeChartGranularity.value }}"
+             unit="{{ chartsCtrl.largeChartUnit }}"
+             start-time="{{ chartsCtrl._largeChartStartTime.toISOString() }}"
+             end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
+             namespace="{{ chartsCtrl.largeChartNamespace }}"
+             statistic="{{ chartsCtrl.largeChartStatistic }}" empty="{{ chart.empty_msg }}">
+        </svg>
     </div>
 </div>

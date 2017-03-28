@@ -1,0 +1,44 @@
+@import "../includes/eucavariables";
+
+
+
+.route-table-editor {
+
+  // Route states
+  .state.active { background-color: $hpe-green; }
+  .state.blackhole { background-color: $hpe-black; }
+
+  #routes {
+    display: none;
+  }
+
+  .route-entry {
+    label {
+      text-align: left;
+      display: block;
+      margin-right: 1rem;
+      margin-bottom: 2px;
+    }
+    select {
+      max-width: 16rem;
+    }
+  }
+
+  .error {
+    @include validation-error-mixin;
+    margin-left: 2rem;
+    &.show {
+      display: inline-block;
+    }
+  }
+
+  table.table {
+    width: 67%;
+  }
+
+  @media only screen and (max-width: 40em) {
+    table.table {
+      width: 100%;
+    }
+  }
+}

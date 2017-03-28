@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -130,6 +130,8 @@ ELB_MONITORING_CHARTS_LIST = [
 ]
 
 
+# The list in static/js/widgets/lister-editor/security-policy-editor.py will replace this.
+# For now, changes need to be made in both places
 SSL_CIPHERS = [
     'ECDHE-ECDSA-AES128-GCM-SHA256',
     'ECDHE-RSA-AES128-GCM-SHA256',

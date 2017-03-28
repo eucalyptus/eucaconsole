@@ -269,15 +269,34 @@
                                                         Delimiter (s3:delimiter)
                                                     </option>
                                                 </optgroup>
+                                                <!--! CloudFormation-specific condition keys -->
+                                                <optgroup label="CloudFormation Conditions" tal:condition="namespace == 'cloudformation'" tal:omit-tag="">
+                                                    <option value="cloudformation:TemplateUrl" i18n:translate="">
+                                                        Template URL
+                                                    </option>
+                                                    <option value="cloudformation:StackPolicyUrl" i18n:translate="">
+                                                        Stack Policy URL
+                                                    </option>
+                                                    <option value="cloudformation:ResourceTypes" i18n:translate="">
+                                                        Resource Types
+                                                    </option>
+                                                    <!-- <option value="cloudformation:ChangeSetName" i18n:translate="">
+                                                        Change Set Name
+                                                    </option> -->
+                                                    <option value="cloudformation:RoleArn" i18n:translate="">
+                                                        Role ARN
+                                                    </option>
+                                                </optgroup>
                                                 <!--! Generic AWS condition keys -->
                                                 <optgroup label="AWS Conditions" tal:omit-tag="">
                                                     <option value="aws:CurrentTime" i18n:translate="">Current time</option>
                                                     <option value="aws:EpochTime" i18n:translate="">Epoch time</option>
+                                                    <option value="aws:principalType" i18n:translate="">Principal type</option>
                                                     <option value="aws:SecureTransport" i18n:translate="">Secure transport</option>
                                                     <option value="aws:SourceArn" i18n:translate="">Source ARN</option>
                                                     <option value="aws:SourceIp" i18n:translate="">Source IP</option>
                                                     <option value="aws:UserAgent" i18n:translate="">User agent</option>
-                                                    <option value="aws:userid" i18n:translate="">User ID</option>
+                                                    <option value="aws:userid">User ID</option>
                                                     <option value="aws:username" i18n:translate="">Username</option>
                                                 </optgroup>
                                             </select>
@@ -331,7 +350,7 @@
                                     </div>
                                     <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
                                         <!--! Boolean/Null conditions -->
-                                        <div ng-if="${cond_operator} &amp;&amp; selectedOperatorType == 'BOOL'">
+                                        <div ng-if="'${cond_operator}' &amp;&amp; conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'BOOL'">
                                             <input type="checkbox" class="condition-value" />
                                             <span i18n:translate="">True</span>
                                         </div>
@@ -435,8 +454,7 @@
                                                ng-if="conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'NUMERIC'" />
                                         <!--! Input field for User* and String* -->
                                         <input type="text" class="condition-value userstringlike"
-                                               ng-if="conditionOperators.${cond_operator} &amp;&amp; conditionKeys.${cond_key}.toLowerCase().indexOf('user') !== -1
-                                               &amp;&amp; selectedOperatorType == 'STRING'" />
+                                               ng-if="conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'STRING'" />
                                         <!--! Input field for date/time operators -->
                                         <input type="text" class="condition-value datetimepicker"
                                                ng-show="conditionOperators.${cond_operator} &amp;&amp; selectedOperatorType == 'DATE'" />
@@ -447,6 +465,9 @@
                                         <input type="text" class="condition-value"
                                                ng-show="conditionOperators.${cond_operator} &amp;&amp; conditionKeys.${cond_key}.indexOf('s3:') !== -1
                                                         &amp;&amp; ['s3:x-amz-acl', 's3:LocationConstraint'].indexOf(conditionKeys.${cond_key}) === -1" />
+                                        <!--! Input field for CloudFormation non-select string values -->
+                                        <input type="text" class="condition-value"
+                                               ng-show="conditionOperators.${cond_operator} &amp;&amp; conditionKeys.${cond_key}.indexOf('cloudformation:') !== -1" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">

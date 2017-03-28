@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview ELB Instances Page JS
  * @requires AngularJS
  *
@@ -54,10 +56,6 @@ angular.module('ELBInstancesPage', ['EucaConsoleUtils', 'MagicSearch'])
             $scope.allInstanceList = options.all_instances;
             $scope.ELBInstanceHealthList = options.elb_instance_health;
             $scope.instanceList = options.instances;
-            // Timeout is needed for the instance selector to be initizalized
-            $timeout(function () {
-                $scope.$broadcast('eventInitSelectedInstances', $scope.instanceList);
-            }, 2000);
         };
         $scope.setWatch = function () {
             eucaHandleUnsavedChanges($scope);

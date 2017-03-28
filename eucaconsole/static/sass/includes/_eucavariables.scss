@@ -34,93 +34,37 @@ $experimental: false;
 $euca-extrasmall-breakpoint: 480px;
 $euca-contentwrap-width: 1040px;
 
-// HPE Colors
+// Colors
 $hpe-black: #333333;
 $hpe-gray: #666666;
+$hpe-darkgray: #444444;
 $hpe-lightgray: #cccccc;
-$hpe-backgroundgray: #F2F2F2; 
-$hpe-hovergray: #F0F0F0;
+$hpe-extralightgray: #e6e7e8;
+$hpe-gray-40: #b3b3b3;
+$hpe-backgroundgray: #F2F2F2;
 $hpe-disabledgray: #EDEDED;
-$hpe-disabledgreen: #CCEEE6;
-$hpe-black: #000000;
-$hpe-green: #01a982;
-$hpe-slate: #425563;
-$hpe-turq: #2ad2c9;
-$hpe-purple: #614767;
-$hpe-bronze: #80746E;
-$hpe-steel: #5F7A76;
-$hpe-orange: #FF8D6D;
+$hpe-validation-input-bgcolor: lighten(lightpink, 10%);
+$hpe-disabledgreen: #CCEEE6;  // HPE-specific color
+$hpe-green: #01a982;  // HPE-specific color
+$hpe-slate: #425563;  // HPE-specific color
+$hpe-turq: #2ad2c9;  // HPE-specific color
+$hpe-purple: #614767;  // HPE-specific color
+$hpe-bronze: #80746E;  // HPE-specific color
+$hpe-steel: #5F7A76;  // HPE-specific color
+$hpe-gray-65: #5a5a5a;  // HP-specific color
+$hpe-blue: #007dba;  // HP-specific color
+$hpe-gold: #e6a818;  // HP-specific color
 
-
-// Colors
-$euca-darkblue: #03405f;
-$euca-extralightblue: #ecf4f7;
-$euca-notificationblue: #40a8c6;
-$euca-orange: #f3901d;
-
-$euca-green: #8cc63e;
-$euca-lightgreen: #8dc640;
-$euca-extralightgreen: #eef7e3;
-$euca-darkgreen: #468400;
-
-$euca-grey: #6a737b;
-$euca-darkgrey: #444;
-$euca-lightgrey: #ccc;
-$euca-extralightgrey: #e6e7e8;
-
-$euca-turquoise: #009e93;
-$euca-olive: #7a853b;
-
-$aws-orange: #ff9900;
-
-$euca-validation-error-color: darkred;
-$euca-validation-input-bgcolor: lighten(lightpink, 10%);
-
-// HP accessible palette styles
-$hp-accessible-blue: #007dba;
-$hp-hover-blue: #006699;
-$hp-hover-orange: #c1401a;
-$hp-gray-65: #5a5a5a;
-$hp-gray-40: #b3b3b3;
-$hp-gray-20: #cccccc;
-$hp-gray-5: #f2f2f2;
-$hp-red: #ff0000;
-$hp-light-red: #f7d7d7;
-$hp-border-radius: 8px;
-
-// HP secondary styles 
-$hp-orange: #d7410b;
-$hp-green: #008424;
-$hp-purple: #822980;
-
-// Additional colors used with HP palette
-$hp-gold: #e6a818;
-
-// Forms
-$euca-input-field-height: 2rem;
 
 // Text
 $euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;
-$euca-header-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;
+$euca-bold-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;
+$euca-header-font-family: $euca-bold-font-family;
 $euca-xs-font-size: 12px;
 $euca-s-font-size: 14px;
 $euca-font-size: 16px;
 $euca-l-font-size: 18px;
 $euca-xl-font-size: 24px;
-$euca-text-color: $hpe-black;
-$euca-link-color: $hpe-green;
-
-// Prevent Google Fonts API call
-$include-open-sans: false;
-
-// Dimensions
-$euca-footer-height: 80px;
-
-// Misc decorations
-$euca-box-shadow: 0 2px 2px 0 $hpe-hovergray;
-
-// Wizards
-$wizard-tab-padding: 8px 1rem;
 
 
 // ####################
@@ -193,7 +137,7 @@ $button-border-width: 2px;
 $button-border-style: solid;
 
 // Tables
-$table-even-row-bg: #white;
+$table-even-row-bg: white;
 
 // Tabs
 $tabs-navigation-padding: rem-calc(4) !default;
@@ -207,9 +151,9 @@ $tooltip-font-color: $hpe-gray;
 $tooltip-padding: rem-calc(5);
 
 // Alarm status colors
-$alarm-status-color-alarm: $hp-red;
-$alarm-status-color-insufficient-data: $hp-gray-65;
-$alarm-status-color-ok: $hp-green;
+$alarm-status-color-alarm: darkred;
+$alarm-status-color-insufficient-data: $hpe-gray-65;
+$alarm-status-color-ok: green;
 
 // Mixins
 // Text overflow (e.g. for handling long resource names)
@@ -231,40 +175,49 @@ $alarm-status-color-ok: $hp-green;
 }
 
 @mixin button-shadow-mixin {
-    box-shadow: 1px 1px 5px 0 $hpe-hovergray;
+    box-shadow: 1px 1px 5px 0 $hpe-backgroundgray;
 }
 
 @mixin disabled-button-mixin {
     background-color: white;
     border-color: $hpe-disabledgray;
     color: $hpe-disabledgray;
-        &:hover {
-            background-color: white;
-            text-decoration: none;
-            border: 2px $hpe-disabledgray;
-            outline: none;
-            color: $hpe-disabledgray;
-
-        }
+    cursor: default;
+    &:hover {
+        cursor: default;
+        pointer-events: none;
+        background-color: white;
+        text-decoration: none;
+        border: 2px solid $hpe-disabledgray;
+        outline: none;
+        box-shadow: none;
+        color: $hpe-disabledgray;
+    }
 }
 
-@mixin primary-disabled-button-mixin {
-    background-color: white;
-    border-color: $hpe-disabledgreen;
-    color: $hpe-disabledgray;
-        &:hover {
-            background-color: white;
-            border-color: $hpe-disabledgreen;
-            text-decoration: none;
-            border-width: 2px;
-            color: $hpe-disabledgray;
 
-        }
+@mixin primary-disabled-button-mixin {
+    @include disabled-button-mixin;
+    border-color: $hpe-disabledgreen;
+    &:hover {
+        border: 2px solid $hpe-disabledgreen;
+    }
+}
+
+@mixin disabled-list-item-mixin {
+    cursor: default;
+    a {
+        color: $hpe-lightgray;
+        pointer-events: none;
+    }
+    &:hover {
+        background-color: #fff;
+    }
 }
 
 @mixin dropdown-shadow-mixin {
     border-color: $hpe-lightgray;
-    box-shadow: 2px 2px 5px $hpe-hovergray;
+    box-shadow: 2px 2px 5px $hpe-backgroundgray;
 }
 
 @mixin helptext-icon-position-mixin {
@@ -278,11 +231,12 @@ $alarm-status-color-ok: $hp-green;
 @mixin validation-error-mixin {
     margin-bottom: 6px;
     background-color: transparent;
-    color: $euca-validation-error-color;
+    color: darkred;
     font-weight: bold;
     padding-left: 0;
     font-style: normal;
     padding-bottom: 4px;
+    line-height: 1rem;
 }
 
 @mixin table-styles-mixin {
@@ -356,12 +310,15 @@ $alarm-status-color-ok: $hp-green;
 // Tab mixins (wizards, etc.)
 @mixin standard-tabs-mixin {
     max-height: 2.6rem !important;
+    border-bottom: 1px solid #ccc;
     dd {
         position: relative;
         top: 1px;
         z-index: 999;
+        padding-right: 2rem;
+        padding-left: 0;
         a {
-            padding: 10px 32px 6px 24px;
+            padding: 10px 0 4px 0;
             color: $hpe-gray;
             background-color: transparent;
             font-family: $euca-header-font-family;
@@ -380,56 +337,33 @@ $alarm-status-color-ok: $hp-green;
             }
         }
     }
+    &.switcher {
+        display: inline-block;
+        dd:last-child {
+            padding-right: 0;
+        }
+    }
 }
 
-@mixin wizard-tabs-mixin {
-    a {  // Visited tabs
-        color: $hpe-gray;
-        font-family: $euca-header-font-family;
-        background-color: transparent;
-        &:hover {
-            color: $hpe-gray;
-            border-bottom: 2px solid $hpe-gray;
-        }
-        box-shadow: none;
-        white-space: nowrap;
-        padding: $wizard-tab-padding;
-        .cir {
-            background-color: $hpe-gray;
+@mixin hide-alarm-threshold-legend-mixin {
+    .nvd3.nv-legend {
+        .nv-series {
+            &:last-child {
+                display: none;
+            }
         }
     }
-    &.active {  // Active tab
-        a {
-            color: $hpe-black;
-            font-family: $euca-header-font-family;
-            background-color: transparent;
-            border-bottom: 2px solid $hpe-black;
+}
+
+@mixin hide-alarm-threshold-tooltip-mixin {
+    .nvtooltip {
+        table {
+            tbody {
+                tr.nv-pointer-events-none:last-child {
+                    display: none;
+                }
+            }
         }
-        .cir {
-            background-color: $hpe-black;
-        }
-    }
-    &.disabled {  // Unvisited tabs
-        color: $hpe-lightgray;
-        font-family: $euca-header-font-family;
-        padding: $wizard-tab-padding;
-        .cir {
-            margin-right: 8px;
-        }
-    }
-    .cir {
-        position: relative;
-        top: -2px;
-        font-size: 0.825rem;
-        display: inline-block;
-        border-radius: 60px;
-        width: 20px; height: 20px;
-        padding: 0 0 0 0;
-        text-align: center;
-        vertical-align: middle;
-        background-color: $hpe-lightgray;
-        color: white;
-        margin-right: 4px;
     }
 }
 

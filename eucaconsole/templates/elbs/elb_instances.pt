@@ -2,7 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
 </head>
 
@@ -205,7 +205,8 @@
                         <div>
                              <instance-selector
                                  template="${request.static_path('eucaconsole:static/html/directives/instance_selector.html')}"
-                                 options='${controller_options_json}'>
+                                 options="${controller_options_json}"
+                                 instance-list="instanceList">
                              </instance-selector>
                         </div>
                     </div>

@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Instance Launch More JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -30,18 +32,18 @@ describe("LaunchMoreInstances", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of instanceNumber is 1", function() {
+        it("should set initial value of instanceNumber to 1", function() {
             expect(scope.instanceNumber).toEqual(1);
         });
 
-        it("Initial value of expanded is false", function() {
-            expect(scope.expanded).not.toBeTruthy();
+        it("should set initial value of expanded to false", function() {
+            expect(scope.expanded).toBe(false);
         });
     });
 
-    describe("Function initController() Test", function() {
+    describe("#initController", function() {
 
-        it("Should call setInitialValues() when initController() is called", function() {
+        it("should call setInitialValues() when initController() is called", function() {
             spyOn(scope, 'setInitialValues');
             scope.initController();
             expect(scope.setInitialValues).toHaveBeenCalled();

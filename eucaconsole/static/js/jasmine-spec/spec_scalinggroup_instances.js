@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Scalinggroup Instances JS 
  * @requires Jasmine, AngularJS mock
  *

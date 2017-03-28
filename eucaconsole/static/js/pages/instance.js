@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Instance page JS
  * @requires AngularJS
  *
  */
 
-angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
+angular.module('InstancePage', ['TagEditorModule', 'EucaConsoleUtils'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout, eucaUnescapeJson, eucaHandleError) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
@@ -45,6 +47,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
             $('#file').on('change', $scope.getPassword);
         };
         $scope.activateWidget = function () {
+            $('#security_groups').chosen({'width': '80%', 'search_contains': true});
             $('#associate-ip-to-instance-modal').on('open.fndtn.reveal', function(){
                 var thisSelect = $(this).find('#ip_address');
                 thisSelect.chosen({'width': '80%', 'search_contains': true});
@@ -67,7 +70,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.consoleOutput = $.base64.decode(results);
+                    $scope.consoleOutput = atob(results);
                     $('#console-output-modal').foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
@@ -89,11 +92,8 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
                     }
                 } else {
                     var inputElement = modal.find('input[type!=hidden]').get(0);
-                    var modalButton = modal.find('button').get(0);
                     if (!!inputElement) {
                         inputElement.focus();
-                    } else if (!!modalButton) {
-                        modalButton.focus();
                     }
                }
             });
@@ -126,6 +126,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
                 } else if (this.getAttribute('href') !== '#') {
                     return;
                 }
+                event.preventDefault();
                 // the ID of the action link needs to match the modal name
                 var modalID = this.getAttribute('id').replace("-action", "-modal");
                 // If there exists unsaved changes, open the wanring modal instead
@@ -271,7 +272,7 @@ angular.module('InstancePage', ['TagEditor', 'EucaConsoleUtils'])
                 if (evt.target.readyState == FileReader.DONE) {
                     var key_contents = evt.target.result;
                     var url = $scope.password_url.replace("_id_", $scope.instanceID);
-                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $.base64.encode(key_contents);
+                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + btoa(key_contents);
                     $http({method:'POST', url:url, data:data,
                            headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                       success(function(oData) {

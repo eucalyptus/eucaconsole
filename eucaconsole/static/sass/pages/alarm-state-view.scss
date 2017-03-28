@@ -1,7 +1,14 @@
 @import "../includes/eucavariables";
+@import "../widgets/delete_alarm_dialog";
 
 
-// Stack status
+#manage-resource-alarms {
+    .label.status.alert {
+        background-color: darkred;
+    }
+}
+
+// Alarm status
 .status.ALARM { background-color: $alarm-status-color-alarm; }
 .status.INSUFFICIENT_DATA { background-color: $alarm-status-color-insufficient-data; }
 .status.OK { background-color: $alarm-status-color-ok; }
@@ -19,10 +26,14 @@
 
 .alarm-listing {
     margin-top: 0.5rem;
+    a[href]:hover {
+        color: $hpe-green;
+        border-bottom: 1px solid $hpe-green;
+    }
 }
 
 i.delete-icon {
-    color: $hp-gray-65 !important;
+    color: $hpe-gray-65 !important;
     &:hover {
         color: darkred !important;
     }

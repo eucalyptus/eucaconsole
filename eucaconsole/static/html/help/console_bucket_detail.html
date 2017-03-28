@@ -3,6 +3,18 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Bucket Details"/>
+<meta name="abstract" content="This page allows you to view details about the bucket and edit the sharing properties of a bucket."/>
+<meta name="description" content="This page allows you to view details about the bucket and edit the sharing properties of a bucket."/>
+<meta name="prodname" content="Eucalyptus"/>
+<meta name="version" content="4.3.0"/>
+<meta name="copyright" content="© 2016 Hewlett Packard Enterprise Development LP 2016" type="primary"/>
+<meta name="DC.Rights.Owner" content="© 2016 Hewlett Packard Enterprise Development LP 2016" type="primary"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="bucket_detail_ui_context"/>
+<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
 <title>Bucket Details</title>
 </head>
 <body id="bucket_detail_ui_context">
@@ -86,10 +98,13 @@
 
         <div class="body taskbody">
             <div class="section context">The sharing settings dictate whether your account or another account can
-                acccess your bucket and its contents.</div>
+                access your bucket and its contents.</div>
 
-            <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">To edit the sharing settings:</span>
+            <ol class="ol steps"><li class="li step stepexpand">
+                    <span class="ph cmd">To edit the sharing settings associated with bucket Access Control Lists (ACLs):</span>
+                    <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> For more information about ACLs, see <a class="xref" href="http://docs.hpcloud.com/eucalyptus/4.3.0/#admin-guide/manage_resources_walrus.html" target="_blank">Manage Walrus Resources</a> in the <em class="ph i">Eucalyptus Administration Guide</em>.</div>
+</div>
+                    
                     <ol type="a" class="ol substeps">
                         <li class="li substep substepexpand">
                             <span class="ph cmd">Click the <span class="ph uicontrol">Propagate grantee permissions...</span> checkbox 
@@ -122,7 +137,42 @@
                     </ol>
 
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
+                    <span class="ph cmd">To edit the settings associated with Cross-Origin Resource Sharing (CORS):
+                    </span>
+                    <ol type="a" class="ol substeps">
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">If a CORS has already been configured, you can:</span>
+                            <div class="itemgroup info"><ul class="ul">
+                                <li class="li">view or edit, by clicking on the pencil icon, or</li>
+
+                                <li class="li">delete it by clicking the remove icon (⊝) next to the configuration</li>
+
+                            </ul>
+
+                            </div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Otherwise, if a CORS has not been configured, click the <span class="ph uicontrol">Add CORS Configuration</span> button.</span>
+                            <div class="itemgroup stepresult">A dialog box opens with an XML template of a basic CORS configuration that you can edit.</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">Edit the values of the existing configuration, or create a new one.</span>
+                            <div class="itemgroup info"><div class="note note"><span class="notetitle">Note:</span> For more information about CORS, see <a class="xref" href="http://docs.hpcloud.com/eucalyptus/4.3.0/#shared/console_buckets_cors.html" target="_blank">Working with CORS</a> in the <em class="ph i">Eucalyptus Console Guide</em>.</div>
+</div>
+                        </li>
+
+                        <li class="li substep substepexpand">
+                            <span class="ph cmd">To add the configuration, click the <span class="ph uicontrol">Save CORS Configuration</span> button.</span>
+                            <div class="itemgroup stepresult">Upon successful creation, the configuration displays below the CORS Configuration settings.</div>
+                        </li>
+
+                    </ol>
+
+                </li>
+<li class="li step stepexpand">
                     <span class="ph cmd">When done, click the <span class="ph uicontrol">Save Changes</span> button to save
                         your work, or click <span class="ph uicontrol">Cancel</span> to abandon your
                         changes.</span>

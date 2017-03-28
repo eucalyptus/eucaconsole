@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview AngularJS CloudWatch chart directive
  * @requires AngularJS, D3, nvd3.js
  *
@@ -9,13 +11,86 @@
  *
  */
 
-angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'ChartServiceModule'])
-.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray) {
+angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'ChartServiceModule', 'CreateAlarmModal', 'ModalModule'])
+.directive('datepicker', function () {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        scope: {
+            format: "@",
+        },
+        link: function(scope, element, attrs){
+            if(typeof(scope.format) == "undefined"){ scope.format = "yyyy/mm/dd hh:ii"; }
+            var startDate = new Date();
+            startDate.setHours(-(14 * 24));  // move back 2 weeks
+            var endDate = new Date();
+            $(element).fdatepicker({format: scope.format, pickTime: true, startDate:startDate, endDate:endDate}).on('changeDate', function(ev){
+                scope.$apply(function() {
+                    ngModel.$setViewValue(ev.date);
+                });
+            });
+        }
+    }; 
+})
+.directive('chartOverlay', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs, ctrl) {
+            scope.graphs = nv.graphs;
+
+            var interactionLayer = document.createElement('div');
+            interactionLayer.setAttribute('class', 'interactionLayer');
+
+            var $layer = angular.element(interactionLayer);
+            element.append(interactionLayer);
+
+            $layer.on('mousemove', function (event) {
+                ctrl.moveIndexLine(event.offsetX, event.offsetY);
+            });
+        },
+        controller: ['$scope', function ($scope) {
+            var vm = this;
+            this.moveIndexLine = function (x, y) {
+                $scope.graphs.forEach(function (graph) {
+                    dispatchEvents(graph, x, y);
+                });
+            };
+
+            function dispatchEvents (graph, x, y) {
+                var margin = graph.margin();
+                x -= margin.left;
+                y -= margin.top;
+
+                var width = graph.interactiveLayer.width(),
+                    height = graph.interactiveLayer.height();
+
+                if(     (x < 0 || y < 0) ||
+                        (x > width || (y % height) > height)
+                ) {
+                    graph.interactiveLayer.dispatch.elementMouseout({
+                        mouseX: x,
+                        mouseY: y
+                    });
+                    graph.interactiveLayer.renderGuideLine(null);
+                    return;
+                }
+
+                var pointXValue = graph.interactiveLayer.xScale().invert(x);
+                graph.interactiveLayer.dispatch.elementMousemove({
+                    mouseX: x,
+                    mouseY: (y % 362) - (margin.bottom + margin.top),
+                    pointXValue: pointXValue
+                });
+            }
+        }]
+    };
+})
+.controller('CloudWatchChartsCtrl', function ($scope, eucaUnescapeJson, eucaOptionsArray, ModalService) {
     var vm = this;
-    vm.duration = 3600;  // Default duration value is one hour
+    vm.duration = '3600';  // Default duration value is one hour
     vm.largeChartStatistic = "Sum";
-    vm.largeChartDuration = 3600;
-    vm.largeChartGranularity = 300;
+    vm.largeChartDuration = '3600';
+    vm.largeChartGranularity = undefined;
     vm._largeChartStartTime = new Date();
     vm._largeChartStartTime.setSeconds(-vm.largeChartDuration);
     vm._largeChartEndTime = new Date();
@@ -24,7 +99,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     vm.emptyMessages = {};
     vm.chartsList = [];
     vm.granularityChoices = [];
-    vm.originalDurationGranularitiesMapping = {};
     vm.durationGranularitiesMapping = {};
     vm.largeChartMetric = '';
     vm.largeChartLoading = false;
@@ -34,6 +108,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     vm.submitMonitoringForm = submitMonitoringForm;
     vm.refreshCharts = refreshCharts;
     vm.emptyChartCount = 0;
+
+    vm.revealCreateModal = revealCreateModal;
+
     vm.displayZeroChartMetrics = [  // Display a zero chart rather than an empty message for the following metrics
         'HTTPCode_ELB_4XX', 'HTTPCode_ELB_5XX', 'HTTPCode_Backend_2XX', 'HTTPCode_Backend_3XX',
         'HTTPCode_Backend_4XX', 'HTTPCode_Backend_5XX'
@@ -68,9 +145,9 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.metricTitleMapping = options.metric_title_mapping;
         vm.chartsList = options.charts_list;
         vm.availabilityZones = options.availability_zones || [];
-        vm.originalDurationGranularitiesMapping = options.duration_granularities_mapping;
         vm.durationGranularitiesMapping = setDurationGranularitiesOptions(options.duration_granularities_mapping);
         vm.granularityChoices = vm.durationGranularitiesMapping[vm.largeChartDuration];
+        vm.largeChartGranularity = vm.granularityChoices[0];
         vm.fullGranularityChoices = options.granularity_choices;
         emptyLargeChartDialogOnOpen();
     }
@@ -88,7 +165,7 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.granularityChoices = vm.durationGranularitiesMapping[vm.largeChartDuration];
         if (!vm.granularityChoices[vm.largeChartDuration]) {
             // Avoid empty granularity choice when duration is modified
-            vm.largeChartGranularity = vm.originalDurationGranularitiesMapping[vm.largeChartDuration][0][0];
+            vm.largeChartGranularity = vm.durationGranularitiesMapping[vm.largeChartDuration][0];
         }
         // update absolute to match
         vm._largeChartStartTime = new Date();
@@ -97,20 +174,53 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         vm.refreshLargeChart();
     }
 
-    vm.shiftTimeLeft = function() {
-        vm.timeRange = "absolute";
-        var timeDiffSecs = (vm._largeChartEndTime.valueOf() - vm._largeChartStartTime.valueOf()) / 2000;
-        vm._largeChartStartTime.setSeconds(-timeDiffSecs);
-        vm._largeChartEndTime.setSeconds(-timeDiffSecs);
+    vm.showLargeChart = function(title, metric, statistic, unit, namespace, ids, idtype) {
+        vm.selectedChartTitle = title; // || parentCtrl.metricTitleMapping[attrs.metric];
+        vm.largeChartMetric = metric;
+        vm.largeChartStatistic = statistic || 'Average';
+        vm.largeChartUnit = unit;
+        vm.largeChartNamespace = namespace;
+        vm.largeChartIds = ids;
+        vm.largeChartIdType = idtype;
+        vm.largeChartDuration = vm.duration;
         vm.refreshLargeChart();
+        ModalService.openModal('largeChart');
+    };
+
+    function getTimeShift() {
+        return (vm._largeChartEndTime.valueOf() - vm._largeChartStartTime.valueOf()) / 2000;
+    }
+
+    vm.shiftTimeLeftAllowed = function() {
+        var startDate = new Date();
+        startDate.setHours(-(14 * 24));  // move back 2 weeks
+        var timeDiffSecs = getTimeShift();
+        return new Date(vm._largeChartStartTime).setSeconds(-timeDiffSecs) > startDate;
+    };
+
+    vm.shiftTimeRightAllowed = function() {
+        var timeDiffSecs = getTimeShift();
+        return new Date(vm._largeChartEndTime).setSeconds(timeDiffSecs) < (new Date());
+    };
+
+    vm.shiftTimeLeft = function() {
+        if (vm.shiftTimeLeftAllowed()) {
+            vm.timeRange = "absolute";
+            var timeDiffSecs = getTimeShift();
+            vm._largeChartStartTime.setSeconds(-timeDiffSecs);
+            vm._largeChartEndTime.setSeconds(-timeDiffSecs);
+            vm.refreshLargeChart();
+        }
     };
 
     vm.shiftTimeRight = function() {
-        vm.timeRange = "absolute";
-        var timeDiffSecs = (vm._largeChartEndTime.valueOf() - vm._largeChartStartTime.valueOf()) / 2000;
-        vm._largeChartStartTime.setSeconds(timeDiffSecs);
-        vm._largeChartEndTime.setSeconds(timeDiffSecs);
-        vm.refreshLargeChart();
+        if (vm.shiftTimeRightAllowed()) {
+            vm.timeRange = "absolute";
+            var timeDiffSecs = getTimeShift();
+            vm._largeChartStartTime.setSeconds(timeDiffSecs);
+            vm._largeChartEndTime.setSeconds(timeDiffSecs);
+            vm.refreshLargeChart();
+        }
     };
 
     vm.handleAbsoluteChange = function() {
@@ -121,20 +231,20 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
         }).map(function(choice) {
             return {value: choice[0], label: choice[1]};
         });
-        if (vm.largeChartGranularity < vm.granularityChoices[0].value) {
+        if (vm.largeChartGranularity.value < vm.granularityChoices[0].value) {
             // set to lowest if old value below lowest
-            vm.largeChartGranularity = vm.granularityChoices[0].value;
+            vm.largeChartGranularity = vm.granularityChoices[0];
         }
         var last = vm.granularityChoices.length;
-        if (vm.largeChartGranularity > vm.granularityChoices[last-1].value) {
+        if (vm.largeChartGranularity.value > vm.granularityChoices[last-1].value) {
             // set to highest if old value above highest
-            vm.largeChartGranularity = vm.granularityChoices[last-1].value;
+            vm.largeChartGranularity = vm.granularityChoices[last-1];
         }
         vm.refreshLargeChart();
     };
     $scope.$on("cloudwatch:updateLargeGraphParams", function($event, stat, period, duration, startTime, endTime) {
         vm.largeChartStatistic = stat;
-        vm.largeChartGranularity = period;
+        vm.largeChartGranularity = $scope.granularityChoices.find(function(choice) { return choice.value == period; });
         if (duration !== undefined) {
             vm.timeRange = "relative";
             vm.largeChartDuration = duration;
@@ -161,7 +271,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     vm.refreshLargeChart = function() {
         $scope.$broadcast('cloudwatch:refreshLargeChart');
         // for external listeners
-        $scope.$emit('cloudwatch:refreshLargeChart', vm.largeChartStatistic, vm.largeChartGranularity, vm.timeRange, vm.largeChartDuration, vm._largeChartStartTime, vm._largeChartEndTime);
+        $scope.$emit(
+            'cloudwatch:refreshLargeChart',
+            vm.largeChartStatistic,
+            vm.largeChartGranularity,
+            vm.timeRange,
+            vm.largeChartDuration,
+            vm._largeChartStartTime,
+            vm._largeChartEndTime);
     };
 
     function emptyLargeChartDialogOnOpen() {
@@ -170,8 +287,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
             chartModal.find('#large-chart').empty();
         });
     }
+
+    function revealCreateModal () {
+        ModalService.openModal('createAlarm');
+    }
 })
-.directive('cloudwatchChart', function($http, $timeout, CloudwatchAPI, ChartService, eucaHandleError) {
+.directive('cloudwatchChart', function($http, $timeout, CloudwatchAPI, ChartService, ModalService, eucaHandleError) {
     return {
         restrict: 'A',  // Restrict to attribute since container element must be <svg>
         scope: {
@@ -190,14 +311,14 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
             'title': '@title',
             'empty': '@empty',
             'large': '@large',
-            'noXLabels': '@noXLabels'
+            'noXLabels': '@noXLabels',
+            'autoLoad': '@'
         },
         link: linkFunc,
         controller: ChartController
     };
 
     function ChartController($scope, $timeout) {
-        renderChart($scope);
         $scope.$on('cloudwatch:refreshCharts', function (evt, refreshOptions) {
             var doRefresh = false;
             // Conditionally refresh charts based on passed options
@@ -228,6 +349,12 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                     renderChart($scope);
                 });
             });
+            if ($scope.autoLoad) {
+                renderChart($scope);
+            }
+        }
+        else {
+            renderChart($scope);
         }
     }
 
@@ -242,7 +369,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 // times to avoid multi-chart display in dialog
                 return false;
             }
-            // Granularity is user-selectable in large chart, so don't auto-adjust on the server
         }
         largeChart = options.largeChart || scope.large;
         var params = options.params || {
@@ -258,8 +384,15 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
             'unit': scope.unit,
             'statistic': scope.statistic
         };
+        // look for minimum set of required params
+        if ((scope.ids === undefined || scope.ids === '') &&
+            (scope.idtype === undefined || scope.idtype === '') &&
+            (scope.dimensions === undefined || scope.dimensions === '')) {
+            return;
+        }
         if (largeChart) {
             parentCtrl.largeChartLoading = true;
+            // Granularity is user-selectable in large chart, so don't auto-adjust on the server
             params.adjustGranularity = 0;
         }
 
@@ -301,26 +434,19 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
                 // Pad chart with zero data where appropriate
                 results = [{
                     key: scope.metric,
-                    values: [{x: new Date().getTime(), y: 0}]
+                    values: [{x: new Date().getTime(), y: 0}],
+                    color: '#2ad2c9'
                 }];
             }
 
-            CloudwatchAPI.getAlarmsForMetric(scope.metric, {
-                metric_name: scope.metric,
-                namespace: scope.namespace,
-                period: scope.duration,
-                statistic: scope.statistic,
-            }).then(function (alarms) {
-                ChartService.resetChart(target);
-                var chart = ChartService.renderChart(target, results, {
-                    unit: oData.unit || scope.unit,
-                    preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,
-                    maxValue: maxValue,
-                    alarms: alarms,
-                    noXLabels: scope.noXLabels
-                });
-                nv.utils.windowResize(chart.update);
+            ChartService.resetChart(target);
+            var chart = ChartService.renderChart(target, results, {
+                unit: oData.unit || scope.unit,
+                preciseMetrics: preciseFormatterMetrics.indexOf(scope.metric) !== -1,
+                maxValue: maxValue,
+                noXLabels: scope.noXLabels
             });
+            nv.utils.windowResize(chart.update);
             parentCtrl.largeChartLoading = false;
         }, function (oData, status) {
             eucaHandleError(oData, status);
@@ -330,50 +456,6 @@ angular.module('CloudWatchCharts', ['EucaConsoleUtils', 'ChartAPIModule', 'Chart
     function linkFunc(scope, element, attrs) {
 
         scope.target = element[0];
-
-        var chartModal = $('#large-chart-modal');
-        var chartWrapper = element.closest('.chart-wrapper');
-
-        if (!attrs.large) {
-            // Display large chart on small chart click
-            chartWrapper.on('click', function () {
-                var parentCtrl = scope.$parent.chartsCtrl;
-                // Granularity (period) defaults to 5 min, so no need to pass it here
-                var options = {
-                    'params': {
-                        'ids': attrs.ids,
-                        'idtype': attrs.idtype,
-                        'dimensions': attrs.dimensions,
-                        'metric': attrs.metric,
-                        'namespace': attrs.namespace,
-                        'duration': attrs.duration,
-                        'startTime': scope.startTime,
-                        'endTime': scope.endTime,
-                        'unit': attrs.unit,
-                        'statistic': attrs.statistic
-                    },
-                    'largeChart': true
-                };
-                parentCtrl.largeChartMetric = attrs.metric;
-                parentCtrl.selectedChartTitle = scope.title || parentCtrl.metricTitleMapping[attrs.metric];
-                parentCtrl.largeChartDuration = parentCtrl.duration;
-                parentCtrl.largeChartStatistic = attrs.statistic || 'Average';
-
-                chartModal.foundation('reveal', 'open');
-                $timeout(function () {
-                    options.params.duration = parentCtrl.largeChartDuration;
-                    options.params.statistic = parentCtrl.largeChartStatistic;
-                    options.params.period = parentCtrl.largeChartGranularity;
-                    renderChart(scope, options);
-                });
-
-                scope.$on('cloudwatch:refreshLargeChart', function () {
-                    $timeout(function () {
-                        renderChart(scope, options);
-                    });
-                });
-            });
-        }
 
         // Handle visibility of loading indicators
         scope.$watch('chartLoading', function (newVal) {

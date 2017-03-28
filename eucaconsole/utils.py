@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2015 Hewlett Packard Enterprise Development LP
+# Copyright 2015-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -28,6 +28,9 @@
 A collection of reusable utility methods
 
 """
+import re
+
+from lxml import etree
 
 
 def is_ufshost_error(conn, cloud_type):
@@ -41,4 +44,44 @@ def is_ufshost_error(conn, cloud_type):
     :param cloud_type: usually 'aws' or 'euca'
     """
     ufshost = conn.host if cloud_type == 'euca' else ''
-    return (ufshost in ['localhost', '127.0.0.1'])
+    return ufshost in ['localhost', '127.0.0.1']
+
+
+def validate_xml(xml, schema):
+    """
+    Validate XML string against a RelaxNG schema
+    :param xml: XML to validate
+    :type xml: str
+    :param schema: RelaxNG schema as string
+    :type schema: str
+    :return: tuple of (True, None) if valid, else (False, exception)
+    :rtype: tuple
+    """
+    # Ensure XML document is well-formed
+    try:
+        xml_tree = etree.fromstring(xml.strip())
+    except etree.XMLSyntaxError as err:
+        return False, err
+
+    # Now validate against schema
+    relaxng_schema = etree.fromstring(schema)
+    relaxng = etree.RelaxNG(relaxng_schema)
+
+    try:
+        relaxng.assertValid(xml_tree)
+        return True, None
+    except etree.DocumentInvalid as err:
+        return False, err
+
+
+def remove_namespace(xml, count=1):
+    """
+    Remove namespaces from XML root element
+    :param xml: XML to remove namespaces from
+    :type xml: str
+    :param count: Limit namespace removal to ___ items
+    :type count: int
+    :return: XML string with namespace removed
+    :rtype: str
+    """
+    return re.sub(' xmlns="[^"]+"', '', xml, count=count)

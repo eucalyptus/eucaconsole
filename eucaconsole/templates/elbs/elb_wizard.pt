@@ -2,7 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/elb_wizard.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/instance_selector.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
 </head>
@@ -26,7 +26,7 @@
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
                     <div id="elb-ssl-hidden-fields-wrapper" class="hide">
-                        <input type="text" name="elb_predefined_policy" id="predefined_policy_hidden_input" />
+                        <input type="text" name="elb_predefined_policy" id="predefined_policy_hidden_input" value="${latest_predefined_policy}" />
                         <input type="text" name="elb_ssl_protocols" id="ssl_protocols_hidden_input" />
                         <input type="text" name="elb_ssl_ciphers" id="ssl_ciphers_hidden_input" />
                         <input type="checkbox" name="elb_security_policy_updated" id="security_policy_updated" />
@@ -66,12 +66,8 @@
                                 </div>
                             </div>
                             <hr />
-                            <div>
-                                <tag-editor
-                                        ng-model="tags"
-                                        template="${request.route_path('render_template', subpath='tag-editor/tag-editor')}"
-                                        tal:content="tags | structure">
-                                </tag-editor>
+                            <div ng-cloak="">
+                                <tag-editor ng-model="tags" tal:content="tags | structure"></tag-editor>
                             </div>
                             <hr />
                             <div>
@@ -98,8 +94,8 @@
                                 ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, rightcol_width=12, stack_label=True)}
                             </div>
                             <div>&nbsp;</div>
-                            <div ng-cloak="true" ng-if="vpcNetwork !== 'None'">
-                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': '$parent.securityGroups', 'options': 'k as v for (k, v) in $parent.securityGroupChoices'}, **security_group_attrs)}
+                            <div ng-cloak="true" ng-show="vpcNetwork !== 'None'">
+                                ${panel('form_field', field=create_form['securitygroup'], rightcol_width=12, stack_label=True, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'}, **security_group_attrs)}
                             </div>
                             <hr />
                             <div>
@@ -111,7 +107,8 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-next-step-from-step2" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
+                                    <a id="visit-next-step-from-step2" class="button small round" ng-click="visitStep($event, currentStepIndex+1)"
+                                       ng-disabled="!vpcNetwork || !securityGroups.length">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"
@@ -166,7 +163,6 @@
                                 </div>
                                 <div>
                                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
-
                                         strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}'}" facets="${search_facets}" filter-keys="${filter_keys}"></magic-search>
                                 </div>
                                 <div>
@@ -186,7 +182,8 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-next-step-from-step4" class="button small round" ng-click="visitStep($event, currentStepIndex+1)" ng-disabled="isValidationError">
+                                    <a id="visit-next-step-from-step4" class="button small round" ng-click="visitStep($event, currentStepIndex+1)"
+                                       tal:attributes="ng-disabled '!vpcSubnets.length' if is_vpc_supported else '!availabilityZones.length'">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                     <a href="${request.route_path('elbs')}"

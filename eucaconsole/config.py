@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -61,33 +61,14 @@ except ImportError:
     __version__ = 'DEVELOPMENT'
 
 REQUIRED_CONFIG = {
-    # 'use': 'egg:eucaconsole',  # can't test for this since container strips it
     'pyramid.includes': ['pyramid_beaker', 'pyramid_chameleon', 'pyramid_layout'],
     'session.type': 'cookie',
-    'cache.memory': 'dogpile.cache.pylibmc'
+    'session.httponly': 'true',
+    'cache.memory': 'dogpile.cache.pylibmc',
 }
 
 
 def check_config(settings):
-    # check for required config first
-    for key in REQUIRED_CONFIG.keys():
-        value = REQUIRED_CONFIG[key]
-        list_failed = False
-        is_list = isinstance(value, list)
-        if is_list:
-            try:
-                for item in value:
-                    settings.get(key).index(item)
-            except ValueError:
-                list_failed = True
-        if list_failed or (not is_list and settings.get(key) != value):
-            if is_list:
-                value = '\n'.join(value)
-            logging.error("*****************************************************************")
-            logging.error(u" Required configuration value {0} = {1} not found in console.ini".format(key, value))
-            logging.error(" Please correct this and restart eucaconsole.")
-            logging.error("*****************************************************************")
-            sys.exit(1)
     if not settings.get('ufshost'):
         logging.warn(
             "'clchost' and 'clcport' are deprecated in Eucalyptus version 4.2.0 and "
@@ -101,15 +82,8 @@ def check_config(settings):
         )
 
 
-def write_routes_json(path):
-    url_dict = {}
-    for url in urls:
-        url_dict[url.name] = url.pattern.replace('{', '{{').replace('}', '}}')
-    with open(os.path.join(path, 'routes.json'), 'w') as outfile:
-        json.dump(url_dict, outfile)
-
-
 def get_configurator(settings, enable_auth=True):
+    settings.update(REQUIRED_CONFIG)
     check_config(settings)
     connection_debug = asbool(settings.get('connection.debug'))
     boto.set_stream_logger('boto', level=(logging.DEBUG if connection_debug else logging.CRITICAL))
@@ -128,12 +102,6 @@ def get_configurator(settings, enable_auth=True):
     config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
-
-    route_dir = os.path.join(os.getcwd(), 'run')
-    if not os.path.exists(route_dir) and os.path.exists('/var/run/eucaconsole'):
-        route_dir = '/var/run/eucaconsole'
-    write_routes_json(route_dir)
-    config.add_static_view(name='static/json', path=route_dir, cache_max_age=cache_duration)
 
     locale_dir = os.path.join(os.getcwd(), 'locale')
     # use local locale directory over system one

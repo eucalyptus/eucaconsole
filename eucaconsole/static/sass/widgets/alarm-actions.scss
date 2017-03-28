@@ -1,0 +1,55 @@
+@import "../includes/_eucavariables";
+.actions {
+    background: none !important;
+
+    .item-list {
+        margin: 0 0 15px;
+
+        .item {
+            color: $hpe-black;
+            background-color: $hpe-extralightgray;
+            margin-right: 8px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.6875rem;
+            border-radius: 3px;
+            white-space: nowrap;
+            line-height: 1;
+            display: inline-block;
+
+            .remove {
+                margin-left: 5px;
+                color: #FFF;
+            }
+        }
+    }
+
+    select {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .cancel {
+        display: inline-block;
+        padding: 0.375rem;
+    }
+
+    &.ng-valid-action-editor-empty,
+    &.ng-pristine,
+    &.ng-invalid {
+        .button {
+            @include primary-disabled-button-mixin;
+            &:hover {
+                box-shadow: none;
+            }
+        }
+    }
+
+    .button {
+        &.incomplete,
+        &.empty {
+            @include primary-disabled-button-mixin;
+            &:hover {
+                box-shadow: none;
+            }
+        }
+    }
+}

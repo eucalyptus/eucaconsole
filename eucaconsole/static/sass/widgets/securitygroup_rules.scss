@@ -40,10 +40,16 @@ form {
     @include item-list;
     .add-label {
         margin-bottom: 6px;
-        color: $hp-gray-65;
+        color: $hpe-gray-65;
     }
     .tabs-content {
-        margin-top: 0.5rem;
+        margin-top: 0.75rem;
+    }
+    .ipaddress {
+        a:hover {
+            color: $hpe-green;
+            border-bottom: 1px solid $hpe-green;
+        }
     }
 }
 

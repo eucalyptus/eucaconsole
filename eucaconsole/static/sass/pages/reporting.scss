@@ -1,0 +1,56 @@
+@import "../includes/eucavariables";
+
+@import "../widgets/modal";
+
+select {
+    width: 12rem;
+}
+
+.active-tags {
+    select {
+        width: 40rem;
+    }
+}
+
+.cancel-link {
+    margin-left: 2rem;
+    color: $hpe-gray;
+    &:hover {
+        color: $hpe-green;
+    }
+}
+
+form {
+    .error {
+        font-size: small;
+        display: none;
+    }
+}
+
+.policy-text-area {
+    height: 15rem;
+    overflow-y: scroll;
+}
+
+.totals {
+    text-align: right;
+}
+
+.usage-service {
+    color: $hpe-black;
+    font-weight: bold;
+}
+
+.table {
+    @include table-styles-mixin;
+    width: 100%
+}
+
+#usage-reports-modal {
+    .row {
+        padding-left: 1rem;
+        .columns {
+            padding-left: 0;
+        }
+    }
+}

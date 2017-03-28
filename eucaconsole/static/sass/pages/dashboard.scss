@@ -67,7 +67,7 @@ $tile-row-height: 24px;
             color: $hpe-gray !important;
         }
         i.dash-alarms {
-            color: red !important;
+            color: darkred !important;
         }
         .icon {  // Font icons
             position: absolute;
@@ -108,7 +108,6 @@ $tile-row-height: 24px;
             }
             .button {
                 display: inline-block;
-                font-weight: bold;
                 &:hover {
                     text-decoration: none;
                 }
@@ -127,6 +126,7 @@ $tile-row-height: 24px;
             border: none;
             &:hover {
                 color: $hpe-green;
+                outline: none;
             }
             &::before, &::after {
                 border: none;
@@ -149,7 +149,7 @@ $tile-row-height: 24px;
                 position: absolute;
                 top: 0; bottom: 0; left: 0; right: 0;
                 &:hover {
-                    background-color: $hpe-hovergray;
+                    background-color: $hpe-backgroundgray;
                     text-decoration: none;
                 }
             }

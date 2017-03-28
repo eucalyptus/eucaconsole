@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -38,14 +38,19 @@ import time
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.view import view_config
 
+from ..i18n import _
 from ..views import BaseView, boto_error_handler
 
 
 CHART_COLORS = {
-    0: '#1f77b4',
-    1: '#822980',
-    2: '#e6a818',
-    3: '#8cc63e',
+    0: '#2ad2c9',
+    1: '#614767',
+    2: '#FF8D6D',
+    3: '#80746E',
+    4: '#000000',
+    5: '#425563',
+    6: '#5F7A76',
+    7: '#666666',
 }
 
 ISO8601 = '%Y-%m-%dT%H:%M:%S.%fZ'
@@ -211,6 +216,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         self.start_time = self.request.params.get('startTime', None)
         self.end_time = self.request.params.get('endTime', None)
         self.tz_offset = int(self.request.params.get('tzoffset', 0))
+        self.threshold = self.request.params.get('threshold')
         self.collapse_to_kb_mb_gb = [
             'NetworkIn', 'NetworkOut', 'DiskReadBytes', 'DiskWriteBytes', 'VolumeReadBytes', 'VolumeWriteBytes'
         ]
@@ -243,6 +249,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
             else:
                 line = lines[0]
                 unit, stats_series, max_value = self.get_stats_series(line['dimensions'], line['label'])
+                stats_series['color'] = CHART_COLORS.get(0)
                 stats_list.append(stats_series)
         else:
             if self.zones and len(self.zones.split(',')) > 1:
@@ -256,7 +263,20 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                         stats_list.append(stats_series)
             else:
                 unit, stats_series, max_value = self.get_stats_series()
+                stats_series['color'] = CHART_COLORS.get(0)
                 stats_list.append(stats_series)
+
+        if self.threshold:
+            threshold = float(self.threshold)
+            threshold_values = []
+            if stats_list:
+                for value in stats_list[0].get('values'):
+                    threshold_values.append(dict(x=value.get('x'), y=threshold))
+            stats_list.append(dict(
+                color='#ff0000',  # NOTE: Update cloudwatch_charts.scss dashed selector when changing color here
+                key=_('Alarm threshold'),
+                values=threshold_values,
+            ))
 
         return dict(
             unit=unit,
@@ -268,7 +288,7 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
         multiplier = 1
         divider = 1
         unit = self.unit
-        period = int(self.request.params.get('period', 300))
+        period = int(self.request.params.get('period', '300'))
         if period % 60 != 0:
             raise HTTPBadRequest()  # Period (granularity) must be a multiple of 60 seconds
 
@@ -307,6 +327,9 @@ class CloudWatchAPIView(BaseView, CloudWatchAPIMixin):
                 key = label
             else:
                 key = dimensions.values()[0]
+        if self.namespace in ['AWS/EC2', 'AWS/ELB'] and dimensions == {} and label:
+            # Handle 'All ______' label for EC2 and ELB metrics
+            key = label
         series = dict(key=key, values=json_stats)
         return unit, series, max_value
 

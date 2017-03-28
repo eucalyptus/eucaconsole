@@ -12,7 +12,7 @@ class LaunchInstanceWizard(BasePage):
     _number_of_instances_input_field_id = "number"
     _instance_type_selector_id = "instance_type"
     _availability_zone_selector_id = "zone"
-    _name_input_field_css = "[class='name ng-pristine ng-untouched ng-valid']"
+    _name_input_field_css = "input.name"
     _step2_next_button_id = "visit-step-3"
     _keypair_selector_id = "keypair"
     _security_group_selector_id = "securitygroup_chosen"
@@ -98,7 +98,7 @@ class LaunchMoreLikeThisDialog(BaseDialog):
         self.tester = tester
 
     _launch_instance_button_id = "save-changes-btn"
-    _instance_name_field_css = "[class='name ng-scope']"
+    _instance_name_field_css = "input.name"
     _advanced_options_css = "#advanced-section>h6>a"
     _help_expando_css = "#help-expando>div>a"
     _enable_monitoring_chkbox_id = "monitoring_enabled"

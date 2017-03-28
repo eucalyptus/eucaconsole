@@ -35,7 +35,6 @@ import pylibmc
 import sys
 import os
 
-from defusedxml import ElementTree
 from markupsafe import escape
 from wtforms import StringField
 from wtforms.ext.csrf import SecureForm
@@ -45,9 +44,9 @@ from boto.exception import BotoServerError
 
 from ..caches import extra_long_term
 from ..caches import invalidate_cache
-from ..constants.elbs import ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
+from ..models.policy import Policy
 
 
 BLANK_CHOICE = ('', _(u'Select...'))
@@ -124,17 +123,17 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if not zones:
-            zones.extend(self.get_availability_zones(region))
+            zones.extend(self.get_availability_zones(self.conn.host))
         for zone in zones:
             choices.append((zone.name, zone.name))
         return sorted(choices)
 
-    def get_availability_zones(self, region):
+    def get_availability_zones(self, ufshost):
         @extra_long_term.cache_on_arguments(namespace='availability_zones')
-        def _get_zones_cache_(self, region):
-            return _get_zones_(self, region)
+        def _get_zones_cache_(self, ufshost):
+            return _get_zones_(self, ufshost)
 
-        def _get_zones_(self, region):
+        def _get_zones_(self, ufshost):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
@@ -143,20 +142,20 @@ class ChoicesManager(object):
                 del zone.region
             return zones
         try:
-            return _get_zones_cache_(self, region)
+            return _get_zones_cache_(self, ufshost)
         except pylibmc.Error:
-            return _get_zones_(self, region)
+            return _get_zones_(self, ufshost)
 
-    def instances(self, instances=None, states=None, escapebraces=True):
+    def instances(self, instances=None, states=None, escapebraces=True, add_blank=True, id_first=False):
         from ..views import TaggedItemView
-        choices = [('', _(u'Select instance...'))]
+        choices = [('', _(u'Select instance...'))] if add_blank else []
         instances = instances or []
         if not instances and self.conn is not None:
             instances = self.conn.get_only_instances()
             if self.conn:
                 for instance in instances:
                     value = instance.id
-                    label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces)
+                    label = TaggedItemView.get_display_name(instance, escapebraces=escapebraces, id_first=id_first)
                     if states is None:
                         choices.append((value, label))
                     else:
@@ -208,16 +207,18 @@ class ChoicesManager(object):
             else:
                 return [(name, name) for name, description in AWS_INSTANCE_TYPE_CHOICES]
 
-    def volumes(self, volumes=None, escapebraces=True):
+    def volumes(self, volumes=None, escapebraces=True, add_blank=True, id_first=False):
         from ..views import TaggedItemView
-        choices = [('', _(u'Select volume...'))]
+        choices = []
+        if add_blank:
+            choices.append(('', _(u'Select volume...')))
         volumes = volumes or []
         if not volumes and self.conn is not None:
             volumes = self.conn.get_all_volumes()
             if self.conn:
                 for volume in volumes:
                     value = volume.id
-                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces)
+                    label = TaggedItemView.get_display_name(volume, escapebraces=escapebraces, id_first=id_first)
                     choices.append((value, label))
         return choices
 
@@ -276,21 +277,15 @@ class ChoicesManager(object):
             ret.append(('none', _(u'None')))
         return ret
 
-    def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
-        choices = []  # ('', _(u'None assigned'))]
-        ipaddresses = ipaddresses or []
-        if not ipaddresses and self.conn is not None:
-            ipaddresses = self.conn.get_all_addresses()
-        if instance and instance.state == 'running':
-            choices.append(('', _(u'Unassign Address')))
-        for eip in ipaddresses:
-            if eip.instance_id is None or eip.instance_id == '':
-                choices.append((eip.public_ip, eip.public_ip))
-        if instance and instance.ip_address:
-            choices.append((instance.ip_address, instance.ip_address))
-        if instance and instance.ip_address is None and instance.state == 'stopped':
-            choices.append(('none', _(u'no address in stopped state')))
-        return sorted(set(choices))
+    def elastic_ip_allocation_ids(self):
+        allocation_id_choices = []
+        elastic_ips = self.conn.get_all_addresses(filters={'domain': 'vpc'})
+        for eip in elastic_ips:
+            if eip.association_id is None:
+                value = eip.allocation_id
+                label = '{0} ({1})'.format(eip.allocation_id, eip.public_ip)
+                allocation_id_choices.append((value, label))
+        return sorted(set(allocation_id_choices))
 
     def kernels(self, kernel_images=None, image=None):
         """Get kernel id choices"""
@@ -382,19 +377,9 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if self.conn is not None:
-            xml_prefix = '{http://elasticloadbalancing.amazonaws.com/doc/2012-12-01/}'
-            resp = self.conn.make_request('DescribeLoadBalancerPolicies')
-            root = ElementTree.fromstring(resp.read())
-            policy_descriptions = root.find('.//{0}PolicyDescriptions'.format(xml_prefix))
-            policies = policy_descriptions.getchildren() if policy_descriptions is not None else []
-            for policy in policies:
-                policy_type = policy.find('.//{0}PolicyTypeName'.format(xml_prefix))
-                if policy_type is not None and policy_type.text == 'SSLNegotiationPolicyType':
-                    policy_name = policy.find('.//{0}PolicyName'.format(xml_prefix)).text
-                    if policy_name.startswith(ELB_PREDEFINED_SECURITY_POLICY_NAME_PREFIX):
-                        choices.append((policy_name, policy_name))
+            choices = self.conn.get_list('DescribeLoadBalancerPolicies', {}, [('member', Policy)])
         if choices:
-            choices = reversed(sorted(set(choices)))
+            choices = reversed(sorted(set([(choice.policy_name, choice.policy_name) for choice in choices])))
         return list(choices)
 
     # IAM options
@@ -475,6 +460,38 @@ class ChoicesManager(object):
                 choices.append((vpc.id, subnet_string))
             else:
                 choices.append((vpc.id, vpc.cidr_block))
+        return sorted(set(choices))
+
+    def vpc_route_tables(self, vpc=None, route_tables=None, add_blank=True, escapebraces=True):
+        from ..views import TaggedItemView
+        choices = []
+        if add_blank:
+            # NOTE: Do not mark the 'None' value for i18n
+            choices = [('None', _(u'None (use main route table for VPC)'))]
+        filters = {}
+        if vpc is not None:
+            filters.update({
+                'vpc-id': vpc.id
+            })
+        if self.conn is not None:
+            route_tables = route_tables or self.conn.get_all_route_tables(filters=filters)
+            for route_table in route_tables:
+                route_table_name = TaggedItemView.get_display_name(route_table, escapebraces=escapebraces)
+                choices.append((route_table.id, route_table_name))
+        return sorted(set(choices))
+
+    def internet_gateways(self, add_blank=True, escapebraces=True, hide_attached=False):
+        from ..views import TaggedItemView
+        choices = []
+        if add_blank:
+            choices = [('None', _(u'None'))]
+        if self.conn is not None:
+            internet_gateways = self.conn.get_all_internet_gateways()
+            if hide_attached:
+                internet_gateways = [igw for igw in internet_gateways if len(igw.attachments) == 0]
+            for igw in internet_gateways:
+                igw_name = TaggedItemView.get_display_name(igw, escapebraces=escapebraces)
+                choices.append((igw.id, igw_name))
         return sorted(set(choices))
 
 

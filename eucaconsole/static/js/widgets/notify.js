@@ -1,6 +1,10 @@
-/*
- Notification package for client side events
-*/
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview Notification pagek for client side events
+ * @requires jQuery
+ *
+ */
 var Notify = (function() {
     var _displayNotification = function (message, type) {
         $("#notifications").append($('<div class="marked">').append(
@@ -10,7 +14,7 @@ var Notify = (function() {
                     .append($('<span>')))
                 .append($('<div class="message">')
                     .text(message))
-                .append($('<a class="close" href="#">&times;</a>')
+                .append($('<a class="close">&times;</a>')
                     .click(function () {
                         Notify.clear();
                     }))));

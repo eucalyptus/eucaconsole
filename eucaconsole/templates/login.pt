@@ -60,7 +60,7 @@
                 </dl>
                 <div class="tabs-content">
                     <div class="content active" id="eucalyptus">
-                        <form class="custom" id="euca-login-form" method="post" name="euca_login_form" ng-submit="isLoggingIn=true"
+                        <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
                               action="${request.route_path('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <input type="hidden" id="euca-region" name="euca-region" value="" />
@@ -88,7 +88,12 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="">
+                                    <a target="euca-support" rel="noopener noreferrer" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <button type="submit" class="submit button" id="euca-login-button" i18n:translate="" ng-disabled="eucaNotValid">
                                         Log in to Eucalyptus
                                     </button>
                                 </div>
@@ -96,9 +101,16 @@
                                     <span i18n:translate="">Logging in</span>&nbsp;<i class="busy"></i>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" tal:condition="oidc_enabled">
+                                <div class="small-1 small-centered columns">
+                                    <label class="stack-label" i18n:translate="">OR</label>
+                                </div>
+                            </div>
+                            <div class="row" tal:condition="oidc_enabled">
                                 <div class="small-12 columns">
-                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">Forgot your password?</a>
+                                    <button type="submit" class="submit oidc button" ng-click="openOIDCModal($event)" id="globus-login-button">
+                                        ${oidc_link_text}
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -133,7 +145,7 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <button type="submit" class="submit button" id="aws-login-button" i18n:translate="">
+                                    <button type="submit" class="submit button" id="aws-login-button" i18n:translate="" ng-disabled="awsNotValid">
                                         Log in to AWS
                                     </button>
                                 </div>
@@ -145,7 +157,7 @@
                                 <div class="small-12 columns">
                                     <span i18n:translate="">Need to access an IAM account?</span><br />
                                     <span i18n:translate="">Contact your</span>
-                                    <a target="_blank" href="${layout.support_url}" i18n:translate="">cloud administrator</a>
+                                    <a target="euca-support" rel="noopener noreferrer" href="${layout.support_url}" i18n:translate="">cloud administrator</a>
                                 </div>
                             </div>
                         </form>
@@ -179,12 +191,35 @@
                 <a class="close-reveal-modal">&#215;</a>
             </div>
         </div>
+        <div>
+            <div id="oidc-account-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Enter account name</h3>
+                <div class="row controls-wrapper">
+                    <div class="small-12 columns field">
+                        <label for="account-name" class="left stack-label">
+                            <span i18n:translate="">Account name</span>
+                            <span class="req">*</span>
+                        </label>
+                        <div ng-non-bindable="">
+                            <input id="account-name" type="text" value="" name="account-name"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 columns">
+                        <button type="submit" class="submit oidc button" ng-disabled="oidcNotValid" ng-click="handleOIDCLogin($event)" id="globus-login-button">
+                            ${oidc_link_text}
+                        </button>
+                    </div>
+                </div>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
     </div>
     <div class="clearfix">&nbsp;</div>
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/hmac-sha256.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/enc-base64.js')}"></script>

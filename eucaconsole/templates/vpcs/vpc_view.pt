@@ -1,0 +1,366 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/vpc.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap"
+         ng-app="VPCDetailsPage" ng-controller="VPCDetailsPageCtrl">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
+                <li class="current">
+                    <a tal:condition="vpc">${vpc_name }</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for VPC:</strong>
+            <em class="breakword">${vpc_name}</em>
+        </h3>
+        <div class="large-12 columns">
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a data-reveal-id="add-subnet-modal" id="add-subnet-action" i18n:translate="">
+                                Add subnet
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="set-main-route-table-modal" id="set-route-table-action" i18n:translate="">
+                                Set main route table
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="create-internet-gateway-modal" id="create-internet-gateway-action" i18n:translate="">
+                                Create internet gateway
+                            </a>
+                        </li>
+                        <li tal:condition="vpc_internet_gateway">
+                            <a href="${request.route_path('internet_gateway_view', id=vpc_internet_gateway.id)}"
+                               id="view-internet-gateway-action" i18n:translate="">
+                                View internet gateway for VPC
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="delete-vpc-modal" id="delete-vpc-action" i18n:translate="">
+                                Delete VPC
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form action="${request.route_path('vpc_update', id=vpc.id)}" id="vpc-form" name="vpcForm"
+                      method="post" data-abide="abide">
+                    ${structure:vpc_form['csrf_token']}
+                    <h6 i18n:translate="">VPC</h6>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="" id="vpc-status-label">State</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <span class="label radius state ${vpc.state}">${vpc.state}</span>
+                        </div>
+                    </div>
+                    <div>
+                        ${panel('form_field', field=vpc_form.name, pattern=layout.tag_pattern_value, leftcol_width_large=3, rightcol_width_large=9)}
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">ID</label></div>
+                        <div class="large-9 small-8 columns value">${vpc.id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">CIDR</label></div>
+                        <div class="large-9 small-8 columns value">${vpc.cidr_block}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Default VPC?</label></div>
+                        <div class="large-9 small-8 columns value">${default_vpc_label}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="vpc_default_security_group">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Default security group</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <a href="${request.route_path('securitygroup_view', id=vpc_default_security_group.id)}">
+                                ${vpc_default_security_group.id}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Main route table</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <a href="${request.route_path('route_table_view', vpc_id=vpc.id, id=vpc_main_route_table.id)}">
+                                ${vpc_main_route_table_name}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns">
+                            <label>
+                                <span i18n:translate="">Internet gateway</span>
+                                <span data-tooltip="" title="${internet_gateway_help_text}">
+                                    <i class="helptext-icon"></i>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="large-9 small-8 columns value">
+                            ${vpc_form.internet_gateway}
+                        </div>
+                    </div>
+                    <hr />
+                    <h6 i18n:translate="">SUBNETS</h6>
+                    <p i18n:translate="" tal:condition="not: vpc_subnets">
+                        There are currently no subnets in this VPC.
+                    </p>
+                    <table class="table subnets" tal:condition="vpc_subnets">
+                        <thead>
+                            <tr>
+                                <th i18n:translate="">NAME (ID)</th>
+                                <th i18n:translate="">STATE</th>
+                                <th i18n:translate="">CIDR</th>
+                                <th i18n:translate="">AVAILABLE IPS</th>
+                                <th i18n:translate="">ZONE</th>
+                                <th i18n:translate="">ROUTE TABLE</th>
+                                <th i18n:translate="">NETWORK ACL</th>
+                                <th i18n:translate="">INSTANCES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr tal:repeat="subnet vpc_subnets">
+                                <td>
+                                    <a href="${request.route_path('subnet_view', vpc_id=vpc.id, id=subnet.id)}">
+                                        ${subnet.name}
+                                    </a>
+                                </td>
+                                <td><span class="label radius state ${subnet.state}">${subnet.state}</span></td>
+                                <td>${subnet.cidr_block}</td>
+                                <td>${subnet.available_ips}</td>
+                                <td>${subnet.zone}</td>
+                                <td>
+                                    <a href="${request.route_path('route_table_view', vpc_id=vpc.id, id=subnet.route_table.id)}">
+                                        ${layout.get_display_name(subnet.route_table)}
+                                    </a>
+                                </td>
+                                <td>
+                                    <div tal:repeat="network_acl subnet.network_acls">
+                                        ${network_acl.name}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div tal:condition="subnet.instance_count == 0" i18n:translate="">none</div>
+                                    <div tal:condition="subnet.instance_count > max_subnet_instance_count" tal:omit-tag="">
+                                        <a href="${request.route_path('instances', _query={'subnet_id': subnet.id})}">
+                                            ${subnet.instance_count}
+                                            <span i18n:translate="">instances</span>
+                                        </a>
+                                    </div>
+                                    <div tal:condition="subnet.instance_count &lt;= max_subnet_instance_count" tal:omit-tag="">
+                                        <div tal:repeat="instance subnet.instances">
+                                            <a href="${request.route_path('instance_view', id=instance.id)}">
+                                                ${instance.name}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a class="button tiny secondary round" i18n:translate="" id="add-subnet-btn"
+                       data-reveal-id="add-subnet-modal">
+                        Add Subnet
+                    </a>
+                    <hr />
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
+                    </div>
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="save-changes-btn">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('vpcs')}" id="cancel-update-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        <!--! Add subnet modal dialog -->
+        <div id="add-subnet-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Add subnet</h3>
+            <form id="add-subnet-form" method="post" data-abide="abide"
+                  action="${request.route_path('vpc_add_subnet', id=vpc.id)}">
+                ${structure:add_subnet_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Add a subnet to VPC</span>
+                    <strong>${vpc_name}</strong>,
+                    <span i18n:translate="">which has a CIDR block of</span>
+                    <strong>${vpc.cidr_block}</strong>.
+                    <span i18n:translate="">
+                        Use the CIDR format to specify your subnet's IP address block (e.g. 10.0.0.0/24).
+                        Block sizes must be between a /16 netmask and a /28 netmask.
+                        A subnet can be the same size as your VPC if the subnet is the only one in the VPC.
+                        Note the pre-populated subnet CIDR block will need to be modified if it conflicts
+                        with an existing subnet's CIDR block in the VPC.
+                    </span>
+                </p>
+                <p tal:condition="vpc_subnets">
+                    <span i18n:translate="">The existing subnet CIDR blocks in this VPC are</span>
+                    <span tal:repeat="subnet vpc_subnets"><strong>${subnet.cidr_block}</strong><span tal:condition="not repeat.subnet.end">,&nbsp;</span></span>
+                </p>
+                <div>
+                    ${panel('form_field', field=add_subnet_form['subnet_name'], stack_label=True)}
+                </div>
+                <div>
+                    ${panel('form_field', field=add_subnet_form['subnet_cidr_block'], stack_label=True, pattern=add_subnet_form.cidr_block_regex)}
+                </div>
+                <div>
+                    ${panel('form_field', field=add_subnet_form['availability_zone'], stack_label=True)}
+                </div>
+                <hr />
+                <div class="required-fields-indicator">
+                    <label>
+                        <span class="req">*</span>
+                        <span i18n:translate="">Required fields</span>
+                    </label>
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Add Subnet
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Set Main Route Table modal dialog -->
+        <div id="set-main-route-table-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Set main route table</h3>
+            <form id="set-main-route-table-form" method="post"
+                  action="${request.route_path('vpc_set_main_route_table', id=vpc.id)}">
+                ${structure:vpc_main_route_table_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Select a route table to set as the main route table for VPC</span>
+                    <strong>${vpc_name}</strong>
+                </p>
+                <div>
+                    ${panel('form_field', field=vpc_main_route_table_form['route_table'], stack_label=True)}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Set main route table
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Create Internet Gateway modal dialog -->
+        <div id="create-internet-gateway-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Create internet gateway</h3>
+            <form id="create-internet-gateway-form" name="createInternetGatewayForm" method="post"
+                  action="${request.route_path('vpc_create_internet_gateway', id=vpc.id)}">
+                ${structure:create_internet_gateway_form['csrf_token']}
+                <p i18n:translate="">
+                    An internet gateway is a virtual router that connects a VPC to the Internet.
+                </p>
+                <div>
+                    ${panel('form_field', field=create_internet_gateway_form['new_igw_name'], stack_label=True, **{'ng-model': 'newInternetGatewayName'})}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Create internet gateway
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Delete VPC modal dialog -->
+        <div id="delete-vpc-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete VPC</h3>
+            <form id="delete-vpc-form" name="deleteVPCForm" method="post"
+                  action="${request.route_path('vpc_delete', id=vpc.id)}">
+                ${structure:vpc_delete_form['csrf_token']}
+                <div tal:condition="vpc_subnets">
+                    <p i18n:translate="">
+                        This VPC has one or more subnets that must be deleted prior to deleting the VPC.
+                    </p>
+                    <p i18n:translate="">
+                        Click on each subnet to view the subnet details page, where you can delete the subnet
+                        and terminate all instances in the subnet.
+                    </p>
+                    <span tal:repeat="subnet vpc_subnets">
+                        <a href="${request.route_path('subnet_view', vpc_id=vpc.id, id=subnet.id)}">
+                            ${subnet.name}
+                        </a>
+                    </span>
+                </div>
+                <div tal:condition="not vpc_subnets">
+                    <p i18n:translate="">
+                        Deleting a VPC will disassociate or delete the following resources from the VPC.
+                    </p>
+                    <div class="resources-list">
+                        <div tal:condition="vpc_internet_gateway" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Internet gateway:
+                            </div>
+                            <div class="columns small-9">${layout.get_display_name(vpc_internet_gateway)}</div>
+                        </div>
+                        <div tal:condition="vpc_route_tables" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Route tables:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="route_table vpc_route_tables">
+                                    ${layout.get_display_name(route_table)}<span
+                                        tal:condition="not repeat.route_table.end">,&nbsp;</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div tal:condition="vpc_security_groups" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Security groups:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="sec_group vpc_security_groups">
+                                    <a href="${request.route_path('securitygroup_view', id=sec_group.id)}">
+                                        ${sec_group.name} (${sec_group.id})</a><span tal:condition="not repeat.sec_group.end">,&nbsp;</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div tal:condition="vpc_network_acls" class="row">
+                            <div class="columns small-3" i18n:translate="">
+                                Network ACLs:
+                            </div>
+                            <div class="columns small-9">
+                                <span tal:repeat="network_acl vpc_network_acls">
+                                    ${layout.get_display_name(network_acl)}<span
+                                        tal:condition="not repeat.network_acl.end">,&nbsp;</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <p i18n:translate="" tal:condition="default_vpc" class="default-vpc-warning">
+                        WARNING: This VPC is the default for your cloud. If you delete the VPC,
+                        you will need to contact your cloud administrator to recreate a default VPC.
+                    </p>
+                    <p>
+                        <span i18n:translate="">Are you sure you want to delete VPC</span>
+                        <strong>${vpc_name}</strong>?
+                    </p>
+                </div>
+                <button class="button expand ${'warning' if default_vpc else ''}"
+                        i18n:translate="" tal:condition="not vpc_subnets">
+                    Yes, Delete VPC
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/vpc_view.js')}"></script>
+</div>
+
+</metal:block>
+

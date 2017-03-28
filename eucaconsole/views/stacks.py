@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -62,6 +62,8 @@ class StackMixin(object):
                 stack_param = self.request.matchdict.get('name')
                 if not(stack_param):
                     stack_param = self.request.params.get('stack-name')
+                if not(stack_param):
+                    return None
                 stacks = self.cloudformation_conn.describe_stacks(stack_name_or_id=stack_param)
                 return stacks[0] if stacks else None
             except BotoServerError:
@@ -127,7 +129,7 @@ class StacksView(LandingPageView):
         self.cloudformation_conn = self.get_connection(conn_type="cloudformation")
         self.initial_sort_key = 'name'
         self.prefix = '/stacks'
-        self.filter_keys = ['name', 'create-time']
+        self.filter_keys = ['name', 'create-time', 'description']
         self.sort_keys = self.get_sort_keys()
         self.json_items_endpoint = self.get_json_endpoint('stacks_json')
         self.delete_form = StacksDeleteForm(request, formdata=request.params or None)
@@ -386,7 +388,7 @@ class StackStateView(BaseView):
         elif "AWS::EC2::" in res_type:
             if "SecurityGroup" in res_type:
                 url = request.route_path('securitygroup_view', id=resource_id)
-            elif "EIP" in res_type:
+            elif res_type[10:] == "EIP":
                 url = request.route_path('ipaddress_view', public_ip=resource_id)
             elif "Instance" in res_type:
                 url = request.route_path('instance_view', id=resource_id)
@@ -407,6 +409,8 @@ class StackStateView(BaseView):
         elif "AWS::S3::" in res_type:
             if "Bucket" in res_type:
                 url = request.route_path('bucket_contents', name=resource_id, subpath='')
+        elif res_type == "AWS::CloudWatch::Alarm":
+            url = request.route_path('cloudwatch_alarm_view', alarm_id=base64.b64encode(bytes(resource_id), '--'))
         return url
 
 
@@ -572,7 +576,9 @@ class StackWizardView(BaseView, StackMixin):
                     if self.stack:
                         # populate defaults with actual values from stack
                         for param in params:
-                            param['default'] = [p.value for p in self.stack.parameters if p.key == param['name']][0]
+                            result = [p.value for p in self.stack.parameters if p.key == param['name']]
+                            if result:
+                                param['default'] = result[0]
                 return dict(
                     results=dict(
                         template_key=template_name,
@@ -599,7 +605,7 @@ class StackWizardView(BaseView, StackMixin):
         with boto_error_handler(self.request):
             (template_url, template_name, parsed) = self.parse_store_template()
             StackWizardView.identify_aws_template(parsed, modify=True)
-            template_body = json.dumps(parsed)
+            template_body = json.dumps(parsed, indent=2)
 
             # now, store it back in S3
             bucket = self.get_create_template_bucket(create=True)
@@ -693,6 +699,8 @@ class StackWizardView(BaseView, StackMixin):
             if ('vmtype' in name_l or 'instancetype' in name_l) and \
                     'options' not in param_vals.keys():
                 param_vals['options'] = self.get_vmtype_options()
+            if 'zone' in name_l or param_type == 'AWS::EC2::AvailabilityZone::Name':
+                param_vals['options'] = self.get_availability_zone_options()
             # if no default, and options are a single value, set that as default
             if 'default' not in param_vals.keys() and \
                     'options' in param_vals.keys() and len(param_vals['options']) == 1:
@@ -787,6 +795,11 @@ class StackWizardView(BaseView, StackMixin):
         vmtypes = ChoicesManager(conn).instance_types(self.cloud_type)
         return vmtypes
 
+    def get_availability_zone_options(self):
+        conn = self.get_connection()
+        zones = ChoicesManager(conn).availability_zones(self.cloud_type, add_blank=False)
+        return zones
+
     @view_config(route_name='stack_create', renderer=TEMPLATE, request_method='POST')
     def stack_create(self):
         if True:  # self.create_form.validate():
@@ -801,14 +814,15 @@ class StackWizardView(BaseView, StackMixin):
                     if val:
                         params.append((name, val))
             tags_json = self.request.params.get('tags')
-            tags = None
+            tags_dict = None
             if tags_json:
                 tags = json.loads(tags_json)
+                tags_dict = TaggedItemView.normalize_tags(tags)
             with boto_error_handler(self.request, location):
                 self.log_request(u"Creating stack:{0}".format(stack_name))
                 result = self.cloudformation_conn.create_stack(
                     stack_name, template_url=template_url, capabilities=capabilities,
-                    parameters=params, tags=tags
+                    parameters=params, tags=tags_dict
                 )
                 stack_id = result[result.rfind('/') + 1:]
                 d = hashlib.md5()
@@ -924,12 +938,12 @@ class StackWizardView(BaseView, StackMixin):
             'AWS::CloudFront',
             'AWS::CloudTrail',
             'AWS::DynamoDB',
-            'AWS::EC2::NetworkInterfaceAttachment',
+            'AWS::EC2::VPCEndpoint',
             'AWS::EC2::VPCPeeringConnection',
-            'AWS::EC2::VPCConnection',
-            'AWS::EC2::VPCConnectionRoute',
-            'AWS::EC2::VPCGateway',
-            'AWS::EC2::VPCGatewayRoutePropagation',
+            'AWS::EC2::VPNConnection',
+            'AWS::EC2::VPNConnectionRoute',
+            'AWS::EC2::VPNGateway',
+            'AWS::EC2::VPNGatewayRoutePropagation',
             'AWS::ElastiCache',
             'AWS::ElasticBeanstalk',
             'AWS::Kinesis',
@@ -952,18 +966,6 @@ class StackWizardView(BaseView, StackMixin):
             ]},
             {'resource': 'AWS::EC2::EIP', 'properties': [
                 'Domain'
-            ]},
-            {'resource': 'AWS::EC2::EIPAssociation', 'properties': [
-                'AllocationId', 'NetworkInterfaceId', 'PrivateIpAddress'
-            ]},
-            {'resource': 'AWS::EC2::Instance', 'properties': [
-                'NetworkInterfaces', 'SecurityGroupIds', 'SourceDestCheck', 'Tags', 'Tenancy'
-            ]},
-            {'resource': 'AWS::EC2::SecurityGroup', 'properties': [
-                'SecurityGroupEgress', 'Tags', 'VpcId'
-            ]},
-            {'resource': 'AWS::EC2::SecurityGroupIngress', 'properties': [
-                'SourceSecurityGroupId'
             ]},
             {'resource': 'AWS::EC2::Volume', 'properties': [
                 'HealthCheckType', 'Tags'
@@ -1031,9 +1033,10 @@ class StackWizardView(BaseView, StackMixin):
                         Type='String'
                     )
             # and, because we provide instance types, remove 'AllowedValues' for InstanceType
-            for name in parsed['Parameters']:
-                if name == 'InstanceType' and 'AllowedValues' in parsed['Parameters'][name]:
-                    del parsed['Parameters'][name]['AllowedValues']
+            if 'Parameters' in parsed.keys():
+                for name in parsed['Parameters']:
+                    if name == 'InstanceType' and 'AllowedValues' in parsed['Parameters'][name]:
+                        del parsed['Parameters'][name]['AllowedValues']
 
         return ret
 

@@ -36,7 +36,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a href="${item_open_url}" id="open-action" target="_blank" i18n:translate="">Open</a>
+                            <a href="${item_open_url}" id="open-action" target="_blank" rel="noopnener noreferrer" i18n:translate="">Open</a>
                         </li>
                         <li>
                             <a href="${item_download_url}" id="download-action" i18n:translate="">Download</a>
@@ -86,7 +86,7 @@
                                title="This is a private link. Use the actions menu to make it public,
                                       or click the Share button to create a shareable private link"
                                ></i>
-                            <a href="${item_link}" class="breakword" target="_blank">${item_link}</a>
+                            <a href="${item_link}" class="breakword" target="_blank" rel="noopener noreferrer">${item_link}</a>
                             <small tal:condition="ufshost_error" style="display:block" class="error">
                                 <i class="fi-alert"></i>
                                 <span i18n:translate="">This link will not work because it includes localhost. Please ask your administrator to change the ufshost setting to the fully qualified domain name or the IP address of the machine running User Facing Services.

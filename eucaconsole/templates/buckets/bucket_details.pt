@@ -1,13 +1,15 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_details.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="BucketDetailsPage" ng-controller="BucketDetailsPageCtrl"
-         ng-init="initController('${bucket_objects_count_url}')">
+         ng-init="initController('${controller_options_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
@@ -97,7 +99,11 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form)}
+                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form, cors_configuration_xml=cors_configuration_xml)}
+                    <hr />
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" tal:content="tags | structure"></tag-editor>
+                    </div>
                     <hr />
                     <div>
                         <button type="submit" id="save_changes_bucket_details_button" class="button"
@@ -122,11 +128,103 @@
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form, delete_form=delete_form)}
         ${panel('create_folder_dialog', bucket_name=bucket_name, create_folder_form=create_folder_form)}
+        <!--! Modal dialog for viewing/editing CORS configuration -->
+        <div class="modal large" modal="corsConfigModal" id="cors-config-modal">
+            <div cors-config-modal=""
+                 template="${request.route_path('render_template', subpath='dialogs/bucket_cors_configuration_dialog')}"
+                 bucket-name="${bucket_name}"
+                 has-cors-config="hasCorsConfig"
+                 cors-config-xml="${cors_configuration_xml}"
+                 sample-cors-config="${sample_cors_configuration}">
+            </div>
+        </div>
+        <!--! Modal dialog for confirming deletion of S3 bucket CORS configuration -->
+        <div id="cors-delete-confirmation-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete CORS Configuration</h3>
+            <div>&nbsp;</div>
+            <form id="cors-deletion-form" method="post"
+                  ng-submit="deleteCorsConfig($event)">
+                ${structure:cors_deletion_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete the CORS configuration for</span>
+                    <strong>${bucket_name}</strong><span i18n:translate="">?</span>
+                </p>
+                <p class="cors-error-wrapper">{{ deleteError }}</p>
+                <button class="button expand" i18n:translate="" ng-if="!deletingCorsConfig">
+                    Yes, Delete CORS Configuration
+                </button>
+                <button class="button expand" i18n:translate="" ng-if="deletingCorsConfig" disabled="disabled">
+                    <span i18n:translate="">Deleting CORS Configuration</span>&nbsp;
+                    <span class="busy"></span>
+                </button>
+            </form>
+            <a href="#" id="cors_configuration_dialog_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Modal dialog for viewing/editing bucket policy -->
+        <div id="bucket-policy-modal" class="reveal-modal medium" data-reveal="">
+            <h3>
+                <span ng-if="hasBucketPolicy" i18n:translate="">Edit Bucket Policy</span>
+                <span ng-if="!hasBucketPolicy" i18n:translate="">Add Bucket policy</span>
+            </h3>
+            <p ng-if="!hasBucketPolicy" i18n:translate="">
+                Add a bucket policy to restrict principals (e.g. accounts) from performing actions in this bucket. <br />
+                NOTE: Listed below is a sample bucket policy that should be modified as needed.
+            </p>
+            <form id="bucket-policy-form" method="post"
+                  ng-submit="setBucketPolicy($event)">
+                <textarea id="policy-textarea" name="bucket_policy"  ng-model="bucketPolicyJson"
+                          title="Set bucket policy" i18n:attributes="title">{{ bucketPolicyJson }}</textarea>
+                <p class="policy-error-wrapper">{{policyError}}</p>
+                <button class="button expand" i18n:translate="" ng-if="!savingBucketPolicy">
+                    Save Bucket Policy
+                </button>
+                <button class="button expand" disabled="disabled" ng-if="savingBucketPolicy">
+                    <span i18n:translate="">Saving Bucket Policy</span>&nbsp;
+                    <span class="busy"></span>
+                </button>
+            </form>
+            <a href="#" id="bucket_policy_dialog_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Modal dialog for confirming deletion of S3 bucket policy -->
+        <div id="bucket-policy-delete-confirmation-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete Bucket Policy</h3>
+            <div>&nbsp;</div>
+            <form id="policy-deletion-form" method="post"
+                  ng-submit="deleteBucketPolicy($event)">
+                ${structure:policy_deletion_form['csrf_token']}
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete the bucket policy for</span>
+                    <strong>${bucket_name}</strong><span i18n:translate="">?</span>
+                </p>
+                <p i18n:translate="" tal:condition="layout.cloud_type == 'aws'">
+                    NOTE: Bucket policy deletion may take up to a minute.
+                </p>
+                <p class="policy-error-wrapper">{{ deletePolicyError }}</p>
+                <button class="button expand" i18n:translate="" ng-if="!deletingBucketPolicy">
+                    Yes, Delete Bucket Policy
+                </button>
+                <button class="button expand" i18n:translate="" ng-if="deletingBucketPolicy" disabled="disabled">
+                    <span i18n:translate="">Deleting Bucket Policy</span>&nbsp;
+                    <span class="busy"></span>
+                </button>
+            </form>
+            <a href="#" id="delete_bucket_policy_dialog_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/xml.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/closetag.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/xml-fold.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/bucket-cors-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/bucket-policy-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/modal.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/bucket_details.js')}"></script>
 </div>
 </metal:block>

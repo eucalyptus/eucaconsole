@@ -1,4 +1,11 @@
-angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServiceModule', 'AlarmsComponents'])
+/**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * @fileOverview directive to show alarms for resource and allow deletion
+ * @requires AngularJS, jQuery
+ *
+ */
+angular.module('AlarmStateView', ['EucaConsoleUtils', 'AlarmServiceModule', 'AlarmsComponents'])
     .directive('alarmStateView', function() {
         return {
             scope: {
@@ -12,43 +19,48 @@ angular.module('AlarmStateView', ['EucaRoutes', 'EucaConsoleUtils', 'AlarmServic
             templateUrl: function (element, attributes) {
                 return attributes.template;
             },
-            controller: ['$scope', '$http', '$timeout', 'eucaRoutes', 'eucaHandleError', 'AlarmService', function($scope, $http, $timeout, eucaRoutes, eucaHandleError, AlarmService) {
-                $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            controller: ['$scope', '$timeout', 'eucaHandleError', 'AlarmService',
+            function($scope, $timeout, eucaHandleError, AlarmService) {
                 $scope.alarms = undefined;  // default to undefined helps avoid errant display of 0 alarms before fetch starts
                 $scope.toggleContent = function() {
                     $scope.expanded = !$scope.expanded;
                 };
-                eucaRoutes.promise.then(function() {
+
+                var refreshList = function () {
+                    $scope.loading = true;
+                    AlarmService.getAlarmsForResource($scope.resourceId, $scope.resourceType)
+                        .then(function success (alarms) {
+                            $scope.alarms = alarms.sort(function (a, b) {
+                                return a.name > b.name;
+                            });
+                            $scope.loading = false;
+                        }, function error (response) {
+                            eucaHandleError(errData.data.message, errData.status);
+                            $scope.loading = false;
+                        });
+                };
+                refreshList();
+
+                $scope.$on('alarmStateView:refreshList', function () {
                     refreshList();
                 });
-                var refreshList = function() {
-                    $scope.loading = true;
-                    $http({method:'GET',
-                        url: eucaRoutes.getRoute('cloudwatch_alarms_for_resource_json', {'id': $scope.resourceId}) + "?resource-type=" + $scope.resourceType,
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                    }).then(function successCallback(oData) {
-                        var response = oData.data ? oData.data : [];
-                        $scope.alarms = response.results.sort(function(a, b) {
-                            return a.name > b.name;
-                        });
-                        $scope.loading = false;
-                    }, function errorCallback(errData) {
-                        eucaHandleError(errData.data.message, errData.status);
-                        $scope.loading = false;
-                    });
+
+                $scope.alarmDetailPath = function (alarmName) {
+                    return '/alarms/' + btoa(alarmName);
                 };
+
                 $scope.showDeleteModal = function(alarm) {
                     $scope.alarmToDelete = alarm;
-                    $('#remove-alarm-modal').foundation('reveal', 'open');
+                    $('#delete-alarm-modal').foundation('reveal', 'open');
                     $timeout(function() {
                         $('.close-reveal-modal').focus();
                     }, 500);
                 };
                 $scope.removeAlarm = function(event) {
-                    $('#remove-alarm-modal').foundation('reveal', 'close');
+                    $('#delete-alarm-modal').foundation('reveal', 'close');
                     $scope.toggleContent();
                     $scope.loading = true;
-                    AlarmService.deleteAlarms([$scope.alarmToDelete], eucaRoutes.getRoute('cloudwatch_alarms'), $('#csrf_token').val())
+                    AlarmService.deleteAlarms([$scope.alarmToDelete], $('#csrf_token').val())
                         .then(function success (response) {
                             Notify.success(response.data.message);
                             refreshList();

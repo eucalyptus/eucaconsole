@@ -1,0 +1,7 @@
+[Unit]
+Description=Eucalyptus Management Console key generation
+ConditionFileNotEmpty=!/etc/eucaconsole/session-keys.ini
+
+[Service]
+ExecStart=/usr/libexec/eucaconsole/eucaconsole-keygen
+Type=oneshot

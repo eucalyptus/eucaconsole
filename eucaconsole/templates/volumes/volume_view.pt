@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volume.css')}" />
 </head>
 
@@ -28,7 +29,6 @@
         <div class="large-12 columns"
              tal:define="form_action request.route_path('volume_update', id=volume.id)
                          if volume else request.route_path('volume_create');
-                         volume_tags volume.tags if volume else {};
                          html_attrs {'disabled': 'disabled'} if volume else {};
                          instance_id volume.attach_data.instance_id if volume else None;">
             <dl class="tabs" id="volume-subnav" tal:condition="volume">
@@ -126,7 +126,9 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
+                    </div>
                     <hr />
                     <div tal:condition="not volume">
                         <label>
@@ -170,6 +172,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/volume.js')}"></script>
 </div>
 </metal:block>

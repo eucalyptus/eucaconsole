@@ -1,10 +1,12 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Scaling Group Policies page JS
  * @requires AngularJS
  *
  */
 
-angular.module('ScalingGroupPolicies', [])
+angular.module('ScalingGroupPolicies', ['CustomFilters'])
     .controller('ScalingGroupPoliciesCtrl', function ($scope) {
         $scope.policyName = '';
         $scope.deleteModal = $('#delete-policy-modal');
@@ -20,11 +22,8 @@ angular.module('ScalingGroupPolicies', [])
             $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
-                var modalButton = modal.find('button').get(0);
                 if (!!inputElement) {
                     inputElement.focus();
-                } else if (!!modalButton) {
-                    modalButton.focus();
                 }
             });
         };

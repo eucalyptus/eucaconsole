@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -30,7 +30,7 @@ Pyramid views for Eucalyptus and AWS key pairs
 """
 import simplejson as json
 
-from boto.exception import BotoServerError
+from botocore.exceptions import ClientError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -55,7 +55,7 @@ class KeyPairsView(LandingPageView):
     def keypairs_landing(self):
         json_items_endpoint = self.request.route_path('keypairs_json')
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['name', 'fingerprint']
+        self.filter_keys = ['name', 'key_fingerprint']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name=_(u'Name: A to Z')),
@@ -76,7 +76,7 @@ class KeyPairsView(LandingPageView):
 class KeyPairsJsonView(BaseView):
     def __init__(self, request):
         super(KeyPairsJsonView, self).__init__(request)
-        self.conn = self.get_connection()
+        self.conn = self.get_connection3()
 
     @view_config(route_name='keypairs_json', renderer='json', request_method='POST')
     def keypairs_json(self):
@@ -86,16 +86,16 @@ class KeyPairsJsonView(BaseView):
         with boto_error_handler(self.request):
             for keypair in self.get_items():
                 keypairs.append(dict(
-                    name=keypair.name,
-                    fingerprint=keypair.fingerprint,
+                    name=keypair['KeyName'],
+                    fingerprint=keypair['KeyFingerprint'],
                 ))
             return dict(results=keypairs)
 
     def get_items(self):
         ret = []
         if self.conn:
-            ret = self.conn.get_all_key_pairs()
-        return ret
+            ret = self.conn.describe_key_pairs()
+        return ret['KeyPairs']
 
 
 class KeyPairView(BaseView):
@@ -110,7 +110,7 @@ class KeyPairView(BaseView):
         if keyname == 'new2':
             keyname = _(u'Import')
         self.title_parts = [_(u'Key Pair'), keyname]
-        self.conn = self.get_connection()
+        self.conn = self.get_connection3()
         self.keypair = self.get_keypair()
         self.keypair_route_id = '/'.join(self.request.subpath)
         self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
@@ -126,13 +126,13 @@ class KeyPairView(BaseView):
         }))
         self.render_dict = dict(
             keypair=self.keypair,
-            keypair_name=self.escape_braces(self.keypair.name) if self.keypair else '',
+            keypair_name=self.escape_braces(self.keypair['KeyName']) if self.keypair else '',
+            keypair_fingerprint=self.keypair['KeyFingerprint'] if self.keypair else '',
             keypair_route_id=self.keypair_route_id,
             keypair_form=self.keypair_form,
             keypair_import_form=self.keypair_import_form,
             keypair_created=self.new_keypair_created,
             delete_form=self.delete_form,
-            keypair_names=self.get_keypair_names(),
             controller_options_json=controller_options_json,
         )
 
@@ -141,25 +141,18 @@ class KeyPairView(BaseView):
         if keypair_param == "new" or keypair_param == "new2":
             return None
         keypairs_param = [keypair_param]
-        keypairs = []
+        keypairs = {}
         if self.conn:
             try:
-                keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
-            except BotoServerError:
+                keypairs = self.conn.describe_key_pairs(KeyNames=keypairs_param)
+            except ClientError:
                 return None
-        keypair = keypairs[0] if keypairs else None
+        keypair = keypairs['KeyPairs'][0] if keypairs.get('KeyPairs') else None
         return keypair 
 
     @view_config(route_name='keypair_view', renderer=TEMPLATE)
     def keypair_view(self):
         return self.render_dict
-
-    def get_keypair_names(self):
-        keypairs = []
-        with boto_error_handler(self.request):
-            if self.conn:
-                keypairs = [k.name for k in self.conn.get_all_key_pairs()]
-        return sorted(set(keypairs))
 
     @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
     def keypair_create(self):
@@ -168,16 +161,15 @@ class KeyPairView(BaseView):
             location = self.request.route_path('keypair_view', subpath=name)
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Creating keypair ") + name)
-                new_keypair = self.conn.create_key_pair(name)
+                new_keypair = self.conn.create_key_pair(KeyName=name)
                 # Store the new keypair material information in the session
-                self._store_file_(new_keypair.name + ".pem",
+                self._store_file_(new_keypair['KeyName'] + ".pem",
                                   'application/x-pem-file;charset=ISO-8859-1',
-                                  new_keypair.material)
+                                  new_keypair['KeyMaterial'])
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
             if self.request.is_xhr:
-                keypair_material = new_keypair.material if new_keypair else None
-                resp_body = json.dumps(dict(message=msg, payload=keypair_material))
+                resp_body = json.dumps(dict(message=msg))
                 return Response(status=200, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
                 location = self.request.route_path('keypair_view', subpath=name)
@@ -199,7 +191,7 @@ class KeyPairView(BaseView):
             success_location = self.request.route_path('keypair_view', subpath=name)
             with boto_error_handler(self.request, failure_location):
                 self.log_request(_(u"Importing keypair ") + name)
-                self.conn.import_key_pair(name, key_material)
+                self.conn.import_key_pair(KeyName=name, PublicKeyMaterial=key_material)
                 msg_template = _(u'Successfully imported key pair {keypair}')
                 msg = msg_template.format(keypair=name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -216,7 +208,7 @@ class KeyPairView(BaseView):
             with boto_error_handler(self.request, location):
                 for keypair_name in keypair_names:
                     self.log_request(_(u"Deleting keypair ") + keypair_name)
-                    self.conn.delete_key_pair(keypair_name)
+                    self.conn.delete_key_pair(KeyName=keypair_name)
                 prefix = _(u'Successfully deleted keypair')
                 if len(keypair_names) == 1:
                     msg = prefix

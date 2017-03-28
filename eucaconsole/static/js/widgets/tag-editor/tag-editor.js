@@ -2,19 +2,36 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
     .directive('tagEditor', ['eucaUnescapeJson', function (eucaUnescapeJson) {
         return {
             scope: {
-                template: '@',
                 showNameTag: '@',
                 autoscale: '@'
             },
             transclude: true,
             restrict: 'E',
             require: 'ngModel',
-            templateUrl: function (element, attributes) {
-                return attributes.template;
-            },
+            templateUrl: '/_template/tag-editor/tag-editor',
             controller: ['$scope', '$window', function ($scope, $window) {
-                $scope.addTag = function () {
-                    if($scope.tagForm.$invalid) {
+                $scope.newTagKey = '';
+                $scope.newTagValue = '';
+
+                $scope.$watch('newTagKey', requireOther('newTagValue'));
+                $scope.$watch('newTagValue', requireOther('newTagKey'));
+
+                function requireOther (other) {
+                    return function (newVal) {
+                        if(newVal === '' || $scope[other] === '') {
+                            $scope.tagForm.$setPristine();
+                        }
+                    };
+                }
+
+                $scope.addTag = function ($event) {
+                    $event.preventDefault();
+
+                    if($scope.newTagKey === '' || $scope.newTagValue === '') {
+                        return;
+                    }
+
+                    if($scope.tagForm.$invalid || $scope.tagForm.$pristine) {
                         return;
                     }
 
@@ -58,13 +75,13 @@ angular.module('TagEditorModule', ['EucaConsoleUtils'])
             }],
             link: function (scope, element, attrs, ctrl, transcludeContents) {
                 var content = transcludeContents();
-                var tags = JSON.parse(content.text() || '{}');
+                var tags = JSON.parse(content.text() || '[]');
                 scope.tags = tags.filter(function (current) {
                     return !current.name.match(/^aws:.*/) &&
                         !current.name.match(/^euca:.*/);
                 });
 
-                attrs.showNameTag = !attrs.showNameTag; // default to true
+                attrs.showNameTag = attrs.showNameTag !== 'false';
                 attrs.autoscale = !!attrs.autoscale;    // default to false
 
                 scope.updateViewValue = function () {

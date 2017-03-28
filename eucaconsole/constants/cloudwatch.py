@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -40,15 +40,14 @@ METRIC_TYPES = [
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupPendingInstances', 'unit': 'None'},
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupTerminatingInstances', 'unit': 'None'},
     {'namespace': 'AWS/AutoScaling', 'name': 'GroupTotalInstances', 'unit': 'None'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeIdleTime', 'unit': 'Seconds'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeQueueLength', 'unit': 'Count'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeReadBytes', 'unit': 'Bytes'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeReadOps', 'unit': 'Count'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeTotalReadTime', 'unit': 'Seconds'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeWriteOps', 'unit': 'Count'},
+    {'namespace': 'AWS/EBS', 'name': 'VolumeWriteBytes', 'unit': 'Bytes'},
+    {'namespace': 'AWS/EBS', 'name': 'VolumeQueueLength', 'unit': 'Count'},
+    {'namespace': 'AWS/EBS', 'name': 'VolumeIdleTime', 'unit': 'Seconds'},
+    {'namespace': 'AWS/EBS', 'name': 'VolumeReadOps', 'unit': 'Count'},
+    {'namespace': 'AWS/EBS', 'name': 'VolumeReadBytes', 'unit': 'Bytes'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeTotalWriteTime', 'unit': 'Seconds'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeThroughputPercentage', 'unit': 'Percent'},
-    {'namespace': 'AWS/EBS', 'name': 'VolumeConsumedReadWriteOps', 'unit': 'Count'},
+    {'namespace': 'AWS/EBS', 'name': 'VolumeTotalReadTime', 'unit': 'Seconds'},
     {'namespace': 'AWS/EC2', 'name': 'CPUUtilization', 'unit': 'Percent'},
     {'namespace': 'AWS/EC2', 'name': 'DiskReadBytes', 'unit': 'Bytes'},
     {'namespace': 'AWS/EC2', 'name': 'DiskReadOps', 'unit': 'Count'},
@@ -57,18 +56,18 @@ METRIC_TYPES = [
     {'namespace': 'AWS/EC2', 'name': 'NetworkIn', 'unit': 'Bytes'},
     {'namespace': 'AWS/EC2', 'name': 'NetworkOut', 'unit': 'Bytes'},
     {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed', 'unit': 'Count'},
-    {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed_System', 'unit': 'Count'},
     {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed_Instance', 'unit': 'Count'},
+    {'namespace': 'AWS/EC2', 'name': 'StatusCheckFailed_System', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'RequestCount', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'Latency', 'unit': 'Seconds'},
+    {'namespace': 'AWS/ELB', 'name': 'UnHealthyHostCount', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'HealthyHostCount', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'HTTPCode_ELB_4XX', 'unit': 'Count'},
+    {'namespace': 'AWS/ELB', 'name': 'HTTPCode_ELB_5XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_2XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_3XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_4XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_5XX', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'HTTPCode_ELB_4XX', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'HTTPCode_ELB_5XX', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'Latency', 'unit': 'Seconds'},
-    {'namespace': 'AWS/ELB', 'name': 'RequestCount', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'HealthyHostCount', 'unit': 'Count'},
-    {'namespace': 'AWS/ELB', 'name': 'UnHealthyHostCount', 'unit': 'Count'},
 ]
 
 
@@ -97,16 +96,19 @@ METRIC_DIMENSION_INPUTS = {
 # Maps metric names to friendly titles, primarily for CloudWatch charts
 METRIC_TITLE_MAPPING = {
     # EC2 Metrics
-    'CPUUtilization': _(u'CPU utilization %'),
-    'DiskReadBytes': _(u'Disk read data'),
-    'DiskReadOps': _(u'Disk read operations'),
-    'DiskWriteBytes': _(u'Disk write data'),
-    'DiskWriteOps': _(u'Disk write operations'),
+    'CPUUtilization': _(u'CPU utilization'),
+    'DiskReadBytes': _(u'Disk read bytes'),
+    'DiskReadOps': _(u'Disk read ops'),
+    'DiskWriteBytes': _(u'Disk write bytes'),
+    'DiskWriteOps': _(u'Disk write ops'),
     'NetworkIn': _(u'Network in'),
     'NetworkOut': _(u'Network out'),
+    'StatusCheckFailed': _(u'Status check failed (either)'),
+    'StatusCheckFailed_Instance': _(u'Status check failed (instance)'),
+    'StatusCheckFailed_System': _(u'Status check failed (system)'),
     # ELB Metrics
-    'RequestCount': _(u'Sum request count'),
-    'Latency': _(u'Avg latency (ms)'),
+    'RequestCount': _(u'Request count'),
+    'Latency': _(u'Latency'),
     'UnHealthyHostCount': _(u'Unhealthy hosts'),
     'HealthyHostCount': _(u'Healthy hosts'),
     'HTTPCode_ELB_4XX': _(u'Sum ELB 4xxs'),
@@ -120,12 +122,30 @@ METRIC_TITLE_MAPPING = {
     'VolumeIdleTime': _(u'Volume idle time'),
     'VolumeQueueLength': _(u'Volume queue length'),
     'VolumeReadBytes': _(u'Volume read bytes'),
-    'VolumeReadOps': _(u'Volume read operations'),
+    'VolumeReadOps': _(u'Volume read ops'),
     'VolumeThroughputPercentage': _(u'Volume throughput percentage'),
     'VolumeTotalReadTime': _(u'Volume total read time'),
     'VolumeTotalWriteTime': _(u'Volume total write time'),
     'VolumeWriteBytes': _(u'Volume write bytes'),
-    'VolumeWriteOps': _(u'Volume write operations'),
+    'VolumeWriteOps': _(u'Volume write ops'),
+    # Scaling Group Metrics
+    'GroupDesiredCapacity': _(u'Group desired capacity'),
+    'GroupInServiceInstances': _(u'Group in service instances'),
+    'GroupMaxSize': _(u'Group max size'),
+    'GroupMinSize': _(u'Group min size'),
+    'GroupPendingInstances': _(u'Group pending instances'),
+    'GroupTerminatingInstances': _(u'Group terminating instances'),
+    'GroupTotalInstances': _(u'Group total instances'),
+    # SQS Metrics
+    'NumberOfMessagesDeleted': _(u'Number of messages deleted'),
+    'NumberOfMessagesSent': _(u'Number of messages sent'),
+    'NumberOfMessagesReceived': _(u'Number of messages received'),
+    'NumberOfEmptyReceives': _(u'Number of empty receives'),
+    'ApproximateNumberOfMessagesDelayed': _(u'Approximate number of messages delayed'),
+    'ApproximateNumberOfMessagesVisible': _(u'Approximate number of messages visible'),
+    'ApproximateNumberOfMessagesNotVisible': _(u'Approximate number of messages not visible'),
+    'ApproximateAgeOfOldestMessage': _(u'Approximate age of oldest message'),
+    'SentMessageSize': _(u'Sent message size')
 }
 
 # Statistic choices for CloudWatch charts
@@ -134,7 +154,7 @@ STATISTIC_CHOICES = [
     ('Minimum', _(u'Minimum')),
     ('Maximum', _(u'Maximum')),
     ('Sum', _(u'Sum')),
-    ('SampleCount', _(u'Sample Count')),
+    ('SampleCount', _(u'Data samples')),
 ]
 
 # Durations for CloudWatch charts (e.g. on Instance monitoring page)

@@ -1,0 +1,53 @@
+@import "../includes/eucavariables";
+@import "../widgets/alarm-actions";
+@import "../widgets/modal";
+
+.create-alarm-modal {
+    .dimensions {
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    .ng-invalid {
+        .button {
+            &.submit {
+                @include disabled-button-mixin;
+            }
+        }
+    }
+
+    .unit-label {
+        font-weight: bold;
+        color: $hpe-gray;
+    }
+
+    input[name=threshold] {
+        margin-bottom: 0;
+    }
+
+    .controls-wrapper {
+        &.dimensions {
+            small.error {
+                position: relative;
+                top: -8px;
+            }
+        }
+    }
+    .metric-chart {
+        svg {
+            @include hide-alarm-threshold-legend-mixin;
+        }
+        @include hide-alarm-threshold-tooltip-mixin;
+    }
+
+    .help {
+        margin: 15px 0 0;
+        .help-content {
+            overflow: auto;
+            max-height: 90vh;
+        }
+    }
+}

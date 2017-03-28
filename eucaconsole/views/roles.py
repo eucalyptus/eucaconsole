@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -206,6 +206,8 @@ class RoleView(BaseView):
         principal = parsed_policy['Statement'][0]['Principal']
         if 'AWS' in principal.keys():
             arn = principal['AWS']
+            if arn == "*":
+                return _(u'All')
             if isinstance(arn, list):
                 arn = arn[0]
             return _(u'Account ') + arn[arn.rindex('::') + 2:arn.rindex(':')]
@@ -214,6 +216,11 @@ class RoleView(BaseView):
             if isinstance(svc, list):
                 svc = svc[0]
             return _(u'Service ') + svc
+        elif 'Federated' in principal.keys():
+            fed = principal['Federated']
+            if isinstance(fed, list):
+                fed = fed[0]
+            return _(u'Federated ') + fed
         return ''
 
     @view_config(route_name='role_view', renderer=TEMPLATE)

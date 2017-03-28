@@ -89,7 +89,7 @@
                 <input class="number" id="new-size" ng-model="newSize" />
             </div>
             <div class="medium-3 columns" ng-show="newVolumeType !== 'ephemeral'">
-                <label class="left" i18n:translate="">Delete on terminate</label>
+                <label i18n:translate="">Delete on terminate</label>
                 <input type="checkbox" name="delete_on_termination"
                     checked="checked" ng-model="newDOT" ng-disabled="disableDOT"/>
             </div>

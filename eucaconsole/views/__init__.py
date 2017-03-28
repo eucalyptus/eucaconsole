@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -39,6 +39,7 @@ import string
 import textwrap
 import time
 from datetime import datetime, timedelta
+from collections import namedtuple
 import threading
 
 from cgi import FieldStorage
@@ -56,6 +57,8 @@ except ImportError:
 from boto.connection import AWSAuthConnection
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
+import botocore.session
+from botocore.exceptions import ClientError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
 from pyramid.i18n import TranslationString
@@ -68,7 +71,7 @@ from ..caches import long_term
 from ..caches import invalidate_cache
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
-from ..models.auth import EucaAuthenticator
+from ..models.auth import EucaAuthenticator, OIDCAuthenticator
 from ..i18n import _
 from ..models import Notification
 from ..models.auth import ConnectionManager, RegionCache
@@ -114,6 +117,36 @@ class BaseView(object):
         self.cloud_type = request.session.get('cloud_type')
         self.security_token = request.session.get('session_token')
         self.euca_logout_form = EucaLogoutForm(self.request)
+
+    def get_connection3(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
+                        secret_key=None, security_token=None):
+        # For this spike, rely on existing model/auth.py code to do the hard stuff.
+        # later, we'd convert all that from the ground up
+        conn2 = self.get_connection(conn_type, cloud_type, region, access_key, secret_key, security_token)
+        if conn2 is None:
+            # return because of unit tests..
+            return None
+
+        # convert the boto2 connection to a botocore client
+        endpoint_url = '{protocol}://{host}:{port}{path}'.format(
+            protocol=('https' if conn2.is_secure else 'http'), host=conn2.host, port=conn2.port, path=conn2.path)
+        session = botocore.session.get_session()
+        client_args = dict(
+            aws_access_key_id=conn2.aws_access_key_id,
+            aws_secret_access_key=conn2.aws_secret_access_key,
+            aws_session_token=conn2.provider.security_token,
+            use_ssl=conn2.is_secure,
+            verify=False
+        )
+        if self.cloud_type == 'euca':
+            client_args.update(dict(
+                api_version=conn2.APIVersion,
+                endpoint_url=endpoint_url,
+            ))
+        conn3 = session.create_client(
+            conn_type, conn2.region.name, **client_args
+        )
+        return conn3
 
     def get_connection(self, conn_type='ec2', cloud_type=None, region=None, access_key=None,
                        secret_key=None, security_token=None):
@@ -161,10 +194,14 @@ class BaseView(object):
             return self.request.session.get('account')
         return self.request.session.get('access_id')  # AWS
 
-    def is_csrf_valid(self, token=None):
+    @staticmethod
+    def is_csrf_valid_static(request, token=None):
         if token is None:
-            token = self.request.params.get('csrf_token')
-        return self.request.session.get_csrf_token() == token
+            token = request.params.get('csrf_token')
+        return request.session.get_csrf_token() == token
+
+    def is_csrf_valid(self, token=None):
+        return self.is_csrf_valid_static(self.request, token)
 
     def _store_file_(self, filename, mime_type, contents):
         # disable using memcache for file storage
@@ -249,7 +286,7 @@ class BaseView(object):
             acct = ''
         ufshost = self.get_connection().host if self.cloud_type == 'euca' else ''
         try:
-            if self.cloud_type == 'euca' and asbool(self.request.registry.settings.get('cache.images.disable', False)):
+            if self.cloud_type == 'euca' and asbool(self.request.registry.settings.get('cache.images.disable', True)):
                 return self._get_images_(owners, executors, ec2_region)
             else:
                 return self._get_images_cached_(owners, executors, ec2_region, acct, ufshost)
@@ -273,14 +310,36 @@ class BaseView(object):
         """
         host = self._get_ufs_host_setting_()
         port = self._get_ufs_port_setting_()
+        cert_info = self.get_cert_verification_info()
+        auth = EucaAuthenticator(
+            host, port, True,
+            validate_certs=cert_info.validate_certs,
+            ca_certs=cert_info.ca_certs_file
+        )
+        return auth
+
+    def get_oidc_authenticator(self):
+        """
+        This method centralizes configuration of the OIDCAuthenticator.
+        """
+        host = self._get_ufs_host_setting_()
+        port = self._get_ufs_port_setting_()
+        cert_info = self.get_cert_verification_info()
+        auth = OIDCAuthenticator(
+            host, port, True,
+            validate_certs=cert_info.validate_certs,
+            ca_certs=cert_info.ca_certs_file
+        )
+        return auth
+
+    def get_cert_verification_info(self):
         validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
         conn = AWSAuthConnection(None, aws_access_key_id='', aws_secret_access_key='')
         ca_certs_file = conn.ca_certificates_file
         conn = None
         ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
-        dns_enabled = self.request.session.get('dns_enabled', True)
-        auth = EucaAuthenticator(host, port, dns_enabled, validate_certs=validate_certs, ca_certs=ca_certs_file)
-        return auth
+        ret = namedtuple('ret', 'validate_certs ca_certs_file')
+        return ret(validate_certs=validate_certs, ca_certs_file=ca_certs_file)
 
     def get_account_attributes(self, attribute_names=None):
         self.__init__(self.request)
@@ -475,7 +534,7 @@ class TaggedItemView(BaseView):
     def add_tags(self):
         if self.conn:
             tags_json = self.request.params.get('tags', '{}')
-            tags_dict = self._normalize_tags(json.loads(tags_json))
+            tags_dict = self.normalize_tags(json.loads(tags_json))
             tags = {}
             for key, value in tags_dict.items():
                 key = self.unescape_braces(key.strip())
@@ -506,7 +565,8 @@ class TaggedItemView(BaseView):
                     tag_value = self.unescape_braces(value)
                     self.tagged_obj.add_tag('Name', tag_value)
 
-    def _normalize_tags(self, tags):
+    @staticmethod
+    def normalize_tags(tags):
         if type(tags) is dict:
             return tags
 
@@ -528,14 +588,20 @@ class TaggedItemView(BaseView):
         return BaseView.escape_json(json.dumps(serialized_tags))
 
     @staticmethod
-    def get_display_name(resource, escapebraces=True):
+    def get_display_name(resource, escapebraces=True, id_first=False):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
-            name = u"{0}{1}".format(
-                name_tag if name_tag else resource.id,
-                u" ({0})".format(resource.id) if name_tag else ''
-            )
+            if id_first:
+                name = u"{0}{1}".format(
+                    resource.id,
+                    u" ({0})".format(name_tag) if name_tag else '',
+                )
+            else:
+                name = u"{0}{1}".format(
+                    name_tag if name_tag else resource.id,
+                    u" ({0})".format(resource.id) if name_tag else '',
+                )
         if escapebraces:
             name = BaseView.escape_braces(name)
         return name
@@ -731,6 +797,14 @@ def conn_error(exc, request):
 def boto_error_handler(request, location=None, template="{0}"):
     try:
         yield
+    except ClientError as err:
+        old_err = BotoServerError(
+            status=err.response.get('ResponseMetadata').get('HTTPStatusCode'),
+            reason=err.response.get('Error').get('Code')
+        )
+        old_err.message = err.response.get('Error').get('Message')
+        old_err.error_code = err.response.get('Error').get('Code')
+        BaseView.handle_error(err=old_err, request=request, location=location, template=template)
     except BotoServerError as err:
         BaseView.handle_error(err=err, request=request, location=location, template=template)
     except socket.error as err:
@@ -739,6 +813,8 @@ def boto_error_handler(request, location=None, template="{0}"):
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
+    if not(BaseView.is_csrf_valid_static(request)):
+        return JSONResponse(status=400, message="missing CSRF token")
     session = request.session
     if session.get('file_cache'):
         (filename, mime_type, contents) = session['file_cache']
@@ -747,6 +823,8 @@ def file_download(request):
         response = Response(content_type=mime_type)
         response.body = str(contents)
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        response.cache_control = 'no-store'
+        response.pragma = 'no-cache'
         return response
     # no file found ...
     # this isn't handled on on client anyway, so we can return pretty much anything

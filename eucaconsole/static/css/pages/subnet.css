@@ -1,0 +1,37 @@
+/* @fileOverview Subnet details page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* ----------------------------------------- Item list
+----------------------------------------- */
+.state.available { background-color: #425563; }
+
+.state.pending { background-color: #6d899e; }
+
+.status.running { background-color: #425563; }
+
+.status.pending { background-color: #6d899e; }
+
+.status.stopped { background-color: darkred; }
+
+.status.stopping { background-color: #ff6666; }
+
+.status.terminated { background-color: #666666; }
+
+.status.shutting-down { background-color: #cccccc; }
+
+#name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id { width: 40%; }
+
+#subnet-instances-link { text-align: right; }
+
+@media only screen and (max-width: 40em) { #name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id { width: 100%; } }
+table.instances { width: 100%; margin-bottom: 1rem; }
+
+#delete-subnet-modal #default-subnet-warning { color: red; }
+#delete-subnet-modal button.button.warning { background-color: red; }
+#delete-subnet-modal button.button.warning:hover { outline-color: red; }
+#delete-subnet-modal .resources-list { margin-bottom: 1rem; }
+#delete-subnet-modal .resources-list .small-3 { text-align: right; font-weight: bold; }
+
+.existing-nat-gateways-notice { margin-bottom: 1rem; }
+
+#ipcount { margin-left: 1rem; }

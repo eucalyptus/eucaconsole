@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Jasmine Unittest for Instance Create Image JS 
  * @requires Jasmine, AngularJS mock
  *
@@ -30,65 +32,65 @@ describe("InstanceCreateImage", function() {
 
     describe("Initial Values Test", function() {
 
-        it("Initial value of expanded is false", function() {
-            expect(scope.expanded).not.toBeTruthy();
+        it("should set initial value of expanded to false", function() {
+            expect(scope.expanded).toBe(false);
         });
 
-        it("Initial value of name is empty", function() {
+        it("should set initial value of name to empty string", function() {
             expect(scope.name).toEqual('');
         });
 
-        it("Initial value of bucketName is empty", function() {
+        it("should set initial value of bucketName to empty string", function() {
             expect(scope.bucketName).toEqual('');
         });
 
-        it("Initial value of s3_prefix is image", function() {
+        it("should set initial value of s3_prefix to 'image'", function() {
             expect(scope.s3_prefix).toEqual('image');
         });
 
-        it("Initial value of s3BucketError is false", function() {
-            expect(scope.s3BucketError).not.toBeTruthy();
+        it("should set initial value of s3BucketError to false", function() {
+            expect(scope.s3BucketError).toBe(false);
         });
 
-        it("Initial value of s3PrefixError is false", function() {
-            expect(scope.s3PrefixError).not.toBeTruthy();
+        it("should set initial value of s3PrefixError to false", function() {
+            expect(scope.s3PrefixError).toBe(false);
         });
 
-        it("Initial value of isNotValid is true", function() {
-            expect(scope.isNotValid).toBeTruthy();
+        it("should set initial value of isNotValid to true", function() {
+            expect(scope.isNotValid).toBe(true);
         });
     });
 
-    describe("Function checkRequiredInput() Test", function() {
+    describe("#checkRequiredInput", function() {
 
-        it("Should call validateS3BucketInput() when checkRequiredInput() is called", function() {
+        it("should call validateS3BucketInput() when checkRequiredInput() is called", function() {
             spyOn(scope, 'validateS3BucketInput');
             scope.checkRequiredInput();
             expect(scope.validateS3BucketInput).toHaveBeenCalled();
         });
 
-        it("Should call validateS3PrefixInput() when checkRequiredInput() is called", function() {
+        it("should call validateS3PrefixInput() when checkRequiredInput() is called", function() {
             spyOn(scope, 'validateS3PrefixInput');
             scope.checkRequiredInput();
             expect(scope.validateS3PrefixInput).toHaveBeenCalled();
         });
 
-        it("Should invalid input if name is empty", function() {
+        it("should set isNotValid to true if name is empty", function() {
             scope.name = '';
             scope.checkRequiredInput();
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should invalid input if bucketName is empty", function() {
+        it("should set isNotValid to true if bucketName is empty", function() {
             scope.bucketName = '';
             scope.checkRequiredInput();
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
 
-        it("Should invalid input if s3_prefix is empty", function() {
+        it("Should set isNotValid to true if s3_prefix is empty", function() {
             scope.s3_prefix = '';
             scope.checkRequiredInput();
-            expect(scope.isNotValid).toBeTruthy();
+            expect(scope.isNotValid).toBe(true);
         });
     });
 });

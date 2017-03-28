@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Launch Config Wizard JS
  * @requires AngularJS
  *
@@ -22,8 +24,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.securityGroupsRulesJsonEndpoint = '';
         $scope.securityGroupCollection = {};
         $scope.securityGroupsRules = {};
-        $scope.keyPairChoices = {};
-        $scope.keyPair = '';
+        $scope.keyPair = undefined;
+        $scope.keyPairChoices = [];
         $scope.newKeyPairName = '';
         $scope.keyPairSelected = '';
         $scope.keyPairModal = $('#create-keypair-modal');
@@ -31,14 +33,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
-        $scope.securityGroupChoices = {};
+        $scope.securityGroupChoices = [];
         $scope.securityGroupChoicesFullName = {};
         $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.isCreateSGChecked = true;
-        $scope.role = '';
+        $scope.role = undefined;
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -53,13 +55,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.keyPairChoices = options.keypair_choices;
+            $scope.keyPair = $scope.keyPairChoices[0];
             $scope.securityGroupChoices = options.securitygroups_choices;
             $scope.roleList = options.role_choices;
+            $scope.role = $scope.roleList[0];
             $scope.securityGroupJsonEndpoint = options.securitygroups_json_endpoint;
             $scope.securityGroupsRulesJsonEndpoint = options.securitygroups_rules_json_endpoint;
             $scope.imageJsonURL = options.image_json_endpoint;
             $scope.securityGroupVPC = options.default_vpc_network;
-            $scope.getAllSecurityGroups(); 
+            $scope.getAllSecurityGroups();
             $scope.getAllSecurityGroupsRules();
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
@@ -146,13 +150,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.imageID = $scope.urlParams.image_id || '';
             $scope.keyPairSelected = $scope.urlParams.keypair || '';
-            if( $scope.instanceTypeSelected !== '' )
+            if ($scope.instanceTypeSelected !== '') {
                 $scope.instanceType = $scope.instanceTypeSelected;
-            if( $scope.keyPairSelected !== '' )
+            }
+            if ($scope.keyPairSelected !== '') {
                 $scope.keyPair = $scope.keyPairSelected;
-            if( $scope.imageID === '' ){
+            }
+            if ($scope.imageID === '') {
                 $scope.currentStepIndex = 1;
-            }else{
+            } else {
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
                 $scope.loadImageInfo($scope.imageID);
@@ -337,18 +343,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {
                     var closeMark = modal.find('.close-reveal-modal');
                     if(!!closeMark){
                         closeMark.focus();
                     }
-                }else{
+                } else {
                     var inputElement = modal.find('input[type!=hidden]').get(0);
-                    var modalButton = modal.find('button').get(0);
                     if (!!inputElement && inputElement.value === '') {
                         inputElement.focus();
-                    } else if (!!modalButton) {
-                        modalButton.focus();
                     }
                }
                 // Handle the angular and foundation conflict when setting the select options after the dialog opens
@@ -447,17 +450,21 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 url: createUrl,
                 data: formData
             }).success(function (oData) {
+                var newKeyPair;
                 $scope.isLoadingKeyPair = false;
-                var keypairMaterial = oData.payload;
                 // Add new key pair to choices and set it as selected
-                $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
-                $scope.keyPair = $scope.newKeyPairName;
+                newKeyPair = {
+                    'id': $scope.newKeyPairName,
+                    'label': $scope.newKeyPairName
+                };
+                $scope.keyPairChoices.push(newKeyPair);
+                $scope.keyPair = newKeyPair;
                 Notify.success(oData.message);
                 // Download key pair file
                 $.generateFile({
                     csrf_token: form.find('input[name="csrf_token"]').val(),
-                    filename: $scope.newKeyPairName + '.pem',
-                    content: keypairMaterial,
+                    filename: 'not-used',  // server sets this
+                    content: 'none',
                     script: downloadUrl
                 });
                 // Close create key pair modal
@@ -485,20 +492,25 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             }).success(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 // Add new security group to choices and set it as selected
+                var newSecurityGroup;
                 var newSecurityGroupID = '';
                 if (oData.id) {
                     newSecurityGroupID = oData.id;
                 }
-                var newlyCreatedSecurityGroupName = $scope.newSecurityGroupName;
-                $scope.securityGroupChoicesFullName[newSecurityGroupID] = newlyCreatedSecurityGroupName;
-                if (newlyCreatedSecurityGroupName.length > 30) {
-                    newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName.substr(0, 30) + "...";
+                var securityGroupName = $scope.newSecurityGroupName;
+                $scope.securityGroupChoicesFullName[newSecurityGroupID] = securityGroupName;
+                if (securityGroupName.length > 45) {
+                    securityGroupName = securityGroupName.substr(0, 45) + "...";
                 }
                 if ($scope.securityGroupVPC && $scope.securityGroupVPC != 'None') {
-                    newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName + " (" + $scope.securityGroupVPC + ")";
+                    securityGroupName = securityGroupName + " (" + $scope.securityGroupVPC + ")";
                 }
-                $scope.securityGroupChoices[newSecurityGroupID] = newlyCreatedSecurityGroupName;
-                $scope.securityGroups.push(newSecurityGroupID);
+                newSecurityGroup = {
+                    'id': newSecurityGroupID,
+                    'label': securityGroupName
+                };
+                $scope.securityGroupChoices.push(newSecurityGroup);
+                $scope.securityGroups.push(newSecurityGroup);
                 var groupRulesObject = JSON.parse($('#rules').val());
                 var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
                 var groupRulesObjectCombined = groupRulesObject.concat(groupRulesEgressObject); 

@@ -25,6 +25,13 @@
     }
 }
 
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+     /* IE10/11 specific styles */
+    .gridwrapper .tile .header a.has-bucket-icon {
+        background-size: 90px;  // Avoid tiny bucket icon in tile view header
+    }
+}
+
 .button.cancel {
     background-color: darken(red, 20%);
 }
@@ -41,7 +48,7 @@
     margin-bottom: 15px;
     .meter {  // barbershop progress indicator
         position: absolute;
-        background-color: $hp-accessible-blue;
+        background-color: $hpe-blue;
         background-image: linear-gradient(-45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
         -webkit-animation: move 2s linear infinite;
         animation: move 2s linear infinite;
@@ -54,7 +61,7 @@
         width: 100%;
         text-align: center;
         margin-top: 5px;
-        margin-bottom: 0px;
+        margin-bottom: 0;
         font-size: 1.0rem;
         font-weight: bold;
     }

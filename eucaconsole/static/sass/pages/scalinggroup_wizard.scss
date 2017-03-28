@@ -14,6 +14,15 @@
     }
 }
 
+.wizard .tabs dd.disabled {
+    position: relative;
+    top: -8px;
+    a {
+        color: #ccc;
+        pointer-events: none;
+    }
+}
+
 #controls_max_size {
     margin-left: -1rem;
 }
@@ -22,6 +31,9 @@
     width: 4rem;
 }
 
+#capacity-section {
+    margin-bottom: 1rem;
+}
 
 [data-abide] #capacity-section .error {
     small.error {

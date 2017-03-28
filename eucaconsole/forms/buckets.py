@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2013-2015 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -231,3 +231,18 @@ class CreateFolderForm(BaseSecureForm):
     def __init__(self, request, **kwargs):
         super(CreateFolderForm, self).__init__(request, **kwargs)
         self.folder_name.error_msg = self.folder_name_error_msg
+
+
+class CorsConfigurationForm(BaseSecureForm):
+    """S3 Bucket CORS Configuration form"""
+    pass
+
+
+class CorsDeletionForm(BaseSecureForm):
+    """S3 Bucket CORS Deletion Confirmation form"""
+    pass
+
+
+class PolicyDeletionForm(BaseSecureForm):
+    """S3 Bucket Policy Deletion Confirmation form"""
+    pass

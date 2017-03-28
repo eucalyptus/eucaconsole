@@ -1,4 +1,6 @@
 /**
+ * Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
  * @fileOverview Launch configurations landing page JS
  * @requires AngularJS, jQuery
  *
