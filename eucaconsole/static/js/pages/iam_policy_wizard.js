@@ -467,6 +467,7 @@ angular.module('IAMPolicyWizard', ['EucaConsoleUtils'])
             if (conditionKey.indexOf('Ip') !== -1) { return 'IP'; }
             if (conditionKey.toLowerCase().indexOf('user') !== -1) { return 'STRING'; }
             if (conditionKey.indexOf('Secure') !== -1) { return 'BOOL'; }
+            if (conditionKey.indexOf('principalType') !== -1) { return 'STRING'; }
 
             // EC2-specific conditions
             if (conditionKey.indexOf('EbsOptimized') !== -1) { return 'BOOL'; }
