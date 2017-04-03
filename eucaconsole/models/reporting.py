@@ -30,6 +30,7 @@ A connection objects for Eucalyptus Reporting features
 """
 
 import logging
+import urllib
 
 import boto
 from boto.connection import AWSQueryConnection
@@ -81,8 +82,8 @@ class EucalyptusConnection(AWSQueryConnection):
             body = json.loads(body)
             return body
         else:
-            boto.log.error('%s %s' % (response.status, response.reason))
-            boto.log.error('%s' % body)
+            logging.error('%s %s' % (response.status, response.reason))
+            logging.error('%s' % body)
             raise self.ResponseError(response.status, response.reason, body=body)
 
 
@@ -182,18 +183,19 @@ class EucalyptusEC2Reports(EucalyptusConnection):
 
     def view_instance_usage_report(self, start_time, end_time, filters, group_by, report_granularity='Daily'):
         """
-        implements ViewUsage
+        implements ViewInstanceUsageReport
         """
         params = {
             'Granularity': report_granularity,
-            'TimePeriodFrom': start_time.isoformat(),
-            'TimePeriodTo': end_time.isoformat(),
-            'GroupBy.Key': group_by,
+            'TimeRangeStart': start_time.isoformat()[:-3] + 'Z',
+            'TimeRangeEnd': end_time.isoformat()[:-3] + 'Z',
+            #'GroupBy.Key': group_by,
+            #'GroupBy.Type': group_by,
         }
         if len(filters) > 0:
             for i, f in enumerate(filters):
                 params['Filters.member.%d.Type' % (i + 1)] = f.get('type')
                 params['Filters.member.%d.Key' % (i + 1)] = f.get('key')
-        ret = self._do_request('ViewUsage', params, 'POST')
+        ret = self._do_request('ViewInstanceUsageReport', params, 'POST')
         return ret
 

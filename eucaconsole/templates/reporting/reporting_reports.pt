@@ -1,7 +1,7 @@
 <div i18n:domain="eucaconsole">
     <div class="section">
         <h6 class="section-label" i18n:translate="">Usage Reports</h6>
-        <a i18n:translate="" ng-click="reports.showEC2InstanceUsageReport()">EC2 Instance Usage Report</a>
+        <a i18n:translate="" href="/reports/instance-usage">EC2 Instance Usage Report</a>
         <p i18n:translate="">
             An interactive report that shows usage for your EC2 instances over a specified period
         </p>
