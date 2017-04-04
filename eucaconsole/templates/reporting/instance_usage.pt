@@ -108,10 +108,9 @@
                                     <select name="group-by"
                                             ng-model="instanceusage.values.groupBy">
                                         <option value="" i18n:translate="">None</option>
-                                        <option value="zone" i18n:translate="">Availability zone</option>
-                                        <option value="type" i18n:translate="">Instance type</option>
+                                        <option value="availability_zone" i18n:translate="">Availability zone</option>
+                                        <option value="instancetype" i18n:translate="">Instance type</option>
                                         <option value="platform" i18n:translate="">Platform</option>
-                                        <option value="region" i18n:translate="">Region</option>
                                         <option value="tag" i18n:translate="">Tag</option>
                                     </select>
                                 </div>

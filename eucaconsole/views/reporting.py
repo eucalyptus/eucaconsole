@@ -28,7 +28,8 @@
 Pyramid views for Eucalyptus and Usage Reporting
 
 """
-import datetime
+from collections import namedtuple
+from datetime import datetime, timedelta
 import simplejson as json
 import io
 from dateutil.relativedelta import relativedelta
@@ -187,17 +188,9 @@ class ReportingAPIView(BaseView):
         service = self.request.params.get('service')
         usage_type = self.request.params.get('usageType')
         granularity = self.request.params.get('granularity')
-        time_period = self.request.params.get('timePeriod')
-        end_time = datetime.datetime.utcnow()
-        if time_period == 'lastWeek':
-            start_time = end_time - relativedelta(days=7)
-        elif time_period == 'lastMonth':
-            start_time = end_time - relativedelta(months=1)
-        else:
-            start_time = self.request.params.get('fromTime')
-            end_time = self.request.params.get('toTime')
+        dates = self.dates_from_params(self.request.params)
         # use "ViewUsage" call to fetch usage information
-        ret = self.conn.view_usage(service, usage_type, 'all', start_time, end_time, report_granularity=granularity)
+        ret = self.conn.view_usage(service, usage_type, 'all', dates.from_date, dates.to_date, report_granularity=granularity)
         filename = 'EucalyptusServiceUsage-{0}-{1}-{2}.csv'.format(
             self.request.session.get('account'),
             service,
@@ -214,25 +207,19 @@ class ReportingAPIView(BaseView):
     def get_reporting_instance_usage(self):
         conn = self.get_connection(conn_type='ec2reports')
         granularity = self.request.params.get('granularity')
-        time_period = self.request.params.get('timePeriod')
         group_by = self.request.params.get('groupBy')
-        end_time = datetime.datetime.utcnow()
-        if time_period == 'lastWeek':
-            start_time = end_time - relativedelta(days=7)
-        elif time_period == 'lastMonth':
-            start_time = end_time - relativedelta(months=1)
-        else:
-            start_time = self.request.params.get('fromTime')
-            end_time = self.request.params.get('toTime')
+        dates = self.dates_from_params(self.request.params)
         with boto_error_handler(self.request):
             # use "ViewInstanceUsageReport" call to fetch usage information
-            ret = conn.view_instance_usage_report(start_time, end_time, {}, group_by, report_granularity=granularity)
+            ret = conn.view_instance_usage_report(dates.from_date, dates.to_date, {}, group_by, report_granularity=granularity)
             csv = ret.get('usageReport')
             data = pandas.read_csv(io.StringIO(csv), engine='c')
-            values = []
-            for item in data.itertuples():
-                values.append({'x': item[1], 'y': item[3]})
-            results = [{'key': group_by, 'values': values}]
+            results = []
+            for series in range(2, len(data.columns)):
+                values = []
+                for item in data.itertuples():
+                    values.append({'x': item[1], 'y': item[series+1]})
+                results.append({'key': data.columns[series], 'values': values})
             return dict(results=results)
 
     @view_config(route_name='reporting_instance_usage', request_method='POST')
@@ -241,29 +228,22 @@ class ReportingAPIView(BaseView):
         if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
         granularity = self.request.params.get('granularity')
-        time_period = self.request.params.get('timePeriod')
         group_by = self.request.params.get('groupBy')
-        end_time = datetime.datetime.utcnow()
-        if time_period == 'lastWeek':
-            start_time = end_time - relativedelta(days=7)
-        elif time_period == 'lastMonth':
-            start_time = end_time - relativedelta(months=1)
-        else:
-            start_time = self.request.params.get('fromTime')
-            end_time = self.request.params.get('toTime')
-        # use "ViewInstanceUsageReport" call to fetch usage information
-        ret = conn.view_instance_usage_report(start_time, end_time, {}, group_by, report_granularity=granularity)
-        filename = 'EucalyptusInstanceUsage-{0}-{1}-{2}.csv'.format(
-            self.request.session.get('account'),
-            '',
-            ''
-        )
-        response = Response(content_type='text/csv')
-        response.text = ret.get('usageReport')
-        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
-        response.cache_control = 'no-store'
-        response.pragma = 'no-cache'
-        return response
+        dates = self.dates_from_params(self.request.params)
+        with boto_error_handler(self.request):
+            # use "ViewInstanceUsageReport" call to fetch usage information
+            ret = conn.view_instance_usage_report(dates.from_date, dates.to_date, {}, group_by, report_granularity=granularity)
+            filename = 'EucalyptusInstanceUsage-{0}-{1}-{2}.csv'.format(
+                self.request.session.get('account'),
+                '',
+                ''
+            )
+            response = Response(content_type='text/csv')
+            response.text = ret.get('usageReport')
+            response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+            response.cache_control = 'no-store'
+            response.pragma = 'no-cache'
+            return response
 
     @staticmethod
     def units_from_details(details):
@@ -272,3 +252,18 @@ class ReportingAPIView(BaseView):
             if unit['hint'] in details:
                 return unit['units']
         return ''
+
+    @staticmethod
+    def dates_from_params(params):
+        time_period = params.get('timePeriod')
+        to_date = datetime.utcnow()
+        if time_period == 'lastWeek':
+            from_date = to_date - relativedelta(days=7)
+        elif time_period == 'lastMonth':
+            from_date = to_date - relativedelta(months=1)
+        else:
+            from_date = datetime.strptime(params.get('fromTime'), '%Y/%m/%d') + timedelta(milliseconds=1)
+            to_date = datetime.strptime(params.get('toTime'), '%Y/%m/%d') + timedelta(milliseconds=1)
+        
+        ret = namedtuple('ret', 'from_date to_date')
+        return ret(from_date=from_date, to_date=to_date)

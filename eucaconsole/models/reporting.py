@@ -189,9 +189,11 @@ class EucalyptusEC2Reports(EucalyptusConnection):
             'Granularity': report_granularity,
             'TimeRangeStart': start_time.isoformat()[:-3] + 'Z',
             'TimeRangeEnd': end_time.isoformat()[:-3] + 'Z',
-            #'GroupBy.Key': group_by,
-            #'GroupBy.Type': group_by,
         }
+        if group_by:
+            params['GroupBy.Type'] = group_by
+            if group_by == 'tag':
+                pass #params['GroupBy.Key'] = tag_value
         if len(filters) > 0:
             for i, f in enumerate(filters):
                 params['Filters.member.%d.Type' % (i + 1)] = f.get('type')
