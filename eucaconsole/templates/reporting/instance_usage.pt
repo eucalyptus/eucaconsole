@@ -117,6 +117,9 @@
                             </div>
                         </div>
                         <div class="large-9 columns">
+                            <div class="columns">
+                                &nbsp;
+                            </div>
                             <button type="submit" class="button" i18n:translate="" id="update-btn"
                                 ng-click="instanceusage.updateUsage($event)"
                                 ng-show="!instanceusage.isUpdating" ng-disabled="instanceReportForm.$invalid">

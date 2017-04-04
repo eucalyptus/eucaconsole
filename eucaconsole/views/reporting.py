@@ -244,8 +244,8 @@ class ReportingAPIView(BaseView):
             )
             filename = 'EucalyptusInstanceUsage-{0}-{1}-{2}.csv'.format(
                 self.request.session.get('account'),
-                '',
-                ''
+                dates.from_date,
+                dates.to_date
             )
             response = Response(content_type='text/csv')
             response.text = ret.get('usageReport')
