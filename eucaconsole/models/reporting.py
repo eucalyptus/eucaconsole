@@ -30,9 +30,7 @@ A connection objects for Eucalyptus Reporting features
 """
 
 import logging
-import urllib
 
-import boto
 from boto.connection import AWSQueryConnection
 from boto.compat import json
 
@@ -76,8 +74,10 @@ class EucalyptusConnection(AWSQueryConnection):
         :return: Parsed JSON response data
         """
         params['Version'] = self.version
+        logging.debug('params: ' + json.dumps(params))
         response = self.make_request(call, params, self.path, method)
         body = response.read().decode('utf-8')
+        logging.debug('response: ' + body)
         if response.status == 200:
             body = json.loads(body)
             return body
@@ -193,11 +193,14 @@ class EucalyptusEC2Reports(EucalyptusConnection):
         if group_by:
             params['GroupBy.Type'] = group_by
             if group_by == 'tag':
-                pass #params['GroupBy.Key'] = tag_value
+                pass  # params['GroupBy.Key'] = tag_value
         if len(filters) > 0:
-            for i, f in enumerate(filters):
-                params['Filters.member.%d.Type' % (i + 1)] = f.get('type')
-                params['Filters.member.%d.Key' % (i + 1)] = f.get('key')
+            i = 0
+            for idx, f in enumerate(filters):
+                for key in filters[f]:
+                    params['Filters.member.%d.Type' % (i + 1)] = f
+                    params['Filters.member.%d.Key' % (i + 1)] = key
+                    i += 1
         ret = self._do_request('ViewInstanceUsageReport', params, 'POST')
         return ret
 

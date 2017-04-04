@@ -70,7 +70,6 @@ class ReportingView(BaseView):
         prefs = ret.get('billingSettings')
         return prefs.get('detailedBillingEnabled')
 
-
     @view_config(route_name='reporting_instance', renderer='../templates/reporting/instance_usage.pt')
     def reporting_instance_usage(self):
         vmtypes = ChoicesManager(self.get_connection()).instance_types(self.cloud_type)
@@ -190,7 +189,9 @@ class ReportingAPIView(BaseView):
         granularity = self.request.params.get('granularity')
         dates = self.dates_from_params(self.request.params)
         # use "ViewUsage" call to fetch usage information
-        ret = self.conn.view_usage(service, usage_type, 'all', dates.from_date, dates.to_date, report_granularity=granularity)
+        ret = self.conn.view_usage(
+            service, usage_type, 'all', dates.from_date, dates.to_date, report_granularity=granularity
+        )
         filename = 'EucalyptusServiceUsage-{0}-{1}-{2}.csv'.format(
             self.request.session.get('account'),
             service,
@@ -209,9 +210,13 @@ class ReportingAPIView(BaseView):
         granularity = self.request.params.get('granularity')
         group_by = self.request.params.get('groupBy')
         dates = self.dates_from_params(self.request.params)
+        filters = self.request.params.get('filters') or '[]'
+        filters = json.loads(filters)
         with boto_error_handler(self.request):
             # use "ViewInstanceUsageReport" call to fetch usage information
-            ret = conn.view_instance_usage_report(dates.from_date, dates.to_date, {}, group_by, report_granularity=granularity)
+            ret = conn.view_instance_usage_report(
+                dates.from_date, dates.to_date, filters, group_by, report_granularity=granularity
+            )
             csv = ret.get('usageReport')
             data = pandas.read_csv(io.StringIO(csv), engine='c')
             results = []
@@ -230,9 +235,13 @@ class ReportingAPIView(BaseView):
         granularity = self.request.params.get('granularity')
         group_by = self.request.params.get('groupBy')
         dates = self.dates_from_params(self.request.params)
+        filters = self.request.params.get('filters') or '[]'
+        filters = json.loads(filters)
         with boto_error_handler(self.request):
             # use "ViewInstanceUsageReport" call to fetch usage information
-            ret = conn.view_instance_usage_report(dates.from_date, dates.to_date, {}, group_by, report_granularity=granularity)
+            ret = conn.view_instance_usage_report(
+                dates.from_date, dates.to_date, filters, group_by, report_granularity=granularity
+            )
             filename = 'EucalyptusInstanceUsage-{0}-{1}-{2}.csv'.format(
                 self.request.session.get('account'),
                 '',

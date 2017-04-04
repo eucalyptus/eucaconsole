@@ -35,7 +35,8 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
                     timePeriod: 'lastWeek',
                     fromDate: '',
                     toDate: '',
-                    groupBy: ''
+                    groupBy: '',
+                    filters: []
                 };
                 vm.isUpdating = false;
                 vm.isDownloading = false;
@@ -48,7 +49,7 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
                     // use reports service to load montly report data
                     vm.isUpdating = true;
                     ReportingService.getInstanceUsage(vm.values.granularity, vm.values.timePeriod,
-                        vm.values.fromDate, vm.values.toDate, vm.values.groupBy).then(
+                        vm.values.fromDate, vm.values.toDate, vm.values.groupBy, vm.values.filters).then(
                     function success(result) {
                             vm.isUpdating = false;
                             vm.usageData.length = 0;
@@ -73,7 +74,8 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
                         'timePeriod': vm.values.timePeriod,
                         'fromTime': vm.values.fromDate,
                         'toTime': vm.values.toDate,
-                        'groupBy': vm.values.groupBy
+                        'groupBy': vm.values.groupBy,
+                        'filters': vm.values.filters
                     };
                     var url = '/reporting-api/instanceusage?' + $httpParamSerializer(params);
                     $.generateFile({
@@ -86,6 +88,19 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
                         vm.isDownloading = false;
                     }, 3000);
                 };
+                $scope.$on('searchUpdated', function ($event, query) {
+                    // split it out
+                    var tmp = query.split('&').sort();
+                    var facets = {};
+                    angular.forEach(tmp, function(item) {
+                        var facet = item.split('=');
+                        if (this[facet[0]] === undefined) {
+                            this[facet[0]] = [];
+                        }
+                        this[facet[0]].push(facet[1]);
+                    }, facets);
+                    vm.values.filters = facets;
+                });
             }
         ],
         controllerAs: 'instanceusage'
@@ -99,7 +114,6 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
         },
         controller: ['$scope', function($scope) {
             $scope.chart = undefined;
-            console.log("graph model is :"+$scope.data);
             nv.addGraph(function() {
                 $scope.chart = nv.models.multiBarChart()
                   .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.

@@ -49,13 +49,14 @@ angular.module('ReportingServiceModule', [])
             });
         },
 
-        getInstanceUsage: function (granularity, timePeriod, fromDate, toDate, groupBy) {
+        getInstanceUsage: function (granularity, timePeriod, fromDate, toDate, groupBy, filters) {
             var params = {
                 'granularity': granularity,
                 'timePeriod': timePeriod,
                 'fromTime': fromDate,
                 'toTime': toDate,
-                'groupBy': groupBy
+                'groupBy': groupBy,
+                'filters': JSON.stringify(filters)
             };
             return $http({
                 method: 'GET',
