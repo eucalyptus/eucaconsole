@@ -163,7 +163,6 @@ class EucalyptusReporting(EucalyptusConnection):
             'TimePeriodTo': end_time.isoformat(),
             'ReportGranularity': report_granularity
         }
-        logging.debug('request params: ' + str(params))
         ret = self._do_request('ViewUsage', params, 'POST')
         return ret
 

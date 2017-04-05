@@ -32,7 +32,7 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
                 var vm = this;
                 vm.values = {
                     granularity: 'Hourly',
-                    timePeriod: 'lastWeek',
+                    timePeriod: 'lastMonth',
                     fromDate: '',
                     toDate: '',
                     groupBy: '',

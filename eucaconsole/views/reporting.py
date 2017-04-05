@@ -83,6 +83,11 @@ class ReportingView(BaseView):
         if len(regions) > 1:
             facets.append({'name': 'region', 'label': _(u'Region'),
                            'options': [{'key': choice[0], 'label':choice[1]} for choice in regions]})
+        tags = self.get_connection().get_all_tags(filters={'resource-type':'instance'})
+        if len(tags) > 1:
+            tag_names = sorted(set([tag.name for tag in tags]))
+            facets.append({'name': 'tags', 'label': _(u'Tags'),
+                           'options': [{'key': tag, 'label': tag} for tag in tag_names]})
         
         return dict(facets=BaseView.escape_json(json.dumps(facets)))
 
