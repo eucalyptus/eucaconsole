@@ -34,7 +34,7 @@ angular.module('UsageReportsModule', ['ModalModule', 'EucaConsoleUtils'])
                 vm.values = {
                     service: 'ec2',
                     usageType: 'all',
-                    granularity: 'Hours',
+                    granularity: 'hourly',
                     timePeriod: 'lastWeek',
                     fromDate: '',
                     toDate: ''
@@ -57,8 +57,8 @@ angular.module('UsageReportsModule', ['ModalModule', 'EucaConsoleUtils'])
                         'usageType': vm.values.usageType,
                         'granularity': vm.values.granularity,
                         'timePeriod': vm.values.timePeriod,
-                        'fromTime': vm.values.fromTime,
-                        'toTime': vm.values.toTime,
+                        'fromTime': vm.values.fromDate,
+                        'toTime': vm.values.toDate,
                     };
                     var url = '/reporting-api/serviceusage?' + $httpParamSerializer(params);
                     $.generateFile({
