@@ -12,7 +12,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="usage in dashboard.monthlyToDateUsage">
+                        <tr ng-repeat="usage in dashboard.monthToDateUsage">
                             <td>
                                 &nbsp;&nbsp;{{ usage[0] }}
                             </td>
