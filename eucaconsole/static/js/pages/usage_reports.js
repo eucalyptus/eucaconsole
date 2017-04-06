@@ -34,7 +34,7 @@ angular.module('UsageReportsModule', ['ModalModule', 'EucaConsoleUtils'])
                 vm.values = {
                     service: 'ec2',
                     usageType: 'all',
-                    granularity: 'Hours',
+                    granularity: 'hourly',
                     timePeriod: 'lastWeek',
                     fromDate: '',
                     toDate: ''
