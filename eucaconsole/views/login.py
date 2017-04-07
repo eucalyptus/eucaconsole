@@ -393,15 +393,23 @@ class LoginView(BaseView, PermissionCheckMixin):
             logging.error("missing the oidc.client.ini file, refer to this setting in the console.ini")
             return None
         else:
-            ini = ConfigParser.ConfigParser()
-            with open(source) as f:
-                ini.readfp(f)
+            try:
+                ini = ConfigParser.ConfigParser()
+                with open(source) as f:
+                    ini.readfp(f)
+            except ConfigParser.Error as err:
+                logging.error("Error parsing the oidc.client.ini file: " + err.message)
+                return None
 
-        Creds =  collections.namedtuple('oidc_creds', 'client_id client_secret')
-        return Creds(
-            client_id=ini.get('general', 'oidc.client.id'),
-            client_secret=ini.get('general', 'oidc.client.secret')
-        )
+        try:
+            Creds = collections.namedtuple('oidc_creds', 'client_id client_secret')
+            return Creds(
+                client_id=ini.get('general', 'oidc.client.id'),
+                client_secret=ini.get('general', 'oidc.client.secret')
+            )
+        except ConfigParser.Error as err:
+            logging.error("Error reading the oidc.client.ini file: " + err.message)
+            return None
 
 
 class LogoutView(BaseView):
