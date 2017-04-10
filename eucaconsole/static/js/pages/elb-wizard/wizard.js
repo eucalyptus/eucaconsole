@@ -51,6 +51,7 @@ angular.module('ELBWizard', [
                 return validSteps;
             };
             ELBWizardService.cloudType = $scope.cloudType;
+            ELBWizardService.vpcEnabled = $scope.vpcEnabled;
         }],
         controllerAs: 'wizard'
     };
