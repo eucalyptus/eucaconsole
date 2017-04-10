@@ -1538,7 +1538,7 @@ ul.resources-nav {
         i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
     }
     li.active {
-        background-color: $hpe-green !important;
+        background-color: $dxc-yellow !important;
         color: white !important;
     }
     i.icon {
@@ -1547,7 +1547,7 @@ ul.resources-nav {
         margin-top: 0.5rem;
         height: 2rem;
         width: 2rem;
-        color: #939598;
+        color: #000000;
     }
     i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
     i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }

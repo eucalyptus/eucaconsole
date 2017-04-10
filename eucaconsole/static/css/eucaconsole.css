@@ -1069,7 +1069,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 
 /* Tooltips */
 .has-tip { border-bottom: dotted 1px #CCCCCC; cursor: help; font-weight: bold; color: #333333; }
-.has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #004c3b; color: #01a982; }
+.has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #004c3a; color: #01a982; }
 .has-tip.tip-left, .has-tip.tip-right { float: none !important; }
 
 .tooltip { display: none; position: absolute; z-index: 1006; font-weight: normal; font-size: 0.875rem; line-height: 1.3; padding: 0.3125rem; max-width: 300px; left: 50%; width: 100%; color: #666666; background: white; }
@@ -1078,7 +1078,7 @@ table thead tr th, table tfoot tr th, table tfoot tr td, table tbody tr th, tabl
 .tooltip.radius { border-radius: 3px; }
 .tooltip.round { border-radius: 1000px; }
 .tooltip.round > .nub { left: 2rem; }
-.tooltip.opened { color: #01a982 !important; border-bottom: dotted 1px #004c3b !important; }
+.tooltip.opened { color: #01a982 !important; border-bottom: dotted 1px #004c3a !important; }
 
 .tap-to-close { display: block; font-size: 0.625rem; color: #777777; font-weight: normal; }
 
@@ -2027,8 +2027,8 @@ ul.resources-nav li i.icon.images { background-image: url(../img/nav/Images.svg)
 ul.resources-nav li i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
 ul.resources-nav li i.icon.instances { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav li i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
-ul.resources-nav li.active { background-color: #01a982 !important; color: white !important; }
-ul.resources-nav i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; color: #939598; }
+ul.resources-nav li.active { background-color: #ffed00 !important; color: white !important; }
+ul.resources-nav i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; color: #000000; }
 ul.resources-nav i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
 ul.resources-nav i.icon.cloudformation { background-image: url(../img/nav/stacks.svg); }
