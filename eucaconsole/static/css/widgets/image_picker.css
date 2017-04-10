@@ -6,7 +6,7 @@
 #image-picker .table { width: 100% !important; border: 1px solid #cccccc; }
 #image-picker .table tbody { display: block; overflow-y: scroll; height: 22rem; }
 #image-picker .table tbody tr { display: block; border-bottom: 1px solid #cccccc; }
-#image-picker .table tbody tr.selected { background-color: #F0F0F0; }
+#image-picker .table tbody tr.selected { background-color: #F2F2F2; }
 #image-picker .table tbody tr.selected:hover { cursor: inherit; }
 #image-picker .table tbody td { word-break: break-all; }
 #image-picker .table tbody td.desc { width: 100%; text-align: left; }

@@ -34,72 +34,30 @@ $experimental: false;
 $euca-extrasmall-breakpoint: 480px;
 $euca-contentwrap-width: 1040px;
 
-// HPE Colors
+// Colors
 $hpe-black: #333333;
 $hpe-gray: #666666;
+$hpe-darkgray: #444444;
 $hpe-lightgray: #cccccc;
-$hpe-backgroundgray: #F2F2F2; 
-$hpe-hovergray: #F0F0F0;
+$hpe-extralightgray: #e6e7e8;
+$hpe-gray-40: #b3b3b3;
+$hpe-backgroundgray: #F2F2F2;
 $hpe-disabledgray: #EDEDED;
-$hpe-disabledgreen: #CCEEE6;
-$hpe-green: #01a982;
-$hpe-slate: #425563;
-$hpe-turq: #2ad2c9;
-$hpe-purple: #614767;
-$hpe-bronze: #80746E;
-$hpe-steel: #5F7A76;
-$hpe-orange: #FF8D6D;
+$hpe-validation-input-bgcolor: lighten(lightpink, 10%);
+$hpe-disabledgreen: #CCEEE6;  // HPE-specific color
+$hpe-green: #01a982;  // HPE-specific color
+$hpe-slate: #425563;  // HPE-specific color
+$hpe-turq: #2ad2c9;  // HPE-specific color
+$hpe-purple: #614767;  // HPE-specific color
+$hpe-bronze: #80746E;  // HPE-specific color
+$hpe-steel: #5F7A76;  // HPE-specific color
+$hpe-gray-65: #5a5a5a;  // HP-specific color
+$hpe-blue: #007dba;  // HP-specific color
+$hpe-gold: #e6a818;  // HP-specific color
 
 $dxc-black: #000000;
 $dxc-white: #ffffff;
 $dxc-yellow: #ffed00;
-
-// Colors
-$euca-darkblue: #03405f;
-$euca-extralightblue: #ecf4f7;
-$euca-notificationblue: #40a8c6;
-$euca-orange: #f3901d;
-
-$euca-green: #8cc63e;
-$euca-lightgreen: #8dc640;
-$euca-extralightgreen: #eef7e3;
-$euca-darkgreen: #468400;
-
-$euca-grey: #6a737b;
-$euca-darkgrey: #444;
-$euca-lightgrey: #ccc;
-$euca-extralightgrey: #e6e7e8;
-
-$euca-turquoise: #009e93;
-$euca-olive: #7a853b;
-
-$aws-orange: #ff9900;
-
-$euca-validation-error-color: darkred;
-$euca-validation-input-bgcolor: lighten(lightpink, 10%);
-
-// HP accessible palette styles
-$hp-accessible-blue: #007dba;
-$hp-hover-blue: #006699;
-$hp-hover-orange: #c1401a;
-$hp-gray-65: #5a5a5a;
-$hp-gray-40: #b3b3b3;
-$hp-gray-20: #cccccc;
-$hp-gray-5: #f2f2f2;
-$hp-red: #ff0000;
-$hp-light-red: #f7d7d7;
-$hp-border-radius: 8px;
-
-// HP secondary styles 
-$hp-orange: #d7410b;
-$hp-green: #008424;
-$hp-purple: #822980;
-
-// Additional colors used with HP palette
-$hp-gold: #e6a818;
-
-// Forms
-$euca-input-field-height: 2rem;
 
 // Text
 $euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;
@@ -110,17 +68,6 @@ $euca-s-font-size: 14px;
 $euca-font-size: 16px;
 $euca-l-font-size: 18px;
 $euca-xl-font-size: 24px;
-$euca-text-color: $hpe-black;
-$euca-link-color: $hpe-green;
-
-// Prevent Google Fonts API call
-$include-open-sans: false;
-
-// Dimensions
-$euca-footer-height: 80px;
-
-// Misc decorations
-$euca-box-shadow: 0 2px 2px 0 $hpe-hovergray;
 
 
 // ####################
@@ -208,8 +155,8 @@ $tooltip-padding: rem-calc(5);
 
 // Alarm status colors
 $alarm-status-color-alarm: darkred;
-$alarm-status-color-insufficient-data: $hp-gray-65;
-$alarm-status-color-ok: $hp-green;
+$alarm-status-color-insufficient-data: $hpe-gray-65;
+$alarm-status-color-ok: green;
 
 // Mixins
 // Text overflow (e.g. for handling long resource names)
@@ -231,7 +178,7 @@ $alarm-status-color-ok: $hp-green;
 }
 
 @mixin button-shadow-mixin {
-    box-shadow: 1px 1px 5px 0 $hpe-hovergray;
+    box-shadow: 1px 1px 5px 0 $hpe-backgroundgray;
 }
 
 @mixin disabled-button-mixin {
@@ -273,7 +220,7 @@ $alarm-status-color-ok: $hp-green;
 
 @mixin dropdown-shadow-mixin {
     border-color: $hpe-lightgray;
-    box-shadow: 2px 2px 5px $hpe-hovergray;
+    box-shadow: 2px 2px 5px $hpe-backgroundgray;
 }
 
 @mixin helptext-icon-position-mixin {
@@ -287,7 +234,7 @@ $alarm-status-color-ok: $hp-green;
 @mixin validation-error-mixin {
     margin-bottom: 6px;
     background-color: transparent;
-    color: $euca-validation-error-color;
+    color: darkred;
     font-weight: bold;
     padding-left: 0;
     font-style: normal;

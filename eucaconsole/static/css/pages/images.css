@@ -24,7 +24,7 @@
 #primary-buttons .button.more-actions[disabled]:hover { outline: none; }
 #primary-buttons .button.more-actions[disabled]:after { border-color: #cccccc transparent transparent transparent; }
 
-#more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
+#more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F2F2F2; }
 #more-actions-dropdown.f-dropdown li.disabled { cursor: default; }
 #more-actions-dropdown.f-dropdown li.disabled a { color: #cccccc; pointer-events: none; }
 #more-actions-dropdown.f-dropdown li.disabled:hover { background-color: #fff; }
@@ -37,14 +37,14 @@
 .gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #666666; font-size: 1.1rem; padding: 0 0 0 0; border: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #01a982; outline: none; }
 .gridwrapper .dropdown.button.tiny::before, .gridwrapper .dropdown.button.tiny::after { border: none; }
-.gridwrapper .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
+.gridwrapper .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F2F2F2; }
 .gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
 .gridwrapper .alert-box.secondary { color: #666666; background-color: white; border: 1px solid #666666; }
 
-.tile { box-shadow: 0 2px 2px 0 #F0F0F0; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile { box-shadow: 0 2px 2px 0 #F2F2F2; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #F0F0F0; text-decoration: none; }
+.tile.add a:hover { background-color: #F2F2F2; text-decoration: none; }
 .tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
 .tile .header { position: relative; height: 24px; }
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #5a5a5a; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
@@ -87,7 +87,7 @@
 .gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
-.gridwrapper .table tr td .f-dropdown a { color: #444; }
+.gridwrapper .table tr td .f-dropdown a { color: #444444; }
 .gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
 .gridwrapper .table tr td .busy { font-size: 0.9rem; width: 0.9rem; height: 0.9rem; margin-left: 0.2rem; }
 .gridwrapper .table tr td a.alarm-status { color: white; }
@@ -132,13 +132,13 @@
 #filters form button { box-shadow: none; }
 
 #sorting-controls { padding-top: 10px; text-align: right; font-size: 14px; }
-#sorting-controls .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F0F0F0; }
+#sorting-controls .f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F2F2F2; }
 #sorting-controls #sorting-dropdown { text-align: left; }
 
 #results-count { padding-top: 0.25rem; text-align: right; }
 #results-count .items-found { vertical-align: baseline; }
 
-.euca-split { border-color: #F0F0F0 !important; width: 2.0rem !important; }
+.euca-split { border-color: #F2F2F2 !important; width: 2.0rem !important; }
 
 .secondary .euca-split { border-color: #666666 !important; }
 .secondary .euca-split:hover { border-color: #01a982 !important; }
@@ -170,7 +170,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .tile .header a { padding-right: 4px; }
 .tile .label.has-tip { background: white; color: #666666; font-weight: bold; border-bottom: 1px solid #666666; }
 .tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #666666; color: white; }
-.tile .footer .action:hover { background-color: #F0F0F0; }
+.tile .footer .action:hover { background-color: #F2F2F2; }
 
 .table .description { word-break: break-all; }
 .table .label { padding: 4px 6px; }
