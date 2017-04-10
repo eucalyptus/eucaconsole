@@ -81,13 +81,17 @@ $alarm-status-color-ok: $hpe-green;
         &.more-actions {
             margin-left: 1rem;
             padding-right: 3rem;
+            &:hover {
+                background-color: darken($dxc-lightgray, 10%);
+            }
             &[disabled] {
-                border: 2px solid $hpe-lightgray;
+                border: none;
                 &:hover {
                     outline: none;
+                    background-color: $dxc-lightgray;
                 }
                 &:after {
-                    border-color: $hpe-lightgray transparent transparent transparent;
+                    border-color: $dxc-lightgray transparent transparent transparent;
                 }
             }
         }
@@ -573,7 +577,7 @@ $alarm-status-color-ok: $hpe-green;
     padding-right: 3.0rem !important;
     .euca-split {
         &:after {
-            border-color: $hpe-black transparent transparent transparent;
+            border-color: $dxc-black transparent transparent transparent;
         }
     }
 }

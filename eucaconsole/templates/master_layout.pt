@@ -97,12 +97,10 @@
     <!-- Footer -->
     <footer>
         <div class="row">
-            <div id="hpe-logo"></div>
+            <div id="dxc-logo"></div>
         </div>
         <div class="row">
-           <span>HPE Helion Eucalyptus</span><span class="copyright subheader">
-            &nbsp;| © 2015-2016 Hewlett Packard Enterprise Company, L.P.
-           </span>
+           <span class="copyright subheader">© DXC Technology</span>
         </div>
         <form id="euca-logout-form" method="post" action="${request.route_path('logout')}">
             ${structure:layout.euca_logout_form['csrf_token']}

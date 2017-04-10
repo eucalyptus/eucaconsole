@@ -1,6 +1,4 @@
 /* @fileOverview Login page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 #notifications-wrapper { padding-top: 2rem; }
@@ -18,7 +16,7 @@
 #login-wrapper .tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
 #login-wrapper .tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
 #login-wrapper .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
-#login-wrapper .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
+#login-wrapper .tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
 #login-wrapper .tabs.switcher { display: inline-block; }
 #login-wrapper .tabs.switcher dd:last-child { padding-right: 0; }
 #login-wrapper .tabs-content { padding: 1rem; background-color: white; }

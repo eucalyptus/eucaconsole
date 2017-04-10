@@ -1,10 +1,6 @@
 /* @fileOverview Images landing page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 /* @section Landing pages styles */
@@ -20,9 +16,10 @@
 
 #primary-buttons .button { padding: 8px 1rem; }
 #primary-buttons .button.more-actions { margin-left: 1rem; padding-right: 3rem; }
-#primary-buttons .button.more-actions[disabled] { border: 2px solid #cccccc; }
-#primary-buttons .button.more-actions[disabled]:hover { outline: none; }
-#primary-buttons .button.more-actions[disabled]:after { border-color: #cccccc transparent transparent transparent; }
+#primary-buttons .button.more-actions:hover { background-color: silver; }
+#primary-buttons .button.more-actions[disabled] { border: none; }
+#primary-buttons .button.more-actions[disabled]:hover { outline: none; background-color: #d9d9d9; }
+#primary-buttons .button.more-actions[disabled]:after { border-color: #d9d9d9 transparent transparent transparent; }
 
 #more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F2F2F2; }
 #more-actions-dropdown.f-dropdown li.disabled { cursor: default; }
@@ -72,7 +69,7 @@
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: white; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #333333; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #000000; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table thead tr th.count { text-align: center; }
 .gridwrapper .table thead tr th.checkbox-header { width: 1.5rem; }
@@ -144,7 +141,7 @@
 .secondary .euca-split:hover { border-color: #01a982 !important; }
 
 .split.button { padding-right: 3.0rem !important; }
-.split.button .euca-split:after { border-color: #333333 transparent transparent transparent; }
+.split.button .euca-split:after { border-color: #000000 transparent transparent transparent; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
@@ -188,9 +185,9 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .table td.status { position: relative; }
 .table td.status .progress { position: relative; font-size: 0.825rem; margin-bottom: 0; }
-.table td.status .progress .meter { background-color: #CCEEE6; padding-left: 4px; color: #333333; font-weight: bold; }
+.table td.status .progress .meter { background-color: #CCEEE6; padding-left: 4px; color: #000000; font-weight: bold; }
 .table td.description { word-break: break-all; }
 
 .tile .footer .completed { padding: 0 0 0 0; }
 .tile .footer .progress { text-align: left; position: relative; border: none; }
-.tile .footer .progress .meter { background-color: #CCEEE6; color: #333333; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.tile .footer .progress .meter { background-color: #CCEEE6; color: #000000; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }

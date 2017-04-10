@@ -1,9 +1,5 @@
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 /* @section Wizard styles */
@@ -15,8 +11,8 @@
 .wizard .tabs dd a { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; box-shadow: none; white-space: nowrap; padding: 8px 0 6px 0; }
 .wizard .tabs dd a:hover { color: #666666; border-bottom: 2px solid #666666; }
 .wizard .tabs dd a .cir { background-color: #666666; }
-.wizard .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
-.wizard .tabs dd.active .cir { background-color: #333333; }
+.wizard .tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
+.wizard .tabs dd.active .cir { background-color: #000000; }
 .wizard .tabs dd.disabled { color: #cccccc; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; padding: 8px 1rem; }
 .wizard .tabs dd.disabled .cir { margin-right: 8px; background-color: #cccccc; }
 .wizard .tabs dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #cccccc; color: white; margin-right: 4px; }
@@ -31,7 +27,7 @@
 
 .summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
 .summary label { position: relative; right: -1rem; color: #666666; margin-top: 4px; cursor: default; }
-.summary .value { word-break: break-all; line-height: 1rem; color: #333333; }
+.summary .value { word-break: break-all; line-height: 1rem; color: #000000; }
 .summary .value.breakword { word-break: normal; word-wrap: break-word; }
 .summary .row { margin-bottom: 5px; }
 .summary .title { font-weight: bold; color: #666666; border-bottom: 1px solid #cccccc; margin-top: 7px; margin-bottom: 0.25rem; }

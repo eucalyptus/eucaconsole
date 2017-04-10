@@ -92,7 +92,7 @@ $snapshot-status-color-failed: darkred;
             .meter {
                 background-color: $hpe-disabledgreen;
                 padding-left: 4px;
-                color: $hpe-black;
+                color: $dxc-black;
                 font-weight: bold;
             }
         }
@@ -114,7 +114,7 @@ $snapshot-status-color-failed: darkred;
             border: none;
             .meter {
                 background-color: $hpe-disabledgreen;
-                color: $hpe-black;
+                color: $dxc-black;
                 position: relative;
                 top: -2px; left: -2px;
                 padding: 1px 0 1px 8px;

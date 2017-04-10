@@ -101,12 +101,12 @@
    Master Layout
 ----------------------------------------- */
 html {
-    background-color: white;
+    background-color: $dxc-black;
 }
 
 body {
     position: relative;
-    color: $hpe-black;
+    color: $dxc-black;
     min-height: 100%;
     font-family: $euca-text-font-family;
     overflow-y: scroll;
@@ -114,7 +114,7 @@ body {
 
 h1, h2, h3, h4, h5 {
         font-family: $euca-header-font-family;
-        color: $hpe-black;
+        color: $dxc-black;
     }
     h6 {
         font-family: $euca-text-font-family;
@@ -125,7 +125,7 @@ h1, h2, h3, h4, h5 {
 .panel {
     h1, h2, h3, h4, h5 {
         font-family: $euca-header-font-family;
-        color: $hpe-black;
+        color: $dxc-black;
     }
     h6 {
         font-family: $euca-text-font-family;
@@ -135,16 +135,16 @@ h1, h2, h3, h4, h5 {
 }
 
 a {
-    color: $hpe-green;
+    color: $dxc-black;
 }
 
 p {
-    color: $hpe-black;
+    color: $dxc-black;
     font-family: $euca-text-font-family;
     font-size: $euca-font-size;
 }
 label {
-    color: $hpe-gray;
+    color: $dxc-darkgray;
     font-family: $euca-text-font-family;
     font-size: $euca-font-size;
     cursor: default;
@@ -171,11 +171,10 @@ b, strong {
     margin-top: 8px;
     background-color: #fff;
     font-family: $euca-header-font-family;
-    color: $hpe-black;
+    color: $dxc-black;
     a {
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
-        color: $hpe-black;
         &:hover {
             text-decoration: none;
         }
@@ -347,7 +346,7 @@ b, strong {
         font-style: normal;
         font-weight: 700;
         font-family: Metric-Regular, Helvetica, Arial, sans-serif;
-        color: $hpe-black;
+        color: $dxc-black;
     }
 }
 
@@ -439,7 +438,7 @@ a.circle {
         transform: translateX(-50%);
         z-index: 9999999;
         width: 100%;
-        color: $hpe-black;
+        color: $dxc-black;
         background-color: white;
         box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15);
         &.success {
@@ -461,9 +460,9 @@ a.circle {
             }
         }
         &.info{
-            border: 2px solid $hpe-black;
+            border: 2px solid $dxc-black;
             .icon {
-                background-color: $hpe-black;
+                background-color: $dxc-black;
                 span:before {
                     content: "\24D8"
                 }
@@ -471,7 +470,7 @@ a.circle {
         }
         &.secondary{
             border: 2px solid $hpe-gray;
-            color: $hpe-black;
+            color: $dxc-black;
         }
         &.alert {
             border: 2px solid darkred;
@@ -579,7 +578,7 @@ textarea.policy-area {
 .action-icon {
     display: inline-block;
     font-size: 1.4rem;
-    color: $hpe-black;
+    color: $dxc-black;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
     &:hover {
@@ -812,9 +811,10 @@ form {
     }
     .cancel-link {
         margin-left: 2rem;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         &:hover {
-            color: $hpe-green;
+            color: $dxc-black;
+            text-decoration: underline;
         }
     }
     .controls_csrf_token {
@@ -941,7 +941,7 @@ form .controls-wrapper > [class*='small-'] label {
 [data-abide] .controls-wrapper.error,
 .controls-wrapper .error {
     label {
-        color: $hpe-black;
+        color: $dxc-black;
     }
     input, select {
         border: 1px solid darkred;
@@ -1029,7 +1029,7 @@ textarea.hidden {
             font-size: $euca-font-size;
             .active-result {
                 &.highlighted {
-                    color: $hpe-black;
+                    color: $dxc-black;
                     background: $hpe-backgroundgray none;
                 }
             }
@@ -1065,7 +1065,7 @@ textarea.hidden {
             top: 0; left: 0; right: 0;
             line-height: 2rem;
             padding-left: 8px;
-            background-color: $hpe-black;
+            background-color: $dxc-black;
             color: white;
             @include ellipsis-overflow;
         }
@@ -1078,7 +1078,7 @@ textarea.hidden {
             .button.dropdown {
                 padding: 12px 38px 12px 22px;
                 a {
-                    color: $hpe-black;
+                    color: $dxc-black;
                     &:hover { 
                     text-decoration: none;
                     }
@@ -1170,11 +1170,12 @@ table.table {
    Footer
 ----------------------------------------- */
 footer {
-    background-color: $hpe-black;
+    background-color: $dxc-black;
     color: white;
     padding: 15px 0 3rem 1rem;
     .copyright {
-        font-size: $euca-xs-font-size;
+        color: white;
+        font-size: $euca-s-font-size;
     }
 }
 
@@ -1191,32 +1192,32 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
-    background-color: #fff;
+    background-color: $dxc-yellow;
     font-family: $euca-header-font-family;
     text-transform: uppercase;
-    color: $hpe-black;
-    border: 2px solid $hpe-green;
+    color: $dxc-black;
+    border: none;
     &:hover {
-        background-color: #fff;
-        color: $hpe-black;
+        background-color: $dxc-black;
+        color: $dxc-yellow;
         text-decoration: none;
-        outline: 2px solid $hpe-green;
+        outline: none;
     }
     &:focus {
-        color: $hpe-black;
+        color: $dxc-black;
         background-color: #fff;
     }
     &.secondary {
-        background-color: #fff;
-        &:hover {
-            background-color: #fff;
-            color: $hpe-black;
-            text-decoration: none;
-            outline: 2px solid $hpe-gray;
-        }
+        background-color: $dxc-lightgray;
         font-family: $euca-header-font-family;
         text-transform: uppercase;
-        color: $hpe-black;
+        color: $dxc-black;
+        &:hover {
+            background-color: $dxc-darkgray;
+            color: $dxc-black;
+            text-decoration: none;
+            outline: none;
+        }
         &.disabled, &[disabled] {
             @include disabled-button-mixin;
         }
@@ -1230,7 +1231,6 @@ footer {
     &.round {
         &:hover {
             outline: none;
-            box-shadow: 0 0 0 2px $hpe-green;
         }
         &.disabled, &[disabled] {
             &:hover {
@@ -1241,7 +1241,7 @@ footer {
     }
     &.dropdown {
         &:after {
-            border-color: $hpe-black transparent transparent transparent;
+            border-color: $dxc-black transparent transparent transparent;
         }
     }
 }

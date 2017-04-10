@@ -32,7 +32,6 @@ $experimental: false;
 
 // Layout
 $euca-extrasmall-breakpoint: 480px;
-$euca-contentwrap-width: 1040px;
 
 // Colors
 $hpe-black: #333333;
@@ -55,10 +54,18 @@ $hpe-gray-65: #5a5a5a;  // HP-specific color
 $hpe-blue: #007dba;  // HP-specific color
 $hpe-gold: #e6a818;  // HP-specific color
 
+$dxc-black: #000000;
+$dxc-white: #ffffff;
+$dxc-yellow: #ffed00;
+$dxc-blue: #00c9ff;
+$dxc-green: #64ff00;
+$dxc-darkgray: #666666;
+$dxc-lightgray: #d9d9d9;
+
 
 // Text
-$euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;
-$euca-bold-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;
+$euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;  // TODO: Replace HPE font reference
+$euca-bold-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;  // TODO: Replace HPE font reference
 $euca-header-font-family: $euca-bold-font-family;
 $euca-xs-font-size: 12px;
 $euca-s-font-size: 14px;
@@ -74,10 +81,7 @@ $euca-xl-font-size: 24px;
 $row-width: rem-calc(1040);
 
 // Colors
-$primary-color: $hpe-green;
-$secondary-color: $hpe-gray;
-$success-color: $hpe-green;
-$code-color: darkred;
+$primary-color: $dxc-black;
 
 // Dropdown menus
 $f-dropdown-bg: white;
@@ -85,29 +89,7 @@ $f-dropdown-triangle-color: $hpe-lightgray;
 
 // Navigation bar settings ============
 // Breakpoint handling
-$topbar-transition-speed: 300ms;
 $topbar-breakpoint: 1020px !default; // Change to 9999px for always mobile layout
-// Colors
-$topbar-bg-color: white;
-$topbar-bg: $topbar-bg-color;
-$topbar-dropdown-link-bg: $hpe-green;
-$topbar-link-bg-hover: $hpe-green;
-/* Dropdown elements */
-$topbar-dropdown-bg: white;
-$topbar-dropdown-link-color: #000;
-$topbar-dropdown-link-bg: white;
-$topbar-dropdown-toggle-size: 5px;
-$topbar-dropdown-toggle-color: black;
-$topbar-dropdown-toggle-alpha: 1.0;
-/* Set the link colors and styles for top-level nav */
-$topbar-link-color: #000;
-$topbar-link-color-hover: #000;
-$topbar-link-color-active: #fff;
-$topbar-link-color-active-hover: #fff;
-$topbar-link-weight: normal;
-$topbar-link-font-size: rem-calc(13);
-$topbar-link-hover-lightness: -10%; // Darken by 10%
-$topbar-link-bg-active-hover: $primary-color;
 
 
 // Breadcrumbs
@@ -179,28 +161,27 @@ $alarm-status-color-ok: green;
 }
 
 @mixin disabled-button-mixin {
-    background-color: white;
-    border-color: $hpe-disabledgray;
-    color: $hpe-disabledgray;
+    background-color: $dxc-lightgray;
+    color: $dxc-darkgray;
     cursor: default;
     &:hover {
         cursor: default;
         pointer-events: none;
         background-color: white;
         text-decoration: none;
-        border: 2px solid $hpe-disabledgray;
+        border: none;
         outline: none;
         box-shadow: none;
-        color: $hpe-disabledgray;
+        color: $dxc-darkgray;
     }
 }
 
 
 @mixin primary-disabled-button-mixin {
     @include disabled-button-mixin;
-    border-color: $hpe-disabledgreen;
+    border-color: $dxc-lightgray;
     &:hover {
-        border: 2px solid $hpe-disabledgreen;
+        border: none;
     }
 }
 
@@ -251,7 +232,7 @@ $alarm-status-color-ok: green;
             padding-right: 6px;
             border-bottom: 1px solid $hpe-lightgray;
             vertical-align: top;
-            color: $hpe-black;
+            color: $dxc-black;
             text-transform: uppercase;
             &.actions {
                 text-align: right;
@@ -330,10 +311,10 @@ $alarm-status-color-ok: green;
         }
         &.active {
             a {
-                color: $hpe-black;
+                color: $dxc-black;
                 font-family: $euca-header-font-family;
                 background-color: transparent;
-                border-bottom: 2px solid $hpe-black;
+                border-bottom: 2px solid $dxc-black;
             }
         }
     }
@@ -365,13 +346,13 @@ $alarm-status-color-ok: green;
     }
     &.active {  // Active tab
         a {
-            color: $hpe-black;
+            color: $dxc-black;
             font-family: $euca-header-font-family;
             background-color: transparent;
-            border-bottom: 2px solid $hpe-black;
+            border-bottom: 2px solid $dxc-black;
         }
         .cir {
-            background-color: $hpe-black;
+            background-color: $dxc-black;
         }
     }
     &.disabled {  // Unvisited tabs

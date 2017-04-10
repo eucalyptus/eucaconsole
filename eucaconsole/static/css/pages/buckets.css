@@ -1,10 +1,6 @@
 /* @fileOverview Buckets landing page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 /* @section Landing pages styles */
@@ -20,9 +16,10 @@
 
 #primary-buttons .button { padding: 8px 1rem; }
 #primary-buttons .button.more-actions { margin-left: 1rem; padding-right: 3rem; }
-#primary-buttons .button.more-actions[disabled] { border: 2px solid #cccccc; }
-#primary-buttons .button.more-actions[disabled]:hover { outline: none; }
-#primary-buttons .button.more-actions[disabled]:after { border-color: #cccccc transparent transparent transparent; }
+#primary-buttons .button.more-actions:hover { background-color: silver; }
+#primary-buttons .button.more-actions[disabled] { border: none; }
+#primary-buttons .button.more-actions[disabled]:hover { outline: none; background-color: #d9d9d9; }
+#primary-buttons .button.more-actions[disabled]:after { border-color: #d9d9d9 transparent transparent transparent; }
 
 #more-actions-dropdown.f-dropdown { border-color: #cccccc; box-shadow: 2px 2px 5px #F2F2F2; }
 #more-actions-dropdown.f-dropdown li.disabled { cursor: default; }
@@ -72,7 +69,7 @@
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: white; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #333333; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #000000; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table thead tr th.count { text-align: center; }
 .gridwrapper .table thead tr th.checkbox-header { width: 1.5rem; }
@@ -144,7 +141,7 @@
 .secondary .euca-split:hover { border-color: #01a982 !important; }
 
 .split.button { padding-right: 3.0rem !important; }
-.split.button .euca-split:after { border-color: #333333 transparent transparent transparent; }
+.split.button .euca-split:after { border-color: #000000 transparent transparent transparent; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
