@@ -12,6 +12,7 @@ angular.module('ModalModule', [])
     return {
         restrict: 'A',
         transclude: true,
+        scope: true,
         compile: function (tElem, tAttrs) {
             var tmp = $interpolate(template)({modalName:tAttrs.modal});
             tElem.append(tmp);

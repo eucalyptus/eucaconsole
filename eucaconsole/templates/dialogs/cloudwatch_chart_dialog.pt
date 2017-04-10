@@ -81,7 +81,7 @@
              start-time="{{ chartsCtrl._largeChartStartTime.toISOString() }}"
              end-time="{{ chartsCtrl._largeChartEndTime.toISOString() }}"
              namespace="{{ chartsCtrl.largeChartNamespace }}"
-             statistic="{{ chartsCtrl.largeChartStatistic }}" empty="{{ chart.empty_msg }}">
+             statistic="{{ chartsCtrl.largeChartStatistic }}" empty="{{ chart.empty_msg }}" auto-load="true">
         </svg>
     </div>
 </div>
