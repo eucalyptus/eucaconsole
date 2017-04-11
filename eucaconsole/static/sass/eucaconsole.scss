@@ -107,6 +107,7 @@ html {
 body {
     position: relative;
     color: $dxc-black;
+    background: $dxc-black;
     min-height: 100%;
     font-family: $euca-text-font-family;
     overflow-y: scroll;
@@ -118,7 +119,7 @@ h1, h2, h3, h4, h5 {
     }
     h6 {
         font-family: $euca-text-font-family;
-        color: $dxc-darkgray;
+        color: $dxc-black;
         text-transform: uppercase;
     }
 
@@ -129,7 +130,7 @@ h1, h2, h3, h4, h5 {
     }
     h6 {
         font-family: $euca-text-font-family;
-        color: $dxc-darkgray;
+        color: $dxc-black;
         text-transform: uppercase;
     }
 }
@@ -144,7 +145,7 @@ p {
     font-size: $euca-font-size;
 }
 label {
-    color: $dxc-darkgray;
+    color: $dxc-black;
     font-family: $euca-text-font-family;
     font-size: $euca-font-size;
     cursor: default;
@@ -169,12 +170,12 @@ b, strong {
 #logobar {
     padding: 6px 0 0 0;
     margin-top: 8px;
-    background-color: #fff;
     font-family: $euca-header-font-family;
-    color: $dxc-black;
+    color: $dxc-white;
     a {
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
+        color: $dxc-white;
         &:hover {
             text-decoration: none;
         }
@@ -192,7 +193,7 @@ b, strong {
     .dropdown {
         display: inline-block;
         margin-left: 1.3rem;
-        color: $hpe-green;
+        color: $dxc-white;
         .icon {
             display: inline-block;
         }
@@ -200,6 +201,9 @@ b, strong {
     .f-dropdown {
         width: auto;
         min-width: 8rem;
+        a {
+            color: $dxc-black;
+        }
         &.open {
             width: auto !important;
         }
@@ -208,6 +212,9 @@ b, strong {
         margin-left: 8px;
         position: relative;
         top: -10px;
+    }
+    .down-caret {
+        border-top-color: $dxc-white;
     }
     .product-name {
         font-size: 1.4rem;
@@ -409,7 +416,7 @@ a.circle {
     top: -1px;
     display: inline-block;
     border-right: 6px solid transparent;
-    border-top: 6px solid $hpe-green;
+    border-top: 6px solid $dxc-black;
     border-left: 6px solid transparent;
     content: '';
 }
@@ -772,7 +779,7 @@ form {
         }
     }
     input {
-        border-color: $dxc-lightgray;
+        border-color: $dxc-black;
         background-color: #fff;
         &[type=file] {
             background-color: transparent;
@@ -785,6 +792,7 @@ form {
     }
     select, textarea {
         background-color: #fff;
+        border-color: $dxc-black;
     }
     .req {
         color: $dxc-darkgray;
@@ -968,6 +976,19 @@ textarea.hidden {
     }
 }
 
+input,
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="number"],
+input[type="search"],
+select,
+textarea {
+    border-color: $dxc-black;
+}
+
+
 /* -----------------------------------------
    Chosen widget
 ----------------------------------------- */
@@ -976,7 +997,7 @@ textarea.hidden {
         background: #fff none;
         .chosen-choices  {
             background: none;
-            border: 1px solid $dxc-lightgray;
+            border: 1px solid $dxc-black;
             li {
                 &.search-field  {
                     input[type=text] {
@@ -989,7 +1010,7 @@ textarea.hidden {
                 }
                 &.search-choice {
                     background: #fff none;
-                    border: 2px solid $dxc-lightgray;
+                    border: 1px solid $dxc-black;
                     padding: 4px 20px 4px 8px;
                     color: $dxc-darkgray;
                     font-family: $euca-header-font-family;
@@ -1009,6 +1030,7 @@ textarea.hidden {
             background-image: none;
             background-color: #fff !important;
             border-radius: 0;
+            border-color: $dxc-black;
             height: 2.5rem;
             line-height: 2.5rem;
             font-size: 0.875rem;
@@ -1079,8 +1101,8 @@ textarea.hidden {
                 padding: 12px 38px 12px 22px;
                 a {
                     color: $dxc-black;
-                    &:hover { 
-                    text-decoration: none;
+                    &:hover {
+                        text-decoration: none;
                     }
                 }
             }

@@ -211,8 +211,10 @@ $alarm-status-color-ok: green;
 
 @mixin table-styles-mixin {
     border: none;
+    border-top: 1px solid $dxc-black;
+    border-bottom: 1px solid $dxc-black;
     thead tr {
-        background-color: white;
+        background-color: $dxc-black;
         th {
             // Note: Do not use shorthand padding rules here since we need to override Foundation styles
             padding-top: 0.5rem;
@@ -221,7 +223,7 @@ $alarm-status-color-ok: green;
             padding-right: 6px;
             border-bottom: 1px solid $dxc-lightgray;
             vertical-align: top;
-            color: $dxc-black;
+            color: $dxc-white;
             text-transform: uppercase;
             &.actions {
                 text-align: right;
@@ -236,6 +238,9 @@ $alarm-status-color-ok: green;
     }
     tr {
         border-bottom: 1px solid $dxc-lightgray;
+        &:last-child {
+            border-bottom: none;
+        }
         td.count {
             text-align: center;
         }

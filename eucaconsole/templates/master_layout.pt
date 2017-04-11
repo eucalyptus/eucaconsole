@@ -48,7 +48,7 @@
                <span id="hp-logo"></span>
             </a>
             <a href="/" title="${layout.site_title}" metal:define-slot="logo">
-                <span class="product-name">Eucalyptus</span>
+                <span class="product-name">Eucalyptus Management Console</span>
             </a>
             <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
                 <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">

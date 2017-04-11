@@ -24,7 +24,7 @@ $dashboard-panel-icon-size: 100px;
             font-family: $euca-text-font-family; 
             font-size: $euca-font-size;
             &:hover {
-            text-decoration: underline;
+                text-decoration: underline;
             }
         }
         #reset-dash {
@@ -34,7 +34,7 @@ $dashboard-panel-icon-size: 100px;
             display: inline-block;
             float: right;
             &:hover {
-            text-decoration: underline;
+                text-decoration: underline;
             }
         }
     }
@@ -83,12 +83,11 @@ $tile-row-height: 24px;
                 position: absolute;
                 bottom: -40%; left: 0; right: 0;
                 text-align: center;
-                color: $dxc-darkgray;
+                color: $dxc-black;
                 font-family: $euca-header-font-family;
                 font-style: normal;
                 &:hover {
-                    text-decoration: underline;
-                    color: $hpe-green;
+                    color: $dxc-darkgray;
                 }
                 i { // busy
                     color: black;
@@ -120,12 +119,12 @@ $tile-row-height: 24px;
             position: absolute;
             width: 30px; height: $tile-row-height;
             top: 0; right: 0;
-            color: $dxc-darkgray;
+            color: $dxc-black;
             font-size: 1.1rem;
             padding: 0 0 0 0;
             border: none;
             &:hover {
-                color: $hpe-green;
+                color: $dxc-darkgray;
                 outline: none;
             }
             &::before, &::after {

@@ -1602,20 +1602,20 @@ th.hide-for-touch { display: table-cell !important; }
 ----------------------------------------- */
 html { background-color: #000000; }
 
-body { position: relative; color: #000000; min-height: 100%; font-family: Metric-Regular, Helvetica, Arial, sans-serif; overflow-y: scroll; }
+body { position: relative; color: #000000; background: #000000; min-height: 100%; font-family: Metric-Regular, Helvetica, Arial, sans-serif; overflow-y: scroll; }
 
 h1, h2, h3, h4, h5 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
 
-h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #666666; text-transform: uppercase; }
+h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #000000; text-transform: uppercase; }
 
 .panel h1, .panel h2, .panel h3, .panel h4, .panel h5 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
-.panel h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #666666; text-transform: uppercase; }
+.panel h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #000000; text-transform: uppercase; }
 
 a { color: #000000; }
 
 p { color: #000000; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
 
-label { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
+label { color: #000000; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
 label.inline { display: inline-block; }
 
 b, strong { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-weight: bold; }
@@ -1624,16 +1624,18 @@ b, strong { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-wei
 ----------------------------------------- */
 #logobar-wrapper { border-bottom: 1px solid #d9d9d9; }
 
-#logobar { padding: 6px 0 0 0; margin-top: 8px; background-color: #fff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
-#logobar a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
+#logobar { padding: 6px 0 0 0; margin-top: 8px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #ffffff; }
+#logobar a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; }
 #logobar a:hover { text-decoration: none; }
 #logobar section { position: relative; line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
 #logobar section .icon { font-size: 1.5rem; }
-#logobar .dropdown { display: inline-block; margin-left: 1.3rem; color: #01a982; }
+#logobar .dropdown { display: inline-block; margin-left: 1.3rem; color: #ffffff; }
 #logobar .dropdown .icon { display: inline-block; }
 #logobar .f-dropdown { width: auto; min-width: 8rem; }
+#logobar .f-dropdown a { color: #000000; }
 #logobar .f-dropdown.open { width: auto !important; }
 #logobar .fi-list { margin-left: 8px; position: relative; top: -10px; }
+#logobar .down-caret { border-top-color: #ffffff; }
 #logobar .product-name { font-size: 1.4rem; position: relative; top: -8px; padding-left: 0.5rem; }
 #logobar #selected-region.aws { position: relative; display: inline-block; padding-left: 24px; background: transparent url(../img/aws_favicon.png) no-repeat left 0; }
 #logobar #region-dropdown { min-width: 12rem; }
@@ -1689,7 +1691,7 @@ i.fi-minus-circle:hover { color: darkred; }
 
 a.circle { color: black; display: inline-block; }
 
-.down-caret { position: relative; top: -1px; display: inline-block; border-right: 6px solid transparent; border-top: 6px solid #01a982; border-left: 6px solid transparent; content: ''; }
+.down-caret { position: relative; top: -1px; display: inline-block; border-right: 6px solid transparent; border-top: 6px solid #000000; border-left: 6px solid transparent; content: ''; }
 
 .up-caret { position: relative; top: -1px; display: inline-block; border-right: 6px solid transparent; border-bottom: 6px solid #01a982; border-left: 6px solid transparent; content: ''; }
 
@@ -1793,10 +1795,10 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 ----------------------------------------- */
 form label { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
 form label.inline { display: inline-block; }
-form input { border-color: #d9d9d9; background-color: #fff; }
+form input { border-color: #000000; background-color: #fff; }
 form input[type=file] { background-color: transparent; }
 form input[type=password] { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
-form select, form textarea { background-color: #fff; }
+form select, form textarea { background-color: #fff; border-color: #000000; }
 form .req { color: #666666; }
 form .row .inline-label { line-height: 2rem; }
 form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; }
@@ -1845,16 +1847,18 @@ form .controls-wrapper > [class*='small-'] label.right { position: relative; rig
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }
 
+input, input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="number"], input[type="search"], select, textarea { border-color: #000000; }
+
 /* ----------------------------------------- Chosen widget
 ----------------------------------------- */
 .chosen-container.chosen-container-multi { background: #fff none; }
-.chosen-container.chosen-container-multi .chosen-choices { background: none; border: 1px solid #d9d9d9; }
+.chosen-container.chosen-container-multi .chosen-choices { background: none; border: 1px solid #000000; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: 34px; padding-left: 10px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field .default { color: #999; }
-.chosen-container.chosen-container-multi .chosen-choices li.search-choice { background: #fff none; border: 2px solid #d9d9d9; padding: 4px 20px 4px 8px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-choice { background: #fff none; border: 1px solid #000000; padding: 4px 20px 4px 8px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice .search-choice-close { top: 8px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice span { line-height: 20px; }
-.chosen-container.chosen-container-single .chosen-single { background-image: none; background-color: #fff !important; border-radius: 0; height: 2.5rem; line-height: 2.5rem; font-size: 0.875rem; }
+.chosen-container.chosen-container-single .chosen-single { background-image: none; background-color: #fff !important; border-radius: 0; border-color: #000000; height: 2.5rem; line-height: 2.5rem; font-size: 0.875rem; }
 .chosen-container.chosen-container-single .chosen-single b { position: relative; top: 10px; }
 .chosen-container .chosen-drop .chosen-search input { height: 2rem; line-height: 2rem; }
 .chosen-container .chosen-drop .chosen-results { font-size: 16px; }
@@ -1891,13 +1895,14 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
-table.table { border: none; }
-table.table thead tr { background-color: white; }
-table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #d9d9d9; vertical-align: top; color: #000000; text-transform: uppercase; }
+table.table { border: none; border-top: 1px solid #000000; border-bottom: 1px solid #000000; }
+table.table thead tr { background-color: #000000; }
+table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #d9d9d9; vertical-align: top; color: #ffffff; text-transform: uppercase; }
 table.table thead tr th.actions { text-align: right; }
 table.table thead tr th.count { text-align: center; }
 table.table thead tr th.checkbox-header { width: 1.5rem; }
 table.table tr { border-bottom: 1px solid #d9d9d9; }
+table.table tr:last-child { border-bottom: none; }
 table.table tr td.count { text-align: center; }
 table.table tr td { vertical-align: top; }
 table.table td.breakall { word-break: break-all !important; }

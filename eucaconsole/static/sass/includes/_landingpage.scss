@@ -62,9 +62,9 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 .clear-link {
-    color: $dxc-darkgray;
+    color: $dxc-black;
     &:hover {
-        color: $hpe-green;
+        color: $dxc-darkgray;
     }
 }
 
@@ -91,7 +91,7 @@ $alarm-status-color-ok: $hpe-green;
                     background-color: $dxc-lightgray;
                 }
                 &:after {
-                    border-color: $dxc-lightgray transparent transparent transparent;
+                    border-color: $dxc-darkgray transparent transparent transparent;
                 }
             }
         }
@@ -112,9 +112,9 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 #refresh-btn {
-    color: $dxc-darkgray;
+    color: $dxc-black;
     &:hover {
-        color: $hpe-green;
+        color: $dxc-darkgray;
     }
 }
 
@@ -128,12 +128,12 @@ $alarm-status-color-ok: $hpe-green;
         position: absolute;
         width: 30px; height: $tile-row-height;
         top: 0; right: 0;
-        color: $dxc-darkgray;
+        color: $dxc-black;
         font-size: 1.1rem;
         padding: 0 0 0 0;
         border: none;
         &:hover {
-            color: $hpe-green;
+            color: $dxc-darkgray;
             outline: none;
         }
         &::before, &::after {
@@ -198,10 +198,10 @@ $alarm-status-color-ok: $hpe-green;
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: $dxc-darkgray;
+            color: $dxc-black;
             font-family: $euca-header-font-family;
             &:hover {
-                color: $hpe-green;
+                color: $dxc-darkgray;
             }
             &.has-checkbox {
                 padding-left: 24px;
@@ -334,8 +334,10 @@ $alarm-status-color-ok: $hpe-green;
             padding: 8px 4px 8px 6px;
             vertical-align: top;
             a {
-                color: $hpe-green;
+                color: $dxc-black;
+                text-decoration: underline;
                 &:hover {
+                    color: $dxc-blue;
                     text-decoration: underline;
                 }
             }
@@ -353,6 +355,7 @@ $alarm-status-color-ok: $hpe-green;
             }
             .f-dropdown a {
                 color: $dxc-darkgray;
+                text-decoration: none;
                 &:hover {
                     text-decoration: none;
                 }
@@ -488,10 +491,10 @@ $alarm-status-color-ok: $hpe-green;
     a {
         float: right;
         border-bottom: none;
-        color: $dxc-darkgray;
+        color: $dxc-black;
         &:hover {
             border-bottom: none;
-            color: $hpe-green;
+            color: $dxc-darkgray;
         }
     }
     label {
@@ -501,15 +504,15 @@ $alarm-status-color-ok: $hpe-green;
     }
     .selected {
         background-color: white;
-        color: $hpe-green;
+        color: $dxc-black;
         &:hover {
-            color: $hpe-green;
+            color: $dxc-black;
             cursor: inherit;
         }
     }
     i {
         display: inline-block;
-        padding: 2px 12px;
+        padding: 0 12px;
     }
 }
 
@@ -560,15 +563,21 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 .euca-split {
-    border-color: $dxc-lightgray !important;
+    border-color: $dxc-black !important;
     width: 2.0rem !important;
+    &:hover {
+        border-color: $dxc-white !important;
+        &::after {
+          border-color: white;
+        }
+    }
 }
 
 .secondary {
     .euca-split {
-        border-color: $dxc-darkgray !important;
+        border-color: $dxc-black !important;
         &:hover {
-            border-color: $hpe-green !important;
+            border-color: $dxc-white !important;
         }
     }
 }
