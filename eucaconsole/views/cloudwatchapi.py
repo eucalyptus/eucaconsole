@@ -46,11 +46,11 @@ CHART_COLORS = {
     0: '#00c9ff',  # $dxc-blue
     1: '#64ff00',  # $dxc-green
     2: '#000000',  # $dxc-black
-    3: '#666666',  # $dxc-darkgray
-    4: 'orange',
-    5: 'darkblue',
-    6: 'purple',
-    7: 'darkgreen',
+    3: '#ffed00',  # $dxc-yellow
+    4: 'purple',  # CSS Level 1 color
+    5: 'navy',  # CSS Level 1 color
+    6: 'olive',  # CSS Level 1 color
+    7: 'teal',  # CSS Level 1 color
 }
 
 ISO8601 = '%Y-%m-%dT%H:%M:%S.%fZ'
