@@ -9,14 +9,14 @@
     .items {
         margin: 0.7rem 0 0.5rem 0;
         .grantentry {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             font-family: $euca-header-font-family;
             font-size: $euca-xs-font-size;
             background-color: white;
-            border: 2px solid $hpe-lightgray;
+            border: 2px solid $dxc-lightgray;
             margin-right: 8px;
             a.remove i  {
-                color: $hpe-gray;
+                color: $dxc-darkgray;
                 &:hover {
                     color: $hpe-green;
                 }

@@ -2,7 +2,7 @@
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 #s3-sharing-panel .items { margin: 0.7rem 0 0.5rem 0; }
-#s3-sharing-panel .items .grantentry { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; background-color: white; border: 2px solid #cccccc; margin-right: 8px; }
+#s3-sharing-panel .items .grantentry { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; background-color: white; border: 2px solid #d9d9d9; margin-right: 8px; }
 #s3-sharing-panel .items .grantentry a.remove i { color: #666666; }
 #s3-sharing-panel .items .grantentry a.remove i:hover { color: #01a982; }
 #s3-sharing-panel #share_type { list-style-type: none; margin-bottom: 0; margin-left: 1px; }

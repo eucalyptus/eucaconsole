@@ -5,19 +5,19 @@
 $stack-status-color-create-in-progress: lighten($hpe-slate, 20%);
 $stack-status-color-create-complete: $hpe-slate;
 $stack-status-color-create-failed: darkred;
-$stack-status-color-rollback-in-progress: $hpe-lightgray;
-$stack-status-color-rollback-complete: $hpe-gray;
+$stack-status-color-rollback-in-progress: $dxc-lightgray;
+$stack-status-color-rollback-complete: $dxc-darkgray;
 $stack-status-color-rollback-failed: darkred;
-$stack-status-color-delete-in-progress: $hpe-lightgray;
-$stack-status-color-delete-complete: $hpe-gray;
+$stack-status-color-delete-in-progress: $dxc-lightgray;
+$stack-status-color-delete-complete: $dxc-darkgray;
 $stack-status-color-delete-failed: darkred;
 $stack-status-update-in-progress: lighten($hpe-slate, 20%);
 $stack-status-update-complete-cleanup-in-progress: lighten($hpe-slate, 20%);
 $stack-status-update-complete: $hpe-slate;
-$stack-status-update-rollback-in-progress: $hpe-lightgray;
+$stack-status-update-rollback-in-progress: $dxc-lightgray;
 $stack-status-update-rollback-failed: darkred;
-$stack-status-update-rollback-complete-cleanup-in-progress: $hpe-lightgray;
-$stack-status-update-rollback-complete: $hpe-gray;
+$stack-status-update-rollback-complete-cleanup-in-progress: $dxc-lightgray;
+$stack-status-update-rollback-complete: $dxc-darkgray;
 
 // Stack status
 .status.create-in-progress { background-color: $stack-status-color-create-in-progress; }

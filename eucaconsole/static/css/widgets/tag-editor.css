@@ -1,7 +1,7 @@
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .tag-editor .item-list { margin-bottom: 6px; }
-.tag-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; background-color: white; border: 2px solid #cccccc; padding: 0.25rem 0.5rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; margin: 5px 8px 0 0; }
+.tag-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; background-color: white; border: 2px solid #d9d9d9; padding: 0.25rem 0.5rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; margin: 5px 8px 0 0; }
 .tag-editor .item-list .item .propagates { color: #777; }
 .tag-editor .item-list .item a.remove { color: #666666; margin-left: 5px; }
 .tag-editor .item-list .item a.remove:hover { color: #01a982; }

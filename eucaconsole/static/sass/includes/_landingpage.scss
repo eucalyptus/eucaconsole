@@ -39,10 +39,10 @@ $tile-label-padding: 28px;
 $grid-dropdown-width: 160px;
 $gridwrapper-table-width: 100%;
 
-$dropdown-border-color: $hpe-lightgray;
+$dropdown-border-color: $dxc-lightgray;
 
 $alarm-status-color-alarm: darkred;
-$alarm-status-color-insufficient: $hpe-gray;
+$alarm-status-color-insufficient: $dxc-darkgray;
 $alarm-status-color-ok: $hpe-green;
 
 .columns.datagrid {
@@ -62,7 +62,7 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 .clear-link {
-    color: $hpe-gray;
+    color: $dxc-darkgray;
     &:hover {
         color: $hpe-green;
     }
@@ -112,7 +112,7 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 #refresh-btn {
-    color: $hpe-gray;
+    color: $dxc-darkgray;
     &:hover {
         color: $hpe-green;
     }
@@ -128,7 +128,7 @@ $alarm-status-color-ok: $hpe-green;
         position: absolute;
         width: 30px; height: $tile-row-height;
         top: 0; right: 0;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         font-size: 1.1rem;
         padding: 0 0 0 0;
         border: none;
@@ -150,16 +150,16 @@ $alarm-status-color-ok: $hpe-green;
     }
     .alert-box {
         &.secondary {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             background-color: white;
-            border: 1px solid $hpe-gray;
+            border: 1px solid $dxc-darkgray;
         }
     }
 }
 
 // Tile/grid view
 .tile {
-    box-shadow: 0 2px 2px 0 $hpe-backgroundgray;
+    box-shadow: 0 2px 2px 0 $dxc-lightgray;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
@@ -182,7 +182,7 @@ $alarm-status-color-ok: $hpe-green;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
-                background-color: $hpe-backgroundgray;
+                background-color: $dxc-lightgray;
                 text-decoration: none;
             }
         }
@@ -198,7 +198,7 @@ $alarm-status-color-ok: $hpe-green;
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: $hpe-gray-65;
+            color: $dxc-darkgray;
             font-family: $euca-header-font-family;
             &:hover {
                 color: $hpe-green;
@@ -216,7 +216,7 @@ $alarm-status-color-ok: $hpe-green;
             left: 7px;
         }
         .f-dropdown a {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             font-family: $euca-text-font-family;
             text-decoration: none;
             font-weight: normal;
@@ -243,7 +243,7 @@ $alarm-status-color-ok: $hpe-green;
             font-family: $euca-text-font-family;
             font-size: $euca-font-size;
             background-color: #FFFFFF;
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             margin-right: 0.2rem;
             min-width: 22px;
             text-align: center;
@@ -277,7 +277,7 @@ $alarm-status-color-ok: $hpe-green;
         left: 0; right: 0;
         padding: 5px;
         color: white;
-        background-color: $hpe-gray;
+        background-color: $dxc-darkgray;
         text-align: center;
         line-height: 1.4rem;
         text-transform: capitalize;
@@ -352,7 +352,7 @@ $alarm-status-color-ok: $hpe-green;
                 word-break: break-all;
             }
             .f-dropdown a {
-                color: $hpe-darkgray;
+                color: $dxc-darkgray;
                 &:hover {
                     text-decoration: none;
                 }
@@ -393,7 +393,7 @@ $alarm-status-color-ok: $hpe-green;
         position: relative;
         input {
             background-color: transparent;
-            border-color: $hpe-lightgray;
+            border-color: $dxc-lightgray;
         }
     }
     .go {
@@ -488,7 +488,7 @@ $alarm-status-color-ok: $hpe-green;
     a {
         float: right;
         border-bottom: none;
-        color: $hpe-gray-65;
+        color: $dxc-darkgray;
         &:hover {
             border-bottom: none;
             color: $hpe-green;
@@ -560,13 +560,13 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 .euca-split {
-    border-color: $hpe-backgroundgray !important;
+    border-color: $dxc-lightgray !important;
     width: 2.0rem !important;
 }
 
 .secondary {
     .euca-split {
-        border-color: $hpe-gray !important;
+        border-color: $dxc-darkgray !important;
         &:hover {
             border-color: $hpe-green !important;
         }

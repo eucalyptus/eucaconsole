@@ -9,7 +9,7 @@
 #maincontent { min-height: 24rem; }
 
 #login-wrapper { position: relative; padding: 10px; }
-#login-wrapper label { font-weight: bold; color: #444444; white-space: nowrap; }
+#login-wrapper label { font-weight: bold; color: #666666; white-space: nowrap; }
 #login-wrapper input { height: 2.25rem; }
 #login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
 #login-wrapper .tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }

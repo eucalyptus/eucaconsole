@@ -21,6 +21,6 @@
 .search-bar i.cancel:hover { color: darkred; }
 .search-bar .f-dropdown.open { left: 0 !important; }
 
-.search-bar .item-list .item { background-color: white; border: 2px solid #cccccc; height: 1.5rem; }
+.search-bar .item-list .item { background-color: white; border: 2px solid #d9d9d9; height: 1.5rem; }
 .search-bar .item-list .item a { color: #666666; }
 .search-bar .item-list .item i.fi-x { padding-left: 4px; }

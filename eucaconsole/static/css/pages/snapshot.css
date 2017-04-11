@@ -2,7 +2,7 @@
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .progress { display: inline-block; width: 50%; }
-.progress .meter { background-color: #CCEEE6; padding-left: 6px; padding-top: 4px; }
+.progress .meter { background-color: #00c9ff; padding-left: 6px; padding-top: 4px; }
 
 .label.status { text-transform: capitalize; }
 .label.status.failed { background-color: darkred; }

@@ -34,25 +34,11 @@ $experimental: false;
 $euca-extrasmall-breakpoint: 480px;
 
 // Colors
-$hpe-black: #333333;
-$hpe-gray: #666666;
-$hpe-darkgray: #444444;
-$hpe-lightgray: #cccccc;
-$hpe-extralightgray: #e6e7e8;
-$hpe-gray-40: #b3b3b3;
-$hpe-backgroundgray: #F2F2F2;
-$hpe-disabledgray: #EDEDED;
-$hpe-validation-input-bgcolor: lighten(lightpink, 10%);
-$hpe-disabledgreen: #CCEEE6;  // HPE-specific color
+$euca-validation-input-bgcolor: lighten(lightpink, 10%);
+
 $hpe-green: #01a982;  // HPE-specific color
 $hpe-slate: #425563;  // HPE-specific color
-$hpe-turq: #2ad2c9;  // HPE-specific color
 $hpe-purple: #614767;  // HPE-specific color
-$hpe-bronze: #80746E;  // HPE-specific color
-$hpe-steel: #5F7A76;  // HPE-specific color
-$hpe-gray-65: #5a5a5a;  // HP-specific color
-$hpe-blue: #007dba;  // HP-specific color
-$hpe-gold: #e6a818;  // HP-specific color
 
 $dxc-black: #000000;
 $dxc-white: #ffffff;
@@ -85,7 +71,7 @@ $primary-color: $dxc-black;
 
 // Dropdown menus
 $f-dropdown-bg: white;
-$f-dropdown-triangle-color: $hpe-lightgray;
+$f-dropdown-triangle-color: $dxc-lightgray;
 
 // Navigation bar settings ============
 // Breakpoint handling
@@ -102,12 +88,12 @@ $crumb-border-style: solid;
 $crumb-border-color: transparent;
 $crumb-radius: 0;
 $crumb-font-size: 1.1rem;
-$crumb-font-color: $hpe-gray;
+$crumb-font-color: $dxc-darkgray;
 $crumb-font-family-current: $euca-text-font-family;
 $crumb-font-color-unavailable: #999;
 $crumb-font-transform: normal;
 $crumb-link-decor: underline;
-$crumb-slash-color: $hpe-gray;
+$crumb-slash-color: $dxc-darkgray;
 $crumb-slash: "/";
 
 // Buttons
@@ -129,12 +115,12 @@ $tabs-content-margin-bottom: rem-calc(1) !default;
 
 // Tooltips
 $tooltip-bg: white;
-$tooltip-font-color: $hpe-gray;
+$tooltip-font-color: $dxc-darkgray;
 $tooltip-padding: rem-calc(5);
 
 // Alarm status colors
 $alarm-status-color-alarm: darkred;
-$alarm-status-color-insufficient-data: $hpe-gray-65;
+$alarm-status-color-insufficient-data: $dxc-darkgray;
 $alarm-status-color-ok: green;
 
 // Mixins
@@ -148,7 +134,7 @@ $alarm-status-color-ok: green;
 // Tiles within panels (e.g. instance_volumes.pt and volume_snapshots.pt page)
 @mixin panel-tile-mixin {
     background-color: white;
-    border: 1px solid $hpe-lightgray;
+    border: 1px solid $dxc-lightgray;
     width: 190px; height: 160px;
     .footer {
         height: 24px;
@@ -157,7 +143,7 @@ $alarm-status-color-ok: green;
 }
 
 @mixin button-shadow-mixin {
-    box-shadow: 1px 1px 5px 0 $hpe-backgroundgray;
+    box-shadow: 1px 1px 5px 0 $dxc-lightgray;
 }
 
 @mixin disabled-button-mixin {
@@ -188,7 +174,7 @@ $alarm-status-color-ok: green;
 @mixin disabled-list-item-mixin {
     cursor: default;
     a {
-        color: $hpe-lightgray;
+        color: $dxc-lightgray;
         pointer-events: none;
     }
     &:hover {
@@ -197,15 +183,15 @@ $alarm-status-color-ok: green;
 }
 
 @mixin dropdown-shadow-mixin {
-    border-color: $hpe-lightgray;
-    box-shadow: 2px 2px 5px $hpe-backgroundgray;
+    border-color: $dxc-lightgray;
+    box-shadow: 2px 2px 5px $dxc-lightgray;
 }
 
 @mixin helptext-icon-position-mixin {
     .helptext-icon {
         position: relative;
         left: -1rem;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
     }
 }
 
@@ -230,7 +216,7 @@ $alarm-status-color-ok: green;
             padding-bottom: 0.5rem;
             padding-left: 6px;
             padding-right: 6px;
-            border-bottom: 1px solid $hpe-lightgray;
+            border-bottom: 1px solid $dxc-lightgray;
             vertical-align: top;
             color: $dxc-black;
             text-transform: uppercase;
@@ -246,7 +232,7 @@ $alarm-status-color-ok: green;
         }
     }
     tr {
-        border-bottom: 1px solid $hpe-lightgray;
+        border-bottom: 1px solid $dxc-lightgray;
         td.count {
             text-align: center;
         }
@@ -272,13 +258,13 @@ $alarm-status-color-ok: green;
     .item-list {
         margin-bottom: 6px;
         .item {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             font-family: $euca-text-font-family;
-            border: 2px solid $hpe-lightgray;
+            border: 2px solid $dxc-lightgray;
             background-color: #fff;
             margin-right: 8px;
             a {
-                color: $hpe-gray;
+                color: $dxc-darkgray;
                 &:hover {
                 color: $hpe-green;
                 text-decoration: none;
@@ -300,11 +286,11 @@ $alarm-status-color-ok: green;
         padding-left: 0;
         a {
             padding: 10px 0 4px 0;
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             background-color: transparent;
             font-family: $euca-header-font-family;
             &:hover {
-                border-bottom: 2px solid $hpe-gray;
+                border-bottom: 2px solid $dxc-darkgray;
                 background-color: transparent;
                 text-decoration: none;
             }
@@ -330,18 +316,18 @@ $alarm-status-color-ok: green;
     padding-right: 1rem;
     padding-left: 1rem;
     a {  // Visited tabs
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         font-family: $euca-header-font-family;
         background-color: transparent;
         &:hover {
-            color: $hpe-gray;
-            border-bottom: 2px solid $hpe-gray;
+            color: $dxc-darkgray;
+            border-bottom: 2px solid $dxc-darkgray;
         }
         box-shadow: none;
         white-space: nowrap;
         padding: 8px 0 6px 0;
         .cir {
-            background-color: $hpe-gray;
+            background-color: $dxc-darkgray;
         }
     }
     &.active {  // Active tab
@@ -356,12 +342,12 @@ $alarm-status-color-ok: green;
         }
     }
     &.disabled {  // Unvisited tabs
-        color: $hpe-lightgray;
+        color: $dxc-lightgray;
         font-family: $euca-header-font-family;
         padding: 8px 1rem;
         .cir {
             margin-right: 8px;
-            background-color: $hpe-lightgray;
+            background-color: $dxc-lightgray;
         }
     }
     .cir {
@@ -374,7 +360,7 @@ $alarm-status-color-ok: green;
         padding: 0 0 0 0;
         text-align: center;
         vertical-align: middle;
-        background-color: $hpe-lightgray;
+        background-color: $dxc-lightgray;
         color: white;
         margin-right: 4px;
     }

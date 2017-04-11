@@ -32,9 +32,9 @@
     }
     .label.has-tip {
         background: white;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         font-weight: bold;
-        border-bottom: 1px solid $hpe-gray;
+        border-bottom: 1px solid $dxc-darkgray;
     }
     .footer .action {
         display: block;
@@ -42,10 +42,10 @@
         left: 0; right: 0; bottom: 0;
         line-height: 1.5rem;
         text-align: center;
-        background-color: $hpe-gray;
+        background-color: $dxc-darkgray;
         color: white;
         &:hover {
-            background-color: $hpe-backgroundgray;
+            background-color: $dxc-lightgray;
         }
     }
 }
@@ -58,10 +58,10 @@
     }
     .label {
         padding: 4px 6px;
-        &.i386 { background-color: $hpe-turq; }
-        &.x86_64 { background-color: $hpe-bronze; }
-        &.ebs { background-color: $hpe-bronze; text-transform: uppercase; }
-        &.instance-store { background-color: $hpe-steel; }
+        &.i386 { background-color: $dxc-darkgray; }
+        &.x86_64 { background-color: $dxc-black; }
+        &.ebs { background-color: $dxc-blue; text-transform: uppercase; }
+        &.instance-store { background-color: $dxc-darkgray; }
     }
     .emi-name {
         display: inline-block;
@@ -90,7 +90,7 @@ $snapshot-status-color-failed: darkred;
             font-size: 0.825rem;
             margin-bottom: 0;
             .meter {
-                background-color: $hpe-disabledgreen;
+                background-color: $dxc-blue;
                 padding-left: 4px;
                 color: $dxc-black;
                 font-weight: bold;
@@ -113,7 +113,7 @@ $snapshot-status-color-failed: darkred;
             position: relative;
             border: none;
             .meter {
-                background-color: $hpe-disabledgreen;
+                background-color: $dxc-blue;
                 color: $dxc-black;
                 position: relative;
                 top: -2px; left: -2px;

@@ -65,10 +65,10 @@
         .content {
             width: 100%;
             .description {
-                color: $hpe-gray;
+                color: $dxc-darkgray;
             }
             .rule-description-label {
-                color: $hpe-gray;
+                color: $dxc-darkgray;
             }
         }
     }
@@ -81,7 +81,7 @@
         .chosen-choices {
             li.search-field {
                 input.default {
-                    color: $hpe-lightgray;
+                    color: $dxc-lightgray;
                     font-size: $euca-font-size;
                     font-family: $euca-text-font-family;
                     margin-left: 3px;
@@ -105,7 +105,7 @@
     label {
         position: relative;
         right: -1rem;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         margin-top: 4px;
         cursor: default;
     }
@@ -123,14 +123,14 @@
     }
     .title {
         font-weight: bold;
-        color: $hpe-gray;
-        border-bottom: 1px solid $hpe-lightgray;
+        color: $dxc-darkgray;
+        border-bottom: 1px solid $dxc-lightgray;
         margin-top: 7px;
         margin-bottom: 0.25rem;
     }
     .section {
         padding: 0.5rem 0;
-        border-bottom: 1px solid $hpe-lightgray;
+        border-bottom: 1px solid $dxc-lightgray;
         &:last-child {
             border-bottom: none;
         }

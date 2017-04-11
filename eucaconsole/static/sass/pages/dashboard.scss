@@ -57,14 +57,14 @@ $tile-row-height: 24px;
         .subheader {
             font-family: $euca-text-font-family;
             font-size: $euca-font-size;
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             margin: 0 0 0 0;
         }
         i.fa-bell {
             color: white !important;
         }
         i.dash-no-alarms {
-            color: $hpe-gray !important;
+            color: $dxc-darkgray !important;
         }
         i.dash-alarms {
             color: darkred !important;
@@ -83,7 +83,7 @@ $tile-row-height: 24px;
                 position: absolute;
                 bottom: -40%; left: 0; right: 0;
                 text-align: center;
-                color: $hpe-gray;
+                color: $dxc-darkgray;
                 font-family: $euca-header-font-family;
                 font-style: normal;
                 &:hover {
@@ -120,7 +120,7 @@ $tile-row-height: 24px;
             position: absolute;
             width: 30px; height: $tile-row-height;
             top: 0; right: 0;
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             font-size: 1.1rem;
             padding: 0 0 0 0;
             border: none;
@@ -149,7 +149,7 @@ $tile-row-height: 24px;
                 position: absolute;
                 top: 0; bottom: 0; left: 0; right: 0;
                 &:hover {
-                    background-color: $hpe-backgroundgray;
+                    background-color: $dxc-lightgray;
                     text-decoration: none;
                 }
             }
@@ -212,7 +212,7 @@ li#alarms {
     .statusrow {
         font-size: 10pt;
         text-align: left;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         margin-top: 10px;
         line-height: 1.2rem;
         .status {
@@ -230,7 +230,7 @@ li#alarms {
             text-align: left;
         }
         i.service-denied {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             font-size: 16pt;
             text-align: left;
         }

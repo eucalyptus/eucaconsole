@@ -118,7 +118,7 @@ h1, h2, h3, h4, h5 {
     }
     h6 {
         font-family: $euca-text-font-family;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         text-transform: uppercase;
     }
 
@@ -129,7 +129,7 @@ h1, h2, h3, h4, h5 {
     }
     h6 {
         font-family: $euca-text-font-family;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         text-transform: uppercase;
     }
 }
@@ -164,7 +164,7 @@ b, strong {
 
 // Logo bar (top-most bar)
 #logobar-wrapper {
-    border-bottom: 1px solid $hpe-lightgray;
+    border-bottom: 1px solid $dxc-lightgray;
 }
 #logobar {
     padding: 6px 0 0 0;
@@ -250,7 +250,7 @@ b, strong {
     padding-left: 16px;
     padding-top: 6px;
     padding-bottom: 1px;
-    color: $hpe-gray;
+    color: $dxc-darkgray;
     font-family: $euca-header-font-family;
     letter-spacing: 1px;
     font-weight: normal;
@@ -271,7 +271,7 @@ b, strong {
     .help-icon {
         position: relative;
         padding: 8px 16px;
-        border-left: 1px solid $hpe-lightgray;
+        border-left: 1px solid $dxc-lightgray;
         font-weight: bold;
         text-align: center;
     }
@@ -312,7 +312,7 @@ b, strong {
    Main Content
 ----------------------------------------- */
 #maincontent {
-    background: $hpe-backgroundgray;
+    background: lighten($dxc-lightgray, 10%);
     position: relative;
     padding-bottom: 3rem;
 }
@@ -352,7 +352,7 @@ b, strong {
 
 .subsection-label {
     font-size: $euca-font-size;
-    color: $hpe-gray;
+    color: $dxc-darkgray;
     margin-bottom: 6px;
 }
 
@@ -361,7 +361,7 @@ b, strong {
 }
 
 hr {
-    border: 1px solid $hpe-lightgray;
+    border: 1px solid $dxc-lightgray;
     border-width: 1px 0 0;
 }
 
@@ -372,11 +372,11 @@ a.has-tip {
 .tooltip {
     font-family: $euca-text-font-family;
     font-size: $euca-s-font-size;
-    border: 2px solid $hpe-lightgray;
+    border: 2px solid $dxc-lightgray;
     max-width: 260px;
     > .nub {
-        border: 6px solid $hpe-lightgray;
-        border-color: transparent transparent $hpe-lightgray transparent;
+        border: 6px solid $dxc-lightgray;
+        border-color: transparent transparent $dxc-lightgray transparent;
         top: -12px;
     }
 }
@@ -451,9 +451,9 @@ a.circle {
             }
         }
         &.warning {
-            border: 2px solid $hpe-gold;
+            border: 2px solid $dxc-yellow;
             .icon {
-                background-color: $hpe-gold;
+                background-color: $dxc-yellow;
                 span:before {
                     content: "\26A0"
                 }
@@ -469,7 +469,7 @@ a.circle {
             }
         }
         &.secondary{
-            border: 2px solid $hpe-gray;
+            border: 2px solid $dxc-darkgray;
             color: $dxc-black;
         }
         &.alert {
@@ -554,7 +554,7 @@ textarea.policy-area {
 }
 
 .helptext-icon {
-    color: $hpe-gray;
+    color: $dxc-darkgray;
     font-size: 1.2rem;
 }
 
@@ -569,7 +569,7 @@ textarea.policy-area {
             text-decoration: none;
         }
         a {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
         }
     }
 }
@@ -606,12 +606,12 @@ textarea.policy-area {
     }
     @include item-list;
     .propagates {
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         font-size: $euca-font-size;
     }
     .add-label {
         margin-bottom: 6px;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         font-family: $euca-text-font-family;
     }
     #add-tag-btn {
@@ -676,7 +676,7 @@ textarea.policy-area {
         width: 2rem;
         padding: 6px 3px 5px 8px;
         line-height: 1.5rem;
-        border: 1px solid $hpe-lightgray;
+        border: 1px solid $dxc-lightgray;
     }
     .delete-on-terminate {
         text-align: center;
@@ -763,7 +763,7 @@ textarea.policy-area {
 
 form {
     label {
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
         cursor: default;
@@ -772,7 +772,7 @@ form {
         }
     }
     input {
-        border-color: $hpe-lightgray;
+        border-color: $dxc-lightgray;
         background-color: #fff;
         &[type=file] {
             background-color: transparent;
@@ -787,7 +787,7 @@ form {
         background-color: #fff;
     }
     .req {
-        color: $hpe-gray;
+        color: $dxc-darkgray;
     }
     .row {
         .inline-label {
@@ -838,7 +838,7 @@ form {
     .error .chosen-container .chosen-single,
     .ng-invalid.ng-touched {
         border-color: darkred;
-        background: $hpe-validation-input-bgcolor;
+        background: $euca-validation-input-bgcolor;
     }
 }
 
@@ -945,7 +945,7 @@ form .controls-wrapper > [class*='small-'] label {
     }
     input, select {
         border: 1px solid darkred;
-        background-color: $hpe-validation-input-bgcolor;
+        background-color: $euca-validation-input-bgcolor;
     }
     small.error {
         @include validation-error-mixin;
@@ -976,7 +976,7 @@ textarea.hidden {
         background: #fff none;
         .chosen-choices  {
             background: none;
-            border: 1px solid $hpe-lightgray;
+            border: 1px solid $dxc-lightgray;
             li {
                 &.search-field  {
                     input[type=text] {
@@ -989,9 +989,9 @@ textarea.hidden {
                 }
                 &.search-choice {
                     background: #fff none;
-                    border: 2px solid $hpe-lightgray;
+                    border: 2px solid $dxc-lightgray;
                     padding: 4px 20px 4px 8px;
-                    color: $hpe-gray;
+                    color: $dxc-darkgray;
                     font-family: $euca-header-font-family;
                     font-size: $euca-xs-font-size;
                     .search-choice-close {
@@ -1030,7 +1030,7 @@ textarea.hidden {
             .active-result {
                 &.highlighted {
                     color: $dxc-black;
-                    background: $hpe-backgroundgray none;
+                    background: $dxc-lightgray none;
                 }
             }
         }
@@ -1046,7 +1046,7 @@ textarea.hidden {
     border: none;
     position: relative;
     h6 {
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         text-transform: uppercase;
         font-family: $euca-text-font-family;
         font-size: $euca-l-font-size;
@@ -1261,15 +1261,15 @@ $btn-group-radius: 10px;
             padding: 0.2rem 1.5rem 0.3rem 1.5rem;
             border-collapse: collapse;
             margin: 0;
-            border: 1px solid $hpe-lightgray;
+            border: 1px solid $dxc-lightgray;
             font-weight: bold;
-            color: $hpe-gray-65;
+            color: $dxc-darkgray;
             &:hover {
-                color: $hpe-blue;
+                color: $dxc-blue;
             }
             &.active {
                 color: white;
-                background-color: $hpe-blue;
+                background-color: $dxc-blue;
             }
             &:first-child {
                 border-top-left-radius: $btn-group-radius;
@@ -1431,14 +1431,14 @@ div.left-nav {
     overflow: hidden;
     border-style: solid;
     border-width: 0 1px 0 0;
-    border-color: $hpe-lightgray;
+    border-color: $dxc-lightgray;
 }
 
 // Off-canvas Nav adjustments
 div.left-off-canvas-menu {
     z-index: 999999 !important;
     background-color: white;
-    border: 0 solid $hpe-lightgray;
+    border: 0 solid $dxc-lightgray;
     border-right-width: 1px;
 }
 
@@ -1475,8 +1475,8 @@ span.euca-nav-size {
 }
 ul.off-canvas-list li{
     a:hover {
-        background-color: $hpe-backgroundgray !important;
-        color: $hpe-gray !important;
+        background-color: $dxc-lightgray !important;
+        color: $dxc-darkgray !important;
     }
 }
 ul.resources-nav {
@@ -1488,7 +1488,7 @@ ul.resources-nav {
     label {
         padding-left: 3.0rem;
         background-color: white;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         padding-top: 0.6rem;
         margin-bottom: 0.6rem;
         border-top: 0;
@@ -1500,7 +1500,7 @@ ul.resources-nav {
     li {
         a {
             background-color: transparent;
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             padding: 0.5rem 8rem 1.0rem 2.6rem;
             line-height: 1.5rem;
             border-bottom: 0;
@@ -1510,8 +1510,8 @@ ul.resources-nav {
             color: white !important;
         }
         &:hover {
-            background-color: $hpe-backgroundgray;
-            color: $hpe-gray;
+            background-color: $dxc-lightgray;
+            color: $dxc-darkgray;
         }
         span {
             padding-left: 0.5rem;
@@ -1585,7 +1585,7 @@ ul.bullet-list {
         font-size: 0.9rem;
         content: '\f138';
         margin: 0 5px 0 -15px;
-        color: $hpe-blue;
+        color: $dxc-blue;
     }
 }
 

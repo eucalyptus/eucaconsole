@@ -7,16 +7,16 @@
 #image-picker {
     .table {
         width: 100% !important;
-        border: 1px solid $hpe-lightgray;
+        border: 1px solid $dxc-lightgray;
         tbody {
             display: block;
             overflow-y: scroll;
             height: 22rem;
             tr {
                 display: block;
-                border-bottom: 1px solid $hpe-lightgray;
+                border-bottom: 1px solid $dxc-lightgray;
                 &.selected {
-                    background-color: $hpe-backgroundgray;
+                    background-color: $dxc-lightgray;
                 }
                 &.selected:hover {
                     cursor: inherit;
@@ -61,10 +61,10 @@
         .label {
             padding: 3px 4px;
             &.i386 {
-                background-color: $hpe-turq;
+                background-color: $dxc-darkgray;
             }
             &.x86_64 {
-                background-color: $hpe-bronze;
+                background-color: $dxc-black;
             }
         }
     }

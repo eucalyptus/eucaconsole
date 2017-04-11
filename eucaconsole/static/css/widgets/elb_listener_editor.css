@@ -9,9 +9,9 @@
 #elb-listener-editor .controls-wrapper #from-port-error { margin-left: 1rem; }
 #elb-listener-editor .security-row label.inline { width: 7rem; text-align: right; line-height: 1.1rem; margin: 0 0.5rem 0 0; padding: 0 0 0 0; }
 #elb-listener-editor .security-section { margin-bottom: 1.5rem; }
-#elb-listener-editor .label.radius { color: #5a5a5a; }
-#elb-listener-editor .label.radius.cert { background-color: #cccccc; }
-#elb-listener-editor .label.radius.bcert { background-color: #b3b3b3; margin-right: 6px; }
+#elb-listener-editor .label.radius { color: #666666; }
+#elb-listener-editor .label.radius.cert { background-color: #d9d9d9; }
+#elb-listener-editor .label.radius.bcert { background-color: #d9d9d9; margin-right: 6px; }
 #elb-listener-editor table.table { width: 100%; }
 #elb-listener-editor table.table tr.top-header { border-bottom: 0; }
 #elb-listener-editor table.table tr.top-header th { border-bottom: none; padding: 0 0 0 6px; }
@@ -19,10 +19,10 @@
 #elb-listener-editor table.table th.vertical-border-header { border-collapse: collapse; border-right: 1px solid #ddd; }
 
 #select-certificate-modal .item-list { margin-bottom: 6px; }
-#select-certificate-modal .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
+#select-certificate-modal .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #d9d9d9; background-color: #fff; margin-right: 8px; }
 #select-certificate-modal .item-list .item a { color: #666666; }
 #select-certificate-modal .item-list .item a:hover { color: #01a982; text-decoration: none; }
-#select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #5a5a5a; }
+#select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #666666; }
 #select-certificate-modal #backend-certificates-display { margin-bottom: 1rem; }
 #select-certificate-modal #new-certificate-wrapper { padding-left: 1rem; }
 

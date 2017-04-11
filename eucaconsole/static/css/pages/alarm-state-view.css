@@ -13,7 +13,7 @@
 
 .status.ALARM { background-color: darkred; }
 
-.status.INSUFFICIENT_DATA { background-color: #5a5a5a; }
+.status.INSUFFICIENT_DATA { background-color: #666666; }
 
 .status.OK { background-color: green; }
 
@@ -24,7 +24,7 @@
 .alarm-listing { margin-top: 0.5rem; }
 .alarm-listing a[href]:hover { color: #01a982; border-bottom: 1px solid #01a982; }
 
-i.delete-icon { color: #5a5a5a !important; }
+i.delete-icon { color: #666666 !important; }
 i.delete-icon:hover { color: darkred !important; }
 
 span.capital { text-transform: capitalize; }
