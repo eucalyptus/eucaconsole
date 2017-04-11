@@ -2025,8 +2025,8 @@ ul.resources-nav li i.icon.images { background-image: url(../img/nav/Images.svg)
 ul.resources-nav li i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
 ul.resources-nav li i.icon.instances { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav li i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
-ul.resources-nav li.active { background-color: #01a982 !important; color: white !important; }
-ul.resources-nav i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; color: #939598; }
+ul.resources-nav li.active { background-color: #ffed00 !important; color: white !important; }
+ul.resources-nav i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; color: #000000; }
 ul.resources-nav i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }
 ul.resources-nav i.icon.cloudformation { background-image: url(../img/nav/stacks.svg); }

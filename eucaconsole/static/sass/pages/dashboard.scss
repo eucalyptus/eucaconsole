@@ -64,7 +64,7 @@ $tile-row-height: 24px;
             color: white !important;
         }
         i.dash-no-alarms {
-            color: $dxc-darkgray !important;
+            color: $dxc-black !important;
         }
         i.dash-alarms {
             color: darkred !important;
@@ -220,12 +220,12 @@ li#alarms {
             left: 8px;
         }
         i.service-up {
-            color: $hpe-green;
+            color: green;
             font-size: 16pt;
             text-align: left;
         }
         i.service-down {
-            color: red;
+            color: darkred;
             font-size: 16pt;
             text-align: left;
         }

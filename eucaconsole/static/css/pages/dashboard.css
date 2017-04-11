@@ -13,7 +13,7 @@
 .panel .tile { background-color: white; position: relative; height: 240px; padding: 4px 8px; }
 .panel .tile .subheader { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; color: #666666; margin: 0 0 0 0; }
 .panel .tile i.fa-bell { color: white !important; }
-.panel .tile i.dash-no-alarms { color: #666666 !important; }
+.panel .tile i.dash-no-alarms { color: #000000 !important; }
 .panel .tile i.dash-alarms { color: darkred !important; }
 .panel .tile .icon { position: absolute; top: 20%; left: 50%; margin-left: -50px; display: inline-block; width: 100px; height: 100px; text-align: center; color: white; font-size: 3rem; }
 .panel .tile .icon em { font-size: 24px; position: absolute; bottom: -40%; left: 0; right: 0; text-align: center; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-style: normal; }
@@ -74,6 +74,6 @@ li#alarms .tile .content { padding-top: 0.8rem; width: 100%; text-align: center;
 
 #health .statusrow { font-size: 10pt; text-align: left; color: #666666; margin-top: 10px; line-height: 1.2rem; }
 #health .statusrow .status { position: relative; left: 8px; }
-#health .statusrow i.service-up { color: #01a982; font-size: 16pt; text-align: left; }
-#health .statusrow i.service-down { color: red; font-size: 16pt; text-align: left; }
+#health .statusrow i.service-up { color: green; font-size: 16pt; text-align: left; }
+#health .statusrow i.service-down { color: darkred; font-size: 16pt; text-align: left; }
 #health .statusrow i.service-denied { color: #666666; font-size: 16pt; text-align: left; }
