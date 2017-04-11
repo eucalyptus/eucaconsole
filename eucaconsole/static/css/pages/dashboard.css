@@ -11,7 +11,7 @@
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 16px; }
 .panel .tile { background-color: white; position: relative; height: 240px; padding: 4px 8px; }
-.panel .tile .subheader { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; color: #666666; margin: 0 0 0 0; }
+.panel .tile .subheader { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; color: #000000; margin: 0 0 0 0; }
 .panel .tile i.fa-bell { color: white !important; }
 .panel .tile i.dash-no-alarms { color: #000000 !important; }
 .panel .tile i.dash-alarms { color: darkred !important; }

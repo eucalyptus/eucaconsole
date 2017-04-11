@@ -43,14 +43,14 @@ from ..views import BaseView, boto_error_handler
 
 
 CHART_COLORS = {
-    0: '#2ad2c9',
-    1: '#614767',
-    2: '#FF8D6D',
-    3: '#80746E',
-    4: '#000000',
-    5: '#425563',
-    6: '#5F7A76',
-    7: '#666666',
+    0: '#00c9ff',  # $dxc-blue
+    1: '#64ff00',  # $dxc-green
+    2: '#000000',  # $dxc-black
+    3: '#666666',  # $dxc-darkgray
+    4: 'orange',
+    5: 'darkblue',
+    6: 'purple',
+    7: 'darkgreen',
 }
 
 ISO8601 = '%Y-%m-%dT%H:%M:%S.%fZ'
