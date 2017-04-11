@@ -156,7 +156,7 @@ $alarm-status-color-ok: green;
     &:hover {
         cursor: default;
         pointer-events: none;
-        background-color: white;
+        background-color: $dxc-lightgray;
         text-decoration: none;
         border: none;
         outline: none;
@@ -268,14 +268,14 @@ $alarm-status-color-ok: green;
         .item {
             color: $dxc-darkgray;
             font-family: $euca-text-font-family;
-            border: 2px solid $dxc-lightgray;
+            border: 2px solid $dxc-darkgray;
             background-color: #fff;
             margin-right: 8px;
             a {
-                color: $dxc-darkgray;
+                color: $dxc-black;
                 &:hover {
-                color: $hpe-green;
-                text-decoration: none;
+                    color: $dxc-darkgray;
+                    text-decoration: none;
                 }
             }
         }

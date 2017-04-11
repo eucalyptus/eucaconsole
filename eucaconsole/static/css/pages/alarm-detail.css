@@ -9,11 +9,11 @@
 .actions select { margin: 0 0 0.5rem 0; }
 .actions .cancel { display: inline-block; padding: 0.375rem; }
 .actions.ng-valid-action-editor-empty .button, .actions.ng-pristine .button, .actions.ng-invalid .button { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { border: none; }
 .actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { box-shadow: none; }
 .actions .button.incomplete, .actions .button.empty { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .actions .button.incomplete:hover, .actions .button.empty:hover { border: none; }
 .actions .button.incomplete:hover, .actions .button.empty:hover { box-shadow: none; }
 
@@ -47,11 +47,11 @@
 .actions select { margin: 0 0 0.5rem 0; }
 .actions .cancel { display: inline-block; padding: 0.375rem; }
 .actions.ng-valid-action-editor-empty .button, .actions.ng-pristine .button, .actions.ng-invalid .button { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { border: none; }
 .actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { box-shadow: none; }
 .actions .button.incomplete, .actions .button.empty { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .actions .button.incomplete:hover, .actions .button.empty:hover { border: none; }
 .actions .button.incomplete:hover, .actions .button.empty:hover { box-shadow: none; }
 
@@ -66,11 +66,11 @@
 .actions select { margin: 0 0 0.5rem 0; }
 .actions .cancel { display: inline-block; padding: 0.375rem; }
 .actions.ng-valid-action-editor-empty .button, .actions.ng-pristine .button, .actions.ng-invalid .button { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { border: none; }
 .actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { box-shadow: none; }
 .actions .button.incomplete, .actions .button.empty { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .actions .button.incomplete:hover, .actions .button.empty:hover { border: none; }
 .actions .button.incomplete:hover, .actions .button.empty:hover { box-shadow: none; }
 
@@ -97,7 +97,7 @@
 
 .create-alarm-modal .dimensions ul { list-style: none; margin: 0; padding: 0; }
 .create-alarm-modal .ng-invalid .button.submit { background-color: #d9d9d9; color: #666666; cursor: default; }
-.create-alarm-modal .ng-invalid .button.submit:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.create-alarm-modal .ng-invalid .button.submit:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .create-alarm-modal .unit-label { font-weight: bold; color: #666666; }
 .create-alarm-modal input[name=threshold] { margin-bottom: 0; }
 .create-alarm-modal .controls-wrapper.dimensions small.error { position: relative; top: -8px; }
@@ -126,5 +126,5 @@ form.alarm-update.alarm-update .trigger-conditions { margin: 1.5rem 0 0; }
 form.alarm-update.alarm-update .trigger-conditions select { margin: 0 0 0.5rem; }
 form.alarm-update select.dimensions-select.ng-invalid + div.chosen-container { border: 1px solid darkred; background-color: #ffe9ec; }
 form.alarm-update.ng-invalid .button.submit, form.alarm-update.ng-pristine .button.submit { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-form.alarm-update.ng-invalid .button.submit:hover, form.alarm-update.ng-pristine .button.submit:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+form.alarm-update.ng-invalid .button.submit:hover, form.alarm-update.ng-pristine .button.submit:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 form.alarm-update.ng-invalid .button.submit:hover, form.alarm-update.ng-pristine .button.submit:hover { border: none; }

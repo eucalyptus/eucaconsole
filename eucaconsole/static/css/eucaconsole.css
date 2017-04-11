@@ -1644,13 +1644,17 @@ b, strong { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-wei
 #logobar #offcanvas-icon i { font-size: 1.8rem; }
 #logobar #user-dropdown-section { position: relative; left: -10px; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; letter-spacing: 1px; font-weight: normal; }
+#breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; letter-spacing: 1px; font-weight: normal; }
 #breadcrumbs li { margin-top: 0.3rem; font-size: 18px; }
+#breadcrumbs li a { color: #000000; }
+#breadcrumbs li a:hover { color: #666666; }
 #breadcrumbs li.current a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
+#breadcrumbs li.current a:hover { color: #000000; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-bottom: 2px; }
 #breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #d9d9d9; font-weight: bold; text-align: center; }
 #breadcrumbs .breadcrumbs > ::before { position: relative; top: -1px; font-size: 0.7rem; }
-#breadcrumbs .fi-home { position: relative; bottom: 1px; }
+#breadcrumbs .fi-home { color: #000000; }
+#breadcrumbs .fi-home:hover { color: #666666; }
 
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
 .sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
@@ -1698,8 +1702,8 @@ a.circle { color: black; display: inline-block; }
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; font-weight: bold; }
 #notifications .marked { position: relative; }
 #notifications .alert-box { position: fixed; padding: 0 0; top: 0; left: 50%; transform: translateX(-50%); z-index: 9999999; width: 100%; color: #000000; background-color: white; box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15); }
-#notifications .alert-box.success { border: 2px solid #01a982; }
-#notifications .alert-box.success .icon { background-color: #01a982; }
+#notifications .alert-box.success { border: 2px solid darkgreen; }
+#notifications .alert-box.success .icon { background-color: darkgreen; }
 #notifications .alert-box.success .icon span:before { content: "✓"; }
 #notifications .alert-box.warning { border: 2px solid #ffed00; }
 #notifications .alert-box.warning .icon { background-color: #ffed00; }
@@ -1729,8 +1733,8 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .helptext-icon { color: #666666; font-size: 1.2rem; }
 
 .expando .title { display: inline-block; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 18px; text-transform: none; }
-.expando .title:hover a, .expando .title:hover i { color: #01a982; text-decoration: none; }
-.expando .title a { color: #666666; }
+.expando .title:hover a, .expando .title:hover i { color: #666666; text-decoration: none; }
+.expando .title a { color: #000000; }
 
 .action-icon { display: inline-block; font-size: 1.4rem; color: #000000; padding-right: 0.5rem; padding-left: 0.5rem; }
 .action-icon:hover { cursor: pointer; color: #01a982; }
@@ -1743,9 +1747,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 ----------------------------------------- */
 #tag-editor small { font-size: 14px; }
 #tag-editor .item-list { margin-bottom: 6px; }
-#tag-editor .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #d9d9d9; background-color: #fff; margin-right: 8px; }
-#tag-editor .item-list .item a { color: #666666; }
-#tag-editor .item-list .item a:hover { color: #01a982; text-decoration: none; }
+#tag-editor .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #666666; background-color: #fff; margin-right: 8px; }
+#tag-editor .item-list .item a { color: #000000; }
+#tag-editor .item-list .item a:hover { color: #666666; text-decoration: none; }
 #tag-editor .propagates { color: #666666; font-size: 16px; }
 #tag-editor .add-label { margin-bottom: 6px; color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
@@ -1883,7 +1887,7 @@ input, input[type="text"], input[type="password"], input[type="date"], input[typ
 
 .reveal-modal { z-index: 9999995; }
 .reveal-modal [data-tooltip] { z-index: 99999999; }
-.reveal-modal h3#about-cloud:hover { color: #01a982; }
+.reveal-modal h3#about-cloud:hover { color: #666666; }
 .reveal-modal h3.pagetitle { margin-left: 0; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .tabs-content { border: none; }
@@ -1891,7 +1895,8 @@ input, input[type="text"], input[type="password"], input[type="date"], input[typ
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
 .reveal-modal .top-margin { margin-top: 0.7rem; }
 .reveal-modal .center { text-align: center; }
-.reveal-modal .close-reveal-modal:hover { color: #01a982; text-decoration: none; }
+.reveal-modal .close-reveal-modal { color: #000000; }
+.reveal-modal .close-reveal-modal:hover { color: #666666; text-decoration: none; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
@@ -1927,9 +1932,9 @@ footer .copyright { color: white; font-size: 14px; }
 .button.secondary { background-color: #d9d9d9; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
 .button.secondary:hover { background-color: #666666; color: #000000; text-decoration: none; outline: none; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: #d9d9d9; color: #666666; cursor: default; }
-.button.secondary.disabled:hover, .button.secondary[disabled]:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.button.secondary.disabled:hover, .button.secondary[disabled]:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .button.disabled, .button[disabled] { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-.button.disabled:hover, .button[disabled]:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.button.disabled:hover, .button[disabled]:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .button.disabled:hover, .button[disabled]:hover { border: none; }
 .button.tiny { white-space: nowrap; }
 .button.round:hover { outline: none; }
@@ -2019,7 +2024,7 @@ ul.resources-nav { width: 450px; list-style-type: none; line-height: 3.0rem; mar
 ul.resources-nav label { padding-left: 3.0rem; background-color: white; color: #666666; padding-top: 0.6rem; margin-bottom: 0.6rem; border-top: 0; }
 ul.resources-nav hr { margin: 0 0.5rem 0 0.5rem; width: 42.5%; }
 ul.resources-nav li a { background-color: transparent; color: #666666; padding: 0.5rem 8rem 1.0rem 2.6rem; line-height: 1.5rem; border-bottom: 0; position: static; }
-ul.resources-nav li a.active { color: white !important; }
+ul.resources-nav li a.active { color: #000000 !important; }
 ul.resources-nav li:hover { background-color: #d9d9d9; color: #666666; }
 ul.resources-nav li span { padding-left: 0.5rem; white-space: nowrap; display: inline-block; vertical-align: middle; }
 ul.resources-nav li span.active { background-color: #01a982; color: white; }
@@ -2030,7 +2035,7 @@ ul.resources-nav li i.icon.images { background-image: url(../img/nav/Images.svg)
 ul.resources-nav li i.icon.images.active { background-image: url(../img/nav/Images_Active.svg); }
 ul.resources-nav li i.icon.instances { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav li i.icon.instances.active { background-image: url(../img/nav/Instances_Active.svg); }
-ul.resources-nav li.active { background-color: #ffed00 !important; color: white !important; }
+ul.resources-nav li.active { background-color: #ffed00 !important; color: #000000 !important; }
 ul.resources-nav i.icon { position: absolute; left: 0.5rem; margin-top: 0.5rem; height: 2rem; width: 2rem; color: #000000; }
 ul.resources-nav i.icon.instances-cat { background-image: url(../img/nav/Instances.svg); }
 ul.resources-nav i.icon.autoscaling { background-image: url(../img/nav/Auto-Scaling-Groups.svg); }

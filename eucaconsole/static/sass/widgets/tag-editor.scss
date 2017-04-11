@@ -22,10 +22,10 @@
       }
 
       a.remove {
-        color: $dxc-darkgray;
-                &:hover {
-                    color: $hpe-green;
-                }
+        color: $dxc-black;
+        &:hover {
+            color: $dxc-darkgray;
+        }
         margin-left: 5px;
       }
     }

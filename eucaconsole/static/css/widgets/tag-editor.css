@@ -3,12 +3,12 @@
 .tag-editor .item-list { margin-bottom: 6px; }
 .tag-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; background-color: white; border: 2px solid #d9d9d9; padding: 0.25rem 0.5rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; margin: 5px 8px 0 0; }
 .tag-editor .item-list .item .propagates { color: #777; }
-.tag-editor .item-list .item a.remove { color: #666666; margin-left: 5px; }
-.tag-editor .item-list .item a.remove:hover { color: #01a982; }
+.tag-editor .item-list .item a.remove { color: #000000; margin-left: 5px; }
+.tag-editor .item-list .item a.remove:hover { color: #666666; }
 .tag-editor .add-label { color: #666666; font-size: 18px; margin-bottom: 6px; }
 .tag-editor .tag-entry-result { display: none; }
 .tag-editor.ng-pristine .button, .tag-editor.ng-invalid .button { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
-.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { border: none; }
 .tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { box-shadow: none; }
 .tag-editor input.ng-invalid.ng-touched ~ .error { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }

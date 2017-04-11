@@ -9,7 +9,7 @@
     .item-list {
         .item {
             background-color: white;
-            border: 2px solid $dxc-lightgray;
+            border: 2px solid $dxc-darkgray;
             height: 1.5rem;
             a {
                 color: $dxc-darkgray;
@@ -18,5 +18,12 @@
                 padding-left: 4px;
             }
         }
+    }
+}
+
+@-moz-document url-prefix() {
+    .search-bar .item-list .item {
+        position: relative;
+        top: 0;
     }
 }

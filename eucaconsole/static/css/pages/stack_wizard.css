@@ -30,7 +30,7 @@
 .summary .value { word-break: break-all; line-height: 1rem; color: #000000; }
 .summary .value.breakword { word-break: normal; word-wrap: break-word; }
 .summary .row { margin-bottom: 5px; }
-.summary .title { font-weight: bold; color: #666666; border-bottom: 1px solid #d9d9d9; margin-top: 7px; margin-bottom: 0.25rem; }
+.summary .title { font-weight: bold; color: #000000; border-bottom: 1px solid #d9d9d9; margin-top: 7px; margin-bottom: 0.25rem; }
 .summary .section { padding: 0.5rem 0; border-bottom: 1px solid #d9d9d9; }
 .summary .section:last-child { border-bottom: none; }
 .summary #tag-preview { word-break: break-all; }

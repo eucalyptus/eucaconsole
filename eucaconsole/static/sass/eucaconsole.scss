@@ -257,15 +257,23 @@ b, strong {
     padding-left: 16px;
     padding-top: 6px;
     padding-bottom: 1px;
-    color: $dxc-darkgray;
     font-family: $euca-header-font-family;
     letter-spacing: 1px;
     font-weight: normal;
     li {
+        a {
+            color: $dxc-black;
+            &:hover {
+                color: $dxc-darkgray;
+            }
+        }
         margin-top: 0.3rem;
         font-size: $euca-l-font-size;
         &.current a {
             font-family: $euca-text-font-family;
+            &:hover {
+                color: $dxc-black;
+            }
         }
     }
     .icon-block{
@@ -288,8 +296,10 @@ b, strong {
         font-size: 0.7rem;
     }
     .fi-home {
-        position: relative;
-        bottom: 1px;
+        color: $dxc-black;
+        &:hover {
+            color: $dxc-darkgray;
+        }
     }
 }
 
@@ -449,9 +459,9 @@ a.circle {
         background-color: white;
         box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15);
         &.success {
-            border: 2px solid $hpe-green;
+            border: 2px solid darkgreen;
             .icon {
-                background-color: $hpe-green;
+                background-color: darkgreen;
                 span:before {
                     content: "\2713"
                 }
@@ -572,11 +582,11 @@ textarea.policy-area {
         font-size: $euca-l-font-size;
         text-transform: none;
         &:hover a, &:hover i {
-            color: $hpe-green;
+            color: $dxc-darkgray;
             text-decoration: none;
         }
         a {
-            color: $dxc-darkgray;
+            color: $dxc-black;
         }
     }
 }
@@ -1125,7 +1135,7 @@ textarea {
     }
     h3 {
         &#about-cloud:hover {
-            color: $hpe-green;
+            color: $dxc-darkgray;
         }
         &.pagetitle {
             margin-left: 0;
@@ -1150,8 +1160,9 @@ textarea {
         text-align: center;
     }
     .close-reveal-modal {
+        color: $dxc-black;
         &:hover {
-            color: $hpe-green;
+            color: $dxc-darkgray;
             text-decoration: none;
         }
     }
@@ -1529,7 +1540,7 @@ ul.resources-nav {
             position: static;
         }
         a.active {
-            color: white !important;
+            color: $dxc-black !important;
         }
         &:hover {
             background-color: $dxc-lightgray;
@@ -1561,7 +1572,7 @@ ul.resources-nav {
     }
     li.active {
         background-color: $dxc-yellow !important;
-        color: white !important;
+        color: $dxc-black !important;
     }
     i.icon {
         position: absolute;

@@ -193,15 +193,17 @@ $alarm-status-color-ok: $hpe-green;
     }
     .header {
         position: relative;
-        height: $tile-row-height;
+        height: $tile-row-height + 6px;
+        background-color: $dxc-black;
         a {
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: $dxc-black;
+            color: $dxc-white;
             font-family: $euca-header-font-family;
             &:hover {
-                color: $dxc-darkgray;
+                color: $dxc-white;
+                text-decoration: underline;
             }
             &.has-checkbox {
                 padding-left: 24px;
@@ -223,6 +225,9 @@ $alarm-status-color-ok: $hpe-green;
             overflow: visible;
             white-space: normal;
             text-overflow: inherit;
+        }
+        .dropdown.button.tiny {
+            color: $dxc-white;
         }
     }
     .content {
@@ -337,7 +342,7 @@ $alarm-status-color-ok: $hpe-green;
                 color: $dxc-black;
                 text-decoration: underline;
                 &:hover {
-                    color: $dxc-blue;
+                    color: $dxc-darkgray;
                     text-decoration: underline;
                 }
             }
