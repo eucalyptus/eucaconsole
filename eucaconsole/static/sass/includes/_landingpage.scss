@@ -234,13 +234,16 @@ $alarm-status-color-ok: green;
         padding: 8px;
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
-        line-height: 1.1rem;
+        line-height: 1rem;
         a {
-          color: $dxc-black;
-          text-decoration: underline;
-          &:hover {
-              text-decoration: underline;
-          }
+            color: $dxc-black;
+            text-decoration: underline;
+            &.label, &.alarm-status {
+                text-decoration: none;
+            }
+            &:hover {
+                text-decoration: underline;
+            }
         }
         div {
             margin-bottom: 2px;

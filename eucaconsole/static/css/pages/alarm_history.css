@@ -50,8 +50,9 @@
 .tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
 .tile .header .f-dropdown a { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .header .dropdown.button.tiny { color: #ffffff; }
-.tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.1rem; }
+.tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1rem; }
 .tile .content a { color: #000000; text-decoration: underline; }
+.tile .content a.label, .tile .content a.alarm-status { text-decoration: none; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; background-color: #FFFFFF; color: #666666; margin-right: 0.2rem; min-width: 22px; text-align: center; }

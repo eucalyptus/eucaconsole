@@ -71,8 +71,8 @@
 }
 
 // Status colors
-$snapshot-status-color-pending: lighten($hpe-purple, 20%);
-$snapshot-status-color-available: $hpe-purple;
+$snapshot-status-color-pending: lighten(green, 20%);
+$snapshot-status-color-available: green;
 $snapshot-status-color-failed: darkred;
 
 

@@ -4,14 +4,15 @@
 // Image state choices are: available, pending, waiting-for-shutdown, cancelling, failed, bundling, storing, registering
 
 // State colors
-$image-state-color-available: $hpe-purple;
+$image-state-color-available: green;
+$image-state-color-in-transition: lighten(green, 20%);
 $image-state-color-cancelling: $dxc-lightgray;
 $image-state-color-failed: darkred;
-$image-state-color-pending: lighten($hpe-purple, 20%);
-$image-state-color-waiting-for-shutdown: lighten($hpe-purple, 20%);
-$image-state-color-bundling: lighten($hpe-purple, 20%);
-$image-state-color-storing: lighten($hpe-purple, 20%);
-$image-state-color-registering: lighten($hpe-purple, 20%);
+$image-state-color-pending: $image-state-color-in-transition;
+$image-state-color-waiting-for-shutdown: $image-state-color-in-transition;
+$image-state-color-bundling: $image-state-color-in-transition;
+$image-state-color-storing: $image-state-color-in-transition;
+$image-state-color-registering: $image-state-color-in-transition;
 
 // Image states
 .state { background-color: transparent; text-transform: capitalize; }

@@ -3,21 +3,21 @@
 ----------------------------------------- */
 .state { background-color: transparent; text-transform: capitalize; }
 
-.state.available { background-color: #614767; }
+.state.available { background-color: green; }
 
 .state.cancelling { background-color: #d9d9d9; }
 
 .state.faied { background-color: darkred; }
 
-.state.pending { background-color: #9774a0; }
+.state.pending { background-color: #00e600; }
 
-.state.waiting-for-shutdown { background-color: #9774a0; }
+.state.waiting-for-shutdown { background-color: #00e600; }
 
-.state.bundling { background-color: #9774a0; }
+.state.bundling { background-color: #00e600; }
 
-.state.storing { background-color: #9774a0; }
+.state.storing { background-color: #00e600; }
 
-.state.registering { background-color: #9774a0; }
+.state.registering { background-color: #00e600; }
 
 /* ----------------------------------------- Account ID Icon 
 ----------------------------------------- */
