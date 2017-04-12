@@ -1,6 +1,8 @@
 /* @fileOverview Dashboard CSS */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
+#logobar .product-name { padding-left: 0; }
+
 #maincontent { padding-top: 1rem; }
 #maincontent #pagetitle { margin-bottom: 0.5rem; margin-left: 0; margin-top: 1rem; }
 #maincontent #pagetitle h3 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 24px; margin-top: 0; display: inline-block; }

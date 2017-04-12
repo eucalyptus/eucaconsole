@@ -1636,7 +1636,7 @@ b, strong { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-wei
 #logobar .f-dropdown.open { width: auto !important; }
 #logobar .fi-list { margin-left: 8px; position: relative; top: -10px; }
 #logobar .down-caret { border-top-color: #ffffff; }
-#logobar .product-name { font-size: 1.4rem; position: relative; top: -8px; padding-left: 0.5rem; }
+#logobar .product-name { font-size: 1.4rem; position: relative; top: -8px; padding-left: 1rem; }
 #logobar #selected-region.aws { position: relative; display: inline-block; padding-left: 24px; background: transparent url(../img/aws_favicon.png) no-repeat left 0; }
 #logobar #region-dropdown { min-width: 12rem; }
 #logobar #region-dropdown li[data-selected] { display: none; }
@@ -1879,6 +1879,9 @@ input, input[type="text"], input[type="password"], input[type="date"], input[typ
 .panel.has-actions .label.status { margin-bottom: 8px; }
 .panel.has-actions .actions-menu { position: absolute; top: 10px; right: 10px; }
 .panel.has-actions .actions-menu .button.dropdown { padding: 12px 38px 12px 22px; }
+.panel.has-actions .actions-menu .button.dropdown:hover { background: #000000; }
+.panel.has-actions .actions-menu .button.dropdown:hover::after { border-top-color: #ffed00; }
+.panel.has-actions .actions-menu .button.dropdown:hover a { color: #ffed00; }
 .panel.has-actions .actions-menu .button.dropdown a { color: #000000; }
 .panel.has-actions .actions-menu .button.dropdown a:hover { text-decoration: none; }
 .panel.has-actions .actions-menu .f-dropdown { min-width: 12rem; width: auto; }

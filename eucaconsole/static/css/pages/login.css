@@ -1,6 +1,8 @@
 /* @fileOverview Login page CSS */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
+#logobar .product-name { padding-left: 0; }
+
 #notifications-wrapper { padding-top: 2rem; }
 
 #ssl-warning .fi-alert { color: darkred; }

@@ -220,7 +220,7 @@ b, strong {
         font-size: 1.4rem;
         position: relative;
         top: -8px;
-        padding-left: 0.5rem;
+        padding-left: 1rem;
     }
     #selected-region.aws {
         position: relative;
@@ -1110,6 +1110,15 @@ textarea {
             top: 10px; right: 10px;
             .button.dropdown {
                 padding: 12px 38px 12px 22px;
+                &:hover {
+                    &::after {
+                        border-top-color: $dxc-yellow;
+                    }
+                    a {
+                        color: $dxc-yellow;
+                    }
+                    background: $dxc-black;
+                }
                 a {
                     color: $dxc-black;
                     &:hover {
