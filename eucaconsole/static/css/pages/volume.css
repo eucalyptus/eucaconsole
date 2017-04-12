@@ -201,6 +201,6 @@ select#zone { width: 50%; }
 .tile .footer.has-progress .progress .meter { color: black; text-align: left; }
 .tile .footer.has-progress .completed { position: relative; top: -3px; }
 
-.status.pending { background-color: #566f82; }
+.status.pending { background-color: #00b300; }
 
-.status.completed { background-color: #425563; }
+.status.completed { background-color: green; }

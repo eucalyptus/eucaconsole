@@ -192,8 +192,8 @@ table.table.scaling-policies hr { margin-top: 4px; margin-bottom: 4px; }
 .tile.policy .header .title { cursor: default; color: #000000; }
 .tile.policy .header .title:hover { color: #666666; text-decoration: underline; }
 
-.tile .footer.healthy { background-color: #425563; }
-.tile .footer.healthy.pending { background-color: #6d899e; }
+.tile .footer.healthy { background-color: green; }
+.tile .footer.healthy.pending { background-color: #00e600; }
 
 #evaluation_periods, #period { display: inline-block; width: 4rem; }
 
@@ -209,9 +209,9 @@ table.table.scaling-policies hr { margin-top: 4px; margin-bottom: 4px; }
 
 #sorting-controls { padding-top: 0.1rem; }
 
-.status.Successful { background-color: #425563; }
+.status.Successful { background-color: green; }
 
-.status.In-progress { background-color: #6d899e; }
+.status.In-progress { background-color: #00e600; }
 
 .status.Failed { background-color: darkred; }
 

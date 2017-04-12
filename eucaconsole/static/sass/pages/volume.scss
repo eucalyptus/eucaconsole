@@ -72,6 +72,6 @@ select#zone { width: 50%; }
     }
 }
 
-.status.pending { background-color: lighten($hpe-slate, 10%); }
-.status.completed { background-color: $hpe-slate; }
+.status.pending { background-color: lighten(green, 10%); }
+.status.completed { background-color: green; }
 

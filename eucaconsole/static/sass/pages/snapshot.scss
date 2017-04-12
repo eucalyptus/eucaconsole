@@ -17,10 +17,9 @@
         background-color: darkred;
     }
     &.completed { 
-        background-color: $hpe-slate;
+        background-color: green;
     }
     &.pending { 
-        background-color: lighten($hpe-slate, 20%); 
+        background-color: lighten(green, 20%);
     }
 }
-

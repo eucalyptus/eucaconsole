@@ -167,7 +167,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status.Inactive { background-color: #666666; }
 
-.status.Active { background-color: #425563; }
+.status.Active { background-color: green; }
 
 .reveal-modal #device { width: 10rem; }
 

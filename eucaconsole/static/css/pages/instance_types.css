@@ -169,6 +169,6 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .table #div-column-cpu { width: 6rem; }
 .table #div-column-memory { width: 8rem; }
 .table #div-column-disk { width: 9rem; }
-.table .type-updated { color: #425563; }
+.table .type-updated { color: #666666; }
 .table a.chosen-single span { color: #666666; }
 .table .error { margin-top: 0.3rem; color: darkred; }

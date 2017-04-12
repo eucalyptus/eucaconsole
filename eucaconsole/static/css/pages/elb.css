@@ -173,7 +173,7 @@ h6.section-label { margin-top: 1.5rem; }
 .tile .footer.has-progress .progress .meter { color: black; text-align: left; }
 .tile .footer.has-progress .completed { position: relative; top: -3px; }
 .tile .footer.status { text-transform: none; }
-.tile .footer.status.allhealthy { background-color: #425563; }
+.tile .footer.status.allhealthy { background-color: green; }
 .tile .footer.status.unhealthy { background-color: darkred; }
 
 #instance-section #refresh-instances-icon { display: none; }

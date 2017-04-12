@@ -163,9 +163,9 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .expando-tiles li div:nth-of-type(1) { float: left; }
 .expando-tiles li div:nth-of-type(2) { clear: both; }
 
-.status.pending { background-color: #6d899e; }
+.status.pending { background-color: #00e600; }
 
-.status.completed { background-color: #425563; }
+.status.completed { background-color: green; }
 
 .status.failed { background-color: darkred; }
 

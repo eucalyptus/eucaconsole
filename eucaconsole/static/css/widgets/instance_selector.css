@@ -1,9 +1,9 @@
 /* @fileOverview Instance Selector CSS */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.status.running { background-color: #425563; }
+.status.running { background-color: green; }
 
-.status.pending { background-color: #6d899e; }
+.status.pending { background-color: #00e600; }
 
 .status.stopped, .status.Error { background-color: darkred; }
 
@@ -13,7 +13,7 @@
 
 .status.shutting-down { background-color: #d9d9d9; }
 
-.status.InService { background-color: #425563; }
+.status.InService { background-color: green; }
 
 .status.OutOfService { background-color: darkred; }
 

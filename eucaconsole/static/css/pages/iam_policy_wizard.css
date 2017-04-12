@@ -49,7 +49,7 @@
 #policy-generator td .advanced .chosen-search input[type=text] { width: 100%; }
 #policy-generator td label { margin-bottom: 2px; margin-top: 6px; }
 #policy-generator td i.tick { color: #d9d9d9; font-size: 1.2rem; }
-#policy-generator td i.tick.fi-check.selected { color: #425563; }
+#policy-generator td i.tick.fi-check.selected { color: green; }
 #policy-generator td i.tick.fi-x.selected { color: darkred; }
 
 #create-iam-policy-btn { margin-top: 1rem; }

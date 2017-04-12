@@ -5,8 +5,8 @@
 
 
 // Status colors
-$snapshot-status-color-pending: lighten($hpe-slate, 20%);
-$snapshot-status-color-completed: $hpe-slate;
+$snapshot-status-color-pending: lighten(green, 20%);
+$snapshot-status-color-completed: green;
 $snapshot-status-color-failed: darkred;
 
 // Mixin for the "in-progress" busy indicator
