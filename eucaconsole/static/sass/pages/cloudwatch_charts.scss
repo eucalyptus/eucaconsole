@@ -161,10 +161,10 @@ svg {
     }
     .graph-shift-left {
         float: left;
-        color: $dxc-darkgray;
+        color: $dxc-black;
         &:hover {
             cursor: pointer;
-            color: $hpe-green;
+            color: $dxc-darkgray;
         }
         &[disabled] {
             color: $dxc-lightgray;
@@ -172,10 +172,10 @@ svg {
     }
     .graph-shift-right {
         float: right;
-        color: $dxc-darkgray;
+        color: $dxc-black;
         &:hover {
             cursor: pointer;
-            color: $hpe-green;
+            color: $dxc-darkgray;
         }
         &[disabled] {
             color: $dxc-lightgray;

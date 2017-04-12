@@ -26,9 +26,12 @@
 
 .alarm-listing {
     margin-top: 0.5rem;
-    a[href]:hover {
-        color: $hpe-green;
-        border-bottom: 1px solid $hpe-green;
+    a[href] {
+        text-decoration: underline;
+        &:hover {
+            color: $dxc-darkgray;
+            border-bottom: 1px solid $dxc-darkgray;
+        }
     }
 }
 

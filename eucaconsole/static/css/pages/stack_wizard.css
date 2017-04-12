@@ -5,7 +5,7 @@
 /* @section Wizard styles */
 .wizard { position: relative; background-color: transparent; }
 .wizard.has-title { position: relative; padding-top: 42px; }
-.wizard.has-title h6.title { position: absolute; text-transform: uppercase; letter-spacing: 1px; top: 0; left: 0; right: 0; line-height: 2.5rem; padding-left: 12px; background-color: #01a982; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.wizard.has-title h6.title { position: absolute; text-transform: uppercase; letter-spacing: 1px; top: 0; left: 0; right: 0; line-height: 2.5rem; padding-left: 12px; background-color: #000000; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .wizard .row.controls-wrapper.readonly { margin-bottom: 0.5rem; }
 .wizard .tabs dd { padding-right: 1rem; padding-left: 1rem; }
 .wizard .tabs dd a { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; box-shadow: none; white-space: nowrap; padding: 8px 0 6px 0; }

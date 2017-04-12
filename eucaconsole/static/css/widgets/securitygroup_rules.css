@@ -17,7 +17,7 @@ form label.protocol { margin-bottom: 1.5rem; }
 #rules-editor .item-list .item a:hover { color: #666666; text-decoration: none; }
 #rules-editor .add-label { margin-bottom: 6px; color: #666666; }
 #rules-editor .tabs-content { margin-top: 0.75rem; }
-#rules-editor .ipaddress a:hover { color: #01a982; border-bottom: 1px solid #01a982; }
+#rules-editor .ipaddress a:hover { color: #666666; border-bottom: 1px solid #666666; }
 
 .duplicated-rule-error { color: red; padding: 10px 10px; }
 

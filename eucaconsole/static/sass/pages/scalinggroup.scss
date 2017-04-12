@@ -74,9 +74,9 @@ table.table.scaling-policies {
     @include panel-tile-mixin;
     &.policy .header .title {
         cursor: default;
-            color: $dxc-darkgray;
+            color: $dxc-black;
         &:hover {
-            color: $hpe-green;
+            color: $dxc-darkgray;
             text-decoration: underline; 
         }
     }

@@ -436,7 +436,7 @@ a.circle {
     top: -1px;
     display: inline-block;
     border-right: 6px solid transparent;
-    border-bottom: 6px solid $hpe-green;
+    border-bottom: 6px solid $dxc-black;
     border-left: 6px solid transparent;
     content: '';
 }
@@ -459,9 +459,9 @@ a.circle {
         background-color: white;
         box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.15);
         &.success {
-            border: 2px solid darkgreen;
+            border: 2px solid green;
             .icon {
-                background-color: darkgreen;
+                background-color: green;
                 span:before {
                     content: "\2713"
                 }
@@ -600,7 +600,7 @@ textarea.policy-area {
     padding-left: 0.5rem;
     &:hover {
         cursor: pointer;
-        color: $hpe-green;
+        color: $dxc-darkgray;
     }
 }
 
@@ -886,9 +886,10 @@ form {
     }
     &.readonly {
         a {
-            color: $hpe-green;
+            color: $dxc-black;
+            text-decoration: underline;
             &:hover {
-                color: $hpe-green;
+                color: $dxc-darkgray;
                 text-decoration: underline;
             }
         }
@@ -1553,7 +1554,7 @@ ul.resources-nav {
             vertical-align: middle;
         }
         span.active {
-            background-color: $hpe-green;
+            background-color: $dxc-yellow;
             color: white;
         }
         i.icon {

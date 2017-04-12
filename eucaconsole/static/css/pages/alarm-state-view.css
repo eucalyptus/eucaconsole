@@ -22,7 +22,8 @@
 .top-state { position: relative; bottom: 1px; }
 
 .alarm-listing { margin-top: 0.5rem; }
-.alarm-listing a[href]:hover { color: #01a982; border-bottom: 1px solid #01a982; }
+.alarm-listing a[href] { text-decoration: underline; }
+.alarm-listing a[href]:hover { color: #666666; border-bottom: 1px solid #666666; }
 
 i.delete-icon { color: #666666 !important; }
 i.delete-icon:hover { color: darkred !important; }

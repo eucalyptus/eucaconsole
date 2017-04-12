@@ -43,7 +43,7 @@ $dropdown-border-color: $dxc-lightgray;
 
 $alarm-status-color-alarm: darkred;
 $alarm-status-color-insufficient: $dxc-darkgray;
-$alarm-status-color-ok: $hpe-green;
+$alarm-status-color-ok: green;
 
 .columns.datagrid {
     padding-left: 0;
@@ -235,8 +235,13 @@ $alarm-status-color-ok: $hpe-green;
         font-family: $euca-text-font-family;
         font-size: $euca-font-size;
         line-height: 1.1rem;
-        a { color: $hpe-green; }
-        a:hover { text-decoration: underline; }
+        a {
+          color: $dxc-black;
+          text-decoration: underline;
+          &:hover {
+              text-decoration: underline;
+          }
+        }
         div {
             margin-bottom: 2px;
             margin-left: $tile-label-padding;
@@ -271,7 +276,7 @@ $alarm-status-color-ok: $hpe-green;
     }
     .link {
         text-transform: uppercase;
-        color: $hpe-green;
+        color: $dxc-black;
         padding: 1px 3px;
         margin-bottom: 2px;
         font-size: 0.9em;
@@ -341,6 +346,9 @@ $alarm-status-color-ok: $hpe-green;
             a {
                 color: $dxc-black;
                 text-decoration: underline;
+                &.label {
+                    text-decoration: none;
+                }
                 &:hover {
                     color: $dxc-darkgray;
                     text-decoration: underline;

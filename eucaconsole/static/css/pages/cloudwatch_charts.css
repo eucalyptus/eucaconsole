@@ -35,9 +35,9 @@ svg g.nv-group[style*='#ff0000'] .nv-point, svg g.nv-group[style*='rgb(255, 0, 0
 .large-chart-wrapper .busy.loading { position: absolute; top: 12rem; left: 48%; width: 3rem; height: 3rem; font-size: 3rem; color: #666666; }
 
 .time-shift svg { width: 100%; height: 18px; }
-.time-shift .graph-shift-left { float: left; color: #666666; }
-.time-shift .graph-shift-left:hover { cursor: pointer; color: #01a982; }
+.time-shift .graph-shift-left { float: left; color: #000000; }
+.time-shift .graph-shift-left:hover { cursor: pointer; color: #666666; }
 .time-shift .graph-shift-left[disabled] { color: #d9d9d9; }
-.time-shift .graph-shift-right { float: right; color: #666666; }
-.time-shift .graph-shift-right:hover { cursor: pointer; color: #01a982; }
+.time-shift .graph-shift-right { float: right; color: #000000; }
+.time-shift .graph-shift-right:hover { cursor: pointer; color: #666666; }
 .time-shift .graph-shift-right[disabled] { color: #d9d9d9; }

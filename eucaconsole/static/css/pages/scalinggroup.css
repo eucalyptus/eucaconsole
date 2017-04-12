@@ -52,7 +52,7 @@
 .tile .header .f-dropdown a { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .header .dropdown.button.tiny { color: #ffffff; }
 .tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.1rem; }
-.tile .content a { color: #01a982; }
+.tile .content a { color: #000000; text-decoration: underline; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; background-color: #FFFFFF; color: #666666; margin-right: 0.2rem; min-width: 22px; text-align: center; }
@@ -60,7 +60,7 @@
 .tile .content .fi-alert { color: darkred; }
 .tile .content a.alarm-status { padding: 2px 6px; color: white; border-radius: 3px; }
 .tile .content a.alarm-status:hover { text-decoration: none; }
-.tile .link { text-transform: uppercase; color: #01a982; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
+.tile .link { text-transform: uppercase; color: #000000; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #666666; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
 .tile .footer.has-progress { padding: 0 0 0 0; text-align: left; }
 .tile .footer .completed { padding: 4px 0 4px 10px; text-align: center; }
@@ -82,6 +82,7 @@
 .gridwrapper .table tr input[type="checkbox"] { margin-bottom: 0; }
 .gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
 .gridwrapper .table tr td a { color: #000000; text-decoration: underline; }
+.gridwrapper .table tr td a.label { text-decoration: none; }
 .gridwrapper .table tr td a:hover { color: #666666; text-decoration: underline; }
 .gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
@@ -187,8 +188,8 @@ table.table.scaling-policies hr { margin-top: 4px; margin-bottom: 4px; }
 
 .tile { background-color: white; border: 1px solid #d9d9d9; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
-.tile.policy .header .title { cursor: default; color: #666666; }
-.tile.policy .header .title:hover { color: #01a982; text-decoration: underline; }
+.tile.policy .header .title { cursor: default; color: #000000; }
+.tile.policy .header .title:hover { color: #666666; text-decoration: underline; }
 
 .tile .footer.healthy { background-color: #425563; }
 .tile .footer.healthy.pending { background-color: #6d899e; }
