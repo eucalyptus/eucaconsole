@@ -140,10 +140,10 @@
 
 .euca-split { border-color: #000000 !important; width: 2.0rem !important; }
 .euca-split:hover { border-color: #ffffff !important; }
-.euca-split:hover::after { border-color: white; }
+.euca-split:hover::after { border-top-color: #ffed00 !important; }
 
-.secondary .euca-split { border-color: #000000 !important; }
-.secondary .euca-split:hover { border-color: #ffffff !important; }
+.secondary .euca-split { border-color: #000000; }
+.secondary .euca-split:hover { border-color: #ffffff; }
 
 .split.button { padding-right: 3.0rem !important; }
 .split.button .euca-split:after { border-color: #000000 transparent transparent transparent; }

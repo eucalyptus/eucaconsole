@@ -584,16 +584,16 @@ $alarm-status-color-ok: green;
     &:hover {
         border-color: $dxc-white !important;
         &::after {
-          border-color: white;
+          border-top-color: $dxc-yellow !important;
         }
     }
 }
 
 .secondary {
     .euca-split {
-        border-color: $dxc-black !important;
+        border-color: $dxc-black;
         &:hover {
-            border-color: $dxc-white !important;
+            border-color: $dxc-white;
         }
     }
 }
