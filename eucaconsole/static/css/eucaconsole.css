@@ -1925,8 +1925,6 @@ table.table.smart-table .st-sort-descent:after { content: '\25BC'; }
 footer { background-color: #000000; color: white; padding: 15px 0 3rem 1rem; }
 footer .copyright { color: white; font-size: 14px; }
 
-#hpe-logo { display: inline-block; width: 95px; height: 40px; margin: 1rem 0; background: url(../img/hpe_pri_grn_rev_rgb.png) no-repeat; }
-
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
 .button { background-color: #ffed00; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; border: none; }
