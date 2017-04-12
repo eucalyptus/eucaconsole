@@ -14,8 +14,8 @@
         </p>
     </div>
     <div id="sharing-acls" ng-cloak="">
-        <div class="items">
-            <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray">
+        <div class="item-list">
+            <span class="label radius secondary item" ng-repeat="grant in grantsArray">
                 {{ grant.display_name || grant.id || grant.email_address || grant.uri.split('/').pop() }}: {{ grant.permission }}
                 <a href="#" class="remove" ng-click="removeGrant($index, $event)"
                    title="Remove permission"><i class="fi-x"></i></a>
