@@ -8,9 +8,9 @@
 /* ----------------------------------------- IAM User Icons
 ----------------------------------------- */
 #users-in-group .item-list { margin-bottom: 6px; }
-#users-in-group .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #666666; background-color: #fff; margin-right: 8px; }
-#users-in-group .item-list .item a { color: #000000; }
-#users-in-group .item-list .item a:hover { color: #666666; text-decoration: none; }
+#users-in-group .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 1px solid #666666; background-color: #d9d9d9; margin-right: 8px; padding-right: 12px; }
+#users-in-group .item-list .item a { color: #666666; position: relative; top: 1px; left: 4px; }
+#users-in-group .item-list .item a:hover { color: #000000; text-decoration: none; }
 
 /* ----------------------------------------- Extra Element Padding
 ----------------------------------------- */

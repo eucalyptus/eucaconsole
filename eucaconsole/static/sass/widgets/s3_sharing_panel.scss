@@ -12,13 +12,13 @@
             color: $dxc-darkgray;
             font-family: $euca-header-font-family;
             font-size: $euca-xs-font-size;
-            background-color: white;
-            border: 2px solid $dxc-darkgray;
+            background-color: $dxc-lightgray;
+            border: 1px solid $dxc-darkgray;
             margin-right: 8px;
             a.remove i  {
-                color: $dxc-black;
+                color: $dxc-darkgray;
                 &:hover {
-                    color: $dxc-darkgray;
+                    color: $dxc-black;
                 }
             }
         }
