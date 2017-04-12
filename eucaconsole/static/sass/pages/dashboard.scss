@@ -6,8 +6,13 @@ $dashboard-panel-padding: 4px;
 $dashboard-panel-icon-size: 100px;
 
 
-#logobar .product-name {
-    padding-left: 0;
+#logobar {
+    .product-name {
+        padding-left: 0;
+    }
+    #user-dropdown-section {
+        left: 0;
+    }
 }
 
 #maincontent {
@@ -25,7 +30,7 @@ $dashboard-panel-icon-size: 100px;
         #zone-selector {
             display: inline-block;
             margin-left: 1rem;
-            font-family: $euca-text-font-family; 
+            font-family: $euca-text-font-family;
             font-size: $euca-font-size;
             &:hover {
                 text-decoration: underline;

@@ -2,6 +2,7 @@
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 #logobar .product-name { padding-left: 0; }
+#logobar #user-dropdown-section { left: 0; }
 
 #maincontent { padding-top: 1rem; }
 #maincontent #pagetitle { margin-bottom: 0.5rem; margin-left: 0; margin-top: 1rem; }
