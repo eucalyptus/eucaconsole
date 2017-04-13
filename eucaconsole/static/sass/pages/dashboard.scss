@@ -5,6 +5,8 @@ $dashboard-panel-tile-height: 240px;
 $dashboard-panel-padding: 4px;
 $dashboard-panel-icon-size: 100px;
 
+$tile-row-height: 24px;
+
 
 #logobar {
     .product-name {
@@ -49,7 +51,10 @@ $dashboard-panel-icon-size: 100px;
     }
 }
 
-$tile-row-height: 24px;
+#dxc-logo {
+    position: relative;
+    left: -0.5rem;
+}
 
 .panel {
     background-color: transparent;

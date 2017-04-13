@@ -12,6 +12,8 @@
 #maincontent #pagetitle #reset-dash { margin-top: 1.25rem; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; display: inline-block; float: right; }
 #maincontent #pagetitle #reset-dash:hover { text-decoration: underline; }
 
+#dxc-logo { position: relative; left: -0.5rem; }
+
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 16px; }
 .panel .tile { background-color: white; position: relative; height: 240px; padding: 4px 8px; }
 .panel .tile .subheader { font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; color: #000000; margin: 0 0 0 0; }

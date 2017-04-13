@@ -1219,9 +1219,25 @@ footer {
     background-color: $dxc-black;
     color: white;
     padding: 15px 0 3rem 1rem;
+    .columns.logo {
+        padding-left: 0;
+    }
+    #dxc-logo {
+        display: inline-block;
+        width: 201px; height: 36px;
+        background: url('../img/dxc_logo_hz_wht_201x36.png') no-repeat;
+    }
     .copyright {
-        color: white;
+        padding-top: 8px;
+        text-align: right;
+        color: $dxc-darkgray;
         font-size: $euca-s-font-size;
+        a {
+            color: $dxc-darkgray;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
 }
 

@@ -98,10 +98,12 @@
     <!-- Footer -->
     <footer>
         <div class="row">
-            <div id="dxc-logo"></div>
-        </div>
-        <div class="row">
-           <span class="copyright subheader">© DXC Technology</span>
+            <div class="small-6 columns logo">
+                <a id="dxc-logo" href="http://dxc.technology/"></a>
+            </div>
+            <div class="small-6 columns copyright">
+                © 2017 <a href="http://dxc.technology/">DXC Technology</a>
+            </div>
         </div>
         <form id="euca-logout-form" method="post" action="${request.route_path('logout')}">
             ${structure:layout.euca_logout_form['csrf_token']}
