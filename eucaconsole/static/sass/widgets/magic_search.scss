@@ -8,6 +8,8 @@
     border-color: $dxc-black;
     .item-list {
         .item {
+            position: relative;
+            top: -1px;
             background-color: white;
             border: 2px solid $dxc-darkgray;
             height: 1.5rem;
@@ -21,9 +23,3 @@
     }
 }
 
-@-moz-document url-prefix() {
-    .search-bar .item-list .item {
-        position: relative;
-        top: 0;
-    }
-}
