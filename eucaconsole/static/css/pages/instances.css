@@ -44,19 +44,19 @@
 .tile.add a:hover { background-color: #d9d9d9; text-decoration: none; }
 .tile.add .plus { font-size: 5rem; margin-bottom: -1rem; }
 .tile .header { position: relative; height: 30px; background-color: #000000; }
-.tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #ffffff; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+.tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #ffffff; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; }
 .tile .header a:hover { color: #ffffff; text-decoration: underline; }
 .tile .header a.has-checkbox { padding-left: 24px; }
 .tile .header strong { font-weight: normal; }
 .tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
-.tile .header .f-dropdown a { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
+.tile .header .f-dropdown a { color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .header .dropdown.button.tiny { color: #ffffff; }
-.tile .content { padding: 8px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1rem; }
+.tile .content { padding: 8px; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1rem; }
 .tile .content a { color: #000000; text-decoration: underline; }
 .tile .content a.label, .tile .content a.alarm-status { text-decoration: none; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
-.tile .content .label { padding: 1px 3px; margin-left: -28px; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; background-color: #FFFFFF; color: #666666; margin-right: 0.2rem; min-width: 22px; text-align: center; }
+.tile .content .label { padding: 1px 3px; margin-left: -28px; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; background-color: #FFFFFF; color: #666666; margin-right: 0.2rem; min-width: 22px; text-align: center; }
 .tile .content .label.ellipsis { margin-left: 0; }
 .tile .content .fi-alert { color: darkred; }
 .tile .content a.alarm-status { padding: 2px 6px; color: white; border-radius: 3px; }
