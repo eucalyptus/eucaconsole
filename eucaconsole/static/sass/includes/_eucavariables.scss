@@ -46,9 +46,8 @@ $dxc-lightgray: #d9d9d9;
 
 
 // Text
-$euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;  // TODO: Replace HPE font reference
-$euca-bold-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;  // TODO: Replace HPE font reference
-$euca-header-font-family: $euca-bold-font-family;
+$euca-text-font-family: 'Lato', Helvetica, Arial, sans-serif;
+$euca-header-font-family: 'PT Sans', Verdana, Geneva, Lucida, sans-serif;
 $euca-xs-font-size: 12px;
 $euca-s-font-size: 14px;
 $euca-font-size: 16px;
@@ -293,6 +292,8 @@ $alarm-status-color-ok: green;
             color: $dxc-darkgray;
             background-color: transparent;
             font-family: $euca-header-font-family;
+            font-weight: bold;
+            text-transform: uppercase;
             &:hover {
                 border-bottom: 2px solid $dxc-darkgray;
                 background-color: transparent;
@@ -322,6 +323,7 @@ $alarm-status-color-ok: green;
     a {  // Visited tabs
         color: $dxc-darkgray;
         font-family: $euca-header-font-family;
+        text-transform: uppercase;
         background-color: transparent;
         &:hover {
             color: $dxc-darkgray;
@@ -348,6 +350,7 @@ $alarm-status-color-ok: green;
     &.disabled {  // Unvisited tabs
         color: $dxc-lightgray;
         font-family: $euca-header-font-family;
+        text-transform: uppercase;
         padding: 8px 1rem;
         .cir {
             margin-right: 8px;

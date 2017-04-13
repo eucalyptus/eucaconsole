@@ -2,9 +2,9 @@
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }
 .tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
-.tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+.tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-weight: bold; text-transform: uppercase; }
 .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
-.tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
+.tabs dd.active a { color: #000000; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
 .tabs.switcher { display: inline-block; }
 .tabs.switcher dd:last-child { padding-right: 0; }
 

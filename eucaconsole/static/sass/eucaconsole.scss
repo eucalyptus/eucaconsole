@@ -82,17 +82,31 @@
    Fonts
 ----------------------------------------- */
 @font-face {
-    font-family: 'Metric-Regular';
-    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Regular.woff) format('woff');
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local("Lato Regular"), local("Lato Regular"), url(../fonts/Lato/Lato-Regular.woff) format("woff");
 }
 
 @font-face {
-    font-family: 'Metric-Light';
-    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Light.woff) format('woff');
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local("Lato Bold"), local("Lato Bold"), url(../fonts/Lato/Lato-Bold.woff) format("woff");
 }
+
 @font-face {
-    font-family: 'Metric-Semibold';
-    src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Semibold.woff) format('woff');
+    font-family: 'PT Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local("PT Sans Regular"), local("PT Sans Regular"), url(../fonts/PT_Sans/PT_Sans-Web-Regular.ttf) format("ttf");
+}
+
+@font-face {
+    font-family: 'PT Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local("PT Sans Bold"), local("PT Sans Bold"), url(../fonts/PT_Sans/PT_Sans-Web-Bold.ttf) format("ttf");
 }
 
 
@@ -113,26 +127,13 @@ body {
     overflow-y: scroll;
 }
 
-h1, h2, h3, h4, h5 {
-        font-family: $euca-header-font-family;
-        color: $dxc-black;
-    }
-    h6 {
-        font-family: $euca-text-font-family;
-        color: $dxc-black;
-        text-transform: uppercase;
-    }
+h1, h2, h3, h4, h5, h6 {
+    font-family: $euca-header-font-family;
+    color: $dxc-black;
+}
 
-.panel {
-    h1, h2, h3, h4, h5 {
-        font-family: $euca-header-font-family;
-        color: $dxc-black;
-    }
-    h6 {
-        font-family: $euca-text-font-family;
-        color: $dxc-black;
-        text-transform: uppercase;
-    }
+h6 {
+    text-transform: uppercase;
 }
 
 a {
@@ -155,7 +156,6 @@ label {
 }
 
 b, strong {
-    font-family: $euca-bold-font-family;
     font-weight: bold;
 }
 
@@ -174,7 +174,7 @@ b, strong {
     color: $dxc-white;
     a {
         font-family: $euca-text-font-family;
-        font-size: $euca-font-size;
+        font-size: $euca-s-font-size;
         color: $dxc-white;
         &:hover {
             text-decoration: none;
@@ -268,7 +268,7 @@ b, strong {
             }
         }
         margin-top: 0.3rem;
-        font-size: $euca-l-font-size;
+        font-size: $euca-s-font-size;
         &.current a {
             font-family: $euca-text-font-family;
             &:hover {
@@ -361,8 +361,6 @@ b, strong {
     }
     em {
         font-style: normal;
-        font-weight: 700;
-        font-family: Metric-Regular, Helvetica, Arial, sans-serif;
         color: $dxc-black;
     }
 }
@@ -732,6 +730,9 @@ textarea.policy-area {
 .help-content {
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: bold;
+    }
     h1 { font-size: 1.2rem; }
     h2 { font-size: 1.1rem; }
     h3, h4 { font-size: 1rem; }
@@ -1078,11 +1079,13 @@ textarea {
     background-color: white;
     border: none;
     position: relative;
-    h6 {
+    h1, h2, h3, h4, h5, h6 {
+        font-family: $euca-header-font-family;
         color: $dxc-black;
+    }
+    h6 {
         text-transform: uppercase;
-        font-family: $euca-text-font-family;
-        font-size: $euca-l-font-size;
+        color: $dxc-darkgray;
     }
     .tabs-content {
         border: none;
@@ -1229,6 +1232,7 @@ footer {
 .button {
     background-color: $dxc-yellow;
     font-family: $euca-header-font-family;
+    font-weight: bold;
     text-transform: uppercase;
     color: $dxc-black;
     border: none;

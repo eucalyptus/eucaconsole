@@ -1595,37 +1595,35 @@ th.hide-for-touch { display: table-cell !important; }
 /* Eucalyptus Management Console main styles */
 /* ----------------------------------------- Fonts
 ----------------------------------------- */
-@font-face { font-family: 'Metric-Regular'; src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Regular.woff) format("woff"); }
-@font-face { font-family: 'Metric-Light'; src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Light.woff) format("woff"); }
-@font-face { font-family: 'Metric-Semibold'; src: url(https://hpefonts.s3.amazonaws.com/MetricWeb-Semibold.woff) format("woff"); }
+@font-face { font-family: 'Lato'; font-style: normal; font-weight: 400; src: local("Lato Regular"), local("Lato Regular"), url(../fonts/Lato/Lato-Regular.woff) format("woff"); }
+@font-face { font-family: 'Lato'; font-style: normal; font-weight: 700; src: local("Lato Bold"), local("Lato Bold"), url(../fonts/Lato/Lato-Bold.woff) format("woff"); }
+@font-face { font-family: 'PT Sans'; font-style: normal; font-weight: 400; src: local("PT Sans Regular"), local("PT Sans Regular"), url(../fonts/PT_Sans/PT_Sans-Web-Regular.ttf) format("ttf"); }
+@font-face { font-family: 'PT Sans'; font-style: normal; font-weight: 700; src: local("PT Sans Bold"), local("PT Sans Bold"), url(../fonts/PT_Sans/PT_Sans-Web-Bold.ttf) format("ttf"); }
 /* ----------------------------------------- Master Layout
 ----------------------------------------- */
 html { background-color: #000000; }
 
-body { position: relative; color: #000000; background: #000000; min-height: 100%; font-family: Metric-Regular, Helvetica, Arial, sans-serif; overflow-y: scroll; }
+body { position: relative; color: #000000; background: #000000; min-height: 100%; font-family: "Lato", Helvetica, Arial, sans-serif; overflow-y: scroll; }
 
-h1, h2, h3, h4, h5 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
+h1, h2, h3, h4, h5, h6 { font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; color: #000000; }
 
-h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #000000; text-transform: uppercase; }
-
-.panel h1, .panel h2, .panel h3, .panel h4, .panel h5 { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #000000; }
-.panel h6 { font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #000000; text-transform: uppercase; }
+h6 { text-transform: uppercase; }
 
 a { color: #000000; }
 
-p { color: #000000; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; }
+p { color: #000000; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; }
 
-label { color: #000000; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
+label { color: #000000; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
 label.inline { display: inline-block; }
 
-b, strong { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-weight: bold; }
+b, strong { font-weight: bold; }
 
 /* ----------------------------------------- Header
 ----------------------------------------- */
 #logobar-wrapper { border-bottom: 1px solid #d9d9d9; }
 
-#logobar { padding: 6px 0 0 0; margin-top: 8px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; color: #ffffff; }
-#logobar a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; }
+#logobar { padding: 6px 0 0 0; margin-top: 8px; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; color: #ffffff; }
+#logobar a { font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 14px; color: #ffffff; }
 #logobar a:hover { text-decoration: none; }
 #logobar section { position: relative; line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
 #logobar section .icon { font-size: 1.5rem; }
@@ -1644,11 +1642,11 @@ b, strong { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-wei
 #logobar #offcanvas-icon i { font-size: 1.8rem; }
 #logobar #user-dropdown-section { position: relative; left: -10px; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; letter-spacing: 1px; font-weight: normal; }
-#breadcrumbs li { margin-top: 0.3rem; font-size: 18px; }
+#breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; letter-spacing: 1px; font-weight: normal; }
+#breadcrumbs li { margin-top: 0.3rem; font-size: 14px; }
 #breadcrumbs li a { color: #000000; }
 #breadcrumbs li a:hover { color: #666666; }
-#breadcrumbs li.current a { font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
+#breadcrumbs li.current a { font-family: "Lato", Helvetica, Arial, sans-serif; }
 #breadcrumbs li.current a:hover { color: #000000; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-bottom: 2px; }
 #breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #d9d9d9; font-weight: bold; text-align: center; }
@@ -1671,9 +1669,9 @@ b, strong { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-wei
   #maincontent { min-height: 65rem; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
-#pagetitle, .pagetitle { font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 24px; margin-left: 1rem; margin-bottom: 1rem; }
+#pagetitle, .pagetitle { font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-size: 24px; margin-left: 1rem; margin-bottom: 1rem; }
 #pagetitle.landingpage, .pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
-#pagetitle em, .pagetitle em { font-style: normal; font-weight: 700; font-family: Metric-Regular, Helvetica, Arial, sans-serif; color: #000000; }
+#pagetitle em, .pagetitle em { font-style: normal; color: #000000; }
 
 .subsection-label { font-size: 16px; color: #666666; margin-bottom: 6px; }
 
@@ -1683,7 +1681,7 @@ hr { border: 1px solid #d9d9d9; border-width: 1px 0 0; }
 
 a.has-tip { border-bottom: none !important; }
 
-.tooltip { font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 14px; border: 2px solid #d9d9d9; max-width: 260px; }
+.tooltip { font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 14px; border: 2px solid #d9d9d9; max-width: 260px; }
 .tooltip > .nub { border: 6px solid #d9d9d9; border-color: transparent transparent #d9d9d9 transparent; top: -12px; }
 
 .breakword { word-wrap: break-word; }
@@ -1732,7 +1730,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 .helptext-icon { color: #666666; font-size: 1.2rem; }
 
-.expando .title { display: inline-block; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 18px; text-transform: none; }
+.expando .title { display: inline-block; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; text-transform: none; }
 .expando .title:hover a, .expando .title:hover i { color: #666666; text-decoration: none; }
 .expando .title a { color: #000000; }
 
@@ -1747,11 +1745,11 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 ----------------------------------------- */
 #tag-editor small { font-size: 14px; }
 #tag-editor .item-list { margin-bottom: 6px; }
-#tag-editor .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 1px solid #666666; background-color: #d9d9d9; margin-right: 8px; padding-right: 12px; }
+#tag-editor .item-list .item { color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; border: 1px solid #666666; background-color: #d9d9d9; margin-right: 8px; padding-right: 12px; }
 #tag-editor .item-list .item a { color: #666666; position: relative; top: 1px; left: 4px; }
 #tag-editor .item-list .item a:hover { color: #000000; text-decoration: none; }
 #tag-editor .propagates { color: #666666; font-size: 16px; }
-#tag-editor .add-label { margin-bottom: 6px; color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; }
+#tag-editor .add-label { margin-bottom: 6px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 #tag-editor.autoscale #autoscale-tag-name-input-div, #tag-editor.autoscale #autoscale-tag-value-input-div { position: relative; left: 1rem; }
 #tag-editor.autoscale #propagate-wrapper { white-space: nowrap; line-height: 2.2rem; }
@@ -1780,6 +1778,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .help-padding { display: block; height: 2.5rem; }
 
 .help-content { font-size: 0.9rem; margin-bottom: 1.5rem; }
+.help-content h1, .help-content h2, .help-content h3, .help-content h4, .help-content h5, .help-content h6 { font-weight: bold; }
 .help-content h1 { font-size: 1.2rem; }
 .help-content h2 { font-size: 1.1rem; }
 .help-content h3, .help-content h4 { font-size: 1rem; }
@@ -1797,7 +1796,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 
 /* ----------------------------------------- Forms
 ----------------------------------------- */
-form label { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
+form label { color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; cursor: default; }
 form label.inline { display: inline-block; }
 form input { border-color: #000000; background-color: #fff; }
 form input[type=file] { background-color: transparent; }
@@ -1829,7 +1828,7 @@ form .error .chosen-container .chosen-single, form .ng-invalid.ng-touched { bord
 .row.controls-wrapper .reverse .error { white-space: nowrap; }
 .row.controls-wrapper .checkbox-row { margin-left: 1rem; }
 .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
-.row.controls-wrapper .field select { font-family: Metric-Regular, Helvetica, Arial, sans-serif; margin-bottom: 0.3rem; margin-top: 0.3rem; padding-top: 6px; padding-bottom: 6px; }
+.row.controls-wrapper .field select { font-family: "Lato", Helvetica, Arial, sans-serif; margin-bottom: 0.3rem; margin-top: 0.3rem; padding-top: 6px; padding-bottom: 6px; }
 .row.controls-wrapper .field textarea { margin-top: 0.3rem; }
 .row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
 .row.controls-wrapper.readonly label { position: relative; right: -15px; }
@@ -1859,7 +1858,7 @@ input, input[type="text"], input[type="password"], input[type="date"], input[typ
 .chosen-container.chosen-container-multi .chosen-choices { background: none; border: 1px solid #000000; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: 34px; padding-left: 10px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field .default { color: #999; }
-.chosen-container.chosen-container-multi .chosen-choices li.search-choice { background: #fff none; border: 1px solid #000000; padding: 4px 20px 4px 8px; color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-choice { background: #fff none; border: 1px solid #000000; padding: 4px 20px 4px 8px; color: #666666; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-size: 12px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice .search-choice-close { top: 8px; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-choice span { line-height: 20px; }
 .chosen-container.chosen-container-single .chosen-single { background-image: none; background-color: #fff !important; border-radius: 0; border-color: #000000; height: 2.5rem; line-height: 2.5rem; font-size: 0.875rem; }
@@ -1871,7 +1870,8 @@ input, input[type="text"], input[type="password"], input[type="date"], input[typ
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
 .panel { background-color: white; border: none; position: relative; }
-.panel h6 { color: #000000; text-transform: uppercase; font-family: Metric-Regular, Helvetica, Arial, sans-serif; font-size: 18px; }
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 { font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; color: #000000; }
+.panel h6 { text-transform: uppercase; color: #666666; }
 .panel .tabs-content { border: none; }
 .panel.no-title { margin-top: 0; }
 .panel.has-actions { position: relative; padding-top: 60px !important; }
@@ -1927,10 +1927,10 @@ footer .copyright { color: white; font-size: 14px; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
-.button { background-color: #ffed00; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; border: none; }
+.button { background-color: #ffed00; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-weight: bold; text-transform: uppercase; color: #000000; border: none; }
 .button:hover { background-color: #000000; color: #ffed00; text-decoration: none; outline: none; }
 .button:focus { color: #000000; background-color: #fff; }
-.button.secondary { background-color: #d9d9d9; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; text-transform: uppercase; color: #000000; }
+.button.secondary { background-color: #d9d9d9; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; text-transform: uppercase; color: #000000; }
 .button.secondary:hover { background-color: #666666; color: #000000; text-decoration: none; outline: none; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: #d9d9d9; color: #666666; cursor: default; }
 .button.secondary.disabled:hover, .button.secondary[disabled]:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
@@ -1955,9 +1955,9 @@ footer .copyright { color: white; font-size: 14px; }
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }
 .tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
-.tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+.tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-weight: bold; text-transform: uppercase; }
 .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
-.tabs dd.active a { color: #000000; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
+.tabs dd.active a { color: #000000; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
 .tabs.switcher { display: inline-block; }
 .tabs.switcher dd:last-child { padding-right: 0; }
 
