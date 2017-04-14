@@ -93,13 +93,14 @@ $tile-row-height: 24px;
             color: white;
             font-size: 3rem;
             em {  // Item counts
-                font-size: $euca-xl-font-size;
+                font-size: $euca-l-font-size;
                 position: absolute;
                 bottom: -40%; left: 0; right: 0;
                 text-align: center;
                 color: $dxc-black;
-                font-family: $euca-header-font-family;
+                font-family: $euca-text-font-family;
                 font-style: normal;
+                font-weight: bold;
                 &:hover {
                     color: $dxc-darkgray;
                 }

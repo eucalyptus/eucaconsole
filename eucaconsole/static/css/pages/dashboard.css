@@ -21,7 +21,7 @@
 .panel .tile i.dash-no-alarms { color: #000000 !important; }
 .panel .tile i.dash-alarms { color: darkred !important; }
 .panel .tile .icon { position: absolute; top: 20%; left: 50%; margin-left: -50px; display: inline-block; width: 100px; height: 100px; text-align: center; color: white; font-size: 3rem; }
-.panel .tile .icon em { font-size: 24px; position: absolute; bottom: -40%; left: 0; right: 0; text-align: center; color: #000000; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-style: normal; }
+.panel .tile .icon em { font-size: 18px; position: absolute; bottom: -40%; left: 0; right: 0; text-align: center; color: #000000; font-family: "Lato", Helvetica, Arial, sans-serif; font-style: normal; font-weight: bold; }
 .panel .tile .icon em:hover { color: #666666; }
 .panel .tile .icon em i { color: black; }
 .panel .tile .footer { position: absolute; height: 30px; left: 1rem; right: 1rem; bottom: 8px; text-align: center; }
