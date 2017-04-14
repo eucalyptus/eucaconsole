@@ -30,8 +30,8 @@
 /* @section Landing pages styles */
 
 // Sass variables
-$tile-width: 202px;
-$tile-height: 220px;
+$tile-width: 230px;
+$tile-height: 240px;
 $tile-row-height: 24px;
 $tile-bg-color: white;
 $tile-label-padding: 28px;
@@ -233,7 +233,7 @@ $alarm-status-color-ok: green;
     .content {
         padding: 8px;
         font-family: $euca-text-font-family;
-        font-size: $euca-font-size;
+        font-size: $euca-s-font-size;
         line-height: 1rem;
         a {
             color: $dxc-black;
@@ -254,12 +254,13 @@ $alarm-status-color-ok: green;
             padding: 1px 3px;
             margin-left: -$tile-label-padding;
             font-family: $euca-text-font-family;
-            font-size: $euca-font-size;
-            background-color: #FFFFFF;
+            font-size: $euca-s-font-size;
+            background-color: $dxc-lightgray;
             color: $dxc-darkgray;
+            border-radius: 3px;
             margin-right: 0.2rem;
-            min-width: 22px;
-            text-align: center;
+            min-width: 20px;
+            text-align: left;
             &.ellipsis {
                 margin-left: 0;
             }

@@ -38,7 +38,7 @@
 .gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
 .gridwrapper .alert-box.secondary { color: #666666; background-color: white; border: 1px solid #666666; }
 
-.tile { box-shadow: 0 2px 2px 0 #d9d9d9; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile { box-shadow: 0 2px 2px 0 #d9d9d9; font-size: 16px; position: relative; display: inline-block; vertical-align: top; width: 230px; height: 240px; max-height: 240px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 .tile.add a:hover { background-color: #d9d9d9; text-decoration: none; }
@@ -51,12 +51,12 @@
 .tile .header .item-checkbox { position: absolute; top: 10px; left: 7px; }
 .tile .header .f-dropdown a { color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; text-decoration: none; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .header .dropdown.button.tiny { color: #ffffff; }
-.tile .content { padding: 8px; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1rem; }
+.tile .content { padding: 8px; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1rem; }
 .tile .content a { color: #000000; text-decoration: underline; }
 .tile .content a.label, .tile .content a.alarm-status { text-decoration: none; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
-.tile .content .label { padding: 1px 3px; margin-left: -28px; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 16px; background-color: #FFFFFF; color: #666666; margin-right: 0.2rem; min-width: 22px; text-align: center; }
+.tile .content .label { padding: 1px 3px; margin-left: -28px; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 14px; background-color: #d9d9d9; color: #666666; border-radius: 3px; margin-right: 0.2rem; min-width: 20px; text-align: left; }
 .tile .content .label.ellipsis { margin-left: 0; }
 .tile .content .fi-alert { color: darkred; }
 .tile .content a.alarm-status { padding: 2px 6px; color: white; border-radius: 3px; }
@@ -184,7 +184,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 .table th, .table td { padding: 4px 7px; }
 .table .label { margin: 0 0 0 0; }
 
-.tile { height: 288px; max-height: 288px; }
+.tile { height: 320px; max-height: 320px; }
 
 #terminate-instances-btn { margin-left: 1rem; }
 
