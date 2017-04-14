@@ -1932,8 +1932,7 @@ footer .copyright a:hover { text-decoration: underline; }
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
 .button { background-color: #ffed00; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-weight: bold; text-transform: uppercase; color: #000000; border: none; }
-.button:hover { background-color: #000000; color: #ffed00; text-decoration: none; outline: none; }
-.button:focus { color: #000000; background-color: #fff; }
+.button:hover, .button:focus { background-color: #000000; color: #ffed00; text-decoration: none; outline: none; }
 .button.secondary { background-color: #d9d9d9; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; text-transform: uppercase; color: #000000; }
 .button.secondary:hover { background-color: #666666; color: #000000; text-decoration: none; outline: none; }
 .button.secondary.disabled, .button.secondary[disabled] { background-color: #d9d9d9; color: #666666; cursor: default; }

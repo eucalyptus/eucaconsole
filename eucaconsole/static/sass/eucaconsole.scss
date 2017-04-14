@@ -1252,15 +1252,11 @@ footer {
     text-transform: uppercase;
     color: $dxc-black;
     border: none;
-    &:hover {
+    &:hover, &:focus {
         background-color: $dxc-black;
         color: $dxc-yellow;
         text-decoration: none;
         outline: none;
-    }
-    &:focus {
-        color: $dxc-black;
-        background-color: #fff;
     }
     &.secondary {
         background-color: $dxc-lightgray;
