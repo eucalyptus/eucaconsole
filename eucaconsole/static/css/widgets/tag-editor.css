@@ -5,7 +5,7 @@
 .tag-editor .item-list .item .propagates { color: #777; }
 .tag-editor .item-list .item a.remove { color: #000000; margin-left: 5px; }
 .tag-editor .item-list .item a.remove:hover { color: #666666; }
-.tag-editor .add-label { color: #666666; font-size: 18px; margin-bottom: 6px; }
+.tag-editor .add-label { color: #666666; font-size: 16px; margin-bottom: 6px; }
 .tag-editor .tag-entry-result { display: none; }
 .tag-editor.ng-pristine .button, .tag-editor.ng-invalid .button { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
 .tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }

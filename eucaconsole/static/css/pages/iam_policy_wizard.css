@@ -28,7 +28,7 @@
 #policy-generator { border-color: #d9d9d9; border-left: none; border-right: none; width: 100%; }
 #policy-generator tr.namespace { border-top: 1px solid #d9d9d9; background-color: white; }
 #policy-generator tr.namespace td { font-size: 1rem; }
-#policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; font-size: 18px; width: 40px; }
+#policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; font-size: 16px; width: 40px; }
 #policy-generator td { font-size: 16px; line-height: 1rem; }
 #policy-generator td.allow, #policy-generator td.deny { text-align: center; }
 #policy-generator td h6 { margin-bottom: 4px; }
