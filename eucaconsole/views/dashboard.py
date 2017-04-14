@@ -270,7 +270,6 @@ class DashboardJsonView(BaseView):
                         status = 'down'
             elif svc == _(u'Elastic Load Balancing'):
                 conn = self.get_connection(conn_type="elb")
-                status = 'down'
                 try:
                     conn.get_all_load_balancers()
                 except BotoServerError as err:
