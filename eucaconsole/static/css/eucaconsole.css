@@ -1923,7 +1923,7 @@ table.table.smart-table .st-sort-descent:after { content: '\25BC'; }
 /* ----------------------------------------- Footer
 ----------------------------------------- */
 footer { background-color: #000000; color: white; padding: 15px 0 3rem 1rem; }
-footer .columns.logo { padding-left: 0; }
+footer .columns.logo { padding-left: 0.5rem; }
 footer #dxc-logo { display: inline-block; width: 201px; height: 36px; background: url("../img/dxc_logo_hz_wht_201x36.png") no-repeat; }
 footer .copyright { padding-top: 8px; text-align: right; color: #666666; font-size: 14px; }
 footer .copyright a { color: #666666; }
