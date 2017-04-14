@@ -179,6 +179,8 @@ select { width: 50%; }
 
 form .row.controls-wrapper { margin-bottom: 0; }
 
+#name { width: 50%; }
+
 #instance_type { width: 100%; }
 
 .busy { margin-left: 1rem; }
@@ -205,7 +207,7 @@ form .row.controls-wrapper { margin-bottom: 0; }
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Small screen */
-@media screen and (max-width: 480px) { select { width: 80%; } }
+@media screen and (max-width: 480px) { select, #name { width: 80%; } }
 #userdatalabel { right: 0; }
 
 #userdata { margin: 0 0 0; }

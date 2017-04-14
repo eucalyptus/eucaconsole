@@ -27,7 +27,11 @@
 }
 
 #bucket-details {
-    margin-left: 0.5rem;
+    margin-left: 0.75rem;
+    text-decoration: underline;
+    &:hover {
+        color: $dxc-darkgray;
+    }
 }
 
 .bucket-progress {

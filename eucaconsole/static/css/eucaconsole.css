@@ -1892,14 +1892,16 @@ input, input[type="text"], input[type="password"], input[type="date"], input[typ
 .reveal-modal [data-tooltip] { z-index: 99999999; }
 .reveal-modal h3#about-cloud:hover { color: #666666; }
 .reveal-modal h3.pagetitle { margin-left: 0; }
+.reveal-modal a { text-decoration: underline; }
+.reveal-modal a:hover { color: #666666; }
+.reveal-modal a.close-reveal-modal { color: #000000; text-decoration: none; }
+.reveal-modal a.close-reveal-modal:hover { color: #666666; text-decoration: none; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .tabs-content { border: none; }
 .reveal-modal .button.expand { margin-bottom: 0; }
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
 .reveal-modal .top-margin { margin-top: 0.7rem; }
 .reveal-modal .center { text-align: center; }
-.reveal-modal .close-reveal-modal { color: #000000; }
-.reveal-modal .close-reveal-modal:hover { color: #666666; text-decoration: none; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */

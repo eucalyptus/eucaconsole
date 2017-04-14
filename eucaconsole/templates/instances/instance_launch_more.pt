@@ -29,14 +29,14 @@
                 <form action="${request.route_path('instance_more_launch', id=instance.id)}" method="post"
                       data-abide="abide" enctype="multipart/form-data" id="launch-more-form">
                     ${structure:launch_more_form['csrf_token']}
-                    ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2, leftcol_width=8, rightcol_width=4, leftcol_width_large=4, rightcol_width_large=8, autofocus='', ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
+                    ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2, leftcol_width_large=5, rightcol_width_large=7, autofocus='', ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                     <hr />
                     <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="large-2 small-4 columns">
                             <label i18n:translate="">Name(s)</label>
                         </div>
                         <div class="large-10 small-8 columns field inline">
-                            <input class="name" ng-repeat="name in buildNumberList(instanceNumber)"
+                            <input type="text" class="name" ng-repeat="name in buildNumberList(instanceNumber)"
                                    name="name_{{ $index }}" placeholder="instance{{ $index + 1 }}" />
                         </div>
                     </div>

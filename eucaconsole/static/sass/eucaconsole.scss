@@ -1154,6 +1154,20 @@ textarea {
             margin-left: 0;
         }
     }
+    a {
+        text-decoration: underline;
+        &:hover {
+            color: $dxc-darkgray;
+        }
+        &.close-reveal-modal {
+            color: $dxc-black;
+            text-decoration: none;
+            &:hover {
+                color: $dxc-darkgray;
+                text-decoration: none;
+            }
+        }
+    }
     form .row.controls-wrapper {
         margin-bottom: 1rem;
     }
@@ -1171,13 +1185,6 @@ textarea {
     }
     .center {
         text-align: center;
-    }
-    .close-reveal-modal {
-        color: $dxc-black;
-        &:hover {
-            color: $dxc-darkgray;
-            text-decoration: none;
-        }
     }
 }
 
