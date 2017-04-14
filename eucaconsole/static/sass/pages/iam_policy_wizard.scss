@@ -19,7 +19,7 @@
     .content {
         margin-top: 8px;
         .choice {
-            border-bottom: 1px solid $hpe-lightgray;
+            border-bottom: 1px solid $dxc-lightgray;
             margin-bottom: 1rem;
             margin-left: 1rem;
             margin-right: 1rem;
@@ -68,13 +68,13 @@
 
 // Policy generator styles
 #policy-generator {
-    border-color: $hpe-lightgray;
+    border-color: $dxc-lightgray;
     border-left: none;
     border-right: none;
     width: 100%;
     tr {
         &.namespace {
-            border-top: 1px solid $hpe-lightgray;
+            border-top: 1px solid $dxc-lightgray;
             background-color: white;
             td {
                 font-size: 1rem;
@@ -162,10 +162,10 @@
             margin-top: 6px;
         }
         i.tick {
-            color: $hpe-lightgray;
+            color: $dxc-lightgray;
             font-size: 1.2rem;
             &.fi-check.selected {
-                color: $hpe-slate;
+                color: green;
             }
             &.fi-x.selected {
                 color: darkred;
@@ -186,6 +186,6 @@
 
 // CodeMirror styles
 .CodeMirror {
-    border: 1px solid $hpe-lightgray;
+    border: 1px solid $dxc-lightgray;
     min-height: 24rem;
 }

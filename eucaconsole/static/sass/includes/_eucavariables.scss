@@ -32,34 +32,22 @@ $experimental: false;
 
 // Layout
 $euca-extrasmall-breakpoint: 480px;
-$euca-contentwrap-width: 1040px;
 
 // Colors
-$hpe-black: #333333;
-$hpe-gray: #666666;
-$hpe-darkgray: #444444;
-$hpe-lightgray: #cccccc;
-$hpe-extralightgray: #e6e7e8;
-$hpe-gray-40: #b3b3b3;
-$hpe-backgroundgray: #F2F2F2;
-$hpe-disabledgray: #EDEDED;
-$hpe-validation-input-bgcolor: lighten(lightpink, 10%);
-$hpe-disabledgreen: #CCEEE6;  // HPE-specific color
-$hpe-green: #01a982;  // HPE-specific color
-$hpe-slate: #425563;  // HPE-specific color
-$hpe-turq: #2ad2c9;  // HPE-specific color
-$hpe-purple: #614767;  // HPE-specific color
-$hpe-bronze: #80746E;  // HPE-specific color
-$hpe-steel: #5F7A76;  // HPE-specific color
-$hpe-gray-65: #5a5a5a;  // HP-specific color
-$hpe-blue: #007dba;  // HP-specific color
-$hpe-gold: #e6a818;  // HP-specific color
+$euca-validation-input-bgcolor: lighten(lightpink, 10%);
+
+$dxc-black: #000000;
+$dxc-white: #ffffff;
+$dxc-yellow: #ffed00;
+$dxc-blue: #00c9ff;
+$dxc-green: #64ff00;
+$dxc-darkgray: #666666;
+$dxc-lightgray: #d9d9d9;
 
 
 // Text
-$euca-text-font-family: Metric-Regular, Helvetica, Arial, sans-serif;
-$euca-bold-font-family: Metric-Semibold, Helvetica, Arial, sans-serif;
-$euca-header-font-family: $euca-bold-font-family;
+$euca-text-font-family: 'Lato', Helvetica, Arial, sans-serif;
+$euca-header-font-family: 'PT Sans', Verdana, Geneva, Lucida, sans-serif;
 $euca-xs-font-size: 12px;
 $euca-s-font-size: 14px;
 $euca-font-size: 16px;
@@ -74,40 +62,15 @@ $euca-xl-font-size: 24px;
 $row-width: rem-calc(1040);
 
 // Colors
-$primary-color: $hpe-green;
-$secondary-color: $hpe-gray;
-$success-color: $hpe-green;
-$code-color: darkred;
+$primary-color: $dxc-black;
 
 // Dropdown menus
 $f-dropdown-bg: white;
-$f-dropdown-triangle-color: $hpe-lightgray;
+$f-dropdown-triangle-color: $dxc-lightgray;
 
 // Navigation bar settings ============
 // Breakpoint handling
-$topbar-transition-speed: 300ms;
 $topbar-breakpoint: 1020px !default; // Change to 9999px for always mobile layout
-// Colors
-$topbar-bg-color: white;
-$topbar-bg: $topbar-bg-color;
-$topbar-dropdown-link-bg: $hpe-green;
-$topbar-link-bg-hover: $hpe-green;
-/* Dropdown elements */
-$topbar-dropdown-bg: white;
-$topbar-dropdown-link-color: #000;
-$topbar-dropdown-link-bg: white;
-$topbar-dropdown-toggle-size: 5px;
-$topbar-dropdown-toggle-color: black;
-$topbar-dropdown-toggle-alpha: 1.0;
-/* Set the link colors and styles for top-level nav */
-$topbar-link-color: #000;
-$topbar-link-color-hover: #000;
-$topbar-link-color-active: #fff;
-$topbar-link-color-active-hover: #fff;
-$topbar-link-weight: normal;
-$topbar-link-font-size: rem-calc(13);
-$topbar-link-hover-lightness: -10%; // Darken by 10%
-$topbar-link-bg-active-hover: $primary-color;
 
 
 // Breadcrumbs
@@ -120,12 +83,12 @@ $crumb-border-style: solid;
 $crumb-border-color: transparent;
 $crumb-radius: 0;
 $crumb-font-size: 1.1rem;
-$crumb-font-color: $hpe-gray;
+$crumb-font-color: $dxc-darkgray;
 $crumb-font-family-current: $euca-text-font-family;
 $crumb-font-color-unavailable: #999;
 $crumb-font-transform: normal;
 $crumb-link-decor: underline;
-$crumb-slash-color: $hpe-gray;
+$crumb-slash-color: $dxc-darkgray;
 $crumb-slash: "/";
 
 // Buttons
@@ -147,12 +110,12 @@ $tabs-content-margin-bottom: rem-calc(1) !default;
 
 // Tooltips
 $tooltip-bg: white;
-$tooltip-font-color: $hpe-gray;
+$tooltip-font-color: $dxc-darkgray;
 $tooltip-padding: rem-calc(5);
 
 // Alarm status colors
 $alarm-status-color-alarm: darkred;
-$alarm-status-color-insufficient-data: $hpe-gray-65;
+$alarm-status-color-insufficient-data: $dxc-darkgray;
 $alarm-status-color-ok: green;
 
 // Mixins
@@ -166,7 +129,7 @@ $alarm-status-color-ok: green;
 // Tiles within panels (e.g. instance_volumes.pt and volume_snapshots.pt page)
 @mixin panel-tile-mixin {
     background-color: white;
-    border: 1px solid $hpe-lightgray;
+    border: 1px solid $dxc-lightgray;
     width: 190px; height: 160px;
     .footer {
         height: 24px;
@@ -175,39 +138,38 @@ $alarm-status-color-ok: green;
 }
 
 @mixin button-shadow-mixin {
-    box-shadow: 1px 1px 5px 0 $hpe-backgroundgray;
+    box-shadow: 1px 1px 5px 0 $dxc-lightgray;
 }
 
 @mixin disabled-button-mixin {
-    background-color: white;
-    border-color: $hpe-disabledgray;
-    color: $hpe-disabledgray;
+    background-color: $dxc-lightgray;
+    color: $dxc-darkgray;
     cursor: default;
     &:hover {
         cursor: default;
         pointer-events: none;
-        background-color: white;
+        background-color: $dxc-lightgray;
         text-decoration: none;
-        border: 2px solid $hpe-disabledgray;
+        border: none;
         outline: none;
         box-shadow: none;
-        color: $hpe-disabledgray;
+        color: $dxc-darkgray;
     }
 }
 
 
 @mixin primary-disabled-button-mixin {
     @include disabled-button-mixin;
-    border-color: $hpe-disabledgreen;
+    border-color: $dxc-lightgray;
     &:hover {
-        border: 2px solid $hpe-disabledgreen;
+        border: none;
     }
 }
 
 @mixin disabled-list-item-mixin {
     cursor: default;
     a {
-        color: $hpe-lightgray;
+        color: $dxc-lightgray;
         pointer-events: none;
     }
     &:hover {
@@ -216,15 +178,15 @@ $alarm-status-color-ok: green;
 }
 
 @mixin dropdown-shadow-mixin {
-    border-color: $hpe-lightgray;
-    box-shadow: 2px 2px 5px $hpe-backgroundgray;
+    border-color: $dxc-lightgray;
+    box-shadow: 2px 2px 5px $dxc-lightgray;
 }
 
 @mixin helptext-icon-position-mixin {
     .helptext-icon {
         position: relative;
         left: -1rem;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
     }
 }
 
@@ -241,17 +203,19 @@ $alarm-status-color-ok: green;
 
 @mixin table-styles-mixin {
     border: none;
+    border-top: 1px solid $dxc-black;
+    border-bottom: 1px solid $dxc-black;
     thead tr {
-        background-color: white;
+        background-color: $dxc-black;
         th {
             // Note: Do not use shorthand padding rules here since we need to override Foundation styles
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
             padding-left: 6px;
             padding-right: 6px;
-            border-bottom: 1px solid $hpe-lightgray;
+            border-bottom: 1px solid $dxc-lightgray;
             vertical-align: top;
-            color: $hpe-black;
+            color: $dxc-white;
             text-transform: uppercase;
             &.actions {
                 text-align: right;
@@ -265,7 +229,10 @@ $alarm-status-color-ok: green;
         }
     }
     tr {
-        border-bottom: 1px solid $hpe-lightgray;
+        border-bottom: 1px solid $dxc-lightgray;
+        &:last-child {
+            border-bottom: none;
+        }
         td.count {
             text-align: center;
         }
@@ -291,16 +258,19 @@ $alarm-status-color-ok: green;
     .item-list {
         margin-bottom: 6px;
         .item {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             font-family: $euca-text-font-family;
-            border: 2px solid $hpe-lightgray;
-            background-color: #fff;
+            border: 1px solid $dxc-darkgray;
+            background-color: $dxc-lightgray;
             margin-right: 8px;
+            padding-right: 12px;
             a {
-                color: $hpe-gray;
+                color: $dxc-darkgray;
+                position: relative;
+                top: 1px; left: 4px;
                 &:hover {
-                color: $hpe-green;
-                text-decoration: none;
+                    color: $dxc-black;
+                    text-decoration: none;
                 }
             }
         }
@@ -319,21 +289,23 @@ $alarm-status-color-ok: green;
         padding-left: 0;
         a {
             padding: 10px 0 4px 0;
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             background-color: transparent;
             font-family: $euca-header-font-family;
+            font-weight: bold;
+            text-transform: uppercase;
             &:hover {
-                border-bottom: 2px solid $hpe-gray;
+                border-bottom: 2px solid $dxc-darkgray;
                 background-color: transparent;
                 text-decoration: none;
             }
         }
         &.active {
             a {
-                color: $hpe-black;
+                color: $dxc-black;
                 font-family: $euca-header-font-family;
                 background-color: transparent;
-                border-bottom: 2px solid $hpe-black;
+                border-bottom: 2px solid $dxc-black;
             }
         }
     }
@@ -349,38 +321,40 @@ $alarm-status-color-ok: green;
     padding-right: 1rem;
     padding-left: 1rem;
     a {  // Visited tabs
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         font-family: $euca-header-font-family;
+        text-transform: uppercase;
         background-color: transparent;
         &:hover {
-            color: $hpe-gray;
-            border-bottom: 2px solid $hpe-gray;
+            color: $dxc-darkgray;
+            border-bottom: 2px solid $dxc-darkgray;
         }
         box-shadow: none;
         white-space: nowrap;
         padding: 8px 0 6px 0;
         .cir {
-            background-color: $hpe-gray;
+            background-color: $dxc-darkgray;
         }
     }
     &.active {  // Active tab
         a {
-            color: $hpe-black;
+            color: $dxc-black;
             font-family: $euca-header-font-family;
             background-color: transparent;
-            border-bottom: 2px solid $hpe-black;
+            border-bottom: 2px solid $dxc-black;
         }
         .cir {
-            background-color: $hpe-black;
+            background-color: $dxc-black;
         }
     }
     &.disabled {  // Unvisited tabs
-        color: $hpe-lightgray;
+        color: $dxc-lightgray;
         font-family: $euca-header-font-family;
+        text-transform: uppercase;
         padding: 8px 1rem;
         .cir {
             margin-right: 8px;
-            background-color: $hpe-lightgray;
+            background-color: $dxc-lightgray;
         }
     }
     .cir {
@@ -393,7 +367,7 @@ $alarm-status-color-ok: green;
         padding: 0 0 0 0;
         text-align: center;
         vertical-align: middle;
-        background-color: $hpe-lightgray;
+        background-color: $dxc-lightgray;
         color: white;
         margin-right: 4px;
     }

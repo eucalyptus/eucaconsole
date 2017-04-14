@@ -5,11 +5,11 @@
     margin-bottom: 6px;
 
     .item {
-      color: $hpe-gray;
+      color: $dxc-darkgray;
       font-family: $euca-header-font-family;
       font-size: $euca-xs-font-size;
       background-color: white;
-      border: 2px solid $hpe-lightgray;
+      border: 2px solid $dxc-lightgray;
       padding: 0.25rem 0.5rem;
       border-radius: 3px;
       white-space: nowrap;
@@ -22,17 +22,17 @@
       }
 
       a.remove {
-        color: $hpe-gray;
-                &:hover {
-                    color: $hpe-green;
-                }
+        color: $dxc-black;
+        &:hover {
+            color: $dxc-darkgray;
+        }
         margin-left: 5px;
       }
     }
   }
 
   .add-label {
-    color: $hpe-gray;
+    color: $dxc-darkgray;
     font-size: $euca-l-font-size; 
     margin-bottom: 6px;
   }

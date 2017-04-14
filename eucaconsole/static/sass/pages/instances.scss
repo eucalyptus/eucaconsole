@@ -5,12 +5,12 @@
 
 
 // Status colors
-$instance-status-color-running: $hpe-slate;
-$instance-status-color-pending: lighten($hpe-slate, 20%);
+$instance-status-color-running: green;
+$instance-status-color-pending: lighten(green, 20%);
 $instance-status-color-stopped: darkred;
 $instance-status-color-stopping: lighten(red, 20%);
-$instance-status-color-terminated: $hpe-gray;
-$instance-status-color-terminating: $hpe-lightgray;
+$instance-status-color-terminated: $dxc-darkgray;
+$instance-status-color-terminating: $dxc-lightgray;
 
 
 // Tile/table view
@@ -26,7 +26,7 @@ $instance-status-color-terminating: $hpe-lightgray;
 .alarm-status.ok { background-color: $alarm-status-color-ok; }
 
 
-$instance-tile-height-adjustment: 68px;
+$instance-tile-height-adjustment: 80px;
 
 // Table view
 .table {

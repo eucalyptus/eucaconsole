@@ -1,12 +1,10 @@
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }
 .tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
-.tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+.tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-weight: bold; text-transform: uppercase; }
 .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
-.tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
+.tabs dd.active a { color: #000000; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
 .tabs.switcher { display: inline-block; }
 .tabs.switcher dd:last-child { padding-right: 0; }
 
@@ -14,7 +12,7 @@
 .tabs-content p { line-height: 1.3rem; }
 .tabs-content .small-10.columns { padding-left: 0; }
 .tabs-content .content { margin-top: 8px; }
-.tabs-content .content .choice { border-bottom: 1px solid #cccccc; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
+.tabs-content .content .choice { border-bottom: 1px solid #d9d9d9; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
 .tabs-content .content .choice:last-child { border-bottom: none; }
 .tabs-content .content .choice .expando i { margin-right: 8px; }
 .tabs-content .content .choice .expando i.fi-minus { margin-right: 7px; }
@@ -27,8 +25,8 @@
 #policy-preview input[type=text], #policy-preview textarea { background-color: white; }
 
 @media only screen and (min-width: 64.063em) and (min-height: 52rem) { #policy-preview { position: fixed; min-width: 26rem; } }
-#policy-generator { border-color: #cccccc; border-left: none; border-right: none; width: 100%; }
-#policy-generator tr.namespace { border-top: 1px solid #cccccc; background-color: white; }
+#policy-generator { border-color: #d9d9d9; border-left: none; border-right: none; width: 100%; }
+#policy-generator tr.namespace { border-top: 1px solid #d9d9d9; background-color: white; }
 #policy-generator tr.namespace td { font-size: 1rem; }
 #policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; font-size: 18px; width: 40px; }
 #policy-generator td { font-size: 16px; line-height: 1rem; }
@@ -50,12 +48,12 @@
 #policy-generator td .advanced .chosen-container.chosen-container-single .chosen-choices { line-height: 1rem; }
 #policy-generator td .advanced .chosen-search input[type=text] { width: 100%; }
 #policy-generator td label { margin-bottom: 2px; margin-top: 6px; }
-#policy-generator td i.tick { color: #cccccc; font-size: 1.2rem; }
-#policy-generator td i.tick.fi-check.selected { color: #425563; }
+#policy-generator td i.tick { color: #d9d9d9; font-size: 1.2rem; }
+#policy-generator td i.tick.fi-check.selected { color: green; }
 #policy-generator td i.tick.fi-x.selected { color: darkred; }
 
 #create-iam-policy-btn { margin-top: 1rem; }
 
 #hand-edited-warning { color: darkred; margin-top: -0.5rem; }
 
-.CodeMirror { border: 1px solid #cccccc; min-height: 24rem; }
+.CodeMirror { border: 1px solid #d9d9d9; min-height: 24rem; }

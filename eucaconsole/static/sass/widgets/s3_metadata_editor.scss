@@ -6,23 +6,7 @@
 
 
 #s3-metadata-editor {
-    .items {
-        margin-bottom: 6px;
-        .metadataentry {
-            color: $hpe-gray;
-            font-family: $euca-header-font-family;
-            font-size: $euca-xs-font-size;
-            background-color: white;
-            border: 2px solid $hpe-lightgray;
-            margin-right: 8px;
-            a {
-                color: $hpe-gray;
-                &:hover {
-                    color: $hpe-green;
-                }
-            }
-        }
-    }
+    @include item-list;
     #metadata_key, #metadata_value, #metadata_content_type {
         width: 50%;
     }

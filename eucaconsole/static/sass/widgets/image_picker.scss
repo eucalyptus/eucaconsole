@@ -7,16 +7,16 @@
 #image-picker {
     .table {
         width: 100% !important;
-        border: 1px solid $hpe-lightgray;
+        border: 1px solid $dxc-lightgray;
         tbody {
             display: block;
             overflow-y: scroll;
             height: 22rem;
             tr {
                 display: block;
-                border-bottom: 1px solid $hpe-lightgray;
+                border-bottom: 1px solid $dxc-lightgray;
                 &.selected {
-                    background-color: $hpe-backgroundgray;
+                    background-color: $dxc-lightgray;
                 }
                 &.selected:hover {
                     cursor: inherit;
@@ -41,7 +41,7 @@
                 display: inline-block;
                 width: 50px;
                 height: 50px;
-                background: url(../../img/image-platform-icons.png) no-repeat top left;
+                background: url(../../img/image-platform-icons-grayscale.png) no-repeat top left;
                 &.redhat { background-position: 0 0; }
                 &.fedora { background-position: 0 -51px; }
                 &.gentoo { background-position: 0 -101px; }
@@ -61,10 +61,10 @@
         .label {
             padding: 3px 4px;
             &.i386 {
-                background-color: $hpe-turq;
+                background-color: $dxc-darkgray;
             }
             &.x86_64 {
-                background-color: $hpe-bronze;
+                background-color: $dxc-black;
             }
         }
     }
