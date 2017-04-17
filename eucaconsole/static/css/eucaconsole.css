@@ -1817,11 +1817,12 @@ form[data-abide].error small.error.inline, form .error small.error.inline { disp
 form .error .chosen-container .chosen-single, form .ng-invalid.ng-touched { border-color: darkred; background: #ffe9ec; }
 
 .row.controls-wrapper { margin-bottom: 0.5rem; }
-.row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
+.row.controls-wrapper label { padding-top: 6px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
 .row.controls-wrapper label.nowrap { white-space: nowrap; }
 .row.controls-wrapper label.stack-label { margin-bottom: 4px; white-space: nowrap; }
 .row.controls-wrapper label.reverse { display: inline-block; text-align: left; position: relative; left: -1rem; }
+.row.controls-wrapper .small-12.columns label, .row.controls-wrapper .medium-12.columns label, .row.controls-wrapper .large-12.columns label { margin-bottom: 4px; }
 .row.controls-wrapper.readonly a { color: #000000; text-decoration: underline; }
 .row.controls-wrapper.readonly a:hover { color: #666666; text-decoration: underline; }
 .row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }

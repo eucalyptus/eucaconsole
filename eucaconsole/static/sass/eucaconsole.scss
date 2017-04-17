@@ -864,7 +864,7 @@ form {
 .row.controls-wrapper {
     margin-bottom: 0.5rem;
     label {
-        padding-top: 4px;
+        padding-top: 6px;
         font-weight: bold;
         text-align: right;
         line-height: 1rem;
@@ -884,6 +884,9 @@ form {
         text-align: left;
         position: relative;
         left: -1rem;
+    }
+    .small-12.columns label, .medium-12.columns label, .large-12.columns label {
+        margin-bottom: 4px;
     }
     &.readonly {
         a {
