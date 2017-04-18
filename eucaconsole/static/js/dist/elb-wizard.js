@@ -80,7 +80,7 @@ angular.module('InstancesServiceModule', [])
                 return data.results;
             });
         },
-        terminateInstance: function (csrfToken, params) {
+        terminateInstances: function (csrfToken, params) {
             params = params || {};
             params.csrf_token = csrfToken;
             var data = $httpParamSerializer(params);
@@ -283,6 +283,7 @@ angular.module('ELBWizard', [
                 return validSteps;
             };
             ELBWizardService.cloudType = $scope.cloudType;
+            ELBWizardService.vpcEnabled = $scope.vpcEnabled;
         }],
         controllerAs: 'wizard'
     };
@@ -591,6 +592,7 @@ angular.module('ELBWizard')
 
         this.values = ELBWizardService.values;
         this.cloudType = ELBWizardService.cloudType;
+        this.vpcEnabled = ELBWizardService.vpcEnabled;
 
         this.submit = function () {
             if($scope.generalForm.$invalid) {
@@ -799,7 +801,8 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         restrict: 'E',
         scope: {
             listeners: '=ngModel',
-            cloudType: '@'
+            cloudType: '@',
+            vpcEnabled: '@'
         },
         templateUrl: '/_template/elbs/listener-editor/listener-editor',
         controller: ['$scope', 'ModalService', function ($scope, ModalService) {
@@ -808,6 +811,11 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             var validPorts = [25, 80, 443, 465, 587],
                 validPortMin = 1024,
                 validPortMax = 65535;
+            if ($scope.vpcEnabled) {
+                validPorts = [1, 65535];
+                validPortMin = 1;
+                validPortMax = 65535;
+            }
 
             this.protocols = [
                 {name: 'Select...', value: 'None', port: ''},

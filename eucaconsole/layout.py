@@ -127,6 +127,8 @@ class MasterLayout(object):
         self.name_without_spaces_pattern = r'^[a-zA-Z0-9\-]{1,255}$'
         self.port_range_pattern = u'{0}'.format(
             '^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$')
+        self.vpc_port_range_pattern = u'{0}'.format(
+            '^([1-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$')
         self.querystring = self.get_query_string()
         self.help_html_dir = 'eucaconsole:static/html/help/'
         self.escape_braces = BaseView.escape_braces

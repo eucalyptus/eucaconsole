@@ -77,14 +77,21 @@
                 </div>
                 <div class="controls-wrapper">
                     <label i18n:translate="" class="inline">Port</label>
-                    <span class="elb-port-tooltip" data-tooltip="" i18n:attributes="title"
+                    <span class="elb-port-tooltip" data-tooltip="" i18n:attributes="title" ng-if="vpcEnabled"
+                          title="Load balancer port must be between 1 and 65535">
+                        <i class="helptext-icon"></i>
+                    </span>
+                    <span class="elb-port-tooltip" data-tooltip="" i18n:attributes="title" ng-if="!vpcEnabled"
                           title="Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535">
                         <i class="helptext-icon"></i>
                     </span>
                     <input class="port" type="number" ng-model="ctrl.from.port"></input>
                 </div>
             </div>
-            <div i18n:translate="" class="port-out-of-range">
+            <div i18n:translate="" class="port-out-of-range" ng-if="vpcEnabled">
+                Load balancer port must between 1 and 65535
+            </div>
+            <div i18n:translate="" class="port-out-of-range" ng-if="!vpcEnabled">
                 Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
             </div>
             <div i18n:translate="" class="port-in-use">

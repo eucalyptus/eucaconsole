@@ -116,13 +116,20 @@
             </div>
             <div class="controls-wrapper">
                 <label class="inline" i18n:translate="">Port</label>
+                <span title="Load balancer port must be between 1 and 65535"
+                      data-tooltip="" i18n:attributes="title" class="elb-port-tooltip" ng-if="'${layout.is_vpc_supported}'=='True'">
+                    <i class="helptext-icon"></i>
+                </span>
                 <span title="Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535"
-                      data-tooltip="" i18n:attributes="title" class="elb-port-tooltip">
+                      data-tooltip="" i18n:attributes="title" class="elb-port-tooltip" ng-if="'${layout.is_vpc_supported}'!='True'">
                     <i class="helptext-icon"></i>
                 </span>
                 <input type="number" class="port from" id="from-port-input" name="from_port"
-                    ng-model="fromPort" pattern="${layout.port_range_pattern}" />
-                <small class="error inline" id="from-port-error" i18n:translate="">
+                    ng-model="fromPort" pattern="${layout.vpc_port_range_pattern}" />
+                <small class="error inline" id="from-port-error" i18n:translate="" ng-if="'${layout.is_vpc_supported}'=='True'">
+                    Load balancer port must be between 1 and 65535
+                </small>
+                <small class="error inline" id="from-port-error" i18n:translate="" ng-if="'${layout.is_vpc_supported}'!='True'">
                     Load balancer port must be either 25, 80, 443, 465, 587 or from 1024 to 65535
                 </small>
             </div>
