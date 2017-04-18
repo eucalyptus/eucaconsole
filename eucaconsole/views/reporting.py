@@ -83,7 +83,7 @@ class ReportingView(BaseView):
         if len(regions) > 1:
             facets.append({'name': 'region', 'label': _(u'Region'),
                            'options': [{'key': choice[0], 'label':choice[1]} for choice in regions]})
-        tags = self.get_connection().get_all_tags(filters={'resource-type':'instance'})
+        tags = self.get_connection().get_all_tags(filters={'resource-type': 'instance'})
         if len(tags) > 1:
             tag_names = sorted(set([tag.name for tag in tags]))
             facets.append({'name': 'tags', 'label': _(u'Tags'),
@@ -150,7 +150,7 @@ class ReportingAPIView(BaseView):
         if len(data) == 0:
             return dict(result=[])
         grouped = data.groupby(('ProductName', 'UsageType'))
-        totals = grouped['Usage    Quantity'].sum()
+        totals = grouped['UsageQuantity'].sum()
         totals_list = totals.to_frame().to_records().tolist()
         results = []
         service = ''
@@ -228,7 +228,7 @@ class ReportingAPIView(BaseView):
             for series in range(2, len(data.columns)):
                 values = []
                 for item in data.itertuples():
-                    values.append({'x': item[1], 'y': item[series+1]})
+                    values.append({'x': item[1], 'y': item[series + 1]})
                 results.append({'key': data.columns[series], 'values': values})
             return dict(results=results)
 

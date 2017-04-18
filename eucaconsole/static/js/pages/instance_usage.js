@@ -14,9 +14,11 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
             format: "@",
         },
         link: function(scope, element, attrs){
-            if(typeof(scope.format) == "undefined"){ scope.format = "yyyy/mm/dd"; }
+            if(typeof(scope.format) === "undefined"){ scope.format = "yyyy/mm/dd"; }
+            var startDate = new Date();
+            startDate.setHours(-(365 * 24));  // move back 1 year 
             var endDate = new Date();
-            $(element).fdatepicker({format: scope.format, pickTime: false, endDate:endDate}).on('changeDate', function(ev){
+            $(element).fdatepicker({format: scope.format, pickTime: false, startDate: startDate, endDate: endDate}).on('changeDate', function(ev){
                 scope.$apply(function() {
                     ngModel.$setViewValue(ev.date);
                 });
@@ -31,7 +33,7 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
             function ($scope, $http, $httpParamSerializer, $timeout, eucaHandleError, ReportingService) {
                 var vm = this;
                 vm.values = {
-                    granularity: 'Hourly',
+                    granularity: 'Daily',
                     timePeriod: 'lastMonth',
                     fromDate: '',
                     toDate: '',
@@ -69,7 +71,7 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
                         return false;
                     }
                     vm.isDownloading = true;
-                    params = {
+                    var params = {
                         'granularity': vm.values.granularity,
                         'timePeriod': vm.values.timePeriod,
                         'fromTime': vm.values.fromDate,
@@ -110,7 +112,7 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
     return {
         restrict: 'A',
         scope: {
-            data: "=ngModel",
+            data: "=ngModel"
         },
         controller: ['$scope', function($scope) {
             $scope.chart = undefined;

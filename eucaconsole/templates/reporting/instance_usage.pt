@@ -34,10 +34,9 @@
                                 <div class="columns">
                                     <label class="left stack-label" i18n:translate="">Granularity</label>
                                 </div>
-                                <div class="large-12 small-12 columns field">
+                                <div class="large-12 columns field">
                                     <select required="required" name="month"
                                             ng-model="instanceusage.values.granularity">
-                                        <option value="Hourly" i18n:translate="">Hourly</option>
                                         <option value="Daily" i18n:translate="">Daily</option>
                                         <option value="Monthly" i18n:translate="">Monthly</option>
                                     </select>
@@ -49,7 +48,7 @@
                                 <div class="columns">
                                     <label class="left stack-label" i18n:translate="">Time Period</label>
                                 </div>
-                                <div class="large-12 small-12 columns field">
+                                <div class="large-12 columns field">
                                     <select required="required" name="month"
                                             ng-model="instanceusage.values.timePeriod">
                                         <option value="lastWeek" i18n:translate="">Last week</option>
@@ -64,7 +63,7 @@
                                 <div class="columns">
                                     <label class="left stack-label" i18n:translate="">From</label>
                                 </div>
-                                <div class="large-12 small-12 columns field">
+                                <div class="large-12 columns field">
                                     <input type="text" class="datefield" datepicker="" name="from_date" ng-model="instanceusage.values.fromDate"/>
                                 </div>
                             </div>
@@ -74,7 +73,7 @@
                                 <div class="columns">
                                     <label class="left stack-label" i18n:translate="">To</label>
                                 </div>
-                                <div class="large-12 small-12 columns field">
+                                <div class="large-12 columns field">
                                     <input type="text" class="datefield" datepicker="" name="to_date" ng-model="instanceusage.values.toDate"/>
                                 </div>
                             </div>
@@ -90,7 +89,7 @@
                                 <div class="columns">
                                     <label class="left stack-label" i18n:translate="">Filters</label>
                                 </div>
-                                <div class="large-12 small-12 columns field">
+                                <div class="large-12 columns field">
                                     <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
                                         strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
                                         facets="${facets}" filter-keys="[]"></magic-search>
@@ -104,7 +103,7 @@
                                 <div class="columns">
                                     <label class="left stack-label" i18n:translate="">Group by</label>
                                 </div>
-                                <div class="large-12 small-12 columns field">
+                                <div class="large-12 columns field">
                                     <select name="group-by"
                                             ng-model="instanceusage.values.groupBy">
                                         <option value="" i18n:translate="">None</option>
