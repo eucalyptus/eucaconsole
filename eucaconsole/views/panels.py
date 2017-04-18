@@ -402,6 +402,7 @@ def elb_listener_editor(context, request, listener_list=None, protocol_list=None
         'listener_list': listener_list,
         'protocol_list': protocol_list,
         'certificate_required_notice': _(u'Certificate is required'),
+        'vpc_enabled': BaseView.is_vpc_supported(request),
     }))
     return dict(
         controller_options_json=controller_options_json,

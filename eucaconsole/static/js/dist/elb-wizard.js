@@ -802,7 +802,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
         scope: {
             listeners: '=ngModel',
             cloudType: '@',
-            vpcSupported: '@'
+            vpcEnabled: '@'
         },
         templateUrl: '/_template/elbs/listener-editor/listener-editor',
         controller: ['$scope', 'ModalService', function ($scope, ModalService) {
@@ -811,7 +811,7 @@ angular.module('ELBListenerEditorModule', ['ModalModule'])
             var validPorts = [25, 80, 443, 465, 587],
                 validPortMin = 1024,
                 validPortMax = 65535;
-            if ($scope.vpcSupported) {
+            if ($scope.vpcEnabled) {
                 validPorts = [1, 65535];
                 validPortMin = 1;
                 validPortMax = 65535;
