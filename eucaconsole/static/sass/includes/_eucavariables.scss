@@ -285,7 +285,7 @@ $alarm-status-color-ok: green;
         position: relative;
         top: 1px;
         z-index: 999;
-        padding-right: 2rem;
+        padding-right: 1.5rem;
         padding-left: 0;
         a {
             padding: 10px 0 4px 0;
@@ -319,7 +319,7 @@ $alarm-status-color-ok: green;
 
 @mixin wizard-tabs-mixin {
     padding-right: 1rem;
-    padding-left: 1rem;
+    padding-left: 0;
     a {  // Visited tabs
         color: $dxc-darkgray;
         font-family: $euca-header-font-family;

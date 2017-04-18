@@ -1817,11 +1817,12 @@ form[data-abide].error small.error.inline, form .error small.error.inline { disp
 form .error .chosen-container .chosen-single, form .ng-invalid.ng-touched { border-color: darkred; background: #ffe9ec; }
 
 .row.controls-wrapper { margin-bottom: 0.5rem; }
-.row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
+.row.controls-wrapper label { padding-top: 6px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
 .row.controls-wrapper label.nowrap { white-space: nowrap; }
 .row.controls-wrapper label.stack-label { margin-bottom: 4px; white-space: nowrap; }
 .row.controls-wrapper label.reverse { display: inline-block; text-align: left; position: relative; left: -1rem; }
+.row.controls-wrapper .small-12.columns label, .row.controls-wrapper .medium-12.columns label, .row.controls-wrapper .large-12.columns label { margin-bottom: 4px; }
 .row.controls-wrapper.readonly a { color: #000000; text-decoration: underline; }
 .row.controls-wrapper.readonly a:hover { color: #666666; text-decoration: underline; }
 .row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }
@@ -1892,14 +1893,16 @@ input, input[type="text"], input[type="password"], input[type="date"], input[typ
 .reveal-modal [data-tooltip] { z-index: 99999999; }
 .reveal-modal h3#about-cloud:hover { color: #666666; }
 .reveal-modal h3.pagetitle { margin-left: 0; }
+.reveal-modal a { text-decoration: underline; }
+.reveal-modal a:hover { color: #666666; }
+.reveal-modal a.close-reveal-modal { color: #000000; text-decoration: none; }
+.reveal-modal a.close-reveal-modal:hover { color: #666666; text-decoration: none; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .tabs-content { border: none; }
 .reveal-modal .button.expand { margin-bottom: 0; }
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
 .reveal-modal .top-margin { margin-top: 0.7rem; }
 .reveal-modal .center { text-align: center; }
-.reveal-modal .close-reveal-modal { color: #000000; }
-.reveal-modal .close-reveal-modal:hover { color: #666666; text-decoration: none; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
@@ -1957,7 +1960,7 @@ footer .copyright a:hover { text-decoration: underline; }
 /* ----------------------------------------- Tabs (on detail pages) Note: Wizard tabs are at _wizards.scss
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }
-.tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
+.tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 1.5rem; padding-left: 0; }
 .tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-weight: bold; text-transform: uppercase; }
 .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
 .tabs dd.active a { color: #000000; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }

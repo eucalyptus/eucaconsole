@@ -1,7 +1,7 @@
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }
-.tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
+.tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 1.5rem; padding-left: 0; }
 .tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-weight: bold; text-transform: uppercase; }
 .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
 .tabs dd.active a { color: #000000; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
@@ -28,7 +28,7 @@
 #policy-generator { border-color: #d9d9d9; border-left: none; border-right: none; width: 100%; }
 #policy-generator tr.namespace { border-top: 1px solid #d9d9d9; background-color: white; }
 #policy-generator tr.namespace td { font-size: 1rem; }
-#policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; font-size: 18px; width: 40px; }
+#policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; font-size: 16px; width: 40px; }
 #policy-generator td { font-size: 16px; line-height: 1rem; }
 #policy-generator td.allow, #policy-generator td.deny { text-align: center; }
 #policy-generator td h6 { margin-bottom: 4px; }

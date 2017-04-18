@@ -864,7 +864,7 @@ form {
 .row.controls-wrapper {
     margin-bottom: 0.5rem;
     label {
-        padding-top: 4px;
+        padding-top: 6px;
         font-weight: bold;
         text-align: right;
         line-height: 1rem;
@@ -884,6 +884,9 @@ form {
         text-align: left;
         position: relative;
         left: -1rem;
+    }
+    .small-12.columns label, .medium-12.columns label, .large-12.columns label {
+        margin-bottom: 4px;
     }
     &.readonly {
         a {
@@ -1154,6 +1157,20 @@ textarea {
             margin-left: 0;
         }
     }
+    a {
+        text-decoration: underline;
+        &:hover {
+            color: $dxc-darkgray;
+        }
+        &.close-reveal-modal {
+            color: $dxc-black;
+            text-decoration: none;
+            &:hover {
+                color: $dxc-darkgray;
+                text-decoration: none;
+            }
+        }
+    }
     form .row.controls-wrapper {
         margin-bottom: 1rem;
     }
@@ -1171,13 +1188,6 @@ textarea {
     }
     .center {
         text-align: center;
-    }
-    .close-reveal-modal {
-        color: $dxc-black;
-        &:hover {
-            color: $dxc-darkgray;
-            text-decoration: none;
-        }
     }
 }
 

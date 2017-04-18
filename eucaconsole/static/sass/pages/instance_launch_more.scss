@@ -3,6 +3,7 @@
 @import "../includes/eucavariables";
 
 form input.name {
+    width: 50%;
     margin-right: 6px;
 }
 
@@ -39,4 +40,9 @@ form input.name {
         width: 145px;
         left: 8px;
     }
+}
+
+/* Small screen */
+@media screen and (max-width: 480px) {
+    select, #name { width: 80%; }
 }

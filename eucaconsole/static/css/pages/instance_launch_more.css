@@ -1,7 +1,7 @@
 /* @fileOverview Launch more like this instance page styles */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-form input.name { margin-right: 6px; }
+form input.name { width: 50%; margin-right: 6px; }
 
 #userdatalabel { right: 0px; }
 
@@ -15,3 +15,5 @@ form input.name { margin-right: 6px; }
 #bdmapping-editor .storage-label { display: none; }
 
 @media screen and (min-width: 1020px) { #controls_ramdisk_id div label { width: 145px; left: 8px; } }
+/* Small screen */
+@media screen and (max-width: 480px) { select, #name { width: 80%; } }
