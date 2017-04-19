@@ -53,3 +53,5 @@ form .error { font-size: small; display: none; }
 #usage-reports-modal .row .columns { padding-left: 0; }
 
 .usage-link { float: right; }
+
+.usage-chart svg { width: 100%; height: 24rem; }
