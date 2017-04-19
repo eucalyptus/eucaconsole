@@ -29,7 +29,8 @@ A connection objects for Eucalyptus Reporting features
 
 """
 
-import boto
+import logging
+
 from boto.connection import AWSQueryConnection
 from boto.compat import json
 
@@ -63,9 +64,6 @@ class EucalyptusConnection(AWSQueryConnection):
         :type params: dict
         :param params: Dictionary of call parameters
 
-        :type path: string
-        :param path: Server path
-
         :type method: string
         :param method: HTTP method to use
 
@@ -73,14 +71,16 @@ class EucalyptusConnection(AWSQueryConnection):
         :return: Parsed JSON response data
         """
         params['Version'] = self.version
+        logging.debug('params: ' + json.dumps(params))
         response = self.make_request(call, params, self.path, method)
         body = response.read().decode('utf-8')
+        logging.debug('response: ' + body)
         if response.status == 200:
             body = json.loads(body)
             return body
         else:
-            boto.log.error('%s %s' % (response.status, response.reason))
-            boto.log.error('%s' % body)
+            logging.error('%s %s' % (response.status, response.reason))
+            logging.error('%s' % body)
             raise self.ResponseError(response.status, response.reason, body=body)
 
 
@@ -123,10 +123,11 @@ class EucalyptusReporting(EucalyptusConnection):
         ret = self._do_request('ViewBilling', params, 'POST')
         return ret
 
-    def modify_billing(self, enabled, bucket_name, cost_allocation_tags=[]):
+    def modify_billing(self, enabled, bucket_name, cost_allocation_tags=None):
         """
         implements ModifyBilling
         """
+        cost_allocation_tags = cost_allocation_tags or []
         params = {
             'DetailedBillingEnabled': enabled,
             'ReportBucket': bucket_name
@@ -179,19 +180,23 @@ class EucalyptusEC2Reports(EucalyptusConnection):
 
     def view_instance_usage_report(self, start_time, end_time, filters, group_by, report_granularity='Daily'):
         """
-        implements ViewUsage
+        implements ViewInstanceUsageReport
         """
         params = {
             'Granularity': report_granularity,
-            'TimeRangeStart': start_time.isoformat(),
-            'TimeRangeEnd': end_time.isoformat(),
-        #    'GroupBy.Type': group_by,
-        #    'GroupBy.Key': group_by,
+            'TimeRangeStart': start_time.isoformat()[:-3] + 'Z',
+            'TimeRangeEnd': end_time.isoformat()[:-3] + 'Z',
         }
+        if group_by:
+            params['GroupBy.Type'] = group_by
+            if group_by == 'tag':
+                pass  # params['GroupBy.Key'] = tag_value
         if len(filters) > 0:
-            for i, f in enumerate(filters):
-                params['Filters.member.%d.Type' % (i + 1)] = f.get('type')
-                params['Filters.member.%d.Key' % (i + 1)] = f.get('key')
+            i = 0
+            for idx, f in enumerate(filters):
+                for key in filters[f]:
+                    params['Filters.member.%d.Type' % (i + 1)] = f
+                    params['Filters.member.%d.Key' % (i + 1)] = key
+                    i += 1
         ret = self._do_request('ViewInstanceUsageReport', params, 'POST')
         return ret
-

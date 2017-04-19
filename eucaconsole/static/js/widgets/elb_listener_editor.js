@@ -71,6 +71,7 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
             if ($scope.serverCertificateName === '' && $('#certificates option:selected').length > 0) {
                 $scope.serverCertificateName = $('#certificates option:selected').text();
             }
+            $scope.vpcEnabled = options.vpc_enabled;
         };
         $scope.setWatcher = function () {
             $scope.$watch('fromProtocol', function(){
@@ -343,6 +344,11 @@ angular.module('ELBListenerEditor', ['EucaConsoleUtils'])
                     validPorts = [25, 80, 443, 465, 587],
                     validPortMin = 1024,
                     validPortMax = 65535;
+                if ($scope.vpcEnabled) {
+                    validPorts = [1, 65535];
+                    validPortMin = 1;
+                    validPortMax = 65535;
+                }
                 portError.hide();
                 if (portInput.hasClass('ng-invalid-pattern')) {
                     $scope.classFromPortDiv = "error";
