@@ -1,6 +1,4 @@
 /* @fileOverview Create VPC CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 #name, #cidr_block, #internet_gateway { width: 40%; }

@@ -82,22 +82,22 @@ input.datefield {
 
 .chart-wrapper {
     h6 {
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         text-transform: none;
         margin-bottom: 0;
         padding: 8px 0 4px 8px;
-        border: 1px solid $hpe-lightgray;
+        border: 1px solid $dxc-lightgray;
         border-bottom: none;
         .busy {
             margin-left: 1rem;
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             max-width: 1rem;
             max-height: 1rem;
         }
     }
     .empty-message-wrapper {
         height: 300px;
-        border: 1px solid $hpe-lightgray;
+        border: 1px solid $dxc-lightgray;
         border-top: none;
         position: relative;
     }
@@ -110,7 +110,7 @@ input.datefield {
     svg {
         width: 100%;
         height: 300px;
-        border: 1px solid $hpe-lightgray;
+        border: 1px solid $dxc-lightgray;
         border-top: none;
     }
     &:hover {
@@ -135,7 +135,7 @@ svg {
     }
 }
 .nvd3 line.nv-guideline {
-  stroke: $hpe-black;
+  stroke: $dxc-black;
 }
 
 .large-chart-wrapper {
@@ -150,7 +150,7 @@ svg {
         width: 3rem;
         height: 3rem;
         font-size: 3rem;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
     }
 }
 
@@ -161,24 +161,24 @@ svg {
     }
     .graph-shift-left {
         float: left;
-        color: $hpe-gray-65;
+        color: $dxc-black;
         &:hover {
             cursor: pointer;
-            color: $hpe-green;
+            color: $dxc-darkgray;
         }
         &[disabled] {
-            color: $hpe-lightgray;
+            color: $dxc-lightgray;
         }
     }
     .graph-shift-right {
         float: right;
-        color: $hpe-gray-65;
+        color: $dxc-black;
         &:hover {
             cursor: pointer;
-            color: $hpe-green;
+            color: $dxc-darkgray;
         }
         &[disabled] {
-            color: $hpe-lightgray;
+            color: $dxc-lightgray;
         }
     }
 }

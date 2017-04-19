@@ -3,8 +3,8 @@
 @import "../includes/eucavariables";
 
 // Status colors
-.status.attached { background-color: $hpe-slate; }
-.status.available { background-color: lighten($hpe-slate, 20%); }
+.status.attached { background-color: $dxc-black; }
+.status.available { background-color: green; }
 
 #name {
   width: 40%;

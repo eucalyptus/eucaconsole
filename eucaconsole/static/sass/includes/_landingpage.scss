@@ -30,8 +30,8 @@
 /* @section Landing pages styles */
 
 // Sass variables
-$tile-width: 202px;
-$tile-height: 220px;
+$tile-width: 230px;
+$tile-height: 240px;
 $tile-row-height: 24px;
 $tile-bg-color: white;
 $tile-label-padding: 28px;
@@ -39,11 +39,11 @@ $tile-label-padding: 28px;
 $grid-dropdown-width: 160px;
 $gridwrapper-table-width: 100%;
 
-$dropdown-border-color: $hpe-lightgray;
+$dropdown-border-color: $dxc-lightgray;
 
 $alarm-status-color-alarm: darkred;
-$alarm-status-color-insufficient: $hpe-gray;
-$alarm-status-color-ok: $hpe-green;
+$alarm-status-color-insufficient: $dxc-darkgray;
+$alarm-status-color-ok: green;
 
 .columns.datagrid {
     padding-left: 0;
@@ -62,9 +62,9 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 .clear-link {
-    color: $hpe-gray;
+    color: $dxc-black;
     &:hover {
-        color: $hpe-green;
+        color: $dxc-darkgray;
     }
 }
 
@@ -81,13 +81,17 @@ $alarm-status-color-ok: $hpe-green;
         &.more-actions {
             margin-left: 1rem;
             padding-right: 3rem;
+            &:hover {
+                background-color: darken($dxc-lightgray, 10%);
+            }
             &[disabled] {
-                border: 2px solid $hpe-lightgray;
+                border: none;
                 &:hover {
                     outline: none;
+                    background-color: $dxc-lightgray;
                 }
                 &:after {
-                    border-color: $hpe-lightgray transparent transparent transparent;
+                    border-color: $dxc-darkgray transparent transparent transparent;
                 }
             }
         }
@@ -108,9 +112,9 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 #refresh-btn {
-    color: $hpe-gray;
+    color: $dxc-black;
     &:hover {
-        color: $hpe-green;
+        color: $dxc-darkgray;
     }
 }
 
@@ -124,12 +128,12 @@ $alarm-status-color-ok: $hpe-green;
         position: absolute;
         width: 30px; height: $tile-row-height;
         top: 0; right: 0;
-        color: $hpe-gray;
+        color: $dxc-black;
         font-size: 1.1rem;
         padding: 0 0 0 0;
         border: none;
         &:hover {
-            color: $hpe-green;
+            color: $dxc-darkgray;
             outline: none;
         }
         &::before, &::after {
@@ -146,16 +150,16 @@ $alarm-status-color-ok: $hpe-green;
     }
     .alert-box {
         &.secondary {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             background-color: white;
-            border: 1px solid $hpe-gray;
+            border: 1px solid $dxc-darkgray;
         }
     }
 }
 
 // Tile/grid view
 .tile {
-    box-shadow: 0 2px 2px 0 $hpe-backgroundgray;
+    box-shadow: 0 2px 2px 0 $dxc-lightgray;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
@@ -178,7 +182,7 @@ $alarm-status-color-ok: $hpe-green;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
             &:hover {
-                background-color: $hpe-backgroundgray;
+                background-color: $dxc-lightgray;
                 text-decoration: none;
             }
         }
@@ -189,15 +193,17 @@ $alarm-status-color-ok: $hpe-green;
     }
     .header {
         position: relative;
-        height: $tile-row-height;
+        height: $tile-row-height + 6px;
+        background-color: $dxc-black;
         a {
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: $hpe-gray-65;
+            color: $dxc-white;
             font-family: $euca-header-font-family;
             &:hover {
-                color: $hpe-green;
+                color: $dxc-white;
+                text-decoration: underline;
             }
             &.has-checkbox {
                 padding-left: 24px;
@@ -212,7 +218,7 @@ $alarm-status-color-ok: $hpe-green;
             left: 7px;
         }
         .f-dropdown a {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             font-family: $euca-text-font-family;
             text-decoration: none;
             font-weight: normal;
@@ -220,14 +226,25 @@ $alarm-status-color-ok: $hpe-green;
             white-space: normal;
             text-overflow: inherit;
         }
+        .dropdown.button.tiny {
+            color: $dxc-white;
+        }
     }
     .content {
         padding: 8px;
         font-family: $euca-text-font-family;
-        font-size: $euca-font-size;
-        line-height: 1.1rem;
-        a { color: $hpe-green; }
-        a:hover { text-decoration: underline; }
+        font-size: $euca-s-font-size;
+        line-height: 1rem;
+        a {
+            color: $dxc-black;
+            text-decoration: underline;
+            &.label, &.alarm-status {
+                text-decoration: none;
+            }
+            &:hover {
+                text-decoration: underline;
+            }
+        }
         div {
             margin-bottom: 2px;
             margin-left: $tile-label-padding;
@@ -237,12 +254,13 @@ $alarm-status-color-ok: $hpe-green;
             padding: 1px 3px;
             margin-left: -$tile-label-padding;
             font-family: $euca-text-font-family;
-            font-size: $euca-font-size;
-            background-color: #FFFFFF;
-            color: $hpe-gray;
+            font-size: $euca-s-font-size;
+            background-color: $dxc-lightgray;
+            color: $dxc-darkgray;
+            border-radius: 3px;
             margin-right: 0.2rem;
-            min-width: 22px;
-            text-align: center;
+            min-width: 20px;
+            text-align: left;
             &.ellipsis {
                 margin-left: 0;
             }
@@ -262,7 +280,7 @@ $alarm-status-color-ok: $hpe-green;
     }
     .link {
         text-transform: uppercase;
-        color: $hpe-green;
+        color: $dxc-black;
         padding: 1px 3px;
         margin-bottom: 2px;
         font-size: 0.9em;
@@ -273,7 +291,7 @@ $alarm-status-color-ok: $hpe-green;
         left: 0; right: 0;
         padding: 5px;
         color: white;
-        background-color: $hpe-gray;
+        background-color: $dxc-darkgray;
         text-align: center;
         line-height: 1.4rem;
         text-transform: capitalize;
@@ -330,8 +348,13 @@ $alarm-status-color-ok: $hpe-green;
             padding: 8px 4px 8px 6px;
             vertical-align: top;
             a {
-                color: $hpe-green;
+                color: $dxc-black;
+                text-decoration: underline;
+                &.label {
+                    text-decoration: none;
+                }
                 &:hover {
+                    color: $dxc-darkgray;
                     text-decoration: underline;
                 }
             }
@@ -348,7 +371,8 @@ $alarm-status-color-ok: $hpe-green;
                 word-break: break-all;
             }
             .f-dropdown a {
-                color: $hpe-darkgray;
+                color: $dxc-darkgray;
+                text-decoration: none;
                 &:hover {
                     text-decoration: none;
                 }
@@ -389,7 +413,7 @@ $alarm-status-color-ok: $hpe-green;
         position: relative;
         input {
             background-color: transparent;
-            border-color: $hpe-lightgray;
+            border-color: $dxc-lightgray;
         }
     }
     .go {
@@ -484,10 +508,10 @@ $alarm-status-color-ok: $hpe-green;
     a {
         float: right;
         border-bottom: none;
-        color: $hpe-gray-65;
+        color: $dxc-black;
         &:hover {
             border-bottom: none;
-            color: $hpe-green;
+            color: $dxc-darkgray;
         }
     }
     label {
@@ -497,15 +521,15 @@ $alarm-status-color-ok: $hpe-green;
     }
     .selected {
         background-color: white;
-        color: $hpe-green;
+        color: $dxc-black;
         &:hover {
-            color: $hpe-green;
+            color: $dxc-black;
             cursor: inherit;
         }
     }
     i {
         display: inline-block;
-        padding: 2px 12px;
+        padding: 0 12px;
     }
 }
 
@@ -556,15 +580,21 @@ $alarm-status-color-ok: $hpe-green;
 }
 
 .euca-split {
-    border-color: $hpe-backgroundgray !important;
+    border-color: $dxc-black !important;
     width: 2.0rem !important;
+    &:hover {
+        border-color: $dxc-white !important;
+        &::after {
+          border-top-color: $dxc-yellow !important;
+        }
+    }
 }
 
 .secondary {
     .euca-split {
-        border-color: $hpe-gray !important;
+        border-color: $dxc-black;
         &:hover {
-            border-color: $hpe-green !important;
+            border-color: $dxc-white;
         }
     }
 }
@@ -573,7 +603,7 @@ $alarm-status-color-ok: $hpe-green;
     padding-right: 3.0rem !important;
     .euca-split {
         &:after {
-            border-color: $hpe-black transparent transparent transparent;
+            border-color: $dxc-black transparent transparent transparent;
         }
     }
 }

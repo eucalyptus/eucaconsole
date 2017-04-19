@@ -1,6 +1,4 @@
 /* @fileOverview single Instance page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .cloudwatch-charts .toprow { display: -ms-flexbox; display: -webkit-flex; display: flex; }
@@ -20,26 +18,26 @@
 
 input.datefield { width: 9rem; float: left; margin-bottom: 0; margin-right: 1rem; }
 
-.chart-wrapper h6 { color: #666666; text-transform: none; margin-bottom: 0; padding: 8px 0 4px 8px; border: 1px solid #cccccc; border-bottom: none; }
+.chart-wrapper h6 { color: #666666; text-transform: none; margin-bottom: 0; padding: 8px 0 4px 8px; border: 1px solid #d9d9d9; border-bottom: none; }
 .chart-wrapper h6 .busy { margin-left: 1rem; color: #666666; max-width: 1rem; max-height: 1rem; }
-.chart-wrapper .empty-message-wrapper { height: 300px; border: 1px solid #cccccc; border-top: none; position: relative; }
+.chart-wrapper .empty-message-wrapper { height: 300px; border: 1px solid #d9d9d9; border-top: none; position: relative; }
 .chart-wrapper .empty-message { position: absolute; margin-top: 6rem; padding: 1rem; line-height: 1.2rem; }
-.chart-wrapper svg { width: 100%; height: 300px; border: 1px solid #cccccc; border-top: none; }
+.chart-wrapper svg { width: 100%; height: 300px; border: 1px solid #d9d9d9; border-top: none; }
 .chart-wrapper:hover { cursor: pointer; }
 
 svg g.euca-alarmLines line.alarm { stroke: red; stroke-width: 1px; stroke-dasharray: 3 3; }
 svg g.nv-group[style*='#ff0000'], svg g.nv-group[style*='rgb(255, 0, 0)'] { stroke-dasharray: 3 3; }
 svg g.nv-group[style*='#ff0000'] .nv-point, svg g.nv-group[style*='rgb(255, 0, 0)'] .nv-point { stroke-dasharray: 0 0; }
 
-.nvd3 line.nv-guideline { stroke: #333333; }
+.nvd3 line.nv-guideline { stroke: #000000; }
 
 .large-chart-wrapper svg { width: 100%; height: 500px; }
 .large-chart-wrapper .busy.loading { position: absolute; top: 12rem; left: 48%; width: 3rem; height: 3rem; font-size: 3rem; color: #666666; }
 
 .time-shift svg { width: 100%; height: 18px; }
-.time-shift .graph-shift-left { float: left; color: #5a5a5a; }
-.time-shift .graph-shift-left:hover { cursor: pointer; color: #01a982; }
-.time-shift .graph-shift-left[disabled] { color: #cccccc; }
-.time-shift .graph-shift-right { float: right; color: #5a5a5a; }
-.time-shift .graph-shift-right:hover { cursor: pointer; color: #01a982; }
-.time-shift .graph-shift-right[disabled] { color: #cccccc; }
+.time-shift .graph-shift-left { float: left; color: #000000; }
+.time-shift .graph-shift-left:hover { cursor: pointer; color: #666666; }
+.time-shift .graph-shift-left[disabled] { color: #d9d9d9; }
+.time-shift .graph-shift-right { float: right; color: #000000; }
+.time-shift .graph-shift-right:hover { cursor: pointer; color: #666666; }
+.time-shift .graph-shift-right[disabled] { color: #d9d9d9; }

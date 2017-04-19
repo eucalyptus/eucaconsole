@@ -1,6 +1,4 @@
 /* @fileOverview ELB Listener Editor Widget CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 #elb-listener-editor .controls-wrapper, .elb-listener-editor .controls-wrapper { display: inline-block; margin-right: 1.5rem; }
@@ -11,9 +9,9 @@
 #elb-listener-editor .controls-wrapper #from-port-error, .elb-listener-editor .controls-wrapper #from-port-error { margin-left: 1rem; }
 #elb-listener-editor .security-row label.inline, .elb-listener-editor .security-row label.inline { width: 7rem; text-align: right; line-height: 1.1rem; margin: 0 0.5rem 0 0; padding: 0 0 0 0; }
 #elb-listener-editor .security-section, .elb-listener-editor .security-section { margin-bottom: 1.5rem; }
-#elb-listener-editor .label.radius, .elb-listener-editor .label.radius { color: #5a5a5a; }
-#elb-listener-editor .label.radius.cert, .elb-listener-editor .label.radius.cert { background-color: #cccccc; }
-#elb-listener-editor .label.radius.bcert, .elb-listener-editor .label.radius.bcert { background-color: #b3b3b3; margin-right: 6px; }
+#elb-listener-editor .label.radius, .elb-listener-editor .label.radius { color: #666666; }
+#elb-listener-editor .label.radius.cert, .elb-listener-editor .label.radius.cert { background-color: #d9d9d9; }
+#elb-listener-editor .label.radius.bcert, .elb-listener-editor .label.radius.bcert { background-color: #d9d9d9; margin-right: 6px; }
 #elb-listener-editor table.table, .elb-listener-editor table.table { width: 100%; }
 #elb-listener-editor table.table tr.top-header, .elb-listener-editor table.table tr.top-header { border-bottom: 0; }
 #elb-listener-editor table.table tr.top-header th, .elb-listener-editor table.table tr.top-header th { border-bottom: none; padding: 0 0 0 6px; }
@@ -21,15 +19,15 @@
 #elb-listener-editor table.table th.vertical-border-header, .elb-listener-editor table.table th.vertical-border-header { border-collapse: collapse; border-right: 1px solid #ddd; }
 
 #select-certificate-modal .item-list { margin-bottom: 6px; }
-#select-certificate-modal .item-list .item { color: #666666; font-family: Metric-Regular, Helvetica, Arial, sans-serif; border: 2px solid #cccccc; background-color: #fff; margin-right: 8px; }
-#select-certificate-modal .item-list .item a { color: #666666; }
-#select-certificate-modal .item-list .item a:hover { color: #01a982; text-decoration: none; }
-#select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #5a5a5a; }
+#select-certificate-modal .item-list .item { color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; border: 1px solid #666666; background-color: #d9d9d9; margin-right: 8px; padding-right: 12px; }
+#select-certificate-modal .item-list .item a { color: #666666; position: relative; top: 1px; left: 4px; }
+#select-certificate-modal .item-list .item a:hover { color: #000000; text-decoration: none; }
+#select-certificate-modal .section-label { margin-top: 1.5rem; margin-bottom: 1rem; color: #666666; }
 #select-certificate-modal #backend-certificates-display { margin-bottom: 1rem; }
 #select-certificate-modal #new-certificate-wrapper { padding-left: 1rem; }
 
 #elb-security-policy-modal #new-policy-wrapper { padding-left: 1rem; }
-#elb-security-policy-modal #new-policy-wrapper h6, #elb-security-policy-modal #new-policy-wrapper label { text-transform: uppercase; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 0.9rem; font-weight: bold; }
+#elb-security-policy-modal #new-policy-wrapper h6, #elb-security-policy-modal #new-policy-wrapper label { text-transform: uppercase; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-size: 0.9rem; font-weight: bold; }
 #elb-security-policy-modal #new-policy-wrapper label[for='server_order_preference'] { text-transform: none; }
 #elb-security-policy-modal #new-policy-wrapper h6 { position: relative; left: 14px; }
 #elb-security-policy-modal #new-policy-wrapper #ssl-options-header { color: #666666; margin-bottom: 0; }

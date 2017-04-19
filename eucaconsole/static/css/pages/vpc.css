@@ -1,11 +1,9 @@
 /* @fileOverview VPC details page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.state.available { background-color: #425563; }
+.state.available { background-color: green; }
 
-.state.pending { background-color: #6d899e; }
+.state.pending { background-color: #00e600; }
 
 .table.subnets { width: 100%; }
 

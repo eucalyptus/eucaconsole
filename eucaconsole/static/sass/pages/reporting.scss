@@ -14,9 +14,9 @@ select {
 
 .cancel-link {
     margin-left: 2rem;
-    color: $hpe-gray;
+    color: $dxc-black;
     &:hover {
-        color: $hpe-green;
+        color: $dxc-darkgray;
     }
 }
 
@@ -37,7 +37,7 @@ form {
 }
 
 .usage-service {
-    color: $hpe-black;
+    color: $dxc-black;
     font-weight: bold;
 }
 

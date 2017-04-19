@@ -1,9 +1,7 @@
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.route-table-editor .state.active { background-color: #01a982; }
-.route-table-editor .state.blackhole { background-color: #333333; }
+.route-table-editor .state.active { background-color: green; }
+.route-table-editor .state.blackhole { background-color: #000000; }
 .route-table-editor #routes { display: none; }
 .route-table-editor .route-entry label { text-align: left; display: block; margin-right: 1rem; margin-bottom: 2px; }
 .route-table-editor .route-entry select { max-width: 16rem; }

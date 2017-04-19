@@ -1,9 +1,5 @@
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .modal { display: none; z-index: 10000; }
@@ -13,8 +9,8 @@
 .modal.large .modal-content { width: 70%; }
 .modal.xlarge .modal-content { width: 95%; }
 .modal .modal-content { opacity: 1; background-color: #FFF; z-index: 100000; width: 60%; max-width: 65rem; margin: 0 auto; left: 0; right: 0; border-radius: 3px; padding: 1.875rem; border: solid 1px #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
-.modal .modal-content .close-modal { font-size: 2.5rem; line-height: 1; position: absolute; top: 0.635rem; right: 1.375rem; color: #AAA; font-weight: bold; cursor: pointer; }
-.modal .modal-content .close-modal:hover { color: #01a982; }
+.modal .modal-content .close-modal { font-size: 2.5rem; line-height: 1; position: absolute; top: 0.635rem; right: 1.375rem; color: #000000; font-weight: bold; cursor: pointer; }
+.modal .modal-content .close-modal:hover { color: #666666; }
 .modal .modal-content button { margin: 0; }
 .modal .modal-content input[type="number"] { width: 100%; }
 .modal .modal-bg { z-index: 99999; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
@@ -29,8 +25,8 @@ select { width: 12rem; }
 
 .active-tags select { width: 40rem; }
 
-.cancel-link { margin-left: 2rem; color: #666666; }
-.cancel-link:hover { color: #01a982; }
+.cancel-link { margin-left: 2rem; color: #000000; }
+.cancel-link:hover { color: #666666; }
 
 form .error { font-size: small; display: none; }
 
@@ -38,15 +34,16 @@ form .error { font-size: small; display: none; }
 
 .totals { text-align: right; }
 
-.usage-service { color: #333333; font-weight: bold; }
+.usage-service { color: #000000; font-weight: bold; }
 
-.table { border: none; width: 100%; }
-.table thead tr { background-color: white; }
-.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #cccccc; vertical-align: top; color: #333333; text-transform: uppercase; }
+.table { border: none; border-top: 1px solid #000000; border-bottom: 1px solid #000000; width: 100%; }
+.table thead tr { background-color: #000000; }
+.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #d9d9d9; vertical-align: top; color: #ffffff; text-transform: uppercase; }
 .table thead tr th.actions { text-align: right; }
 .table thead tr th.count { text-align: center; }
 .table thead tr th.checkbox-header { width: 1.5rem; }
-.table tr { border-bottom: 1px solid #cccccc; }
+.table tr { border-bottom: 1px solid #d9d9d9; }
+.table tr:last-child { border-bottom: none; }
 .table tr td.count { text-align: center; }
 
 #usage-reports-modal .row { padding-left: 1rem; }

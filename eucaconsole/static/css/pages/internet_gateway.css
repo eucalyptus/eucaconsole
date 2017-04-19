@@ -1,11 +1,9 @@
 /* @fileOverview Internet Gateway details page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.status.attached { background-color: #425563; }
+.status.attached { background-color: #000000; }
 
-.status.available { background-color: #6d899e; }
+.status.available { background-color: green; }
 
 #name { width: 40%; }
 

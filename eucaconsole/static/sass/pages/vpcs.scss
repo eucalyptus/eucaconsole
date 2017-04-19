@@ -2,8 +2,8 @@
 @import "../includes/landingpage";
 
 // VPC State colors
-.state.available { background-color: $hpe-slate; }
-.state.pending { background-color: lighten($hpe-slate, 20%); }
+.state.available { background-color: green; }
+.state.pending { background-color: lighten(green, 20%); }
 
 
 // Table view
