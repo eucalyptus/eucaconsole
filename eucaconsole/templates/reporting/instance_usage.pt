@@ -1,0 +1,170 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.min.css')}" />
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/foundation-datepicker.css')}" />
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/widgets/magic_search.css')}"/>
+    <link rel="stylesheet" type="text/css"
+        href="${request.static_path('eucaconsole:static/css/pages/reporting.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="InstanceUsageModule"> 
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="/reporting" i18n:translate="">Usage Reporting</a></li>
+                <li><a href="/reporting/reports" i18n:translate="">Reports</a></li>
+                <li class="current" i18n:translate="">EC2 Instance Usage Reports</li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">EC2 Instance Usage Reports</strong>
+        </h3>
+        <div class="large-12 columns">
+            <div class="panel" instance-usage="">
+                <form name="instanceReportForm" novalidate="">
+                    <div class="row">
+                        <div class="large-3 columns">
+                            <div id="row inline stacked controls-wrapper">
+                                <div class="columns">
+                                    <label class="left stack-label" i18n:translate="">Granularity</label>
+                                </div>
+                                <div class="large-12 columns field">
+                                    <select required="required" name="month"
+                                            ng-model="instanceusage.values.granularity">
+                                        <option value="Daily" i18n:translate="">Daily</option>
+                                        <option value="Monthly" i18n:translate="">Monthly</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="large-3 columns">
+                            <div id="row inline stacked controls-wrapper">
+                                <div class="columns">
+                                    <label class="left stack-label" i18n:translate="">Time Period</label>
+                                </div>
+                                <div class="large-12 columns field">
+                                    <select required="required" name="month"
+                                            ng-model="instanceusage.values.timePeriod">
+                                        <option value="lastWeek" i18n:translate="">Last week</option>
+                                        <option value="lastMonth" i18n:translate="">Last month</option>
+                                        <option value="custom" i18n:translate="">Custom date range</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="large-2 columns" ng-show="instanceusage.values.timePeriod == 'custom'">
+                            <div id="row inline stacked controls-wrapper">
+                                <div class="columns">
+                                    <label class="left stack-label" i18n:translate="">From</label>
+                                </div>
+                                <div class="large-12 columns field">
+                                    <input type="text" class="datefield" datepicker="" name="from_date" ng-model="instanceusage.values.fromDate"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="large-2 columns" ng-show="instanceusage.values.timePeriod == 'custom'">
+                            <div id="row inline stacked controls-wrapper">
+                                <div class="columns">
+                                    <label class="left stack-label" i18n:translate="">To</label>
+                                </div>
+                                <div class="large-12 columns field">
+                                    <input type="text" class="datefield" datepicker="" name="to_date" ng-model="instanceusage.values.toDate"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="large-2 columns">
+                            <div id="row">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <div id="row inline stacked controls-wrapper">
+                                <div class="columns">
+                                    <label class="left stack-label" i18n:translate="">Filters</label>
+                                </div>
+                                <div class="large-12 columns field">
+                                    <magic-search template="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.html')}"
+                                        strings="{'remove':'${layout.searchtext_remove}', 'cancel':'${layout.searchtext_cancel}', 'prompt':'${layout.searchtext_prompt}', 'text':'${layout.searchtext_text_facet}'}"
+                                        facets="${facets}" filter-keys="[]"></magic-search>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-3 columns">
+                            <div id="row inline stacked controls-wrapper">
+                                <div class="columns">
+                                    <label class="left stack-label" i18n:translate="">Group by</label>
+                                </div>
+                                <div class="large-12 columns field">
+                                    <select name="group-by"
+                                            ng-model="instanceusage.values.groupBy">
+                                        <option value="" i18n:translate="">None</option>
+                                        <option value="availability_zone" i18n:translate="">Availability zone</option>
+                                        <option value="instancetype" i18n:translate="">Instance type</option>
+                                        <option value="platform" i18n:translate="">Platform</option>
+                                        <option value="tag" i18n:translate="">Tag</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="large-9 columns">
+                            <div class="columns">
+                                &nbsp;
+                            </div>
+                            <button type="submit" class="button" i18n:translate="" id="update-btn"
+                                ng-click="instanceusage.updateUsage($event)"
+                                ng-show="!instanceusage.isUpdating" ng-disabled="instanceReportForm.$invalid">
+                                Update Report
+                            </button>
+                            <div ng-show="instanceusage.isUpdating">
+                                <span i18n:translate="">Updating report...</span>
+                                <i class="busy"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <button type="submit" class="button right" i18n:translate="" id="download-btn"
+                                ng-click="instanceusage.downloadUsage($event)"
+                                ng-show="!instanceusage.isDownloading" ng-disabled="instanceReportForm.$invalid">
+                                Download Report (CSV)
+                            </button>
+                            <div ng-show="instanceusage.isDownloading" class="right">
+                                <span i18n:translate="">Creating report...</span>
+                                <i class="busy"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-12 columns usage-chart">
+                            <svg usage-bar-chart="" ng-model="instanceusage.usageData">
+                            </svg>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/d3/d3.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/nvd3/nv.d3.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/chosen.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/magic-search/magic_search.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-route.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/services/reporting-service.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/foundation-datepicker/foundation-datepicker.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/instance_usage.js')}"></script>
+</div>
+
+</metal:block>

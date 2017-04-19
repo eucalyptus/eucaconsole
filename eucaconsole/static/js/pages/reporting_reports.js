@@ -14,8 +14,6 @@ angular.module('ReportingPage')
         monthSelection: vm.monthChoices[0],
     };
     vm.loadingUsageData = false;
-    vm.showEC2InstanceUsageReport = function() {
-    };
     vm.showUsageReportsByService = function() {
         ModalService.openModal('usageReports');
     };

@@ -6,7 +6,7 @@
  *
  */
 angular.module('ReportingServiceModule', [])
-.factory('ReportingService', ['$http', '$interpolate', function ($http, $interpolate) {
+.factory('ReportingService', ['$http', '$httpParamSerializer', function ($http, $httpParamSerializer) {
     $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
     return {
@@ -38,10 +38,29 @@ angular.module('ReportingServiceModule', [])
         },
 
         getMonthlyUsage: function (year, month) {
-            var url = '/reporting-api/monthlyusage?year=' + year + '&month=' + month;
+            var params = {year:year, month:month};
             return $http({
                 method: 'GET',
-                url: url
+                url: '/reporting-api/monthlyusage?' + $httpParamSerializer(params)
+            }).then( function (response) {
+                return response.data || {
+                    enabled: false
+                };
+            });
+        },
+
+        getInstanceUsage: function (granularity, timePeriod, fromDate, toDate, groupBy, filters) {
+            var params = {
+                'granularity': granularity,
+                'timePeriod': timePeriod,
+                'fromTime': fromDate,
+                'toTime': toDate,
+                'groupBy': groupBy,
+                'filters': JSON.stringify(filters)
+            };
+            return $http({
+                method: 'GET',
+                url: '/reporting-api/instanceusage?' + $httpParamSerializer(params)
             }).then( function (response) {
                 return response.data || {
                     enabled: false
