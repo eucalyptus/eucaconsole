@@ -30,9 +30,10 @@ Pyramid views for Eucalyptus and Usage Reporting
 """
 from collections import namedtuple
 from datetime import datetime, timedelta
-import simplejson as json
-import io
 from dateutil.relativedelta import relativedelta
+
+import io
+import simplejson as json
 
 from pyramid.response import Response
 from pyramid.view import view_config

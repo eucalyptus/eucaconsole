@@ -11,10 +11,12 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
         require: 'ngModel',
         restrict: 'A',
         scope: {
-            format: "@",
+            format: "@"
         },
         link: function(scope, element, attrs){
-            if(typeof(scope.format) === "undefined"){ scope.format = "yyyy/mm/dd"; }
+            if (typeof(scope.format) === "undefined") {
+                scope.format = "yyyy/mm/dd";
+            }
             var startDate = new Date();
             startDate.setHours(-(365 * 24));  // move back 1 year 
             var endDate = new Date();
@@ -139,7 +141,9 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
                 return $scope.chart;
             });
             $scope.$watch('data', function(newVal, oldVal) {
-                if (newVal == oldVal) return;
+                if (newVal === oldVal) {
+                    return;
+                }
                 d3.select('.usage-chart svg')
                     .datum(newVal)
                     .call($scope.chart);

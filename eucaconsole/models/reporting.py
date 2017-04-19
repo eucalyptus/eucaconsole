@@ -64,9 +64,6 @@ class EucalyptusConnection(AWSQueryConnection):
         :type params: dict
         :param params: Dictionary of call parameters
 
-        :type path: string
-        :param path: Server path
-
         :type method: string
         :param method: HTTP method to use
 
@@ -126,10 +123,11 @@ class EucalyptusReporting(EucalyptusConnection):
         ret = self._do_request('ViewBilling', params, 'POST')
         return ret
 
-    def modify_billing(self, enabled, bucket_name, cost_allocation_tags=[]):
+    def modify_billing(self, enabled, bucket_name, cost_allocation_tags=None):
         """
         implements ModifyBilling
         """
+        cost_allocation_tags = cost_allocation_tags or []
         params = {
             'DetailedBillingEnabled': enabled,
             'ReportBucket': bucket_name
@@ -202,4 +200,3 @@ class EucalyptusEC2Reports(EucalyptusConnection):
                     i += 1
         ret = self._do_request('ViewInstanceUsageReport', params, 'POST')
         return ret
-
