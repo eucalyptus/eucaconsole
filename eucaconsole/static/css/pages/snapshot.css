@@ -7,4 +7,4 @@
 .label.status { text-transform: capitalize; }
 .label.status.failed { background-color: darkred; }
 .label.status.completed { background-color: green; }
-.label.status.pending { background-color: #00e600; }
+.label.status.pending { background-color: #00cc00; }

@@ -165,11 +165,11 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .row .status.running { background-color: green; }
 
-.row .status.pending { background-color: #00e600; }
+.row .status.pending { background-color: #00cc00; }
 
 .row .status.stopped { background-color: darkred; }
 
-.row .status.stopping { background-color: #ff6666; }
+.row .status.stopping { background-color: red; }
 
 .row .status.terminated { background-color: #666666; }
 
@@ -201,7 +201,7 @@ form .row.controls-wrapper { margin-bottom: 0; }
 .tile .footer { height: 24px; padding-top: 2px; }
 .tile .footer.attached { background-color: #000000; }
 .tile .footer.attaching { background-color: #333333; }
-.tile .footer.detaching { background-color: #00e600; }
+.tile .footer.detaching { background-color: #00cc00; }
 
 #attach-volume-modal [data-abide] .inline .error small.error { display: block !important; margin-bottom: 0; }
 #attach-volume-modal #device { width: 10rem; }

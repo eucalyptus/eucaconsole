@@ -3,11 +3,11 @@
 ----------------------------------------- */
 .status.running { background-color: green; }
 
-.status.pending { background-color: #00e600; }
+.status.pending { background-color: #00cc00; }
 
 .status.stopped, .status.Error { background-color: darkred; }
 
-.status.stopping { background-color: #ff6666; }
+.status.stopping { background-color: red; }
 
 .status.terminated { background-color: #666666; }
 

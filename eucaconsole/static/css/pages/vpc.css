@@ -3,7 +3,7 @@
 ----------------------------------------- */
 .state.available { background-color: green; }
 
-.state.pending { background-color: #00e600; }
+.state.pending { background-color: #00cc00; }
 
 .table.subnets { width: 100%; }
 
