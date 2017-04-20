@@ -5,8 +5,8 @@
 .route-table-editor {
 
   // Route states
-  .state.active { background-color: $hpe-green; }
-  .state.blackhole { background-color: $hpe-black; }
+  .state.active { background-color: green; }
+  .state.blackhole { background-color: $dxc-black; }
 
   #routes {
     display: none;

@@ -1,23 +1,21 @@
 /* @fileOverview Subnet details page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.state.available { background-color: #425563; }
+.state.available { background-color: green; }
 
-.state.pending { background-color: #6d899e; }
+.state.pending { background-color: #00cd00; }
 
-.status.running { background-color: #425563; }
+.status.running { background-color: green; }
 
-.status.pending { background-color: #6d899e; }
+.status.pending { background-color: #00cd00; }
 
 .status.stopped { background-color: darkred; }
 
-.status.stopping { background-color: #ff6666; }
+.status.stopping { background-color: red; }
 
 .status.terminated { background-color: #666666; }
 
-.status.shutting-down { background-color: #cccccc; }
+.status.shutting-down { background-color: #d9d9d9; }
 
 #name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id { width: 40%; }
 

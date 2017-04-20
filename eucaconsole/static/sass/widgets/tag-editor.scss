@@ -1,39 +1,11 @@
 @import "../includes/eucavariables";
 
 .tag-editor {
-  .item-list {
-    margin-bottom: 6px;
-
-    .item {
-      color: $hpe-gray;
-      font-family: $euca-header-font-family;
-      font-size: $euca-xs-font-size;
-      background-color: white;
-      border: 2px solid $hpe-lightgray;
-      padding: 0.25rem 0.5rem;
-      border-radius: 3px;
-      white-space: nowrap;
-      line-height: 1;
-      display: inline-block;
-      margin: 5px 8px 0 0;
-
-      .propagates {
-        color: #777;
-      }
-
-      a.remove {
-        color: $hpe-gray;
-                &:hover {
-                    color: $hpe-green;
-                }
-        margin-left: 5px;
-      }
-    }
-  }
+  @include item-list;
 
   .add-label {
-    color: $hpe-gray;
-    font-size: $euca-l-font-size; 
+    color: $dxc-darkgray;
+    font-size: $euca-font-size;
     margin-bottom: 6px;
   }
 

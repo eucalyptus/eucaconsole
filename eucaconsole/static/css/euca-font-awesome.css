@@ -1109,8 +1109,6 @@
 
 .fa-medium:before { content: ""; }
 
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .gridwrapper .dropdown.button.tiny .grid-action { position: relative; top: 4px; }

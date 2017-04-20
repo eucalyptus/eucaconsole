@@ -1,34 +1,32 @@
 /* @fileOverview IMage detail view page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .state { background-color: transparent; text-transform: capitalize; }
 
-.state.available { background-color: #614767; }
+.state.available { background-color: green; }
 
-.state.cancelling { background-color: #cccccc; }
+.state.cancelling { background-color: #d9d9d9; }
 
 .state.faied { background-color: darkred; }
 
-.state.pending { background-color: #9774a0; }
+.state.pending { background-color: #00cd00; }
 
-.state.waiting-for-shutdown { background-color: #9774a0; }
+.state.waiting-for-shutdown { background-color: #00cd00; }
 
-.state.bundling { background-color: #9774a0; }
+.state.bundling { background-color: #00cd00; }
 
-.state.storing { background-color: #9774a0; }
+.state.storing { background-color: #00cd00; }
 
-.state.registering { background-color: #9774a0; }
+.state.registering { background-color: #00cd00; }
 
 /* ----------------------------------------- Account ID Icon 
 ----------------------------------------- */
 .items { margin-bottom: 6px; }
-.items .account-id-icon { color: #333; background-color: #cccccc; margin-right: 8px; }
+.items .account-id-icon { color: #333; background-color: #d9d9d9; margin-right: 8px; }
 .items .account-id-icon a { color: white; }
 
 .progress { text-align: left; position: relative; border: none; }
-.progress .meter { background-color: #CCEEE6; color: black; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.progress .meter { background-color: #00c9ff; color: black; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }
 
 /* ----------------------------------------- Extra Element Padding
 ----------------------------------------- */

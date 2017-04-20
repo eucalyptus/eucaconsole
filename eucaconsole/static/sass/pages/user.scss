@@ -7,8 +7,8 @@
 // User status choices are: creating, available, in-use, deleting, deleted, error
 
 // Status colors
-$keys-status-color-active: $hpe-slate;
-$keys-status-color-inactive: $hpe-gray;
+$keys-status-color-active: green;
+$keys-status-color-inactive: $dxc-darkgray;
 
 
 // ***********
@@ -52,7 +52,7 @@ $keys-status-color-inactive: $hpe-gray;
 }
 
 .CodeMirror {
-    border: 1px solid $hpe-lightgray;
+    border: 1px solid $dxc-lightgray;
     min-height: 400px;
 }
 

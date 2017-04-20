@@ -1,21 +1,19 @@
 /* @fileOverview Instance Selector CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-.status.running { background-color: #425563; }
+.status.running { background-color: green; }
 
-.status.pending { background-color: #6d899e; }
+.status.pending { background-color: #00cd00; }
 
 .status.stopped, .status.Error { background-color: darkred; }
 
-.status.stopping { background-color: #ff6666; }
+.status.stopping { background-color: red; }
 
 .status.terminated { background-color: #666666; }
 
-.status.shutting-down { background-color: #cccccc; }
+.status.shutting-down { background-color: #d9d9d9; }
 
-.status.InService { background-color: #425563; }
+.status.InService { background-color: green; }
 
 .status.OutOfService { background-color: darkred; }
 
