@@ -169,7 +169,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .alarm-status.ok { background-color: green; }
 
-.status.creating { background-color: #00e600; }
+.status.creating { background-color: #00cd00; }
 
 .status.available { background-color: green; }
 
@@ -187,6 +187,6 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status.detached { background-color: green; }
 
-.status.detaching { background-color: #00e600; }
+.status.detaching { background-color: #00cd00; }
 
 .table td.instance { white-space: nowrap; }

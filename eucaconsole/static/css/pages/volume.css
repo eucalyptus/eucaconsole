@@ -173,7 +173,7 @@ select#zone { width: 50%; }
 
 .status { background-color: #666666; text-transform: capitalize; }
 
-.status.creating { background-color: #00e600; }
+.status.creating { background-color: #00cd00; }
 
 .status.available { background-color: green; }
 
@@ -191,7 +191,7 @@ select#zone { width: 50%; }
 
 .status.detached { background-color: green; }
 
-.status.detaching { background-color: #00e600; }
+.status.detaching { background-color: #00cd00; }
 
 .reveal-modal #device { width: 10rem; }
 

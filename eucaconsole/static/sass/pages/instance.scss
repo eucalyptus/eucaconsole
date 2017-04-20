@@ -7,7 +7,7 @@
 
 // Status colors
 $instance-status-color-running: green;
-$instance-status-color-pending: lighten(green, 20%);
+$instance-status-color-pending: lighten(green, 15%);
 $instance-status-color-stopped: darkred;
 $instance-status-color-stopping: lighten(red, 20%);
 $instance-status-color-terminated: $dxc-darkgray;
@@ -15,7 +15,7 @@ $instance-status-color-terminating: $dxc-lightgray;
 
 $volume-status-color-attached: $dxc-black;
 $volume-status-color-attaching: lighten($dxc-black, 20%);
-$volume-status-color-detaching: lighten(green, 20%);
+$volume-status-color-detaching: lighten(green, 15%);
 
 
 .row .status.running { background-color: $instance-status-color-running; }

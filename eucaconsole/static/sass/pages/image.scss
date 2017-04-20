@@ -5,7 +5,7 @@
 
 // State colors
 $image-state-color-available: green;
-$image-state-color-in-transition: lighten(green, 20%);
+$image-state-color-in-transition: lighten(green, 15%);
 $image-state-color-cancelling: $dxc-lightgray;
 $image-state-color-failed: darkred;
 $image-state-color-pending: $image-state-color-in-transition;
