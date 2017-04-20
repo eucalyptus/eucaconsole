@@ -88,7 +88,7 @@ table.table.scaling-policies {
     .footer {
         &.healthy {
             background-color: green;
-            &.pending { background-color: lighten(green, 20%); }
+            &.pending { background-color: lighten(green, 15%); }
         }
     }
 }
@@ -132,7 +132,7 @@ table.table.scaling-policies {
 
 // Status colors
 $scaling-status-color-successful: green;
-$scaling-status-color-in-progress: lighten(green, 20%);
+$scaling-status-color-in-progress: lighten(green, 15%);
 $scaling-status-color-failed: darkred;
 $scaling-status-color-not-yet-in-service: $dxc-lightgray;
 $scaling-status-color-canceled: $dxc-darkgray;

@@ -4,7 +4,7 @@
 
 // Status colors
 .status.available { background-color: green; }
-.status.pending { background-color: lighten(green, 20%); }
+.status.pending { background-color: lighten(green, 15%); }
 .status.deleting { background-color: $dxc-lightgray; }
 .status.deleted { background-color: $dxc-darkgray; }
 .status.failed { background-color: darkred; }

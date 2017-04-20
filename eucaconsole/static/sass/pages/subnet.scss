@@ -4,11 +4,11 @@
 
 // Subnet State colors
 .state.available { background-color: green; }
-.state.pending { background-color: lighten(green, 20%); }
+.state.pending { background-color: lighten(green, 15%); }
 
 // Instance state colors
 .status.running { background-color: green; }
-.status.pending { background-color: lighten(green, 20%); }
+.status.pending { background-color: lighten(green, 15%); }
 .status.stopped { background-color: darkred; }
 .status.stopping { background-color: lighten(red, 20%); }
 .status.terminated { background-color: $dxc-darkgray; }
