@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Hewlett Packard Enterprise Development LP
+ * Copyright 2017 Ent. Services Development Corporation LP
  *
  * @fileOverview directive to show cancel stack update dialog
  * @requires AngularJS, jQuery

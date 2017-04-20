@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Hewlett Packard Enterprise Development LP
+ * Copyright 2017 Ent. Services Development Corporation LP
  *
  * @fileOverview directive and factory to manage modal dialogs
  * @requires AngularJS, jQuery

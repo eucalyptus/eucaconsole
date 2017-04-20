@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2013-2016 Hewlett Packard Enterprise Development LP
+# Copyright 2013-2017 Ent. Services Development Corporation LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following

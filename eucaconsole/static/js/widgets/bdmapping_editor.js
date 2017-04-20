@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Hewlett Packard Enterprise Development LP
+ * Copyright 2017 Ent. Services Development Corporation LP
  *
  * @fileOverview Block Device Mapping Editor JS
  * @requires AngularJS

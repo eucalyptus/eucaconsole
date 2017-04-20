@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Hewlett Packard Enterprise Development LP
+ * Copyright 2017 Ent. Services Development Corporation LP
  *
  * @fileOverview Common JS for Landing pages
  * @requires AngularJS, jQuery, and Purl jQuery URL parser plugin
