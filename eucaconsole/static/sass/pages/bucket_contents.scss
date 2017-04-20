@@ -6,7 +6,7 @@
 .icon {
     display: inline-block;
     width: 20px;
-    color: $hpe-green;
+    color: $dxc-black;
 }
 
 .file-list {
@@ -27,7 +27,11 @@
 }
 
 #bucket-details {
-    margin-left: 0.5rem;
+    margin-left: 0.75rem;
+    text-decoration: underline;
+    &:hover {
+        color: $dxc-darkgray;
+    }
 }
 
 .bucket-progress {
@@ -38,7 +42,7 @@
     margin-bottom: 15px;
     .meter {  // barbershop progress indicator
         position: absolute;
-        background-color: $hpe-disabledgreen;
+        background-color: $dxc-blue;
         background-image: linear-gradient(-45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);
         background-size: 50px 50px;
         -webkit-animation: move 2s linear infinite;

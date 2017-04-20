@@ -1,28 +1,22 @@
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .actions { background: none !important; }
 .actions .item-list { margin: 0 0 15px; }
-.actions .item-list .item { color: #333333; background-color: #e6e7e8; margin-right: 8px; padding: 0.25rem 0.5rem; font-size: 0.6875rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; }
+.actions .item-list .item { color: #000000; background-color: #d9d9d9; margin-right: 8px; padding: 0.25rem 0.5rem; font-size: 0.6875rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; }
 .actions .item-list .item .remove { margin-left: 5px; color: #FFF; }
 .actions select { margin: 0 0 0.5rem 0; }
 .actions .cancel { display: inline-block; padding: 0.375rem; }
-.actions.ng-valid-action-editor-empty .button, .actions.ng-pristine .button, .actions.ng-invalid .button { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; border-color: #CCEEE6; }
-.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
-.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { border: 2px solid #CCEEE6; }
+.actions.ng-valid-action-editor-empty .button, .actions.ng-pristine .button, .actions.ng-invalid .button { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { border: none; }
 .actions.ng-valid-action-editor-empty .button:hover, .actions.ng-pristine .button:hover, .actions.ng-invalid .button:hover { box-shadow: none; }
-.actions .button.incomplete, .actions .button.empty { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; border-color: #CCEEE6; }
-.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
-.actions .button.incomplete:hover, .actions .button.empty:hover { border: 2px solid #CCEEE6; }
+.actions .button.incomplete, .actions .button.empty { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.actions .button.incomplete:hover, .actions .button.empty:hover { border: none; }
 .actions .button.incomplete:hover, .actions .button.empty:hover { box-shadow: none; }
 
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .modal { display: none; z-index: 10000; }
@@ -32,8 +26,8 @@
 .modal.large .modal-content { width: 70%; }
 .modal.xlarge .modal-content { width: 95%; }
 .modal .modal-content { opacity: 1; background-color: #FFF; z-index: 100000; width: 60%; max-width: 65rem; margin: 0 auto; left: 0; right: 0; border-radius: 3px; padding: 1.875rem; border: solid 1px #666; box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); }
-.modal .modal-content .close-modal { font-size: 2.5rem; line-height: 1; position: absolute; top: 0.635rem; right: 1.375rem; color: #AAA; font-weight: bold; cursor: pointer; }
-.modal .modal-content .close-modal:hover { color: #01a982; }
+.modal .modal-content .close-modal { font-size: 2.5rem; line-height: 1; position: absolute; top: 0.635rem; right: 1.375rem; color: #000000; font-weight: bold; cursor: pointer; }
+.modal .modal-content .close-modal:hover { color: #666666; }
 .modal .modal-content button { margin: 0; }
 .modal .modal-content input[type="number"] { width: 100%; }
 .modal .modal-bg { z-index: 99999; position: fixed; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0, 0, 0, 0.45); }
@@ -45,8 +39,8 @@
 .modal.open .modal-content { animation-name: slidedown; animation-duration: 0.3s; }
 
 .create-alarm-modal .dimensions ul { list-style: none; margin: 0; padding: 0; }
-.create-alarm-modal .ng-invalid .button.submit { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; }
-.create-alarm-modal .ng-invalid .button.submit:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
+.create-alarm-modal .ng-invalid .button.submit { background-color: #d9d9d9; color: #666666; cursor: default; }
+.create-alarm-modal .ng-invalid .button.submit:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
 .create-alarm-modal .unit-label { font-weight: bold; color: #666666; }
 .create-alarm-modal input[name=threshold] { margin-bottom: 0; }
 .create-alarm-modal .controls-wrapper.dimensions small.error { position: relative; top: -8px; }

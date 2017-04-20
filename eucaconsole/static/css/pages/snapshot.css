@@ -1,12 +1,10 @@
 /* @fileOverview Snapshot detail page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .progress { display: inline-block; width: 50%; }
-.progress .meter { background-color: #CCEEE6; padding-left: 6px; padding-top: 4px; }
+.progress .meter { background-color: #00c9ff; padding-left: 6px; padding-top: 4px; }
 
 .label.status { text-transform: capitalize; }
 .label.status.failed { background-color: darkred; }
-.label.status.completed { background-color: #425563; }
-.label.status.pending { background-color: #6d899e; }
+.label.status.completed { background-color: green; }
+.label.status.pending { background-color: #00cc00; }

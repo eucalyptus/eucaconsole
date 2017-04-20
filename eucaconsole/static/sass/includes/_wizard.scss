@@ -30,46 +30,47 @@
     padding-right: 1rem;
     padding-left: 1rem;
     a {  // Visited tabs
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         font-family: $euca-header-font-family;
         background-color: transparent;
         &:hover {
-            color: $hpe-gray;
-            border-bottom: 2px solid $hpe-gray;
+            color: $dxc-darkgray;
+            border-bottom: 2px solid $dxc-darkgray;
         }
         box-shadow: none;
         white-space: nowrap;
         padding: 8px 0 6px 0;
         .cir {
-            background-color: $hpe-gray;
+            background-color: $dxc-darkgray;
         }
     }
     &.active {  // Active tab
         a {
-            color: $hpe-black;
+            color: $dxc-black;
             font-family: $euca-header-font-family;
             background-color: transparent;
-            border-bottom: 2px solid $hpe-black;
+            border-bottom: 2px solid $dxc-black;
         }
         .cir {
-            background-color: $hpe-black;
+            background-color: $dxc-black;
         }
     }
     &.disabled {  // Unvisited tabs
+        color: $dxc-lightgray;
+        font-family: $euca-header-font-family;
+        text-transform: uppercase;
+        padding: 8px 1rem;
+        .cir {
+            margin-right: 8px;
+            background-color: $dxc-lightgray;
+        }
         a {
-            color: $hpe-lightgray;
+            color: $dxc-lightgray;
             margin-top: -8px;
             &:hover {
                 border-bottom: none;
                 cursor: default;
             }
-        }
-        color: $hpe-lightgray;
-        font-family: $euca-header-font-family;
-        padding: 8px 1rem;
-        .cir {
-            margin-right: 8px;
-            background-color: $hpe-lightgray;
         }
     }
     .cir {
@@ -82,7 +83,7 @@
         padding: 0 0 0 0;
         text-align: center;
         vertical-align: middle;
-        background-color: $hpe-lightgray;
+        background-color: $dxc-lightgray;
         color: white;
         margin-right: 4px;
     }
@@ -102,7 +103,7 @@
             top: 0; left: 0; right: 0;
             line-height: 2.5rem;
             padding-left: 12px;
-            background-color: $hpe-green;
+            background-color: $dxc-black;
             color: white;
             @include ellipsis-overflow;
         }
@@ -126,10 +127,10 @@
         .content {
             width: 100%;
             .description {
-                color: $hpe-gray;
+                color: $dxc-darkgray;
             }
             .rule-description-label {
-                color: $hpe-gray;
+                color: $dxc-darkgray;
             }
         }
     }
@@ -142,7 +143,7 @@
         .chosen-choices {
             li.search-field {
                 input.default {
-                    color: $hpe-lightgray;
+                    color: $dxc-lightgray;
                     font-size: $euca-font-size;
                     font-family: $euca-text-font-family;
                     margin-left: 3px;
@@ -166,14 +167,14 @@
     label {
         position: relative;
         right: -1rem;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         margin-top: 4px;
         cursor: default;
     }
     .value {
         word-break: break-all;
         line-height: 1rem;
-        color: $hpe-black;
+        color: $dxc-black;
         &.breakword {
             word-break: normal;
             word-wrap: break-word;
@@ -184,14 +185,14 @@
     }
     .title {
         font-weight: bold;
-        color: $hpe-gray;
-        border-bottom: 1px solid $hpe-lightgray;
+        color: $dxc-black;
+        border-bottom: 1px solid $dxc-lightgray;
         margin-top: 7px;
         margin-bottom: 0.25rem;
     }
     .section {
         padding: 0.5rem 0;
-        border-bottom: 1px solid $hpe-lightgray;
+        border-bottom: 1px solid $dxc-lightgray;
         &:last-child {
             border-bottom: none;
         }

@@ -3,16 +3,16 @@
 @import "../includes/eucavariables";
 
 // Subnet State colors
-.state.available { background-color: $hpe-slate; }
-.state.pending { background-color: lighten($hpe-slate, 20%); }
+.state.available { background-color: green; }
+.state.pending { background-color: lighten(green, 15%); }
 
 // Instance state colors
-.status.running { background-color: $hpe-slate; }
-.status.pending { background-color: lighten($hpe-slate, 20%); }
+.status.running { background-color: green; }
+.status.pending { background-color: lighten(green, 15%); }
 .status.stopped { background-color: darkred; }
-.status.stopping { background-color: lighten(red, 20%); }
-.status.terminated { background-color: $hpe-gray; }
-.status.shutting-down { background-color: $hpe-lightgray; }
+.status.stopping { background-color: red; }
+.status.terminated { background-color: $dxc-darkgray; }
+.status.shutting-down { background-color: $dxc-lightgray; }
 
 
 #name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id {

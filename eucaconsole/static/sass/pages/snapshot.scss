@@ -5,7 +5,7 @@
     display: inline-block;
     width: 50%;
     .meter {  // barbershop progress indicator
-        background-color: $hpe-disabledgreen;
+        background-color: $dxc-blue;
         padding-left: 6px;
         padding-top: 4px;
     }
@@ -17,10 +17,9 @@
         background-color: darkred;
     }
     &.completed { 
-        background-color: $hpe-slate;
+        background-color: green;
     }
     &.pending { 
-        background-color: lighten($hpe-slate, 20%); 
+        background-color: lighten(green, 15%);
     }
 }
-

@@ -5,7 +5,7 @@
 
 
 // Status colors
-$status-color-healthy: $hpe-slate;
+$status-color-healthy: green;
 $status-color-unhealthy: darkred;
 
 .alarm-status.alarm { background-color: $alarm-status-color-alarm; }
@@ -18,6 +18,6 @@ $status-color-unhealthy: darkred;
 .tile .status.unhealthy { background-color: $status-color-unhealthy; }
 
 // Table view
-.fi-check { color: $hpe-green; }
+.fi-check { color: $status-color-healthy; }
 .fi-alert { color: $status-color-unhealthy; }
 

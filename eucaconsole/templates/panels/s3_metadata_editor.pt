@@ -5,8 +5,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_metadata_editor.css')}" />
     <h6 i18n:translate="">Metadata</h6>
     <div ng-cloak="">
-        <div class="items">
-            <span class="label radius secondary metadataentry"
+        <div class="item-list">
+            <span class="label radius secondary item"
                   ng-repeat="metadata in metadataArray" ng-cloak="cloak">
                 <span title="{{ getSafeTitle(metadata) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
                     {{ metadata.name }} <em>=</em> {{ metadata.value }}

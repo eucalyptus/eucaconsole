@@ -3,10 +3,10 @@
 @import "../includes/eucavariables";
 
 // Status colors
-.status.available { background-color: $hpe-slate; }
-.status.pending { background-color: lighten($hpe-slate, 20%); }
-.status.deleting { background-color: $hpe-lightgray; }
-.status.deleted { background-color: $hpe-gray; }
+.status.available { background-color: green; }
+.status.pending { background-color: lighten(green, 15%); }
+.status.deleting { background-color: $dxc-lightgray; }
+.status.deleted { background-color: $dxc-darkgray; }
 .status.failed { background-color: darkred; }
 
 .warning .fi-alert {

@@ -1,8 +1,8 @@
 /* @fileOverview Login page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
+#logobar .product-name { padding-left: 0; }
+
 #notifications-wrapper { padding-top: 2rem; }
 
 #ssl-warning .fi-alert { color: darkred; }
@@ -11,14 +11,14 @@
 #maincontent { min-height: 24rem; }
 
 #login-wrapper { position: relative; padding: 10px; }
-#login-wrapper label { font-weight: bold; color: #444444; white-space: nowrap; }
+#login-wrapper label { font-weight: bold; color: #666666; white-space: nowrap; }
 #login-wrapper input { height: 2.25rem; }
 #login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
 #login-wrapper .tabs { max-height: 2.6rem !important; border-bottom: 1px solid #ccc; }
-#login-wrapper .tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 2rem; padding-left: 0; }
-#login-wrapper .tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; }
+#login-wrapper .tabs dd { position: relative; top: 1px; z-index: 999; padding-right: 1.5rem; padding-left: 0; }
+#login-wrapper .tabs dd a { padding: 10px 0 4px 0; color: #666666; background-color: transparent; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; font-weight: bold; text-transform: uppercase; }
 #login-wrapper .tabs dd a:hover { border-bottom: 2px solid #666666; background-color: transparent; text-decoration: none; }
-#login-wrapper .tabs dd.active a { color: #333333; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; background-color: transparent; border-bottom: 2px solid #333333; }
+#login-wrapper .tabs dd.active a { color: #000000; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; background-color: transparent; border-bottom: 2px solid #000000; }
 #login-wrapper .tabs.switcher { display: inline-block; }
 #login-wrapper .tabs.switcher dd:last-child { padding-right: 0; }
 #login-wrapper .tabs-content { padding: 1rem; background-color: white; }

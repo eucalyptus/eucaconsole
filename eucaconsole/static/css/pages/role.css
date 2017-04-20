@@ -1,6 +1,4 @@
 /* @fileOverview IAM Roles detail view page CSS */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 /* ----------------------------------------- Chosen Widget Modification
@@ -18,7 +16,7 @@
 
 .top-bottom-padding { padding-top: 10px; padding-bottom: 15px; }
 
-.CodeMirror { border: 1px solid #cccccc; min-height: 400px; }
+.CodeMirror { border: 1px solid #d9d9d9; min-height: 400px; }
 
 .ec2-block label { left: 0; }
 

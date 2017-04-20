@@ -74,9 +74,9 @@ table.table.scaling-policies {
     @include panel-tile-mixin;
     &.policy .header .title {
         cursor: default;
-            color: $hpe-gray;
+            color: $dxc-black;
         &:hover {
-            color: $hpe-green;
+            color: $dxc-darkgray;
             text-decoration: underline; 
         }
     }
@@ -87,8 +87,8 @@ table.table.scaling-policies {
 .tile {
     .footer {
         &.healthy {
-            background-color: $hpe-slate;
-            &.pending { background-color: lighten($hpe-slate, 20%); }
+            background-color: green;
+            &.pending { background-color: lighten(green, 15%); }
         }
     }
 }
@@ -131,13 +131,13 @@ table.table.scaling-policies {
 }
 
 // Status colors
-$scaling-status-color-successful: $hpe-slate;
-$scaling-status-color-in-progress: lighten($hpe-slate, 20%);
+$scaling-status-color-successful: green;
+$scaling-status-color-in-progress: lighten(green, 15%);
 $scaling-status-color-failed: darkred;
-$scaling-status-color-not-yet-in-service: $hpe-lightgray;
-$scaling-status-color-canceled: $hpe-gray;
-$scaling-status-color-waiting-for-launch: $hpe-lightgray;
-$scaling-status-color-waiting-for-terminate: $hpe-lightgray;
+$scaling-status-color-not-yet-in-service: $dxc-lightgray;
+$scaling-status-color-canceled: $dxc-darkgray;
+$scaling-status-color-waiting-for-launch: $dxc-lightgray;
+$scaling-status-color-waiting-for-terminate: $dxc-lightgray;
 
 // Scaling group history status
 .status.Successful { background-color: $scaling-status-color-successful; }

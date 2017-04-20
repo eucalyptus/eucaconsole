@@ -1,17 +1,14 @@
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 .tag-editor .item-list { margin-bottom: 6px; }
-.tag-editor .item-list .item { color: #666666; font-family: Metric-Semibold, Helvetica, Arial, sans-serif; font-size: 12px; background-color: white; border: 2px solid #cccccc; padding: 0.25rem 0.5rem; border-radius: 3px; white-space: nowrap; line-height: 1; display: inline-block; margin: 5px 8px 0 0; }
-.tag-editor .item-list .item .propagates { color: #777; }
-.tag-editor .item-list .item a.remove { color: #666666; margin-left: 5px; }
-.tag-editor .item-list .item a.remove:hover { color: #01a982; }
-.tag-editor .add-label { color: #666666; font-size: 18px; margin-bottom: 6px; }
+.tag-editor .item-list .item { color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; border: 1px solid #666666; background-color: #d9d9d9; margin-right: 8px; padding-right: 12px; }
+.tag-editor .item-list .item a { color: #666666; position: relative; top: 1px; left: 4px; }
+.tag-editor .item-list .item a:hover { color: #000000; text-decoration: none; }
+.tag-editor .add-label { color: #666666; font-size: 16px; margin-bottom: 6px; }
 .tag-editor .tag-entry-result { display: none; }
-.tag-editor.ng-pristine .button, .tag-editor.ng-invalid .button { background-color: white; border-color: #EDEDED; color: #EDEDED; cursor: default; border-color: #CCEEE6; }
-.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: white; text-decoration: none; border: 2px solid #EDEDED; outline: none; box-shadow: none; color: #EDEDED; }
-.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { border: 2px solid #CCEEE6; }
+.tag-editor.ng-pristine .button, .tag-editor.ng-invalid .button { background-color: #d9d9d9; color: #666666; cursor: default; border-color: #d9d9d9; }
+.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { cursor: default; pointer-events: none; background-color: #d9d9d9; text-decoration: none; border: none; outline: none; box-shadow: none; color: #666666; }
+.tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { border: none; }
 .tag-editor.ng-pristine .button:hover, .tag-editor.ng-invalid .button:hover { box-shadow: none; }
 .tag-editor input.ng-invalid.ng-touched ~ .error { display: block; margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; line-height: 1rem; }
 .tag-editor #propagate-wrapper { white-space: nowrap; }

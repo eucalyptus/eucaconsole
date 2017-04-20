@@ -5,6 +5,17 @@ $dashboard-panel-tile-height: 240px;
 $dashboard-panel-padding: 4px;
 $dashboard-panel-icon-size: 100px;
 
+$tile-row-height: 24px;
+
+
+#logobar {
+    .product-name {
+        padding-left: 0;
+    }
+    #user-dropdown-section {
+        left: 0;
+    }
+}
 
 #maincontent {
     padding-top: 1rem;
@@ -21,10 +32,10 @@ $dashboard-panel-icon-size: 100px;
         #zone-selector {
             display: inline-block;
             margin-left: 1rem;
-            font-family: $euca-text-font-family; 
+            font-family: $euca-text-font-family;
             font-size: $euca-font-size;
             &:hover {
-            text-decoration: underline;
+                text-decoration: underline;
             }
         }
         #reset-dash {
@@ -34,13 +45,16 @@ $dashboard-panel-icon-size: 100px;
             display: inline-block;
             float: right;
             &:hover {
-            text-decoration: underline;
+                text-decoration: underline;
             }
         }
     }
 }
 
-$tile-row-height: 24px;
+#dxc-logo {
+    position: relative;
+    left: -0.5rem;
+}
 
 .panel {
     background-color: transparent;
@@ -57,14 +71,14 @@ $tile-row-height: 24px;
         .subheader {
             font-family: $euca-text-font-family;
             font-size: $euca-font-size;
-            color: $hpe-gray;
+            color: $dxc-black;
             margin: 0 0 0 0;
         }
         i.fa-bell {
             color: white !important;
         }
         i.dash-no-alarms {
-            color: $hpe-gray !important;
+            color: $dxc-black !important;
         }
         i.dash-alarms {
             color: darkred !important;
@@ -79,16 +93,16 @@ $tile-row-height: 24px;
             color: white;
             font-size: 3rem;
             em {  // Item counts
-                font-size: $euca-xl-font-size;
+                font-size: $euca-l-font-size;
                 position: absolute;
                 bottom: -40%; left: 0; right: 0;
                 text-align: center;
-                color: $hpe-gray;
-                font-family: $euca-header-font-family;
+                color: $dxc-black;
+                font-family: $euca-text-font-family;
                 font-style: normal;
+                font-weight: bold;
                 &:hover {
-                    text-decoration: underline;
-                    color: $hpe-green;
+                    color: $dxc-darkgray;
                 }
                 i { // busy
                     color: black;
@@ -120,12 +134,12 @@ $tile-row-height: 24px;
             position: absolute;
             width: 30px; height: $tile-row-height;
             top: 0; right: 0;
-            color: $hpe-gray;
+            color: $dxc-black;
             font-size: 1.1rem;
             padding: 0 0 0 0;
             border: none;
             &:hover {
-                color: $hpe-green;
+                color: $dxc-darkgray;
                 outline: none;
             }
             &::before, &::after {
@@ -149,7 +163,7 @@ $tile-row-height: 24px;
                 position: absolute;
                 top: 0; bottom: 0; left: 0; right: 0;
                 &:hover {
-                    background-color: $hpe-backgroundgray;
+                    background-color: $dxc-lightgray;
                     text-decoration: none;
                 }
             }
@@ -212,7 +226,7 @@ li#alarms {
     .statusrow {
         font-size: 10pt;
         text-align: left;
-        color: $hpe-gray;
+        color: $dxc-darkgray;
         margin-top: 10px;
         line-height: 1.2rem;
         .status {
@@ -220,17 +234,17 @@ li#alarms {
             left: 8px;
         }
         i.service-up {
-            color: $hpe-green;
+            color: green;
             font-size: 16pt;
             text-align: left;
         }
         i.service-down {
-            color: red;
+            color: darkred;
             font-size: 16pt;
             text-align: left;
         }
         i.service-denied {
-            color: $hpe-gray;
+            color: $dxc-darkgray;
             font-size: 16pt;
             text-align: left;
         }

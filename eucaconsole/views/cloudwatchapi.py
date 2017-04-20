@@ -43,14 +43,14 @@ from ..views import BaseView, boto_error_handler
 
 
 CHART_COLORS = {
-    0: '#2ad2c9',
-    1: '#614767',
-    2: '#FF8D6D',
-    3: '#80746E',
-    4: '#000000',
-    5: '#425563',
-    6: '#5F7A76',
-    7: '#666666',
+    #  NOTE: NVD3 sets the seventh (index = 6) line color to red, so specify at least seven colors below
+    0: '#00c9ff',  # $dxc-blue
+    1: '#64ff00',  # $dxc-green
+    2: 'purple',  # CSS Level 1 color
+    3: 'navy',  # CSS Level 1 color
+    4: 'green',  # CSS Level 1 color
+    5: 'teal',  # CSS Level 1 color
+    6: 'olive',  # CSS Level 1 color
 }
 
 ISO8601 = '%Y-%m-%dT%H:%M:%S.%fZ'

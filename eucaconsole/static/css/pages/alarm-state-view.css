@@ -1,9 +1,5 @@
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
-/* Dropdown elements */
-/* Set the link colors and styles for top-level nav */
 /* ----------------------------------------- Item list
 ----------------------------------------- */
 #delete-alarm-modal p { margin: 0 0 7px; }
@@ -17,7 +13,7 @@
 
 .status.ALARM { background-color: darkred; }
 
-.status.INSUFFICIENT_DATA { background-color: #5a5a5a; }
+.status.INSUFFICIENT_DATA { background-color: #666666; }
 
 .status.OK { background-color: green; }
 
@@ -26,9 +22,10 @@
 .top-state { position: relative; bottom: 1px; }
 
 .alarm-listing { margin-top: 0.5rem; }
-.alarm-listing a[href]:hover { color: #01a982; border-bottom: 1px solid #01a982; }
+.alarm-listing a[href] { text-decoration: underline; }
+.alarm-listing a[href]:hover { color: #666666; border-bottom: 1px solid #666666; }
 
-i.delete-icon { color: #5a5a5a !important; }
+i.delete-icon { color: #666666 !important; }
 i.delete-icon:hover { color: darkred !important; }
 
 span.capital { text-transform: capitalize; }
