@@ -41,7 +41,6 @@ import pandas
 
 from ..forms import ChoicesManager
 from ..i18n import _
-from ..forms import ChoicesManager
 from ..views import BaseView, JSONResponse
 from ..models.auth import RegionCache
 from . import boto_error_handler
