@@ -71,6 +71,7 @@ class EucalyptusConnection(AWSQueryConnection):
         :return: Parsed JSON response data
         """
         params['Version'] = self.version
+        logging.debug('action = ' + call)
         logging.debug('params: ' + json.dumps(params))
         response = self.make_request(call, params, self.path, method)
         body = response.read().decode('utf-8')

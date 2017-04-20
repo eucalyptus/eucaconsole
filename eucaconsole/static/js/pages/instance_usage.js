@@ -35,7 +35,7 @@ angular.module('InstanceUsageModule', ['EucaConsoleUtils', 'MagicSearch', 'Repor
             function ($scope, $http, $httpParamSerializer, $timeout, eucaHandleError, ReportingService) {
                 var vm = this;
                 vm.values = {
-                    granularity: 'Daily',
+                    granularity: 'daily',
                     timePeriod: 'lastMonth',
                     fromDate: '',
                     toDate: '',
