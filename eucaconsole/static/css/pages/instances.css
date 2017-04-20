@@ -169,7 +169,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status.stopped { background-color: darkred; }
 
-.status.stopping { background-color: #ff6666; }
+.status.stopping { background-color: red; }
 
 .status.terminated { background-color: #666666; }
 
