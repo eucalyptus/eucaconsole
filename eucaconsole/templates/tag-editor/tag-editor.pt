@@ -3,7 +3,8 @@
     <div class="columns field">
 
         <div class="item-list">
-            <span class="item" ng-cloak="" ng-repeat="tag in tags track by $index">
+            <span class="label radius secondary item" ng-cloak="" ng-repeat="tag in tags track by $index"
+                  ng-hide="!showNameTag &amp;&amp; tag.name === 'Name'">
                 <span title="{{ tag | safe }}">
                     <span>{{ tag.name | ellipsis: 20 }}</span>
                     <span ng-if="tag.value">= {{ tag.value | ellipsis: 40 }}</span>
