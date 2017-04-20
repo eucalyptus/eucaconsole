@@ -163,7 +163,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .state.available { background-color: green; }
 
-.state.pending { background-color: #00cd00; }
+.state.pending { background-color: #00cc00; }
 
 .table .subnet-item { min-width: 10rem; }
 

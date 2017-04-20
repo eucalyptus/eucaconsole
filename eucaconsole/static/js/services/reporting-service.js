@@ -67,5 +67,36 @@ angular.module('ReportingServiceModule', [])
                 };
             });
         },
+
+        getMonthToDateUsage: function (year, month) {
+            var url = '/reporting-api/monthtodateusage?year=' + year + '&month=' + month;
+            return $http({
+                method: 'GET',
+                url: url
+            }).then( function (response) {
+                return response.data || {
+                    enabled: false
+                };
+            });
+        },
+
+        getInstanceUsage: function (granularity, timePeriod, fromDate, toDate, groupBy) {
+            var params = {
+                'granularity': granularity,
+                'timePeriod': timePeriod,
+                'fromTime': fromDate,
+                'toTime': toDate,
+                'groupBy': groupBy
+            };
+            var url = '/reporting-api/instanceusage?' + $httpParamSerializer(params);
+            return $http({
+                method: 'GET',
+                url: url
+            }).then( function (response) {
+                return response.data || {
+                    enabled: false
+                };
+            });
+        },
     };
 }]);

@@ -55,7 +55,12 @@ form {
     }
 }
 
-svg {
-    height: 300px;
-    width: 100%;
+.usage-link {
+    float:right;
 }
+
+.usage-chart svg {
+    width: 100%;
+    height: 24rem;
+}
+

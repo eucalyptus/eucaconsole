@@ -3,11 +3,11 @@
 ----------------------------------------- */
 .state.available { background-color: green; }
 
-.state.pending { background-color: #00cd00; }
+.state.pending { background-color: #00cc00; }
 
 .status.running { background-color: green; }
 
-.status.pending { background-color: #00cd00; }
+.status.pending { background-color: #00cc00; }
 
 .status.stopped { background-color: darkred; }
 

@@ -37,8 +37,8 @@
                                 <div class="large-12 columns field">
                                     <select required="required" name="month"
                                             ng-model="instanceusage.values.granularity">
-                                        <option value="Daily" i18n:translate="">Daily</option>
-                                        <option value="Monthly" i18n:translate="">Monthly</option>
+                                        <option value="daily" i18n:translate="">Daily</option>
+                                        <option value="monthly" i18n:translate="">Monthly</option>
                                     </select>
                                 </div>
                             </div>

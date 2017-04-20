@@ -165,7 +165,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status.running { background-color: green; }
 
-.status.pending { background-color: #00cd00; }
+.status.pending { background-color: #00cc00; }
 
 .status.stopped { background-color: darkred; }
 

@@ -3,7 +3,7 @@
 ----------------------------------------- */
 .status.available { background-color: green; }
 
-.status.pending { background-color: #00cd00; }
+.status.pending { background-color: #00cc00; }
 
 .status.deleting { background-color: #d9d9d9; }
 

@@ -193,7 +193,7 @@ table.table.scaling-policies hr { margin-top: 4px; margin-bottom: 4px; }
 .tile.policy .header .title:hover { color: #666666; text-decoration: underline; }
 
 .tile .footer.healthy { background-color: green; }
-.tile .footer.healthy.pending { background-color: #00cd00; }
+.tile .footer.healthy.pending { background-color: #00cc00; }
 
 #evaluation_periods, #period { display: inline-block; width: 4rem; }
 
@@ -211,7 +211,7 @@ table.table.scaling-policies hr { margin-top: 4px; margin-bottom: 4px; }
 
 .status.Successful { background-color: green; }
 
-.status.In-progress { background-color: #00cd00; }
+.status.In-progress { background-color: #00cc00; }
 
 .status.Failed { background-color: darkred; }
 
