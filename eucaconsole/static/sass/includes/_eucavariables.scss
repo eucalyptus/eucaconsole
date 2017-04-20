@@ -216,6 +216,7 @@ $alarm-status-color-ok: green;
             border-bottom: 1px solid $dxc-lightgray;
             vertical-align: top;
             color: $dxc-white;
+            font-family: $euca-header-font-family;
             text-transform: uppercase;
             &.actions {
                 text-align: right;

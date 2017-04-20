@@ -8,10 +8,10 @@
 // Attach status choices (volume.attach_data.status) are: attaching, attached, detaching, detached
 
 // Status colors
-$volume-status-color-creating: lighten(green, 20%);
+$volume-status-color-creating: lighten(green, 15%);
 $volume-status-color-available: green;
 $volume-status-color-detached: green;
-$volume-status-color-detaching: lighten(green, 20%);
+$volume-status-color-detaching: lighten(green, 15%);
 $volume-status-color-deleting: $dxc-lightgray;
 $volume-status-color-deleted: $dxc-darkgray;
 $volume-status-color-error: darkred;

@@ -71,7 +71,7 @@
 
 .gridwrapper .table { border: none; border-top: 1px solid #000000; border-bottom: 1px solid #000000; width: 100%; }
 .gridwrapper .table thead tr { background-color: #000000; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #d9d9d9; vertical-align: top; color: #ffffff; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 6px; padding-right: 6px; border-bottom: 1px solid #d9d9d9; vertical-align: top; color: #ffffff; font-family: "PT Sans", Verdana, Geneva, Lucida, sans-serif; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table thead tr th.count { text-align: center; }
 .gridwrapper .table thead tr th.checkbox-header { width: 1.5rem; }
@@ -169,7 +169,7 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .alarm-status.ok { background-color: green; }
 
-.status.creating { background-color: #00e600; }
+.status.creating { background-color: #00cd00; }
 
 .status.available { background-color: green; }
 
@@ -187,6 +187,6 @@ table.expando tr.even, table.expando tr.alt, table.expando tr:nth-of-type(even) 
 
 .status.detached { background-color: green; }
 
-.status.detaching { background-color: #00e600; }
+.status.detaching { background-color: #00cd00; }
 
 .table td.instance { white-space: nowrap; }

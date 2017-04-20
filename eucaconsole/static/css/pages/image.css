@@ -9,15 +9,15 @@
 
 .state.faied { background-color: darkred; }
 
-.state.pending { background-color: #00e600; }
+.state.pending { background-color: #00cd00; }
 
-.state.waiting-for-shutdown { background-color: #00e600; }
+.state.waiting-for-shutdown { background-color: #00cd00; }
 
-.state.bundling { background-color: #00e600; }
+.state.bundling { background-color: #00cd00; }
 
-.state.storing { background-color: #00e600; }
+.state.storing { background-color: #00cd00; }
 
-.state.registering { background-color: #00e600; }
+.state.registering { background-color: #00cd00; }
 
 /* ----------------------------------------- Account ID Icon 
 ----------------------------------------- */
