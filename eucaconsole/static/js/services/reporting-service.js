@@ -81,7 +81,7 @@ angular.module('ReportingServiceModule', [])
         },
 
         getInstanceUsage: function (granularity, timePeriod, fromDate, toDate, groupBy) {
-            params = {
+            var params = {
                 'granularity': granularity,
                 'timePeriod': timePeriod,
                 'fromTime': fromDate,
