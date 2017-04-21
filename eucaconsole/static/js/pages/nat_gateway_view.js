@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Hewlett Packard Enterprise Development LP
+ * Copyright 2017 Ent. Services Development Corporation LP
  *
  * @fileOverview NAT Gateway Details Page JS
  * @requires AngularJS
