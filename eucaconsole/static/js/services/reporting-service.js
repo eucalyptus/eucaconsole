@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 Hewlett Packard Enterprise Development LP
+ * Copyright 2017 Ent. Services Development Corporation LP
  *
  * @fileOverview factory methods for reporting XHR calls
  * @requires AngularJS 

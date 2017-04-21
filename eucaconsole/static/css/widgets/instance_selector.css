@@ -3,7 +3,7 @@
 ----------------------------------------- */
 .status.running { background-color: green; }
 
-.status.pending { background-color: #00cd00; }
+.status.pending { background-color: #00cc00; }
 
 .status.stopped, .status.Error { background-color: darkred; }
 
