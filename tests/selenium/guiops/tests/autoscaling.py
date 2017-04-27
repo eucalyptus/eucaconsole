@@ -19,7 +19,7 @@ class AutoScalingOperationsSequence(GuiOps):
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce,
                              browser=self.browser, version=self.version, platform=self.platform)
         logging.basicConfig(format='%(asctime)s %(message)s')
-        self.zoom_out()
+        self.tester.zoom_out()
 
     def asg_ops_test(self):
         self.tester.login(self.account, self.user, self.password)

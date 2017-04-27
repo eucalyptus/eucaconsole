@@ -17,7 +17,7 @@ class Stack_operations_sequence(GuiOps):
         self.version = parser.parse_options()['version']
         self.platform = parser.parse_options()['platform']
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce, browser=self.browser, version=self.version, platform=self.platform)
-        self.zoom_out()
+        self.tester.zoom_out()
 
     def stack_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
