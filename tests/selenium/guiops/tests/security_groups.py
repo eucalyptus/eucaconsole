@@ -19,6 +19,7 @@ class SecurityGroupOperationsSequence(GuiOps):
         self.platform = parser.parse_options()['platform']
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce,
                              browser=self.browser, version=self.version, platform=self.platform)
+        self.zoom_out()
 
     def security_group_ops_test(self):
 
