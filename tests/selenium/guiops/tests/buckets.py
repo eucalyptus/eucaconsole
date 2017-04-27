@@ -25,7 +25,7 @@ class Buckets_operations_sequence(GuiOps):
             version=self.version,
             platform=self.platform)
         logging.basicConfig(format='%(asctime)s %(message)s')
-        self.zoom_out()
+        self.tester.zoom_out()
 
     def get_bucket_name(self):
         return self.id_generator() + '-bucket'
