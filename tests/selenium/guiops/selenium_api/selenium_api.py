@@ -11,7 +11,7 @@ from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-
+from selenium.webdriver.common.keys import Keys
 
 class UICheckException(Exception):
     def __init__(self, message):
@@ -55,6 +55,10 @@ class SeleniumApi(object):
         url = self.driver.current_url.encode('ascii', 'ignore')
         url = str(url)
         return url
+
+    def zoom_out(self):
+        self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + "-")
+        self.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + "-")
 
     def is_clickable_by_id(self, element_id):
         """
