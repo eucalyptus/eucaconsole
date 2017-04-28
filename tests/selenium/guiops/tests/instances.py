@@ -19,6 +19,7 @@ class InstanceOperationsSequence(GuiOps):
         self.zone1 = self.zones.get(0)
         self.tester = GuiOps(console_url=self.console_url, webdriver_url=self.webdriver_url, sauce=self.sauce,
                              browser=self.browser, version=self.version, platform=self.platform)
+        self.tester.zoom_out()
 
     def instance_ops_test(self):
         self.tester.login(self.account, self.user, self.password)
