@@ -30,7 +30,7 @@ angular.module('CorsServiceModule', ['EucaRoutes'])
                     return $http({
                         method: 'DELETE',
                         url: path,
-                        params: {
+                        data: {
                             csrf_token: csrfToken
                         }
                     });
