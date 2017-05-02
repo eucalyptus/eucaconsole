@@ -10,11 +10,12 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils', 'Bucket
     return {
         restrict: 'A',
         scope: {
-            bucketName: '='
+            bucketName: '=',
+            bucketList: '='
         },
         templateUrl: '/_template/dialogs/create_bucket_dialog2',
-        controller: ['$scope', '$http', 'eucaHandleError', 'ModalService', 'BucketService', 
-        function ($scope, $http, eucaHandleError, ModalService, BucketService) {
+        controller: ['$scope', '$http', '$timeout', 'eucaHandleError', 'ModalService', 'BucketService', 
+        function ($scope, $http, $timeout, eucaHandleError, ModalService, BucketService) {
             var vm = this;
             $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             vm.existingBucketConflict = false;
@@ -28,6 +29,7 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils', 'Bucket
                 vm.isCreatingBucket = true;
                 BucketService.createBucket(vm.bucketName, $('#csrf_token').val()).then(
                     function success(oData) {
+                        $scope.bucketList.push(vm.bucketName);
                         $scope.bucketName = vm.bucketName;
                         vm.isCreatingBucket = false;
                         ModalService.closeModal('createBucketDialog');
