@@ -4,9 +4,9 @@ angular.module('ReportingPage')
         var vm = this;
         vm.today = new Date();
         vm.monthToDateUsage = [];
-        vm.loadMonthToDateData = function() {
+        vm.loadRecentData = function() {
             // use reports service to load montly report data
-            ReportingService.getMonthToDateUsage(vm.today.getFullYear(), vm.today.getMonth()+1).then(
+            ReportingService.getRecentUsage().then(
             function success(result) {
                     vm.monthToDateUsage = result.results;
                 },
@@ -14,6 +14,6 @@ angular.module('ReportingPage')
                     eucaHandleError(errData.data.message, errData.status);
                 });
         };
-        vm.loadMonthToDateData();
+        vm.loadRecentData();
     }
 ]);

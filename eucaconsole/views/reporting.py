@@ -186,30 +186,39 @@ class ReportingAPIView(BaseView):
         response.pragma = 'no-cache'
         return response
 
-    @view_config(route_name='reporting_month_to_date_usage', renderer='json', request_method='GET', xhr=True)
-    def get_reporting_month_to_date_usage(self):
-        year = int(self.request.params.get('year'))
-        month = int(self.request.params.get('month'))
-        # use "ViewMontlyUsage" call to fetch usage information
-        ret = self.conn.view_monthly_usage(year, month)
+    @view_config(route_name='reporting_recent_usage', renderer='json', request_method='GET', xhr=True)
+    def get_reporting_recent_usage(self):
+        to_date = datetime.utcnow()
+        from_date = to_date - relativedelta(months=1)
+        results = []
+        # use "ViewUsage" call to fetch usage information
+        # get instance usage
+        ret = self.conn.view_usage('ec2', 'BoxUsage', 'all', from_date, to_date, 'daily')
         csv = ret.get('data')
         data = pandas.read_csv(io.StringIO(csv), engine='c')
-        # reduce to required columns
-        data = data.filter(['ProductName', 'UsageType', 'UsageQuantity'])
-        grouped = data.groupby(('ProductName', 'UsageType'))
-        totals = grouped['UsageQuantity'].sum()
-        totals_list = totals.to_frame().to_records().tolist()
-        results = []
-        service = ''
-        for idx, rec in enumerate(totals_list):
-            if service != rec[0]:
-                results.append((rec[0],))
-                service = rec[0]
-            results.append((
-                rec[0], rec[1],
-                '{:0.8f}'.format(rec[2]).rstrip('0').rstrip('.'),
-                self.units_from_details(rec[1])
-            ))
+        grouped = data.groupby(('Service'))
+        totals = grouped.sum()
+        totals_list = totals.to_records().tolist()
+        results.append((_(u'EC2 Instance Usage'), totals_list[0][2], _(u'instance hours')))
+        # get bucket usage
+        ret = self.conn.view_usage('s3', 'TimedStorage', 'all', from_date, to_date, 'daily')
+        csv = ret.get('data')
+        data = pandas.read_csv(io.StringIO(csv), engine='c')
+        grouped = data.groupby(('Service'))
+        totals = grouped.sum()
+        totals_list = totals.to_records().tolist()
+        byte_hrs = totals_list[0][1]
+        # TODO: don't use std math, too much error
+        mb_hrs = byte_hrs / (1024.0 * 1024)
+        results.append((_(u'S3 Storage'), mb_hrs, _(u'MB hours')))
+        # get elb usage
+        ret = self.conn.view_usage('ec2', 'LoadBalancer', 'all', from_date, to_date, 'daily')
+        csv = ret.get('data')
+        data = pandas.read_csv(io.StringIO(csv), engine='c')
+        grouped = data.groupby(('Service'))
+        totals = grouped.sum()
+        totals_list = totals.to_records().tolist()
+        results.append((_(u'Elastic Load Balancing'), totals_list[0][2], _(u'requests')))
         return dict(results=results)
 
     @view_config(route_name='reporting_service_usage', request_method='POST')

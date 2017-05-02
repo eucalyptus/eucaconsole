@@ -68,8 +68,8 @@ angular.module('ReportingServiceModule', [])
             });
         },
 
-        getMonthToDateUsage: function (year, month) {
-            var url = '/reporting-api/monthtodateusage?year=' + year + '&month=' + month;
+        getRecentUsage: function () {
+            var url = '/reporting-api/recentusage';
             return $http({
                 method: 'GET',
                 url: url
