@@ -25,7 +25,7 @@ angular.module('BucketPolicyServiceModule', [])
             return $http({
                 method: 'DELETE',
                 url: $interpolate('/buckets/{{name}}/policy')({name: bucketName}),
-                params: {
+                data: {
                     csrf_token: csrfToken
                 }
             });
