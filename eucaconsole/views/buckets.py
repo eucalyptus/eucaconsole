@@ -919,7 +919,8 @@ class BucketCorsConfigurationView(BaseView, BucketMixin):
 
     @view_config(route_name='bucket_cors_configuration', renderer='json', request_method='DELETE', xhr=True)
     def bucket_delete_cors_configuration(self):
-        csrf_token = self.request.params.get('csrf_token')
+        message = json.loads(self.request.body)
+        csrf_token = message.get('csrf_token')
         if not self.is_csrf_valid(token=csrf_token):
             return JSONResponse(status=400, message=_('Missing CSRF token'))
         if self.bucket:
