@@ -56,8 +56,8 @@ function ($scope, $routeParams, BucketService, eucaHandleError, ModalService, Re
 
     $scope.$watch('preferences.values.bucketName', function(newVal, oldVal) {
         if (newVal === oldVal) return;
-        //if (vm.buckets.indexOf(newVal) > -1) return;
-        //vm.buckets.push(newVal);
+        if (vm.buckets.indexOf(newVal) > -1) return;
+        vm.buckets.push(newVal);
     });
 
     $scope.$on('$destroy', function () {

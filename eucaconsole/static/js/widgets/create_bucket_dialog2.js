@@ -10,8 +10,7 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils', 'Bucket
     return {
         restrict: 'A',
         scope: {
-            bucketName: '=',
-            bucketList: '='
+            bucketName: '='
         },
         templateUrl: '/_template/dialogs/create_bucket_dialog2',
         controller: ['$scope', '$http', '$timeout', 'eucaHandleError', 'ModalService', 'BucketService', 
@@ -29,10 +28,14 @@ angular.module('CreateBucketModule', ['ModalModule', 'EucaConsoleUtils', 'Bucket
                 vm.isCreatingBucket = true;
                 BucketService.createBucket(vm.bucketName, $('#csrf_token').val()).then(
                     function success(oData) {
-                        $scope.bucketList.push(vm.bucketName);
                         $scope.bucketName = vm.bucketName;
-                        vm.isCreatingBucket = false;
-                        ModalService.closeModal('createBucketDialog');
+                        // this was tricky to get working. $apply() needs to be called, but wasn't
+                        // returning, so wrapping clean up calls in timeout function to ensure they're called after.
+                        $timeout(function() {
+                            vm.isCreatingBucket = false;
+                            ModalService.closeModal('createBucketDialog');
+                        });
+                        $scope.$apply();
                     },
                     function error(oData) {
                         eucaHandleError(oData);

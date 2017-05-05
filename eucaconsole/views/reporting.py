@@ -42,6 +42,7 @@ import pandas
 from ..forms import ChoicesManager
 from ..i18n import _
 from ..views import BaseView, JSONResponse
+from ..views.buckets import BucketContentsView, BucketDetailsView
 from ..models.auth import RegionCache
 from . import boto_error_handler
 
@@ -59,6 +60,37 @@ UNITS_LOOKUP = [
     {'hint': 'Usage', 'units': 'Units'},
 ]
 
+DEFAULT_BILLING_POLICY = """
+{{
+  "Version": "2008-10-17",
+  "Id": "Policy1335892530063",
+  "Statement": [
+    {{
+      "Sid": "Stmt1335892150622",
+      "Effect": "Allow",
+      "Principal": {{
+        "AWS": "arn:aws:iam::{billing_acct}:root"
+      }},
+      "Action": [
+        "s3:GetBucketAcl",
+        "s3:GetBucketPolicy"
+      ],
+      "Resource": "arn:aws:s3:::{bucket_name}"
+    }},
+    {{
+      "Sid": "Stmt1335892526596",
+      "Effect": "Allow",
+      "Principal": {{
+        "AWS": "arn:aws:iam::{billing_acct}:root"
+      }},
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::{bucket_name}/*"
+    }}
+  ]
+}}
+"""
 
 class ReportingView(BaseView):
     def __init__(self, request):
@@ -129,6 +161,23 @@ class ReportingAPIView(BaseView):
         csrf_token = params.get('csrf_token')
         if not self.is_csrf_valid(token=csrf_token):
             return JSONResponse(status=400, message="missing CSRF token")
+        # fetch bucket policy
+        s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(self.request):
+            portal_svc = self.get_connection(conn_type='admin').get_all_services(service_type='portal')
+            if len(portal_svc) < 1 and len(portal_svc[0].accounts) < 1:
+                logging.error('ERROR: Eucalyptus not returning account info with portal service!')
+            billing_acct = portal_svc[0].accounts[0].account_number
+            bucket = BucketContentsView.get_bucket(self.request, s3_conn, params.get('bucketName'))
+            policy = BucketDetailsView.get_bucket_policy(bucket)
+            # if no policy, create required one
+            if not(policy):
+                bucket.set_policy(DEFAULT_BILLING_POLICY.format(
+                    billing_acct=billing_acct, bucket_name=bucket.name
+                ))
+            # if existing policy, ensure it has required statements
+            else:
+                pass
         self.log_request(_(u"Saving report preferences"))
         # use "ModifyBilling" to change billing configuration
         enabled = params.get('enabled')
