@@ -25,7 +25,7 @@ angular.module('CorsServiceModule', [])
             return $http({
                 method: 'DELETE',
                 url: $interpolate('/buckets/{{name}}/cors_configuration')({name: bucketName}),
-                params: {
+                data: {
                     csrf_token: csrfToken
                 }
             });
