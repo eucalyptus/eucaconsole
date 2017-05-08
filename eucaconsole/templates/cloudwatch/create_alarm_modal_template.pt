@@ -82,7 +82,7 @@
         </div>
         <div class="small-3 columns">
             <input ng-model="alarm.threshold" name="threshold" autofocus="" i18n:attributes="placeholder"
-                   placeholder="amount..." required="required" type="number" min="1"/>
+                   placeholder="amount..." required="required" type="number" min="0"/>
             <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.required"
                    i18n:translate="">Threshold value is required.</small>
             <small class="error" ng-show="createAlarmForm.threshold.$touched &amp;&amp; createAlarmForm.threshold.$error.number"
