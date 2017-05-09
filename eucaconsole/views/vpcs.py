@@ -1245,16 +1245,18 @@ class NetworkACLView(TaggedItemView):
         self.network_acl_form = NetworkACLForm(
             self.request, network_acl=self.network_acl, formdata=self.request.params or None)
         self.tagged_obj = self.network_acl
+        self.network_acl_name = TaggedItemView.get_display_name(self.network_acl)
         self.title_parts = [_('Network ACL'), self.network_acl_id]
         default_for_vpc = self.network_acl.default
         self.render_dict = dict(
             network_acl=self.network_acl,
             network_acl_id=self.network_acl_id,
-            network_acl_name=self.get_display_name(self.network_acl),
+            network_acl_name=self.network_acl_name,
             network_acl_form=self.network_acl_form,
             vpc=self.vpc,
             vpc_id=self.vpc_id,
             vpc_name=self.get_display_name(self.vpc),
+            subnets=self.get_associated_subnets(),
             tags=self.serialize_tags(self.network_acl.tags) if self.network_acl else [],
             default_for_vpc=default_for_vpc,
             default_for_vpc_label=_('yes') if default_for_vpc else _('no'),
@@ -1291,3 +1293,8 @@ class NetworkACLView(TaggedItemView):
     def get_network_acl_vpc(self):
         vpc_list = self.vpc_conn.get_all_vpcs(filters={'vpc-id': [self.vpc_id]})
         return vpc_list[0] if vpc_list else None
+
+    def get_associated_subnets(self):
+        associated_subnet_ids = [assoc.subnet_id for assoc in self.network_acl.associations]
+        subnets = self.vpc_conn.get_all_subnets(filters={'vpc-id': self.vpc_id, 'subnet-id': associated_subnet_ids})
+        return [dict(id=subnet.id, name=self.get_display_name(subnet)) for subnet in subnets]
