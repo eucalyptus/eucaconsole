@@ -294,6 +294,8 @@ urls = [
     Route(name='nat_gateway_create', pattern='/vpcs/{vpc_id}/subnets/{id}/create-nat-gateway'),
     Route(name='nat_gateway_view', pattern='/vpcs/{vpc_id}/nat-gateways/{id}'),
     Route(name='nat_gateway_delete', pattern='/vpcs/{vpc_id}/nat-gateways/{id}/delete'),
+    Route(name='network_acl_view', pattern='/vpcs/{vpc_id}/network-acls/{id}'),
+    Route(name='network_acl_update', pattern='/vpcs/{vpc_id}/network-acls/{id}/update'),
 
     # Key pairs #####
     # Landing page

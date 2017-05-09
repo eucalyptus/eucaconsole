@@ -144,7 +144,9 @@
                                 </td>
                                 <td>
                                     <div tal:repeat="network_acl subnet.network_acls">
-                                        ${network_acl.name}
+                                        <a href="${request.route_path('network_acl_view', vpc_id=vpc.id, id=network_acl.id)}">
+                                            ${network_acl.name}
+                                        </a>
                                     </div>
                                 </td>
                                 <td>

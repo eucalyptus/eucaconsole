@@ -1,0 +1,85 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="NetworkACLDetailsPage"
+             ng-controller="NetworkACLDetailsPageCtrl">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
+                <li><a href="${request.route_path('vpc_view', id=vpc.id)}" i18n:translate="">${vpc_name}</a></li>
+                <li class="current">
+                    <a tal:condition="network_acl">${network_acl_name}</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for Network ACL:</strong>
+            <em class="breakword">${network_acl_name}</em>
+        </h3>
+        <div class="large-12 columns">
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a data-reveal-id="delete-network-acl-modal" id="delete-network-acl-action" i18n:translate="">
+                                Delete
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form action="${request.route_path('network_acl_update', vpc_id=vpc.id, id=network_acl_id)}"
+                      id="network-acl-form" name="networkACLForm" method="post" data-abide="abide">
+                    ${structure:network_acl_form['csrf_token']}
+                    <h6 i18n:translate="">Network ACL</h6>
+                    <div>
+                        ${panel('form_field', field=network_acl_form.name, pattern=layout.tag_pattern_value, leftcol_width_large=3, rightcol_width_large=9)}
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">ID</label></div>
+                        <div class="large-9 small-8 columns value">${network_acl_id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">VPC</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <a href="${request.route_path('vpc_view', id=vpc.id)}">
+                                ${vpc_name}
+                            </a>
+                        </div>
+                    </div>
+                    <hr />
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>
+                    </div>
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="save-changes-btn">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('vpcs')}" id="cancel-update-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/network_acl_view.js')}"></script>
+</div>
+
+</metal:block>
+

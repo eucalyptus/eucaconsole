@@ -43,7 +43,7 @@ from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm, CreateSubnetForm,
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
     InternetGatewayForm, InternetGatewayDeleteForm, InternetGatewayDetachForm, CreateRouteTableForm,
-    CreateNatGatewayForm, NatGatewayDeleteForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateNatGatewayForm, NatGatewayDeleteForm, NetworkACLForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -1225,3 +1225,66 @@ class NatGatewayView(BaseView):
                 if attachment.vpc_id == self.vpc_id:
                     return igw
         return None
+
+
+class NetworkACLView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/vpcs/network_acl_view.pt'
+
+    def __init__(self, request, **kwargs):
+        super(NetworkACLView, self).__init__(request, **kwargs)
+        self.vpc_id = self.request.matchdict.get('vpc_id')
+        self.network_acl_id = self.request.matchdict.get('id')
+        self.location = self.request.route_path('network_acl_view', vpc_id=self.vpc_id, id=self.network_acl_id)
+        self.conn = self.get_connection()  # Required for tag updates
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        with boto_error_handler(request, self.location):
+            self.network_acl = self.get_network_acl()
+            self.vpc = self.get_network_acl_vpc()
+        if self.network_acl is None or self.vpc is None:
+            raise HTTPNotFound()
+        self.network_acl_form = NetworkACLForm(
+            self.request, network_acl=self.network_acl, formdata=self.request.params or None)
+        self.tagged_obj = self.network_acl
+        self.title_parts = [_('Network ACL'), self.network_acl_id]
+        self.render_dict = dict(
+            network_acl=self.network_acl,
+            network_acl_id=self.network_acl_id,
+            network_acl_name=self.get_display_name(self.network_acl),
+            network_acl_form=self.network_acl_form,
+            vpc=self.vpc,
+            vpc_id=self.vpc_id,
+            vpc_name=self.get_display_name(self.vpc),
+            tags=self.serialize_tags(self.network_acl.tags) if self.network_acl else [],
+        )
+
+    @view_config(route_name='network_acl_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def network_acl_view(self):
+        return self.render_dict
+
+    @view_config(route_name='network_acl_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def network_acl_update(self):
+        if self.network_acl and self.network_acl_form.validate():
+            location = self.request.route_path('network_acl_view', vpc_id=self.vpc_id, id=self.network_acl_id)
+            with boto_error_handler(self.request, location):
+                # Update tags
+                self.update_tags()
+
+                # Save Name tag
+                name = self.request.params.get('name', '')
+                self.update_name_tag(name)
+
+            msg = _(u'Successfully updated network ACL')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.network_acl_form.get_errors_list()
+        return self.render_dict
+
+    def get_network_acl(self):
+        filters = {'vpc-id': self.vpc_id, 'network-acl-id': self.network_acl_id}
+        network_acls = self.vpc_conn.get_all_network_acls(filters=filters)
+        return network_acls[0] if network_acls else None
+
+    def get_network_acl_vpc(self):
+        vpc_list = self.vpc_conn.get_all_vpcs(filters={'vpc-id': [self.vpc_id]})
+        return vpc_list[0] if vpc_list else None

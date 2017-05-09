@@ -293,3 +293,14 @@ class CreateNatGatewayForm(BaseSecureForm):
 
 class NatGatewayDeleteForm(BaseSecureForm):
     pass
+
+
+class NetworkACLForm(BaseSecureForm):
+    """Form to update an existing network ACL"""
+    name_error_msg = _('Not a valid name')
+    name = TextEscapedField(label=_('Name'))
+
+    def __init__(self, request, network_acl=None, **kwargs):
+        super(NetworkACLForm, self).__init__(request, **kwargs)
+        self.name.error_msg = self.name_error_msg
+        self.name.data = network_acl.tags.get('Name', '')
