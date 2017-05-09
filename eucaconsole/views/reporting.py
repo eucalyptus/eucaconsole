@@ -35,6 +35,7 @@ from dateutil.relativedelta import relativedelta
 import io
 import simplejson as json
 
+from boto.exception import BotoServerError
 from pyramid.response import Response
 from pyramid.view import view_config
 import pandas
@@ -161,6 +162,10 @@ class ReportingAPIView(BaseView):
         csrf_token = params.get('csrf_token')
         if not self.is_csrf_valid(token=csrf_token):
             return JSONResponse(status=400, message="missing CSRF token")
+        enabled = params.get('enabled')
+        bucket_name = params.get('bucketName')
+        tags = params.get('tags')
+        self.log_request(_(u"Saving report preferences"))
         # fetch bucket policy
         s3_conn = self.get_connection(conn_type='s3')
         with boto_error_handler(self.request):
@@ -169,21 +174,30 @@ class ReportingAPIView(BaseView):
                 logging.error('ERROR: Eucalyptus not returning account info with portal service!')
             billing_acct = portal_svc[0].accounts[0].account_number
             bucket = BucketContentsView.get_bucket(self.request, s3_conn, params.get('bucketName'))
-            policy = BucketDetailsView.get_bucket_policy(bucket)
+            policy_doc = BucketDetailsView.get_bucket_policy(bucket)
             # if no policy, create required one
-            if not(policy):
+            if not(policy_doc):
                 bucket.set_policy(DEFAULT_BILLING_POLICY.format(
                     billing_acct=billing_acct, bucket_name=bucket.name
                 ))
-            # if existing policy, ensure it has required statements
-            else:
-                pass
-        self.log_request(_(u"Saving report preferences"))
-        # use "ModifyBilling" to change billing configuration
-        enabled = params.get('enabled')
-        bucket_name = params.get('bucketName')
-        tags = params.get('tags')
-        self.conn.modify_billing(enabled, bucket_name, tags)
+            # if existing policy, try using it. If it fails, add policy statements
+            # use "ModifyBilling" to change billing configuration
+            try:
+                self.conn.modify_billing(enabled, bucket_name, tags)
+            except BotoServerError as err:
+                msg = json.loads(err.body)['error'][0]['message']
+                if msg.find('bucket is not accessible') == -1:
+                    # if not the error we're looking for
+                    raise err
+                # add statements and retry
+                policy = json.loads(policy_doc)
+                new_policy_doc = DEFAULT_BILLING_POLICY.format(
+                    billing_acct=billing_acct, bucket_name=bucket.name
+                )
+                new_policy = json.loads(new_policy_doc)
+                policy['Statement'].extend(new_policy['Statement'])
+                bucket.set_policy(json.dumps(policy))
+                self.conn.modify_billing(enabled, bucket_name, tags)
         # use "ModifyAccount" to change report access
         user_reports_enabled = params.get('userReportsEnabled')
         self.conn.modify_account(user_reports_enabled)
