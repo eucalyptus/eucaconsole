@@ -92,7 +92,9 @@
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Network ACL</label></div>
                         <div class="large-9 small-8 columns value" tal:condition="subnet_network_acl">
-                            ${subnet_network_acl.name}
+                            <a href="${request.route_path('network_acl_view', vpc_id=vpc.id, id=subnet_network_acl.id)}">
+                                ${subnet_network_acl.name}
+                            </a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">

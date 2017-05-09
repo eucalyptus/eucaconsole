@@ -3,9 +3,10 @@
 ----------------------------------------- */
 .state.available { background-color: green; }
 
-.state.pending { background-color: #00cc00; }
+.state.pending { background-color: #00cd00; }
 
 .table.subnets { width: 100%; }
+.table.subnets a { text-decoration: underline; }
 
 #name, #internet_gateway, #subnet_name, #subnet_cidr_block, #availability_zone { width: 40%; }
 

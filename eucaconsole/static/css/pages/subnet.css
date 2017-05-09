@@ -3,11 +3,11 @@
 ----------------------------------------- */
 .state.available { background-color: green; }
 
-.state.pending { background-color: #00cc00; }
+.state.pending { background-color: #00cd00; }
 
 .status.running { background-color: green; }
 
-.status.pending { background-color: #00cc00; }
+.status.pending { background-color: #00cd00; }
 
 .status.stopped { background-color: darkred; }
 
@@ -23,6 +23,7 @@
 
 @media only screen and (max-width: 40em) { #name, #route_table, #route_table_name, #public_ip_auto_assignment, #eip_allocation_id { width: 100%; } }
 table.instances { width: 100%; margin-bottom: 1rem; }
+table.instances a { text-decoration: underline; }
 
 #delete-subnet-modal #default-subnet-warning { color: red; }
 #delete-subnet-modal button.button.warning { background-color: red; }

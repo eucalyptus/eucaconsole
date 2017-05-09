@@ -8,6 +8,9 @@
 
 .table.subnets {
   width: 100%;
+  a {
+    text-decoration: underline;
+  }
 }
 
 #name, #internet_gateway, #subnet_name, #subnet_cidr_block, #availability_zone {
