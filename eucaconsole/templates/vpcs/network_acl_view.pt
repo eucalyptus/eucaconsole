@@ -52,6 +52,10 @@
                             </a>
                         </div>
                     </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Default for VPC</label></div>
+                        <div class="large-9 small-8 columns value">${default_for_vpc_label}</div>
+                    </div>
                     <hr />
                     <div ng-cloak="">
                         <tag-editor ng-model="tags" show-name-tag="false" tal:content="tags | structure"></tag-editor>

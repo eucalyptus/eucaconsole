@@ -1246,6 +1246,7 @@ class NetworkACLView(TaggedItemView):
             self.request, network_acl=self.network_acl, formdata=self.request.params or None)
         self.tagged_obj = self.network_acl
         self.title_parts = [_('Network ACL'), self.network_acl_id]
+        default_for_vpc = self.network_acl.default
         self.render_dict = dict(
             network_acl=self.network_acl,
             network_acl_id=self.network_acl_id,
@@ -1255,6 +1256,8 @@ class NetworkACLView(TaggedItemView):
             vpc_id=self.vpc_id,
             vpc_name=self.get_display_name(self.vpc),
             tags=self.serialize_tags(self.network_acl.tags) if self.network_acl else [],
+            default_for_vpc=default_for_vpc,
+            default_for_vpc_label=_('yes') if default_for_vpc else _('no'),
         )
 
     @view_config(route_name='network_acl_view', renderer=VIEW_TEMPLATE, request_method='GET')
