@@ -33,6 +33,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 import io
+import logging
 import simplejson as json
 
 from boto.exception import BotoServerError
@@ -92,6 +93,7 @@ DEFAULT_BILLING_POLICY = """
   ]
 }}
 """
+
 
 class ReportingView(BaseView):
     def __init__(self, request):
