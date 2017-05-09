@@ -190,18 +190,22 @@ class ReportingAPIView(BaseView):
                     # if not the error we're looking for
                     raise err
                 # add statements and retry
-                policy = json.loads(policy_doc)
-                new_policy_doc = DEFAULT_BILLING_POLICY.format(
-                    billing_acct=billing_acct, bucket_name=bucket.name
-                )
-                new_policy = json.loads(new_policy_doc)
-                policy['Statement'].extend(new_policy['Statement'])
-                bucket.set_policy(json.dumps(policy))
+                bucket.set_policy(self.update_bucket_policy(policy_doc, billing_acct, bucket.name))
                 self.conn.modify_billing(enabled, bucket_name, tags)
-        # use "ModifyAccount" to change report access
-        user_reports_enabled = params.get('userReportsEnabled')
-        self.conn.modify_account(user_reports_enabled)
-        return dict(message=_("Successully updated reporting preferences."))
+            # use "ModifyAccount" to change report access
+            user_reports_enabled = params.get('userReportsEnabled')
+            self.conn.modify_account(user_reports_enabled)
+            return dict(message=_("Successully updated reporting preferences."))
+
+    @staticmethod
+    def update_bucket_policy(existing_policy, billing_acct, bucket_name):
+        policy = json.loads(existing_policy)
+        new_policy_doc = DEFAULT_BILLING_POLICY.format(
+            billing_acct=billing_acct, bucket_name=bucket_name
+        )
+        new_policy = json.loads(new_policy_doc)
+        policy['Statement'].extend(new_policy['Statement'])
+        return json.dumps(policy)
 
     @view_config(route_name='reporting_monthly_usage', renderer='json', request_method='GET', xhr=True)
     def get_reporting_monthly_usage(self):
