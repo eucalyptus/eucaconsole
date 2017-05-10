@@ -178,7 +178,7 @@ class ReportingAPIView(BaseView):
             bucket = BucketContentsView.get_bucket(self.request, s3_conn, params.get('bucketName'))
             policy_doc = BucketDetailsView.get_bucket_policy(bucket)
             # if no policy, create required one
-            if not(policy_doc):
+            if not policy_doc:
                 bucket.set_policy(DEFAULT_BILLING_POLICY.format(
                     billing_acct=billing_acct, bucket_name=bucket.name
                 ))

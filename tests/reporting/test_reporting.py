@@ -33,26 +33,24 @@ import unittest
 import simplejson as json
 
 from pyramid import testing
-from pyramid.httpexceptions import HTTPNotFound
-
-from tests import BaseViewTestCase
 
 from eucaconsole.views.reporting import ReportingAPIView
 
+
 class ReportingAPIViewTests(unittest.TestCase):
-    policy_doc = '{ \
-      "Version": "2011-04-01", \
-      "Statement": [ \
-        { \
-          "Action": "s3:GetBucketAcl", \
-          "Resource": "arn:aws:s3:::testbucket/*", \
-          "Effect": "Allow", \
-          "Principal": { \
-            "AWS": "arn:aws:iam::012345678901:root" \
-          } \
-        } \
-      ] \
-    }'
+    policy_doc = """{
+      "Version": "2011-04-01",
+      "Statement": [
+        {
+          "Action": "s3:GetBucketAcl",
+          "Resource": "arn:aws:s3:::testbucket/*",
+          "Effect": "Allow",
+          "Principal": {
+            "AWS": "arn:aws:iam::012345678901:root"
+          }
+        }
+      ]
+    }"""
 
     def setUp(self):
         self.config = testing.setUp()

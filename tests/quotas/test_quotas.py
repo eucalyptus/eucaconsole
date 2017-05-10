@@ -30,12 +30,11 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 from pyramid import testing
-from pyramid.httpexceptions import HTTPNotFound
 
 from eucaconsole.forms import BaseSecureForm
 from eucaconsole.forms.quotas import QuotasForm
 
-from tests import BaseViewTestCase, BaseFormTestCase
+from tests import BaseFormTestCase
 
 
 class QuotasUpdateFormTestCase(BaseFormTestCase):
@@ -43,31 +42,31 @@ class QuotasUpdateFormTestCase(BaseFormTestCase):
     form_class = QuotasForm
     request = testing.DummyRequest()
     form = form_class(request)
-    policy_doc = '{ \
-      "Version": "2011-04-01", \
-      "Statement": [ \
-        { \
-          "Action": "s3:CreateBucket", \
-          "Resource": "*", \
-          "Effect": "Limit", \
-          "Condition": { \
-            "NumericLessThanEquals": { \
-              "s3:quota-bucketnumber": "1" \
-            } \
-          } \
-        }, \
-        { \
-          "Action": "elasticloadbalancing:createloadbalancer", \
-          "Resource": "*", \
-          "Effect": "Limit", \
-          "Condition": { \
-            "NumericLessThanEquals": { \
-              "elasticloadbalancing:quota-loadbalancernumber": "2" \
-            } \
-          } \
-        } \
-      ] \
-    }'
+    policy_doc = """{
+      "Version": "2011-04-01",
+      "Statement": [
+        {
+          "Action": "s3:CreateBucket",
+          "Resource": "*",
+          "Effect": "Limit",
+          "Condition": {
+            "NumericLessThanEquals": {
+              "s3:quota-bucketnumber": "1"
+            }
+          }
+        },
+        {
+          "Action": "elasticloadbalancing:createloadbalancer",
+          "Resource": "*",
+          "Effect": "Limit",
+          "Condition": {
+            "NumericLessThanEquals": {
+              "elasticloadbalancing:quota-loadbalancernumber": "2"
+            }
+          }
+        }
+      ]
+    }"""
 
     def test_secure_form(self):
         self.has_field('csrf_token')
