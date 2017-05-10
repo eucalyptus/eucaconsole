@@ -103,7 +103,8 @@ class ASGDetailPage(DetailPage):
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "General":
-            self.tester.click_element_by_css(self._general_tab_css.format(asg_name))
+            if tab != "GENERAL":
+                self.tester.click_element_by_css(self._general_tab_css.format(asg_name))
         else:
             pass
 
