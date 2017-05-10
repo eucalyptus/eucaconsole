@@ -33,8 +33,10 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 import io
+import logging
 import simplejson as json
 
+from boto.exception import BotoServerError
 from pyramid.response import Response
 from pyramid.view import view_config
 import pandas
@@ -42,6 +44,7 @@ import pandas
 from ..forms import ChoicesManager
 from ..i18n import _
 from ..views import BaseView, JSONResponse
+from ..views.buckets import BucketContentsView, BucketDetailsView
 from ..models.auth import RegionCache
 from . import boto_error_handler
 
@@ -58,6 +61,38 @@ UNITS_LOOKUP = [
     {'hint': 'SnapshotUsage', 'units': 'GB-month'},
     {'hint': 'Usage', 'units': 'Units'},
 ]
+
+DEFAULT_BILLING_POLICY = """
+{{
+  "Version": "2008-10-17",
+  "Id": "Policy1335892530063",
+  "Statement": [
+    {{
+      "Sid": "Stmt1335892150622",
+      "Effect": "Allow",
+      "Principal": {{
+        "AWS": "arn:aws:iam::{billing_acct}:root"
+      }},
+      "Action": [
+        "s3:GetBucketAcl",
+        "s3:GetBucketPolicy"
+      ],
+      "Resource": "arn:aws:s3:::{bucket_name}"
+    }},
+    {{
+      "Sid": "Stmt1335892526596",
+      "Effect": "Allow",
+      "Principal": {{
+        "AWS": "arn:aws:iam::{billing_acct}:root"
+      }},
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::{bucket_name}/*"
+    }}
+  ]
+}}
+"""
 
 
 class ReportingView(BaseView):
@@ -129,16 +164,50 @@ class ReportingAPIView(BaseView):
         csrf_token = params.get('csrf_token')
         if not self.is_csrf_valid(token=csrf_token):
             return JSONResponse(status=400, message="missing CSRF token")
-        self.log_request(_(u"Saving report preferences"))
-        # use "ModifyBilling" to change billing configuration
         enabled = params.get('enabled')
         bucket_name = params.get('bucketName')
         tags = params.get('tags')
-        self.conn.modify_billing(enabled, bucket_name, tags)
-        # use "ModifyAccount" to change report access
-        user_reports_enabled = params.get('userReportsEnabled')
-        self.conn.modify_account(user_reports_enabled)
-        return dict(message=_("Successully updated reporting preferences."))
+        self.log_request(_(u"Saving report preferences"))
+        # fetch bucket policy
+        s3_conn = self.get_connection(conn_type='s3')
+        with boto_error_handler(self.request):
+            portal_svc = self.get_connection(conn_type='admin').get_all_services(service_type='portal')
+            if len(portal_svc) < 1 and len(portal_svc[0].accounts) < 1:
+                logging.error('ERROR: Eucalyptus not returning account info with portal service!')
+            billing_acct = portal_svc[0].accounts[0].account_number
+            bucket = BucketContentsView.get_bucket(self.request, s3_conn, params.get('bucketName'))
+            policy_doc = BucketDetailsView.get_bucket_policy(bucket)
+            # if no policy, create required one
+            if not policy_doc:
+                bucket.set_policy(DEFAULT_BILLING_POLICY.format(
+                    billing_acct=billing_acct, bucket_name=bucket.name
+                ))
+            # if existing policy, try using it. If it fails, add policy statements
+            # use "ModifyBilling" to change billing configuration
+            try:
+                self.conn.modify_billing(enabled, bucket_name, tags)
+            except BotoServerError as err:
+                msg = json.loads(err.body)['error'][0]['message']
+                if msg.find('bucket is not accessible') == -1:
+                    # if not the error we're looking for
+                    raise err
+                # add statements and retry
+                bucket.set_policy(self.update_bucket_policy(policy_doc, billing_acct, bucket.name))
+                self.conn.modify_billing(enabled, bucket_name, tags)
+            # use "ModifyAccount" to change report access
+            user_reports_enabled = params.get('userReportsEnabled')
+            self.conn.modify_account(user_reports_enabled)
+            return dict(message=_("Successully updated reporting preferences."))
+
+    @staticmethod
+    def update_bucket_policy(existing_policy, billing_acct, bucket_name):
+        policy = json.loads(existing_policy)
+        new_policy_doc = DEFAULT_BILLING_POLICY.format(
+            billing_acct=billing_acct, bucket_name=bucket_name
+        )
+        new_policy = json.loads(new_policy_doc)
+        policy['Statement'].extend(new_policy['Statement'])
+        return json.dumps(policy)
 
     @view_config(route_name='reporting_monthly_usage', renderer='json', request_method='GET', xhr=True)
     def get_reporting_monthly_usage(self):
