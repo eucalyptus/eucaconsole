@@ -124,11 +124,3 @@ class LogoutViewTestCase(BaseViewTestCase):
         view = LogoutView(request).logout
         self.assert_(isinstance(view(), HTTPFound))
 
-
-class AWSConnectionCase(BaseTestCase):
-    def test_host_for_region(self):
-        conn = ConnectionManager.aws_connection('eu-west-2', 'access', 'secret', 'token', 'ec2', True)
-        self.assertEqual(conn.host, 'ec2.eu-west-2.amazonaws.com')
-
-        conn = ConnectionManager.aws_connection('invalid-region', 'access', 'secret', 'token', 'ec2', True)
-        self.assertEqual(conn, None)
