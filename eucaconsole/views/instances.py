@@ -1099,7 +1099,6 @@ class InstanceMonitoringView(BaseInstanceView):
     def __init__(self, request):
         super(InstanceMonitoringView, self).__init__(request)
         self.title_parts = [_(u'Instance'), request.matchdict.get('id'), _(u'Monitoring')]
-        self.cw_conn = self.get_connection(conn_type='cloudwatch')
         self.instance_id = self.request.matchdict.get('id')
         self.location = self.request.route_path('instance_monitoring', id=self.instance_id)
         with boto_error_handler(self.request):
