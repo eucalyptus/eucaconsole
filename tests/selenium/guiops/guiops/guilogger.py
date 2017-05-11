@@ -1,8 +1,7 @@
-import os
-import sys
-import logging
-import time
+from autologging import logged, traced
 
+@logged
+@traced
 class Guilogger(object):
     # Constructor for Guilogger
     def __init__(self,
