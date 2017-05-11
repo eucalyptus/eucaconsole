@@ -1,7 +1,6 @@
 from guiops.guiops import GuiOps
 from option_parser import Option_parser
 
-
 class SnapshotOperationsSequence(GuiOps):
     def __init__(self):
         parser = Option_parser()
@@ -23,24 +22,60 @@ class SnapshotOperationsSequence(GuiOps):
         self.tester.zoom_out()
 
     def snapshot_ops_test(self):
+        print ""
+        print "Logging in ..."
+        print ""
         self.tester.login(self.account, self.user, self.password)
         volume1_name = self.id_generator() + "-volume"
+        print ""
+        print "Creating volume"+volume1_name+"from view page ..."
+        print ""
         volume1 = self.tester.create_volume_from_view_page(volume1_name, availability_zone=self.zone1)
         volume1_id = volume1.get("volume_id")
+        print ""
+        print "Creating snapshot without name on volume view page ..."
+        print ""
         snapshot1 = self.tester.create_snapshot_on_volumes_view_page(
             volume1_id, snapshot_description="Created by snapshot operations test")
         snapshot1_id = snapshot1.get("snapshot_id")
+        print ""
+        print "Creates snapshot "+snapshot1_id
+        print ""
         snapshot2_name = self.id_generator() + "-snapshot"
+        print ""
+        print "Running create_snapshot_from_dashboard with name "+snapshot2_name
+        print ""
         snapshot2 = self.tester.create_snapshot_from_dashboard(
             volume1_id, snapshot2_name, "Created by snapshot operations test")
         snapshot2_id = snapshot2.get("snapshot_id")
+        print ""
+        print "Created snapshot named "+snapshot2_name+" id "+snapshot2_id
+        print ""
+        print ""
+        print "Running launch_instance_from_dashboard..."
+        print ""
         instance1 = self.tester.launch_instance_from_dashboard(availability_zone=self.zone1)
         instance1_id = instance1.get("instance_id")
+        print ""
+        print "Launched instance id "+instance1_id
+        print ""
+        print ""
+        print "Running attach_volume_from_instance_lp "+volume1_id+" attaching to instance "+instance1_id
+        print ""
         self.tester.attach_volume_from_instance_lp(volume1_id, instance1_id, device="/dev/vdg")
         snapshot3_name = self.id_generator() + "-snapshot"
+        print ""
+        print "Running create_snapshot_on_snapshot_view_page "+volume1_id+" snapshot by name "+snapshot3_name
+        print ""
         snapshot3 = self.tester.create_snapshot_on_snapshot_view_page(
             volume1_id, snapshot3_name, "Created by snapshot operations test")
         snapshot3_id = snapshot3.get("snapshot_id")
+        print ""
+        print ""
+        print ""
+        print ""
+        print ""
+        print ""
         image1 = self.tester.register_snapshot_as_an_image_from_snapshot_landing_page(
             snapshot3_id, self.id_generator() + "-image")
         image1_id = image1.get("image_id")
