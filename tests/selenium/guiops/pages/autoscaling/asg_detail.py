@@ -69,7 +69,8 @@ class ASGDetailPage(DetailPage):
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "Scaling history":
-            self.tester.click_element_by_css_robust(self._scaling_history_tab_css.format(asg_name), _refresh_button_css_in_history_tab)
+            if tab != "SCALING HISTORY":
+                self.tester.click_element_by_css_robust(self._scaling_history_tab_css.format(asg_name), _refresh_button_css_in_history_tab)
         else:
             pass
 
@@ -80,7 +81,8 @@ class ASGDetailPage(DetailPage):
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "Instances":
-            self.tester.click_element_by_css(self._instances_tab_css.format(asg_name))
+            if tab != "INSTANCES":
+                self.tester.click_element_by_css(self._instances_tab_css.format(asg_name))
         else:
             pass
 
@@ -92,7 +94,8 @@ class ASGDetailPage(DetailPage):
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "Monitoring":
-            self.tester.click_element_by_css(self._monitoring_tab_css.format(asg_name))
+            if tab != "MONITORING":
+                self.tester.click_element_by_css(self._monitoring_tab_css.format(asg_name))
         else:
             pass
 
@@ -115,7 +118,8 @@ class ASGDetailPage(DetailPage):
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "Scaling policies":
-            self.tester.click_element_by_css(self._scaling_policies_tab_css.format(asg_name))
+            if tab != "SCALING POLICIES":
+                self.tester.click_element_by_css(self._scaling_policies_tab_css.format(asg_name))
         else:
             pass
 
