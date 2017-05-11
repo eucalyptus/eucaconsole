@@ -102,6 +102,8 @@ class MasterLayout(object):
                 self.has_regions = False
             except socket.error:
                 self.has_regions = False
+            if self.cloud_type == 'aws' and asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
+                self.regions.append(dict(name='us-gov-west-1', label='us-gov-west-1'))
         if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
             if (self.selected_region == '' or self.selected_region == 'undefined' or self.selected_region == 'euca'):

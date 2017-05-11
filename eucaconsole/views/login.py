@@ -52,7 +52,6 @@ from ..models import Notification
 from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
 from ..views import JSONResponse
-from ..constants import AWS_REGIONS
 
 
 INVALID_SSL_CERT_MSG = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
@@ -354,8 +353,7 @@ class LoginView(BaseView, PermissionCheckMixin):
                 session['cloud_type'] = 'aws'
                 session['auth_type'] = 'keys'
                 self._assign_session_creds(session, creds)
-                last_visited_aws_region = [reg for reg in AWS_REGIONS if reg.get('name') == aws_region]
-                session['region'] = aws_region if last_visited_aws_region else default_region
+                session['region'] = aws_region if aws_region else default_region
                 session['username_label'] = u'{user}...@AWS'.format(user=creds.access_key[:8])
                 session['supported_platforms'] = self.get_account_attributes(['supported-platforms'])
                 session['default_vpc'] = self.get_account_attributes(['default-vpc'])
