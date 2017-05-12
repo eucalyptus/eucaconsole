@@ -1335,7 +1335,6 @@ class NetworkACLView(TaggedItemView):
             vpc=self.vpc,
             vpc_id=self.vpc_id,
             vpc_name=self.get_display_name(self.vpc),
-            subnets=self.get_associated_subnets(),
             tags=self.serialize_tags(self.network_acl.tags) if self.network_acl else [],
             default_for_vpc=default_for_vpc,
             default_for_vpc_label=_('yes') if default_for_vpc else _('no'),
@@ -1369,11 +1368,18 @@ class NetworkACLView(TaggedItemView):
         if self.network_acl and self.network_acl_delete_form.validate():
             location = self.request.route_path('vpc_view', id=self.vpc_id)
             with boto_error_handler(self.request, location):
+                # Remove subnet associations if necessary
+                if self.network_acl.associations:
+                    for assoc in self.network_acl.associations:
+                        log_msg = _('Disassociating subnet {0} from network ACL {1}').format(
+                            assoc.subnet_id, self.network_acl_id)
+                        self.vpc_conn.disassociate_network_acl(assoc.subnet_id, self.vpc_id)
+                        self.log_request(log_msg)
                 log_msg = _('Deleting network ACL {0}').format(self.network_acl_name)
                 self.log_request(log_msg)
                 self.vpc_conn.delete_network_acl(self.network_acl_id)
             msg = _(
-                'Successfully sent request to delete network ACL.  It may take a moment to delete the network ACL.')
+                'Successfully deleted network ACL.')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.request.route_path('vpc_view', id=self.vpc_id))
         else:
