@@ -101,6 +101,17 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
+                        <div class="large-3 small-4 columns"><label i18n:translate="">Network ACLs</label></div>
+                        <div class="large-9 small-8 columns value">
+                            <div tal:repeat="network_acl vpc_network_acls">
+                                <a href="${request.route_path('network_acl_view', vpc_id=vpc.id, id=network_acl.id)}">
+                                    ${layout.get_display_name(network_acl)}
+                                    <span tal:condition="network_acl.default == 'true'"> - Default for VPC</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns">
                             <label>
                                 <span i18n:translate="">Internet gateway</span>

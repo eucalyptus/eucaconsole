@@ -1342,7 +1342,7 @@ class NetworkACLView(TaggedItemView):
     @view_config(route_name='network_acl_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def network_acl_delete(self):
         if self.network_acl and self.network_acl_delete_form.validate():
-            location = self.request.route_path('vpc_view', vpc_id=self.vpc_id)
+            location = self.request.route_path('vpc_view', id=self.vpc_id)
             with boto_error_handler(self.request, location):
                 log_msg = _('Deleting network ACL {0}').format(self.network_acl_name)
                 self.log_request(log_msg)

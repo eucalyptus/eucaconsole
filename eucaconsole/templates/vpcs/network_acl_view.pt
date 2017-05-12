@@ -5,8 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="NetworkACLDetailsPage"
-             ng-controller="NetworkACLDetailsPageCtrl">
+    <div class="row" id="contentwrap" ng-app="NetworkACLDetailsPage">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>

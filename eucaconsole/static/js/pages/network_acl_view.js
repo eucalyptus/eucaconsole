@@ -6,8 +6,4 @@
  *
  */
 
-angular.module('NetworkACLDetailsPage', ['TagEditorModule'])
-    .controller('NetworkACLDetailsPageCtrl', function ($scope) {
-        // pass
-    })
-;
+angular.module('NetworkACLDetailsPage', ['TagEditorModule']);
