@@ -44,7 +44,7 @@ from ..forms.vpcs import (
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
     InternetGatewayForm, InternetGatewayDeleteForm, InternetGatewayDetachForm, CreateRouteTableForm,
     CreateNatGatewayForm, NatGatewayDeleteForm, NetworkACLForm, CreateNetworkACLForm, NetworkACLDeleteForm,
-    INTERNET_GATEWAY_HELP_TEXT
+    SubnetAssociateNetworkACLForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -593,6 +593,7 @@ class SubnetView(TaggedItemView):
         with boto_error_handler(request, self.location):
             self.vpc = self.get_vpc()
             self.subnet = self.get_subnet()
+            self.vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': self.vpc.id})
         if self.subnet is None or self.vpc is None:
             raise HTTPNotFound()
         with boto_error_handler(request, self.location):
@@ -601,6 +602,10 @@ class SubnetView(TaggedItemView):
             self.subnet_network_acl = self.get_subnet_network_acl()
             self.create_nat_gateway_form = CreateNatGatewayForm(
                 self.request, ec2_conn=self.conn, formdata=self.request.params or None)
+            self.associate_network_acl_form = SubnetAssociateNetworkACLForm(
+                self.request, vpc_conn=self.vpc_conn, subnet_network_acl=self.subnet_network_acl,
+                vpc_network_acls=self.vpc_network_acls, formdata=self.request.params or None
+            )
             self.subnet_form = SubnetForm(
                 self.request, vpc_conn=self.vpc_conn, vpc=self.vpc, route_tables=self.vpc_route_tables,
                 subnet=self.subnet, subnet_route_table=self.subnet_route_table, formdata=self.request.params or None
@@ -628,6 +633,7 @@ class SubnetView(TaggedItemView):
             routes=json.dumps([vpc_local_route]),
             create_route_table_form=self.create_route_table_form,
             create_nat_gateway_form=self.create_nat_gateway_form,
+            associate_network_acl_form=self.associate_network_acl_form,
             terminate_form=self.terminate_form,
             allocate_eips_form=self.allocate_eips_form,
             subnet_instances_link=self.request.route_path('instances', _query={'subnet_id': self.subnet.id}),
@@ -703,19 +709,39 @@ class SubnetView(TaggedItemView):
             domain = self.request.params.get('domain') or None
             ipcount = int(self.request.params.get('ipcount', 0))
             with boto_error_handler(self.request, location):
-                with boto_error_handler(self.request, self.location):
-                    self.log_request(_(u"Allocating {0} Elastic IPs").format(ipcount))
-                    for i in xrange(ipcount):
-                        new_ip = self.conn.allocate_address(domain=domain)
-                        new_ips.append(new_ip.public_ip)
-                    prefix = _(u'Successfully allocated elastic IPs')
-                    ips = ', '.join(new_ips)
-                    msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
-                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                self.log_request(_(u"Allocating {0} Elastic IPs").format(ipcount))
+                for i in xrange(ipcount):
+                    new_ip = self.conn.allocate_address(domain=domain)
+                    new_ips.append(new_ip.public_ip)
+                prefix = _(u'Successfully allocated elastic IPs')
+                ips = ', '.join(new_ips)
+                msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.allocate_eips_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='subnet_associate_network_acl', renderer=VIEW_TEMPLATE, request_method='POST')
+    def subnet_associate_network_acl(self):
+        if self.subnet and self.associate_network_acl_form.validate():
+            location = self.request.route_path('subnet_view', vpc_id=self.vpc.id, id=self.subnet.id)
+            network_acl = self.request.params.get('network_acl') or None
+            if network_acl:
+                self.log_request(_(u"Associating subnet with network ACL {0}").format(network_acl))
+                msg = 'Successfully associated subnet with network ACL {0}'.format(network_acl)
+                with boto_error_handler(self.request, location):
+                    self.vpc_conn.associate_network_acl(network_acl_id=network_acl, subnet_id=self.subnet.id)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            elif self.subnet_network_acl is not None:
+                # Disassociate network ACL if an association exists
+                self.log_request(_(u"Disassociating subnet from network ACL {0}").format(self.subnet_network_acl))
+                msg = 'Successfully disassociated subnet from network ACL {0}'.format(self.subnet_network_acl)
+                self.vpc_conn.disassociate_network_acl(self.subnet.id, self.vpc.id)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.associate_network_acl_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='route_table_create', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -783,8 +809,7 @@ class SubnetView(TaggedItemView):
         return None
 
     def get_subnet_network_acl(self):
-        vpc_network_acls = self.vpc_conn.get_all_network_acls(filters={'vpc-id': self.vpc.id})
-        subnet_network_acls = VPCView.get_subnet_network_acls(self.subnet.id, vpc_network_acls)
+        subnet_network_acls = VPCView.get_subnet_network_acls(self.subnet.id, self.vpc_network_acls)
         if subnet_network_acls:
             return subnet_network_acls[0]
         return None

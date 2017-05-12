@@ -30,6 +30,11 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li>
+                            <a data-reveal-id="associate-network-acl-modal" id="associate-netowrk-acl-action" i18n:translate="">
+                                Associate with network ACL
+                            </a>
+                        </li>
+                        <li>
                             <a data-reveal-id="create-route-table-modal" id="create-route-table-action" i18n:translate="">
                                 Create route table
                             </a>
@@ -209,6 +214,20 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <div id="associate-network-acl-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Associate subnet with network ACL</h3>
+            <form id="associate-network-acl-form" name="associateNetworkACLForm" method="post"
+                  action="${request.route_path('subnet_associate_network_acl', vpc_id=vpc.id, id=subnet.id)}">
+                ${structure:associate_network_acl_form['csrf_token']}
+                <div class="row">
+                    ${panel('form_field', field=associate_network_acl_form['network_acl'], stack_label=True)}
+                </div>
+                <button class="button expand" i18n:translate="">
+                    Associate subnet with network ACL
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
         <div id="create-route-table-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Create route table</h3>
             <form id="create-route-table-form" name="createRouteTableForm" method="post"
