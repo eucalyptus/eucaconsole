@@ -304,3 +304,8 @@ class NetworkACLForm(BaseSecureForm):
         super(NetworkACLForm, self).__init__(request, **kwargs)
         self.name.error_msg = self.name_error_msg
         self.name.data = network_acl.tags.get('Name', '')
+
+
+class CreateNetworkACLForm(BaseSecureForm):
+    name_error_msg = _('Not a valid name')
+    name = StringField(label=_('Name'))

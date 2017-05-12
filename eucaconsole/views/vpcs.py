@@ -43,7 +43,7 @@ from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm, CreateSubnetForm,
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
     InternetGatewayForm, InternetGatewayDeleteForm, InternetGatewayDetachForm, CreateRouteTableForm,
-    CreateNatGatewayForm, NatGatewayDeleteForm, NetworkACLForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateNatGatewayForm, NatGatewayDeleteForm, NetworkACLForm, CreateNetworkACLForm, INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -1225,6 +1225,57 @@ class NatGatewayView(BaseView):
                 if attachment.vpc_id == self.vpc_id:
                     return igw
         return None
+
+
+class CreateNetworkACLView(BaseView):
+    """Create Network ACL view and handler"""
+    TEMPLATE = '../templates/vpcs/network_acl_new.pt'
+
+    def __init__(self, request):
+        super(CreateNetworkACLView, self).__init__(request)
+        self.title_parts = [_(u'VPC'), _(u'Create Network ACL')]
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.vpc_id = self.request.matchdict.get('vpc_id')
+        self.create_network_acl_form = CreateNetworkACLForm(
+            self.request, vpc_conn=self.vpc_conn, formdata=self.request.params or None)
+        self.render_dict = dict(
+            vpc_id=self.vpc_id,
+            create_network_acl_form=self.create_network_acl_form,
+        )
+
+    @view_config(route_name='network_acl_new', renderer=TEMPLATE, request_method='GET')
+    def network_acl_new(self):
+        """Displays the Create Network ACL page"""
+        return self.render_dict
+
+    @view_config(route_name='network_acl_create', renderer=TEMPLATE, request_method='POST')
+    def network_acl_create(self):
+        """Handle Network ACL creation"""
+        if self.create_network_acl_form.validate():
+            name = self.request.params.get('name')
+            tags_json = self.request.params.get('tags')
+            self.log_request(_(u"Creating Network ACL {0}").format(name))
+            with boto_error_handler(self.request):
+                network_acl = self.vpc_conn.create_network_acl(self.vpc_id)
+                network_acl_id = network_acl.id
+
+                # Add tags
+                if name:
+                    network_acl.add_tag('Name', name)
+                if tags_json:
+                    tags = json.loads(tags_json)
+                    tags_dict = TaggedItemView.normalize_tags(tags)
+                    for tagname, tagvalue in tags_dict.items():
+                        network_acl.add_tag(tagname, tagvalue)
+
+            msg = _(u'Successfully created network ACL. ')
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            location = self.request.route_path('network_acl_view', vpc_id=self.vpc_id, id=network_acl_id)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_network_acl_form.get_errors_list()
+        return self.render_dict
 
 
 class NetworkACLView(TaggedItemView):

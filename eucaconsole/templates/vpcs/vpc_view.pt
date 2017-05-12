@@ -41,6 +41,11 @@
                                 Create internet gateway
                             </a>
                         </li>
+                        <li>
+                            <a href="${request.route_path('network_acl_new', vpc_id=vpc.id)}" id="create-network-acl-action" i18n:translate="">
+                                Create network ACL
+                            </a>
+                        </li>
                         <li tal:condition="vpc_internet_gateway">
                             <a href="${request.route_path('internet_gateway_view', id=vpc_internet_gateway.id)}"
                                id="view-internet-gateway-action" i18n:translate="">
