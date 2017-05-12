@@ -39,6 +39,7 @@ from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
+from .constants import AWS_REGIONS
 from .forms.login import EucaLogoutForm
 from .forms.vpcs import CIDR_BLOCK_REGEX
 from .i18n import _
@@ -102,8 +103,11 @@ class MasterLayout(object):
                 self.has_regions = False
             except socket.error:
                 self.has_regions = False
-            if self.cloud_type == 'aws' and asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
-                self.regions.append(dict(name='us-gov-west-1', label='us-gov-west-1'))
+            if self.cloud_type == 'aws':
+                for region in self.regions:
+                    region['label'] = AWS_REGIONS.get(region['name'].replace('-', '_'), region['name'])
+                if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
+                    self.regions.append(dict(name='us-gov-west-1', label='US GovCloud'))
         if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
             if (self.selected_region == '' or self.selected_region == 'undefined' or self.selected_region == 'euca'):

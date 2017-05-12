@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-# Copyright 2013-2017 Ent. Services Development Corporation LP
+# _*_ coding: utf_8 _*_
+# Copyright 2013_2017 Ent. Services Development Corporation LP
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -28,6 +28,27 @@
 Common constants
 
 """
+
+
+# AWS Regions list
+# Endpoints are handled via boto's endpoints.json
+# Note: A future release of the Eucalyptus console will pull regions via the DescribeRegions API call
+AWS_REGIONS = {
+    'us_east_1': 'US East (N. Virginia)',
+    'us_east_2': 'US East (Ohio)',
+    'us_west_1': 'US West (N. California)',
+    'us_west_2': 'US West (Oregon)',
+    'ca_central_1': 'Canada (Central)',
+    'eu_west_1': 'EU (Ireland)',
+    'eu_west_2': 'EU (London)',
+    'eu_central_1': 'EU (Frankfurt)',
+    'ap_south_1': 'Asia Pacific (Mumbai)',
+    'ap_southeast_1': 'Asia Pacific (Singapore)',
+    'ap_southeast_2': 'Asia Pacific (Sydney)',
+    'ap_northeast_1': 'Asia Pacific (Tokyo)',
+    'ap_northeast_2': 'Asia Pacific (Seoul)',
+    'sa_east_1': u'South America (São Paulo)',
+}
 
 
 # List of all landing page route names (used to limit redirect handling for AWS region selection)
