@@ -298,6 +298,7 @@ urls = [
     Route(name='network_acl_create', pattern='/vpcs/{vpc_id}/network-acls/create'),
     Route(name='network_acl_view', pattern='/vpcs/{vpc_id}/network-acls/{id}'),
     Route(name='network_acl_update', pattern='/vpcs/{vpc_id}/network-acls/{id}/update'),
+    Route(name='network_acl_delete', pattern='/vpcs/{vpc_id}/network-acls/{id}/delete'),
 
     # Key pairs #####
     # Landing page

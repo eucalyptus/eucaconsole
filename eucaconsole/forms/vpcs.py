@@ -295,6 +295,10 @@ class NatGatewayDeleteForm(BaseSecureForm):
     pass
 
 
+class NetworkACLDeleteForm(BaseSecureForm):
+    pass
+
+
 class NetworkACLForm(BaseSecureForm):
     """Form to update an existing network ACL"""
     name_error_msg = _('Not a valid name')

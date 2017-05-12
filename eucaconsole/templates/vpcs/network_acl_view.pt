@@ -87,6 +87,37 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <!--! Delete Network ACL modal dialog -->
+        <div id="delete-network-acl-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete Network ACL</h3>
+            <div tal:condition="default_for_vpc">
+                <p i18n:translate="">
+                    This network ACL is the default one for VPC ${vpc_name} and cannot be deleted.
+                </p>
+            </div>
+            <form tal:condition="not: default_for_vpc" id="delete-network-acl-form" name="deleteNetworkACLForm" method="post"
+                  action="${request.route_path('network_acl_delete', vpc_id=vpc.id, id=network_acl_id)}">
+                ${structure:network_acl_delete_form['csrf_token']}
+                <p i18n:translate="" tal:condition="subnets">
+                    The network ACL is currently associated with the following subnet(s).
+                    Deleting this network ACL may associate the following subnets with the VPC's default network ACL.
+                </p>
+                <div class="resources-list" tal:condition="subnets">
+                    <span tal:repeat="subnet subnets">
+                        ${layout.get_display_name(subnet)}<span
+                            tal:condition="not repeat.subnet.end">,&nbsp;</span>
+                    </span>
+                </div>
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete network ACL</span>
+                    <strong>${network_acl_name}</strong>?
+                </p>
+                <button class="button expand" i18n:translate="">
+                    Yes, Delete Network ACL
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

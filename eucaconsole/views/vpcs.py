@@ -43,7 +43,8 @@ from ..forms.vpcs import (
     VPCsFiltersForm, VPCForm, VPCMainRouteTableForm, CreateInternetGatewayForm, CreateVPCForm, CreateSubnetForm,
     RouteTableForm, VPCDeleteForm, SubnetForm, SubnetDeleteForm, RouteTableSetMainForm, RouteTableDeleteForm,
     InternetGatewayForm, InternetGatewayDeleteForm, InternetGatewayDetachForm, CreateRouteTableForm,
-    CreateNatGatewayForm, NatGatewayDeleteForm, NetworkACLForm, CreateNetworkACLForm, INTERNET_GATEWAY_HELP_TEXT
+    CreateNatGatewayForm, NatGatewayDeleteForm, NetworkACLForm, CreateNetworkACLForm, NetworkACLDeleteForm,
+    INTERNET_GATEWAY_HELP_TEXT
 )
 from ..i18n import _
 from ..models import Notification
@@ -1295,15 +1296,17 @@ class NetworkACLView(TaggedItemView):
             raise HTTPNotFound()
         self.network_acl_form = NetworkACLForm(
             self.request, network_acl=self.network_acl, formdata=self.request.params or None)
+        self.network_acl_delete_form = NetworkACLDeleteForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.network_acl
         self.network_acl_name = TaggedItemView.get_display_name(self.network_acl)
         self.title_parts = [_('Network ACL'), self.network_acl_id]
-        default_for_vpc = self.network_acl.default
+        default_for_vpc = self.network_acl.default.lower() == 'true'
         self.render_dict = dict(
             network_acl=self.network_acl,
             network_acl_id=self.network_acl_id,
             network_acl_name=self.network_acl_name,
             network_acl_form=self.network_acl_form,
+            network_acl_delete_form=self.network_acl_delete_form,
             vpc=self.vpc,
             vpc_id=self.vpc_id,
             vpc_name=self.get_display_name(self.vpc),
@@ -1334,6 +1337,22 @@ class NetworkACLView(TaggedItemView):
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.network_acl_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='network_acl_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def network_acl_delete(self):
+        if self.network_acl and self.network_acl_delete_form.validate():
+            location = self.request.route_path('vpc_view', vpc_id=self.vpc_id)
+            with boto_error_handler(self.request, location):
+                log_msg = _('Deleting network ACL {0}').format(self.network_acl_name)
+                self.log_request(log_msg)
+                self.vpc_conn.delete_network_acl(self.network_acl_id)
+            msg = _(
+                'Successfully sent request to delete network ACL.  It may take a moment to delete the network ACL.')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.request.route_path('vpc_view', id=self.vpc_id))
+        else:
+            self.request.error_messages = self.network_acl_delete_form.get_errors_list()
         return self.render_dict
 
     def get_network_acl(self):
