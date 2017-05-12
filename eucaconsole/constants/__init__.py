@@ -34,20 +34,20 @@ Common constants
 # Endpoints are handled via boto's endpoints.json
 # Note: A future release of the Eucalyptus console will pull regions via the DescribeRegions API call
 AWS_REGIONS = {
-    'us_east_1': 'US East (N. Virginia)',
-    'us_east_2': 'US East (Ohio)',
-    'us_west_1': 'US West (N. California)',
-    'us_west_2': 'US West (Oregon)',
-    'ca_central_1': 'Canada (Central)',
-    'eu_west_1': 'EU (Ireland)',
-    'eu_west_2': 'EU (London)',
-    'eu_central_1': 'EU (Frankfurt)',
-    'ap_south_1': 'Asia Pacific (Mumbai)',
-    'ap_southeast_1': 'Asia Pacific (Singapore)',
-    'ap_southeast_2': 'Asia Pacific (Sydney)',
-    'ap_northeast_1': 'Asia Pacific (Tokyo)',
-    'ap_northeast_2': 'Asia Pacific (Seoul)',
-    'sa_east_1': u'South America (São Paulo)',
+    'us-east-1': 'US East (N. Virginia)',
+    'us-east-2': 'US East (Ohio)',
+    'us-west-1': 'US West (N. California)',
+    'us-west-2': 'US West (Oregon)',
+    'ca-central-1': 'Canada (Central)',
+    'eu-west-1': 'EU (Ireland)',
+    'eu-west-2': 'EU (London)',
+    'eu-central-1': 'EU (Frankfurt)',
+    'ap-south-1': 'Asia Pacific (Mumbai)',
+    'ap-southeast-1': 'Asia Pacific (Singapore)',
+    'ap-southeast-2': 'Asia Pacific (Sydney)',
+    'ap-northeast-1': 'Asia Pacific (Tokyo)',
+    'ap-northeast-2': 'Asia Pacific (Seoul)',
+    'sa-east-1': u'South America (São Paulo)',
 }
 
 

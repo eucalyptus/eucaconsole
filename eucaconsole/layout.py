@@ -105,7 +105,7 @@ class MasterLayout(object):
                 self.has_regions = False
             if self.cloud_type == 'aws':
                 for region in self.regions:
-                    region['label'] = AWS_REGIONS.get(region['name'].replace('-', '_'), region['name'])
+                    region['label'] = AWS_REGIONS.get(region['name'], region['name'])
                 if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
                     self.regions.append(dict(name='us-gov-west-1', label='US GovCloud'))
         if hasattr(self, 'regions'):
