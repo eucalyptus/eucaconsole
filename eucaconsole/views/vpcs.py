@@ -1394,8 +1394,3 @@ class NetworkACLView(TaggedItemView):
     def get_network_acl_vpc(self):
         vpc_list = self.vpc_conn.get_all_vpcs(filters={'vpc-id': [self.vpc_id]})
         return vpc_list[0] if vpc_list else None
-
-    def get_associated_subnets(self):
-        associated_subnet_ids = [assoc.subnet_id for assoc in self.network_acl.associations]
-        subnets = self.vpc_conn.get_all_subnets(filters={'vpc-id': self.vpc_id, 'subnet-id': associated_subnet_ids})
-        return [dict(id=subnet.id, name=self.get_display_name(subnet)) for subnet in subnets]
