@@ -27,7 +27,7 @@
                         controlling traffic in and out of subnets. While VPC security groups at at the instance level,
                         network ACLs act at the subnet level, allowing you to create default firewall rules
                         that are automatically applied to instances in the subnet the network ACL is associated with.
-                        Network ACLs allow you to configure rules thta explicitly allow and deny rules,
+                        Network ACLs allow you to configure rules that explicitly allow and deny rules,
                         while security groups only allow traffic.
                     </p>
                     ${structure:create_network_acl_form['csrf_token']}
