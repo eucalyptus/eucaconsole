@@ -1,0 +1,70 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/tag-editor.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="CreateNetworkACL">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
+                <li><a href="${request.route_path('vpc_view', id=vpc_id)}" i18n:translate="">${vpc_id}</a></li>
+                <li class="current"><a i18n:translate="">Create Network ACL</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create VPC</strong>
+        </h3>
+        <div class="large-12 columns">
+            <div class="panel">
+                <form action="${request.route_path('network_acl_create', vpc_id=vpc_id)}" method="post"
+                      data-abide="abide" id="create-network-acl-form">
+                    <p i18n:translate="">
+                        A network ACL is an optional layer of security for your VPC that acts as a firewall for
+                        controlling traffic in and out of subnets. While VPC security groups at at the instance level,
+                        network ACLs act at the subnet level, allowing you to create default firewall rules
+                        that are automatically applied to instances in the subnet the network ACL is associated with.
+                        Network ACLs allow you to configure rules that explicitly allow and deny rules,
+                        while security groups only allow traffic.
+                    </p>
+                    ${structure:create_network_acl_form['csrf_token']}
+                    ${panel('form_field', field=create_network_acl_form['name'], stack_label=True, autofocus='', pattern=layout.tag_pattern_value)}
+                    <hr/>
+                    <div ng-cloak="">
+                        <tag-editor ng-model="tags">[]</tag-editor>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="columns small-6">
+                            <button type="submit" class="button" id="create-network-acl-btn" i18n:translate="">
+                                Create Network ACL
+                            </button>
+                            <a href="${request.route_path('vpc_view', id=vpc_id)}" id="cancel-link"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                        <div class="columns small-6">
+                            <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-12 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Help content here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/tag-editor/tag-editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/network_acl_new.js')}"></script>
+</div>
+
+</metal:block>

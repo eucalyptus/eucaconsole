@@ -480,6 +480,21 @@ class ChoicesManager(object):
                 choices.append((route_table.id, route_table_name))
         return sorted(set(choices))
 
+    def vpc_network_acls(self, vpc_id=None, network_acls=None, escapebraces=True):
+        from ..views import TaggedItemView
+        choices = [('', _("None (use VPC's default network ACL)"))]
+        filters = {}
+        if vpc_id is not None:
+            filters.update({
+                'vpc-id': vpc_id
+            })
+        if self.conn is not None:
+            network_acls = network_acls or self.conn.get_all_network_acls(filters=filters)
+            for network_acl in network_acls:
+                network_acl_name = TaggedItemView.get_display_name(network_acl, escapebraces=escapebraces)
+                choices.append((network_acl.id, network_acl_name))
+        return sorted(set(choices))
+
     def internet_gateways(self, add_blank=True, escapebraces=True, hide_attached=False):
         from ..views import TaggedItemView
         choices = []

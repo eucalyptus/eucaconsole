@@ -284,6 +284,7 @@ urls = [
     Route(name='subnet_view', pattern='/vpcs/{vpc_id}/subnets/{id}'),
     Route(name='subnet_update', pattern='/vpcs/{vpc_id}/subnets/{id}/update'),
     Route(name='subnet_allocate_eips', pattern='/vpcs/{vpc_id}/subnets/{id}/allocate-eips'),
+    Route(name='subnet_associate_network_acl', pattern='/vpcs/{vpc_id}/subnets/{id}/associate-network-acl'),
     Route(name='subnet_delete', pattern='/vpcs/{vpc_id}/subnets/{id}/delete'),
     Route(name='route_table_create', pattern='/vpcs/{vpc_id}/subnets/{id}/create-route-table'),
     Route(name='route_table_view', pattern='/vpcs/{vpc_id}/route-tables/{id}'),
@@ -294,8 +295,11 @@ urls = [
     Route(name='nat_gateway_create', pattern='/vpcs/{vpc_id}/subnets/{id}/create-nat-gateway'),
     Route(name='nat_gateway_view', pattern='/vpcs/{vpc_id}/nat-gateways/{id}'),
     Route(name='nat_gateway_delete', pattern='/vpcs/{vpc_id}/nat-gateways/{id}/delete'),
+    Route(name='network_acl_new', pattern='/vpcs/{vpc_id}/network-acls/new'),
+    Route(name='network_acl_create', pattern='/vpcs/{vpc_id}/network-acls/create'),
     Route(name='network_acl_view', pattern='/vpcs/{vpc_id}/network-acls/{id}'),
     Route(name='network_acl_update', pattern='/vpcs/{vpc_id}/network-acls/{id}/update'),
+    Route(name='network_acl_delete', pattern='/vpcs/{vpc_id}/network-acls/{id}/delete'),
 
     # Key pairs #####
     # Landing page
