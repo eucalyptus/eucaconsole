@@ -1593,12 +1593,6 @@ th.hide-for-touch { display: table-cell !important; }
   th.show-for-print { display: table-cell !important; } }
 /* =========================================================== */
 /* Eucalyptus Management Console main styles */
-/* ----------------------------------------- Fonts
------------------------------------------ */
-@font-face { font-family: 'Lato'; font-style: normal; font-weight: 400; src: local("Lato Regular"), local("Lato Regular"), url(../fonts/Lato/Lato-Regular.woff) format("woff"); }
-@font-face { font-family: 'Lato'; font-style: normal; font-weight: 700; src: local("Lato Bold"), local("Lato Bold"), url(../fonts/Lato/Lato-Bold.woff) format("woff"); }
-@font-face { font-family: 'PT Sans'; font-style: normal; font-weight: 400; src: local("PT Sans Regular"), local("PT Sans Regular"), url(../fonts/PT_Sans/PT_Sans-Web-Regular.ttf) format("ttf"); }
-@font-face { font-family: 'PT Sans'; font-style: normal; font-weight: 700; src: local("PT Sans Bold"), local("PT Sans Bold"), url(../fonts/PT_Sans/PT_Sans-Web-Bold.ttf) format("ttf"); }
 /* ----------------------------------------- Master Layout
 ----------------------------------------- */
 html { background-color: #000000; }
