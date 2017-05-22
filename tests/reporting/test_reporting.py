@@ -24,55 +24,50 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Quotas tests
+Reporting tests
 
 See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
+import unittest
+import simplejson as json
+
 from pyramid import testing
 
-from eucaconsole.forms import BaseSecureForm
-from eucaconsole.forms.quotas import QuotasForm
-
-from tests import BaseFormTestCase
+from eucaconsole.views.reporting import ReportingAPIView
 
 
-class QuotasUpdateFormTestCase(BaseFormTestCase):
-    """Quotas form used on user detail and new user pages"""
-    form_class = QuotasForm
-    request = testing.DummyRequest()
-    form = form_class(request)
+class ReportingAPIViewTests(unittest.TestCase):
     policy_doc = """{
       "Version": "2011-04-01",
       "Statement": [
         {
-          "Action": "s3:CreateBucket",
-          "Resource": "*",
-          "Effect": "Limit",
-          "Condition": {
-            "NumericLessThanEquals": {
-              "s3:quota-bucketnumber": "1"
-            }
-          }
-        },
-        {
-          "Action": "elasticloadbalancing:createloadbalancer",
-          "Resource": "*",
-          "Effect": "Limit",
-          "Condition": {
-            "NumericLessThanEquals": {
-              "elasticloadbalancing:quota-loadbalancernumber": "2"
-            }
+          "Action": "s3:GetBucketAcl",
+          "Resource": "arn:aws:s3:::testbucket/*",
+          "Effect": "Allow",
+          "Principal": {
+            "AWS": "arn:aws:iam::012345678901:root"
           }
         }
       ]
     }"""
 
-    def test_secure_form(self):
-        self.has_field('csrf_token')
-        self.assertTrue(issubclass(self.form_class, BaseSecureForm))
+    def setUp(self):
+        self.config = testing.setUp()
 
-    def test_policy_parsing(self):
-        self.form.scan_policy(self.policy_doc)
-        self.assertEquals(self.form.s3_buckets_max.data, "1")
-        self.assertEquals(self.form.elb_load_balancers_max.data, "2")
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_update_policy_doc(self):
+        policy = ReportingAPIView.update_bucket_policy(self.policy_doc, '012345678901', 'testbucket')
+        policy = json.loads(policy)
+        stmt = policy['Statement']
+        self.assertEquals(len(stmt), 3)
+        action = policy['Statement'][2]['Action'][0]
+        self.assertEquals(action, 's3:PutObject')
+        principal = policy['Statement'][2]['Principal']['AWS']
+        self.assertEquals(principal, 'arn:aws:iam::012345678901:root')
+        resource = policy['Statement'][2]['Resource']
+        self.assertEquals(resource, 'arn:aws:s3:::testbucket/*')
+        self.assertEquals(principal, 'arn:aws:iam::012345678901:root')
+

@@ -5,8 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="NetworkACLDetailsPage"
-             ng-controller="NetworkACLDetailsPageCtrl">
+    <div class="row" id="contentwrap" ng-app="NetworkACLDetailsPage">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('vpcs')}" i18n:translate="">VPCs</a></li>
@@ -59,9 +58,9 @@
                     <div class="row controls-wrapper readonly">
                         <div class="large-3 small-4 columns"><label i18n:translate="">Subnets</label></div>
                         <div class="large-9 small-8 columns value">
-                            <div tal:repeat="subnet subnets">
-                                <a href="${request.route_path('subnet_view', vpc_id=vpc.id, id=subnet.id)}">
-                                    ${subnet.name}
+                            <div tal:repeat="assoc network_acl.associations">
+                                <a href="${request.route_path('subnet_view', vpc_id=vpc.id, id=assoc.subnet_id)}">
+                                    ${assoc.subnet_id}
                                 </a>
                             </div>
                         </div>
@@ -87,6 +86,38 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <!--! Delete Network ACL modal dialog -->
+        <div id="delete-network-acl-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Delete Network ACL</h3>
+            <div tal:condition="default_for_vpc">
+                <p i18n:translate="">
+                    This network ACL is the default one for VPC ${vpc_name} and cannot be deleted.
+                </p>
+            </div>
+            <form tal:condition="not: default_for_vpc" id="delete-network-acl-form" name="deleteNetworkACLForm" method="post"
+                  action="${request.route_path('network_acl_delete', vpc_id=vpc.id, id=network_acl_id)}">
+                ${structure:network_acl_delete_form['csrf_token']}
+                <p i18n:translate="" tal:condition="network_acl.associations">
+                    The network ACL is currently associated with the following subnet(s).
+                    Deleting this network ACL may associate the subnets with the VPC's default network ACL.
+                </p>
+                <div class="resources-list" tal:condition="network_acl.associations">
+                    <strong tal:repeat="assoc network_acl.associations">
+                        ${assoc.subnet_id}<span
+                            tal:condition="not repeat.assoc.end">,&nbsp;</span>
+                    </strong>
+                </div>
+                <br />
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete network ACL</span>
+                    <strong>${network_acl_name}</strong>?
+                </p>
+                <button class="button expand" i18n:translate="">
+                    Yes, Delete Network ACL
+                </button>
+            </form>
+            <a href="#" class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

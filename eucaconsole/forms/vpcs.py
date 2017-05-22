@@ -183,6 +183,15 @@ class CreateSubnetForm(BaseSecureForm):
         self.subnet_cidr_block.data = suggested_subnet_cidr_block
 
 
+class SubnetAssociateNetworkACLForm(BaseSecureForm):
+    """Form to associate a subnet with a network ACL"""
+    network_acl = SelectField(label=_('Network ACL'))
+
+    def __init__(self, request, vpc_conn=None, vpc_id=None, subnet_network_acl=None, vpc_network_acls=None, **kwargs):
+        super(SubnetAssociateNetworkACLForm, self).__init__(request, **kwargs)
+        self.network_acl.choices = ChoicesManager(conn=vpc_conn).vpc_network_acls(vpc_id, vpc_network_acls)
+
+
 class SubnetForm(BaseSecureForm):
     """Form to update an existing subnet"""
     name_error_msg = _('Not a valid name')
@@ -295,6 +304,10 @@ class NatGatewayDeleteForm(BaseSecureForm):
     pass
 
 
+class NetworkACLDeleteForm(BaseSecureForm):
+    pass
+
+
 class NetworkACLForm(BaseSecureForm):
     """Form to update an existing network ACL"""
     name_error_msg = _('Not a valid name')
@@ -304,3 +317,8 @@ class NetworkACLForm(BaseSecureForm):
         super(NetworkACLForm, self).__init__(request, **kwargs)
         self.name.error_msg = self.name_error_msg
         self.name.data = network_acl.tags.get('Name', '')
+
+
+class CreateNetworkACLForm(BaseSecureForm):
+    name_error_msg = _('Not a valid name')
+    name = StringField(label=_('Name'))

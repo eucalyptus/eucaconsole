@@ -6,4 +6,5 @@
  *
  */
 
-angular.module('NetworkACLDetailsPage', ['TagEditorModule']);
+angular.module('CreateNetworkACL', ['TagEditorModule']);
+

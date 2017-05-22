@@ -74,13 +74,15 @@ class VolumeDetailPage(DetailPage):
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "Snapshots":
-            self.tester.click_element_by_css(self._snapshots_tab_css.format(volume_id))
+            if tab != "SNAPSHOTS":
+                self.tester.click_element_by_css(self._snapshots_tab_css.format(volume_id))
 
     def goto_monitoring_tab(self, volume_id):
         tab = self.tester.store_text_by_css(self._active_tab_css)
         print "Found active tab {0}".format(tab)
         if tab != "Monitoring":
-            self.tester.click_element_by_css(self._monitoring_tab_css.format(volume_id))
+            if tab != "MONITORING":
+                self.tester.click_element_by_css(self._monitoring_tab_css.format(volume_id))
 
     def verify_attach_notice_on_volume_monitoring_page(self, volume_id):
         self.tester.wait_for_element_present_by_id(self._unattached_notice_id)
@@ -92,6 +94,9 @@ class VolumeDetailPage(DetailPage):
             self.tester.wait_for_element_present_by_id(chart_id)
 
     def click_create_snapshot_from_volume_tile(self, volume_id):
+        print""
+        print"Running click_create_snapshot_from_volume_tile method from volume_detail.py"
+        print""
         self.goto_snapshots_tab(volume_id)
         self.tester.click_element_by_css(self._create_snapshot_tile_css)
 

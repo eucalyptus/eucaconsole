@@ -103,7 +103,7 @@
             <i class="busy"></i>
         </div>
         <div class="modal small" modal="createBucketDialog">
-            <div create-bucket-dialog="" bucket-name="preferences.values.bucketName"></div>
+            <div create-bucket-dialog="" bucket-name="preferences.values.bucketName" bucket-list="preferences.buckets"></div>
         </div>
     </form>
 </div>
