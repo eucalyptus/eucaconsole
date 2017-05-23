@@ -195,7 +195,7 @@ class ConnectionManager(object):
         else:
             # look up region endpoint
             query_region = 'us-east-1'
-            endpoint = '{0}.{1}.amazonaws.com'.format(path, query_region)
+            endpoint = '{0}.{1}.amazonaws.com'.format('ec2', query_region)
             region_obj = RegionInfo(name=query_region, endpoint=endpoint)
             conn = EC2Connection(
                 aws_access_key_id=access_key, aws_secret_access_key=secret_key,
