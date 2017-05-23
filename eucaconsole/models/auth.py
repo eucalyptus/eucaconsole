@@ -63,7 +63,6 @@ from .admin import EucalyptusAdmin
 from .reporting import EucalyptusReporting, EucalyptusEC2Reports
 from .utils import HttpsConnectionFactory
 from ..caches import default_term
-from ..constants import AWS_REGIONS
 
 
 class User(object):
@@ -194,7 +193,16 @@ class ConnectionManager(object):
                 aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token
             )
         else:
-            if len([reg for reg in AWS_REGIONS if reg.get('name') == region]) != 1:
+            # look up region endpoint
+            query_region = 'us-east-1'
+            endpoint = '{0}.{1}.amazonaws.com'.format('ec2', query_region)
+            region_obj = RegionInfo(name=query_region, endpoint=endpoint)
+            conn = EC2Connection(
+                aws_access_key_id=access_key, aws_secret_access_key=secret_key,
+                security_token=token, region=region_obj
+            )
+            regions = RegionCache(conn).get_regions('aws')
+            if len([reg.endpoint for reg in regions if reg.name == region]) != 1:
                 logging.error('Invalid region provided: ' + str(region))
                 return None
             endpoint = '{0}.{1}.amazonaws.com'.format(path, region)

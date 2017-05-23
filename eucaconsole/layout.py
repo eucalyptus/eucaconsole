@@ -74,27 +74,28 @@ class MasterLayout(object):
         self.default_region = ''
         self.is_vpc_supported = BaseView.is_vpc_supported(request)
         self.get_display_name = TaggedItemView.get_display_name
-        if self.cloud_type == 'aws':
-            self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
-            self.is_vpc_supported = True
-            self.regions = list(AWS_REGIONS)
-            if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
-                self.regions.append(dict(name='us-gov-west-1', label='US GovCloud'))
-        else:
-            if self.access_id:
+        secret_key = self.request.session.get('secret_key')
+        session_token = self.request.session.get('session_token')
+        if self.access_id:
+            if self.cloud_type == 'aws':
+                self.default_region = request.registry.settings.get('aws.default.region', 'us-east-1')
+                self.is_vpc_supported = True
+                conn = ConnectionManager.aws_connection(
+                    self.default_region, self.access_id, secret_key, session_token, 'ec2' 
+                )
+            else:
+                self.default_region = request.registry.settings.get('default.region', None)
                 host = self.request.registry.settings.get('ufshost')
                 port = self.request.registry.settings.get('ufsport')
-                secret_key = self.request.session.get('secret_key')
-                session_token = self.request.session.get('session_token')
                 dns_enabled = self.request.session.get('dns_enabled')
                 conn = ConnectionManager.euca_connection(
                     host, port, 'euca', self.access_id, secret_key, session_token, 'ec2', dns_enabled
                 )
+            if self.access_id:
                 try:
                     self.regions = RegionCache(conn).regions()
                     if len(self.regions) == 1:
                         self.has_regions = False
-                    self.default_region = request.registry.settings.get('default.region', None)
                     if self.default_region is None:
                         for region in self.regions:
                             if region['endpoints']['ec2'].find(host) > -1:
@@ -103,11 +104,14 @@ class MasterLayout(object):
                     self.has_regions = False
                 except socket.error:
                     self.has_regions = False
+                if self.cloud_type == 'aws':
+                    for region in self.regions:
+                        region['label'] = AWS_REGIONS.get(region['name'], region['name'])
+                    if asbool(request.registry.settings.get('aws.govcloud.enabled', 'false')):
+                        self.regions.append(dict(name='us-gov-west-1', label='US GovCloud'))
         if hasattr(self, 'regions'):
             self.selected_region = self.request.session.get('region', self.default_region)
-            if (self.selected_region == '' or
-                self.selected_region == 'undefined' or
-                self.selected_region == 'euca'):
+            if (self.selected_region == '' or self.selected_region == 'undefined' or self.selected_region == 'euca'):
                 self.selected_region = self.default_region
             self.selected_region_label = self.get_selected_region_label(self.selected_region, self.regions)
         self.username_label = self.request.session.get('username_label')
