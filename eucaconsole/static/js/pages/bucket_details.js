@@ -24,6 +24,7 @@ angular.module('BucketDetailsPage',
         $scope.bucketPolicyJson = '';
         $scope.hasCorsConfig = false;
         $scope.hasBucketPolicy = false;
+        var bucketPolicyJsonOrig = '';
         $scope.initController = function (optionsJson) {
             var options = JSON.parse(eucaUnescapeJson(optionsJson));
             $scope.bucketName = options.bucket_name;
@@ -36,6 +37,7 @@ angular.module('BucketDetailsPage',
             if (!$scope.hasBucketPolicy) {
                 $scope.bucketPolicyJson = $scope.sampleBucketPolicy;
             }
+            bucketPolicyJsonOrig = $scope.bucketPolicyJson;
             $scope.initPolicyDialogListener();
             $scope.getBucketObjectsCount();
             $scope.handleUnsavedChanges();
@@ -57,17 +59,18 @@ angular.module('BucketDetailsPage',
         };
         $scope.initPolicyDialogListener = function () {
             var policyDialog = $('#bucket-policy-modal');
-            policyDialog.on('opened.fndtn.reveal', function () {
+            $timeout(function() {
                 var policyTextarea = document.getElementById('policy-textarea');
-                policyDialog.find('.CodeMirror').remove();  // Avoid duplicate CodeMirror textareas
-                if (policyTextarea !== null) {
-                    $scope.policyCodeEditor = CodeMirror.fromTextArea(policyTextarea, {
-                        mode: "javascript",
-                        lineWrapping: true,
-                        styleActiveLine: true,
-                        lineNumbers: true
-                    });
-                }
+                $scope.policyCodeEditor = CodeMirror.fromTextArea(policyTextarea, {
+                    mode: "javascript",
+                    lineWrapping: true,
+                    styleActiveLine: true,
+                    lineNumbers: true
+                });
+            });
+            policyDialog.on('opened.fndtn.reveal', function () {
+                $scope.policyCodeEditor.setValue($scope.bucketPolicyJson);
+                $scope.policyCodeEditor.clearHistory();
             });
         };
         $scope.setBucketPolicy = function ($event) {
@@ -75,18 +78,26 @@ angular.module('BucketDetailsPage',
             $scope.savingBucketPolicy = true;
             $scope.policyError = '';
             var csrfToken = angular.element('#csrf_token').val();
-            var policyTextarea = angular.element('#policy-textarea');
-            BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, $scope.policyCodeEditor.getValue())
+            // need to pull update out of CodeMirror since model doesn't get updated
+            $scope.bucketPolicyJson = $scope.policyCodeEditor.getValue();
+            BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, $scope.bucketPolicyJson)
                 .then(function success(response) {
                     $scope.savingBucketPolicy = false;
                     $scope.hasBucketPolicy = true;
                     $rootScope.$broadcast('s3:bucketPolicySaved');
                     $('#bucket-policy-modal').foundation('reveal', 'close');
                     Notify.success(response.data.message);
+                    bucketPolicyJsonOrig = $scope.bucketPolicyJson;
                 }, function error(errData) {
                     $scope.policyError = errData.data.message;
                     $scope.savingBucketPolicy = false;
                 });
+        };
+        $scope.restorePolicy = function() {
+            $timeout(function() {
+                $scope.bucketPolicyJson = bucketPolicyJsonOrig;
+                $scope.policyError = '';
+            });
         };
 
         $scope.deleteBucketPolicy = function ($event) {
