@@ -78,14 +78,16 @@ angular.module('BucketDetailsPage',
             $scope.savingBucketPolicy = true;
             $scope.policyError = '';
             var csrfToken = angular.element('#csrf_token').val();
-            var policyTextarea = $scope.bucketPolicyJson;
-            BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, $scope.policyCodeEditor.getValue())
+            // need to pull update out of CodeMirror since model doesn't get updated
+            $scope.bucketPolicyJson = $scope.policyCodeEditor.getValue();
+            BucketPolicyService.setBucketPolicy($scope.bucketName, csrfToken, $scope.bucketPolicyJson)
                 .then(function success(response) {
                     $scope.savingBucketPolicy = false;
                     $scope.hasBucketPolicy = true;
                     $rootScope.$broadcast('s3:bucketPolicySaved');
                     $('#bucket-policy-modal').foundation('reveal', 'close');
                     Notify.success(response.data.message);
+                    bucketPolicyJsonOrig = $scope.bucketPolicyJson;
                 }, function error(errData) {
                     $scope.policyError = errData.data.message;
                     $scope.savingBucketPolicy = false;
