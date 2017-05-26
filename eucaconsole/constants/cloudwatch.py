@@ -68,6 +68,20 @@ METRIC_TYPES = [
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_3XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_4XX', 'unit': 'Count'},
     {'namespace': 'AWS/ELB', 'name': 'HTTPCode_Backend_5XX', 'unit': 'Count'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'ComputeCoreAvailable', 'unit': 'Count'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'ComputeCoreTotal', 'unit': 'Count'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'ComputeDiskAvailable', 'unit': 'Gigabytes'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'ComputeDiskTotal', 'unit': 'Gigabytes'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'ComputeMemoryAvailable', 'unit': 'Megabytes'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'ComputeMemoryTotal', 'unit': 'Megabytes'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'InstanceTypeAvailable', 'unit': 'Count'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'InstanceTypeTotal', 'unit': 'Count'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'PublicIpTypeAvailable', 'unit': 'Count'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'PublicIpTypeTotal', 'unit': 'Count'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'StorageEbsAvailable', 'unit': 'Gigabytes'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'StorageEbsTotal', 'unit': 'Gigabytes'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'StorageObjectAvailable', 'unit': 'Gigabytes'},
+    {'namespace': 'AWS/EucalyptusCapacity', 'name': 'StorageObjectTotal', 'unit': 'Gigabytes'},
 ]
 
 
