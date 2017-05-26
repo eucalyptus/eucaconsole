@@ -16,6 +16,7 @@
     <link rel="shortcut icon" href="${request.static_path('eucaconsole:static/img/favicon.ico')}" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/thirdparty/angular-csp.css')}"
           type="text/css" media="screen" charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700|PT+Sans:400,700" rel="stylesheet" />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/fonts/foundation-icons.css')}"
           type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/thirdparty/chosen.min.css')}" />
