@@ -14,9 +14,11 @@
                                 ng-change="usagereports.updateUsageType()">
                             <option value="ec2" i18n:translate="">Compute</option>
                             <option value="s3" i18n:translate="">Object Storage</option>
-                            <option value="cw" i18n:translate="">CloudWatch</option>
+                            <option value="cloudwatch" i18n:translate="">CloudWatch</option>
+                            <!--
                             <option value="sqs" i18n:translate="">SQS</option>
                             <option value="vpc" i18n:translate="">VPC</option>
+                            -->
                         </select>
                     </div>
                 </div>
@@ -33,9 +35,11 @@
                                 i18n:translate="">All usage types</option>
                             <option value="BoxUsage" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">Box usage</option>
-                            <option value="datain" ng-hide="usagereports.values.service != 'ec2'"
+                            <option value="LoadBalancerUsage" ng-hide="usagereports.values.service != 'ec2'"
+                                i18n:translate="">Load Balancer usage</option>
+                            <option value="DataTransfer-In-Bytes" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">Data Transfer In (Bytes)</option>
-                            <option value="dataout" ng-hide="usagereports.values.service != 'ec2'"
+                            <option value="DataTransfer-OutBytes" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">Data Transfer Out (Bytes)</option>
                             <option value="VolumeUsage" ng-hide="usagereports.values.service != 'ec2'"
                                 i18n:translate="">EBS Volume Usage</option>
@@ -43,13 +47,17 @@
                                 i18n:translate="">EBS Volume IO Usage</option>
                             <option value="all" ng-hide="usagereports.values.service != 's3'"
                                 i18n:translate="">All usage types</option>
-                            <option value="requests" ng-hide="usagereports.values.service != 's3'"
+                            <option value="StorageObjectCount" ng-hide="usagereports.values.service != 's3'"
+                                i18n:translate="">Storage Object Count</option>
+                            <option value="TimedStorage-ByteHrs" ng-hide="usagereports.values.service != 's3'"
+                                i18n:translate="">Storage Byte/Hours</option>
+                            <option value="Requests" ng-hide="usagereports.values.service != 's3'"
                                 i18n:translate="">Requests</option>
-                            <option value="datain" ng-hide="usagereports.values.service != 's3'"
+                            <option value="DataTransfer-In-Bytes" ng-hide="usagereports.values.service != 's3'"
                                 i18n:translate="">Data Transfer In (Bytes)</option>
-                            <option value="dataout" ng-hide="usagereports.values.service != 's3'"
+                            <option value="DataTransfer-OutBytes" ng-hide="usagereports.values.service != 's3'"
                                 i18n:translate="">Data Transfer Out (Bytes)</option>
-                            <option value="requests" ng-hide="['cw', 'sqs', 'vpc'].indexOf(usagereports.values.service) == -1"
+                            <option value="request" ng-hide="usagereports.values.service != 'cloudwatch'"
                                 i18n:translate="">Requests</option>
                         </select>
                     </div>

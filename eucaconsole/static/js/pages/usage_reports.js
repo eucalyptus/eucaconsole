@@ -40,7 +40,7 @@ angular.module('UsageReportsModule', ['ModalModule', 'EucaConsoleUtils'])
                     toDate: ''
                 };
                 vm.updateUsageType = function() {
-                    vm.values.usageType = 'requests';
+                    vm.values.usageType = 'request';
                     if (vm.values.service == 'ec2' || vm.values.service == 's3') {
                         vm.values.usageType = 'all';
                     }
