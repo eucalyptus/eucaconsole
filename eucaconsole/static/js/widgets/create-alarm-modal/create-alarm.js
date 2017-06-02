@@ -35,7 +35,7 @@ angular.module('CreateAlarmModal', [
         },
         controller: ['$scope', '$rootScope', 'AlarmService', 'ModalService', function ($scope, $rootScope, AlarmService, ModalService) {
             var vm = this;
-            $scope.alarm = {};
+            $scope.alarm = { threshold: 1 };
             $scope.namespaces = [];
             var csrf_token = $('#csrf_token').val();
             var loadBalancers = [];
