@@ -128,6 +128,12 @@ METRIC_CATEGORIES = [
         namespace='AWS/SQS',
     ),
     dict(
+        name='euca',
+        label=_(u'Eucalyptus Capacity'),
+        resource=None,
+        namespace='AWS/EucalyptusCapacity',
+    ),
+    dict(
         name='custom',
         label=_(u'Custom metrics'),
         namespace=None,
